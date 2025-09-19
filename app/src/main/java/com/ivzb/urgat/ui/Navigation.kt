@@ -14,7 +14,11 @@ fun MainNavigation() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "main") {
-        composable("main") { ExpensesScreen(modifier = Modifier.padding(16.dp)) }
-        // TODO: Add more destinations
+        composable("main") { ExpensesScreen(
+            onAddExpense = {},
+            // todo
+//            onAddExpense = navController::navigateToAddExpense,
+            modifier = Modifier.padding(16.dp)
+        ) }
     }
 }
