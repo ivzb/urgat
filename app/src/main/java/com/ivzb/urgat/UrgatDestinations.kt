@@ -2,6 +2,7 @@ package com.ivzb.urgat
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -27,10 +28,15 @@ data object Notes: UrgatDestination {
     override val route = "notes"
 }
 
+data object Weather: UrgatDestination {
+    override val icon = Icons.Filled.DateRange
+    override val route = "weather"
+}
+
 data object AddExpense: UrgatDestination {
     override val icon = Icons.Filled.Add
     override val route = "addExpense"
 }
 
 // Screens to be displayed in the top UrgatTabRow
-val urgatTabRowScreens = listOf(Overview, Expenses, Notes)
+val urgatTabRowScreens = listOf(Overview, Expenses, Notes, Weather)
