@@ -19,3 +19,6 @@ data object AddExpense: UrgatDestination {
     override val icon = Icons.Filled.Add
     override val route = "addExpense"
 }
+
+// Screens to be displayed in the top UrgatTabRow
+val urgatTabRowScreens = listOf(Expenses)
