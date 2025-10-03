@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
+import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
 
 @Composable
@@ -34,6 +35,10 @@ fun UrgatNavHost(
                 },
                 modifier = Modifier.padding(16.dp)
             )
+        }
+
+        composable(Notes.route) {
+            NotesScreen()
         }
 
         composable(AddExpense.route) {
