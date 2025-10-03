@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
+import com.ivzb.urgat.ui.overview.OverviewScreen
 
 @Composable
 fun UrgatNavHost(
@@ -19,9 +20,13 @@ fun UrgatNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Expenses.route,
+        startDestination = Overview.route,
         modifier = modifier
     ) {
+        composable(Overview.route) {
+            OverviewScreen()
+        }
+
         composable(Expenses.route) {
             ExpensesScreen(
                 onAddExpense = {

@@ -2,12 +2,18 @@ package com.ivzb.urgat
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed interface UrgatDestination {
     val icon: ImageVector
     val route: String
+}
+
+data object Overview: UrgatDestination {
+    override val icon = Icons.Filled.Home
+    override val route = "overview"
 }
 
 data object Expenses: UrgatDestination {
@@ -21,4 +27,4 @@ data object AddExpense: UrgatDestination {
 }
 
 // Screens to be displayed in the top UrgatTabRow
-val urgatTabRowScreens = listOf(Expenses)
+val urgatTabRowScreens = listOf(Overview, Expenses)
