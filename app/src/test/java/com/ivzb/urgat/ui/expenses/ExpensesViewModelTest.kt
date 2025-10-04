@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.ivzb.urgat.data.ExpensesRepository
+import com.ivzb.urgat.data.expense.ExpensesRepository
 
 /**
  * Example local unit test, which will execute on the development machine (host).

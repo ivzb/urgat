@@ -31,7 +31,14 @@ fun UrgatNavHost(
         }
 
         composable(Todo.route) {
-            TodoScreen()
+            TodoScreen(
+                onAddTodo = {
+                    TODO()
+                },
+                onClickTodo = {
+                    TODO()
+                }
+            )
         }
 
         composable(Expenses.route) {

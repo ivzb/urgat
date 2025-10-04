@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import com.ivzb.urgat.data.ExpensesRepository
+import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.ui.expenses.ExpensesUiState.Error
 import com.ivzb.urgat.ui.expenses.ExpensesUiState.Loading
 import com.ivzb.urgat.ui.expenses.ExpensesUiState.Success
@@ -21,7 +21,7 @@ class ExpensesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: StateFlow<ExpensesUiState> = expensesRepository
-        .expensess.map<List<String>, ExpensesUiState>(::Success)
+        .expenses.map<List<String>, ExpensesUiState>(::Success)
         .catch { emit(Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
 

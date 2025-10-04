@@ -4,14 +4,14 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import com.ivzb.urgat.data.ExpensesRepository
-import com.ivzb.urgat.data.di.DataModule
-import com.ivzb.urgat.data.di.FakeExpensesRepository
+import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.di.RepositoryModule
+import com.ivzb.urgat.data.source.di.FakeExpensesRepository
 
 @Module
 @TestInstallIn(
     components = [SingletonComponent::class],
-    replaces = [DataModule::class]
+    replaces = [RepositoryModule::class]
 )
 interface FakeDataModule {
 

@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.local.database
+package com.ivzb.urgat.data.expense
 
 import androidx.room.Dao
 import androidx.room.Entity
@@ -8,7 +8,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Entity
-data class Expenses(
+data class Expense(
     val name: String
 ) {
     @PrimaryKey(autoGenerate = true)
@@ -16,10 +16,10 @@ data class Expenses(
 }
 
 @Dao
-interface ExpensesDao {
-    @Query("SELECT * FROM expenses ORDER BY uid DESC LIMIT 10")
-    fun getExpensess(): Flow<List<Expenses>>
+interface ExpenseDao {
+    @Query("SELECT * FROM expense ORDER BY uid DESC LIMIT 10")
+    fun getExpenses(): Flow<List<Expense>>
 
     @Insert
-    suspend fun insertExpenses(item: Expenses)
+    suspend fun insertExpense(item: Expense)
 }

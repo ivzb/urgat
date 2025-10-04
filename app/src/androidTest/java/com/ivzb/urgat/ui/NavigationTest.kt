@@ -7,7 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
 import org.junit.Test
-import com.ivzb.urgat.data.di.fakeExpensess
+import com.ivzb.urgat.data.source.di.fakeExpensess
 
 @HiltAndroidTest
 class NavigationTest {
