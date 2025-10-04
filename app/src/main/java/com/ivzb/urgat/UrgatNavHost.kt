@@ -12,6 +12,7 @@ import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
+import com.ivzb.urgat.ui.todo.TodoScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
 
 @Composable
@@ -27,6 +28,10 @@ fun UrgatNavHost(
     ) {
         composable(Overview.route) {
             OverviewScreen()
+        }
+
+        composable(Todo.route) {
+            TodoScreen()
         }
 
         composable(Expenses.route) {
