@@ -3,6 +3,7 @@ package com.ivzb.urgat
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.ivzb.urgat.navigation.UrgatNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

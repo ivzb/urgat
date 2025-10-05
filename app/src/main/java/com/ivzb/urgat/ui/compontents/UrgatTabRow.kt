@@ -29,7 +29,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ivzb.urgat.UrgatDestination
+import com.ivzb.urgat.navigation.UrgatDestination
 import java.util.Locale
 
 @Composable

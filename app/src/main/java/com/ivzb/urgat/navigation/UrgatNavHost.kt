@@ -1,4 +1,4 @@
-package com.ivzb.urgat
+package com.ivzb.urgat.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -23,42 +23,42 @@ fun UrgatNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = Overview.route,
+        startDestination = OverviewDestination.route,
         modifier = modifier
     ) {
-        composable(Overview.route) {
+        composable(OverviewDestination.route) {
             OverviewScreen()
         }
 
-        composable(Todo.route) {
+        composable(TodoDestination.route) {
             TodoScreen(
                 onAddTodo = {
-                    TODO()
+                    navController.navigateSingleTopTo(AddTodoDestination.route)
                 },
-                onClickTodo = {
+                onTodoClick = {
                     TODO()
                 }
             )
         }
 
-        composable(Expenses.route) {
+        composable(ExpensesDestination.route) {
             ExpensesScreen(
                 onAddExpense = {
-                    navController.navigateSingleTopTo(AddExpense.route)
+                    navController.navigateSingleTopTo(AddExpenseDestination.route)
                 },
                 modifier = Modifier.padding(16.dp)
             )
         }
 
-        composable(Notes.route) {
+        composable(NotesDestination.route) {
             NotesScreen()
         }
 
-        composable(Weather.route) {
+        composable(WeatherDestination.route) {
             WeatherScreen()
         }
 
-        composable(AddExpense.route) {
+        composable(AddExpenseDestination.route) {
             AddExpenseScreen()
         }
     }

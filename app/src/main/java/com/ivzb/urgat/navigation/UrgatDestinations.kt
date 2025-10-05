@@ -1,4 +1,4 @@
-package com.ivzb.urgat
+package com.ivzb.urgat.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,35 +14,40 @@ sealed interface UrgatDestination {
     val route: String
 }
 
-data object Overview: UrgatDestination {
+data object OverviewDestination: UrgatDestination {
     override val icon = Icons.Filled.Home
     override val route = "overview"
 }
 
-data object Todo: UrgatDestination {
+data object TodoDestination: UrgatDestination {
     override val icon = Icons.Filled.Done
     override val route = "todo"
 }
 
-data object Expenses: UrgatDestination {
+data object ExpensesDestination: UrgatDestination {
     override val icon = Icons.Filled.ShoppingCart
     override val route = "expenses"
 }
 
-data object Notes: UrgatDestination {
+data object NotesDestination: UrgatDestination {
     override val icon = Icons.Filled.Person
     override val route = "notes"
 }
 
-data object Weather: UrgatDestination {
+data object WeatherDestination: UrgatDestination {
     override val icon = Icons.Filled.DateRange
     override val route = "weather"
 }
 
-data object AddExpense: UrgatDestination {
+data object AddTodoDestination: UrgatDestination {
+    override val icon = Icons.Filled.Add
+    override val route = "addTodo"
+}
+
+data object AddExpenseDestination: UrgatDestination {
     override val icon = Icons.Filled.Add
     override val route = "addExpense"
 }
 
 // Screens to be displayed in the top UrgatTabRow
-val urgatTabRowScreens = listOf(Overview, Todo, Expenses, Notes, Weather)
+val urgatTabRowScreens = listOf(OverviewDestination, TodoDestination, ExpensesDestination, NotesDestination, WeatherDestination)
