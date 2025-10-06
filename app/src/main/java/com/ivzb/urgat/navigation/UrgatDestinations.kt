@@ -39,9 +39,15 @@ data object WeatherDestination: UrgatDestination {
     override val route = "weather"
 }
 
-data object AddTodoDestination: UrgatDestination {
+data object AddEditTodoDestination: UrgatDestination {
     override val icon = Icons.Filled.Add
-    override val route = "addTodo"
+    override val route = "${Args.ROUTE}/{${Args.TITLE_ARG}}?${Args.TODO_ID_ARG}=${Args.TODO_ID_ARG}"
+
+    object Args {
+        const val ROUTE = "addEditTodo"
+        const val TITLE_ARG = "title"
+        const val TODO_ID_ARG = "todoId"
+    }
 }
 
 data object AddExpenseDestination: UrgatDestination {

@@ -12,4 +12,9 @@
     <string name="error_todos">Error while loading todos</string>
     <string name="loading_todos">Loading todos</string>
     <string name="new_todo">New Todo</string>
+    <string name="add_todo">Add Todo</string>
+    <string name="menu_back">Back</string>
+    <string name="empty_todo_message">Empty todo message</string>
+    <string name="title_hint">Title</string>
+    <string name="description_hint">Enter your todo here.</string>
 </resources>

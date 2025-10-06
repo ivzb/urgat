@@ -8,19 +8,36 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
+import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
 import com.ivzb.urgat.ui.compontents.UrgatTabRow
+import com.ivzb.urgat.ui.expenses.ExpensesScreen
+import com.ivzb.urgat.ui.notes.NotesScreen
+import com.ivzb.urgat.ui.overview.OverviewScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.todo.TodoScreen
+import com.ivzb.urgat.ui.weather.WeatherScreen
 
 @Composable
 fun UrgatNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    navActions: UrgatNavActions = remember(navController) {
+        UrgatNavActions(navController)
+    }
 ) {
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
@@ -29,28 +46,102 @@ fun UrgatNavGraph(
     UrgatTheme {
         Scaffold(
             topBar = {
-                UrgatTabRow(
-                    allScreens = urgatTabRowScreens,
-                    onTabSelected = { screen ->
-                        navController.navigateSingleTopTo(screen.route)
-                    },
-                    currentScreen = currentScreen,
-                )
+                if (urgatTabRowScreens.contains(currentScreen)) {
+                    UrgatTabRow(
+                        allScreens = urgatTabRowScreens,
+                        onTabSelected = { screen ->
+                            navController.navigateSingleTopTo(screen.route)
+                        },
+                        currentScreen = currentScreen,
+                    )
+                }
             },
             floatingActionButton = {
                 if (currentScreen == TodoDestination) {
                     FloatingActionButton(onClick = {
-                        navController.navigateSingleTopTo(AddTodoDestination.route)
+                        navActions.navigateToAddEditTodo(R.string.add_todo, null)
                     }) {
                         Icon(Icons.Default.Add, contentDescription = stringResource(R.string.new_todo))
                     }
                 }
             }
         ) { innerPadding ->
-            UrgatNavHost(
+
+            NavHost(
                 navController = navController,
+                startDestination = OverviewDestination.route,
                 modifier = modifier.padding(innerPadding)
-            )
+            ) {
+                composable(OverviewDestination.route) {
+                    OverviewScreen()
+                }
+
+                composable(TodoDestination.route) {
+                    TodoScreen(
+                        onAddTodo = {
+                            navActions.navigateToAddEditTodo(R.string.add_todo, null)
+                        },
+                        onTodoClick = {
+                            TODO()
+                        }
+                    )
+                }
+
+                composable(ExpensesDestination.route) {
+                    ExpensesScreen(
+                        onAddExpense = {
+                            navActions.navigateToAddEditExpense()
+                        },
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                composable(NotesDestination.route) {
+                    NotesScreen()
+                }
+
+                composable(WeatherDestination.route) {
+                    WeatherScreen()
+                }
+
+                composable(AddEditTodoDestination.route, arguments = listOf(
+                    navArgument(AddEditTodoDestination.Args.TITLE_ARG) { type = NavType.IntType },
+                    navArgument(AddEditTodoDestination.Args.TODO_ID_ARG) { type = NavType.StringType; nullable = true },
+                )) { entry ->
+                    val title = entry.arguments?.getInt(AddEditTodoDestination.Args.TITLE_ARG) ?: 0
+                    val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.TODO_ID_ARG)
+
+                    AddEditTodoScreen(
+                        screenTitle = title,
+                        onTodoUpdate = {
+                            navActions.navigateToTodo()
+                        },
+                        onBack = { navController.popBackStack() }
+
+                    )
+                }
+
+                composable(AddExpenseDestination.route) {
+                    AddExpenseScreen()
+                }
+            }
         }
     }
 }
+
+fun NavHostController.navigateSingleTopTo(route: String) =
+    this.navigate(route) {
+        // Pop up to the start destination of the graph to
+        // avoid building up a large stack of destinations
+        // on the back stack as users select items
+        popUpTo(
+            this@navigateSingleTopTo.graph.findStartDestination().id
+        ) {
+            saveState = true
+        }
+        // Avoid multiple copies of the same destination when
+        // reselecting the same item
+        launchSingleTop = true
+        // Restore state when reselecting a previously selected item
+        restoreState = true
+    }
