@@ -1,16 +1,28 @@
 package com.ivzb.urgat.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -23,7 +35,6 @@ import androidx.navigation.navArgument
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
-import com.ivzb.urgat.ui.compontents.UrgatTabRow
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
@@ -41,23 +52,50 @@ fun UrgatNavGraph(
 ) {
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
-    val currentScreen = urgatTabRowScreens.find { it.route == currentDestination?.route } ?: OverviewDestination
+    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
+
+    var selectedItem by remember { mutableStateOf<UrgatMenuDestination>(OverviewDestination) }
 
     UrgatTheme {
         Scaffold(
-            topBar = {
-                if (urgatTabRowScreens.contains(currentScreen)) {
-                    UrgatTabRow(
-                        allScreens = urgatTabRowScreens,
-                        onTabSelected = { screen ->
-                            navController.navigateSingleTopTo(screen.route)
-                        },
-                        currentScreen = currentScreen,
-                    )
+            bottomBar = {
+                if (currentTabScreen != null) {
+                    NavigationBar {
+                        bottomNavigationScreens.forEach { item ->
+                            NavigationBarItem(
+                                selected = selectedItem == item,
+                                onClick = {
+                                    selectedItem = item
+                                    navController.navigate(item.route)
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = item.icon,
+                                        contentDescription = stringResource(item.label)
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = stringResource(item.label),
+                                        color = if (selectedItem == item) {
+                                            MaterialTheme.colorScheme.onPrimaryContainer
+                                        } else {
+                                            MaterialTheme.colorScheme.onSurfaceVariant
+                                        }
+                                    )
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = MaterialTheme.colorScheme.surface,
+                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    indicatorColor = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
                 }
             },
             floatingActionButton = {
-                if (currentScreen == TodoDestination) {
+                if (currentTabScreen == TodoDestination) {
                     FloatingActionButton(onClick = {
                         navActions.navigateToAddEditTodo(R.string.add_todo, null)
                     }) {
@@ -70,7 +108,14 @@ fun UrgatNavGraph(
             NavHost(
                 navController = navController,
                 startDestination = OverviewDestination.route,
-                modifier = modifier.padding(innerPadding)
+                modifier = modifier.padding(
+                    PaddingValues(
+                        start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                        top = 0.dp, // Ignore top padding because top bar is missing
+                        end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
+                        bottom = innerPadding.calculateBottomPadding()
+                    )
+                )
             ) {
                 composable(OverviewDestination.route) {
                     OverviewScreen()
@@ -117,7 +162,6 @@ fun UrgatNavGraph(
                             navActions.navigateToTodo()
                         },
                         onBack = { navController.popBackStack() }
-
                     )
                 }
 

@@ -2,7 +2,11 @@
 <resources>
     <string name="app_name">Urgat</string>
     <string name="add">Add</string>
+    <string name="overview">Overview</string>
+    <string name="todo">Todo</string>
     <string name="expenses">Expenses</string>
+    <string name="notes">Notes</string>
+    <string name="weather">Weather</string>
     <string name="all_todos">All Todos</string>
     <string name="active_todos">Active Todos</string>
     <string name="completed_todos">Completed Todos</string>
@@ -13,8 +17,10 @@
     <string name="loading_todos">Loading todos</string>
     <string name="new_todo">New Todo</string>
     <string name="add_todo">Add Todo</string>
+    <string name="edit_todo">Edit Todo</string>
     <string name="menu_back">Back</string>
     <string name="empty_todo_message">Empty todo message</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
+    <string name="save">Save</string>
 </resources>

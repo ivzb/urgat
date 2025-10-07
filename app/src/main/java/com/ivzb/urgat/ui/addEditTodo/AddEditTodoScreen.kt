@@ -2,6 +2,9 @@ package com.ivzb.urgat.ui.addEditTodo
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,22 +17,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -92,51 +90,70 @@ private fun AddEditTodoContent(
     onDescriptionChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier
-            .fillMaxWidth()
-            .padding(all = dimensionResource(id = R.dimen.horizontal_margin))
-            .verticalScroll(rememberScrollState())
+    Column (
+        modifier = modifier
     ) {
         AddEditTodoTopAppBar(screenTitle, onBack)
 
-        if (loading) {
-            Text("Loading...")
-        } else {
-            val textFieldColors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.onSecondary
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(R.dimen.content_padding))
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (loading) {
+                Text("Loading...")
+            } else {
+                val textFieldColors = OutlinedTextFieldDefaults.colors(
+//                    focusedBorderColor = Color.Transparent,
+//                    unfocusedBorderColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.onSecondary
+                )
 
-            OutlinedTextField(
-                value = title,
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = onTitleChanged,
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.title_hint),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                },
-                textStyle = MaterialTheme.typography.headlineSmall
-                    .copy(fontWeight = FontWeight.Bold),
-                maxLines = 1,
-                colors = textFieldColors
-            )
+                TextField(
+                    value = title,
+                    onValueChange = onTitleChanged,
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.title_hint),
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.headlineSmall
+                        .copy(fontWeight = FontWeight.Bold),
+                    maxLines = 1,
+//                    colors = textFieldColors,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
 
-            OutlinedTextField(
-                value = description,
-                onValueChange = onDescriptionChanged,
-                placeholder = { Text(stringResource(id = R.string.description_hint)) },
-                modifier = Modifier
-                    .height(350.dp)
-                    .fillMaxWidth(),
-                colors = textFieldColors
-            )
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
 
-            Button(onClick = onSave) {
-                Text("Save")
+                TextField(
+                    value = description,
+                    onValueChange = onDescriptionChanged,
+                    placeholder = { Text(stringResource(id = R.string.description_hint)) },
+//                    colors = textFieldColors,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth()
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                )
+
+                Button(
+                    onClick = onSave,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.save))
+                }
             }
         }
     }
@@ -146,14 +163,78 @@ private fun AddEditTodoContent(
 @Composable
 private fun AddEditTodoTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
     TopAppBar(
-        title = { Text(text = stringResource(title)) },
+        title = {
+            Text(text = stringResource(title))
+        },
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
             }
         },
-        modifier = Modifier.fillMaxWidth()
+        windowInsets = WindowInsets(0.dp),
+        modifier = Modifier
+            .fillMaxWidth()
     )
+}
+
+@Preview
+@Composable
+private fun AddContentPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditTodoContent(
+                screenTitle = R.string.add_todo,
+                onBack = {},
+                onSave = {},
+                loading = false,
+                title = "",
+                description = "",
+                onTitleChanged = {},
+                onDescriptionChanged = {},
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EditTodoContentPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditTodoContent(
+                screenTitle = R.string.edit_todo,
+                onBack = {},
+                onSave = {},
+                loading = false,
+                title = "Title",
+                description = "Description",
+                onTitleChanged = {},
+                onDescriptionChanged = {},
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LoadingContentPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditTodoContent(
+                screenTitle = R.string.add_todo,
+                onBack = {},
+                onSave = {},
+                loading = true,
+                title = "",
+                description = "",
+                onTitleChanged = {},
+                onDescriptionChanged = {},
+                modifier = Modifier
+            )
+        }
+    }
 }
 
 @Preview

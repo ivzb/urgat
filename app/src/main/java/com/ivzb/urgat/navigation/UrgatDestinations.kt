@@ -1,5 +1,6 @@
 package com.ivzb.urgat.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
@@ -8,33 +9,43 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.ivzb.urgat.R
 
 sealed interface UrgatDestination {
     val icon: ImageVector
     val route: String
 }
 
-data object OverviewDestination: UrgatDestination {
+sealed interface UrgatMenuDestination: UrgatDestination {
+    val label: Int
+}
+
+data object OverviewDestination: UrgatMenuDestination {
+    override val label = R.string.overview
     override val icon = Icons.Filled.Home
     override val route = "overview"
 }
 
-data object TodoDestination: UrgatDestination {
+data object TodoDestination: UrgatMenuDestination {
+    override val label = R.string.todo
     override val icon = Icons.Filled.Done
     override val route = "todo"
 }
 
-data object ExpensesDestination: UrgatDestination {
+data object ExpensesDestination: UrgatMenuDestination {
+    override val label = R.string.expenses
     override val icon = Icons.Filled.ShoppingCart
     override val route = "expenses"
 }
 
-data object NotesDestination: UrgatDestination {
+data object NotesDestination: UrgatMenuDestination {
+    override val label = R.string.notes
     override val icon = Icons.Filled.Person
     override val route = "notes"
 }
 
-data object WeatherDestination: UrgatDestination {
+data object WeatherDestination: UrgatMenuDestination {
+    override val label = R.string.weather
     override val icon = Icons.Filled.DateRange
     override val route = "weather"
 }
@@ -56,4 +67,4 @@ data object AddExpenseDestination: UrgatDestination {
 }
 
 // Screens to be displayed in the top UrgatTabRow
-val urgatTabRowScreens = listOf(OverviewDestination, TodoDestination, ExpensesDestination, NotesDestination, WeatherDestination)
+val bottomNavigationScreens = listOf(OverviewDestination, TodoDestination, ExpensesDestination, NotesDestination, WeatherDestination)
