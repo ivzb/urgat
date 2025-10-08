@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 class UrgatNavActions(private val navController: NavHostController) {
 
     fun navigateToTodo() {
-        navController.navigateSingleTopTo(TodoDestination.route)
+        navController.navigateSingleTopTo(TodoDestination.route, popInclusive = true)
     }
 
     fun navigateToAddEditTodo(@StringRes title: Int, todoId: String?) {

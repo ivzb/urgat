@@ -57,7 +57,6 @@ fun ExpensesScreen(
     modifier: Modifier = Modifier,
     viewModel: ExpensesViewModel = hiltViewModel()
 ) {
-
     val items by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (items is ExpensesUiState.Success) {

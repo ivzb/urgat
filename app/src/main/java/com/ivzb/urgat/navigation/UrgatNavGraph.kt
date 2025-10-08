@@ -16,9 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -49,130 +47,159 @@ fun UrgatNavGraph(
         UrgatNavActions(navController)
     }
 ) {
-    val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStack?.destination
-    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
-
-    var selectedItem by remember { mutableStateOf<UrgatMenuDestination>(OverviewDestination) }
-
     UrgatTheme {
         Scaffold(
             bottomBar = {
-                if (currentTabScreen != null) {
-                    NavigationBar {
-                        bottomNavigationScreens.forEach { item ->
-                            NavigationBarItem(
-                                selected = selectedItem == item,
-                                onClick = {
-                                    selectedItem = item
-                                    navController.navigate(item.route)
-                                },
-                                icon = {
-                                    Icon(
-                                        imageVector = item.icon,
-                                        contentDescription = stringResource(item.label)
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        text = stringResource(item.label),
-                                        color = if (selectedItem == item) {
-                                            MaterialTheme.colorScheme.onPrimaryContainer
-                                        } else {
-                                            MaterialTheme.colorScheme.onSurfaceVariant
-                                        }
-                                    )
-                                },
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MaterialTheme.colorScheme.surface,
-                                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    indicatorColor = MaterialTheme.colorScheme.primary
-                                )
-                            )
-                        }
-                    }
-                }
+                BottomBarContent(navController)
             },
             floatingActionButton = {
-                if (currentTabScreen == TodoDestination) {
-                    FloatingActionButton(onClick = {
-                        navActions.navigateToAddEditTodo(R.string.add_todo, null)
-                    }) {
-                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.new_todo))
-                    }
-                }
+                FloatingActionButtonContent(navController, navActions)
             }
         ) { innerPadding ->
 
-            NavHost(
-                navController = navController,
-                startDestination = OverviewDestination.route,
+            NavHostContent(
+                navController,
+                navActions,
                 modifier = modifier.padding(
                     PaddingValues(
                         start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
-                        top = 0.dp, // Ignore top padding because top bar is missing
+                        top = -1.dp, // Ignore top padding because top bar is missing
                         end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
                         bottom = innerPadding.calculateBottomPadding()
                     )
                 )
-            ) {
-                composable(OverviewDestination.route) {
-                    OverviewScreen()
-                }
+            )
+        }
+    }
+}
 
-                composable(TodoDestination.route) {
-                    TodoScreen(
-                        onAddTodo = {
-                            navActions.navigateToAddEditTodo(R.string.add_todo, null)
-                        },
-                        onTodoClick = {
-                            navActions.navigateToAddEditTodo(R.string.edit_todo, it.id)
-                        }
+@Composable
+private fun BottomBarContent(
+    navController: NavHostController,
+) {
+    val currentBackStack by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStack?.destination
+    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
+
+    if (currentTabScreen != null) {
+        NavigationBar {
+            bottomNavigationScreens.forEach { item ->
+                NavigationBarItem(
+                    selected = currentTabScreen == item,
+                    onClick = {
+                        navController.navigate(item.route)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = stringResource(item.label)
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(item.label),
+                            color = if (currentTabScreen == item) {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+                        )
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.surface,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = MaterialTheme.colorScheme.primary
                     )
-                }
-
-                composable(ExpensesDestination.route) {
-                    ExpensesScreen(
-                        onAddExpense = {
-                            navActions.navigateToAddEditExpense()
-                        },
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-
-                composable(NotesDestination.route) {
-                    NotesScreen()
-                }
-
-                composable(WeatherDestination.route) {
-                    WeatherScreen()
-                }
-
-                composable(AddEditTodoDestination.route, arguments = listOf(
-                    navArgument(AddEditTodoDestination.Args.TITLE_ARG) { type = NavType.IntType },
-                    navArgument(AddEditTodoDestination.Args.TODO_ID_ARG) { type = NavType.StringType; nullable = true },
-                )) { entry ->
-                    val title = entry.arguments?.getInt(AddEditTodoDestination.Args.TITLE_ARG) ?: 0
-                    val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.TODO_ID_ARG)
-
-                    AddEditTodoScreen(
-                        screenTitle = title,
-                        onTodoUpdate = {
-                            navActions.navigateToTodo()
-                        },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-
-                composable(AddExpenseDestination.route) {
-                    AddExpenseScreen()
-                }
+                )
             }
         }
     }
 }
 
-fun NavHostController.navigateSingleTopTo(route: String) =
+@Composable
+private fun FloatingActionButtonContent(
+    navController: NavHostController,
+    navActions: UrgatNavActions
+) {
+    val currentBackStack by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStack?.destination
+    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
+
+    if (currentTabScreen == TodoDestination) {
+        FloatingActionButton(onClick = {
+            navActions.navigateToAddEditTodo(R.string.add_todo, null)
+        }) {
+            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.new_todo))
+        }
+    }
+}
+
+@Composable
+private fun NavHostContent(
+    navController: NavHostController,
+    navActions: UrgatNavActions,
+    modifier: Modifier
+) {
+    NavHost(
+        navController = navController,
+        startDestination = OverviewDestination.route,
+        modifier = modifier
+    ) {
+        composable(OverviewDestination.route) {
+            OverviewScreen()
+        }
+
+        composable(TodoDestination.route) {
+            TodoScreen(
+                onAddTodo = {
+                    navActions.navigateToAddEditTodo(R.string.add_todo, null)
+                },
+                onTodoClick = {
+                    navActions.navigateToAddEditTodo(R.string.edit_todo, it.id)
+                }
+            )
+        }
+
+        composable(ExpensesDestination.route) {
+            ExpensesScreen(
+                onAddExpense = {
+                    navActions.navigateToAddEditExpense()
+                },
+                modifier = Modifier.padding(16.dp)
+            )
+        }
+
+        composable(NotesDestination.route) {
+            NotesScreen()
+        }
+
+        composable(WeatherDestination.route) {
+            WeatherScreen()
+        }
+
+        composable(AddEditTodoDestination.route, arguments = listOf(
+            navArgument(AddEditTodoDestination.Args.TITLE_ARG) { type = NavType.IntType },
+            navArgument(AddEditTodoDestination.Args.TODO_ID_ARG) { type = NavType.StringType; nullable = true },
+        )) { entry ->
+            val title = entry.arguments?.getInt(AddEditTodoDestination.Args.TITLE_ARG) ?: 0
+            val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.TODO_ID_ARG)
+
+            AddEditTodoScreen(
+                screenTitle = title,
+                onTodoUpdate = {
+                    navActions.navigateToTodo()
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(AddExpenseDestination.route) {
+            AddExpenseScreen()
+        }
+    }
+}
+
+fun NavHostController.navigateSingleTopTo(route: String, popInclusive: Boolean = false) =
     this.navigate(route) {
         // Pop up to the start destination of the graph to
         // avoid building up a large stack of destinations
@@ -181,7 +208,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
             this@navigateSingleTopTo.graph.findStartDestination().id
         ) {
             saveState = true
-            inclusive = true
+            inclusive = popInclusive
         }
         // Avoid multiple copies of the same destination when
         // reselecting the same item

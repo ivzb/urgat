@@ -34,7 +34,7 @@ private class FakeExpensesRepository : ExpensesRepository {
 
     private val data = mutableListOf<String>()
 
-    override val expensess: Flow<List<String>>
+    override val expenses: Flow<List<String>>
         get() = flow { emit(data.toList()) }
 
     override suspend fun add(name: String) {
