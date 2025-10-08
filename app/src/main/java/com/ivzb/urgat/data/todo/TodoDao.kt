@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Query("SELECT * FROM todo")
+    @Query("SELECT * FROM todo ORDER BY id DESC")
     fun observeAll(): Flow<List<LocalTodo>>
 
     @Query("SELECT * FROM todo WHERE id = :todoId")
     fun observeById(todoId: String): Flow<LocalTodo>
 
-    @Query("SELECT * FROM todo")
+    @Query("SELECT * FROM todo ORDER BY id DESC")
     suspend fun getAll(): List<LocalTodo>
 
     @Query("SELECT * FROM todo WHERE id = :todoId")

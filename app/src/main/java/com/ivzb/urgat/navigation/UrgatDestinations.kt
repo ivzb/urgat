@@ -52,7 +52,7 @@ data object WeatherDestination: UrgatMenuDestination {
 
 data object AddEditTodoDestination: UrgatDestination {
     override val icon = Icons.Filled.Add
-    override val route = "${Args.ROUTE}/{${Args.TITLE_ARG}}?${Args.TODO_ID_ARG}=${Args.TODO_ID_ARG}"
+    override val route = "${Args.ROUTE}/{${Args.TITLE_ARG}}?${Args.TODO_ID_ARG}={${Args.TODO_ID_ARG}}"
 
     object Args {
         const val ROUTE = "addEditTodo"

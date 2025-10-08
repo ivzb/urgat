@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -127,7 +126,7 @@ fun UrgatNavGraph(
                             navActions.navigateToAddEditTodo(R.string.add_todo, null)
                         },
                         onTodoClick = {
-                            TODO()
+                            navActions.navigateToAddEditTodo(R.string.edit_todo, it.id)
                         }
                     )
                 }
@@ -182,6 +181,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
             this@navigateSingleTopTo.graph.findStartDestination().id
         ) {
             saveState = true
+            inclusive = true
         }
         // Avoid multiple copies of the same destination when
         // reselecting the same item
