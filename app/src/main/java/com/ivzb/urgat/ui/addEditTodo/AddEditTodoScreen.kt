@@ -43,9 +43,9 @@ fun AddEditTodoScreen(
     @StringRes screenTitle: Int,
     onTodoUpdate: () -> Unit,
     onBack: () -> Unit,
+    onShowSnackbar: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditTodoViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -71,8 +71,9 @@ fun AddEditTodoScreen(
     // Check for user messages to display on the screen
     uiState.userMessage?.let { userMessage ->
         val snackbarText = stringResource(userMessage)
-        LaunchedEffect(snackbarHostState, viewModel, userMessage, snackbarText) {
-            snackbarHostState.showSnackbar(snackbarText)
+
+        LaunchedEffect(userMessage) {
+            onShowSnackbar(snackbarText)
             viewModel.snackbarMessageShown()
         }
     }

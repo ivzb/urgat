@@ -5,6 +5,7 @@ fun Todo.toLocal() = LocalTodo(
     title = title,
     description = description,
     isCompleted = isCompleted,
+    createdAt = createdAt
 )
 
 fun List<Todo>.toLocal() = map(Todo::toLocal)
@@ -14,6 +15,7 @@ fun LocalTodo.toExternal() = Todo(
     title = title,
     description = description,
     isCompleted = isCompleted,
+    createdAt = createdAt
 )
 
 @JvmName("localToExternal")

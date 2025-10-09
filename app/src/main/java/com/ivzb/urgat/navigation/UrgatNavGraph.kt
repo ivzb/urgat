@@ -13,10 +13,14 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -38,6 +42,8 @@ import com.ivzb.urgat.ui.overview.OverviewScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun UrgatNavGraph(
@@ -45,7 +51,9 @@ fun UrgatNavGraph(
     navController: NavHostController = rememberNavController(),
     navActions: UrgatNavActions = remember(navController) {
         UrgatNavActions(navController)
-    }
+    },
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
     UrgatTheme {
         Scaffold(
@@ -54,12 +62,18 @@ fun UrgatNavGraph(
             },
             floatingActionButton = {
                 FloatingActionButtonContent(navController, navActions)
-            }
+            },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { innerPadding ->
 
             NavHostContent(
                 navController,
                 navActions,
+                onShowSnackbar = { message ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(message)
+                    }
+                },
                 modifier = modifier.padding(
                     PaddingValues(
                         start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
@@ -138,6 +152,7 @@ private fun FloatingActionButtonContent(
 private fun NavHostContent(
     navController: NavHostController,
     navActions: UrgatNavActions,
+    onShowSnackbar: (String) -> Unit,
     modifier: Modifier
 ) {
     NavHost(
@@ -186,7 +201,8 @@ private fun NavHostContent(
                 onTodoUpdate = {
                     navActions.navigateToTodo()
                 },
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onShowSnackbar = onShowSnackbar
             )
         }
 

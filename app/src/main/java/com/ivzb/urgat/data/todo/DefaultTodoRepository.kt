@@ -25,9 +25,10 @@ class DefaultTodoRepository @Inject constructor(
             UUID.randomUUID().toString()
         }
         val todo = Todo(
+            id = todoId,
             title = title,
             description = description,
-            id = todoId,
+            createdAt = System.currentTimeMillis()
         )
         localDataSource.upsert(todo.toLocal())
         return todoId

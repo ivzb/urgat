@@ -41,10 +41,11 @@ class AddEditTodoViewModel @Inject constructor(
     }
 
     fun saveTodo() {
-        if (uiState.value.title.isEmpty() || uiState.value.description.isEmpty()) {
+        if (uiState.value.title.isEmpty() && uiState.value.description.isEmpty()) {
             _uiState.update {
                 it.copy(userMessage = R.string.empty_todo_message)
             }
+
             return
         }
 
