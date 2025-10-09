@@ -9,9 +9,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun OverviewScreen(
@@ -26,11 +31,13 @@ fun OverviewScreen(
     onClickNote: (String) -> Unit = {},
     onClickSeeAllWeather: () -> Unit = {},
 ) {
+    val screenName = stringResource(R.string.overview)
+
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(dimensionResource(R.dimen.content_padding))
             .verticalScroll(rememberScrollState())
-            .semantics { contentDescription = "Overivew Screen" }
+            .semantics { contentDescription = screenName }
     ) {
         TodoCard(
             onClickSeeAllTodos = onClickSeeAllTodos,
@@ -38,7 +45,10 @@ fun OverviewScreen(
             onClickTodo = onClickTodo
         )
 
-        Spacer(Modifier.height(UrgatDefaultPadding))
+        Spacer(
+            modifier = Modifier
+                .height(dimensionResource(R.dimen.list_item_padding))
+        )
 
         ExpensesCard(
             onClickSeeAllExpenses = onClickSeeAllExpenses,
@@ -46,7 +56,10 @@ fun OverviewScreen(
             onClickExpense = onClickExpense
         )
 
-        Spacer(Modifier.height(UrgatDefaultPadding))
+        Spacer(
+            modifier = Modifier
+                .height(dimensionResource(R.dimen.list_item_padding))
+        )
 
         NotesCard(
             onClickSeeAllNotes = onClickSeeAllNotes,
@@ -54,7 +67,10 @@ fun OverviewScreen(
             onClickNote = onClickNote
         )
 
-        Spacer(Modifier.height(UrgatDefaultPadding))
+        Spacer(
+            modifier = Modifier
+                .height(dimensionResource(R.dimen.list_item_padding))
+        )
 
         WeatherCard(
             onClickSeeAllWeather = onClickSeeAllWeather
@@ -69,7 +85,7 @@ private fun TodoCard(
     onClickTodo: (String) -> Unit = {},
 ) {
 
-    Text("Todos card")
+    Text("Todo card")
 }
 
 @Composable
@@ -100,4 +116,42 @@ private fun WeatherCard(
     Text("Weather card")
 }
 
-private val UrgatDefaultPadding = 12.dp
+@Preview
+@Composable
+fun OverviewScreenPreview() {
+    UrgatTheme {
+        OverviewScreen()
+    }
+}
+
+@Preview
+@Composable
+fun TodoCardPreview() {
+    UrgatTheme {
+        TodoCard()
+    }
+}
+
+@Preview
+@Composable
+fun ExpensesCardPreview() {
+    UrgatTheme {
+        ExpensesCard()
+    }
+}
+
+@Preview
+@Composable
+fun NotesCardPreview() {
+    UrgatTheme {
+        NotesCard()
+    }
+}
+
+@Preview
+@Composable
+fun WeatherCardPreview() {
+    UrgatTheme {
+        WeatherCard()
+    }
+}

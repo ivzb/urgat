@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -53,35 +54,33 @@ fun UrgatNavGraph(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
-    UrgatTheme {
-        Scaffold(
-            bottomBar = {
-                BottomBarContent(navController)
-            },
-            floatingActionButton = {
-                FloatingActionButtonContent(navController, navActions)
-            },
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-        ) { innerPadding ->
+    Scaffold(
+        bottomBar = {
+            BottomBarContent(navController)
+        },
+        floatingActionButton = {
+            FloatingActionButtonContent(navController, navActions)
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { innerPadding ->
 
-            NavHostContent(
-                navController,
-                navActions,
-                onShowSnackbar = { message ->
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(message)
-                    }
-                },
-                modifier = modifier.padding(
-                    PaddingValues(
-                        start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
-                        top = 0.dp, // Ignore top padding because top bar is missing
-                        end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
-                        bottom = innerPadding.calculateBottomPadding()
-                    )
+        NavHostContent(
+            navController,
+            navActions,
+            onShowSnackbar = { message ->
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(message)
+                }
+            },
+            modifier = modifier.padding(
+                PaddingValues(
+                    start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    top = 0.dp, // Ignore top padding because top bar is missing
+                    end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = innerPadding.calculateBottomPadding()
                 )
             )
-        }
+        )
     }
 }
 
@@ -187,10 +186,14 @@ private fun NavHostContent(
             WeatherScreen()
         }
 
-        composable(AddEditTodoDestination.route, arguments = listOf(
-            navArgument(AddEditTodoDestination.Args.TITLE_ARG) { type = NavType.IntType },
-            navArgument(AddEditTodoDestination.Args.TODO_ID_ARG) { type = NavType.StringType; nullable = true },
-        )) { entry ->
+        composable(
+            AddEditTodoDestination.route, arguments = listOf(
+                navArgument(AddEditTodoDestination.Args.TITLE_ARG) { type = NavType.IntType },
+                navArgument(AddEditTodoDestination.Args.TODO_ID_ARG) {
+                    type = NavType.StringType; nullable = true
+                },
+            )
+        ) { entry ->
             val title = entry.arguments?.getInt(AddEditTodoDestination.Args.TITLE_ARG) ?: 0
             val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.TODO_ID_ARG)
 
@@ -205,5 +208,13 @@ private fun NavHostContent(
         composable(AddExpenseDestination.route) {
             AddExpenseScreen()
         }
+    }
+}
+
+@Preview
+@Composable
+fun UrgatNavGraphPreview() {
+    UrgatTheme {
+        UrgatNavGraph()
     }
 }
