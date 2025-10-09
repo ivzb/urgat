@@ -25,6 +25,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -35,7 +36,6 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun TodoScreen(
-    onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodoViewModel = hiltViewModel()
@@ -125,28 +125,44 @@ private fun TodoItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                 vertical = dimensionResource(id = R.dimen.list_item_padding),
             )
             .clickable { onTodoClick(todo) }
     ) {
         Checkbox(
             checked = todo.isCompleted,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier
+                .align(Alignment.Top)
         )
 
-        Text(
-            text = todo.titleForList,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(
-                start = dimensionResource(id = R.dimen.horizontal_margin)
-            ),
-            textDecoration = if (todo.isCompleted) {
-                TextDecoration.LineThrough
-            } else {
-                null
+        Column {
+            Text(
+                text = todo.title,
+                style = MaterialTheme.typography.headlineSmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textDecoration = if (todo.isCompleted) {
+                    TextDecoration.LineThrough
+                } else {
+                    null
+                }
+            )
+
+            if (todo.description.isNotEmpty()) {
+                Text(
+                    text = todo.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 5,
+                    overflow = TextOverflow.Ellipsis,
+                    textDecoration = if (todo.isCompleted) {
+                        TextDecoration.LineThrough
+                    } else {
+                        null
+                    }
+                )
             }
-        )
+        }
     }
 }
 
@@ -207,6 +223,12 @@ private fun TodosContentPreview() {
                         isCompleted = true,
                         id = "ID 5"
                     ),
+                    Todo(
+                        title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        isCompleted = false,
+                        id = "ID 6"
+                    )
                 ),
                 currentFilteringLabel = R.string.all_todos,
                 onTodoClick = { },

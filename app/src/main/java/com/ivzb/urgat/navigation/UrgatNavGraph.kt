@@ -63,7 +63,7 @@ fun UrgatNavGraph(
                 modifier = modifier.padding(
                     PaddingValues(
                         start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
-                        top = -1.dp, // Ignore top padding because top bar is missing
+                        top = 0.dp, // Ignore top padding because top bar is missing
                         end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
                         bottom = innerPadding.calculateBottomPadding()
                     )
@@ -151,9 +151,6 @@ private fun NavHostContent(
 
         composable(TodoDestination.route) {
             TodoScreen(
-                onAddTodo = {
-                    navActions.navigateToAddEditTodo(R.string.add_todo, null)
-                },
                 onTodoClick = {
                     navActions.navigateToAddEditTodo(R.string.edit_todo, it.id)
                 }
