@@ -17,7 +17,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -25,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -198,9 +196,7 @@ private fun NavHostContent(
 
             AddEditTodoScreen(
                 screenTitle = title,
-                onTodoUpdate = {
-                    navActions.navigateToTodo()
-                },
+                onTodoUpdate = { navActions.navigateToTodo() },
                 onBack = { navController.popBackStack() },
                 onShowSnackbar = onShowSnackbar
             )
@@ -211,21 +207,3 @@ private fun NavHostContent(
         }
     }
 }
-
-fun NavHostController.navigateSingleTopTo(route: String, popInclusive: Boolean = false) =
-    this.navigate(route) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
-        // on the back stack as users select items
-        popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id
-        ) {
-            saveState = true
-            inclusive = popInclusive
-        }
-        // Avoid multiple copies of the same destination when
-        // reselecting the same item
-        launchSingleTop = true
-        // Restore state when reselecting a previously selected item
-        restoreState = true
-    }
