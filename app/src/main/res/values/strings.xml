@@ -10,6 +10,7 @@
     <string name="all_todos">All Todos</string>
     <string name="active_todos">Active Todos</string>
     <string name="completed_todos">Completed Todos</string>
+    <string name="recent_todos">Recent Todos</string>
     <string name="no_todos">You have no todos!</string>
     <string name="no_active_todos">You have no active todos!</string>
     <string name="no_completed_todos">You have no completed todos!</string>
@@ -23,4 +24,6 @@
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
     <string name="save">Save</string>
+    <string name="loading_overview">Loading overview</string>
+    <string name="error_overview">Error while loading overview</string>
 </resources>

@@ -11,6 +11,9 @@ interface TodoDao {
     @Query("SELECT * FROM todo ORDER BY createdAt DESC")
     fun observeAll(): Flow<List<LocalTodo>>
 
+    @Query("SELECT * FROM todo ORDER BY createdAt DESC LIMIT :limit")
+    fun observeAll(limit: Int): Flow<List<LocalTodo>>
+
     @Query("SELECT * FROM todo WHERE id = :todoId")
     fun observeById(todoId: String): Flow<LocalTodo>
 

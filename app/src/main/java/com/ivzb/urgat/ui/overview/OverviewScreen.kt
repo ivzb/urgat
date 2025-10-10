@@ -4,45 +4,111 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
+import com.ivzb.urgat.ui.todo.TodosContent
 
 @Composable
 fun OverviewScreen(
-    onClickSeeAllTodos: () -> Unit = {},
-    onClickAddTodo: () -> Unit = {},
-    onClickTodo: (String) -> Unit = {},
-    onClickSeeAllExpenses: () -> Unit = {},
-    onClickAddExpense: () -> Unit = {},
-    onClickExpense: (String) -> Unit = {},
-    onClickSeeAllNotes: () -> Unit = {},
-    onClickAddNote: () -> Unit = {},
-    onClickNote: (String) -> Unit = {},
-    onClickSeeAllWeather: () -> Unit = {},
+    onSeeAllTodos: () -> Unit,
+    onAddTodo: () -> Unit,
+    onTodoClick: (Todo) -> Unit,
+    onSeeAllExpenses: () -> Unit,
+    onAddExpense: () -> Unit,
+    onExpenseClick: (String) -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onAddNote: () -> Unit,
+    onNoteClick: (String) -> Unit,
+    onSeeAllWeather: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: OverviewViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when {
+        uiState.isLoading -> {
+            EmptyState(
+                label = uiState.filteringUiInfo.loadingLabel,
+                iconRes = uiState.filteringUiInfo.loadingIconRes,
+                modifier = modifier
+            )
+        }
+
+        uiState.hasError -> {
+            EmptyState(
+                label = uiState.filteringUiInfo.errorLabel,
+                iconRes = uiState.filteringUiInfo.errorIconRes,
+                modifier = modifier
+            )
+        }
+
+        else -> {
+            OverviewContent(
+                todos = uiState.todoItems,
+                todoFilteringUiInfo = uiState.todoFilteringUiInfo,
+                onTodoClick = onTodoClick,
+                onTodoCheckedChange = viewModel::completeTodo,
+                onSeeAllTodos = onSeeAllTodos,
+                onAddTodo = onAddTodo,
+                onExpenseClick = onExpenseClick,
+                onSeeAllNotes = onSeeAllNotes,
+                onAddNote = onAddNote,
+                onNoteClick = onNoteClick,
+                onAddExpense = onAddExpense,
+                onSeeAllExpenses = onSeeAllExpenses,
+                onSeeAllWeather = onSeeAllWeather,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun OverviewContent(
+    todos: List<Todo>,
+    todoFilteringUiInfo: TodoFilteringUiInfo,
+    onTodoClick: (Todo) -> Unit,
+    onTodoCheckedChange: (Todo, Boolean) -> Unit,
+    onSeeAllTodos: () -> Unit,
+    onAddTodo: () -> Unit,
+    onSeeAllExpenses: () -> Unit,
+    onAddExpense: () -> Unit,
+    onExpenseClick: (String) -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onAddNote: () -> Unit,
+    onNoteClick: (String) -> Unit,
+    onSeeAllWeather: () -> Unit,
+    modifier: Modifier
 ) {
     val screenName = stringResource(R.string.overview)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(dimensionResource(R.dimen.content_padding))
-            .verticalScroll(rememberScrollState())
             .semantics { contentDescription = screenName }
     ) {
         TodoCard(
-            onClickSeeAllTodos = onClickSeeAllTodos,
-            onClickAddTodo = onClickAddTodo,
-            onClickTodo = onClickTodo
+            todos = todos,
+            todoFilteringUiInfo = todoFilteringUiInfo,
+            onTodoClick = onTodoClick,
+            onTodoCheckedChange = onTodoCheckedChange,
+            onSeeAllTodos = onSeeAllTodos,
+            onAddTodo = onAddTodo,
         )
 
         Spacer(
@@ -51,9 +117,9 @@ fun OverviewScreen(
         )
 
         ExpensesCard(
-            onClickSeeAllExpenses = onClickSeeAllExpenses,
-            onClickAddExpense = onClickAddExpense,
-            onClickExpense = onClickExpense
+            onSeeAllExpenses = onSeeAllExpenses,
+            onAddExpense = onAddExpense,
+            onExpenseClick = onExpenseClick
         )
 
         Spacer(
@@ -62,9 +128,9 @@ fun OverviewScreen(
         )
 
         NotesCard(
-            onClickSeeAllNotes = onClickSeeAllNotes,
-            onClickAddNote = onClickAddNote,
-            onClickNote = onClickNote
+            onSeeAllNotes = onSeeAllNotes,
+            onAddNote = onAddNote,
+            onNoteClick = onNoteClick
         )
 
         Spacer(
@@ -73,26 +139,54 @@ fun OverviewScreen(
         )
 
         WeatherCard(
-            onClickSeeAllWeather = onClickSeeAllWeather
+            onSeeAllWeather = onSeeAllWeather
         )
     }
+
 }
 
 @Composable
 private fun TodoCard(
-    onClickSeeAllTodos: () -> Unit = {},
-    onClickAddTodo: () -> Unit = {},
-    onClickTodo: (String) -> Unit = {},
+    todos: List<Todo>,
+    todoFilteringUiInfo: TodoFilteringUiInfo,
+    onTodoClick: (Todo) -> Unit,
+    onTodoCheckedChange: (Todo, Boolean) -> Unit,
+    onSeeAllTodos: () -> Unit,
+    onAddTodo: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    when {
+        todos.isEmpty() -> {
+            EmptyState(
+                label = todoFilteringUiInfo.emptyLabel,
+                iconRes = todoFilteringUiInfo.emptyIconRes,
+                modifier = modifier
+            )
+        }
 
-    Text("Todo card")
+        else -> {
+            TodosContent(
+                todos = todos,
+                currentFilteringLabel = todoFilteringUiInfo.currentFilteringLabel,
+                onTodoClick = onTodoClick,
+                onTodoCheckedChange = onTodoCheckedChange,
+                modifier = modifier
+            )
+
+//        Row {
+//            Text("see all todos button")
+//            Text("|")
+//            Text("add todo button")
+//        }
+        }
+    }
 }
 
 @Composable
 private fun ExpensesCard(
-    onClickSeeAllExpenses: () -> Unit = {},
-    onClickAddExpense: () -> Unit = {},
-    onClickExpense: (String) -> Unit = {},
+    onSeeAllExpenses: () -> Unit,
+    onAddExpense: () -> Unit,
+    onExpenseClick: (String) -> Unit,
 ) {
 
     Text("Expenses card")
@@ -100,9 +194,9 @@ private fun ExpensesCard(
 
 @Composable
 private fun NotesCard(
-    onClickSeeAllNotes: () -> Unit = {},
-    onClickAddNote: () -> Unit = {},
-    onClickNote: (String) -> Unit = {},
+    onSeeAllNotes: () -> Unit,
+    onAddNote: () -> Unit,
+    onNoteClick: (String) -> Unit,
 ) {
 
     Text("Notes card")
@@ -110,7 +204,7 @@ private fun NotesCard(
 
 @Composable
 private fun WeatherCard(
-    onClickSeeAllWeather: () -> Unit = {}
+    onSeeAllWeather: () -> Unit
 ) {
 
     Text("Weather card")
@@ -120,7 +214,18 @@ private fun WeatherCard(
 @Composable
 fun OverviewScreenPreview() {
     UrgatTheme {
-        OverviewScreen()
+        OverviewScreen(
+            onSeeAllTodos = {},
+            onAddTodo = {},
+            onTodoClick = {},
+            onSeeAllExpenses = {},
+            onAddExpense = {},
+            onExpenseClick = {},
+            onSeeAllNotes = {},
+            onAddNote = {},
+            onNoteClick = {},
+            onSeeAllWeather = {}
+        )
     }
 }
 
@@ -128,7 +233,36 @@ fun OverviewScreenPreview() {
 @Composable
 fun TodoCardPreview() {
     UrgatTheme {
-        TodoCard()
+        TodoCard(
+            todos = listOf(
+                Todo(
+                    id = "ID 1",
+                    title = "Title 1",
+                    description = "Description 1",
+                    isCompleted = false,
+                    createdAt = 0
+                ),
+                Todo(
+                    id = "ID 2",
+                    title = "Title 2",
+                    description = "Description 2",
+                    isCompleted = true,
+                    createdAt = 1
+                ),
+                Todo(
+                    id = "ID 3",
+                    title = "Title 3",
+                    description = "Description 3",
+                    isCompleted = true,
+                    createdAt = 2
+                ),
+            ),
+            todoFilteringUiInfo = TodoFilteringUiInfo(),
+            onTodoClick = {},
+            onTodoCheckedChange = { _, _ -> },
+            onSeeAllTodos = {},
+            onAddTodo = {},
+        )
     }
 }
 
@@ -136,7 +270,11 @@ fun TodoCardPreview() {
 @Composable
 fun ExpensesCardPreview() {
     UrgatTheme {
-        ExpensesCard()
+        ExpensesCard(
+            onSeeAllExpenses = {},
+            onAddExpense = {},
+            onExpenseClick = {}
+        )
     }
 }
 
@@ -144,7 +282,11 @@ fun ExpensesCardPreview() {
 @Composable
 fun NotesCardPreview() {
     UrgatTheme {
-        NotesCard()
+        NotesCard(
+            onSeeAllNotes = {},
+            onAddNote = {},
+            onNoteClick = {}
+        )
     }
 }
 
@@ -152,6 +294,8 @@ fun NotesCardPreview() {
 @Composable
 fun WeatherCardPreview() {
     UrgatTheme {
-        WeatherCard()
+        WeatherCard(
+            onSeeAllWeather = {}
+        )
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodosFilterType.*
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -24,7 +25,7 @@ data class TodoUiState(
     val items: List<Todo> = emptyList(),
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
-    val filteringUiInfo: FilteringUiInfo = FilteringUiInfo()
+    val filteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo()
 )
 
 @HiltViewModel
@@ -37,13 +38,15 @@ class TodoViewModel @Inject constructor(
         savedStateHandle.getStateFlow(TODOS_FILTER_SAVED_STATE_KEY, ALL_TODOS)
 
     private val _filterUiInfo = _savedFilterType.map { getFilterUiInfo(it) }.distinctUntilChanged()
+
     private val _isLoading = MutableStateFlow(false)
+
     private val _filteredTodosAsync =
         combine(todoRepository.getTodosStream(), _savedFilterType) { todos, type ->
             filterTodos(todos, type)
         }
-        .map { Async.Success(it) }
-        .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
+            .map { Async.Success(it) }
+            .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
 
     val uiState: StateFlow<TodoUiState> = combine(
         _filterUiInfo, _isLoading, _filteredTodosAsync
@@ -52,9 +55,11 @@ class TodoViewModel @Inject constructor(
             Async.Loading -> {
                 TodoUiState(isLoading = true)
             }
+
             is Async.Error -> {
                 TodoUiState(hasError = true)
             }
+
             is Async.Success -> {
                 TodoUiState(
                     items = todosAsync.data,
@@ -64,11 +69,11 @@ class TodoViewModel @Inject constructor(
             }
         }
     }
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = TodoUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = TodoUiState(isLoading = true)
+        )
 
     fun setFiltering(requestType: TodosFilterType) {
         savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = requestType
@@ -97,6 +102,7 @@ class TodoViewModel @Inject constructor(
                 ACTIVE_TODOS -> if (todo.isActive) {
                     todosToShow.add(todo)
                 }
+
                 COMPLETED_TODOS -> if (todo.isCompleted) {
                     todosToShow.add(todo)
                 }
@@ -105,24 +111,29 @@ class TodoViewModel @Inject constructor(
         return todosToShow
     }
 
-    private fun getFilterUiInfo(requestType: TodosFilterType): FilteringUiInfo =
+    private fun getFilterUiInfo(requestType: TodosFilterType): TodoFilteringUiInfo =
         when (requestType) {
             ALL_TODOS -> {
-                FilteringUiInfo(
-                    R.string.all_todos, R.string.no_todos,
-                    R.drawable.logo_no_fill
+                TodoFilteringUiInfo(
+                    currentFilteringLabel = R.string.all_todos,
+                    emptyLabel = R.string.no_todos,
+                    emptyIconRes = R.drawable.logo_no_fill
                 )
             }
+
             ACTIVE_TODOS -> {
-                FilteringUiInfo(
-                    R.string.active_todos, R.string.no_active_todos,
-                    R.drawable.ic_check_circle
+                TodoFilteringUiInfo(
+                    currentFilteringLabel = R.string.active_todos,
+                    emptyLabel = R.string.no_active_todos,
+                    emptyIconRes = R.drawable.ic_check_circle
                 )
             }
+
             COMPLETED_TODOS -> {
-                FilteringUiInfo(
-                    R.string.completed_todos, R.string.no_completed_todos,
-                    R.drawable.ic_verified_user
+                TodoFilteringUiInfo(
+                    currentFilteringLabel = R.string.completed_todos,
+                    emptyLabel = R.string.no_completed_todos,
+                    emptyIconRes = R.drawable.ic_verified_user
                 )
             }
         }
@@ -131,15 +142,15 @@ class TodoViewModel @Inject constructor(
 
 const val TODOS_FILTER_SAVED_STATE_KEY = "TODOS_FILTER_SAVED_STATE_KEY"
 
-data class FilteringUiInfo(
+data class TodoFilteringUiInfo(
     val currentFilteringLabel: Int = R.string.all_todos,
 
-    val noTodosLabel: Int = R.string.no_todos,
-    val noTodoIconRes: Int = R.drawable.logo_no_fill,
+    override val emptyLabel: Int = R.string.no_todos,
+    override val emptyIconRes: Int = R.drawable.logo_no_fill,
 
-    val loadingTodosLabel: Int = R.string.loading_todos,
-    val loadingTodoIconRes: Int = R.drawable.ic_loading,
+    override val loadingLabel: Int = R.string.loading_todos,
+    override val loadingIconRes: Int = R.drawable.ic_loading,
 
-    val errorTodosLabel: Int = R.string.error_todos,
-    val errorTodoIconRes: Int = R.drawable.ic_error,
-)
+    override val errorLabel: Int = R.string.error_todos,
+    override val errorIconRes: Int = R.drawable.ic_error,
+) : FilteringUiInfo

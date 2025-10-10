@@ -1,16 +1,12 @@
 package com.ivzb.urgat.ui.todo
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
@@ -22,16 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -45,25 +40,25 @@ fun TodoScreen(
 
     when {
         uiState.isLoading -> {
-            TodosNoContent(
-                label = uiState.filteringUiInfo.loadingTodosLabel,
-                iconRes = uiState.filteringUiInfo.loadingTodoIconRes,
+            EmptyState(
+                label = uiState.filteringUiInfo.loadingLabel,
+                iconRes = uiState.filteringUiInfo.loadingIconRes,
                 modifier = modifier
             )
         }
 
         !uiState.isLoading && uiState.items.isEmpty() -> {
-            TodosNoContent(
-                label = uiState.filteringUiInfo.noTodosLabel,
-                iconRes = uiState.filteringUiInfo.noTodoIconRes,
+            EmptyState(
+                label = uiState.filteringUiInfo.emptyLabel,
+                iconRes = uiState.filteringUiInfo.emptyIconRes,
                 modifier = modifier
             )
         }
 
         uiState.hasError -> {
-            TodosNoContent(
-                label = uiState.filteringUiInfo.errorTodosLabel,
-                iconRes = uiState.filteringUiInfo.errorTodoIconRes,
+            EmptyState(
+                label = uiState.filteringUiInfo.errorLabel,
+                iconRes = uiState.filteringUiInfo.errorIconRes,
                 modifier = modifier
             )
         }
@@ -81,7 +76,7 @@ fun TodoScreen(
 }
 
 @Composable
-private fun TodosContent(
+fun TodosContent(
     todos: List<Todo>,
     @StringRes currentFilteringLabel: Int,
     onTodoClick: (Todo) -> Unit,
@@ -168,26 +163,6 @@ private fun TodoItem(
     }
 }
 
-@Composable
-private fun TodosNoContent(
-    @StringRes label: Int,
-    @DrawableRes iconRes: Int,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier.size(96.dp)
-        )
-        Text(stringResource(id = label))
-    }
-}
-
 @Preview
 @Composable
 private fun TodosContentPreview() {
@@ -255,45 +230,6 @@ private fun TodosContentPreview() {
                 currentFilteringLabel = R.string.all_todos,
                 onTodoClick = { },
                 onTodoCheckedChange = { _, _ -> },
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun EmptyTodosPreview() {
-    UrgatTheme {
-        Surface {
-            TodosNoContent(
-                label = R.string.no_todos,
-                iconRes = R.drawable.logo_no_fill,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun LoadingTodosPreview() {
-    UrgatTheme {
-        Surface {
-            TodosNoContent(
-                label = R.string.loading_todos,
-                iconRes = R.drawable.ic_loading,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun ErrorTodosPreview() {
-    UrgatTheme {
-        Surface {
-            TodosNoContent(
-                label = R.string.error_todos,
-                iconRes = R.drawable.ic_error,
             )
         }
     }

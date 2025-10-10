@@ -3,6 +3,7 @@ package com.ivzb.urgat.navigation
 import androidx.annotation.StringRes
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.ivzb.urgat.R
 
 class UrgatNavActions(private val navController: NavHostController) {
 
@@ -10,7 +11,15 @@ class UrgatNavActions(private val navController: NavHostController) {
         navController.navigateSingleTopTo(TodoDestination, popInclusive = true)
     }
 
-    fun navigateToAddEditTodo(@StringRes title: Int, todoId: String?) {
+    fun navigateToAddTodo() {
+        navigateToAddEditTodo(R.string.add_todo, null)
+    }
+
+    fun navigateToEditTodo(todoId: String) {
+        navigateToAddEditTodo(R.string.edit_todo, todoId)
+    }
+
+    private fun navigateToAddEditTodo(@StringRes title: Int, todoId: String?) {
         val route = "${AddEditTodoDestination.Args.ROUTE}/$title".let {
             if (todoId != null) "$it?${AddEditTodoDestination.Args.TODO_ID_ARG}=$todoId" else it
         }

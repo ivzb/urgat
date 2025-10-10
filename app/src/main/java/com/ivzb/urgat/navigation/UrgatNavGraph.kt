@@ -138,7 +138,7 @@ private fun FloatingActionButtonContent(
 
     if (currentTabScreen == TodoDestination) {
         FloatingActionButton(onClick = {
-            navActions.navigateToAddEditTodo(R.string.add_todo, null)
+            navActions.navigateToAddTodo()
         }) {
             Icon(Icons.Default.Add, contentDescription = stringResource(R.string.new_todo))
         }
@@ -158,13 +158,25 @@ private fun NavHostContent(
         modifier = modifier
     ) {
         composable(OverviewDestination.route) {
-            OverviewScreen()
+            OverviewScreen(
+                onSeeAllTodos = { navActions.navigateToTodo() },
+                onAddTodo = { navActions.navigateToAddTodo() },
+                onTodoClick = { navActions.navigateToEditTodo(it.id) },
+                onSeeAllExpenses = {},
+                onAddExpense = {},
+                onExpenseClick = {},
+                onSeeAllNotes = {},
+                onAddNote = {},
+                onNoteClick = {},
+                onSeeAllWeather = {},
+                modifier = modifier
+            )
         }
 
         composable(TodoDestination.route) {
             TodoScreen(
                 onTodoClick = {
-                    navActions.navigateToAddEditTodo(R.string.edit_todo, it.id)
+                    navActions.navigateToEditTodo(it.id)
                 }
             )
         }

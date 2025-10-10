@@ -6,6 +6,8 @@ interface TodoRepository {
 
     fun getTodosStream(): Flow<List<Todo>>
 
+    fun getTodosStream(limit: Int): Flow<List<Todo>>
+
     suspend fun getTodos(): List<Todo>
 
     fun getTodoStream(todoId: String): Flow<Todo?>
