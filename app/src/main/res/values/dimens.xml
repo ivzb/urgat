@@ -4,4 +4,11 @@
     <dimen name="vertical_margin">16dp</dimen>
     <dimen name="list_item_padding">8dp</dimen>
     <dimen name="content_padding">16dp</dimen>
+    <dimen name="content_corner_radius">16dp</dimen>
+    <dimen name="menu_content_padding">8dp</dimen>
+    <dimen name="menu_item_padding">4dp</dimen>
+    <dimen name="menu_icon_size">44dp</dimen>
+    <dimen name="menu_button_corner_radius">8dp</dimen>
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="overview_item_content_padding">24dp</dimen>
 </resources>

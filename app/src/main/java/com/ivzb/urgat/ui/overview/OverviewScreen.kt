@@ -1,30 +1,41 @@
 package com.ivzb.urgat.ui.overview
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
@@ -111,8 +122,8 @@ private fun OverviewContent(
     val screenName = stringResource(R.string.overview)
 
     LazyColumn(
-        modifier = modifier
-            .padding(dimensionResource(R.dimen.content_padding))
+        modifier = Modifier
+            .fillMaxSize()
             .semantics { contentDescription = screenName }
     ) {
         item {
@@ -172,14 +183,31 @@ private fun Header(
 ) {
     Column(
         modifier = modifier
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(dimensionResource(R.dimen.content_padding))
     ) {
-        Text(stringResource(R.string.overview))
+        Text(
+            text = stringResource(R.string.overview),
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.background
+        )
 
-        Row {
+        Spacer(
+            modifier = Modifier
+                .height(dimensionResource(R.dimen.vertical_margin))
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin)),
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
             items.forEach {
                 HeaderItem(
                     item = it,
-                    onClick = onItemClick
+                    onClick = onItemClick,
+                    modifier = Modifier
+                        .weight(1f)
                 )
             }
         }
@@ -189,18 +217,41 @@ private fun Header(
 @Composable
 private fun HeaderItem(
     item: HeaderItem,
-    onClick: (HeaderItem) -> Unit
+    onClick: (HeaderItem) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Button(
-        onClick = { onClick(item) }
+        onClick = { onClick(item) },
+        contentPadding = PaddingValues(
+            horizontal = 0.dp,
+            vertical = dimensionResource(R.dimen.menu_content_padding)
+        ),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.primary
+        ),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)),
+        modifier = modifier
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             Icon(
                 imageVector = item.icon,
                 contentDescription = null,
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.menu_icon_size))
+                    .padding(dimensionResource(R.dimen.menu_item_padding))
             )
 
-            Text(stringResource(item.label))
+            Text(
+                text = stringResource(item.label),
+                style = MaterialTheme.typography.labelMedium
+                    .copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.menu_item_padding))
+            )
         }
     }
 }
@@ -228,10 +279,11 @@ private fun LazyListScope.itemTodo(
                 Text(
                     text = stringResource(todoFilteringUiInfo.currentFilteringLabel),
                     modifier = Modifier.padding(
-                        horizontal = dimensionResource(id = R.dimen.list_item_padding),
+                        horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                         vertical = dimensionResource(id = R.dimen.vertical_margin)
                     ),
                     style = MaterialTheme.typography.headlineSmall
+                        .copy(fontWeight = FontWeight.Bold)
                 )
             }
 
@@ -242,7 +294,7 @@ private fun LazyListScope.itemTodo(
                     onCheckedChange = { onTodoCheckedChange(todo, it) },
                     withCheckbox = false,
                     modifier = Modifier
-                        .padding(horizontal = dimensionResource(R.dimen.horizontal_margin))
+                        .padding(horizontal = dimensionResource(R.dimen.overview_item_content_padding))
                 )
             }
         }
