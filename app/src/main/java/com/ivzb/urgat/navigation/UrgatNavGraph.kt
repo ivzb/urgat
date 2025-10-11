@@ -159,16 +159,12 @@ private fun NavHostContent(
     ) {
         composable(OverviewDestination.route) {
             OverviewScreen(
-                onSeeAllTodos = { navActions.navigateToTodo() },
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
-                onSeeAllExpenses = {},
                 onAddExpense = {},
                 onExpenseClick = {},
-                onSeeAllNotes = {},
                 onAddNote = {},
                 onNoteClick = {},
-                onSeeAllWeather = {},
                 modifier = modifier
             )
         }
@@ -211,7 +207,6 @@ private fun NavHostContent(
 
             AddEditTodoScreen(
                 screenTitle = title,
-                onTodoUpdate = { navActions.navigateToTodo() },
                 onBack = { navController.popBackStack() },
                 onShowSnackbar = onShowSnackbar
             )

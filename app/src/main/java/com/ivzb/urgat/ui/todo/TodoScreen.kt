@@ -102,7 +102,8 @@ fun TodosContent(
                 TodoItem(
                     todo = todo,
                     onTodoClick = onTodoClick,
-                    onCheckedChange = { onTodoCheckedChange(todo, it) }
+                    onCheckedChange = { onTodoCheckedChange(todo, it) },
+                    withCheckbox = true
                 )
             }
         }
@@ -110,26 +111,30 @@ fun TodosContent(
 }
 
 @Composable
-private fun TodoItem(
+fun TodoItem(
     todo: Todo,
     onCheckedChange: (Boolean) -> Unit,
-    onTodoClick: (Todo) -> Unit
+    onTodoClick: (Todo) -> Unit,
+    withCheckbox: Boolean,
+    modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
                 vertical = dimensionResource(id = R.dimen.list_item_padding),
             )
             .clickable { onTodoClick(todo) }
     ) {
-        Checkbox(
-            checked = todo.isCompleted,
-            onCheckedChange = onCheckedChange,
-            modifier = Modifier
-                .align(Alignment.Top)
-        )
+        if (withCheckbox) {
+            Checkbox(
+                checked = todo.isCompleted,
+                onCheckedChange = onCheckedChange,
+                modifier = Modifier
+                    .align(Alignment.Top)
+            )
+        }
 
         Column {
             if (todo.title.isNotEmpty()) {
@@ -237,7 +242,7 @@ private fun TodosContentPreview() {
 
 @Preview
 @Composable
-private fun TodoItemPreview() {
+private fun TodoItemWithCheckboxPreview() {
     UrgatTheme {
         Surface {
             TodoItem(
@@ -248,7 +253,28 @@ private fun TodoItemPreview() {
                     createdAt = 0
                 ),
                 onTodoClick = { },
-                onCheckedChange = { }
+                onCheckedChange = { },
+                withCheckbox = true
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TodoItemWithoutCheckboxPreview() {
+    UrgatTheme {
+        Surface {
+            TodoItem(
+                todo = Todo(
+                    id = "ID",
+                    title = "Title",
+                    description = "Description",
+                    createdAt = 0
+                ),
+                onTodoClick = { },
+                onCheckedChange = { },
+                withCheckbox = false
             )
         }
     }
@@ -268,7 +294,8 @@ private fun TodoItemCompletedPreview() {
                     createdAt = 0
                 ),
                 onTodoClick = { },
-                onCheckedChange = { }
+                onCheckedChange = { },
+                withCheckbox = true
             )
         }
     }

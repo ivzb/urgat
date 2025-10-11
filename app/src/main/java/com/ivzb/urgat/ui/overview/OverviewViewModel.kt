@@ -1,5 +1,9 @@
 package com.ivzb.urgat.ui.overview
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -10,8 +14,10 @@ import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -20,12 +26,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class OverviewUiState(
+    val headerItems: List<HeaderItem> = emptyList(),
     val todoItems: List<Todo> = emptyList(),
     val todoFilteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo(),
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
     val filteringUiInfo: FilteringUiInfo = OverviewFilteringUiInfo()
 )
+
+sealed class UiEvent {
+    class AddTodo() : UiEvent()
+    class AddExpense() : UiEvent()
+    class AddNote() : UiEvent()
+}
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
@@ -38,6 +51,9 @@ class OverviewViewModel @Inject constructor(
         todoRepository.getTodosStream(LIMIT)
             .map { Async.Success(it) }
             .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
+
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     val uiState: StateFlow<OverviewUiState> = combine(
         _isLoading, _todosAsync
@@ -53,6 +69,23 @@ class OverviewViewModel @Inject constructor(
 
             is Async.Success -> {
                 OverviewUiState(
+                    headerItems = listOf(
+                        HeaderItem(
+                            HeaderItemId.Todo,
+                            Icons.Filled.Done,
+                            R.string.add_todo
+                        ),
+                        HeaderItem(
+                            HeaderItemId.Expense,
+                            Icons.Filled.ShoppingCart,
+                            R.string.add_expense
+                        ),
+                        HeaderItem(
+                            HeaderItemId.Note,
+                            Icons.Filled.Person,
+                            R.string.add_note
+                        ),
+                    ),
                     todoItems = todosAsync.data,
                     todoFilteringUiInfo = TodoFilteringUiInfo(
                         R.string.recent_todos,
@@ -78,9 +111,22 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
+    fun onHeaderItemClick(item: HeaderItem) {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                when (item.id) {
+                    HeaderItemId.Todo -> UiEvent.AddTodo()
+                    HeaderItemId.Expense -> UiEvent.AddExpense()
+                    HeaderItemId.Note -> UiEvent.AddNote()
+                }
+            )
+        }
+    }
+
     companion object {
 
         private const val LIMIT = 3
+
     }
 
 }
@@ -94,6 +140,4 @@ data class OverviewFilteringUiInfo(
 
     override val errorLabel: Int = R.string.error_overview,
     override val errorIconRes: Int = R.drawable.ic_error,
-) : FilteringUiInfo {
-
-}
+) : FilteringUiInfo

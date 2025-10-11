@@ -26,4 +26,6 @@
     <string name="save">Save</string>
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="add_note">Add Note</string>
 </resources>
