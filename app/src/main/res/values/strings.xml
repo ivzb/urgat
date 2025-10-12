@@ -28,4 +28,7 @@
     <string name="error_overview">Error while loading overview</string>
     <string name="add_expense">Add Expense</string>
     <string name="add_note">Add Note</string>
+    <string name="search">Search</string>
+    <string name="clear_completed">Clear completed</string>
+    <string name="more">More</string>
 </resources>

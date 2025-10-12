@@ -146,32 +146,6 @@ private fun OverviewContent(
                     .height(dimensionResource(R.dimen.list_item_padding))
             )
         }
-
-//        ExpensesCard(
-//            onSeeAllExpenses = onSeeAllExpenses,
-//            onAddExpense = onAddExpense,
-//            onExpenseClick = onExpenseClick
-//        )
-//
-//        Spacer(
-//            modifier = Modifier
-//                .height(dimensionResource(R.dimen.list_item_padding))
-//        )
-//
-//        NotesCard(
-//            onSeeAllNotes = onSeeAllNotes,
-//            onAddNote = onAddNote,
-//            onNoteClick = onNoteClick
-//        )
-//
-//        Spacer(
-//            modifier = Modifier
-//                .height(dimensionResource(R.dimen.list_item_padding))
-//        )
-//
-//        WeatherCard(
-//            onSeeAllWeather = onSeeAllWeather
-//        )
     }
 }
 
@@ -181,35 +155,21 @@ private fun Header(
     onItemClick: (HeaderItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin)),
+        modifier = Modifier
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .padding(dimensionResource(R.dimen.content_padding))
     ) {
-        Text(
-            text = stringResource(R.string.overview),
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.background
-        )
-
-        Spacer(
-            modifier = Modifier
-                .height(dimensionResource(R.dimen.vertical_margin))
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin)),
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            items.forEach {
-                HeaderItem(
-                    item = it,
-                    onClick = onItemClick,
-                    modifier = Modifier
-                        .weight(1f)
-                )
-            }
+        items.forEach {
+            HeaderItem(
+                item = it,
+                onClick = onItemClick,
+                modifier = Modifier
+                    .weight(1f)
+            )
         }
     }
 }

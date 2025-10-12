@@ -1,13 +1,20 @@
 package com.ivzb.urgat.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -16,14 +23,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -44,6 +54,7 @@ import com.ivzb.urgat.ui.weather.WeatherScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UrgatNavGraph(
     modifier: Modifier = Modifier,
@@ -54,12 +65,31 @@ fun UrgatNavGraph(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ) {
+    val currentBackStack by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStack?.destination
+    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
+
     Scaffold(
+        topBar = {
+            TopAppBarContent(
+                currentDestination = currentTabScreen
+            )
+        },
         bottomBar = {
-            BottomBarContent(navController)
+            BottomBarContent(
+                currentDestination = currentTabScreen,
+                onItemClick = {
+                    navController.navigate(it.route)
+                }
+            )
         },
         floatingActionButton = {
-            FloatingActionButtonContent(navController, navActions)
+            FloatingActionButtonContent(
+                currentTabScreen,
+                onAddTodo = {
+                    navActions.navigateToAddTodo()
+                }
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
@@ -72,33 +102,85 @@ fun UrgatNavGraph(
                     snackbarHostState.showSnackbar(message)
                 }
             },
-            modifier = modifier.padding(
-                PaddingValues(
-                    start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
-                    top = 0.dp, // Ignore top padding because top bar is missing
-                    end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
-                    bottom = innerPadding.calculateBottomPadding()
-                )
-            )
+            modifier = modifier
+                .padding(innerPadding)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopAppBarContent(
+    currentDestination: UrgatMenuDestination?
+) {
+    if (currentDestination != null) {
+        TopAppBar(
+            title = { Text(stringResource(currentDestination.label)) },
+            actions = {
+                IconButton(onClick = {
+                    TODO("open search")
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search)
+                    )
+                }
+
+                if (currentDestination == OverviewDestination || currentDestination == TodoDestination) {
+                    TopAppBarDropdownMenu(
+                        iconContent = {
+                            Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
+                        }
+                    ) { closeMenu ->
+                        DropdownMenuItem(
+                            text = { Text(text = stringResource(id = R.string.clear_completed)) },
+                            onClick = {
+                                TODO("clear completed todos")
+                                closeMenu()
+                            }
+                        )
+                    }
+                }
+            },
+            windowInsets = WindowInsets()
         )
     }
 }
 
 @Composable
-private fun BottomBarContent(
-    navController: NavHostController,
+private fun TopAppBarDropdownMenu(
+    iconContent: @Composable () -> Unit,
+    content: @Composable ColumnScope.(() -> Unit) -> Unit
 ) {
-    val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStack?.destination
-    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
+    var expanded by remember { mutableStateOf(false) }
 
-    if (currentTabScreen != null) {
+    Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)) {
+        IconButton(onClick = { expanded = !expanded }) {
+            iconContent()
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.wrapContentSize(Alignment.TopEnd)
+        ) {
+            content { expanded = !expanded }
+        }
+    }
+}
+
+@Composable
+private fun BottomBarContent(
+    currentDestination: UrgatMenuDestination?,
+    onItemClick: (UrgatMenuDestination) -> Unit
+) {
+    if (currentDestination != null) {
         NavigationBar {
             bottomNavigationScreens.forEach { item ->
                 NavigationBarItem(
-                    selected = currentTabScreen == item,
+                    selected = currentDestination == item,
                     onClick = {
-                        navController.navigate(item.route)
+                        onItemClick(item)
                     },
                     icon = {
                         Icon(
@@ -109,7 +191,7 @@ private fun BottomBarContent(
                     label = {
                         Text(
                             text = stringResource(item.label),
-                            color = if (currentTabScreen == item) {
+                            color = if (currentDestination == item) {
                                 MaterialTheme.colorScheme.onPrimaryContainer
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
@@ -129,16 +211,12 @@ private fun BottomBarContent(
 
 @Composable
 private fun FloatingActionButtonContent(
-    navController: NavHostController,
-    navActions: UrgatNavActions
+    currentDestination: UrgatMenuDestination?,
+    onAddTodo: () -> Unit
 ) {
-    val currentBackStack by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStack?.destination
-    val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
-
-    if (currentTabScreen == TodoDestination) {
+    if (currentDestination == TodoDestination) {
         FloatingActionButton(onClick = {
-            navActions.navigateToAddTodo()
+            onAddTodo()
         }) {
             Icon(Icons.Default.Add, contentDescription = stringResource(R.string.new_todo))
         }
@@ -223,5 +301,90 @@ private fun NavHostContent(
 fun UrgatNavGraphPreview() {
     UrgatTheme {
         UrgatNavGraph()
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarContentOverviewDestinationPreview() {
+    UrgatTheme {
+        TopAppBarContent(
+            currentDestination = OverviewDestination
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarContentTodoDestinationPreview() {
+    UrgatTheme {
+        TopAppBarContent(
+            currentDestination = TodoDestination
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarContentEmptyDestinationPreview() {
+    UrgatTheme {
+        TopAppBarContent(
+            currentDestination = null
+        )
+    }
+}
+
+@Preview
+@Composable
+fun BottomBarContentOverviewDestinationPreview() {
+    UrgatTheme {
+        BottomBarContent(
+            currentDestination = OverviewDestination,
+            onItemClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun BottomBarContentNoDestinationPreview() {
+    UrgatTheme {
+        BottomBarContent(
+            currentDestination = null,
+            onItemClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun FloatingActionButtonContentOverviewDestinationPreview() {
+    UrgatTheme {
+        FloatingActionButtonContent(
+            currentDestination = OverviewDestination,
+            onAddTodo = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun FloatingActionButtonContentTodoDestinationPreview() {
+    UrgatTheme {
+        FloatingActionButtonContent(
+            currentDestination = TodoDestination,
+            onAddTodo = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun FloatingActionButtonContentNoDestinationPreview() {
+    UrgatTheme {
+        FloatingActionButtonContent(
+            currentDestination = null,
+            onAddTodo = {}
+        )
     }
 }
