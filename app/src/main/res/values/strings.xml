@@ -31,4 +31,5 @@
     <string name="search">Search</string>
     <string name="clear_completed">Clear completed</string>
     <string name="more">More</string>
+    <string name="close">Close</string>
 </resources>

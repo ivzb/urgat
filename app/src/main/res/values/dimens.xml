@@ -11,4 +11,5 @@
     <dimen name="menu_button_corner_radius">8dp</dimen>
     <dimen name="card_elevation">8dp</dimen>
     <dimen name="overview_item_content_padding">24dp</dimen>
+    <dimen name="search_text_field_padding">4dp</dimen>
 </resources>

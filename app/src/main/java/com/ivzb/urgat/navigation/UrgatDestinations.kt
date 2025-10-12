@@ -1,6 +1,5 @@
 package com.ivzb.urgat.navigation
 
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
@@ -16,35 +15,35 @@ sealed interface UrgatDestination {
     val route: String
 }
 
-sealed interface UrgatMenuDestination: UrgatDestination {
-    val label: Int
+sealed class UrgatMenuDestination: UrgatDestination {
+    abstract val label: Int
 }
 
-data object OverviewDestination: UrgatMenuDestination {
+data object OverviewDestination: UrgatMenuDestination() {
     override val label = R.string.overview
     override val icon = Icons.Filled.Home
     override val route = "overview"
 }
 
-data object TodoDestination: UrgatMenuDestination {
+data object TodoDestination: UrgatMenuDestination() {
     override val label = R.string.todo
     override val icon = Icons.Filled.Done
     override val route = "todo"
 }
 
-data object ExpensesDestination: UrgatMenuDestination {
+data object ExpensesDestination: UrgatMenuDestination() {
     override val label = R.string.expenses
     override val icon = Icons.Filled.ShoppingCart
     override val route = "expenses"
 }
 
-data object NotesDestination: UrgatMenuDestination {
+data object NotesDestination: UrgatMenuDestination() {
     override val label = R.string.notes
     override val icon = Icons.Filled.Person
     override val route = "notes"
 }
 
-data object WeatherDestination: UrgatMenuDestination {
+data object WeatherDestination: UrgatMenuDestination() {
     override val label = R.string.weather
     override val icon = Icons.Filled.DateRange
     override val route = "weather"
@@ -52,12 +51,12 @@ data object WeatherDestination: UrgatMenuDestination {
 
 data object AddEditTodoDestination: UrgatDestination {
     override val icon = Icons.Filled.Add
-    override val route = "${Args.ROUTE}/{${Args.TITLE_ARG}}?${Args.TODO_ID_ARG}={${Args.TODO_ID_ARG}}"
+    override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_TODO_ID}={${Args.ARG_TODO_ID}}"
 
     object Args {
         const val ROUTE = "addEditTodo"
-        const val TITLE_ARG = "title"
-        const val TODO_ID_ARG = "todoId"
+        const val ARG_TITLE = "title"
+        const val ARG_TODO_ID = "todoId"
     }
 }
 

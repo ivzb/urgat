@@ -2,13 +2,11 @@ package com.ivzb.urgat.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,12 +21,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +43,7 @@ import androidx.navigation.navArgument
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
+import com.ivzb.urgat.ui.components.SearchableTopBar
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
@@ -69,10 +68,15 @@ fun UrgatNavGraph(
     val currentDestination = currentBackStack?.destination
     val currentTabScreen = bottomNavigationScreens.find { it.route == currentDestination?.route }
 
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         topBar = {
             TopAppBarContent(
-                currentDestination = currentTabScreen
+                currentDestination = currentTabScreen,
+                onSearchQueryChanged = {
+                    searchQuery = it
+                }
             )
         },
         bottomBar = {
@@ -111,21 +115,23 @@ fun UrgatNavGraph(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopAppBarContent(
-    currentDestination: UrgatMenuDestination?
+    currentDestination: UrgatMenuDestination?,
+    onSearchQueryChanged: (String) -> Unit
 ) {
     if (currentDestination != null) {
-        TopAppBar(
-            title = { Text(stringResource(currentDestination.label)) },
-            actions = {
-                IconButton(onClick = {
-                    TODO("open search")
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(R.string.search)
-                    )
-                }
+        var isSearching by rememberSaveable { mutableStateOf(false) }
+        var searchQuery by rememberSaveable { mutableStateOf("") }
 
+        SearchableTopBar(
+            isSearching = isSearching,
+            onIsSearchingChanged = { isSearching = it },
+            searchQuery = searchQuery,
+            onSearchQueryChanged = {
+                searchQuery = it
+                onSearchQueryChanged(it)
+            },
+            titleResId = currentDestination.label,
+            actionsContent = {
                 if (currentDestination == OverviewDestination || currentDestination == TodoDestination) {
                     TopAppBarDropdownMenu(
                         iconContent = {
@@ -141,8 +147,7 @@ private fun TopAppBarContent(
                         )
                     }
                 }
-            },
-            windowInsets = WindowInsets()
+            }
         )
     }
 }
@@ -274,14 +279,14 @@ private fun NavHostContent(
 
         composable(
             AddEditTodoDestination.route, arguments = listOf(
-                navArgument(AddEditTodoDestination.Args.TITLE_ARG) { type = NavType.IntType },
-                navArgument(AddEditTodoDestination.Args.TODO_ID_ARG) {
+                navArgument(AddEditTodoDestination.Args.ARG_TITLE) { type = NavType.IntType },
+                navArgument(AddEditTodoDestination.Args.ARG_TODO_ID) {
                     type = NavType.StringType; nullable = true
                 },
             )
         ) { entry ->
-            val title = entry.arguments?.getInt(AddEditTodoDestination.Args.TITLE_ARG) ?: 0
-            val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.TODO_ID_ARG)
+            val title = entry.arguments?.getInt(AddEditTodoDestination.Args.ARG_TITLE) ?: 0
+            val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.ARG_TODO_ID)
 
             AddEditTodoScreen(
                 screenTitle = title,
@@ -309,7 +314,8 @@ fun UrgatNavGraphPreview() {
 fun TopAppBarContentOverviewDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            currentDestination = OverviewDestination
+            currentDestination = OverviewDestination,
+            onSearchQueryChanged = {}
         )
     }
 }
@@ -319,7 +325,8 @@ fun TopAppBarContentOverviewDestinationPreview() {
 fun TopAppBarContentTodoDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            currentDestination = TodoDestination
+            currentDestination = TodoDestination,
+            onSearchQueryChanged = {}
         )
     }
 }
@@ -329,7 +336,8 @@ fun TopAppBarContentTodoDestinationPreview() {
 fun TopAppBarContentEmptyDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            currentDestination = null
+            currentDestination = null,
+            onSearchQueryChanged = {}
         )
     }
 }

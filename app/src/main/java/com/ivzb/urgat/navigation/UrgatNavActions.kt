@@ -7,10 +7,6 @@ import com.ivzb.urgat.R
 
 class UrgatNavActions(private val navController: NavHostController) {
 
-    fun navigateToTodo() {
-        navController.navigateSingleTopTo(TodoDestination, popInclusive = true)
-    }
-
     fun navigateToAddTodo() {
         navigateToAddEditTodo(R.string.add_todo, null)
     }
@@ -21,7 +17,7 @@ class UrgatNavActions(private val navController: NavHostController) {
 
     private fun navigateToAddEditTodo(@StringRes title: Int, todoId: String?) {
         val route = "${AddEditTodoDestination.Args.ROUTE}/$title".let {
-            if (todoId != null) "$it?${AddEditTodoDestination.Args.TODO_ID_ARG}=$todoId" else it
+            if (todoId != null) "$it?${AddEditTodoDestination.Args.ARG_TODO_ID}=$todoId" else it
         }
         navController.navigate(route)
     }
