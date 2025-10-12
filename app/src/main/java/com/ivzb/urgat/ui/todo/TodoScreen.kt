@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,15 +87,15 @@ fun TodosContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_margin))
     ) {
         Text(
             text = stringResource(currentFilteringLabel),
             modifier = Modifier.padding(
-                horizontal = dimensionResource(id = R.dimen.list_item_padding),
+                horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                 vertical = dimensionResource(id = R.dimen.vertical_margin)
             ),
             style = MaterialTheme.typography.headlineSmall
+                .copy(fontWeight = FontWeight.Bold)
         )
 
         LazyColumn {
@@ -102,8 +103,7 @@ fun TodosContent(
                 TodoItem(
                     todo = todo,
                     onTodoClick = onTodoClick,
-                    onCheckedChange = { onTodoCheckedChange(todo, it) },
-                    withCheckbox = true
+                    onCheckedChange = { onTodoCheckedChange(todo, it) }
                 )
             }
         }
@@ -115,26 +115,21 @@ fun TodoItem(
     todo: Todo,
     onCheckedChange: (Boolean) -> Unit,
     onTodoClick: (Todo) -> Unit,
-    withCheckbox: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(
-                vertical = dimensionResource(id = R.dimen.list_item_padding),
-            )
             .clickable { onTodoClick(todo) }
+            .padding(dimensionResource(id = R.dimen.list_item_padding)),
     ) {
-        if (withCheckbox) {
-            Checkbox(
-                checked = todo.isCompleted,
-                onCheckedChange = onCheckedChange,
-                modifier = Modifier
-                    .align(Alignment.Top)
-            )
-        }
+        Checkbox(
+            checked = todo.isCompleted,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier
+                .align(Alignment.Top)
+        )
 
         Column {
             if (todo.title.isNotEmpty()) {
@@ -242,7 +237,7 @@ private fun TodosContentPreview() {
 
 @Preview
 @Composable
-private fun TodoItemWithCheckboxPreview() {
+private fun TodoItemPreview() {
     UrgatTheme {
         Surface {
             TodoItem(
@@ -253,28 +248,7 @@ private fun TodoItemWithCheckboxPreview() {
                     createdAt = 0
                 ),
                 onTodoClick = { },
-                onCheckedChange = { },
-                withCheckbox = true
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun TodoItemWithoutCheckboxPreview() {
-    UrgatTheme {
-        Surface {
-            TodoItem(
-                todo = Todo(
-                    id = "ID",
-                    title = "Title",
-                    description = "Description",
-                    createdAt = 0
-                ),
-                onTodoClick = { },
-                onCheckedChange = { },
-                withCheckbox = false
+                onCheckedChange = { }
             )
         }
     }
@@ -294,8 +268,7 @@ private fun TodoItemCompletedPreview() {
                     createdAt = 0
                 ),
                 onTodoClick = { },
-                onCheckedChange = { },
-                withCheckbox = true
+                onCheckedChange = { }
             )
         }
     }

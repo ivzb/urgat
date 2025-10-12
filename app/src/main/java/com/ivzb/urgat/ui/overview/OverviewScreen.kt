@@ -291,10 +291,7 @@ private fun LazyListScope.itemTodo(
                 TodoItem(
                     todo = todo,
                     onTodoClick = onTodoClick,
-                    onCheckedChange = { onTodoCheckedChange(todo, it) },
-                    withCheckbox = false,
-                    modifier = Modifier
-                        .padding(horizontal = dimensionResource(R.dimen.overview_item_content_padding))
+                    onCheckedChange = { onTodoCheckedChange(todo, it) }
                 )
             }
         }
