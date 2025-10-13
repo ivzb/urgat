@@ -57,8 +57,24 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
+    override fun getTodosStream(searchQuery: String): Flow<List<Todo>> {
+        return localDataSource.observeAll(searchQuery).map { todos ->
+            withContext(dispatcher) {
+                todos.toExternal()
+            }
+        }
+    }
+
     override fun getTodosStream(limit: Int): Flow<List<Todo>> {
         return localDataSource.observeAll(limit).map { todos ->
+            withContext(dispatcher) {
+                todos.toExternal()
+            }
+        }
+    }
+
+    override fun getTodosStream(limit: Int, searchQuery: String): Flow<List<Todo>> {
+        return localDataSource.observeAll(limit, searchQuery).map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
             }

@@ -12,6 +12,7 @@
     <string name="completed_todos">Completed Todos</string>
     <string name="recent_todos">Recent Todos</string>
     <string name="no_todos">You have no todos!</string>
+    <string name="no_todos_search">You have no todos with this search criteria!</string>
     <string name="no_active_todos">You have no active todos!</string>
     <string name="no_completed_todos">You have no completed todos!</string>
     <string name="error_todos">Error while loading todos</string>

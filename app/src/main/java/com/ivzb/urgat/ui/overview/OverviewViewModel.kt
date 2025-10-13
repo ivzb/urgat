@@ -14,12 +14,16 @@ import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,10 +51,20 @@ class OverviewViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
 
-    private val _todosAsync =
-        todoRepository.getTodosStream(LIMIT)
-            .map { Async.Success(it) }
-            .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
+    private val _searchQuery = MutableStateFlow("")
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private val _todosAsync = _searchQuery
+        .debounce(300)
+        .flatMapLatest { searchQuery ->
+            if (searchQuery == "") {
+                todoRepository.getTodosStream(LIMIT)
+            } else {
+                todoRepository.getTodosStream(LIMIT, searchQuery)
+            }
+        }
+        .map { Async.Success(it) }
+        .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
@@ -89,7 +103,7 @@ class OverviewViewModel @Inject constructor(
                     todoItems = todosAsync.data,
                     todoFilteringUiInfo = TodoFilteringUiInfo(
                         R.string.recent_todos,
-                        R.string.no_todos,
+                        if (_searchQuery.value.isEmpty()) R.string.no_todos else R.string.no_todos_search,
                         R.drawable.logo_no_fill
                     ),
                     isLoading = isLoading,
@@ -102,6 +116,10 @@ class OverviewViewModel @Inject constructor(
         started = WhileUiSubscribed,
         initialValue = OverviewUiState(isLoading = true)
     )
+
+    fun onSearchQueryChanged(newQuery: String) {
+        _searchQuery.value = newQuery
+    }
 
     fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
