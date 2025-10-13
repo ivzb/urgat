@@ -38,9 +38,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
@@ -57,42 +60,53 @@ fun OverviewScreen(
     onAddNote: () -> Unit,
     onNoteClick: (String) -> Unit,
 
+    navController: NavHostController,
+
     modifier: Modifier = Modifier,
     viewModel: OverviewViewModel = hiltViewModel()
 ) {
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    MenuScaffold(
+        currentDestination = OverviewDestination,
+        onSearchQueryChanged = {
+            TODO("update view model")
+        },
+        onAddItem = onAddTodo,
+        navController = navController,
+        modifier = modifier
+    ) {
 
-    when {
-        uiState.isLoading -> {
-            EmptyState(
-                label = uiState.filteringUiInfo.loadingLabel,
-                iconRes = uiState.filteringUiInfo.loadingIconRes,
-                modifier = modifier
-            )
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+        when {
+            uiState.isLoading -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.loadingLabel,
+                    iconRes = uiState.filteringUiInfo.loadingIconRes,
+                )
+            }
+
+            uiState.hasError -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.errorLabel,
+                    iconRes = uiState.filteringUiInfo.errorIconRes,
+                )
+            }
+
+            else -> {
+                OverviewContent(
+                    headerItems = uiState.headerItems,
+                    onHeaderItemClick = viewModel::onHeaderItemClick,
+                    todos = uiState.todoItems,
+                    todoFilteringUiInfo = uiState.todoFilteringUiInfo,
+                    onTodoClick = onTodoClick,
+                    onTodoCheckedChange = viewModel::completeTodo,
+                    onExpenseClick = onExpenseClick,
+                    onNoteClick = onNoteClick,
+                )
+            }
         }
 
-        uiState.hasError -> {
-            EmptyState(
-                label = uiState.filteringUiInfo.errorLabel,
-                iconRes = uiState.filteringUiInfo.errorIconRes,
-                modifier = modifier
-            )
-        }
-
-        else -> {
-            OverviewContent(
-                headerItems = uiState.headerItems,
-                onHeaderItemClick = viewModel::onHeaderItemClick,
-                todos = uiState.todoItems,
-                todoFilteringUiInfo = uiState.todoFilteringUiInfo,
-                onTodoClick = onTodoClick,
-                onTodoCheckedChange = viewModel::completeTodo,
-                onExpenseClick = onExpenseClick,
-                onNoteClick = onNoteClick,
-                modifier = modifier
-            )
-        }
     }
 
     LaunchedEffect(Unit) {
@@ -122,7 +136,7 @@ private fun OverviewContent(
     val screenName = stringResource(R.string.overview)
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .semantics { contentDescription = screenName }
     ) {

@@ -25,53 +25,71 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun TodoScreen(
+    onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
+
+    navController: NavHostController,
+
     modifier: Modifier = Modifier,
     viewModel: TodoViewModel = hiltViewModel()
 ) {
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    MenuScaffold(
+        currentDestination = TodoDestination,
+        onSearchQueryChanged = {
+            TODO("update view model")
+        },
+        onAddItem = onAddTodo,
+        navController = navController,
+        modifier = modifier
+    ) {
 
-    when {
-        uiState.isLoading -> {
-            EmptyState(
-                label = uiState.filteringUiInfo.loadingLabel,
-                iconRes = uiState.filteringUiInfo.loadingIconRes,
-                modifier = modifier
-            )
-        }
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-        !uiState.isLoading && uiState.items.isEmpty() -> {
-            EmptyState(
-                label = uiState.filteringUiInfo.emptyLabel,
-                iconRes = uiState.filteringUiInfo.emptyIconRes,
-                modifier = modifier
-            )
-        }
+        when {
+            uiState.isLoading -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.loadingLabel,
+                    iconRes = uiState.filteringUiInfo.loadingIconRes,
+                    modifier = modifier
+                )
+            }
 
-        uiState.hasError -> {
-            EmptyState(
-                label = uiState.filteringUiInfo.errorLabel,
-                iconRes = uiState.filteringUiInfo.errorIconRes,
-                modifier = modifier
-            )
-        }
+            !uiState.isLoading && uiState.items.isEmpty() -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.emptyLabel,
+                    iconRes = uiState.filteringUiInfo.emptyIconRes,
+                    modifier = modifier
+                )
+            }
 
-        else -> {
-            TodosContent(
-                todos = uiState.items,
-                currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
-                onTodoClick = onTodoClick,
-                onTodoCheckedChange = viewModel::completeTodo,
-                modifier = modifier
-            )
+            uiState.hasError -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.errorLabel,
+                    iconRes = uiState.filteringUiInfo.errorIconRes,
+                    modifier = modifier
+                )
+            }
+
+            else -> {
+                TodosContent(
+                    todos = uiState.items,
+                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+                    onTodoClick = onTodoClick,
+                    onTodoCheckedChange = viewModel::completeTodo,
+                    modifier = modifier
+                )
+            }
         }
     }
 }

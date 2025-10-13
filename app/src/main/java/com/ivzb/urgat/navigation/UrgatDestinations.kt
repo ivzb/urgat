@@ -17,12 +17,14 @@ sealed interface UrgatDestination {
 
 sealed class UrgatMenuDestination: UrgatDestination {
     abstract val label: Int
+    open val withFAB: Boolean = true
 }
 
 data object OverviewDestination: UrgatMenuDestination() {
     override val label = R.string.overview
     override val icon = Icons.Filled.Home
     override val route = "overview"
+    override val withFAB = false
 }
 
 data object TodoDestination: UrgatMenuDestination() {

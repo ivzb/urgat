@@ -3,25 +3,18 @@ package com.ivzb.urgat.ui.addEditTodo
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -88,13 +82,15 @@ private fun AddEditTodoContent(
     onDescriptionChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column (
-        modifier = modifier
-    ) {
-        AddEditTodoTopAppBar(screenTitle, onBack)
+    Scaffold(
+        topBar = {
+            TextTopAppBar(screenTitle, onBack)
+        },
+    ) { innerPadding ->
 
         Column(
-            modifier = Modifier
+            modifier = modifier
+                .padding(innerPadding)
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.content_padding))
                 .verticalScroll(rememberScrollState())
@@ -102,12 +98,6 @@ private fun AddEditTodoContent(
             if (loading) {
                 Text("Loading...")
             } else {
-                val textFieldColors = OutlinedTextFieldDefaults.colors(
-//                    focusedBorderColor = Color.Transparent,
-//                    unfocusedBorderColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.onSecondary
-                )
-
                 TextField(
                     value = title,
                     onValueChange = onTitleChanged,
@@ -120,7 +110,6 @@ private fun AddEditTodoContent(
                     textStyle = MaterialTheme.typography.headlineSmall
                         .copy(fontWeight = FontWeight.Bold),
                     maxLines = 1,
-//                    colors = textFieldColors,
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -134,7 +123,6 @@ private fun AddEditTodoContent(
                     value = description,
                     onValueChange = onDescriptionChanged,
                     placeholder = { Text(stringResource(id = R.string.description_hint)) },
-//                    colors = textFieldColors,
                     modifier = Modifier
                         .height(150.dp)
                         .fillMaxWidth()
@@ -155,24 +143,6 @@ private fun AddEditTodoContent(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun AddEditTodoTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
-    TopAppBar(
-        title = {
-            Text(text = stringResource(title))
-        },
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
-            }
-        },
-        windowInsets = WindowInsets(0.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-    )
 }
 
 @Preview
@@ -231,16 +201,6 @@ private fun LoadingContentPreview() {
                 onDescriptionChanged = {},
                 modifier = Modifier
             )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun AddEditTodoTopAppBarPreview() {
-    UrgatTheme {
-        Surface {
-            AddEditTodoTopAppBar(R.string.add_todo) { }
         }
     }
 }
