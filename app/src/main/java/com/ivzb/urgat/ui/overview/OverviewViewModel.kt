@@ -54,8 +54,9 @@ class OverviewViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private val _todosAsync = _searchQuery
-        .debounce(300)
+    private val _todosAsync =
+        _searchQuery
+        .debounce(DEBOUNCE_TIME_MILLIS)
         .flatMapLatest { searchQuery ->
             if (searchQuery == "") {
                 todoRepository.getTodosStream(LIMIT)
@@ -144,6 +145,7 @@ class OverviewViewModel @Inject constructor(
     companion object {
 
         private const val LIMIT = 3
+        private const val DEBOUNCE_TIME_MILLIS = 300L
 
     }
 

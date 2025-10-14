@@ -46,9 +46,7 @@ fun TodoScreen(
 
     MenuScaffold(
         currentDestination = TodoDestination,
-        onSearchQueryChanged = {
-            TODO("update view model")
-        },
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
         onAddItem = onAddTodo,
         navController = navController,
         modifier = modifier

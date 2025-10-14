@@ -69,7 +69,6 @@ fun OverviewScreen(
     MenuScaffold(
         currentDestination = OverviewDestination,
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
-        onAddItem = onAddTodo,
         navController = navController,
         modifier = modifier
     ) {
@@ -170,7 +169,7 @@ private fun Header(
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin)),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .padding(dimensionResource(R.dimen.content_padding))

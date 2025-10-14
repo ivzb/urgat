@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -41,10 +43,22 @@ class TodoViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
 
+    private val _searchQuery = MutableStateFlow("")
+
     private val _filteredTodosAsync =
-        combine(todoRepository.getTodosStream(), _savedFilterType) { todos, type ->
-            filterTodos(todos, type)
-        }
+        _searchQuery
+            .debounce(DEBOUNCE_TIME_MILLIS)
+            .flatMapLatest { searchQuery ->
+                val todoStream = if (searchQuery == "") {
+                    todoRepository.getTodosStream()
+                } else {
+                    todoRepository.getTodosStream(searchQuery = searchQuery)
+                }
+
+                combine(todoStream, _savedFilterType) { todos, type ->
+                    filterTodos(todos, type)
+                }
+            }
             .map { Async.Success(it) }
             .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
 
@@ -74,6 +88,10 @@ class TodoViewModel @Inject constructor(
             started = WhileUiSubscribed,
             initialValue = TodoUiState(isLoading = true)
         )
+
+    fun onSearchQueryChanged(newQuery: String) {
+        _searchQuery.value = newQuery
+    }
 
     fun setFiltering(requestType: TodosFilterType) {
         savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = requestType
@@ -137,6 +155,12 @@ class TodoViewModel @Inject constructor(
                 )
             }
         }
+
+    companion object {
+
+        private const val DEBOUNCE_TIME_MILLIS = 300L
+
+    }
 
 }
 
