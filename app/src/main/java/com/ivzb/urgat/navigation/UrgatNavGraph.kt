@@ -1,14 +1,15 @@
 package com.ivzb.urgat.navigation
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -61,6 +62,8 @@ private fun NavHostContent(
         navController = navController,
         startDestination = OverviewDestination.route,
         modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
     ) {
         composable(OverviewDestination.route) {
             OverviewScreen(
@@ -71,7 +74,6 @@ private fun NavHostContent(
                 onAddNote = {},
                 onNoteClick = {},
                 navController = navController,
-                modifier = modifier
             )
         }
 
@@ -82,7 +84,6 @@ private fun NavHostContent(
                     navActions.navigateToEditTodo(it.id)
                 },
                 navController = navController,
-                modifier = modifier
             )
         }
 
@@ -92,21 +93,18 @@ private fun NavHostContent(
                     navActions.navigateToAddEditExpense()
                 },
                 navController = navController,
-                modifier = modifier
             )
         }
 
         composable(NotesDestination.route) {
             NotesScreen(
                 navController = navController,
-                modifier = modifier
             )
         }
 
         composable(WeatherDestination.route) {
             WeatherScreen(
                 navController = navController,
-                modifier = modifier
             )
         }
 
