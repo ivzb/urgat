@@ -18,10 +18,17 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -82,6 +89,8 @@ private fun AddEditTodoContent(
     onDescriptionChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     Scaffold(
         topBar = {
             TextTopAppBar(screenTitle, onBack)
@@ -98,9 +107,24 @@ private fun AddEditTodoContent(
             if (loading) {
                 Text("Loading...")
             } else {
+                var titleTextFieldValue by remember {
+                    mutableStateOf(
+                        TextFieldValue(
+                            text = title,
+                            selection = TextRange(title.length)
+                        )
+                    )
+                }
+
                 TextField(
-                    value = title,
-                    onValueChange = onTitleChanged,
+                    value = titleTextFieldValue,
+                    onValueChange = {
+                        titleTextFieldValue = it.copy(
+                            selection = TextRange(it.text.length)
+                        )
+
+                        onTitleChanged(it.text)
+                    },
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.title_hint),
@@ -112,6 +136,7 @@ private fun AddEditTodoContent(
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .focusRequester(focusRequester),
                 )
 
                 Spacer(
@@ -139,6 +164,10 @@ private fun AddEditTodoContent(
                         .fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.save))
+                }
+
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
                 }
             }
         }

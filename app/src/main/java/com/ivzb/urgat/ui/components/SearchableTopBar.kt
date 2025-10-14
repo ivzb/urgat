@@ -28,6 +28,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -69,14 +71,27 @@ fun SearchableTopBar(
                 windowInsets = WindowInsets()
             )
         } else {
+            var searchQueryTextFieldValue by remember {
+                mutableStateOf(
+                    TextFieldValue(
+                        text = searchQuery,
+                        selection = TextRange(searchQuery.length)
+                    )
+                )
+            }
+
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
                     .focusRequester(focusRequester),
-                value = searchQuery,
+                value = searchQueryTextFieldValue,
                 onValueChange = {
-                    onSearchQueryChanged(it)
+                    searchQueryTextFieldValue = it.copy(
+                        selection = TextRange(it.text.length)
+                    )
+
+                    onSearchQueryChanged(it.text)
                 },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.background,
@@ -98,6 +113,10 @@ fun SearchableTopBar(
                 trailingIcon = {
                     if (searchQuery.isNotBlank()) {
                         IconButton(onClick = {
+                            searchQueryTextFieldValue = searchQueryTextFieldValue.copy(
+                                text = "",
+                                selection = TextRange(0)
+                            )
                             onSearchQueryChanged("")
                         }) {
                             Icon(
@@ -109,7 +128,6 @@ fun SearchableTopBar(
                 }
             )
 
-            // Auto-focus when search mode is activated
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
             }
