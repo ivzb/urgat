@@ -8,21 +8,21 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Query("SELECT * FROM todo ORDER BY createdAt DESC")
+    @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun observeAll(): Flow<List<LocalTodo>>
 
     @Query("" +
             "SELECT * FROM todo " +
-            "WHERE title LIKE '%' || :searchQuery || '%' OR description LIKE '%' || :searchQuery || '%'" +
+            "WHERE isDeleted = 0 AND title LIKE '%' || :searchQuery || '%' OR description LIKE '%' || :searchQuery || '%'" +
             "ORDER BY createdAt DESC")
     fun observeAll(searchQuery: String): Flow<List<LocalTodo>>
 
-    @Query("SELECT * FROM todo ORDER BY createdAt DESC LIMIT :limit")
+    @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT :limit")
     fun observeAll(limit: Int): Flow<List<LocalTodo>>
 
     @Query("" +
             "SELECT * FROM todo " +
-            "WHERE title LIKE '%' || :searchQuery || '%' OR description LIKE '%' || :searchQuery || '%'" +
+            "WHERE isDeleted = 0 AND title LIKE '%' || :searchQuery || '%' OR description LIKE '%' || :searchQuery || '%'" +
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
     )
@@ -31,7 +31,7 @@ interface TodoDao {
     @Query("SELECT * FROM todo WHERE id = :todoId")
     fun observeById(todoId: String): Flow<LocalTodo>
 
-    @Query("SELECT * FROM todo ORDER BY createdAt DESC")
+    @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
     suspend fun getAll(): List<LocalTodo>
 
     @Query("SELECT * FROM todo WHERE id = :todoId")
@@ -52,6 +52,6 @@ interface TodoDao {
     @Query("DELETE FROM todo")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM todo WHERE isCompleted = 1")
+    @Query("UPDATE todo SET isDeleted = 1 WHERE isCompleted = 1 AND isDeleted = 0")
     suspend fun deleteCompleted(): Int
 }

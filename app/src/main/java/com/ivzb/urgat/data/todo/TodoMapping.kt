@@ -5,6 +5,7 @@ fun Todo.toLocal() = LocalTodo(
     title = title,
     description = description,
     isCompleted = isCompleted,
+    isDeleted = isDeleted,
     createdAt = createdAt
 )
 
@@ -15,6 +16,7 @@ fun LocalTodo.toExternal() = Todo(
     title = title,
     description = description,
     isCompleted = isCompleted,
+    isDeleted = isDeleted,
     createdAt = createdAt
 )
 

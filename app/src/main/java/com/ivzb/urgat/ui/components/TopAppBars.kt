@@ -38,7 +38,8 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 @Composable
 fun TopAppBarContent(
     currentDestination: UrgatMenuDestination,
-    onSearchQueryChanged: (String) -> Unit
+    onSearchQueryChanged: (String) -> Unit,
+    actionsContent: (@Composable () -> Unit)? = null
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -52,28 +53,12 @@ fun TopAppBarContent(
             onSearchQueryChanged(it)
         },
         titleResId = currentDestination.label,
-        actionsContent = {
-            if (currentDestination == OverviewDestination || currentDestination == TodoDestination) {
-                TopAppBarDropdownMenu(
-                    iconContent = {
-                        Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
-                    }
-                ) { closeMenu ->
-                    DropdownMenuItem(
-                        text = { Text(text = stringResource(id = R.string.clear_completed)) },
-                        onClick = {
-                            TODO("clear completed todos")
-                            closeMenu()
-                        }
-                    )
-                }
-            }
-        }
+        actionsContent = actionsContent
     )
 }
 
 @Composable
-private fun TopAppBarDropdownMenu(
+fun TopAppBarDropdownMenu(
     iconContent: @Composable () -> Unit,
     content: @Composable ColumnScope.(() -> Unit) -> Unit
 ) {

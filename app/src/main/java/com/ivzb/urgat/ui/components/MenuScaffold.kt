@@ -20,6 +20,7 @@ fun MenuScaffold(
     onAddItem: (() -> Unit)? = null,
 
     navController: NavHostController,
+    topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -28,7 +29,8 @@ fun MenuScaffold(
         topBar = {
             TopAppBarContent(
                 currentDestination = currentDestination,
-                onSearchQueryChanged = onSearchQueryChanged
+                onSearchQueryChanged = onSearchQueryChanged,
+                actionsContent = topAppBarActionsContent
             )
         },
         bottomBar = {

@@ -5,10 +5,11 @@ data class Todo(
     val title: String = "",
     val description: String = "",
     val isCompleted: Boolean = false,
+    val isDeleted: Boolean = false,
     val createdAt: Long
 ) {
 
     val isActive
-        get() = !isCompleted
+        get() = !isCompleted && !isDeleted
 
 }

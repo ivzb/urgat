@@ -11,5 +11,6 @@ data class LocalTodo(
     var title: String,
     var description: String,
     var isCompleted: Boolean,
+    var isDeleted: Boolean,
     var createdAt: Long
 )

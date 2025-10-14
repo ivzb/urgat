@@ -130,6 +130,12 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
+    fun clearCompletedTodos() {
+        viewModelScope.launch {
+            todoRepository.clearCompletedTodos()
+        }
+    }
+
     fun onHeaderItemClick(item: HeaderItem) {
         viewModelScope.launch {
             _uiEvent.emit(

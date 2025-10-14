@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +35,7 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.TopAppBarDropdownMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -49,6 +54,21 @@ fun TodoScreen(
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
         onAddItem = onAddTodo,
         navController = navController,
+        topAppBarActionsContent = {
+            TopAppBarDropdownMenu(
+                iconContent = {
+                    Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
+                }
+            ) { closeMenu ->
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(id = R.string.clear_completed)) },
+                    onClick = {
+                        viewModel.clearCompletedTodos()
+                        closeMenu()
+                    }
+                )
+            }
+        },
         modifier = modifier
     ) {
 

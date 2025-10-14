@@ -17,10 +17,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,6 +46,7 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.TopAppBarDropdownMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
@@ -70,6 +73,21 @@ fun OverviewScreen(
         currentDestination = OverviewDestination,
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
         navController = navController,
+        topAppBarActionsContent = {
+            TopAppBarDropdownMenu(
+                iconContent = {
+                    Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
+                }
+            ) { closeMenu ->
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(id = R.string.clear_completed)) },
+                    onClick = {
+                        viewModel.clearCompletedTodos()
+                        closeMenu()
+                    }
+                )
+            }
+        },
         modifier = modifier
     ) {
 
