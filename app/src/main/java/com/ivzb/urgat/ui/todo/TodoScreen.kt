@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
@@ -37,7 +36,6 @@ import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterTodosMenu
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.components.TopAppBarDropdownMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -50,60 +48,82 @@ fun TodoScreen(
     modifier: Modifier = Modifier,
     viewModel: TodoViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    TodoScreenScaffold(
+        uiState = uiState,
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onAddTodo = onAddTodo,
+        onTodoClick = onTodoClick,
+        setFiltering = viewModel::setFiltering,
+        clearCompletedTodos = viewModel::clearCompletedTodos,
+        completeTodo = viewModel::completeTodo,
+        navController = navController,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun TodoScreenScaffold(
+    uiState: TodoUiState,
+    onSearchQueryChanged: (String) -> Unit,
+    onAddTodo: () -> Unit,
+    onTodoClick: (Todo) -> Unit,
+    setFiltering: (TodosFilterType) -> Unit,
+    clearCompletedTodos: () -> Unit,
+    completeTodo: (Todo, Boolean) -> Unit,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
 
     MenuScaffold(
         currentDestination = TodoDestination,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddTodo,
         navController = navController,
         topAppBarActionsContent = {
             FilterTodosMenu(
-                onFilterAllTodos = { viewModel.setFiltering(TodosFilterType.ALL_TODOS) },
-                onFilterActiveTodos = { viewModel.setFiltering(TodosFilterType.ACTIVE_TODOS) },
-                onFilterCompletedTodos = { viewModel.setFiltering(TodosFilterType.COMPLETED_TODOS) },
+                onFilterAllTodos = { setFiltering(TodosFilterType.ALL_TODOS) },
+                onFilterActiveTodos = { setFiltering(TodosFilterType.ACTIVE_TODOS) },
+                onFilterCompletedTodos = { setFiltering(TodosFilterType.COMPLETED_TODOS) },
             )
 
             MoreTodosMenu(
-                onClearCompletedTodos = viewModel::clearCompletedTodos
+                onClearCompletedTodos = clearCompletedTodos
             )
         },
         modifier = modifier
-    ) {
-
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    ) { listState ->
 
         when {
             uiState.isLoading -> {
                 EmptyState(
                     label = uiState.filteringUiInfo.loadingLabel,
-                    iconRes = uiState.filteringUiInfo.loadingIconRes,
-                    modifier = modifier
+                    iconRes = uiState.filteringUiInfo.loadingIconRes
                 )
             }
 
             !uiState.isLoading && uiState.items.isEmpty() -> {
                 EmptyState(
                     label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes,
-                    modifier = modifier
+                    iconRes = uiState.filteringUiInfo.emptyIconRes
                 )
             }
 
             uiState.hasError -> {
                 EmptyState(
                     label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes,
-                    modifier = modifier
+                    iconRes = uiState.filteringUiInfo.errorIconRes
                 )
             }
 
             else -> {
-                TodosContent(
+                TodoContent(
                     todos = uiState.items,
                     currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
                     onTodoClick = onTodoClick,
-                    onTodoCheckedChange = viewModel::completeTodo,
-                    modifier = modifier
+                    onTodoCheckedChange = completeTodo,
+                    listState = listState
                 )
             }
         }
@@ -111,11 +131,12 @@ fun TodoScreen(
 }
 
 @Composable
-fun TodosContent(
+fun TodoContent(
     todos: List<Todo>,
     @StringRes currentFilteringLabel: Int,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -132,7 +153,11 @@ fun TodosContent(
                 .copy(fontWeight = FontWeight.Bold)
         )
 
-        LazyColumn {
+        LazyColumn (
+            modifier = modifier
+                .fillMaxSize(),
+            state = listState
+        ) {
             items(todos) { todo ->
                 TodoItem(
                     todo = todo,
@@ -198,11 +223,149 @@ fun TodoItem(
 }
 
 @Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
 @Composable
-private fun TodosContentPreview() {
+private fun TodoScreenScaffoldPreview() {
+    UrgatTheme {
+        TodoScreenScaffold(
+            uiState = TodoUiState(
+                items = listOf(
+                    Todo(
+                        id = "ID 1",
+                        title = "Title 1",
+                        description = "Description 1",
+                        isCompleted = false,
+                        createdAt = 0
+                    ),
+                    Todo(
+                        id = "ID 2",
+                        title = "Title 2",
+                        description = "Description 2",
+                        isCompleted = true,
+                        createdAt = 1
+                    ),
+                    Todo(
+                        id = "ID 3",
+                        title = "Title 3",
+                        description = "Description 3",
+                        isCompleted = true,
+                        createdAt = 2
+                    ),
+                    Todo(
+                        id = "ID 4",
+                        title = "Title 4",
+                        description = "Description 4",
+                        isCompleted = false,
+                        createdAt = 3
+                    ),
+                    Todo(
+                        id = "ID 5",
+                        title = "Title 5",
+                        description = "Description 5",
+                        isCompleted = true,
+                        createdAt = 4
+                    ),
+                    Todo(
+                        id = "ID 6",
+                        title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                        isCompleted = false,
+                        createdAt = 5
+                    ),
+                    Todo(
+                        id = "ID 7",
+                        title = "Test",
+                        description = "",
+                        isCompleted = false,
+                        createdAt = 6
+                    ),
+                    Todo(
+                        id = "ID 8",
+                        title = "",
+                        description = "Test",
+                        isCompleted = false,
+                        createdAt = 7
+                    ),
+                ),
+                filteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = false,
+            ),
+            onSearchQueryChanged = {},
+            onAddTodo = {},
+            onTodoClick = {},
+            setFiltering = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+private fun TodoScreenScaffoldEmptyPreview() {
+    UrgatTheme {
+        TodoScreenScaffold(
+            uiState = TodoUiState(
+                items = listOf(),
+                filteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = false,
+            ),
+            onSearchQueryChanged = {},
+            onAddTodo = {},
+            onTodoClick = {},
+            setFiltering = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+private fun TodoScreenScaffoldLoadingPreview() {
+    UrgatTheme {
+        TodoScreenScaffold(
+            uiState = TodoUiState(
+                items = listOf(),
+                filteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = true,
+            ),
+            onSearchQueryChanged = {},
+            onAddTodo = {},
+            onTodoClick = {},
+            setFiltering = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TodoContentPreview() {
     UrgatTheme {
         Surface {
-            TodosContent(
+            TodoContent(
                 todos = listOf(
                     Todo(
                         id = "ID 1",
@@ -264,6 +427,7 @@ private fun TodosContentPreview() {
                 currentFilteringLabel = R.string.all_todos,
                 onTodoClick = { },
                 onTodoCheckedChange = { _, _ -> },
+                listState = rememberLazyListState()
             )
         }
     }

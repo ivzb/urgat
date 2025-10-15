@@ -49,6 +49,7 @@ data object WeatherDestination: UrgatMenuDestination() {
     override val label = R.string.weather
     override val icon = Icons.Filled.DateRange
     override val route = "weather"
+    override val withFAB = false
 }
 
 data object AddEditTodoDestination: UrgatDestination {

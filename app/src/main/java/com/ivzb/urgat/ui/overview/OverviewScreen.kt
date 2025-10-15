@@ -13,16 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,13 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.components.TopAppBarDropdownMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
@@ -70,25 +70,57 @@ fun OverviewScreen(
     viewModel: OverviewViewModel = hiltViewModel()
 ) {
 
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    OverviewScreenScaffold(
+        uiState = uiState,
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onHeaderItemClick = viewModel::onHeaderItemClick,
+        onTodoClick = onTodoClick,
+        onExpenseClick = onExpenseClick,
+        onNoteClick = onNoteClick,
+        clearCompletedTodos = viewModel::clearCompletedTodos,
+        completeTodo = viewModel::completeTodo,
+        navController = navController,
+        modifier = modifier
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is UiEvent.AddTodo -> onAddTodo()
+                is UiEvent.AddExpense -> onAddExpense()
+                is UiEvent.AddNote -> onAddNote()
+            }
+        }
+    }
+}
+
+@Composable
+private fun OverviewScreenScaffold(
+    uiState: OverviewUiState,
+    onSearchQueryChanged: (String) -> Unit,
+    onHeaderItemClick: (HeaderItem) -> Unit,
+    onTodoClick: (Todo) -> Unit,
+    onExpenseClick: (String) -> Unit,
+    onNoteClick: (String) -> Unit,
+    clearCompletedTodos: () -> Unit,
+    completeTodo: (Todo, Boolean) -> Unit,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
+
     MenuScaffold(
         currentDestination = OverviewDestination,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onSearchQueryChanged = onSearchQueryChanged,
         navController = navController,
         topAppBarActionsContent = {
-            TopAppBarDropdownMenu(
-                iconContent = {
-                    Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
-                }
-            ) { closeMenu ->
-                MoreTodosMenu(
-                    onClearCompletedTodos = viewModel::clearCompletedTodos
-                )
-            }
+            MoreTodosMenu(
+                onClearCompletedTodos = clearCompletedTodos
+            )
         },
         modifier = modifier
-    ) {
-
-        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    ) { listState ->
 
         when {
             uiState.isLoading -> {
@@ -108,29 +140,19 @@ fun OverviewScreen(
             else -> {
                 OverviewContent(
                     headerItems = uiState.headerItems,
-                    onHeaderItemClick = viewModel::onHeaderItemClick,
+                    onHeaderItemClick = onHeaderItemClick,
                     todos = uiState.todoItems,
                     todoFilteringUiInfo = uiState.todoFilteringUiInfo,
                     onTodoClick = onTodoClick,
-                    onTodoCheckedChange = viewModel::completeTodo,
+                    onTodoCheckedChange = completeTodo,
                     onExpenseClick = onExpenseClick,
                     onNoteClick = onNoteClick,
+                    listState = listState,
                 )
             }
         }
 
     }
-
-    LaunchedEffect(Unit) {
-        viewModel.uiEvent.collectLatest { event ->
-            when (event) {
-                is UiEvent.AddTodo -> onAddTodo()
-                is UiEvent.AddExpense -> onAddExpense()
-                is UiEvent.AddNote -> onAddNote()
-            }
-        }
-    }
-
 }
 
 @Composable
@@ -143,6 +165,7 @@ private fun OverviewContent(
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
     onExpenseClick: (String) -> Unit,
     onNoteClick: (String) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.overview)
@@ -150,7 +173,8 @@ private fun OverviewContent(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .semantics { contentDescription = screenName }
+            .semantics { contentDescription = screenName },
+        state = listState
     ) {
         item {
             Header(
@@ -313,6 +337,217 @@ private fun WeatherCard(
 }
 
 @Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+fun OverviewScreenScaffoldTodosPreview() {
+    UrgatTheme {
+        OverviewScreenScaffold(
+            uiState = OverviewUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        HeaderItemId.Todo,
+                        Icons.Filled.Done,
+                        R.string.add_todo
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Expense,
+                        Icons.Filled.ShoppingCart,
+                        R.string.add_expense
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Note,
+                        Icons.Filled.Person,
+                        R.string.add_note
+                    ),
+                ),
+                todoItems = listOf(
+                    Todo(
+                        id = "ID 1",
+                        title = "Title 1",
+                        description = "Description 1",
+                        isCompleted = false,
+                        createdAt = 0
+                    ),
+                    Todo(
+                        id = "ID 2",
+                        title = "Title 2",
+                        description = "Description 2",
+                        isCompleted = true,
+                        createdAt = 1
+                    ),
+                    Todo(
+                        id = "ID 3",
+                        title = "Title 3",
+                        description = "Description 3",
+                        isCompleted = true,
+                        createdAt = 2
+                    ),
+                ),
+                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = false,
+                hasError = false,
+                filteringUiInfo = OverviewFilteringUiInfo()
+            ),
+            onSearchQueryChanged = {},
+            onHeaderItemClick = {},
+            onTodoClick = {},
+            onExpenseClick = {},
+            onNoteClick = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+fun OverviewScreenScaffoldEmptyTodosPreview() {
+    UrgatTheme {
+        OverviewScreenScaffold(
+            uiState = OverviewUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        HeaderItemId.Todo,
+                        Icons.Filled.Done,
+                        R.string.add_todo
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Expense,
+                        Icons.Filled.ShoppingCart,
+                        R.string.add_expense
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Note,
+                        Icons.Filled.Person,
+                        R.string.add_note
+                    ),
+                ),
+                todoItems = listOf(),
+                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = false,
+                hasError = false,
+                filteringUiInfo = OverviewFilteringUiInfo()
+            ),
+            onSearchQueryChanged = {},
+            onHeaderItemClick = {},
+            onTodoClick = {},
+            onExpenseClick = {},
+            onNoteClick = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+fun OverviewScreenScaffoldLoadingPreview() {
+    UrgatTheme {
+        OverviewScreenScaffold(
+            uiState = OverviewUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        HeaderItemId.Todo,
+                        Icons.Filled.Done,
+                        R.string.add_todo
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Expense,
+                        Icons.Filled.ShoppingCart,
+                        R.string.add_expense
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Note,
+                        Icons.Filled.Person,
+                        R.string.add_note
+                    ),
+                ),
+                todoItems = listOf(),
+                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = true,
+                hasError = false,
+                filteringUiInfo = OverviewFilteringUiInfo()
+            ),
+            onSearchQueryChanged = {},
+            onHeaderItemClick = {},
+            onTodoClick = {},
+            onExpenseClick = {},
+            onNoteClick = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+fun OverviewScreenScaffoldErrorPreview() {
+    UrgatTheme {
+        OverviewScreenScaffold(
+            uiState = OverviewUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        HeaderItemId.Todo,
+                        Icons.Filled.Done,
+                        R.string.add_todo
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Expense,
+                        Icons.Filled.ShoppingCart,
+                        R.string.add_expense
+                    ),
+                    HeaderItem(
+                        HeaderItemId.Note,
+                        Icons.Filled.Person,
+                        R.string.add_note
+                    ),
+                ),
+                todoItems = listOf(),
+                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = false,
+                hasError = true,
+                filteringUiInfo = OverviewFilteringUiInfo()
+            ),
+            onSearchQueryChanged = {},
+            onHeaderItemClick = {},
+            onTodoClick = {},
+            onExpenseClick = {},
+            onNoteClick = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+
+@Preview
 @Composable
 fun OverviewContentPreview() {
     UrgatTheme {
@@ -363,11 +598,17 @@ fun OverviewContentPreview() {
             onTodoCheckedChange = { _, _ -> },
             onExpenseClick = {},
             onNoteClick = {},
+            listState = rememberLazyListState()
         )
     }
 }
 
 @Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
 @Composable
 fun OverviewHeader() {
     UrgatTheme {

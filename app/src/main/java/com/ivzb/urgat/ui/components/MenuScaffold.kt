@@ -6,8 +6,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,10 +34,12 @@ fun MenuScaffold(
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable (LazyListState) -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
+
+    val lazyListState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -53,7 +62,8 @@ fun MenuScaffold(
         floatingActionButton = {
             if (currentDestination.withFAB) {
                 FloatingActionButtonContent(
-                    onAddItem = {
+                    extended = lazyListState.isScrollingUp(),
+                    onClick = {
                         onAddItem?.invoke()
                     }
                 )
@@ -64,7 +74,7 @@ fun MenuScaffold(
 
         Row(modifier = modifier
             .fillMaxSize()
-            .padding(innerPadding)
+            .padding(innerPadding),
         ) {
 
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -76,9 +86,31 @@ fun MenuScaffold(
                 )
             }
 
-            content()
+            content(lazyListState)
         }
     }
+}
+
+/**
+ * Returns whether the lazy list is currently scrolling up.
+ */
+@Composable
+private fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
 }
 
 @Preview

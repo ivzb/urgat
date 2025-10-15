@@ -1,11 +1,9 @@
 package com.ivzb.urgat.ui.expenses
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,155 +13,110 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.ExpensesDestination
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun ExpensesScreen(
     onAddExpense: () -> Unit,
-
     navController: NavHostController,
-
     modifier: Modifier = Modifier,
     viewModel: ExpensesViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ExpensesScreenScaffold(
+        uiState = uiState,
+        onSearchQueryChanged = {},
+        onAddExpense = onAddExpense,
+        navController = navController,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun ExpensesScreenScaffold(
+    uiState: ExpensesUiState,
+    onSearchQueryChanged: (String) -> Unit,
+    onAddExpense: () -> Unit,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
 ) {
 
     MenuScaffold(
         currentDestination = ExpensesDestination,
-        onSearchQueryChanged = {
-            TODO("update view model")
-        },
+        onSearchQueryChanged = onSearchQueryChanged,
+        onAddItem = onAddExpense,
         navController = navController,
         modifier = modifier
-    ) {
+    ) { listState ->
 
-        val items by viewModel.uiState.collectAsStateWithLifecycle()
-
-        if (items is ExpensesUiState.Success) {
-            ExpensesScreen(
-                expenses = (items as ExpensesUiState.Success).data,
-                onAddExpense = onAddExpense,
-                modifier = modifier
-            )
-        }
-    }
-}
-
-@Composable
-internal fun ExpensesScreen(
-    expenses: List<String>,
-    onAddExpense: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-
-    val lazyListState = rememberLazyListState()
-
-    // The coroutine scope for event handlers calling suspend functions.
-    val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        floatingActionButton = {
-            ExpensesFloatingActionButton(
-                extended = lazyListState.isScrollingUp(),
-                onClick = {
-                    coroutineScope.launch {
-                        onAddExpense()
-                    }
-                }
-            )
-        }
-    ) { padding ->
-
-        Box(modifier = modifier) {
-            LazyColumn(
-                contentPadding = WindowInsets(16.dp, 32.dp, 16.dp,
-                    padding.calculateBottomPadding() + 32.dp
-                ).asPaddingValues(),
-                state = lazyListState
-            ) {
-                item { Header(title = stringResource(R.string.expenses)) }
-                item { Spacer(modifier = Modifier.height(16.dp)) }
-                items(expenses) { expense ->
-                    ExpenseRow(expense)
-                }
-                item { Spacer(modifier = Modifier.height(32.dp)) }
+        when (uiState) {
+            ExpensesUiState.Loading -> {
+                Text("Loading")
             }
-        }
-    }
-}
 
-@Composable
-private fun ExpensesFloatingActionButton(
-    extended: Boolean,
-    onClick: () -> Unit
-) {
-    // Use `FloatingActionButton` rather than `ExtendedFloatingActionButton` for full control on
-    // how it should animate.
-    FloatingActionButton(onClick = onClick) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = null
-            )
-            // Toggle the visibility of the content with animation.
-            AnimatedVisibility(visible = extended) {
-                Text(
-                    text = stringResource(R.string.add),
-                    modifier = Modifier
-                        .padding(start = 8.dp, top = 3.dp)
+            is ExpensesUiState.Error -> {
+                Text("Error")
+            }
+
+            is ExpensesUiState.Success -> {
+                ExpensesScreenContent(
+                    expenses = uiState.data,
+                    listState = listState,
+                    modifier = modifier
                 )
             }
         }
     }
 }
 
-/**
- * Returns whether the lazy list is currently scrolling up.
- */
 @Composable
-private fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
-    return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
-            } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
+internal fun ExpensesScreenContent(
+    expenses: List<String>,
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
+
+    Box(modifier = modifier) {
+        LazyColumn(
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.horizontal_margin),
+                vertical = dimensionResource(R.dimen.vertical_margin)
+            ),
+            state = listState
+        ) {
+            item { Header(title = stringResource(R.string.expenses)) }
+
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+            items(expenses) { expense ->
+                ExpenseRow(expense)
             }
+
+            item { Spacer(modifier = Modifier.height(32.dp)) }
         }
-    }.value
+    }
 }
 
 @Composable
@@ -202,20 +155,74 @@ private fun ExpenseRow(expense: String) {
     }
 }
 
-// Previews
-
-@Preview(showBackground = true)
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
 @Composable
-private fun DefaultPreview() {
+private fun ExpensesScreenScaffoldPreview() {
     UrgatTheme {
-        ExpensesScreen(listOf("Compose", "Room", "Kotlin"), onAddExpense = {})
+        ExpensesScreenScaffold(
+            uiState = ExpensesUiState.Success(
+                data = listOf("Compose", "Room", "Kotlin"),
+            ),
+            onSearchQueryChanged = {},
+            onAddExpense = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
     }
 }
 
-@Preview(showBackground = true, widthDp = 480)
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
 @Composable
-private fun PortraitPreview() {
+private fun ExpensesScreenScaffoldLoadingPreview() {
     UrgatTheme {
-        ExpensesScreen(listOf("Compose", "Room", "Kotlin"), onAddExpense = {})
+        ExpensesScreenScaffold(
+            uiState = ExpensesUiState.Loading,
+            onSearchQueryChanged = {},
+            onAddExpense = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Preview(
+    name = "Landscape",
+    widthDp = 640,
+    heightDp = 360
+)
+@Composable
+private fun ExpensesScreenScaffoldErrorPreview() {
+    UrgatTheme {
+        ExpensesScreenScaffold(
+            uiState = ExpensesUiState.Error(
+                throwable = IllegalArgumentException()
+            ),
+            onSearchQueryChanged = {},
+            onAddExpense = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExpensesScreenContentPreview() {
+    UrgatTheme {
+        ExpensesScreenContent(
+            expenses = listOf("Compose", "Room", "Kotlin"),
+            listState = rememberLazyListState()
+        )
     }
 }
