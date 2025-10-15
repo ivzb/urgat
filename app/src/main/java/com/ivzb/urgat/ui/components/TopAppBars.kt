@@ -25,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -100,6 +101,54 @@ fun TextTopAppBar(
     )
 }
 
+@Composable
+fun FilterTodosMenu(
+    onFilterAllTodos: () -> Unit,
+    onFilterActiveTodos: () -> Unit,
+    onFilterCompletedTodos: () -> Unit
+) {
+    TopAppBarDropdownMenu(
+        iconContent = {
+            Icon(
+                painterResource(id = R.drawable.ic_filter_list),
+                stringResource(id = R.string.menu_filter)
+            )
+        }
+    ) { closeMenu ->
+        DropdownMenuItem(
+            onClick = { onFilterAllTodos(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_all)) }
+        )
+        DropdownMenuItem(
+            onClick = { onFilterActiveTodos(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_active)) }
+        )
+        DropdownMenuItem(
+            onClick = { onFilterCompletedTodos(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_completed)) }
+        )
+    }
+}
+
+@Composable
+fun MoreTodosMenu(
+    onClearCompletedTodos: () -> Unit
+) {
+    TopAppBarDropdownMenu(
+        iconContent = {
+            Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
+        }
+    ) { closeMenu ->
+        DropdownMenuItem(
+            text = { Text(text = stringResource(id = R.string.clear_completed)) },
+            onClick = {
+                onClearCompletedTodos()
+                closeMenu()
+            }
+        )
+    }
+}
+
 @Preview
 @Composable
 fun TopAppBarContentOverviewDestinationPreview() {
@@ -129,5 +178,27 @@ private fun TextTopAppBarPreview() {
         Surface {
             TextTopAppBar(R.string.add_todo) { }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun FilterTodosMenuPreview() {
+    UrgatTheme {
+        FilterTodosMenu(
+            onFilterAllTodos = {},
+            onFilterActiveTodos = {},
+            onFilterCompletedTodos = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun MoreTodosMenuPreview() {
+    UrgatTheme {
+        MoreTodosMenu(
+            onClearCompletedTodos = {}
+        )
     }
 }

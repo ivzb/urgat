@@ -34,7 +34,9 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.FilterTodosMenu
 import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.components.TopAppBarDropdownMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
@@ -55,19 +57,15 @@ fun TodoScreen(
         onAddItem = onAddTodo,
         navController = navController,
         topAppBarActionsContent = {
-            TopAppBarDropdownMenu(
-                iconContent = {
-                    Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
-                }
-            ) { closeMenu ->
-                DropdownMenuItem(
-                    text = { Text(text = stringResource(id = R.string.clear_completed)) },
-                    onClick = {
-                        viewModel.clearCompletedTodos()
-                        closeMenu()
-                    }
-                )
-            }
+            FilterTodosMenu(
+                onFilterAllTodos = { viewModel.setFiltering(TodosFilterType.ALL_TODOS) },
+                onFilterActiveTodos = { viewModel.setFiltering(TodosFilterType.ACTIVE_TODOS) },
+                onFilterCompletedTodos = { viewModel.setFiltering(TodosFilterType.COMPLETED_TODOS) },
+            )
+
+            MoreTodosMenu(
+                onClearCompletedTodos = viewModel::clearCompletedTodos
+            )
         },
         modifier = modifier
     ) {

@@ -36,8 +36,7 @@ class TodoViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType =
-        savedStateHandle.getStateFlow(TODOS_FILTER_SAVED_STATE_KEY, ALL_TODOS)
+    private val _savedFilterType = savedStateHandle.getStateFlow(TODOS_FILTER_SAVED_STATE_KEY, ALL_TODOS)
 
     private val _filterUiInfo = _savedFilterType.map { getFilterUiInfo(it) }.distinctUntilChanged()
 
