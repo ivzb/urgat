@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,18 +48,7 @@ fun MenuScaffold(
     modifier: Modifier = Modifier,
     content: @Composable (LazyListState) -> Unit
 ) {
-    val windowSize = with(LocalDensity.current) {
-        currentWindowSize().toSize().toDpSize()
-    }
-
-    val layoutType = if (windowSize.width >= 1200.dp) {
-        NavigationSuiteType.NavigationDrawer
-    } else {
-        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
-            currentWindowAdaptiveInfo()
-        )
-    }
-
+    val navigationLayoutType = calculateNavigationSuiteType()
     val lazyListState = rememberLazyListState()
 
     Scaffold(
@@ -82,9 +72,10 @@ fun MenuScaffold(
         contentWindowInsets = WindowInsets.systemBars,
     ) { innerPadding ->
 
-        Row(modifier = modifier
-            .fillMaxSize()
-            .padding(innerPadding),
+        Row(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding),
         ) {
 
             NavigationSuiteScaffold(
@@ -109,7 +100,7 @@ fun MenuScaffold(
                         )
                     }
                 },
-                layoutType = layoutType,
+                layoutType = navigationLayoutType,
             ) {
 
                 content(lazyListState)
@@ -138,6 +129,35 @@ private fun LazyListState.isScrollingUp(): Boolean {
             }
         }
     }.value
+}
+
+@Composable
+private fun calculateNavigationSuiteType(): NavigationSuiteType {
+    val configuration = LocalConfiguration.current
+    val orientation = configuration.orientation
+    val windowSize = with(LocalDensity.current) {
+        currentWindowSize().toSize().toDpSize()
+    }
+
+    val layoutType = when {
+        // landscape phone
+        windowSize.height < 600.dp && orientation == Configuration.ORIENTATION_LANDSCAPE -> {
+            NavigationSuiteType.NavigationRail
+        }
+
+        // tablet
+        windowSize.width >= 1200.dp -> {
+            NavigationSuiteType.NavigationDrawer
+        }
+
+        else -> {
+            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                currentWindowAdaptiveInfo()
+            )
+        }
+    }
+
+    return layoutType
 }
 
 @Preview
