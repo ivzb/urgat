@@ -36,7 +36,7 @@ private fun WeatherScreenScaffold(
 ) {
 
     MenuScaffold(
-        currentDestination = WeatherDestination,
+        selectedDestination = WeatherDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         navController = navController,
         modifier = modifier

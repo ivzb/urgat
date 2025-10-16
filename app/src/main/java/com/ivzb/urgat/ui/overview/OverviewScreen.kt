@@ -111,7 +111,7 @@ private fun OverviewScreenScaffold(
 ) {
 
     MenuScaffold(
-        currentDestination = OverviewDestination,
+        selectedDestination = OverviewDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         navController = navController,
         topAppBarActionsContent = {

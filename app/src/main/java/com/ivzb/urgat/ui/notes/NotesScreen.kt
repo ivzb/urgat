@@ -35,7 +35,7 @@ private fun NotesScreenScaffold(
 ) {
 
     MenuScaffold(
-        currentDestination = NotesDestination,
+        selectedDestination = NotesDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         navController = navController,
         modifier = modifier

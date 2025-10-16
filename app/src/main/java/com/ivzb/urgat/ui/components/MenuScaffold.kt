@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowSize
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -17,16 +23,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.navigation.UrgatMenuDestination
+import com.ivzb.urgat.navigation.bottomNavigationScreens
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun MenuScaffold(
-    currentDestination: UrgatMenuDestination,
+    selectedDestination: UrgatMenuDestination,
     onSearchQueryChanged: (String) -> Unit,
     onAddItem: (() -> Unit)? = null,
 
@@ -36,31 +47,30 @@ fun MenuScaffold(
     modifier: Modifier = Modifier,
     content: @Composable (LazyListState) -> Unit
 ) {
-    val configuration = LocalConfiguration.current
-    val orientation = configuration.orientation
+    val windowSize = with(LocalDensity.current) {
+        currentWindowSize().toSize().toDpSize()
+    }
+
+    val layoutType = if (windowSize.width >= 1200.dp) {
+        NavigationSuiteType.NavigationDrawer
+    } else {
+        NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+            currentWindowAdaptiveInfo()
+        )
+    }
 
     val lazyListState = rememberLazyListState()
 
     Scaffold(
         topBar = {
             TopAppBarContent(
-                currentDestination = currentDestination,
+                selectedDestination = selectedDestination,
                 onSearchQueryChanged = onSearchQueryChanged,
                 actionsContent = topAppBarActionsContent
             )
         },
-        bottomBar = {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                BottomBarContent(
-                    currentDestination = currentDestination,
-                    onItemClick = {
-                        navController.navigate(it.route)
-                    }
-                )
-            }
-        },
         floatingActionButton = {
-            if (currentDestination.withFAB) {
+            if (selectedDestination.withFAB) {
                 FloatingActionButtonContent(
                     extended = lazyListState.isScrollingUp(),
                     onClick = {
@@ -77,16 +87,33 @@ fun MenuScaffold(
             .padding(innerPadding),
         ) {
 
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                NavigationRailContent(
-                    currentDestination = currentDestination,
-                    onItemClick = {
-                        navController.navigate(it.route)
+            NavigationSuiteScaffold(
+                navigationSuiteItems = {
+                    bottomNavigationScreens.forEach {
+                        item(
+                            selected = it == selectedDestination,
+                            onClick = {
+                                navController.navigate(it.route)
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = it.icon,
+                                    contentDescription = stringResource(it.label)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = stringResource(it.label)
+                                )
+                            },
+                        )
                     }
-                )
-            }
+                },
+                layoutType = layoutType,
+            ) {
 
-            content(lazyListState)
+                content(lazyListState)
+            }
         }
     }
 }
@@ -114,11 +141,16 @@ private fun LazyListState.isScrollingUp(): Boolean {
 }
 
 @Preview
+@LandscapePreview
+@TabletPreview
+@TabletLandscapePreview
+@FoldablePreviewFolded
+@FoldablePreviewUnfolded
 @Composable
 fun MenuScaffoldPreview() {
     UrgatTheme {
         MenuScaffold(
-            currentDestination = OverviewDestination,
+            selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
             onAddItem = {},
             navController = rememberNavController(),

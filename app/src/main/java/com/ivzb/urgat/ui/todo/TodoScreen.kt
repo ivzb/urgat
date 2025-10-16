@@ -77,7 +77,7 @@ private fun TodoScreenScaffold(
 ) {
 
     MenuScaffold(
-        currentDestination = TodoDestination,
+        selectedDestination = TodoDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddTodo,
         navController = navController,

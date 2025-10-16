@@ -38,7 +38,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarContent(
-    currentDestination: UrgatMenuDestination,
+    selectedDestination: UrgatMenuDestination,
     onSearchQueryChanged: (String) -> Unit,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
@@ -53,7 +53,7 @@ fun TopAppBarContent(
             searchQuery = it
             onSearchQueryChanged(it)
         },
-        titleResId = currentDestination.label,
+        titleResId = selectedDestination.label,
         actionsContent = actionsContent
     )
 }
@@ -154,7 +154,7 @@ fun MoreTodosMenu(
 fun TopAppBarContentOverviewDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            currentDestination = OverviewDestination,
+            selectedDestination = OverviewDestination,
             onSearchQueryChanged = {}
         )
     }
@@ -165,7 +165,7 @@ fun TopAppBarContentOverviewDestinationPreview() {
 fun TopAppBarContentTodoDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            currentDestination = TodoDestination,
+            selectedDestination = TodoDestination,
             onSearchQueryChanged = {}
         )
     }

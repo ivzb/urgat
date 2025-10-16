@@ -64,7 +64,7 @@ private fun ExpensesScreenScaffold(
 ) {
 
     MenuScaffold(
-        currentDestination = ExpensesDestination,
+        selectedDestination = ExpensesDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddExpense,
         navController = navController,
