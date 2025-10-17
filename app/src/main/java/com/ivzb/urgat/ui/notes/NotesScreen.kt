@@ -8,6 +8,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.navigation.NotesDestination
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
@@ -48,11 +49,7 @@ private fun NotesScreenScaffold(
 
 @Composable
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 private fun NotesScreenScaffoldPreview() {
     UrgatTheme {
         NotesScreenScaffold(

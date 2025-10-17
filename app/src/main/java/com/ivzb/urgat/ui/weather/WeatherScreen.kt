@@ -8,6 +8,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.navigation.WeatherDestination
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
@@ -49,11 +50,7 @@ private fun WeatherScreenScaffold(
 
 @Composable
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 private fun WeatherScreenScaffoldPreview() {
     UrgatTheme {
         WeatherScreenScaffold(

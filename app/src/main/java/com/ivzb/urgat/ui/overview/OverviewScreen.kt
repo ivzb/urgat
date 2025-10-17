@@ -1,16 +1,21 @@
 package com.ivzb.urgat.ui.overview
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -31,6 +36,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -46,6 +53,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -169,32 +177,50 @@ private fun OverviewContent(
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.overview)
+    val configuration = LocalConfiguration.current
+    val orientation = configuration.orientation
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .semantics { contentDescription = screenName },
-        state = listState
+    Row (
+        modifier = Modifier.fillMaxSize()
     ) {
-        item {
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Header(
                 items = headerItems,
-                onItemClick = onHeaderItemClick
+                onItemClick = onHeaderItemClick,
+                orientation
             )
         }
 
-        itemTodo(
-            todos = todos,
-            todoFilteringUiInfo = todoFilteringUiInfo,
-            onTodoClick = onTodoClick,
-            onTodoCheckedChange = onTodoCheckedChange,
-        )
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .semantics { contentDescription = screenName },
+            state = listState
+        ) {
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                item {
+                    Header(
+                        items = headerItems,
+                        onItemClick = onHeaderItemClick,
+                        orientation
+                    )
+                }
+            }
 
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.list_item_padding))
+            itemTodo(
+                todos = todos,
+                todoFilteringUiInfo = todoFilteringUiInfo,
+                onTodoClick = onTodoClick,
+                onTodoCheckedChange = onTodoCheckedChange,
             )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.list_item_padding))
+                )
+            }
         }
     }
 }
@@ -203,24 +229,59 @@ private fun OverviewContent(
 private fun Header(
     items: List<HeaderItem>,
     onItemClick: (HeaderItem) -> Unit,
+    orientation: Int,
     modifier: Modifier = Modifier
 ) {
 
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin)),
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
-            .padding(dimensionResource(R.dimen.content_padding))
-    ) {
-        items.forEach {
-            HeaderItem(
-                item = it,
-                onClick = onItemClick,
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
+            modifier = modifier
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(dimensionResource(R.dimen.overview_header_item_padding))
+        ) {
+
+            HeaderContent(
+                items = items,
+                onItemClick = onItemClick,
                 modifier = Modifier
+                    .defaultMinSize(minWidth = dimensionResource(R.dimen.overview_header_item_min_width))
                     .weight(1f)
             )
         }
+    } else {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
+            modifier = modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(dimensionResource(R.dimen.overview_header_item_padding))
+        ) {
+
+            HeaderContent(
+                items = items,
+                onItemClick = onItemClick,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun HeaderContent(
+    items: List<HeaderItem>,
+    onItemClick: (HeaderItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    items.forEach {
+        HeaderItem(
+            item = it,
+            onClick = onItemClick,
+            modifier = modifier
+        )
     }
 }
 
@@ -337,11 +398,7 @@ private fun WeatherCard(
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 fun OverviewScreenScaffoldTodosPreview() {
     UrgatTheme {
@@ -406,11 +463,7 @@ fun OverviewScreenScaffoldTodosPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 fun OverviewScreenScaffoldEmptyTodosPreview() {
     UrgatTheme {
@@ -453,11 +506,7 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 fun OverviewScreenScaffoldLoadingPreview() {
     UrgatTheme {
@@ -500,11 +549,7 @@ fun OverviewScreenScaffoldLoadingPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 fun OverviewScreenScaffoldErrorPreview() {
     UrgatTheme {
@@ -604,13 +649,8 @@ fun OverviewContentPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
 @Composable
-fun OverviewHeader() {
+fun OverviewHeaderPreview() {
     UrgatTheme {
         Header(
             items = listOf(
@@ -631,13 +671,42 @@ fun OverviewHeader() {
                 ),
             ),
             onItemClick = {},
+            orientation = Configuration.ORIENTATION_PORTRAIT
+        )
+    }
+}
+
+@LandscapePreview
+@Composable
+fun OverviewHeaderLandscapePreview() {
+    UrgatTheme {
+        Header(
+            items = listOf(
+                HeaderItem(
+                    HeaderItemId.Todo,
+                    Icons.Filled.Done,
+                    R.string.add_todo
+                ),
+                HeaderItem(
+                    HeaderItemId.Expense,
+                    Icons.Filled.ShoppingCart,
+                    R.string.add_expense
+                ),
+                HeaderItem(
+                    HeaderItemId.Note,
+                    Icons.Filled.Person,
+                    R.string.add_note
+                ),
+            ),
+            onItemClick = {},
+            orientation = Configuration.ORIENTATION_LANDSCAPE
         )
     }
 }
 
 @Preview
 @Composable
-fun OverviewHeaderItem() {
+fun OverviewHeaderItemPreview() {
     UrgatTheme {
         HeaderItem(
             item = HeaderItem(

@@ -34,6 +34,7 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterTodosMenu
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -223,11 +224,7 @@ fun TodoItem(
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 private fun TodoScreenScaffoldPreview() {
     UrgatTheme {
@@ -307,11 +304,7 @@ private fun TodoScreenScaffoldPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 private fun TodoScreenScaffoldEmptyPreview() {
     UrgatTheme {
@@ -334,11 +327,7 @@ private fun TodoScreenScaffoldEmptyPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 private fun TodoScreenScaffoldLoadingPreview() {
     UrgatTheme {

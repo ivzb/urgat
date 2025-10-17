@@ -33,6 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.ExpensesDestination
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
@@ -156,11 +157,7 @@ private fun ExpenseRow(expense: String) {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 private fun ExpensesScreenScaffoldPreview() {
     UrgatTheme {
@@ -177,11 +174,7 @@ private fun ExpensesScreenScaffoldPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 private fun ExpensesScreenScaffoldLoadingPreview() {
     UrgatTheme {
@@ -196,11 +189,7 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
 }
 
 @Preview
-@Preview(
-    name = "Landscape",
-    widthDp = 640,
-    heightDp = 360
-)
+@LandscapePreview
 @Composable
 private fun ExpensesScreenScaffoldErrorPreview() {
     UrgatTheme {
