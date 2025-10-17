@@ -5,6 +5,8 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -26,10 +28,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.ivzb.urgat.R
@@ -59,7 +64,7 @@ fun SearchableTopBar(
                     Text(stringResource(titleResId))
                 },
                 actions = {
-                    if (withTopAppBarActions) {
+                    if (withTopAppBarActions || searchQuery.isNotEmpty()) {
                         IconButton(onClick = {
                             onIsSearchingChanged(!isSearching)
                         }) {
@@ -68,7 +73,9 @@ fun SearchableTopBar(
                                 contentDescription = stringResource(R.string.search)
                             )
                         }
+                    }
 
+                    if (withTopAppBarActions) {
                         actionsContent?.invoke()
                     }
                 },
@@ -84,11 +91,9 @@ fun SearchableTopBar(
                 )
             }
 
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
-                    .focusRequester(focusRequester),
                 value = searchQueryTextFieldValue,
                 onValueChange = {
                     searchQueryTextFieldValue = it.copy(
@@ -97,6 +102,15 @@ fun SearchableTopBar(
 
                     onSearchQueryChanged(it.text)
                 },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        keyboardController?.hide()
+                    }
+                ),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.background,
                     unfocusedContainerColor = MaterialTheme.colorScheme.background
@@ -129,7 +143,11 @@ fun SearchableTopBar(
                             )
                         }
                     }
-                }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
+                    .focusRequester(focusRequester)
             )
 
             LaunchedEffect(Unit) {
