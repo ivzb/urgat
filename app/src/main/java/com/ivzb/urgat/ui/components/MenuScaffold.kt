@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,57 +53,58 @@ fun MenuScaffold(
     val navigationLayoutType = calculateNavigationSuiteType()
     val lazyListState = rememberLazyListState()
 
-    Scaffold(
-        topBar = {
-            TopAppBarContent(
-                selectedDestination = selectedDestination,
-                onSearchQueryChanged = onSearchQueryChanged,
-                withTopAppBarActions = withTopAppBarActions,
-                actionsContent = topAppBarActionsContent
-            )
-        },
-        floatingActionButton = {
-            if (selectedDestination.withFAB) {
-                FloatingActionButtonContent(
-                    extended = lazyListState.isScrollingUp(),
+    NavigationSuiteScaffold(
+        navigationSuiteItems = {
+            bottomNavigationScreens.forEach {
+                item(
+                    selected = it == selectedDestination,
                     onClick = {
-                        onAddItem?.invoke()
-                    }
+                        navController.navigate(it.route)
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = it.icon,
+                            contentDescription = stringResource(it.label)
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(it.label)
+                        )
+                    },
                 )
             }
         },
-        contentWindowInsets = WindowInsets.systemBars,
-    ) { innerPadding ->
+        layoutType = navigationLayoutType,
+        modifier = modifier
+            .fillMaxSize()
+    ) {
 
-        Row(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-        ) {
+        Scaffold(
+            topBar = {
+                TopAppBarContent(
+                    selectedDestination = selectedDestination,
+                    onSearchQueryChanged = onSearchQueryChanged,
+                    withTopAppBarActions = withTopAppBarActions,
+                    actionsContent = topAppBarActionsContent
+                )
+            },
+            floatingActionButton = {
+                if (selectedDestination.withFAB) {
+                    FloatingActionButtonContent(
+                        extended = lazyListState.isScrollingUp(),
+                        onClick = {
+                            onAddItem?.invoke()
+                        }
+                    )
+                }
+            },
+            contentWindowInsets = WindowInsets.systemBars,
+        ) { innerPadding ->
 
-            NavigationSuiteScaffold(
-                navigationSuiteItems = {
-                    bottomNavigationScreens.forEach {
-                        item(
-                            selected = it == selectedDestination,
-                            onClick = {
-                                navController.navigate(it.route)
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = it.icon,
-                                    contentDescription = stringResource(it.label)
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = stringResource(it.label)
-                                )
-                            },
-                        )
-                    }
-                },
-                layoutType = navigationLayoutType,
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
             ) {
 
                 content(lazyListState)
