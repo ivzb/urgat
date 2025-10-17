@@ -82,6 +82,7 @@ private fun TodoScreenScaffold(
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddTodo,
         navController = navController,
+        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterTodosMenu(
                 onFilterAllTodos = { setFiltering(TodosFilterType.ALL_TODOS) },

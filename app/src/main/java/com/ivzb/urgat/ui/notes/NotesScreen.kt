@@ -38,6 +38,7 @@ private fun NotesScreenScaffold(
     MenuScaffold(
         selectedDestination = NotesDestination,
         onSearchQueryChanged = onSearchQueryChanged,
+        withTopAppBarActions = false,
         navController = navController,
         modifier = modifier
     ) {

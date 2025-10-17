@@ -40,6 +40,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 fun TopAppBarContent(
     selectedDestination: UrgatMenuDestination,
     onSearchQueryChanged: (String) -> Unit,
+    withTopAppBarActions: Boolean = true,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
@@ -54,6 +55,7 @@ fun TopAppBarContent(
             onSearchQueryChanged(it)
         },
         titleResId = selectedDestination.label,
+        withTopAppBarActions = withTopAppBarActions,
         actionsContent = actionsContent
     )
 }
@@ -155,7 +157,36 @@ fun TopAppBarContentOverviewDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
-            onSearchQueryChanged = {}
+            onSearchQueryChanged = {},
+            withTopAppBarActions = true,
+            actionsContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_filter_list),
+                        stringResource(id = R.string.menu_filter)
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
+    UrgatTheme {
+        TopAppBarContent(
+            selectedDestination = OverviewDestination,
+            onSearchQueryChanged = {},
+            withTopAppBarActions = false,
+            actionsContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_filter_list),
+                        stringResource(id = R.string.menu_filter)
+                    )
+                }
+            }
         )
     }
 }
@@ -166,7 +197,9 @@ fun TopAppBarContentTodoDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
             selectedDestination = TodoDestination,
-            onSearchQueryChanged = {}
+            onSearchQueryChanged = {},
+            withTopAppBarActions = true,
+            actionsContent = {}
         )
     }
 }

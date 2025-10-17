@@ -68,6 +68,7 @@ private fun ExpensesScreenScaffold(
         selectedDestination = ExpensesDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddExpense,
+        withTopAppBarActions = (uiState as? ExpensesUiState.Success)?.data?.isNotEmpty() ?: false,
         navController = navController,
         modifier = modifier
     ) { listState ->

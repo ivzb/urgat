@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -42,6 +43,7 @@ fun SearchableTopBar(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     titleResId: Int,
+    withTopAppBarActions: Boolean = true,
     actionsContent: @Composable (() -> Unit)? = null
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -57,16 +59,18 @@ fun SearchableTopBar(
                     Text(stringResource(titleResId))
                 },
                 actions = {
-                    IconButton(onClick = {
-                        onIsSearchingChanged(!isSearching)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.search)
-                        )
-                    }
+                    if (withTopAppBarActions) {
+                        IconButton(onClick = {
+                            onIsSearchingChanged(!isSearching)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = stringResource(R.string.search)
+                            )
+                        }
 
-                    actionsContent?.invoke()
+                        actionsContent?.invoke()
+                    }
                 },
                 windowInsets = WindowInsets()
             )
@@ -145,7 +149,38 @@ fun SearchableTopBarPreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            actionsContent = {}
+            actionsContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_filter_list),
+                        stringResource(id = R.string.menu_filter)
+                    )
+                }
+            },
+            withTopAppBarActions = true
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SearchableTopBarWithoutActionsPreview() {
+    UrgatTheme {
+        SearchableTopBar(
+            isSearching = false,
+            onIsSearchingChanged = {},
+            searchQuery = "",
+            onSearchQueryChanged = {},
+            titleResId = R.string.search,
+            actionsContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_filter_list),
+                        stringResource(id = R.string.menu_filter)
+                    )
+                }
+            },
+            withTopAppBarActions = false
         )
     }
 }
@@ -160,7 +195,8 @@ fun SearchableTopBarSearchingEmptyStatePreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            actionsContent = {}
+            actionsContent = {},
+            withTopAppBarActions = true
         )
     }
 }
@@ -175,7 +211,8 @@ fun SearchableTopBarSearchingTextStatePreview() {
             searchQuery = "John",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            actionsContent = {}
+            actionsContent = {},
+            withTopAppBarActions = true
         )
     }
 }

@@ -43,6 +43,7 @@ fun MenuScaffold(
     onAddItem: (() -> Unit)? = null,
 
     navController: NavHostController,
+    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
@@ -56,6 +57,7 @@ fun MenuScaffold(
             TopAppBarContent(
                 selectedDestination = selectedDestination,
                 onSearchQueryChanged = onSearchQueryChanged,
+                withTopAppBarActions = withTopAppBarActions,
                 actionsContent = topAppBarActionsContent
             )
         },
@@ -174,6 +176,8 @@ fun MenuScaffoldPreview() {
             onSearchQueryChanged = {},
             onAddItem = {},
             navController = rememberNavController(),
+            withTopAppBarActions = true,
+            topAppBarActionsContent = {},
             modifier = Modifier
         ) { }
     }
