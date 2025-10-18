@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.expenses
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.navigation.ExpensesDestination
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -40,7 +43,10 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 @Composable
 fun ExpensesScreen(
     onAddExpense: () -> Unit,
+    onExpenseClick: (Expense) -> Unit,
+
     navController: NavHostController,
+
     modifier: Modifier = Modifier,
     viewModel: ExpensesViewModel = hiltViewModel()
 ) {
@@ -50,6 +56,7 @@ fun ExpensesScreen(
         uiState = uiState,
         onSearchQueryChanged = {},
         onAddExpense = onAddExpense,
+        onExpenseClick = onExpenseClick,
         navController = navController,
         modifier = modifier
     )
@@ -60,6 +67,7 @@ private fun ExpensesScreenScaffold(
     uiState: ExpensesUiState,
     onSearchQueryChanged: (String) -> Unit,
     onAddExpense: () -> Unit,
+    onExpenseClick: (Expense) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -68,25 +76,39 @@ private fun ExpensesScreenScaffold(
         selectedDestination = ExpensesDestination,
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddExpense,
-        withTopAppBarActions = (uiState as? ExpensesUiState.Success)?.data?.isNotEmpty() ?: false,
+        withTopAppBarActions = uiState.items.isNotEmpty(),
         navController = navController,
         modifier = modifier
     ) { listState ->
 
-        when (uiState) {
-            ExpensesUiState.Loading -> {
-                Text("Loading")
+        when {
+            uiState.isLoading -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.loadingLabel,
+                    iconRes = uiState.filteringUiInfo.loadingIconRes
+                )
             }
 
-            is ExpensesUiState.Error -> {
-                Text("Error")
+            !uiState.isLoading && uiState.items.isEmpty() -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.emptyLabel,
+                    iconRes = uiState.filteringUiInfo.emptyIconRes
+                )
             }
 
-            is ExpensesUiState.Success -> {
-                ExpensesScreenContent(
-                    expenses = uiState.data,
-                    listState = listState,
-                    modifier = modifier
+            uiState.hasError -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.errorLabel,
+                    iconRes = uiState.filteringUiInfo.errorIconRes
+                )
+            }
+
+            else -> {
+                ExpensesContent(
+                    expenses = uiState.items,
+                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
+                    onExpenseClick = onExpenseClick,
+                    listState = listState
                 )
             }
         }
@@ -94,8 +116,10 @@ private fun ExpensesScreenScaffold(
 }
 
 @Composable
-internal fun ExpensesScreenContent(
-    expenses: List<String>,
+internal fun ExpensesContent(
+    expenses: List<Expense>,
+    @StringRes currentFilteringLabel: Int,
+    onExpenseClick: (Expense) -> Unit,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -113,7 +137,7 @@ internal fun ExpensesScreenContent(
             item { Spacer(modifier = Modifier.height(16.dp)) }
 
             items(expenses) { expense ->
-                ExpenseRow(expense)
+                ExpenseItem(expense)
             }
 
             item { Spacer(modifier = Modifier.height(32.dp)) }
@@ -133,7 +157,7 @@ private fun Header(
 }
 
 @Composable
-private fun ExpenseRow(expense: String) {
+private fun ExpenseItem(expense: Expense) {
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
@@ -148,9 +172,11 @@ private fun ExpenseRow(expense: String) {
                 imageVector = Icons.Default.Check,
                 contentDescription = null
             )
+
             Spacer(modifier = Modifier.width(16.dp))
+
             Text(
-                text = expense,
+                text = expense.name,
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -163,11 +189,51 @@ private fun ExpenseRow(expense: String) {
 private fun ExpensesScreenScaffoldPreview() {
     UrgatTheme {
         ExpensesScreenScaffold(
-            uiState = ExpensesUiState.Success(
-                data = listOf("Compose", "Room", "Kotlin"),
+            uiState = ExpensesUiState(
+                items = listOf(
+                    Expense(
+                        id = "ID 1",
+                        name = "Food",
+                        amount = 10.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Expense(
+                        id = "ID 1",
+                        name = "Stuff",
+                        amount = 23.23.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    )
+                ),
+                filteringUiInfo = ExpensesFilteringUiInfo(),
+                isLoading = false,
+                hasError = false
             ),
             onSearchQueryChanged = {},
             onAddExpense = {},
+            onExpenseClick = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@LandscapePreview
+@Composable
+private fun ExpensesScreenScaffoldEmptyPreview() {
+    UrgatTheme {
+        ExpensesScreenScaffold(
+            uiState = ExpensesUiState(
+                items = listOf(),
+                filteringUiInfo = ExpensesFilteringUiInfo(),
+                isLoading = false,
+                hasError = false
+            ),
+            onSearchQueryChanged = {},
+            onAddExpense = {},
+            onExpenseClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -180,9 +246,15 @@ private fun ExpensesScreenScaffoldPreview() {
 private fun ExpensesScreenScaffoldLoadingPreview() {
     UrgatTheme {
         ExpensesScreenScaffold(
-            uiState = ExpensesUiState.Loading,
+            uiState = ExpensesUiState(
+                items = listOf(),
+                filteringUiInfo = ExpensesFilteringUiInfo(),
+                isLoading = true,
+                hasError = false
+            ),
             onSearchQueryChanged = {},
             onAddExpense = {},
+            onExpenseClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -195,11 +267,15 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
 private fun ExpensesScreenScaffoldErrorPreview() {
     UrgatTheme {
         ExpensesScreenScaffold(
-            uiState = ExpensesUiState.Error(
-                throwable = IllegalArgumentException()
+            uiState = ExpensesUiState(
+                items = listOf(),
+                filteringUiInfo = ExpensesFilteringUiInfo(),
+                isLoading = false,
+                hasError = true
             ),
             onSearchQueryChanged = {},
             onAddExpense = {},
+            onExpenseClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -207,12 +283,47 @@ private fun ExpensesScreenScaffoldErrorPreview() {
 }
 
 @Preview
+@LandscapePreview
 @Composable
 private fun ExpensesScreenContentPreview() {
     UrgatTheme {
-        ExpensesScreenContent(
-            expenses = listOf("Compose", "Room", "Kotlin"),
+        ExpensesContent(
+            expenses = listOf(
+                Expense(
+                    id = "ID 1",
+                    name = "Food",
+                    amount = 10.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Expense(
+                    id = "ID 1",
+                    name = "Stuff",
+                    amount = 23.23.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                )
+            ),
+            currentFilteringLabel = R.string.all_expenses,
+            onExpenseClick = {},
             listState = rememberLazyListState()
+        )
+    }
+}
+
+@Preview
+@LandscapePreview
+@Composable
+private fun ExpenseItemPreview() {
+    UrgatTheme {
+        ExpenseItem(
+            expense = Expense(
+                id = "ID 1",
+                name = "Food",
+                amount = 10.toBigDecimal(),
+                isDeleted = false,
+                createdAt = 0,
+            ),
         )
     }
 }

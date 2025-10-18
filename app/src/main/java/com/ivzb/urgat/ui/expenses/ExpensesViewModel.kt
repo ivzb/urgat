@@ -1,39 +1,140 @@
 package com.ivzb.urgat.ui.expenses
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.R
+import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.ui.components.FilteringUiInfo
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
+import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import com.ivzb.urgat.data.expense.ExpensesRepository
-import com.ivzb.urgat.ui.expenses.ExpensesUiState.Error
-import com.ivzb.urgat.ui.expenses.ExpensesUiState.Loading
-import com.ivzb.urgat.ui.expenses.ExpensesUiState.Success
+import java.math.BigDecimal
 import javax.inject.Inject
+
+data class ExpensesUiState(
+    val items: List<Expense> = emptyList(),
+    val isLoading: Boolean = false,
+    val hasError: Boolean = false,
+    val filteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo()
+)
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
-    private val expensesRepository: ExpensesRepository
+    private val expensesRepository: ExpensesRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val uiState: StateFlow<ExpensesUiState> = expensesRepository
-        .expenses.map<List<String>, ExpensesUiState>(::Success)
-        .catch { emit(Error(it)) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
+    private val _savedFilterType = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, ALL_EXPENSES)
 
-    fun addExpenses(name: String) {
-        viewModelScope.launch {
-            expensesRepository.add(name)
+    private val _filterUiInfo = _savedFilterType.map { getFilterUiInfo(it) }.distinctUntilChanged()
+
+    private val _isLoading = MutableStateFlow(false)
+
+    private val _filteredExpensesAsync = combine(
+            expensesRepository.getExpensesStream(), _savedFilterType
+            ) { expenses, filteringType ->
+                filterExpenses(expenses, filteringType)
+             }
+            .map { Async.Success(data = it) }
+            .catch<Async<List<Expense>>> { emit(Async.Error(R.string.error_expenses)) }
+
+    val uiState: StateFlow<ExpensesUiState> = combine(
+        _filterUiInfo, _isLoading, _filteredExpensesAsync
+        ) { filterUiInfo, isLoading, expensesAsync ->
+            when (expensesAsync) {
+                Async.Loading -> {
+                    ExpensesUiState(isLoading = true)
+                }
+
+                is Async.Error -> {
+                    ExpensesUiState(hasError = true)
+                }
+
+                is Async.Success -> {
+                    ExpensesUiState(
+                        items = expensesAsync.data,
+                        filteringUiInfo = filterUiInfo,
+                        isLoading = isLoading
+                    )
+                }
+            }
+         }
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = ExpensesUiState(isLoading = true)
+        )
+
+    private fun filterExpenses(expenses: List<Expense>, filteringType: ExpensesFilterType): List<Expense> {
+        val expensesToShow = ArrayList<Expense>()
+
+        for (expense in expenses) {
+            when (filteringType) {
+                ALL_EXPENSES -> expensesToShow.add(expense)
+
+                COST_EXPENSES -> if (expense.amount > BigDecimal.ZERO) {
+                    expensesToShow.add(expense)
+                }
+
+                DEBIT_EXPENSES -> if (expense.amount < BigDecimal.ZERO) {
+                    expensesToShow.add(expense)
+                }
+            }
         }
+        return expensesToShow
     }
+
+    private fun getFilterUiInfo(requestType: ExpensesFilterType): ExpensesFilteringUiInfo =
+        when (requestType) {
+            ALL_EXPENSES -> {
+                ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.all_expenses,
+                    emptyLabel = R.string.no_expenses,
+                    emptyIconRes = R.drawable.logo_no_fill
+                )
+            }
+
+            DEBIT_EXPENSES -> {
+                ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.debit_expenses,
+                    emptyLabel = R.string.no_debit_expenses,
+                    emptyIconRes = R.drawable.ic_check_circle
+                )
+            }
+
+            COST_EXPENSES -> {
+                ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.cost_expenses,
+                    emptyLabel = R.string.no_cost_expenses,
+                    emptyIconRes = R.drawable.ic_verified_user
+                )
+            }
+        }
 }
 
-sealed interface ExpensesUiState {
-    object Loading : ExpensesUiState
-    data class Error(val throwable: Throwable) : ExpensesUiState
-    data class Success(val data: List<String>) : ExpensesUiState
-}
+const val EXPENSES_FILTER_SAVED_STATE_KEY = "EXPENSES_FILTER_SAVED_STATE_KEY"
+
+data class ExpensesFilteringUiInfo(
+    val currentFilteringLabel: Int = R.string.all_expenses,
+
+    override val emptyLabel: Int = R.string.no_expenses,
+    override val emptyIconRes: Int = R.drawable.logo_no_fill,
+
+    override val loadingLabel: Int = R.string.loading_expenses,
+    override val loadingIconRes: Int = R.drawable.ic_loading,
+
+    override val errorLabel: Int = R.string.error_expenses,
+    override val errorIconRes: Int = R.drawable.ic_error,
+) : FilteringUiInfo

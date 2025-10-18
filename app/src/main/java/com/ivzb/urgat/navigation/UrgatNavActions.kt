@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.ivzb.urgat.R
+import kotlin.math.exp
 
 class UrgatNavActions(private val navController: NavHostController) {
 
@@ -15,15 +16,26 @@ class UrgatNavActions(private val navController: NavHostController) {
         navigateToAddEditTodo(R.string.edit_todo, todoId)
     }
 
-    private fun navigateToAddEditTodo(@StringRes title: Int, todoId: String?) {
+    private fun navigateToAddEditTodo(@StringRes title: Int, id: String?) {
         val route = "${AddEditTodoDestination.Args.ROUTE}/$title".let {
-            if (todoId != null) "$it?${AddEditTodoDestination.Args.ARG_TODO_ID}=$todoId" else it
+            if (id != null) "$it?${AddEditTodoDestination.Args.ARG_ID}=$id" else it
         }
         navController.navigate(route)
     }
 
-    fun navigateToAddEditExpense() {
-        navController.navigate(AddExpenseDestination.route)
+    fun navigateToAddExpense() {
+        navigateToAddEditExpense(R.string.add_expense, null)
+    }
+
+    fun navigateToEditExpense(expenseId: String) {
+        navigateToAddEditExpense(R.string.edit_expense, expenseId)
+    }
+
+    private fun navigateToAddEditExpense(@StringRes title: Int, id: String?) {
+        val route = "${AddEditExpenseDestination.Args.ROUTE}/$title".let {
+            if (id != null) "$it?${AddEditExpenseDestination.Args.ARG_ID}=$id" else it
+        }
+        navController.navigate(route)
     }
 
     private fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestination, popInclusive: Boolean = false) =

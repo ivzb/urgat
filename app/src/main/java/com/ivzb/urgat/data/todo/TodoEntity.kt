@@ -3,10 +3,8 @@ package com.ivzb.urgat.data.todo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "todo"
-)
-data class LocalTodo(
+@Entity(tableName = "todo")
+data class TodoEntity(
     @PrimaryKey val id: String,
     var title: String,
     var description: String,

@@ -1,6 +1,6 @@
 package com.ivzb.urgat.data.todo
 
-fun Todo.toLocal() = LocalTodo(
+fun Todo.toEntity() = TodoEntity(
     id = id,
     title = title,
     description = description,
@@ -9,9 +9,9 @@ fun Todo.toLocal() = LocalTodo(
     createdAt = createdAt
 )
 
-fun List<Todo>.toLocal() = map(Todo::toLocal)
+fun List<Todo>.toEntity() = map(Todo::toEntity)
 
-fun LocalTodo.toExternal() = Todo(
+fun TodoEntity.toExternal() = Todo(
     id = id,
     title = title,
     description = description,
@@ -20,5 +20,5 @@ fun LocalTodo.toExternal() = Todo(
     createdAt = createdAt
 )
 
-@JvmName("localToExternal")
-fun List<LocalTodo>.toExternal() = map(LocalTodo::toExternal)
+@JvmName("entityToExternal")
+fun List<TodoEntity>.toExternal() = map(TodoEntity::toExternal)

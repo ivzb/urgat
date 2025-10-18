@@ -28,6 +28,7 @@
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>
     <string name="add_expense">Add Expense</string>
+    <string name="edit_expense">Edit Expense</string>
     <string name="add_note">Add Note</string>
     <string name="search">Search</string>
     <string name="clear_completed">Clear completed</string>
@@ -37,4 +38,12 @@
     <string name="nav_all">All</string>
     <string name="nav_active">Active</string>
     <string name="nav_completed">Completed</string>
+    <string name="all_expenses">All expenses</string>
+    <string name="no_expenses">You have no expenses!</string>
+    <string name="loading_expenses">Loading expenses</string>
+    <string name="error_expenses">Error while loading expenses</string>
+    <string name="debit_expenses">Debit expenses</string>
+    <string name="no_debit_expenses">You have no debit expenses!</string>
+    <string name="cost_expenses">Cost expenses</string>
+    <string name="no_cost_expenses">You have no cost expenses!</string>
 </resources>

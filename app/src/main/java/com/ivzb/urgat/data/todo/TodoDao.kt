@@ -9,16 +9,16 @@ import kotlinx.coroutines.flow.Flow
 interface TodoDao {
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
-    fun observeAll(): Flow<List<LocalTodo>>
+    fun observeAll(): Flow<List<TodoEntity>>
 
     @Query("" +
             "SELECT * FROM todo " +
             "WHERE isDeleted = 0 AND title LIKE '%' || :searchQuery || '%' OR description LIKE '%' || :searchQuery || '%'" +
             "ORDER BY createdAt DESC")
-    fun observeAll(searchQuery: String): Flow<List<LocalTodo>>
+    fun observeAll(searchQuery: String): Flow<List<TodoEntity>>
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT :limit")
-    fun observeAll(limit: Int): Flow<List<LocalTodo>>
+    fun observeAll(limit: Int): Flow<List<TodoEntity>>
 
     @Query("" +
             "SELECT * FROM todo " +
@@ -26,22 +26,22 @@ interface TodoDao {
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
     )
-    fun observeAll(limit: Int, searchQuery: String): Flow<List<LocalTodo>>
+    fun observeAll(limit: Int, searchQuery: String): Flow<List<TodoEntity>>
 
     @Query("SELECT * FROM todo WHERE id = :todoId")
-    fun observeById(todoId: String): Flow<LocalTodo>
+    fun observeById(todoId: String): Flow<TodoEntity>
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
-    suspend fun getAll(): List<LocalTodo>
+    suspend fun getAll(): List<TodoEntity>
 
     @Query("SELECT * FROM todo WHERE id = :todoId")
-    suspend fun getById(todoId: String): LocalTodo?
+    suspend fun getById(todoId: String): TodoEntity?
 
     @Upsert
-    suspend fun upsert(todo: LocalTodo)
+    suspend fun upsert(todo: TodoEntity)
 
     @Upsert
-    suspend fun upsertAll(todos: List<LocalTodo>)
+    suspend fun upsertAll(todos: List<TodoEntity>)
 
     @Query("UPDATE todo SET isCompleted = :completed WHERE id = :todoId")
     suspend fun updateCompleted(todoId: String, completed: Boolean)

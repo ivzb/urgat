@@ -291,6 +291,7 @@ private fun TodoScreenScaffoldPreview() {
                 ),
                 filteringUiInfo = TodoFilteringUiInfo(),
                 isLoading = false,
+                hasError = false
             ),
             onSearchQueryChanged = {},
             onAddTodo = {},
@@ -314,6 +315,7 @@ private fun TodoScreenScaffoldEmptyPreview() {
                 items = listOf(),
                 filteringUiInfo = TodoFilteringUiInfo(),
                 isLoading = false,
+                hasError = false
             ),
             onSearchQueryChanged = {},
             onAddTodo = {},
@@ -337,6 +339,7 @@ private fun TodoScreenScaffoldLoadingPreview() {
                 items = listOf(),
                 filteringUiInfo = TodoFilteringUiInfo(),
                 isLoading = true,
+                hasError = false
             ),
             onSearchQueryChanged = {},
             onAddTodo = {},
@@ -351,6 +354,31 @@ private fun TodoScreenScaffoldLoadingPreview() {
 }
 
 @Preview
+@LandscapePreview
+@Composable
+private fun TodoScreenScaffoldErrorPreview() {
+    UrgatTheme {
+        TodoScreenScaffold(
+            uiState = TodoUiState(
+                items = listOf(),
+                filteringUiInfo = TodoFilteringUiInfo(),
+                isLoading = false,
+                hasError = true
+            ),
+            onSearchQueryChanged = {},
+            onAddTodo = {},
+            onTodoClick = {},
+            setFiltering = {},
+            clearCompletedTodos = {},
+            completeTodo = { _, _ -> },
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@LandscapePreview
 @Composable
 private fun TodoContentPreview() {
     UrgatTheme {
@@ -424,6 +452,7 @@ private fun TodoContentPreview() {
 }
 
 @Preview
+@LandscapePreview
 @Composable
 private fun TodoItemPreview() {
     UrgatTheme {
@@ -443,6 +472,7 @@ private fun TodoItemPreview() {
 }
 
 @Preview
+@LandscapePreview
 @Composable
 private fun TodoItemCompletedPreview() {
     UrgatTheme {

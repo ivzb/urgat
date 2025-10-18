@@ -54,18 +54,24 @@ data object WeatherDestination: UrgatMenuDestination() {
 
 data object AddEditTodoDestination: UrgatDestination {
     override val icon = Icons.Filled.Add
-    override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_TODO_ID}={${Args.ARG_TODO_ID}}"
+    override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
 
     object Args {
         const val ROUTE = "addEditTodo"
         const val ARG_TITLE = "title"
-        const val ARG_TODO_ID = "todoId"
+        const val ARG_ID = "id"
     }
 }
 
-data object AddExpenseDestination: UrgatDestination {
+data object AddEditExpenseDestination: UrgatDestination {
     override val icon = Icons.Filled.Add
-    override val route = "addExpense"
+    override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
+
+    object Args {
+        const val ROUTE = "addEditExpense"
+        const val ARG_TITLE = "title"
+        const val ARG_ID = "id"
+    }
 }
 
 // Screens to be displayed in the top UrgatTabRow

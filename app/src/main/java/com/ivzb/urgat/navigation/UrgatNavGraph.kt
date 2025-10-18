@@ -16,8 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseScreen
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
-import com.ivzb.urgat.ui.addExpense.AddExpenseScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
@@ -69,7 +69,7 @@ private fun NavHostContent(
             OverviewScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
-                onAddExpense = {},
+                onAddExpense = { navActions.navigateToAddExpense() },
                 onExpenseClick = {},
                 onAddNote = {},
                 onNoteClick = {},
@@ -90,7 +90,10 @@ private fun NavHostContent(
         composable(ExpensesDestination.route) {
             ExpensesScreen(
                 onAddExpense = {
-                    navActions.navigateToAddEditExpense()
+                    navActions.navigateToAddExpense()
+                },
+                onExpenseClick = {
+                    navActions.navigateToEditExpense(it.id)
                 },
                 navController = navController,
             )
@@ -111,13 +114,13 @@ private fun NavHostContent(
         composable(
             AddEditTodoDestination.route, arguments = listOf(
                 navArgument(AddEditTodoDestination.Args.ARG_TITLE) { type = NavType.IntType },
-                navArgument(AddEditTodoDestination.Args.ARG_TODO_ID) {
+                navArgument(AddEditTodoDestination.Args.ARG_ID) {
                     type = NavType.StringType; nullable = true
                 },
             )
         ) { entry ->
             val title = entry.arguments?.getInt(AddEditTodoDestination.Args.ARG_TITLE) ?: 0
-            val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.ARG_TODO_ID)
+            val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.ARG_ID)
 
             AddEditTodoScreen(
                 screenTitle = title,
@@ -126,8 +129,22 @@ private fun NavHostContent(
             )
         }
 
-        composable(AddExpenseDestination.route) {
-            AddExpenseScreen()
+        composable(
+            AddEditExpenseDestination.route, arguments = listOf(
+                navArgument(AddEditExpenseDestination.Args.ARG_TITLE) { type = NavType.IntType },
+                navArgument(AddEditExpenseDestination.Args.ARG_ID) {
+                    type = NavType.StringType; nullable = true
+                },
+            )
+        ) { entry ->
+            val title = entry.arguments?.getInt(AddEditExpenseDestination.Args.ARG_TITLE) ?: 0
+            val expenseId = entry.arguments?.getString(AddEditExpenseDestination.Args.ARG_ID)
+
+            AddEditExpenseScreen(
+                screenTitle = title,
+                onBack = { navController.popBackStack() },
+                onShowSnackbar = onShowSnackbar
+            )
         }
     }
 }

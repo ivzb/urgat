@@ -30,7 +30,7 @@ class DefaultTodoRepository @Inject constructor(
             description = description,
             createdAt = System.currentTimeMillis()
         )
-        localDataSource.upsert(todo.toLocal())
+        localDataSource.upsert(todo.toEntity())
         return todoId
     }
 
@@ -40,7 +40,7 @@ class DefaultTodoRepository @Inject constructor(
             description = description
         ) ?: throw Exception("Todo (id $todoId) not found")
 
-        localDataSource.upsert(todo.toLocal())
+        localDataSource.upsert(todo.toEntity())
     }
 
     override suspend fun getTodos(): List<Todo> {

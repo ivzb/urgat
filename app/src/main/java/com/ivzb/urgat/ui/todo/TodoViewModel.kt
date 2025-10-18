@@ -54,11 +54,11 @@ class TodoViewModel @Inject constructor(
                     todoRepository.getTodosStream(searchQuery = searchQuery)
                 }
 
-                combine(todoStream, _savedFilterType) { todos, type ->
-                    filterTodos(todos, type)
+                combine(todoStream, _savedFilterType) { todos, filteringType ->
+                    filterTodos(todos, filteringType)
                 }
             }
-            .map { Async.Success(it) }
+            .map { Async.Success(data = it) }
             .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
 
     val uiState: StateFlow<TodoUiState> = combine(

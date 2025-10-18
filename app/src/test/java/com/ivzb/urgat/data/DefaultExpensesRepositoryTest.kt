@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.expense.ExpenseDao
 
 /**
@@ -30,13 +30,13 @@ class DefaultExpensesRepositoryTest {
 
 private class FakeExpenseDao : ExpenseDao {
 
-    private val data = mutableListOf<Expense>()
+    private val data = mutableListOf<ExpenseEntity>()
 
-    override fun getExpenses(): Flow<List<Expense>> = flow {
+    override fun getExpenses(): Flow<List<ExpenseEntity>> = flow {
         emit(data)
     }
 
-    override suspend fun insertExpense(item: Expense) {
+    override suspend fun insertExpense(item: ExpenseEntity) {
         data.add(0, item)
     }
 }
