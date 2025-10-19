@@ -22,6 +22,7 @@
     <string name="edit_todo">Edit Todo</string>
     <string name="menu_back">Back</string>
     <string name="empty_todo_message">Empty todo message</string>
+    <string name="empty_expense_message">Complete all expense fields</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
     <string name="save">Save</string>

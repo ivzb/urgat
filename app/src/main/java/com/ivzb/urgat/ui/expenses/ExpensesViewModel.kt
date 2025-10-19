@@ -43,7 +43,7 @@ class ExpensesViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
 
     private val _filteredExpensesAsync = combine(
-            expensesRepository.getExpensesStream(), _savedFilterType
+            expensesRepository.getStream(), _savedFilterType
             ) { expenses, filteringType ->
                 filterExpenses(expenses, filteringType)
              }

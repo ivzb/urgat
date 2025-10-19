@@ -47,7 +47,7 @@ fun AddEditTodoScreen(
     onBack: () -> Unit,
     onShowSnackbar: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AddEditTodoViewModel = hiltViewModel(),
+    viewModel: AddEditTodoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

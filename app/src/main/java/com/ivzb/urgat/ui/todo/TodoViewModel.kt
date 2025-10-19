@@ -49,9 +49,9 @@ class TodoViewModel @Inject constructor(
             .debounce(DEBOUNCE_TIME_MILLIS)
             .flatMapLatest { searchQuery ->
                 val todoStream = if (searchQuery == "") {
-                    todoRepository.getTodosStream()
+                    todoRepository.getStream()
                 } else {
-                    todoRepository.getTodosStream(searchQuery = searchQuery)
+                    todoRepository.getStream(searchQuery = searchQuery)
                 }
 
                 combine(todoStream, _savedFilterType) { todos, filteringType ->
@@ -98,15 +98,15 @@ class TodoViewModel @Inject constructor(
 
     fun clearCompletedTodos() {
         viewModelScope.launch {
-            todoRepository.clearCompletedTodos()
+            todoRepository.clearCompleted()
         }
     }
 
     fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
-            todoRepository.completeTodo(todo.id)
+            todoRepository.complete(todo.id)
         } else {
-            todoRepository.activateTodo(todo.id)
+            todoRepository.activate(todo.id)
         }
     }
 

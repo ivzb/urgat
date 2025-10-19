@@ -75,7 +75,7 @@ class AddEditTodoViewModel @Inject constructor(
     }
 
     private fun createNewTodo() = viewModelScope.launch {
-        todoRepository.createTodo(uiState.value.title, uiState.value.description)
+        todoRepository.create(uiState.value.title, uiState.value.description)
         _uiState.update {
             it.copy(isTodoSaved = true)
         }
@@ -87,7 +87,7 @@ class AddEditTodoViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            todoRepository.updateTodo(
+            todoRepository.update(
                 todoId,
                 title = uiState.value.title,
                 description = uiState.value.description,
@@ -105,7 +105,7 @@ class AddEditTodoViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            todoRepository.getTodo(todoId).let { todo ->
+            todoRepository.get(todoId).let { todo ->
                 if (todo != null) {
                     _uiState.update {
                         it.copy(

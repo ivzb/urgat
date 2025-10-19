@@ -59,9 +59,9 @@ class OverviewViewModel @Inject constructor(
         .debounce(DEBOUNCE_TIME_MILLIS)
         .flatMapLatest { searchQuery ->
             if (searchQuery == "") {
-                todoRepository.getTodosStream(LIMIT)
+                todoRepository.getStream(LIMIT)
             } else {
-                todoRepository.getTodosStream(LIMIT, searchQuery)
+                todoRepository.getStream(LIMIT, searchQuery)
             }
         }
         .map { Async.Success(it) }
@@ -124,15 +124,15 @@ class OverviewViewModel @Inject constructor(
 
     fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
-            todoRepository.completeTodo(todo.id)
+            todoRepository.complete(todo.id)
         } else {
-            todoRepository.activateTodo(todo.id)
+            todoRepository.activate(todo.id)
         }
     }
 
     fun clearCompletedTodos() {
         viewModelScope.launch {
-            todoRepository.clearCompletedTodos()
+            todoRepository.clearCompleted()
         }
     }
 

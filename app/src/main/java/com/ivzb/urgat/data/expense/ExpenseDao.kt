@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.expense
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -9,5 +10,11 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM expenses WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun observeAll(): Flow<List<ExpenseEntity>>
+
+    @Upsert
+    suspend fun upsert(expense: ExpenseEntity)
+
+    @Query("SELECT * FROM expenses WHERE id = :id")
+    suspend fun getById(id: String): ExpenseEntity?
 
 }

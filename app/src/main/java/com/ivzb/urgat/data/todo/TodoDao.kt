@@ -28,14 +28,14 @@ interface TodoDao {
     )
     fun observeAll(limit: Int, searchQuery: String): Flow<List<TodoEntity>>
 
-    @Query("SELECT * FROM todo WHERE id = :todoId")
-    fun observeById(todoId: String): Flow<TodoEntity>
+    @Query("SELECT * FROM todo WHERE id = :id")
+    fun observeById(id: String): Flow<TodoEntity>
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
     suspend fun getAll(): List<TodoEntity>
 
-    @Query("SELECT * FROM todo WHERE id = :todoId")
-    suspend fun getById(todoId: String): TodoEntity?
+    @Query("SELECT * FROM todo WHERE id = :id")
+    suspend fun getById(id: String): TodoEntity?
 
     @Upsert
     suspend fun upsert(todo: TodoEntity)
@@ -43,11 +43,11 @@ interface TodoDao {
     @Upsert
     suspend fun upsertAll(todos: List<TodoEntity>)
 
-    @Query("UPDATE todo SET isCompleted = :completed WHERE id = :todoId")
-    suspend fun updateCompleted(todoId: String, completed: Boolean)
+    @Query("UPDATE todo SET isCompleted = :completed WHERE id = :id")
+    suspend fun updateCompleted(id: String, completed: Boolean)
 
-    @Query("DELETE FROM todo WHERE id = :todoId")
-    suspend fun deleteById(todoId: String): Int
+    @Query("DELETE FROM todo WHERE id = :id")
+    suspend fun deleteById(id: String): Int
 
     @Query("DELETE FROM todo")
     suspend fun deleteAll()

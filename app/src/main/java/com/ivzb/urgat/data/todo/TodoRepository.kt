@@ -4,31 +4,31 @@ import kotlinx.coroutines.flow.Flow
 
 interface TodoRepository {
 
-    fun getTodosStream(): Flow<List<Todo>>
+    fun getStream(): Flow<List<Todo>>
 
-    fun getTodosStream(searchQuery: String): Flow<List<Todo>>
+    fun getStream(searchQuery: String): Flow<List<Todo>>
 
-    fun getTodosStream(limit: Int): Flow<List<Todo>>
+    fun getStream(limit: Int): Flow<List<Todo>>
 
-    fun getTodosStream(limit: Int, searchQuery: String): Flow<List<Todo>>
+    fun getStream(limit: Int, searchQuery: String): Flow<List<Todo>>
 
-    suspend fun getTodos(): List<Todo>
+    suspend fun getAll(): List<Todo>
 
-    fun getTodoStream(todoId: String): Flow<Todo?>
+    fun getStreamById(id: String): Flow<Todo?>
 
-    suspend fun getTodo(todoId: String): Todo?
+    suspend fun get(id: String): Todo?
 
-    suspend fun createTodo(title: String, description: String): String
+    suspend fun create(title: String, description: String): String
 
-    suspend fun updateTodo(todoId: String, title: String, description: String)
+    suspend fun update(id: String, title: String, description: String)
 
-    suspend fun completeTodo(todoId: String)
+    suspend fun complete(id: String)
 
-    suspend fun activateTodo(todoId: String)
+    suspend fun activate(id: String)
 
-    suspend fun clearCompletedTodos()
+    suspend fun clearCompleted()
 
-    suspend fun deleteAllTodos()
+    suspend fun deleteAll()
 
-    suspend fun deleteTodo(todoId: String)
+    suspend fun delete(id: String)
 }

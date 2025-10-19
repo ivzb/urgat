@@ -18,38 +18,38 @@ class DefaultTodoRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : TodoRepository {
 
-    override suspend fun createTodo(title: String, description: String): String {
+    override suspend fun create(title: String, description: String): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
-        val todoId = withContext(dispatcher) {
+        val id = withContext(dispatcher) {
             UUID.randomUUID().toString()
         }
         val todo = Todo(
-            id = todoId,
+            id = id,
             title = title,
             description = description,
             createdAt = System.currentTimeMillis()
         )
         localDataSource.upsert(todo.toEntity())
-        return todoId
+        return id
     }
 
-    override suspend fun updateTodo(todoId: String, title: String, description: String) {
-        val todo = getTodo(todoId)?.copy(
+    override suspend fun update(id: String, title: String, description: String) {
+        val todo = get(id)?.copy(
             title = title,
             description = description
-        ) ?: throw Exception("Todo (id $todoId) not found")
+        ) ?: throw Exception("Todo (id $id) not found")
 
         localDataSource.upsert(todo.toEntity())
     }
 
-    override suspend fun getTodos(): List<Todo> {
+    override suspend fun getAll(): List<Todo> {
         return withContext(dispatcher) {
             localDataSource.getAll().toExternal()
         }
     }
 
-    override fun getTodosStream(): Flow<List<Todo>> {
+    override fun getStream(): Flow<List<Todo>> {
         return localDataSource.observeAll().map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
@@ -57,7 +57,7 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
-    override fun getTodosStream(searchQuery: String): Flow<List<Todo>> {
+    override fun getStream(searchQuery: String): Flow<List<Todo>> {
         return localDataSource.observeAll(searchQuery).map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
@@ -65,7 +65,7 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
-    override fun getTodosStream(limit: Int): Flow<List<Todo>> {
+    override fun getStream(limit: Int): Flow<List<Todo>> {
         return localDataSource.observeAll(limit).map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
@@ -73,7 +73,7 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
-    override fun getTodosStream(limit: Int, searchQuery: String): Flow<List<Todo>> {
+    override fun getStream(limit: Int, searchQuery: String): Flow<List<Todo>> {
         return localDataSource.observeAll(limit, searchQuery).map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
@@ -81,32 +81,32 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
-    override fun getTodoStream(todoId: String): Flow<Todo?> {
-        return localDataSource.observeById(todoId).map { it.toExternal() }
+    override fun getStreamById(id: String): Flow<Todo?> {
+        return localDataSource.observeById(id).map { it.toExternal() }
     }
 
-    override suspend fun getTodo(todoId: String): Todo? {
-        return localDataSource.getById(todoId)?.toExternal()
+    override suspend fun get(id: String): Todo? {
+        return localDataSource.getById(id)?.toExternal()
     }
 
-    override suspend fun completeTodo(todoId: String) {
-        localDataSource.updateCompleted(todoId = todoId, completed = true)
+    override suspend fun complete(id: String) {
+        localDataSource.updateCompleted(id = id, completed = true)
     }
 
-    override suspend fun activateTodo(todoId: String) {
-        localDataSource.updateCompleted(todoId = todoId, completed = false)
+    override suspend fun activate(id: String) {
+        localDataSource.updateCompleted(id = id, completed = false)
     }
 
-    override suspend fun clearCompletedTodos() {
+    override suspend fun clearCompleted() {
         localDataSource.deleteCompleted()
     }
 
-    override suspend fun deleteAllTodos() {
+    override suspend fun deleteAll() {
         localDataSource.deleteAll()
     }
 
-    override suspend fun deleteTodo(todoId: String) {
-        localDataSource.deleteById(todoId)
+    override suspend fun delete(id: String) {
+        localDataSource.deleteById(id)
     }
 
 }
