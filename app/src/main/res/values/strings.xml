@@ -25,6 +25,8 @@
     <string name="empty_expense_message">Complete all expense fields</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
+    <string name="expense_hint">Expense</string>
+    <string name="amount_hint">Amount</string>
     <string name="save">Save</string>
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>

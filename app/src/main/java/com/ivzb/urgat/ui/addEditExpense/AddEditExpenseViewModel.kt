@@ -41,7 +41,7 @@ class AddEditExpenseViewModel @Inject constructor(
     }
 
     fun saveExpense() {
-        if (uiState.value.name.isNotEmpty() && uiState.value.amount.isNotEmpty()) {
+        if (uiState.value.name.isEmpty() || uiState.value.amount.isEmpty()) {
             _uiState.update {
                 it.copy(userMessage = R.string.empty_expense_message)
             }
@@ -68,9 +68,9 @@ class AddEditExpenseViewModel @Inject constructor(
         }
     }
 
-    fun updateAmount(amount: BigDecimal) {
+    fun updateAmount(amount: String) {
         _uiState.update {
-            it.copy(amount = amount.toString())
+            it.copy(amount = amount)
         }
     }
 
