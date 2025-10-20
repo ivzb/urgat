@@ -142,7 +142,7 @@ class TodoViewModel @Inject constructor(
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.active_todos,
                     emptyLabel = R.string.no_active_todos,
-                    emptyIconRes = R.drawable.ic_check_circle
+                    emptyIconRes = R.drawable.logo_no_fill
                 )
             }
 
@@ -150,7 +150,7 @@ class TodoViewModel @Inject constructor(
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.completed_todos,
                     emptyLabel = R.string.no_completed_todos,
-                    emptyIconRes = R.drawable.ic_verified_user
+                    emptyIconRes = R.drawable.logo_no_fill
                 )
             }
         }
