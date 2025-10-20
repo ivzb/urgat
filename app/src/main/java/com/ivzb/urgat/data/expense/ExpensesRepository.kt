@@ -7,6 +7,8 @@ interface ExpensesRepository {
 
     fun getStream(): Flow<List<Expense>>
 
+    fun getStream(searchQuery: String): Flow<List<Expense>>
+
     suspend fun create(name: String, amount: BigDecimal): String
 
     suspend fun update(id: String, name: String, amount: BigDecimal)

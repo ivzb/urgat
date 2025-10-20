@@ -25,6 +25,14 @@ class DefaultExpensesRepository @Inject constructor(
         }
     }
 
+    override fun getStream(searchQuery: String): Flow<List<Expense>> {
+        return localDataSource.observeAll(searchQuery).map { expenses ->
+            withContext(dispatcher) {
+                expenses.toExternal()
+            }
+        }
+    }
+
     override suspend fun create(name: String, amount: BigDecimal): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher

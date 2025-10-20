@@ -17,11 +17,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
 import javax.inject.Inject
+import kotlin.math.exp
 
 data class ExpensesUiState(
     val items: List<Expense> = emptyList(),
@@ -42,11 +45,25 @@ class ExpensesViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
 
-    private val _filteredExpensesAsync = combine(
-            expensesRepository.getStream(), _savedFilterType
-            ) { expenses, filteringType ->
-                filterExpenses(expenses, filteringType)
-             }
+    private val _searchQuery = MutableStateFlow("")
+
+    private val _filteredExpensesAsync =
+        _searchQuery
+            .debounce(DEBOUNCE_TIME_MILLIS)
+            .flatMapLatest { searchQuery ->
+                val expensesStream = if (searchQuery == "") {
+                    expensesRepository.getStream()
+                } else {
+                    expensesRepository.getStream(searchQuery = searchQuery)
+                }
+
+                combine(
+                    expensesStream,
+                    _savedFilterType
+                ) { expenses, filteringType ->
+                    filterExpenses(expenses, filteringType)
+                 }
+            }
             .map { Async.Success(data = it) }
             .catch<Async<List<Expense>>> { emit(Async.Error(R.string.error_expenses)) }
 
@@ -76,6 +93,14 @@ class ExpensesViewModel @Inject constructor(
             started = WhileUiSubscribed,
             initialValue = ExpensesUiState(isLoading = true)
         )
+
+    fun onSearchQueryChanged(newQuery: String) {
+        _searchQuery.value = newQuery
+    }
+
+    fun setFiltering(requestType: ExpensesFilterType) {
+        savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] = requestType
+    }
 
     private fun filterExpenses(expenses: List<Expense>, filteringType: ExpensesFilterType): List<Expense> {
         val expensesToShow = ArrayList<Expense>()
@@ -122,6 +147,13 @@ class ExpensesViewModel @Inject constructor(
                 )
             }
         }
+
+    companion object {
+
+        private const val DEBOUNCE_TIME_MILLIS = 300L
+
+    }
+
 }
 
 const val EXPENSES_FILTER_SAVED_STATE_KEY = "EXPENSES_FILTER_SAVED_STATE_KEY"

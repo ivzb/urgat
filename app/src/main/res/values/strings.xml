@@ -41,6 +41,8 @@
     <string name="nav_all">All</string>
     <string name="nav_active">Active</string>
     <string name="nav_completed">Completed</string>
+    <string name="nav_debit">Debit</string>
+    <string name="nav_cost">Cost</string>
     <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>
     <string name="loading_expenses">Loading expenses</string>

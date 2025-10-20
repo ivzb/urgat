@@ -82,11 +82,11 @@ class TodoViewModel @Inject constructor(
             }
         }
     }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = TodoUiState(isLoading = true)
-        )
+    .stateIn(
+        scope = viewModelScope,
+        started = WhileUiSubscribed,
+        initialValue = TodoUiState(isLoading = true)
+    )
 
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery

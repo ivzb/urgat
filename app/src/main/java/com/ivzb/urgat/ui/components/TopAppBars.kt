@@ -133,6 +133,35 @@ fun FilterTodosMenu(
 }
 
 @Composable
+fun FilterExpensesMenu(
+    onFilterAllExpenses: () -> Unit,
+    onFilterDebitExpenses: () -> Unit,
+    onFilterCostExpenses: () -> Unit
+) {
+    TopAppBarDropdownMenu(
+        iconContent = {
+            Icon(
+                painterResource(id = R.drawable.ic_filter_list),
+                stringResource(id = R.string.menu_filter)
+            )
+        }
+    ) { closeMenu ->
+        DropdownMenuItem(
+            onClick = { onFilterAllExpenses(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_all)) }
+        )
+        DropdownMenuItem(
+            onClick = { onFilterDebitExpenses(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_debit)) }
+        )
+        DropdownMenuItem(
+            onClick = { onFilterCostExpenses(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_cost)) }
+        )
+    }
+}
+
+@Composable
 fun MoreTodosMenu(
     onClearCompletedTodos: () -> Unit
 ) {

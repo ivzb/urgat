@@ -1,7 +1,9 @@
 package com.ivzb.urgat.ui.expenses
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,19 +15,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -36,9 +38,12 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.navigation.ExpensesDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.FilterExpensesMenu
+import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import java.math.BigDecimal
 
 @Composable
 fun ExpensesScreen(
@@ -54,9 +59,10 @@ fun ExpensesScreen(
 
     ExpensesScreenScaffold(
         uiState = uiState,
-        onSearchQueryChanged = {},
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
         onAddExpense = onAddExpense,
         onExpenseClick = onExpenseClick,
+        setFiltering = viewModel::setFiltering,
         navController = navController,
         modifier = modifier
     )
@@ -68,6 +74,7 @@ private fun ExpensesScreenScaffold(
     onSearchQueryChanged: (String) -> Unit,
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    setFiltering: (ExpensesFilterType) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -77,6 +84,13 @@ private fun ExpensesScreenScaffold(
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddExpense,
         withTopAppBarActions = uiState.items.isNotEmpty(),
+        topAppBarActionsContent = {
+            FilterExpensesMenu(
+                onFilterAllExpenses = { setFiltering(ExpensesFilterType.ALL_EXPENSES) },
+                onFilterDebitExpenses = { setFiltering(ExpensesFilterType.DEBIT_EXPENSES) },
+                onFilterCostExpenses = { setFiltering(ExpensesFilterType.COST_EXPENSES) },
+            )
+        },
         navController = navController,
         modifier = modifier
     ) { listState ->
@@ -132,32 +146,37 @@ internal fun ExpensesContent(
             ),
             state = listState
         ) {
-            item { Header(title = stringResource(R.string.expenses)) }
-
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-
-            items(expenses) { expense ->
-                ExpenseItem(expense)
+            item {
+                Header(title = stringResource(currentFilteringLabel))
             }
 
-            item { Spacer(modifier = Modifier.height(32.dp)) }
+            item {
+                Spacer(modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+
+            items(expenses) { expense ->
+                ExpenseItem(
+                    expense = expense,
+                    onExpenseClick = onExpenseClick
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun Header(
-    title: String
+private fun ExpenseItem(
+    expense: Expense,
+    onExpenseClick: (Expense) -> Unit
 ) {
-    Text(
-        text = title,
-        modifier = Modifier.semantics { heading() },
-        style = MaterialTheme.typography.headlineLarge
-    )
-}
-
-@Composable
-private fun ExpenseItem(expense: Expense) {
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
@@ -166,19 +185,35 @@ private fun ExpenseItem(expense: Expense) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { onExpenseClick(expense) }
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = null
+                painter = painterResource(R.drawable.ic_dollar),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Text(
-                text = expense.name,
-                style = MaterialTheme.typography.bodySmall
-            )
+            Column {
+                Text(
+                    text = expense.name,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
+                Text(
+                    text = expense.amount.abs().toPlainString(),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(if (expense.amount > BigDecimal.ZERO) {
+                        0xFFF44336
+                    } else {
+                        0xFF4CAF50
+                    })
+                )
+            }
         }
     }
 }
@@ -199,9 +234,16 @@ private fun ExpensesScreenScaffoldPreview() {
                         createdAt = 0,
                     ),
                     Expense(
-                        id = "ID 1",
+                        id = "ID 2",
                         name = "Stuff",
                         amount = 23.23.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Expense(
+                        id = "ID 3",
+                        name = "Salary",
+                        amount = -920.toBigDecimal(),
                         isDeleted = false,
                         createdAt = 0,
                     )
@@ -214,6 +256,7 @@ private fun ExpensesScreenScaffoldPreview() {
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
+            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -235,6 +278,7 @@ private fun ExpensesScreenScaffoldEmptyPreview() {
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
+            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -256,6 +300,7 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
+            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -277,6 +322,7 @@ private fun ExpensesScreenScaffoldErrorPreview() {
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
+            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -324,6 +370,7 @@ private fun ExpenseItemPreview() {
                 isDeleted = false,
                 createdAt = 0,
             ),
+            onExpenseClick = {}
         )
     }
 }

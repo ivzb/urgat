@@ -51,6 +51,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
@@ -195,6 +196,10 @@ private fun OverviewContent(
             modifier = modifier
                 .fillMaxSize()
                 .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.horizontal_margin),
+                vertical = dimensionResource(R.dimen.vertical_margin)
+            ),
             state = listState
         ) {
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -255,6 +260,7 @@ private fun Header(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
             modifier = modifier
                 .fillMaxWidth()
+                .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
                 .background(MaterialTheme.colorScheme.primary)
                 .padding(dimensionResource(R.dimen.overview_header_item_padding))
         ) {
@@ -262,7 +268,8 @@ private fun Header(
             HeaderContent(
                 items = items,
                 onItemClick = onItemClick,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
             )
         }
     }
@@ -346,14 +353,11 @@ private fun LazyListScope.itemTodo(
 
         else -> {
             item {
-                Text(
-                    text = stringResource(todoFilteringUiInfo.currentFilteringLabel),
+                Header(
+                    title = stringResource(todoFilteringUiInfo.currentFilteringLabel),
                     modifier = Modifier.padding(
-                        horizontal = dimensionResource(id = R.dimen.horizontal_margin),
                         vertical = dimensionResource(id = R.dimen.vertical_margin)
                     ),
-                    style = MaterialTheme.typography.headlineSmall
-                        .copy(fontWeight = FontWeight.Bold)
                 )
             }
 
