@@ -68,9 +68,13 @@ private fun NavHostContent(
         composable(OverviewDestination.route) {
             OverviewScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
+                onSeeAllTodos = { navController.navigateSingleTopTo(TodoDestination) },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
+
                 onAddExpense = { navActions.navigateToAddExpense() },
+                onSeeAllExpenses = { navController.navigateSingleTopTo(ExpensesDestination) },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
+
                 onAddNote = {},
                 onNoteClick = {},
                 navController = navController,

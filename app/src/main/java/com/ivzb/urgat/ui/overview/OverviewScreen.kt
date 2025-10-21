@@ -56,6 +56,7 @@ import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.components.SeeAllHeader
 import com.ivzb.urgat.ui.expenses.ExpenseItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -66,9 +67,11 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun OverviewScreen(
     onAddTodo: () -> Unit,
+    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
 
     onAddExpense: () -> Unit,
+    onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
     onAddNote: () -> Unit,
@@ -86,11 +89,16 @@ fun OverviewScreen(
         uiState = uiState,
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
         onHeaderItemClick = viewModel::onHeaderItemClick,
+
+        onSeeAllTodos = onSeeAllTodos,
         onTodoClick = onTodoClick,
-        onExpenseClick = onExpenseClick,
-        onNoteClick = onNoteClick,
         clearCompletedTodos = viewModel::clearCompletedTodos,
         completeTodo = viewModel::completeTodo,
+
+        onSeeAllExpenses = onSeeAllExpenses,
+        onExpenseClick = onExpenseClick,
+
+        onNoteClick = onNoteClick,
         navController = navController,
         modifier = modifier
     )
@@ -111,11 +119,16 @@ private fun OverviewScreenScaffold(
     uiState: OverviewUiState,
     onSearchQueryChanged: (String) -> Unit,
     onHeaderItemClick: (HeaderItem) -> Unit,
+
+    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-    onNoteClick: (String) -> Unit,
     clearCompletedTodos: () -> Unit,
     completeTodo: (Todo, Boolean) -> Unit,
+
+    onSeeAllExpenses: () -> Unit,
+    onExpenseClick: (Expense) -> Unit,
+
+    onNoteClick: (String) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -155,11 +168,13 @@ private fun OverviewScreenScaffold(
 
                     todos = uiState.todoItems,
                     todoFilteringUiInfo = uiState.todoFilteringUiInfo,
+                    onSeeAllTodos = onSeeAllTodos,
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = completeTodo,
 
                     expenses = uiState.expensesItems,
                     expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
+                    onSeeAllExpenses = onSeeAllExpenses,
                     onExpenseClick = onExpenseClick,
 
                     onNoteClick = onNoteClick,
@@ -178,11 +193,13 @@ private fun OverviewContent(
 
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
+    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
 
     expenses: List<Expense>,
     expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
     onNoteClick: (String) -> Unit,
@@ -228,6 +245,7 @@ private fun OverviewContent(
             itemTodo(
                 todos = todos,
                 todoFilteringUiInfo = todoFilteringUiInfo,
+                onSeeAllTodos = onSeeAllTodos,
                 onTodoClick = onTodoClick,
                 onTodoCheckedChange = onTodoCheckedChange,
             )
@@ -242,6 +260,7 @@ private fun OverviewContent(
             itemExpenses(
                 expenses = expenses,
                 expensesFilteringUiInfo = expensesFilteringUiInfo,
+                onSeeAllExpenses = onSeeAllExpenses,
                 onExpenseClick = onExpenseClick
             )
 
@@ -362,6 +381,7 @@ private fun HeaderItem(
 private fun LazyListScope.itemTodo(
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
+    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -379,8 +399,9 @@ private fun LazyListScope.itemTodo(
 
         else -> {
             item {
-                Header(
+                SeeAllHeader(
                     title = stringResource(todoFilteringUiInfo.currentFilteringLabel),
+                    onSeeAllClick = onSeeAllTodos,
                     modifier = Modifier.padding(
                         vertical = dimensionResource(id = R.dimen.vertical_margin)
                     ),
@@ -401,6 +422,7 @@ private fun LazyListScope.itemTodo(
 private fun LazyListScope.itemExpenses(
     expenses: List<Expense>,
     expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -417,8 +439,9 @@ private fun LazyListScope.itemExpenses(
 
         else -> {
             item {
-                Header(
+                SeeAllHeader(
                     title = stringResource(expensesFilteringUiInfo.currentFilteringLabel),
+                    onSeeAllClick = onSeeAllExpenses,
                     modifier = Modifier.padding(
                         vertical = dimensionResource(id = R.dimen.vertical_margin)
                     ),
@@ -507,11 +530,13 @@ fun OverviewScreenScaffoldTodosPreview() {
             ),
             onSearchQueryChanged = {},
             onHeaderItemClick = {},
+            onSeeAllTodos = {},
             onTodoClick = {},
-            onExpenseClick = {},
-            onNoteClick = {},
             clearCompletedTodos = {},
             completeTodo = { _, _ -> },
+            onSeeAllExpenses = {},
+            onExpenseClick = {},
+            onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -550,11 +575,13 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
             ),
             onSearchQueryChanged = {},
             onHeaderItemClick = {},
+            onSeeAllTodos = {},
             onTodoClick = {},
-            onExpenseClick = {},
-            onNoteClick = {},
             clearCompletedTodos = {},
             completeTodo = { _, _ -> },
+            onSeeAllExpenses = {},
+            onExpenseClick = {},
+            onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -593,11 +620,13 @@ fun OverviewScreenScaffoldLoadingPreview() {
             ),
             onSearchQueryChanged = {},
             onHeaderItemClick = {},
+            onSeeAllTodos = {},
             onTodoClick = {},
-            onExpenseClick = {},
-            onNoteClick = {},
             clearCompletedTodos = {},
             completeTodo = { _, _ -> },
+            onSeeAllExpenses = {},
+            onExpenseClick = {},
+            onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -636,11 +665,13 @@ fun OverviewScreenScaffoldErrorPreview() {
             ),
             onSearchQueryChanged = {},
             onHeaderItemClick = {},
+            onSeeAllTodos = {},
             onTodoClick = {},
-            onExpenseClick = {},
-            onNoteClick = {},
             clearCompletedTodos = {},
             completeTodo = { _, _ -> },
+            onSeeAllExpenses = {},
+            onExpenseClick = {},
+            onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -695,6 +726,7 @@ fun OverviewContentPreview() {
                 ),
             ),
             todoFilteringUiInfo = TodoFilteringUiInfo(),
+            onSeeAllTodos = {},
             onTodoClick = {},
             onTodoCheckedChange = { _, _ -> },
             expenses =  listOf(
@@ -721,6 +753,7 @@ fun OverviewContentPreview() {
                 )
             ),
             expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
+            onSeeAllExpenses = {},
             onExpenseClick = {},
             onNoteClick = {},
             listState = rememberLazyListState()
@@ -829,6 +862,7 @@ fun TodoCardPreview() {
                     ),
                 ),
                 todoFilteringUiInfo = TodoFilteringUiInfo(),
+                onSeeAllTodos = {},
                 onTodoClick = {},
                 onTodoCheckedChange = { _, _ -> }
             )
@@ -866,6 +900,7 @@ fun ExpensesCardPreview() {
                     )
                 ),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
+                onSeeAllExpenses = {},
                 onExpenseClick = {}
             )
         }

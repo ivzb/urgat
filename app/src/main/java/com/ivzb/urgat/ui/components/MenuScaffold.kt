@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.navigation.UrgatMenuDestination
 import com.ivzb.urgat.navigation.bottomNavigationScreens
+import com.ivzb.urgat.navigation.navigateSingleTopTo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -59,7 +60,7 @@ fun MenuScaffold(
                 item(
                     selected = it == selectedDestination,
                     onClick = {
-                        navController.navigate(it.route)
+                        navController.navigateSingleTopTo(it)
                     },
                     icon = {
                         Icon(
