@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
@@ -55,6 +56,8 @@ import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.expenses.ExpenseItem
+import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
@@ -66,7 +69,7 @@ fun OverviewScreen(
     onTodoClick: (Todo) -> Unit,
 
     onAddExpense: () -> Unit,
-    onExpenseClick: (String) -> Unit,
+    onExpenseClick: (Expense) -> Unit,
 
     onAddNote: () -> Unit,
     onNoteClick: (String) -> Unit,
@@ -109,7 +112,7 @@ private fun OverviewScreenScaffold(
     onSearchQueryChanged: (String) -> Unit,
     onHeaderItemClick: (HeaderItem) -> Unit,
     onTodoClick: (Todo) -> Unit,
-    onExpenseClick: (String) -> Unit,
+    onExpenseClick: (Expense) -> Unit,
     onNoteClick: (String) -> Unit,
     clearCompletedTodos: () -> Unit,
     completeTodo: (Todo, Boolean) -> Unit,
@@ -149,11 +152,16 @@ private fun OverviewScreenScaffold(
                 OverviewContent(
                     headerItems = uiState.headerItems,
                     onHeaderItemClick = onHeaderItemClick,
+
                     todos = uiState.todoItems,
                     todoFilteringUiInfo = uiState.todoFilteringUiInfo,
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = completeTodo,
+
+                    expenses = uiState.expensesItems,
+                    expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
                     onExpenseClick = onExpenseClick,
+
                     onNoteClick = onNoteClick,
                     listState = listState,
                 )
@@ -166,12 +174,17 @@ private fun OverviewScreenScaffold(
 @Composable
 private fun OverviewContent(
     headerItems: List<HeaderItem>,
+    onHeaderItemClick: (HeaderItem) -> Unit,
+
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
-    onHeaderItemClick: (HeaderItem) -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
-    onExpenseClick: (String) -> Unit,
+
+    expenses: List<Expense>,
+    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onExpenseClick: (Expense) -> Unit,
+
     onNoteClick: (String) -> Unit,
     listState: LazyListState,
     modifier: Modifier = Modifier
@@ -217,6 +230,19 @@ private fun OverviewContent(
                 todoFilteringUiInfo = todoFilteringUiInfo,
                 onTodoClick = onTodoClick,
                 onTodoCheckedChange = onTodoCheckedChange,
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.list_item_padding))
+                )
+            }
+
+            itemExpenses(
+                expenses = expenses,
+                expensesFilteringUiInfo = expensesFilteringUiInfo,
+                onExpenseClick = onExpenseClick
             )
 
             item {
@@ -372,14 +398,41 @@ private fun LazyListScope.itemTodo(
     }
 }
 
-@Composable
-private fun ExpensesCard(
-    onSeeAllExpenses: () -> Unit,
-    onAddExpense: () -> Unit,
-    onExpenseClick: (String) -> Unit,
+private fun LazyListScope.itemExpenses(
+    expenses: List<Expense>,
+    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onExpenseClick: (Expense) -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    when {
+        expenses.isEmpty() -> {
+            item {
+                EmptyState(
+                    label = expensesFilteringUiInfo.emptyLabel,
+                    iconRes = expensesFilteringUiInfo.emptyIconRes,
+                    modifier = modifier
+                )
+            }
+        }
 
-    Text("Expenses card")
+        else -> {
+            item {
+                Header(
+                    title = stringResource(expensesFilteringUiInfo.currentFilteringLabel),
+                    modifier = Modifier.padding(
+                        vertical = dimensionResource(id = R.dimen.vertical_margin)
+                    ),
+                )
+            }
+
+            items(expenses) { expense ->
+                ExpenseItem(
+                    expense = expense,
+                    onExpenseClick = onExpenseClick
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -644,6 +697,30 @@ fun OverviewContentPreview() {
             todoFilteringUiInfo = TodoFilteringUiInfo(),
             onTodoClick = {},
             onTodoCheckedChange = { _, _ -> },
+            expenses =  listOf(
+                Expense(
+                    id = "ID 1",
+                    name = "Food",
+                    amount = 10.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Expense(
+                    id = "ID 2",
+                    name = "Stuff",
+                    amount = 23.23.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Expense(
+                    id = "ID 3",
+                    name = "Salary",
+                    amount = -920.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                )
+            ),
+            expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
             onExpenseClick = {},
             onNoteClick = {},
             listState = rememberLazyListState()
@@ -763,11 +840,35 @@ fun TodoCardPreview() {
 @Composable
 fun ExpensesCardPreview() {
     UrgatTheme {
-        ExpensesCard(
-            onSeeAllExpenses = {},
-            onAddExpense = {},
-            onExpenseClick = {}
-        )
+        LazyColumn {
+            itemExpenses(
+                expenses = listOf(
+                    Expense(
+                        id = "ID 1",
+                        name = "Food",
+                        amount = 10.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Expense(
+                        id = "ID 2",
+                        name = "Stuff",
+                        amount = 23.23.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Expense(
+                        id = "ID 3",
+                        name = "Salary",
+                        amount = -920.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    )
+                ),
+                expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
+                onExpenseClick = {}
+            )
+        }
     }
 }
 

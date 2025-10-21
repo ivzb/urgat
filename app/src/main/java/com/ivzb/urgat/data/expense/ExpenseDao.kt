@@ -18,6 +18,17 @@ interface ExpenseDao {
     )
     fun observeAll(searchQuery: String): Flow<List<ExpenseEntity>>
 
+    @Query("SELECT * FROM expenses WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT :limit")
+    fun observeAll(limit: Int): Flow<List<ExpenseEntity>>
+
+    @Query("" +
+            "SELECT * FROM expenses " +
+            "WHERE isDeleted = 0 AND name LIKE '%' || :searchQuery || '%' OR amount LIKE '%' || :searchQuery || '%'" +
+            "ORDER BY createdAt DESC " +
+            "LIMIT :limit"
+    )
+    fun observeAll(limit: Int, searchQuery: String): Flow<List<ExpenseEntity>>
+
     @Upsert
     suspend fun upsert(expense: ExpenseEntity)
 

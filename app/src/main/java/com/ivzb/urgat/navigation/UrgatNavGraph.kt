@@ -70,7 +70,7 @@ private fun NavHostContent(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
                 onAddExpense = { navActions.navigateToAddExpense() },
-                onExpenseClick = {},
+                onExpenseClick = { navActions.navigateToEditExpense(it.id) },
                 onAddNote = {},
                 onNoteClick = {},
                 navController = navController,

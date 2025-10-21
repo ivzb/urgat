@@ -7,10 +7,10 @@
     <string name="expenses">Expenses</string>
     <string name="notes">Notes</string>
     <string name="weather">Weather</string>
-    <string name="all_todos">All Todos</string>
-    <string name="active_todos">Active Todos</string>
-    <string name="completed_todos">Completed Todos</string>
-    <string name="recent_todos">Recent Todos</string>
+    <string name="all_todos">All todos</string>
+    <string name="active_todos">Active todos</string>
+    <string name="completed_todos">Completed todos</string>
+    <string name="recent_todos">Recent todos</string>
     <string name="no_todos">You have no todos!</string>
     <string name="no_todos_search">You have no todos with this search criteria!</string>
     <string name="no_active_todos">You have no active todos!</string>
@@ -51,4 +51,6 @@
     <string name="no_debit_expenses">You have no debit expenses!</string>
     <string name="cost_expenses">Cost expenses</string>
     <string name="no_cost_expenses">You have no cost expenses!</string>
+    <string name="recent_expenses">Recent expenses</string>
+    <string name="no_expenses_search">You have no expenses with this search criteria!</string>
 </resources>

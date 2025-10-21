@@ -7,9 +7,12 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.ui.components.FilteringUiInfo
+import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -31,8 +34,13 @@ import javax.inject.Inject
 
 data class OverviewUiState(
     val headerItems: List<HeaderItem> = emptyList(),
+
     val todoItems: List<Todo> = emptyList(),
     val todoFilteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo(),
+
+    val expensesItems: List<Expense> = emptyList(),
+    val expensesFilteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo(),
+
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
     val filteringUiInfo: FilteringUiInfo = OverviewFilteringUiInfo()
@@ -47,6 +55,7 @@ sealed class UiEvent {
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
     private val todoRepository: TodoRepository,
+    private val expensesRepository: ExpensesRepository
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -67,22 +76,38 @@ class OverviewViewModel @Inject constructor(
         .map { Async.Success(it) }
         .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
 
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    private val _expensesAsync =
+        _searchQuery
+            .debounce(DEBOUNCE_TIME_MILLIS)
+            .flatMapLatest { searchQuery ->
+                if (searchQuery == "") {
+                    expensesRepository.getStream(LIMIT)
+                } else {
+                    expensesRepository.getStream(LIMIT, searchQuery)
+                }
+            }
+            .map { Async.Success(it) }
+            .catch<Async<List<Expense>>> { emit(Async.Error(R.string.error_todos)) }
+
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     val uiState: StateFlow<OverviewUiState> = combine(
-        _isLoading, _todosAsync
-    ) { isLoading, todosAsync ->
-        when (todosAsync) {
-            Async.Loading -> {
+        _isLoading, _todosAsync, _expensesAsync
+    ) { isLoading, todos, expenses ->
+        val items = listOf(todos, expenses)
+
+        when {
+            items.any { it is Async.Loading } -> {
                 OverviewUiState(isLoading = true)
             }
 
-            is Async.Error -> {
+            items.any { it is Async.Error } -> {
                 OverviewUiState(hasError = true)
             }
 
-            is Async.Success -> {
+            items.all { it is Async.Success } -> {
                 OverviewUiState(
                     headerItems = listOf(
                         HeaderItem(
@@ -101,15 +126,23 @@ class OverviewViewModel @Inject constructor(
                             R.string.add_note
                         ),
                     ),
-                    todoItems = todosAsync.data,
+                    todoItems = (todos as Async.Success).data,
                     todoFilteringUiInfo = TodoFilteringUiInfo(
                         R.string.recent_todos,
                         if (_searchQuery.value.isEmpty()) R.string.no_todos else R.string.no_todos_search,
                         R.drawable.logo_no_fill
                     ),
+                    expensesItems = (expenses as Async.Success).data,
+                    expensesFilteringUiInfo = ExpensesFilteringUiInfo(
+                        R.string.recent_expenses,
+                        if (_searchQuery.value.isEmpty()) R.string.no_expenses else R.string.no_expenses_search,
+                        R.drawable.logo_no_fill
+                    ),
                     isLoading = isLoading,
                 )
             }
+
+            else -> throw Exception("undefined state: $isLoading, $todos, $expenses")
         }
     }
     .stateIn(

@@ -173,7 +173,7 @@ internal fun ExpensesContent(
 }
 
 @Composable
-private fun ExpenseItem(
+fun ExpenseItem(
     expense: Expense,
     onExpenseClick: (Expense) -> Unit
 ) {

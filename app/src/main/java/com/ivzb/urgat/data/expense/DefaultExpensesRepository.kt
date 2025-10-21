@@ -1,5 +1,7 @@
 package com.ivzb.urgat.data.expense
 
+import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.data.todo.toExternal
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,6 +29,22 @@ class DefaultExpensesRepository @Inject constructor(
 
     override fun getStream(searchQuery: String): Flow<List<Expense>> {
         return localDataSource.observeAll(searchQuery).map { expenses ->
+            withContext(dispatcher) {
+                expenses.toExternal()
+            }
+        }
+    }
+
+    override fun getStream(limit: Int): Flow<List<Expense>> {
+        return localDataSource.observeAll(limit).map { expenses ->
+            withContext(dispatcher) {
+                expenses.toExternal()
+            }
+        }
+    }
+
+    override fun getStream(limit: Int, searchQuery: String): Flow<List<Expense>> {
+        return localDataSource.observeAll(limit, searchQuery).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
             }
