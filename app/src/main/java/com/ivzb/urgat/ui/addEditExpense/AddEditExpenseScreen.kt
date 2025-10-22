@@ -12,8 +12,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -29,23 +31,21 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditExpenseScreen(
     @StringRes screenTitle: Int,
     onBack: () -> Unit,
-    onShowSnackbar: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditExpenseViewModel = hiltViewModel()
 ) {
@@ -56,6 +56,10 @@ fun AddEditExpenseScreen(
         onBack = onBack,
         onSave = viewModel::saveExpense,
         loading = uiState.isLoading,
+        userMessage = uiState.userMessage,
+        onShowUserMessage = {
+            viewModel.snackbarMessageShown()
+        },
         name = uiState.name,
         amount = uiState.amount,
         onNameChanged = viewModel::updateName,
@@ -69,16 +73,6 @@ fun AddEditExpenseScreen(
             onBack()
         }
     }
-
-    // Check for user messages to display on the screen
-    uiState.userMessage?.let { userMessage ->
-        val snackbarText = stringResource(userMessage)
-
-        LaunchedEffect(userMessage) {
-            onShowSnackbar(snackbarText)
-            viewModel.snackbarMessageShown()
-        }
-    }
 }
 
 @Composable
@@ -87,18 +81,26 @@ private fun AddEditExpenseContent(
     onBack: () -> Unit,
     onSave: () -> Unit,
     loading: Boolean,
+    userMessage: Int?,
+    onShowUserMessage: () -> Unit,
     name: String,
     amount: String,
     onNameChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
     Scaffold(
         topBar = {
             TextTopAppBar(screenTitle, onBack)
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
     ) { innerPadding ->
 
         Column(
@@ -167,7 +169,6 @@ private fun AddEditExpenseContent(
                     onClick = onSave,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .imePadding()
                 ) {
                     Text(stringResource(R.string.save))
                 }
@@ -175,6 +176,17 @@ private fun AddEditExpenseContent(
                 LaunchedEffect(Unit) {
                     focusRequester.requestFocus()
                 }
+            }
+        }
+    }
+
+    userMessage?.let { userMessage ->
+        val snackbarText = stringResource(userMessage)
+
+        LaunchedEffect(userMessage) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(snackbarText)
+                onShowUserMessage()
             }
         }
     }
@@ -190,6 +202,8 @@ private fun AddContentPreview() {
                 onBack = {},
                 onSave = {},
                 loading = false,
+                userMessage = null,
+                onShowUserMessage = {},
                 name = "",
                 amount = "",
                 onNameChanged = {},
@@ -210,6 +224,8 @@ private fun EditExpenseContentPreview() {
                 onBack = {},
                 onSave = {},
                 loading = false,
+                userMessage = null,
+                onShowUserMessage = {},
                 name = "Title",
                 amount = "12.3",
                 onNameChanged = {},
@@ -230,6 +246,8 @@ private fun LoadingContentPreview() {
                 onBack = {},
                 onSave = {},
                 loading = true,
+                userMessage = null,
+                onShowUserMessage = {},
                 name = "",
                 amount = "",
                 onNameChanged = {},

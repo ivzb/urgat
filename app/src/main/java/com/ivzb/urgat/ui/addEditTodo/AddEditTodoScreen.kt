@@ -14,6 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -22,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -40,12 +43,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditTodoScreen(
     @StringRes screenTitle: Int,
     onBack: () -> Unit,
-    onShowSnackbar: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditTodoViewModel = hiltViewModel()
 ) {
@@ -56,6 +59,10 @@ fun AddEditTodoScreen(
         onBack = onBack,
         onSave = viewModel::saveTodo,
         loading = uiState.isLoading,
+        userMessage = uiState.userMessage,
+        onShowUserMessage = {
+            viewModel.snackbarMessageShown()
+        },
         title = uiState.title,
         description = uiState.description,
         onTitleChanged = viewModel::updateTitle,
@@ -69,16 +76,6 @@ fun AddEditTodoScreen(
             onBack()
         }
     }
-
-    // Check for user messages to display on the screen
-    uiState.userMessage?.let { userMessage ->
-        val snackbarText = stringResource(userMessage)
-
-        LaunchedEffect(userMessage) {
-            onShowSnackbar(snackbarText)
-            viewModel.snackbarMessageShown()
-        }
-    }
 }
 
 @Composable
@@ -87,18 +84,26 @@ private fun AddEditTodoContent(
     onBack: () -> Unit,
     onSave: () -> Unit,
     loading: Boolean,
+    userMessage: Int?,
+    onShowUserMessage: () -> Unit,
     title: String,
     description: String,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
     Scaffold(
         topBar = {
             TextTopAppBar(screenTitle, onBack)
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
     ) { innerPadding ->
 
         Column(
@@ -174,7 +179,6 @@ private fun AddEditTodoContent(
                     onClick = onSave,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .imePadding()
                 ) {
                     Text(stringResource(R.string.save))
                 }
@@ -182,6 +186,17 @@ private fun AddEditTodoContent(
                 LaunchedEffect(Unit) {
                     focusRequester.requestFocus()
                 }
+            }
+        }
+    }
+
+    userMessage?.let { userMessage ->
+        val snackbarText = stringResource(userMessage)
+
+        LaunchedEffect(userMessage) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(snackbarText)
+                onShowUserMessage()
             }
         }
     }
@@ -197,6 +212,8 @@ private fun AddContentPreview() {
                 onBack = {},
                 onSave = {},
                 loading = false,
+                userMessage = null,
+                onShowUserMessage = {},
                 title = "",
                 description = "",
                 onTitleChanged = {},
@@ -217,6 +234,8 @@ private fun EditTodoContentPreview() {
                 onBack = {},
                 onSave = {},
                 loading = false,
+                userMessage = null,
+                onShowUserMessage = {},
                 title = "Title",
                 description = "Description",
                 onTitleChanged = {},
@@ -237,6 +256,8 @@ private fun LoadingContentPreview() {
                 onBack = {},
                 onSave = {},
                 loading = true,
+                userMessage = null,
+                onShowUserMessage = {},
                 title = "",
                 description = "",
                 onTitleChanged = {},

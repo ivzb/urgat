@@ -34,19 +34,12 @@ fun UrgatNavGraph(
     navController: NavHostController = rememberNavController(),
     navActions: UrgatNavActions = remember(navController) {
         UrgatNavActions(navController)
-    },
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    }
 ) {
 
     NavHostContent(
         navController,
         navActions,
-        onShowSnackbar = { message ->
-            coroutineScope.launch {
-                snackbarHostState.showSnackbar(message)
-            }
-        },
         modifier = modifier
     )
 }
@@ -55,7 +48,6 @@ fun UrgatNavGraph(
 private fun NavHostContent(
     navController: NavHostController,
     navActions: UrgatNavActions,
-    onShowSnackbar: (String) -> Unit,
     modifier: Modifier
 ) {
     NavHost(
@@ -128,8 +120,7 @@ private fun NavHostContent(
 
             AddEditTodoScreen(
                 screenTitle = title,
-                onBack = { navController.popBackStack() },
-                onShowSnackbar = onShowSnackbar
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -146,8 +137,7 @@ private fun NavHostContent(
 
             AddEditExpenseScreen(
                 screenTitle = title,
-                onBack = { navController.popBackStack() },
-                onShowSnackbar = onShowSnackbar
+                onBack = { navController.popBackStack() }
             )
         }
     }
