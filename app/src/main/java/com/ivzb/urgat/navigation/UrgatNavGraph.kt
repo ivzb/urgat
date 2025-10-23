@@ -1,14 +1,19 @@
 package com.ivzb.urgat.navigation
 
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseScreen
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
@@ -24,7 +30,7 @@ import com.ivzb.urgat.ui.overview.OverviewScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +48,8 @@ fun UrgatNavGraph(
         navActions,
         modifier = modifier
     )
+
+    DoubleBackToExitApp()
 }
 
 @Composable
@@ -139,6 +147,29 @@ private fun NavHostContent(
                 screenTitle = title,
                 onBack = { navController.popBackStack() }
             )
+        }
+    }
+}
+
+
+@Composable
+private fun DoubleBackToExitApp() {
+    val context = LocalContext.current
+    var backPressedOnce by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    BackHandler {
+        if (backPressedOnce) {
+            (context as? android.app.Activity)?.finish()
+            return@BackHandler
+        }
+
+        backPressedOnce = true
+        Toast.makeText(context, context.getString(R.string.press_back_once_more_to_exit), Toast.LENGTH_SHORT).show()
+
+        scope.launch {
+            delay(2_000)
+            backPressedOnce = false
         }
     }
 }
