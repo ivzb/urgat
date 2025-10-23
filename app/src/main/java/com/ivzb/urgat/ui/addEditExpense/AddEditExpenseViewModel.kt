@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import javax.inject.Inject
 
 data class AddEditExpenseUiState(
     val name: String = "",
     val amount: String = "",
+    val focusIndex: Int? = null,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
     val isExpenseSaved: Boolean = false
@@ -41,9 +41,19 @@ class AddEditExpenseViewModel @Inject constructor(
     }
 
     fun saveExpense() {
-        if (uiState.value.name.isEmpty() || uiState.value.amount.isEmpty()) {
+        val fields = listOf(
+            uiState.value.name,
+            uiState.value.amount
+        )
+
+        val emptyIndex = fields.indexOfFirst { it.isEmpty() }
+
+        if (emptyIndex != -1) {
             _uiState.update {
-                it.copy(userMessage = R.string.empty_expense_message)
+                it.copy(
+                    focusIndex = emptyIndex,
+                    userMessage = R.string.empty_expense_message
+                )
             }
 
             return

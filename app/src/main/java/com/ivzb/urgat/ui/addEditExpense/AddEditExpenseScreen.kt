@@ -42,6 +42,11 @@ import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
+enum class FieldId {
+    Name,
+    Amount
+}
+
 @Composable
 fun AddEditExpenseScreen(
     @StringRes screenTitle: Int,
@@ -62,6 +67,7 @@ fun AddEditExpenseScreen(
         },
         name = uiState.name,
         amount = uiState.amount,
+        focusIndex = uiState.focusIndex,
         onNameChanged = viewModel::updateName,
         onAmountChanged = viewModel::updateAmount,
         modifier = modifier
@@ -85,13 +91,16 @@ private fun AddEditExpenseContent(
     onShowUserMessage: () -> Unit,
     name: String,
     amount: String,
+    focusIndex: Int?,
     onNameChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val focusRequester = remember { FocusRequester() }
+    val focusRequesters = remember {
+        List(FieldId.entries.size) { FocusRequester() }
+    }
 
     Scaffold(
         topBar = {
@@ -139,7 +148,7 @@ private fun AddEditExpenseContent(
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(focusRequester),
+                        .focusRequester(focusRequesters[FieldId.Name.ordinal]),
                 )
 
                 Spacer(
@@ -158,6 +167,7 @@ private fun AddEditExpenseContent(
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
                 )
 
                 Spacer(
@@ -173,8 +183,10 @@ private fun AddEditExpenseContent(
                     Text(stringResource(R.string.save))
                 }
 
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
+                LaunchedEffect(focusIndex) {
+                    focusIndex?.let { index ->
+                        focusRequesters.getOrNull(index)?.requestFocus()
+                    }
                 }
             }
         }
@@ -206,6 +218,7 @@ private fun AddContentPreview() {
                 onShowUserMessage = {},
                 name = "",
                 amount = "",
+                focusIndex = null,
                 onNameChanged = {},
                 onAmountChanged = {},
                 modifier = Modifier
@@ -228,6 +241,7 @@ private fun EditExpenseContentPreview() {
                 onShowUserMessage = {},
                 name = "Title",
                 amount = "12.3",
+                focusIndex = null,
                 onNameChanged = {},
                 onAmountChanged = {},
                 modifier = Modifier
@@ -250,6 +264,7 @@ private fun LoadingContentPreview() {
                 onShowUserMessage = {},
                 name = "",
                 amount = "",
+                focusIndex = null,
                 onNameChanged = {},
                 onAmountChanged = {},
                 modifier = Modifier

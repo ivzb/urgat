@@ -1,1 +1,2 @@
-Move focus to next empty field on save button click
+add date and category to expense
+name and category should be auto-suggested in a dropdown while typing name
