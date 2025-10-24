@@ -27,6 +27,8 @@
     <string name="description_hint">Enter your todo here.</string>
     <string name="expense_hint">Expense</string>
     <string name="amount_hint">Amount</string>
+    <string name="category_hint">Category</string>
+    <string name="date_hint">Date</string>
     <string name="save">Save</string>
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>
@@ -55,4 +57,5 @@
     <string name="no_expenses_search">You have no expenses with this search criteria!</string>
     <string name="see_all">See all</string>
     <string name="press_back_once_more_to_exit">Press back once more to exit.</string>
+    <string name="select_date">Select date</string>
 </resources>

@@ -9,6 +9,8 @@ data class ExpenseEntity(
     @PrimaryKey val id: String,
     val name: String,
     val amount: BigDecimal,
+    val category: String,
+    val date: Long,
     var isDeleted: Boolean,
     var createdAt: Long
 )

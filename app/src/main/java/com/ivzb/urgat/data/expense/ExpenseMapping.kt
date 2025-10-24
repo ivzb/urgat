@@ -4,6 +4,8 @@ fun Expense.toEntity() = ExpenseEntity(
     id = id,
     name = name,
     amount = amount,
+    category = category,
+    date = date,
     isDeleted = isDeleted,
     createdAt = createdAt
 )
@@ -14,6 +16,8 @@ fun ExpenseEntity.toExternal() = Expense(
     id = id,
     name = name,
     amount = amount,
+    category = category,
+    date = date,
     isDeleted = isDeleted,
     createdAt = createdAt
 )

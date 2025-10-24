@@ -17,6 +17,8 @@ import javax.inject.Inject
 data class AddEditExpenseUiState(
     val name: String = "",
     val amount: String = "",
+    val category: String = "",
+    val date: Long = System.currentTimeMillis(),
     val focusIndex: Int? = null,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
@@ -43,7 +45,8 @@ class AddEditExpenseViewModel @Inject constructor(
     fun saveExpense() {
         val fields = listOf(
             uiState.value.name,
-            uiState.value.amount
+            uiState.value.amount,
+            uiState.value.category,
         )
 
         val emptyIndex = fields.indexOfFirst { it.isEmpty() }
@@ -84,10 +87,24 @@ class AddEditExpenseViewModel @Inject constructor(
         }
     }
 
+    fun updateCategory(category: String) {
+        _uiState.update {
+            it.copy(category = category)
+        }
+    }
+
+    fun updateDate(date: Long) {
+        _uiState.update {
+            it.copy(date = date)
+        }
+    }
+
     private fun createNewExpense() = viewModelScope.launch {
         expensesRepository.create(
             name = uiState.value.name,
-            amount = uiState.value.amount.toBigDecimal()
+            amount = uiState.value.amount.toBigDecimal(),
+            category = uiState.value.category,
+            date = uiState.value.date
         )
 
         _uiState.update {
@@ -105,6 +122,8 @@ class AddEditExpenseViewModel @Inject constructor(
                 expenseId,
                 name = uiState.value.name,
                 amount = uiState.value.amount.toBigDecimal(),
+                category = uiState.value.category,
+                date = uiState.value.date
             )
 
             _uiState.update {
@@ -125,6 +144,8 @@ class AddEditExpenseViewModel @Inject constructor(
                         it.copy(
                             name = expense.name,
                             amount = expense.amount.toString(),
+                            category = expense.category,
+                            date = expense.date,
                             isLoading = false
                         )
                     }

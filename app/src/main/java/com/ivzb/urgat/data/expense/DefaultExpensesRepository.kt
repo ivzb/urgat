@@ -51,7 +51,7 @@ class DefaultExpensesRepository @Inject constructor(
         }
     }
 
-    override suspend fun create(name: String, amount: BigDecimal): String {
+    override suspend fun create(name: String, amount: BigDecimal, category: String, date: Long): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
         val id = withContext(dispatcher) {
@@ -61,16 +61,21 @@ class DefaultExpensesRepository @Inject constructor(
             id = id,
             name = name,
             amount = amount,
+            category = category,
+            date = date,
+            isDeleted =  false,
             createdAt = System.currentTimeMillis()
         )
         localDataSource.upsert(todo.toEntity())
         return id
     }
 
-    override suspend fun update(id: String, name: String, amount: BigDecimal) {
+    override suspend fun update(id: String, name: String, amount: BigDecimal, category: String, date: Long) {
         val todo = get(id)?.copy(
             name = name,
-            amount = amount
+            amount = amount,
+            category = category,
+            date = date
         ) ?: throw Exception("Todo (id $id) not found")
 
         localDataSource.upsert(todo.toEntity())

@@ -4,8 +4,10 @@ import java.math.BigDecimal
 
 data class Expense(
     val id: String,
-    val name: String = "",
-    val amount: BigDecimal = BigDecimal.ZERO,
-    val isDeleted: Boolean = false,
+    val name: String,
+    val amount: BigDecimal,
+    val category: String,
+    val date: Long,
+    val isDeleted: Boolean,
     val createdAt: Long
 )

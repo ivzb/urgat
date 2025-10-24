@@ -1,7 +1,9 @@
 package com.ivzb.urgat.ui.addEditExpense
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,6 +33,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -38,13 +45,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
 enum class FieldId {
     Name,
-    Amount
+    Amount,
+    Category,
+    Date,
 }
 
 @Composable
@@ -67,9 +77,13 @@ fun AddEditExpenseScreen(
         },
         name = uiState.name,
         amount = uiState.amount,
+        category = uiState.category,
+        date = uiState.date,
         focusIndex = uiState.focusIndex,
         onNameChanged = viewModel::updateName,
         onAmountChanged = viewModel::updateAmount,
+        onCategoryChanged = viewModel::updateCategory,
+        onDateChanged = viewModel::updateDate,
         modifier = modifier
     )
 
@@ -91,9 +105,13 @@ private fun AddEditExpenseContent(
     onShowUserMessage: () -> Unit,
     name: String,
     amount: String,
+    category: String,
+    date: Long,
     focusIndex: Int?,
     onNameChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
+    onCategoryChanged: (String) -> Unit,
+    onDateChanged: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -101,6 +119,7 @@ private fun AddEditExpenseContent(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -141,6 +160,7 @@ private fun AddEditExpenseContent(
                         onNameChanged(it.text)
                     },
                     placeholder = { Text(text = stringResource(id = R.string.expense_hint)) },
+                    label = { Text(stringResource(id = R.string.expense_hint)) },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -160,15 +180,72 @@ private fun AddEditExpenseContent(
                     value = amount,
                     onValueChange = onAmountChanged,
                     placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+                    label = { Text(stringResource(id = R.string.amount_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Next
                     ),
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
                 )
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+                ) {
+                    TextField(
+                        value = category,
+                        onValueChange = onCategoryChanged,
+                        placeholder = { Text(stringResource(id = R.string.category_hint)) },
+                        label = { Text(stringResource(id = R.string.category_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[FieldId.Category.ordinal]),
+                    )
+
+                    DatePicker(
+                        timestamp = date,
+                        onTimestampSelected = onDateChanged
+                    ) { selectedDate, dialog ->
+
+                        TextField(
+                            value = selectedDate,
+                            onValueChange = {},
+                            placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                            label = { Text(stringResource(id = R.string.date_hint)) },
+                            readOnly = true,
+                            maxLines = 1,
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.DateRange,
+                                    contentDescription = stringResource(id = R.string.date_hint)
+                                )
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                                .onFocusChanged {
+                                    if (it.isFocused) {
+                                        dialog.show()
+                                        focusManager.clearFocus()
+                                    }
+                                },
+                        )
+                    }
+                }
 
                 Spacer(
                     modifier = Modifier
@@ -218,9 +295,13 @@ private fun AddContentPreview() {
                 onShowUserMessage = {},
                 name = "",
                 amount = "",
+                category = "",
+                date = 0L,
                 focusIndex = null,
                 onNameChanged = {},
                 onAmountChanged = {},
+                onCategoryChanged = {},
+                onDateChanged = {},
                 modifier = Modifier
             )
         }
@@ -241,9 +322,13 @@ private fun EditExpenseContentPreview() {
                 onShowUserMessage = {},
                 name = "Title",
                 amount = "12.3",
+                category = "",
+                date = 0L,
                 focusIndex = null,
                 onNameChanged = {},
                 onAmountChanged = {},
+                onCategoryChanged = {},
+                onDateChanged = {},
                 modifier = Modifier
             )
         }
@@ -264,9 +349,13 @@ private fun LoadingContentPreview() {
                 onShowUserMessage = {},
                 name = "",
                 amount = "",
+                category = "",
+                date = 0L,
                 focusIndex = null,
                 onNameChanged = {},
                 onAmountChanged = {},
+                onCategoryChanged = {},
+                onDateChanged = {},
                 modifier = Modifier
             )
         }
