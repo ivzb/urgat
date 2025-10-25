@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +45,7 @@ import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
 
 @Composable
@@ -177,6 +180,8 @@ fun ExpenseItem(
     expense: Expense,
     onExpenseClick: (Expense) -> Unit
 ) {
+    val date = remember { expense.date.toLocalDate() }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
@@ -186,25 +191,39 @@ fun ExpenseItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { onExpenseClick(expense) }
-                .padding(16.dp)
+                .padding(dimensionResource(R.dimen.list_item_padding)),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_dollar),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-            )
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = date.dayOfMonth.toString(),
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+
+                Text(
+                    text = date.month.name.take(3),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column {
+            Column (
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .weight(1f)
+            ) {
                 Text(
                     text = expense.name,
                     style = MaterialTheme.typography.bodySmall,
                 )
 
                 Text(
-                    text = expense.amount.abs().toPlainString(),
+                    text = (expense.amount * -1.toBigDecimal()).toPlainString(),
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
                     color = Color(if (expense.amount > BigDecimal.ZERO) {

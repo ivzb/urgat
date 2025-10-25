@@ -4,7 +4,7 @@ import android.app.DatePickerDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import java.time.Instant
+import com.ivzb.urgat.util.toLocalDate
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -18,10 +18,9 @@ fun DatePicker(
     val context = LocalContext.current
     val dateFormat = remember { DateTimeFormatter.ofPattern("dd/MM/yyyy") }
     val selectedDate = remember(timestamp) {
-        Instant.ofEpochMilli(timestamp)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
+        timestamp.toLocalDate()
     }
+
     val formattedDate = selectedDate.format(dateFormat)
     val datePickerDialog = remember {
         DatePickerDialog(
