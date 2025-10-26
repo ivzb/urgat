@@ -2,7 +2,7 @@ package com.ivzb.urgat.util
 
 import kotlinx.coroutines.flow.SharingStarted
 
-private const val StopTimeoutMillis: Long = 5000
+private const val StopTimeoutMillis: Long = 5_000L
 
 /**
  * A [SharingStarted] meant to be used with a [StateFlow] to expose data to the UI.

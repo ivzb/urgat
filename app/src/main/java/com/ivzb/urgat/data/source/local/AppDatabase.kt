@@ -5,14 +5,22 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.expense.ExpenseDao
+import com.ivzb.urgat.data.note.NoteDao
+import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.todo.TodoDao
 
-@Database(entities = [TodoEntity::class, ExpenseEntity::class], version = 1)
+@Database(entities = [
+    TodoEntity::class,
+    ExpenseEntity::class,
+    NoteEntity::class,
+ ], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun todoDao(): TodoDao
 
     abstract fun expenseDao(): ExpenseDao
+
+    abstract fun noteDao(): NoteDao
 }

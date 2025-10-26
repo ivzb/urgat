@@ -105,6 +105,12 @@ private fun NavHostContent(
 
         composable(NotesDestination.route) {
             NotesScreen(
+                onAddNote = {
+                    TODO()
+                },
+                onNoteClick = {
+                    TODO()
+                },
                 navController = navController,
             )
         }

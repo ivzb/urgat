@@ -1,7 +1,5 @@
 package com.ivzb.urgat.data.expense
 
-import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.data.todo.toExternal
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -57,7 +55,7 @@ class DefaultExpensesRepository @Inject constructor(
         val id = withContext(dispatcher) {
             UUID.randomUUID().toString()
         }
-        val todo = Expense(
+        val expense = Expense(
             id = id,
             name = name,
             amount = amount,
@@ -66,19 +64,19 @@ class DefaultExpensesRepository @Inject constructor(
             isDeleted =  false,
             createdAt = System.currentTimeMillis()
         )
-        localDataSource.upsert(todo.toEntity())
+        localDataSource.upsert(expense.toEntity())
         return id
     }
 
     override suspend fun update(id: String, name: String, amount: BigDecimal, category: String, date: Long) {
-        val todo = get(id)?.copy(
+        val expense = get(id)?.copy(
             name = name,
             amount = amount,
             category = category,
             date = date
-        ) ?: throw Exception("Todo (id $id) not found")
+        ) ?: throw Exception("Expense (id $id) not found")
 
-        localDataSource.upsert(todo.toEntity())
+        localDataSource.upsert(expense.toEntity())
     }
 
     override suspend fun get(id: String): Expense? {

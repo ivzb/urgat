@@ -2,11 +2,14 @@ package com.ivzb.urgat.ui.notes
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.navigation.NotesDestination
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
@@ -14,10 +17,16 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun NotesScreen(
+    onAddNote: () -> Unit,
+    onNoteClick: (Note) -> Unit,
+
     navController: NavHostController,
+
     modifier: Modifier = Modifier,
     viewModel: NotesViewModel = hiltViewModel()
 ) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     NotesScreenScaffold(
         onSearchQueryChanged = {

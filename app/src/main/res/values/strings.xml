@@ -58,4 +58,8 @@
     <string name="see_all">See all</string>
     <string name="press_back_once_more_to_exit">Press back once more to exit.</string>
     <string name="select_date">Select date</string>
+    <string name="all_notes">All notes</string>
+    <string name="no_notes">You have no notes!</string>
+    <string name="loading_notes">Loading notes</string>
+    <string name="error_notes">Error while loading notes</string>
 </resources>
