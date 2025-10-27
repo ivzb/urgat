@@ -1,6 +1,7 @@
 package com.ivzb.urgat.di
 
 import com.ivzb.urgat.data.expense.ExpenseDao
+import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.todo.TodoDao
 import dagger.Module
@@ -17,5 +18,8 @@ class DaoModule {
 
     @Provides
     fun provideExpensesDao(appDatabase: AppDatabase): ExpenseDao = appDatabase.expenseDao()
+
+    @Provides
+    fun provideNotesDao(appDatabase: AppDatabase): NoteDao = appDatabase.noteDao()
 
 }

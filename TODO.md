@@ -3,3 +3,5 @@ read the MVI article about state changes to simplify multiple functions to the v
 improve empty state of overview screen because it's showing 2 empty states of each item
 create notes module
 make main screens more generic
+add notes to overview screen
+add/edit note screen

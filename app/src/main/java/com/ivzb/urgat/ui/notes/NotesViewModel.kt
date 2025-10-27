@@ -89,11 +89,7 @@ class NotesViewModel @Inject constructor(
     
 }
 
-const val NOTES_FILTER_SAVED_STATE_KEY = "NOTES_FILTER_SAVED_STATE_KEY"
-
 data class NotesFilteringUiInfo(
-    val currentFilteringLabel: Int = R.string.all_notes,
-
     override val emptyLabel: Int = R.string.no_notes,
     override val emptyIconRes: Int = R.drawable.logo_no_fill,
 
