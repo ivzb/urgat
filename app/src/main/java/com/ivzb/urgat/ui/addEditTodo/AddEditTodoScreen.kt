@@ -37,12 +37,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.transparentTextFieldColors
 import kotlinx.coroutines.launch
 
 @Composable
@@ -147,6 +147,7 @@ private fun AddEditTodoContent(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
                     ),
+                    colors = transparentTextFieldColors(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
@@ -165,14 +166,15 @@ private fun AddEditTodoContent(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
+                    colors = transparentTextFieldColors(),
                     modifier = Modifier
-                        .height(150.dp)
+                        .weight(1f)
                         .fillMaxWidth()
                 )
 
                 Spacer(
                     modifier = Modifier
-                        .weight(1f)
+                        .height(dimensionResource(R.dimen.vertical_margin))
                 )
 
                 Button(

@@ -37,6 +37,21 @@ class UrgatNavActions(private val navController: NavHostController) {
         }
         navController.navigate(route)
     }
+
+    fun navigateToAddNote() {
+        navigateToAddEditNote(R.string.add_note, null)
+    }
+
+    fun navigateToEditNote(expenseId: String) {
+        navigateToAddEditNote(R.string.edit_note, expenseId)
+    }
+
+    private fun navigateToAddEditNote(@StringRes title: Int, id: String?) {
+        val route = "${AddEditNoteDestination.Args.ROUTE}/$title".let {
+            if (id != null) "$it?${AddEditNoteDestination.Args.ARG_ID}=$id" else it
+        }
+        navController.navigate(route)
+    }
 }
 
 fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestination, popInclusive: Boolean = false) =

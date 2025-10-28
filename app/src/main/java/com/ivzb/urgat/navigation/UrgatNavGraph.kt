@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseScreen
+import com.ivzb.urgat.ui.addEditNote.AddEditNoteScreen
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
@@ -75,8 +76,9 @@ private fun NavHostContent(
                 onSeeAllExpenses = { navController.navigateSingleTopTo(ExpensesDestination) },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
 
-                onAddNote = {},
-                onNoteClick = {},
+                onAddNote = { navActions.navigateToAddNote() },
+                onSeeAllNotes = { navController.navigateSingleTopTo(NotesDestination) },
+                onNoteClick = { navActions.navigateToEditNote(it.id) },
                 navController = navController,
             )
         }
@@ -106,10 +108,10 @@ private fun NavHostContent(
         composable(NotesDestination.route) {
             NotesScreen(
                 onAddNote = {
-                    TODO()
+                    navActions.navigateToAddNote()
                 },
                 onNoteClick = {
-                    TODO()
+                    navActions.navigateToEditNote(it.id)
                 },
                 navController = navController,
             )
@@ -150,6 +152,23 @@ private fun NavHostContent(
             val expenseId = entry.arguments?.getString(AddEditExpenseDestination.Args.ARG_ID)
 
             AddEditExpenseScreen(
+                screenTitle = title,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            AddEditNoteDestination.route, arguments = listOf(
+                navArgument(AddEditNoteDestination.Args.ARG_TITLE) { type = NavType.IntType },
+                navArgument(AddEditNoteDestination.Args.ARG_ID) {
+                    type = NavType.StringType; nullable = true
+                },
+            )
+        ) { entry ->
+            val title = entry.arguments?.getInt(AddEditNoteDestination.Args.ARG_TITLE) ?: 0
+            val noteId = entry.arguments?.getString(AddEditNoteDestination.Args.ARG_ID)
+
+            AddEditNoteScreen(
                 screenTitle = title,
                 onBack = { navController.popBackStack() }
             )

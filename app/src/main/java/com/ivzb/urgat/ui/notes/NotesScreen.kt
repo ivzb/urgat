@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -126,7 +127,7 @@ internal fun NotesContent(
     ) {
 
         val (leftNotes, rightNotes) = notes.chunked((notes.size + 1) / 2)
-            .let { it[0] to it[1] }
+            .let { it.getOrNull(0).orEmpty() to it.getOrNull(1).orEmpty() }
 
         NotesColumn(
             leftNotes,
@@ -194,6 +195,8 @@ fun NoteItem(
             Text(
                 text = note.content,
                 style = MaterialTheme.typography.bodySmall,
+                maxLines = 10,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

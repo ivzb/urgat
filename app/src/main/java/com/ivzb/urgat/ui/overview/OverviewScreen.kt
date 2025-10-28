@@ -49,10 +49,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
-import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
@@ -75,7 +75,8 @@ fun OverviewScreen(
     onExpenseClick: (Expense) -> Unit,
 
     onAddNote: () -> Unit,
-    onNoteClick: (String) -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onNoteClick: (Note) -> Unit,
 
     navController: NavHostController,
 
@@ -98,6 +99,7 @@ fun OverviewScreen(
         onSeeAllExpenses = onSeeAllExpenses,
         onExpenseClick = onExpenseClick,
 
+        onSeeAllNotes = onSeeAllNotes,
         onNoteClick = onNoteClick,
         navController = navController,
         modifier = modifier
@@ -128,7 +130,9 @@ private fun OverviewScreenScaffold(
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
-    onNoteClick: (String) -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onNoteClick: (Note) -> Unit,
+
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
@@ -177,6 +181,7 @@ private fun OverviewScreenScaffold(
                     onSeeAllExpenses = onSeeAllExpenses,
                     onExpenseClick = onExpenseClick,
 
+                    onSeeAllNotes = onSeeAllNotes,
                     onNoteClick = onNoteClick,
                     listState = listState,
                 )
@@ -202,7 +207,8 @@ private fun OverviewContent(
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
-    onNoteClick: (String) -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onNoteClick: (Note) -> Unit,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -536,6 +542,7 @@ fun OverviewScreenScaffoldTodosPreview() {
             completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
+            onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
@@ -581,6 +588,7 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
             completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
+            onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
@@ -626,6 +634,7 @@ fun OverviewScreenScaffoldLoadingPreview() {
             completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
+            onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
@@ -671,6 +680,7 @@ fun OverviewScreenScaffoldErrorPreview() {
             completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
+            onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
             modifier = Modifier
@@ -761,6 +771,7 @@ fun OverviewContentPreview() {
             expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
             onSeeAllExpenses = {},
             onExpenseClick = {},
+            onSeeAllNotes = {},
             onNoteClick = {},
             listState = rememberLazyListState()
         )

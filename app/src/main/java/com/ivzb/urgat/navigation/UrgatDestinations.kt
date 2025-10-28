@@ -74,5 +74,16 @@ data object AddEditExpenseDestination: UrgatDestination {
     }
 }
 
+data object AddEditNoteDestination: UrgatDestination {
+    override val icon = Icons.Filled.Add
+    override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
+
+    object Args {
+        const val ROUTE = "addEditNote"
+        const val ARG_TITLE = "title"
+        const val ARG_ID = "id"
+    }
+}
+
 // Screens to be displayed in the top UrgatTabRow
 val bottomNavigationScreens = listOf(OverviewDestination, TodoDestination, ExpensesDestination, NotesDestination, WeatherDestination)

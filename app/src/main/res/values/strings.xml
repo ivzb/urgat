@@ -23,18 +23,21 @@
     <string name="menu_back">Back</string>
     <string name="empty_todo_message">Please enter a todo message.</string>
     <string name="empty_expense_message">Please fill in all expense fields.</string>
+    <string name="empty_note_message">Please enter a note.</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
     <string name="expense_hint">Expense</string>
     <string name="amount_hint">Amount</string>
     <string name="category_hint">Category</string>
-    <string name="date_hint">Date</string>
+    <string name="date_hint" translatable="false">dd/MM/yyyy</string>
+    <string name="note_hint">Enter your note here.</string>
     <string name="save">Save</string>
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>
     <string name="add_expense">Add Expense</string>
     <string name="edit_expense">Edit Expense</string>
     <string name="add_note">Add Note</string>
+    <string name="edit_note">Edit Note</string>
     <string name="search">Search</string>
     <string name="clear_completed">Clear completed</string>
     <string name="more">More</string>

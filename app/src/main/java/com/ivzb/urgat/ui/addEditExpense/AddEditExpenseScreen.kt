@@ -160,7 +160,6 @@ private fun AddEditExpenseContent(
                         onNameChanged(it.text)
                     },
                     placeholder = { Text(text = stringResource(id = R.string.expense_hint)) },
-                    label = { Text(stringResource(id = R.string.expense_hint)) },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -180,7 +179,6 @@ private fun AddEditExpenseContent(
                     value = amount,
                     onValueChange = onAmountChanged,
                     placeholder = { Text(stringResource(id = R.string.amount_hint)) },
-                    label = { Text(stringResource(id = R.string.amount_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -205,7 +203,6 @@ private fun AddEditExpenseContent(
                         value = category,
                         onValueChange = onCategoryChanged,
                         placeholder = { Text(stringResource(id = R.string.category_hint)) },
-                        label = { Text(stringResource(id = R.string.category_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done

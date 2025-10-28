@@ -5,3 +5,6 @@ create notes module
 make main screens more generic
 add notes to overview screen
 add/edit note screen
+add preview screens instead of direct edit for todo, expense and note
+add focus index to todo view model
+improve add/edit screens loading state
