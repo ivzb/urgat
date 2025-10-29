@@ -59,6 +59,8 @@ import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.components.SeeAllHeader
 import com.ivzb.urgat.ui.expenses.ExpenseItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
+import com.ivzb.urgat.ui.notes.NoteItem
+import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
@@ -181,8 +183,11 @@ private fun OverviewScreenScaffold(
                     onSeeAllExpenses = onSeeAllExpenses,
                     onExpenseClick = onExpenseClick,
 
+                    notes = uiState.notesItems,
+                    notesFilteringUiInfo = uiState.notesFilteringUiInfo,
                     onSeeAllNotes = onSeeAllNotes,
                     onNoteClick = onNoteClick,
+
                     listState = listState,
                 )
             }
@@ -207,8 +212,11 @@ private fun OverviewContent(
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
+    notes: List<Note>,
+    notesFilteringUiInfo: NotesFilteringUiInfo,
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
+
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -268,6 +276,20 @@ private fun OverviewContent(
                 expensesFilteringUiInfo = expensesFilteringUiInfo,
                 onSeeAllExpenses = onSeeAllExpenses,
                 onExpenseClick = onExpenseClick
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.list_item_padding))
+                )
+            }
+
+            itemNotes(
+                notes = notes,
+                notesFilteringUiInfo = notesFilteringUiInfo,
+                onSeeAllNotes = onSeeAllNotes,
+                onNoteClick = onNoteClick
             )
 
             item {
@@ -464,14 +486,43 @@ private fun LazyListScope.itemExpenses(
     }
 }
 
-@Composable
-private fun NotesCard(
+private fun LazyListScope.itemNotes(
+    notes: List<Note>,
+    notesFilteringUiInfo: NotesFilteringUiInfo,
     onSeeAllNotes: () -> Unit,
-    onAddNote: () -> Unit,
-    onNoteClick: (String) -> Unit,
+    onNoteClick: (Note) -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    when {
+        notes.isEmpty() -> {
+            item {
+                EmptyState(
+                    label = notesFilteringUiInfo.emptyLabel,
+                    iconRes = notesFilteringUiInfo.emptyIconRes,
+                    modifier = modifier
+                )
+            }
+        }
 
-    Text("Notes card")
+        else -> {
+            item {
+                SeeAllHeader(
+                    title = stringResource(notesFilteringUiInfo.currentFilteringLabel),
+                    onSeeAllClick = onSeeAllNotes,
+                    modifier = Modifier.padding(
+                        vertical = dimensionResource(id = R.dimen.vertical_margin)
+                    ),
+                )
+            }
+
+            items(notes) { note ->
+                NoteItem(
+                    note = note,
+                    onNoteClick = onNoteClick
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -771,6 +822,39 @@ fun OverviewContentPreview() {
             expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
             onSeeAllExpenses = {},
             onExpenseClick = {},
+            notes = listOf(
+                Note(
+                    id = "ID 1",
+                    content = "Remember to buy milk and eggs before the store closes.",
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Note(
+                    id = "ID 2",
+                    content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Note(
+                    id = "ID 3",
+                    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Note(
+                    id = "ID 4",
+                    content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Note(
+                    id = "ID 5",
+                    content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
+                    isDeleted = false,
+                    createdAt = 0,
+                )
+            ),
+            notesFilteringUiInfo = NotesFilteringUiInfo(),
             onSeeAllNotes = {},
             onNoteClick = {},
             listState = rememberLazyListState()
@@ -934,11 +1018,45 @@ fun ExpensesCardPreview() {
 @Composable
 fun NotesCardPreview() {
     UrgatTheme {
-        NotesCard(
-            onSeeAllNotes = {},
-            onAddNote = {},
-            onNoteClick = {}
-        )
+        LazyColumn {
+            itemNotes(
+                notes = listOf(
+                    Note(
+                        id = "ID 1",
+                        content = "Remember to buy milk and eggs before the store closes.",
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Note(
+                        id = "ID 2",
+                        content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Note(
+                        id = "ID 3",
+                        content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Note(
+                        id = "ID 4",
+                        content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Note(
+                        id = "ID 5",
+                        content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
+                        isDeleted = false,
+                        createdAt = 0,
+                    )
+                ),
+                notesFilteringUiInfo = NotesFilteringUiInfo(),
+                onSeeAllNotes = {},
+                onNoteClick = {}
+            )
+        }
     }
 }
 
