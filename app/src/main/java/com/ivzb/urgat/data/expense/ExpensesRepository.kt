@@ -1,22 +1,12 @@
 package com.ivzb.urgat.data.expense
 
-import kotlinx.coroutines.flow.Flow
+import com.ivzb.urgat.data.base.BaseRepository
 import java.math.BigDecimal
 
-interface ExpensesRepository {
-
-    fun getStream(): Flow<List<Expense>>
-
-    fun getStream(searchQuery: String): Flow<List<Expense>>
-
-    fun getStream(limit: Int): Flow<List<Expense>>
-
-    fun getStream(limit: Int, searchQuery: String): Flow<List<Expense>>
+interface ExpensesRepository: BaseRepository<Expense> {
 
     suspend fun create(name: String, amount: BigDecimal, category: String, date: Long): String
 
     suspend fun update(id: String, name: String, amount: BigDecimal, category: String, date: Long)
-
-    suspend fun get(id: String): Expense?
 
 }

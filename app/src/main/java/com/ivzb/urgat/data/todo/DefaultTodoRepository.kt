@@ -43,28 +43,6 @@ class DefaultTodoRepository @Inject constructor(
         localDataSource.upsert(todo.toEntity())
     }
 
-    override suspend fun getAll(): List<Todo> {
-        return withContext(dispatcher) {
-            localDataSource.getAll().toExternal()
-        }
-    }
-
-    override fun getStream(): Flow<List<Todo>> {
-        return localDataSource.observeAll().map { todos ->
-            withContext(dispatcher) {
-                todos.toExternal()
-            }
-        }
-    }
-
-    override fun getStream(searchQuery: String): Flow<List<Todo>> {
-        return localDataSource.observeAll(searchQuery).map { todos ->
-            withContext(dispatcher) {
-                todos.toExternal()
-            }
-        }
-    }
-
     override fun getStream(limit: Int): Flow<List<Todo>> {
         return localDataSource.observeAll(limit).map { todos ->
             withContext(dispatcher) {
@@ -81,10 +59,6 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
-    override fun getStreamById(id: String): Flow<Todo?> {
-        return localDataSource.observeById(id).map { it.toExternal() }
-    }
-
     override suspend fun get(id: String): Todo? {
         return localDataSource.getById(id)?.toExternal()
     }
@@ -99,10 +73,6 @@ class DefaultTodoRepository @Inject constructor(
 
     override suspend fun clearCompleted() {
         localDataSource.deleteCompleted()
-    }
-
-    override suspend fun deleteAll() {
-        localDataSource.deleteAll()
     }
 
     override suspend fun delete(id: String) {

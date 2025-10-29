@@ -5,18 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.data.note.NotesRepository
+import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -29,7 +25,7 @@ data class NotesUiState(
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(
-    private val notesRepository: NotesRepository,
+    observeNotesUseCase: ObserveNotesUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -37,21 +33,9 @@ class NotesViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val _filteredNotesAsync =
-        _searchQuery
-            .debounce(DEBOUNCE_TIME_MILLIS)
-            .flatMapLatest { searchQuery ->
-                if (searchQuery == "") {
-                    notesRepository.getStream()
-                } else {
-                    notesRepository.getStream(searchQuery = searchQuery)
-                }
-            }
-            .map { Async.Success(data = it) }
-            .catch<Async<List<Note>>> { emit(Async.Error(R.string.error_notes)) }
-
     val uiState: StateFlow<NotesUiState> = combine(
-        _isLoading, _filteredNotesAsync
+        _isLoading,
+        observeNotesUseCase(_searchQuery, null)
     ) { isLoading, notesAsync ->
         when (notesAsync) {
             Async.Loading -> {
@@ -81,12 +65,6 @@ class NotesViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    companion object {
-
-        private const val DEBOUNCE_TIME_MILLIS = 300L
-
-    }
-    
 }
 
 data class NotesFilteringUiInfo(

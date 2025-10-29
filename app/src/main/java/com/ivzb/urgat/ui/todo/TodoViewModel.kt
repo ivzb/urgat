@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodosFilterType.*
 import com.ivzb.urgat.util.Async
@@ -13,11 +14,8 @@ import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,6 +30,7 @@ data class TodoUiState(
 
 @HiltViewModel
 class TodoViewModel @Inject constructor(
+    observeTodosUseCase: ObserveTodosUseCase,
     private val todoRepository: TodoRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -44,25 +43,10 @@ class TodoViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val _filteredTodosAsync =
-        _searchQuery
-            .debounce(DEBOUNCE_TIME_MILLIS)
-            .flatMapLatest { searchQuery ->
-                val todoStream = if (searchQuery == "") {
-                    todoRepository.getStream()
-                } else {
-                    todoRepository.getStream(searchQuery = searchQuery)
-                }
-
-                combine(todoStream, _savedFilterType) { todos, filteringType ->
-                    filterTodos(todos, filteringType)
-                }
-            }
-            .map { Async.Success(data = it) }
-            .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
-
     val uiState: StateFlow<TodoUiState> = combine(
-        _filterUiInfo, _isLoading, _filteredTodosAsync
+        _filterUiInfo,
+        _isLoading,
+        observeTodosUseCase(_searchQuery, _savedFilterType)
     ) { filterUiInfo, isLoading, todosAsync ->
         when (todosAsync) {
             Async.Loading -> {
@@ -108,24 +92,6 @@ class TodoViewModel @Inject constructor(
         } else {
             todoRepository.activate(todo.id)
         }
-    }
-
-    private fun filterTodos(todos: List<Todo>, filteringType: TodosFilterType): List<Todo> {
-        val todosToShow = ArrayList<Todo>()
-
-        for (todo in todos) {
-            when (filteringType) {
-                ALL_TODOS -> todosToShow.add(todo)
-                ACTIVE_TODOS -> if (todo.isActive) {
-                    todosToShow.add(todo)
-                }
-
-                COMPLETED_TODOS -> if (todo.isCompleted) {
-                    todosToShow.add(todo)
-                }
-            }
-        }
-        return todosToShow
     }
 
     private fun getFilterUiInfo(requestType: TodosFilterType): TodoFilteringUiInfo =

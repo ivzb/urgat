@@ -8,11 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
 import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.data.note.NotesRepository
+import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
@@ -20,17 +21,11 @@ import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,62 +55,24 @@ sealed class UiEvent {
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
+    observeTodosUseCase: ObserveTodosUseCase,
+    observeExpensesUseCase: ObserveExpensesUseCase,
+    observeNotesUseCase: ObserveNotesUseCase,
     private val todoRepository: TodoRepository,
-    private val expensesRepository: ExpensesRepository,
-    private val notesRepository: NotesRepository,
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
 
     private val _searchQuery = MutableStateFlow("")
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private val _todosAsync =
-        _searchQuery
-        .debounce(DEBOUNCE_TIME_MILLIS)
-        .flatMapLatest { searchQuery ->
-            if (searchQuery == "") {
-                todoRepository.getStream(LIMIT)
-            } else {
-                todoRepository.getStream(LIMIT, searchQuery)
-            }
-        }
-        .map { Async.Success(it) }
-        .catch<Async<List<Todo>>> { emit(Async.Error(R.string.error_todos)) }
-
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private val _expensesAsync =
-        _searchQuery
-            .debounce(DEBOUNCE_TIME_MILLIS)
-            .flatMapLatest { searchQuery ->
-                if (searchQuery == "") {
-                    expensesRepository.getStream(LIMIT)
-                } else {
-                    expensesRepository.getStream(LIMIT, searchQuery)
-                }
-            }
-            .map { Async.Success(it) }
-            .catch<Async<List<Expense>>> { emit(Async.Error(R.string.error_todos)) }
-
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private val _notesAsync =
-        _searchQuery
-            .debounce(DEBOUNCE_TIME_MILLIS)
-            .flatMapLatest { searchQuery ->
-                if (searchQuery == "") {
-                    notesRepository.getStream(LIMIT)
-                } else {
-                    notesRepository.getStream(LIMIT, searchQuery)
-                }
-            }
-            .map { Async.Success(it) }
-            .catch<Async<List<Note>>> { emit(Async.Error(R.string.error_notes)) }
-
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     val uiState: StateFlow<OverviewUiState> = combine(
-        _isLoading, _todosAsync, _expensesAsync, _notesAsync
+        _isLoading,
+        observeTodosUseCase(_searchQuery, null, LIMIT),
+        observeExpensesUseCase(_searchQuery, null, LIMIT),
+        observeNotesUseCase(_searchQuery, null, LIMIT),
     ) { isLoading, todos, expenses, notes ->
         val items = listOf(todos, expenses, notes)
 
@@ -211,7 +168,6 @@ class OverviewViewModel @Inject constructor(
     companion object {
 
         private const val LIMIT = 3
-        private const val DEBOUNCE_TIME_MILLIS = 300L
 
     }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
@@ -35,6 +36,7 @@ data class ExpensesUiState(
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
+    observeExpensesUseCase: ObserveExpensesUseCase,
     private val expensesRepository: ExpensesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -47,52 +49,34 @@ class ExpensesViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val _filteredExpensesAsync =
-        _searchQuery
-            .debounce(DEBOUNCE_TIME_MILLIS)
-            .flatMapLatest { searchQuery ->
-                val expensesStream = if (searchQuery == "") {
-                    expensesRepository.getStream()
-                } else {
-                    expensesRepository.getStream(searchQuery = searchQuery)
-                }
-
-                combine(
-                    expensesStream,
-                    _savedFilterType
-                ) { expenses, filteringType ->
-                    filterExpenses(expenses, filteringType)
-                 }
-            }
-            .map { Async.Success(data = it) }
-            .catch<Async<List<Expense>>> { emit(Async.Error(R.string.error_expenses)) }
-
     val uiState: StateFlow<ExpensesUiState> = combine(
-        _filterUiInfo, _isLoading, _filteredExpensesAsync
-        ) { filterUiInfo, isLoading, expensesAsync ->
-            when (expensesAsync) {
-                Async.Loading -> {
-                    ExpensesUiState(isLoading = true)
-                }
-
-                is Async.Error -> {
-                    ExpensesUiState(hasError = true)
-                }
-
-                is Async.Success -> {
-                    ExpensesUiState(
-                        items = expensesAsync.data,
-                        filteringUiInfo = filterUiInfo,
-                        isLoading = isLoading
-                    )
-                }
+        _filterUiInfo,
+        _isLoading,
+        observeExpensesUseCase(_searchQuery, _savedFilterType)
+    ) { filterUiInfo, isLoading, expensesAsync ->
+        when (expensesAsync) {
+            Async.Loading -> {
+                ExpensesUiState(isLoading = true)
             }
-         }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = ExpensesUiState(isLoading = true)
-        )
+
+            is Async.Error -> {
+                ExpensesUiState(hasError = true)
+            }
+
+            is Async.Success -> {
+                ExpensesUiState(
+                    items = expensesAsync.data,
+                    filteringUiInfo = filterUiInfo,
+                    isLoading = isLoading
+                )
+            }
+        }
+     }
+    .stateIn(
+        scope = viewModelScope,
+        started = WhileUiSubscribed,
+        initialValue = ExpensesUiState(isLoading = true)
+    )
 
     fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery

@@ -16,22 +16,6 @@ class DefaultNotesRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : NotesRepository {
 
-    override fun getStream(): Flow<List<Note>> {
-        return localDataSource.observeAll().map { expenses ->
-            withContext(dispatcher) {
-                expenses.toExternal()
-            }
-        }
-    }
-
-    override fun getStream(searchQuery: String): Flow<List<Note>> {
-        return localDataSource.observeAll(searchQuery).map { expenses ->
-            withContext(dispatcher) {
-                expenses.toExternal()
-            }
-        }
-    }
-
     override fun getStream(limit: Int): Flow<List<Note>> {
         return localDataSource.observeAll(limit).map { expenses ->
             withContext(dispatcher) {
@@ -74,5 +58,9 @@ class DefaultNotesRepository @Inject constructor(
 
     override suspend fun get(id: String): Note? {
         return localDataSource.getById(id)?.toExternal()
+    }
+
+    override suspend fun delete(id: String) {
+        localDataSource.deleteById(id)
     }
 }

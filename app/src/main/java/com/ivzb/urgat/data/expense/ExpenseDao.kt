@@ -35,4 +35,7 @@ interface ExpenseDao {
     @Query("SELECT * FROM expenses WHERE id = :id")
     suspend fun getById(id: String): ExpenseEntity?
 
+    @Query("DELETE FROM expenses WHERE id = :id")
+    suspend fun deleteById(id: String): Int
+
 }
