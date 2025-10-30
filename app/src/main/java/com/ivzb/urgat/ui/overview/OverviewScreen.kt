@@ -111,9 +111,9 @@ fun OverviewScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
-                is UiEvent.AddTodo -> onAddTodo()
-                is UiEvent.AddExpense -> onAddExpense()
-                is UiEvent.AddNote -> onAddNote()
+                is OverviewUiEvent.AddTodo -> onAddTodo()
+                is OverviewUiEvent.AddExpense -> onAddExpense()
+                is OverviewUiEvent.AddNote -> onAddNote()
             }
         }
     }

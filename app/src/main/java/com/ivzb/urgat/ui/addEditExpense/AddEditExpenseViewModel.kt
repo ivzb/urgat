@@ -16,17 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AddEditExpenseUiState(
-    val name: String = "",
-    val amount: String = "",
-    val category: String = "",
-    val date: Long = System.currentTimeMillis(),
-    val focusIndex: Int = 0,
-    val isLoading: Boolean = false,
-    val userMessage: Int? = null,
-    val isExpenseSaved: Boolean = false
-)
-
 @HiltViewModel
 class AddEditExpenseViewModel @Inject constructor(
     private val getExpenseUseCase: GetExpenseUseCase,

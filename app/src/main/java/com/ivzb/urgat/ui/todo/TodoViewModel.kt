@@ -9,7 +9,6 @@ import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
 import com.ivzb.urgat.data.todo.useCase.CompleteTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
-import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodosFilterType.*
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -22,13 +21,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class TodoUiState(
-    val items: List<Todo> = emptyList(),
-    val isLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val filteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo()
-)
 
 @HiltViewModel
 class TodoViewModel @Inject constructor(
@@ -86,7 +78,7 @@ class TodoViewModel @Inject constructor(
 
     fun clearCompletedTodos() {
         viewModelScope.launch {
-            clearCompletedTodos()
+            clearCompletedTodosUseCase()
         }
     }
 
@@ -128,15 +120,3 @@ class TodoViewModel @Inject constructor(
 }
 
 const val TODOS_FILTER_SAVED_STATE_KEY = "TODOS_FILTER_SAVED_STATE_KEY"
-
-data class TodoFilteringUiInfo(
-    val currentFilteringLabel: Int = R.string.all_todos,
-
-    override val emptyLabel: Int = R.string.no_todos,
-    override val emptyIconRes: Int = R.drawable.logo_no_fill,
-
-    override val loadingLabel: Int = R.string.loading_todos,
-
-    override val errorLabel: Int = R.string.error_todos,
-    override val errorIconRes: Int = R.drawable.ic_error,
-) : FilteringUiInfo

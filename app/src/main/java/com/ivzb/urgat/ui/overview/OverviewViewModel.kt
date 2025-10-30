@@ -7,16 +7,13 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
-import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
 import com.ivzb.urgat.data.todo.useCase.CompleteTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
-import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
@@ -32,29 +29,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class OverviewUiState(
-    val headerItems: List<HeaderItem> = emptyList(),
-
-    val todoItems: List<Todo> = emptyList(),
-    val todoFilteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo(),
-
-    val expensesItems: List<Expense> = emptyList(),
-    val expensesFilteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo(),
-
-    val notesItems: List<Note> = emptyList(),
-    val notesFilteringUiInfo: NotesFilteringUiInfo = NotesFilteringUiInfo(),
-
-    val isLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val filteringUiInfo: FilteringUiInfo = OverviewFilteringUiInfo()
-)
-
-sealed class UiEvent {
-    class AddTodo() : UiEvent()
-    class AddExpense() : UiEvent()
-    class AddNote() : UiEvent()
-}
-
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
@@ -69,7 +43,7 @@ class OverviewViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    private val _uiEvent = MutableSharedFlow<OverviewUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     val uiState: StateFlow<OverviewUiState> = combine(
@@ -161,9 +135,9 @@ class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(
                 when (item.id) {
-                    HeaderItemId.Todo -> UiEvent.AddTodo()
-                    HeaderItemId.Expense -> UiEvent.AddExpense()
-                    HeaderItemId.Note -> UiEvent.AddNote()
+                    HeaderItemId.Todo -> OverviewUiEvent.AddTodo()
+                    HeaderItemId.Expense -> OverviewUiEvent.AddExpense()
+                    HeaderItemId.Note -> OverviewUiEvent.AddNote()
                 }
             )
         }
@@ -176,13 +150,3 @@ class OverviewViewModel @Inject constructor(
     }
 
 }
-
-data class OverviewFilteringUiInfo(
-    override val emptyLabel: Int = 0,
-    override val emptyIconRes: Int = 0,
-
-    override val loadingLabel: Int = R.string.loading_overview,
-
-    override val errorLabel: Int = R.string.error_overview,
-    override val errorIconRes: Int = R.drawable.ic_error,
-) : FilteringUiInfo

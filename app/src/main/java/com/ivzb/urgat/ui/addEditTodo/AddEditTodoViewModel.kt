@@ -16,15 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AddEditTodoUiState(
-    val title: String = "",
-    val description: String = "",
-    val isTodoCompleted: Boolean = false,
-    val isLoading: Boolean = false,
-    val userMessage: Int? = null,
-    val isTodoSaved: Boolean = false
-)
-
 @HiltViewModel
 class AddEditTodoViewModel @Inject constructor(
     private val getTodoUseCase: GetTodoUseCase,

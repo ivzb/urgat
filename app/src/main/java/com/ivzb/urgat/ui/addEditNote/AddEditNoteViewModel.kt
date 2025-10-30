@@ -16,14 +16,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class AddEditNoteUiState(
-    val content: String = "",
-    val focusIndex: Int = 0,
-    val isLoading: Boolean = false,
-    val userMessage: Int? = null,
-    val isNoteSaved: Boolean = false
-)
-
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
     private val getNoteUseCase: GetNoteUseCase,
