@@ -12,7 +12,9 @@ import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
+import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
+import com.ivzb.urgat.data.todo.useCase.CompleteTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
@@ -58,7 +60,9 @@ class OverviewViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
     observeExpensesUseCase: ObserveExpensesUseCase,
     observeNotesUseCase: ObserveNotesUseCase,
-    private val todoRepository: TodoRepository,
+    private val completeTodoUseCase: CompleteTodoUseCase,
+    private val activateTodoUseCase: ActivateTodoUseCase,
+    private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -141,15 +145,15 @@ class OverviewViewModel @Inject constructor(
 
     fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
-            todoRepository.complete(todo.id)
+            completeTodoUseCase(todo.id)
         } else {
-            todoRepository.activate(todo.id)
+            activateTodoUseCase(todo.id)
         }
     }
 
     fun clearCompletedTodos() {
         viewModelScope.launch {
-            todoRepository.clearCompleted()
+            clearCompletedTodosUseCase()
         }
     }
 

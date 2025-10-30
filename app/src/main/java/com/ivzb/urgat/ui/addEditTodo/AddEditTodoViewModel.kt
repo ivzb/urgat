@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.note.useCase.CreateTodoUseCase
+import com.ivzb.urgat.data.note.useCase.UpdateTodoUseCase
+import com.ivzb.urgat.data.todo.useCase.GetTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +27,9 @@ data class AddEditTodoUiState(
 
 @HiltViewModel
 class AddEditTodoViewModel @Inject constructor(
-    private val todoRepository: TodoRepository,
+    private val getTodoUseCase: GetTodoUseCase,
+    private val createTodoUseCase: CreateTodoUseCase,
+    private val updateTodoUseCase: UpdateTodoUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -75,7 +79,7 @@ class AddEditTodoViewModel @Inject constructor(
     }
 
     private fun createNewTodo() = viewModelScope.launch {
-        todoRepository.create(uiState.value.title, uiState.value.description)
+        createTodoUseCase(uiState.value.title, uiState.value.description)
         _uiState.update {
             it.copy(isTodoSaved = true)
         }
@@ -87,7 +91,7 @@ class AddEditTodoViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            todoRepository.update(
+            updateTodoUseCase(
                 todoId,
                 title = uiState.value.title,
                 description = uiState.value.description,
@@ -105,7 +109,7 @@ class AddEditTodoViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            todoRepository.get(todoId).let { todo ->
+            getTodoUseCase(todoId)?.let { todo ->
                 if (todo != null) {
                     _uiState.update {
                         it.copy(

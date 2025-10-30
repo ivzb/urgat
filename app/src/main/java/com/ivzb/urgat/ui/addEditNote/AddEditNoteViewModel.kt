@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.note.NotesRepository
+import com.ivzb.urgat.data.note.useCase.CreateNoteUseCase
+import com.ivzb.urgat.data.note.useCase.GetNoteUseCase
+import com.ivzb.urgat.data.note.useCase.UpdateNoteUseCase
 import com.ivzb.urgat.navigation.AddEditNoteDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +26,9 @@ data class AddEditNoteUiState(
 
 @HiltViewModel
 class AddEditNoteViewModel @Inject constructor(
-    private val notesRepository: NotesRepository,
+    private val getNoteUseCase: GetNoteUseCase,
+    private val createNoteUseCase: CreateNoteUseCase,
+    private val updateNoteUseCase: UpdateNoteUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -77,7 +81,7 @@ class AddEditNoteViewModel @Inject constructor(
     }
 
     private fun createNewNote() = viewModelScope.launch {
-        notesRepository.create(
+        createNoteUseCase(
             content = uiState.value.content
         )
 
@@ -92,7 +96,7 @@ class AddEditNoteViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            notesRepository.update(
+            updateNoteUseCase(
                 noteId,
                 content = uiState.value.content
             )
@@ -109,7 +113,7 @@ class AddEditNoteViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            notesRepository.get(noteId).let { note ->
+            getNoteUseCase(noteId).let { note ->
                 if (note != null) {
                     _uiState.update {
                         it.copy(

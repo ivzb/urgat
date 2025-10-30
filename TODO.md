@@ -8,5 +8,5 @@ add preview screens instead of direct edit for todo, expense and note
 add focus index to todo view model
 improve add/edit screens loading state
 consider using intent object to handle all kind of events which would then trigger state change in the view model
-extract all calls from viewmodels to repository to use cases so it can be resued
 UI visual issue when adding new items, compose is showing the date of the previous item?
+extract ui state objects to separate class

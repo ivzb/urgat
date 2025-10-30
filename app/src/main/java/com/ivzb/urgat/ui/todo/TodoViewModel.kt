@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
+import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
+import com.ivzb.urgat.data.todo.useCase.CompleteTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodosFilterType.*
@@ -31,7 +33,9 @@ data class TodoUiState(
 @HiltViewModel
 class TodoViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
-    private val todoRepository: TodoRepository,
+    private val completeTodoUseCase: CompleteTodoUseCase,
+    private val activateTodoUseCase: ActivateTodoUseCase,
+    private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -82,15 +86,15 @@ class TodoViewModel @Inject constructor(
 
     fun clearCompletedTodos() {
         viewModelScope.launch {
-            todoRepository.clearCompleted()
+            clearCompletedTodos()
         }
     }
 
     fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
-            todoRepository.complete(todo.id)
+            completeTodoUseCase(todo.id)
         } else {
-            todoRepository.activate(todo.id)
+            activateTodoUseCase(todo.id)
         }
     }
 
@@ -120,12 +124,6 @@ class TodoViewModel @Inject constructor(
                 )
             }
         }
-
-    companion object {
-
-        private const val DEBOUNCE_TIME_MILLIS = 300L
-
-    }
 
 }
 

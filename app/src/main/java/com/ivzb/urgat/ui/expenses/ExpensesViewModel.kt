@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
@@ -16,16 +15,12 @@ import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
 import javax.inject.Inject
-import kotlin.math.exp
 
 data class ExpensesUiState(
     val items: List<Expense> = emptyList(),
@@ -37,7 +32,6 @@ data class ExpensesUiState(
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
     observeExpensesUseCase: ObserveExpensesUseCase,
-    private val expensesRepository: ExpensesRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -131,12 +125,6 @@ class ExpensesViewModel @Inject constructor(
                 )
             }
         }
-
-    companion object {
-
-        private const val DEBOUNCE_TIME_MILLIS = 300L
-
-    }
 
 }
 

@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.expense.useCase.CreateExpenseUseCase
+import com.ivzb.urgat.data.expense.useCase.GetExpenseUseCase
+import com.ivzb.urgat.data.expense.useCase.UpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +29,9 @@ data class AddEditExpenseUiState(
 
 @HiltViewModel
 class AddEditExpenseViewModel @Inject constructor(
-    private val expensesRepository: ExpensesRepository,
+    private val getExpenseUseCase: GetExpenseUseCase,
+    private val createExpenseUseCase: CreateExpenseUseCase,
+    private val updateExpenseUseCase: UpdateExpenseUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -100,7 +104,7 @@ class AddEditExpenseViewModel @Inject constructor(
     }
 
     private fun createNewExpense() = viewModelScope.launch {
-        expensesRepository.create(
+        createExpenseUseCase(
             name = uiState.value.name,
             amount = uiState.value.amount.toBigDecimal(),
             category = uiState.value.category,
@@ -118,7 +122,7 @@ class AddEditExpenseViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            expensesRepository.update(
+            updateExpenseUseCase(
                 expenseId,
                 name = uiState.value.name,
                 amount = uiState.value.amount.toBigDecimal(),
@@ -138,7 +142,7 @@ class AddEditExpenseViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            expensesRepository.get(expenseId).let { expense ->
+            getExpenseUseCase(expenseId).let { expense ->
                 if (expense != null) {
                     _uiState.update {
                         it.copy(
