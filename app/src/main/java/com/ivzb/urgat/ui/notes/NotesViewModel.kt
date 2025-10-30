@@ -74,7 +74,6 @@ data class NotesFilteringUiInfo(
     override val emptyIconRes: Int = R.drawable.logo_no_fill,
 
     override val loadingLabel: Int = R.string.loading_notes,
-    override val loadingIconRes: Int = R.drawable.ic_loading,
 
     override val errorLabel: Int = R.string.error_notes,
     override val errorIconRes: Int = R.drawable.ic_error,

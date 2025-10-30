@@ -182,7 +182,6 @@ data class OverviewFilteringUiInfo(
     override val emptyIconRes: Int = 0,
 
     override val loadingLabel: Int = R.string.loading_overview,
-    override val loadingIconRes: Int = R.drawable.ic_loading,
 
     override val errorLabel: Int = R.string.error_overview,
     override val errorIconRes: Int = R.drawable.ic_error,

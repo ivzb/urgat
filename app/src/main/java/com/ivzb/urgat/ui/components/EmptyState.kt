@@ -30,6 +30,7 @@ fun EmptyState(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Image(
             painter = painterResource(id = iconRes),
             contentDescription = null,
@@ -48,19 +49,6 @@ private fun EmptyTodosPreview() {
             EmptyState(
                 label = R.string.no_todos,
                 iconRes = R.drawable.logo_no_fill,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun LoadingTodosPreview() {
-    UrgatTheme {
-        Surface {
-            EmptyState(
-                label = R.string.loading_todos,
-                iconRes = R.drawable.ic_loading,
             )
         }
     }

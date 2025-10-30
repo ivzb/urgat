@@ -40,6 +40,7 @@ import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterExpensesMenu
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
+import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.toLocalDate
@@ -98,9 +99,8 @@ private fun ExpensesScreenScaffold(
 
         when {
             uiState.isLoading -> {
-                EmptyState(
+                LoadingState(
                     label = uiState.filteringUiInfo.loadingLabel,
-                    iconRes = uiState.filteringUiInfo.loadingIconRes
                 )
             }
 

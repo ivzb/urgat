@@ -54,6 +54,7 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.LandscapePreview
+import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.components.SeeAllHeader
@@ -154,9 +155,8 @@ private fun OverviewScreenScaffold(
 
         when {
             uiState.isLoading -> {
-                EmptyState(
-                    label = uiState.filteringUiInfo.loadingLabel,
-                    iconRes = uiState.filteringUiInfo.loadingIconRes,
+                LoadingState(
+                    uiState.filteringUiInfo.loadingLabel
                 )
             }
 
