@@ -61,10 +61,9 @@ fun ExpensesScreen(
 
     ExpensesScreenScaffold(
         uiState = uiState,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onIntent = viewModel::onIntent,
         onAddExpense = onAddExpense,
         onExpenseClick = onExpenseClick,
-        setFiltering = viewModel::setFiltering,
         navController = navController,
         modifier = modifier
     )
@@ -73,24 +72,23 @@ fun ExpensesScreen(
 @Composable
 private fun ExpensesScreenScaffold(
     uiState: ExpensesUiState,
-    onSearchQueryChanged: (String) -> Unit,
+    onIntent: (ExpensesIntent) -> Unit,
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
-    setFiltering: (ExpensesFilterType) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
 
     MenuScaffold(
         selectedDestination = ExpensesDestination,
-        onSearchQueryChanged = onSearchQueryChanged,
+        onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
         withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterExpensesMenu(
-                onFilterAllExpenses = { setFiltering(ExpensesFilterType.ALL_EXPENSES) },
-                onFilterDebitExpenses = { setFiltering(ExpensesFilterType.DEBIT_EXPENSES) },
-                onFilterCostExpenses = { setFiltering(ExpensesFilterType.COST_EXPENSES) },
+                onFilterAllExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.ALL_EXPENSES)) },
+                onFilterDebitExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.DEBIT_EXPENSES)) },
+                onFilterCostExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.COST_EXPENSES)) },
             )
         },
         navController = navController,
@@ -275,11 +273,10 @@ private fun ExpensesScreenScaffoldPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
-            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -297,11 +294,10 @@ private fun ExpensesScreenScaffoldEmptyPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
-            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -319,11 +315,10 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
                 isLoading = true,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
-            setFiltering = {},
             modifier = Modifier
         )
     }
@@ -341,11 +336,10 @@ private fun ExpensesScreenScaffoldErrorPreview() {
                 isLoading = false,
                 hasError = true
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
             navController = rememberNavController(),
-            setFiltering = {},
             modifier = Modifier
         )
     }

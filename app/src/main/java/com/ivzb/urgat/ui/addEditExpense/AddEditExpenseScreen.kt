@@ -69,21 +69,8 @@ fun AddEditExpenseScreen(
     AddEditExpenseContent(
         screenTitle = screenTitle,
         onBack = onBack,
-        onSave = viewModel::saveExpense,
-        loading = uiState.isLoading,
-        userMessage = uiState.userMessage,
-        onShowUserMessage = {
-            viewModel.snackbarMessageShown()
-        },
-        name = uiState.name,
-        amount = uiState.amount,
-        category = uiState.category,
-        date = uiState.date,
-        focusIndex = uiState.focusIndex,
-        onNameChanged = viewModel::updateName,
-        onAmountChanged = viewModel::updateAmount,
-        onCategoryChanged = viewModel::updateCategory,
-        onDateChanged = viewModel::updateDate,
+        uiState = uiState,
+        onIntent = viewModel::onIntent,
         modifier = modifier
     )
 
@@ -99,19 +86,8 @@ fun AddEditExpenseScreen(
 private fun AddEditExpenseContent(
     screenTitle: Int,
     onBack: () -> Unit,
-    onSave: () -> Unit,
-    loading: Boolean,
-    userMessage: Int?,
-    onShowUserMessage: () -> Unit,
-    name: String,
-    amount: String,
-    category: String,
-    date: Long,
-    focusIndex: Int?,
-    onNameChanged: (String) -> Unit,
-    onAmountChanged: (String) -> Unit,
-    onCategoryChanged: (String) -> Unit,
-    onDateChanged: (Long) -> Unit,
+    uiState: AddEditExpenseUiState,
+    onIntent: (AddEditExpenseIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -138,14 +114,14 @@ private fun AddEditExpenseContent(
                 .padding(dimensionResource(R.dimen.content_padding))
                 .verticalScroll(rememberScrollState())
         ) {
-            if (loading) {
+            if (uiState.isLoading) {
                 Text("Loading...")
             } else {
                 var nameTextFieldValue by remember {
                     mutableStateOf(
                         TextFieldValue(
-                            text = name,
-                            selection = TextRange(name.length)
+                            text = uiState.name,
+                            selection = TextRange(uiState.name.length)
                         )
                     )
                 }
@@ -157,7 +133,7 @@ private fun AddEditExpenseContent(
                             selection = TextRange(it.text.length)
                         )
 
-                        onNameChanged(it.text)
+                        onIntent(AddEditExpenseIntent.UpdateName(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.expense_hint)) },
                     maxLines = 1,
@@ -176,8 +152,10 @@ private fun AddEditExpenseContent(
                 )
 
                 TextField(
-                    value = amount,
-                    onValueChange = onAmountChanged,
+                    value = uiState.amount,
+                    onValueChange = {
+                        onIntent(AddEditExpenseIntent.UpdateAmount(it))
+                    },
                     placeholder = { Text(stringResource(id = R.string.amount_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
@@ -200,8 +178,10 @@ private fun AddEditExpenseContent(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
                 ) {
                     TextField(
-                        value = category,
-                        onValueChange = onCategoryChanged,
+                        value = uiState.category,
+                        onValueChange = {
+                            onIntent(AddEditExpenseIntent.UpdateCategory(it))
+                        },
                         placeholder = { Text(stringResource(id = R.string.category_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
@@ -214,8 +194,10 @@ private fun AddEditExpenseContent(
                     )
 
                     DatePicker(
-                        timestamp = date,
-                        onTimestampSelected = onDateChanged
+                        timestamp = uiState.date,
+                        onTimestampSelected = {
+                            onIntent(AddEditExpenseIntent.UpdateDate(it))
+                        }
                     ) { selectedDate, dialog ->
 
                         TextField(
@@ -250,29 +232,29 @@ private fun AddEditExpenseContent(
                 )
 
                 Button(
-                    onClick = onSave,
+                    onClick = {
+                        onIntent(AddEditExpenseIntent.SaveExpense)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.save))
                 }
 
-                LaunchedEffect(focusIndex) {
-                    focusIndex?.let { index ->
-                        focusRequesters.getOrNull(index)?.requestFocus()
-                    }
+                LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
                 }
             }
         }
     }
 
-    userMessage?.let { userMessage ->
+    uiState.userMessage?.let { userMessage ->
         val snackbarText = stringResource(userMessage)
 
         LaunchedEffect(userMessage) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(snackbarText)
-                onShowUserMessage()
+                onIntent(AddEditExpenseIntent.UserMessageShown)
             }
         }
     }
@@ -286,19 +268,8 @@ private fun AddContentPreview() {
             AddEditExpenseContent(
                 screenTitle = R.string.add_expense,
                 onBack = {},
-                onSave = {},
-                loading = false,
-                userMessage = null,
-                onShowUserMessage = {},
-                name = "",
-                amount = "",
-                category = "",
-                date = 0L,
-                focusIndex = null,
-                onNameChanged = {},
-                onAmountChanged = {},
-                onCategoryChanged = {},
-                onDateChanged = {},
+                uiState = AddEditExpenseUiState(),
+                onIntent = {},
                 modifier = Modifier
             )
         }
@@ -313,19 +284,13 @@ private fun EditExpenseContentPreview() {
             AddEditExpenseContent(
                 screenTitle = R.string.edit_expense,
                 onBack = {},
-                onSave = {},
-                loading = false,
-                userMessage = null,
-                onShowUserMessage = {},
-                name = "Title",
-                amount = "12.3",
-                category = "",
-                date = 0L,
-                focusIndex = null,
-                onNameChanged = {},
-                onAmountChanged = {},
-                onCategoryChanged = {},
-                onDateChanged = {},
+                uiState = AddEditExpenseUiState(
+                    name = "Title",
+                    amount = "12.3",
+                    category = "",
+                    date = 0L,
+                ),
+                onIntent = {},
                 modifier = Modifier
             )
         }
@@ -340,19 +305,10 @@ private fun LoadingContentPreview() {
             AddEditExpenseContent(
                 screenTitle = R.string.add_expense,
                 onBack = {},
-                onSave = {},
-                loading = true,
-                userMessage = null,
-                onShowUserMessage = {},
-                name = "",
-                amount = "",
-                category = "",
-                date = 0L,
-                focusIndex = null,
-                onNameChanged = {},
-                onAmountChanged = {},
-                onCategoryChanged = {},
-                onDateChanged = {},
+                uiState = AddEditExpenseUiState(
+                    isLoading = true
+                ),
+                onIntent = {},
                 modifier = Modifier
             )
         }

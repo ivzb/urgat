@@ -35,7 +35,28 @@ class AddEditTodoViewModel @Inject constructor(
         }
     }
 
-    fun saveTodo() {
+    fun onIntent(intent: AddEditTodoIntent) {
+        when (intent) {
+            is AddEditTodoIntent.UpdateTitle -> updateTitle(intent.value)
+            is AddEditTodoIntent.UpdateDescription -> updateDescription(intent.value)
+            AddEditTodoIntent.SaveTodo -> saveTodo()
+            AddEditTodoIntent.UserMessageShown -> userMessageShown()
+        }
+    }
+
+    private fun updateTitle(newTitle: String) {
+        _uiState.update {
+            it.copy(title = newTitle)
+        }
+    }
+
+    private fun updateDescription(newDescription: String) {
+        _uiState.update {
+            it.copy(description = newDescription)
+        }
+    }
+
+    private fun saveTodo() {
         if (uiState.value.title.isEmpty() && uiState.value.description.isEmpty()) {
             _uiState.update {
                 it.copy(userMessage = R.string.empty_todo_message)
@@ -51,21 +72,9 @@ class AddEditTodoViewModel @Inject constructor(
         }
     }
 
-    fun snackbarMessageShown() {
+    private fun userMessageShown() {
         _uiState.update {
             it.copy(userMessage = null)
-        }
-    }
-
-    fun updateTitle(newTitle: String) {
-        _uiState.update {
-            it.copy(title = newTitle)
-        }
-    }
-
-    fun updateDescription(newDescription: String) {
-        _uiState.update {
-            it.copy(description = newDescription)
         }
     }
 

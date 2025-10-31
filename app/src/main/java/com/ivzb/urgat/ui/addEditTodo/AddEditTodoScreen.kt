@@ -57,16 +57,8 @@ fun AddEditTodoScreen(
     AddEditTodoContent(
         screenTitle = screenTitle,
         onBack = onBack,
-        onSave = viewModel::saveTodo,
-        loading = uiState.isLoading,
-        userMessage = uiState.userMessage,
-        onShowUserMessage = {
-            viewModel.snackbarMessageShown()
-        },
-        title = uiState.title,
-        description = uiState.description,
-        onTitleChanged = viewModel::updateTitle,
-        onDescriptionChanged = viewModel::updateDescription,
+        uiState = uiState,
+        onIntent = viewModel::onIntent,
         modifier = modifier
     )
 
@@ -82,14 +74,8 @@ fun AddEditTodoScreen(
 private fun AddEditTodoContent(
     screenTitle: Int,
     onBack: () -> Unit,
-    onSave: () -> Unit,
-    loading: Boolean,
-    userMessage: Int?,
-    onShowUserMessage: () -> Unit,
-    title: String,
-    description: String,
-    onTitleChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
+    uiState: AddEditTodoUiState,
+    onIntent: (AddEditTodoIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -113,14 +99,14 @@ private fun AddEditTodoContent(
                 .padding(dimensionResource(R.dimen.content_padding))
                 .verticalScroll(rememberScrollState())
         ) {
-            if (loading) {
+            if (uiState.isLoading) {
                 Text("Loading...")
             } else {
                 var titleTextFieldValue by remember {
                     mutableStateOf(
                         TextFieldValue(
-                            text = title,
-                            selection = TextRange(title.length)
+                            text = uiState.title,
+                            selection = TextRange(uiState.title.length)
                         )
                     )
                 }
@@ -132,7 +118,7 @@ private fun AddEditTodoContent(
                             selection = TextRange(it.text.length)
                         )
 
-                        onTitleChanged(it.text)
+                        onIntent(AddEditTodoIntent.UpdateTitle(it.text))
                     },
                     placeholder = {
                         Text(
@@ -159,8 +145,8 @@ private fun AddEditTodoContent(
                 )
 
                 TextField(
-                    value = description,
-                    onValueChange = onDescriptionChanged,
+                    value = uiState.description,
+                    onValueChange = { onIntent(AddEditTodoIntent.UpdateDescription(it)) },
                     placeholder = { Text(stringResource(id = R.string.description_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -178,7 +164,7 @@ private fun AddEditTodoContent(
                 )
 
                 Button(
-                    onClick = onSave,
+                    onClick = { onIntent(AddEditTodoIntent.SaveTodo) },
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
@@ -192,13 +178,13 @@ private fun AddEditTodoContent(
         }
     }
 
-    userMessage?.let { userMessage ->
+    uiState.userMessage?.let { userMessage ->
         val snackbarText = stringResource(userMessage)
 
         LaunchedEffect(userMessage) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(snackbarText)
-                onShowUserMessage()
+                onIntent(AddEditTodoIntent.UserMessageShown)
             }
         }
     }
@@ -212,14 +198,8 @@ private fun AddContentPreview() {
             AddEditTodoContent(
                 screenTitle = R.string.add_todo,
                 onBack = {},
-                onSave = {},
-                loading = false,
-                userMessage = null,
-                onShowUserMessage = {},
-                title = "",
-                description = "",
-                onTitleChanged = {},
-                onDescriptionChanged = {},
+                uiState = AddEditTodoUiState(),
+                onIntent = {},
                 modifier = Modifier
             )
         }
@@ -234,14 +214,11 @@ private fun EditTodoContentPreview() {
             AddEditTodoContent(
                 screenTitle = R.string.edit_todo,
                 onBack = {},
-                onSave = {},
-                loading = false,
-                userMessage = null,
-                onShowUserMessage = {},
-                title = "Title",
-                description = "Description",
-                onTitleChanged = {},
-                onDescriptionChanged = {},
+                uiState = AddEditTodoUiState(
+                    title = "Title",
+                    description = "Description"
+                ),
+                onIntent = {},
                 modifier = Modifier
             )
         }
@@ -256,14 +233,10 @@ private fun LoadingContentPreview() {
             AddEditTodoContent(
                 screenTitle = R.string.add_todo,
                 onBack = {},
-                onSave = {},
-                loading = true,
-                userMessage = null,
-                onShowUserMessage = {},
-                title = "",
-                description = "",
-                onTitleChanged = {},
-                onDescriptionChanged = {},
+                uiState = AddEditTodoUiState(
+                    isLoading = true
+                ),
+                onIntent = {},
                 modifier = Modifier
             )
         }

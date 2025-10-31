@@ -113,11 +113,20 @@ class OverviewViewModel @Inject constructor(
         initialValue = OverviewUiState(isLoading = true)
     )
 
-    fun onSearchQueryChanged(newQuery: String) {
+    fun onIntent(intent: OverviewIntent) {
+        when (intent) {
+            OverviewIntent.ClearCompletedTodos -> clearCompletedTodos()
+            is OverviewIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
+            is OverviewIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+            is OverviewIntent.HeaderItemClick -> onHeaderItemClick(intent.item)
+        }
+    }
+
+    private fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
     }
 
-    fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
+    private fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
             completeTodoUseCase(todo.id)
         } else {
@@ -125,13 +134,13 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
-    fun clearCompletedTodos() {
+    private fun clearCompletedTodos() {
         viewModelScope.launch {
             clearCompletedTodosUseCase()
         }
     }
 
-    fun onHeaderItemClick(item: HeaderItem) {
+    private fun onHeaderItemClick(item: HeaderItem) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (item.id) {

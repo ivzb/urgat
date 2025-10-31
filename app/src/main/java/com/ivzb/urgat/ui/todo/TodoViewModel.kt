@@ -68,21 +68,30 @@ class TodoViewModel @Inject constructor(
         initialValue = TodoUiState(isLoading = true)
     )
 
-    fun onSearchQueryChanged(newQuery: String) {
+    fun onIntent(intent: TodoIntent) {
+        when (intent) {
+            is TodoIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+            is TodoIntent.SetFiltering -> setFiltering(intent.filterType)
+            is TodoIntent.ClearCompletedTodos -> clearCompletedTodos()
+            is TodoIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
+        }
+    }
+
+    private fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
     }
 
-    fun setFiltering(requestType: TodosFilterType) {
+    private fun setFiltering(requestType: TodosFilterType) {
         savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = requestType
     }
 
-    fun clearCompletedTodos() {
+    private fun clearCompletedTodos() {
         viewModelScope.launch {
             clearCompletedTodosUseCase()
         }
     }
 
-    fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
+    private fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {
         if (completed) {
             completeTodoUseCase(todo.id)
         } else {

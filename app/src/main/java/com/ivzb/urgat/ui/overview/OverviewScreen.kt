@@ -91,19 +91,17 @@ fun OverviewScreen(
 
     OverviewScreenScaffold(
         uiState = uiState,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
-        onHeaderItemClick = viewModel::onHeaderItemClick,
+        onIntent = viewModel::onIntent,
 
         onSeeAllTodos = onSeeAllTodos,
         onTodoClick = onTodoClick,
-        clearCompletedTodos = viewModel::clearCompletedTodos,
-        completeTodo = viewModel::completeTodo,
 
         onSeeAllExpenses = onSeeAllExpenses,
         onExpenseClick = onExpenseClick,
 
         onSeeAllNotes = onSeeAllNotes,
         onNoteClick = onNoteClick,
+
         navController = navController,
         modifier = modifier
     )
@@ -122,13 +120,10 @@ fun OverviewScreen(
 @Composable
 private fun OverviewScreenScaffold(
     uiState: OverviewUiState,
-    onSearchQueryChanged: (String) -> Unit,
-    onHeaderItemClick: (HeaderItem) -> Unit,
+    onIntent: (OverviewIntent) -> Unit,
 
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-    clearCompletedTodos: () -> Unit,
-    completeTodo: (Todo, Boolean) -> Unit,
 
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
@@ -142,12 +137,12 @@ private fun OverviewScreenScaffold(
 
     MenuScaffold(
         selectedDestination = OverviewDestination,
-        onSearchQueryChanged = onSearchQueryChanged,
+        onSearchQueryChanged = { query -> onIntent(OverviewIntent.SearchQueryChanged(query)) },
         navController = navController,
         withTopAppBarActions = uiState.todoItems.isNotEmpty(),
         topAppBarActionsContent = {
             MoreTodosMenu(
-                onClearCompletedTodos = clearCompletedTodos
+                onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
             )
         },
         modifier = modifier
@@ -170,13 +165,13 @@ private fun OverviewScreenScaffold(
             else -> {
                 OverviewContent(
                     headerItems = uiState.headerItems,
-                    onHeaderItemClick = onHeaderItemClick,
+                    onHeaderItemClick = { item -> onIntent(OverviewIntent.HeaderItemClick(item)) },
 
                     todos = uiState.todoItems,
                     todoFilteringUiInfo = uiState.todoFilteringUiInfo,
                     onSeeAllTodos = onSeeAllTodos,
                     onTodoClick = onTodoClick,
-                    onTodoCheckedChange = completeTodo,
+                    onTodoCheckedChange = { todo, completed -> onIntent(OverviewIntent.CompleteTodo(todo, completed)) },
 
                     expenses = uiState.expensesItems,
                     expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
@@ -585,12 +580,9 @@ fun OverviewScreenScaffoldTodosPreview() {
                 hasError = false,
                 filteringUiInfo = OverviewFilteringUiInfo()
             ),
-            onSearchQueryChanged = {},
-            onHeaderItemClick = {},
+            onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
             onSeeAllNotes = {},
@@ -631,12 +623,9 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
                 hasError = false,
                 filteringUiInfo = OverviewFilteringUiInfo()
             ),
-            onSearchQueryChanged = {},
-            onHeaderItemClick = {},
+            onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
             onSeeAllNotes = {},
@@ -677,12 +666,9 @@ fun OverviewScreenScaffoldLoadingPreview() {
                 hasError = false,
                 filteringUiInfo = OverviewFilteringUiInfo()
             ),
-            onSearchQueryChanged = {},
-            onHeaderItemClick = {},
+            onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
             onSeeAllNotes = {},
@@ -723,12 +709,9 @@ fun OverviewScreenScaffoldErrorPreview() {
                 hasError = true,
                 filteringUiInfo = OverviewFilteringUiInfo()
             ),
-            onSearchQueryChanged = {},
-            onHeaderItemClick = {},
+            onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             onSeeAllExpenses = {},
             onExpenseClick = {},
             onSeeAllNotes = {},

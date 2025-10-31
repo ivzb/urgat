@@ -62,11 +62,18 @@ class ExpensesViewModel @Inject constructor(
         initialValue = ExpensesUiState(isLoading = true)
     )
 
-    fun onSearchQueryChanged(newQuery: String) {
+    fun onIntent(intent: ExpensesIntent) {
+        when (intent) {
+            is ExpensesIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+            is ExpensesIntent.SetFiltering -> setFiltering(intent.filterType)
+        }
+    }
+
+    private fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
     }
 
-    fun setFiltering(requestType: ExpensesFilterType) {
+    private fun setFiltering(requestType: ExpensesFilterType) {
         savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] = requestType
     }
 

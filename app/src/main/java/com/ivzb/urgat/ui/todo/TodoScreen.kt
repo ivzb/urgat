@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,12 +58,9 @@ fun TodoScreen(
 
     TodoScreenScaffold(
         uiState = uiState,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onIntent = viewModel::onIntent,
         onAddTodo = onAddTodo,
         onTodoClick = onTodoClick,
-        setFiltering = viewModel::setFiltering,
-        clearCompletedTodos = viewModel::clearCompletedTodos,
-        completeTodo = viewModel::completeTodo,
         navController = navController,
         modifier = modifier
     )
@@ -73,31 +69,28 @@ fun TodoScreen(
 @Composable
 private fun TodoScreenScaffold(
     uiState: TodoUiState,
-    onSearchQueryChanged: (String) -> Unit,
+    onIntent: (TodoIntent) -> Unit,
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-    setFiltering: (TodosFilterType) -> Unit,
-    clearCompletedTodos: () -> Unit,
-    completeTodo: (Todo, Boolean) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
 
     MenuScaffold(
         selectedDestination = TodoDestination,
-        onSearchQueryChanged = onSearchQueryChanged,
+        onSearchQueryChanged = { query -> onIntent(TodoIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
         navController = navController,
         withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterTodosMenu(
-                onFilterAllTodos = { setFiltering(TodosFilterType.ALL_TODOS) },
-                onFilterActiveTodos = { setFiltering(TodosFilterType.ACTIVE_TODOS) },
-                onFilterCompletedTodos = { setFiltering(TodosFilterType.COMPLETED_TODOS) },
+                onFilterAllTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.ALL_TODOS)) },
+                onFilterActiveTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.ACTIVE_TODOS)) },
+                onFilterCompletedTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.COMPLETED_TODOS)) },
             )
 
             MoreTodosMenu(
-                onClearCompletedTodos = clearCompletedTodos
+                onClearCompletedTodos = { onIntent(TodoIntent.ClearCompletedTodos) }
             )
         },
         modifier = modifier
@@ -129,7 +122,7 @@ private fun TodoScreenScaffold(
                     todos = uiState.items,
                     currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
                     onTodoClick = onTodoClick,
-                    onTodoCheckedChange = completeTodo,
+                    onTodoCheckedChange = { todo, completed -> onIntent(TodoIntent.CompleteTodo(todo, completed)) },
                     listState = listState
                 )
             }
@@ -312,12 +305,9 @@ private fun TodoScreenScaffoldPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            setFiltering = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -336,12 +326,9 @@ private fun TodoScreenScaffoldEmptyPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            setFiltering = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -360,12 +347,9 @@ private fun TodoScreenScaffoldLoadingPreview() {
                 isLoading = true,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            setFiltering = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             navController = rememberNavController(),
             modifier = Modifier
         )
@@ -384,12 +368,9 @@ private fun TodoScreenScaffoldErrorPreview() {
                 isLoading = false,
                 hasError = true
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            setFiltering = {},
-            clearCompletedTodos = {},
-            completeTodo = { _, _ -> },
             navController = rememberNavController(),
             modifier = Modifier
         )

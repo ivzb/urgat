@@ -35,7 +35,21 @@ class AddEditNoteViewModel @Inject constructor(
         }
     }
 
-    fun saveNote() {
+    fun onIntent(intent: AddEditNoteIntent) {
+        when (intent) {
+            is AddEditNoteIntent.UpdateContent -> updateContent(intent.value)
+            AddEditNoteIntent.SaveNote -> saveNote()
+            AddEditNoteIntent.UserMessageShown -> userMessageShown()
+        }
+    }
+
+    private fun updateContent(content: String) {
+        _uiState.update {
+            it.copy(content = content)
+        }
+    }
+
+    private fun saveNote() {
         val fields = listOf(
             uiState.value.content
         )
@@ -60,15 +74,32 @@ class AddEditNoteViewModel @Inject constructor(
         }
     }
 
-    fun snackbarMessageShown() {
+    private fun userMessageShown() {
         _uiState.update {
             it.copy(userMessage = null)
         }
     }
 
-    fun updateContent(content: String) {
+    private fun loadNote(noteId: String) {
         _uiState.update {
-            it.copy(content = content)
+            it.copy(isLoading = true)
+        }
+
+        viewModelScope.launch {
+            getNoteUseCase(noteId).let { note ->
+                if (note != null) {
+                    _uiState.update {
+                        it.copy(
+                            content = note.content,
+                            isLoading = false
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
+                }
+            }
         }
     }
 
@@ -95,29 +126,6 @@ class AddEditNoteViewModel @Inject constructor(
 
             _uiState.update {
                 it.copy(isNoteSaved = true)
-            }
-        }
-    }
-
-    private fun loadNote(noteId: String) {
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
-
-        viewModelScope.launch {
-            getNoteUseCase(noteId).let { note ->
-                if (note != null) {
-                    _uiState.update {
-                        it.copy(
-                            content = note.content,
-                            isLoading = false
-                        )
-                    }
-                } else {
-                    _uiState.update {
-                        it.copy(isLoading = false)
-                    }
-                }
             }
         }
     }

@@ -22,5 +22,7 @@ data class OverviewUiState(
 
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
-    val filteringUiInfo: FilteringUiInfo = OverviewFilteringUiInfo()
+    val filteringUiInfo: FilteringUiInfo = OverviewFilteringUiInfo(),
+
+    val uiEvent: OverviewUiEvent? = null,
 )

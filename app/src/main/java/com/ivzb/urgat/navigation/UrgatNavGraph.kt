@@ -86,33 +86,23 @@ private fun NavHostContent(
         composable(TodoDestination.route) {
             TodoScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
-                onTodoClick = {
-                    navActions.navigateToEditTodo(it.id)
-                },
+                onTodoClick = { navActions.navigateToEditTodo(it.id) },
                 navController = navController,
             )
         }
 
         composable(ExpensesDestination.route) {
             ExpensesScreen(
-                onAddExpense = {
-                    navActions.navigateToAddExpense()
-                },
-                onExpenseClick = {
-                    navActions.navigateToEditExpense(it.id)
-                },
+                onAddExpense = { navActions.navigateToAddExpense() },
+                onExpenseClick = { navActions.navigateToEditExpense(it.id) },
                 navController = navController,
             )
         }
 
         composable(NotesDestination.route) {
             NotesScreen(
-                onAddNote = {
-                    navActions.navigateToAddNote()
-                },
-                onNoteClick = {
-                    navActions.navigateToEditNote(it.id)
-                },
+                onAddNote = { navActions.navigateToAddNote() },
+                onNoteClick = { navActions.navigateToEditNote(it.id) },
                 navController = navController,
             )
         }

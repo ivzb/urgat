@@ -51,7 +51,7 @@ fun NotesScreen(
 
     NotesScreenScaffold(
         uiState = uiState,
-        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+        onIntent = viewModel::onIntent,
         onAddNote = onAddNote,
         onNoteClick = onNoteClick,
         navController = navController,
@@ -62,7 +62,7 @@ fun NotesScreen(
 @Composable
 private fun NotesScreenScaffold(
     uiState: NotesUiState,
-    onSearchQueryChanged: (String) -> Unit,
+    onIntent: (NotesIntent) -> Unit,
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
     navController: NavHostController,
@@ -71,7 +71,7 @@ private fun NotesScreenScaffold(
 
     MenuScaffold(
         selectedDestination = NotesDestination,
-        onSearchQueryChanged = onSearchQueryChanged,
+        onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         withTopAppBarActions = false,
         navController = navController,
@@ -119,7 +119,7 @@ internal fun NotesContent(
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(R.dimen.grid_padding))
     ) {
@@ -243,7 +243,7 @@ private fun NotesScreenScaffoldPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddNote = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -264,7 +264,7 @@ private fun NotesScreenScaffoldEmptyPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddNote = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -285,7 +285,7 @@ private fun NotesScreenScaffoldLoadingPreview() {
                 isLoading = true,
                 hasError = false
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddNote = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -306,7 +306,7 @@ private fun NotesScreenScaffoldErrorPreview() {
                 isLoading = false,
                 hasError = true
             ),
-            onSearchQueryChanged = {},
+            onIntent = {},
             onAddNote = {},
             onNoteClick = {},
             navController = rememberNavController(),

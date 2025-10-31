@@ -51,7 +51,13 @@ class NotesViewModel @Inject constructor(
         initialValue = NotesUiState(isLoading = true)
     )
 
-    fun onSearchQueryChanged(newQuery: String) {
+    fun onIntent(intent: NotesIntent) {
+        when (intent) {
+            is NotesIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+        }
+    }
+
+    private fun onSearchQueryChanged(newQuery: String) {
         _searchQuery.value = newQuery
     }
 

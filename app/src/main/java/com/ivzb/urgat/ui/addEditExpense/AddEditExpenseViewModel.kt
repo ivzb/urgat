@@ -35,7 +35,42 @@ class AddEditExpenseViewModel @Inject constructor(
         }
     }
 
-    fun saveExpense() {
+    fun onIntent(intent: AddEditExpenseIntent) {
+        when (intent) {
+            is AddEditExpenseIntent.UpdateName -> updateName(intent.value)
+            is AddEditExpenseIntent.UpdateAmount -> updateAmount(intent.value)
+            is AddEditExpenseIntent.UpdateCategory -> updateCategory(intent.value)
+            is AddEditExpenseIntent.UpdateDate -> updateDate(intent.value)
+            AddEditExpenseIntent.SaveExpense -> saveExpense()
+            AddEditExpenseIntent.UserMessageShown -> userMessageShown()
+        }
+    }
+
+    private fun updateName(name: String) {
+        _uiState.update {
+            it.copy(name = name)
+        }
+    }
+
+    private fun updateAmount(amount: String) {
+        _uiState.update {
+            it.copy(amount = amount)
+        }
+    }
+
+    private fun updateCategory(category: String) {
+        _uiState.update {
+            it.copy(category = category)
+        }
+    }
+
+    private fun updateDate(date: Long) {
+        _uiState.update {
+            it.copy(date = date)
+        }
+    }
+
+    private fun saveExpense() {
         val fields = listOf(
             uiState.value.name,
             uiState.value.amount,
@@ -62,36 +97,6 @@ class AddEditExpenseViewModel @Inject constructor(
         }
     }
 
-    fun snackbarMessageShown() {
-        _uiState.update {
-            it.copy(userMessage = null)
-        }
-    }
-
-    fun updateName(name: String) {
-        _uiState.update {
-            it.copy(name = name)
-        }
-    }
-
-    fun updateAmount(amount: String) {
-        _uiState.update {
-            it.copy(amount = amount)
-        }
-    }
-
-    fun updateCategory(category: String) {
-        _uiState.update {
-            it.copy(category = category)
-        }
-    }
-
-    fun updateDate(date: Long) {
-        _uiState.update {
-            it.copy(date = date)
-        }
-    }
-
     private fun createNewExpense() = viewModelScope.launch {
         createExpenseUseCase(
             name = uiState.value.name,
@@ -102,6 +107,13 @@ class AddEditExpenseViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(isExpenseSaved = true)
+        }
+    }
+
+
+    private fun userMessageShown() {
+        _uiState.update {
+            it.copy(userMessage = null)
         }
     }
 

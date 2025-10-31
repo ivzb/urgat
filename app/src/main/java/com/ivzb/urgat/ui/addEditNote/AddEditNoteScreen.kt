@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseUiState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.transparentTextFieldColors
@@ -59,15 +60,8 @@ fun AddEditNoteScreen(
     AddEditNoteContent(
         screenTitle = screenTitle,
         onBack = onBack,
-        onSave = viewModel::saveNote,
-        loading = uiState.isLoading,
-        userMessage = uiState.userMessage,
-        onShowUserMessage = {
-            viewModel.snackbarMessageShown()
-        },
-        content = uiState.content,
-        focusIndex = uiState.focusIndex,
-        onContentChanged = viewModel::updateContent,
+        uiState = uiState,
+        onIntent = viewModel::onIntent,
         modifier = modifier
     )
 
@@ -83,13 +77,8 @@ fun AddEditNoteScreen(
 private fun AddEditNoteContent(
     screenTitle: Int,
     onBack: () -> Unit,
-    onSave: () -> Unit,
-    loading: Boolean,
-    userMessage: Int?,
-    onShowUserMessage: () -> Unit,
-    content: String,
-    focusIndex: Int?,
-    onContentChanged: (String) -> Unit,
+    uiState: AddEditNoteUiState,
+    onIntent: (AddEditNoteIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -115,14 +104,14 @@ private fun AddEditNoteContent(
                 .padding(dimensionResource(R.dimen.content_padding))
                 .verticalScroll(rememberScrollState())
         ) {
-            if (loading) {
+            if (uiState.isLoading) {
                 Text("Loading...")
             } else {
                 var contentTextFieldValue by remember {
                     mutableStateOf(
                         TextFieldValue(
-                            text = content,
-                            selection = TextRange(content.length)
+                            text = uiState.content,
+                            selection = TextRange(uiState.content.length)
                         )
                     )
                 }
@@ -134,7 +123,7 @@ private fun AddEditNoteContent(
                             selection = TextRange(it.text.length)
                         )
 
-                        onContentChanged(it.text)
+                        onIntent(AddEditNoteIntent.UpdateContent(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.note_hint)) },
                     keyboardOptions = KeyboardOptions(
@@ -154,29 +143,27 @@ private fun AddEditNoteContent(
                 )
 
                 Button(
-                    onClick = onSave,
+                    onClick = { onIntent(AddEditNoteIntent.SaveNote) },
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.save))
                 }
 
-                LaunchedEffect(focusIndex) {
-                    focusIndex?.let { index ->
-                        focusRequesters.getOrNull(index)?.requestFocus()
-                    }
+                LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
                 }
             }
         }
     }
 
-    userMessage?.let { userMessage ->
+    uiState.userMessage?.let { userMessage ->
         val snackbarText = stringResource(userMessage)
 
         LaunchedEffect(userMessage) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(snackbarText)
-                onShowUserMessage()
+                onIntent(AddEditNoteIntent.UserMessageShown)
             }
         }
     }
@@ -190,13 +177,8 @@ private fun AddContentPreview() {
             AddEditNoteContent(
                 screenTitle = R.string.add_note,
                 onBack = {},
-                onSave = {},
-                loading = false,
-                userMessage = null,
-                onShowUserMessage = {},
-                content = "",
-                focusIndex = null,
-                onContentChanged = {},
+                uiState = AddEditNoteUiState(),
+                onIntent = {},
                 modifier = Modifier
             )
         }
@@ -211,13 +193,10 @@ private fun EditNoteContentPreview() {
             AddEditNoteContent(
                 screenTitle = R.string.edit_note,
                 onBack = {},
-                onSave = {},
-                loading = false,
-                userMessage = null,
-                onShowUserMessage = {},
-                content = "Note content",
-                focusIndex = null,
-                onContentChanged = {},
+                uiState = AddEditNoteUiState(
+                    content = "Note content",
+                ),
+                onIntent = {},
                 modifier = Modifier
             )
         }
@@ -232,13 +211,10 @@ private fun LoadingContentPreview() {
             AddEditNoteContent(
                 screenTitle = R.string.add_note,
                 onBack = {},
-                onSave = {},
-                loading = true,
-                userMessage = null,
-                onShowUserMessage = {},
-                content = "",
-                focusIndex = null,
-                onContentChanged = {},
+                uiState = AddEditNoteUiState(
+                    isLoading = true
+                ),
+                onIntent = {},
                 modifier = Modifier
             )
         }
