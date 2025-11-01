@@ -6,6 +6,7 @@
     <string name="todo">Todo</string>
     <string name="expenses">Expenses</string>
     <string name="notes">Notes</string>
+    <string name="trackers">Trackers</string>
     <string name="weather">Weather</string>
     <string name="all_todos">All todos</string>
     <string name="active_todos">Active todos</string>
