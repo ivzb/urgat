@@ -42,15 +42,13 @@ import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun TodoScreen(
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-
-    navController: NavHostController,
-
     modifier: Modifier = Modifier,
     viewModel: TodoViewModel = hiltViewModel()
 ) {
@@ -61,7 +59,6 @@ fun TodoScreen(
         onIntent = viewModel::onIntent,
         onAddTodo = onAddTodo,
         onTodoClick = onTodoClick,
-        navController = navController,
         modifier = modifier
     )
 }
@@ -72,15 +69,13 @@ private fun TodoScreenScaffold(
     onIntent: (TodoIntent) -> Unit,
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
 
-    MenuScaffold(
+    UrgatScaffold(
         selectedDestination = TodoDestination,
         onSearchQueryChanged = { query -> onIntent(TodoIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
-        navController = navController,
         withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterTodosMenu(
@@ -308,7 +303,6 @@ private fun TodoScreenScaffoldPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -329,7 +323,6 @@ private fun TodoScreenScaffoldEmptyPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -350,7 +343,6 @@ private fun TodoScreenScaffoldLoadingPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -371,7 +363,6 @@ private fun TodoScreenScaffoldErrorPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }

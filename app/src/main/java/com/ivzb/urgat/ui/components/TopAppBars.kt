@@ -31,14 +31,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.OverviewDestination
-import com.ivzb.urgat.navigation.TodoDestination
-import com.ivzb.urgat.navigation.UrgatMenuDestination
+import com.ivzb.urgat.navigation.TrackersDestination
+import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarContent(
-    selectedDestination: UrgatMenuDestination,
+    selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
     withTopAppBarActions: Boolean = true,
     actionsContent: (@Composable () -> Unit)? = null
@@ -222,10 +222,10 @@ fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
 
 @Preview
 @Composable
-fun TopAppBarContentTodoDestinationPreview() {
+fun TopAppBarContentTrackersDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = TodoDestination,
+            selectedDestination = TrackersDestination,
             onSearchQueryChanged = {},
             withTopAppBarActions = true,
             actionsContent = {}

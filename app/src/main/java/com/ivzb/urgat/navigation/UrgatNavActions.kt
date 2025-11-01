@@ -1,12 +1,14 @@
 package com.ivzb.urgat.navigation
 
 import androidx.annotation.StringRes
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.ivzb.urgat.R
-import kotlin.math.exp
 
 class UrgatNavActions(private val navController: NavHostController) {
+
+    fun navigateToTodo() {
+        navController.navigate(TodoDestination.route)
+    }
 
     fun navigateToAddTodo() {
         navigateToAddEditTodo(R.string.add_todo, null)
@@ -21,6 +23,10 @@ class UrgatNavActions(private val navController: NavHostController) {
             if (id != null) "$it?${AddEditTodoDestination.Args.ARG_ID}=$id" else it
         }
         navController.navigate(route)
+    }
+
+    fun navigateToExpenses() {
+        navController.navigate(ExpensesDestination.route)
     }
 
     fun navigateToAddExpense() {
@@ -38,6 +44,10 @@ class UrgatNavActions(private val navController: NavHostController) {
         navController.navigate(route)
     }
 
+    fun navigateToNotes() {
+        navController.navigate(NotesDestination.route)
+    }
+
     fun navigateToAddNote() {
         navigateToAddEditNote(R.string.add_note, null)
     }
@@ -53,21 +63,3 @@ class UrgatNavActions(private val navController: NavHostController) {
         navController.navigate(route)
     }
 }
-
-fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestination, popInclusive: Boolean = false) =
-    this.navigate(destination.route) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
-        // on the back stack as users select items
-        popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id
-        ) {
-            saveState = true
-            inclusive = popInclusive
-        }
-        // Avoid multiple copies of the same destination when
-        // reselecting the same item
-        launchSingleTop = true
-        // Restore state when reselecting a previously selected item
-        restoreState = true
-    }

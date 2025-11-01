@@ -1,5 +1,6 @@
 package com.ivzb.urgat.navigation
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ivzb.urgat.R
@@ -30,6 +32,7 @@ import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoScreen
+import com.ivzb.urgat.ui.trackers.TrackersScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -50,7 +53,7 @@ fun UrgatNavGraph(
         modifier = modifier
     )
 
-    DoubleBackToExitApp()
+    DoubleBackToExitApp(navController)
 }
 
 @Composable
@@ -69,15 +72,15 @@ private fun NavHostContent(
         composable(OverviewDestination.route) {
             OverviewScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
-                onSeeAllTodos = { navController.navigateSingleTopTo(TodoDestination) },
+                onSeeAllTodos = { navActions.navigateToTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
 
                 onAddExpense = { navActions.navigateToAddExpense() },
-                onSeeAllExpenses = { navController.navigateSingleTopTo(ExpensesDestination) },
+                onSeeAllExpenses = { navActions.navigateToExpenses() },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
 
                 onAddNote = { navActions.navigateToAddNote() },
-                onSeeAllNotes = { navController.navigateSingleTopTo(NotesDestination) },
+                onSeeAllNotes = { navActions.navigateToNotes() },
                 onNoteClick = { navActions.navigateToEditNote(it.id) },
                 navController = navController,
             )
@@ -87,7 +90,6 @@ private fun NavHostContent(
             TodoScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
-                navController = navController,
             )
         }
 
@@ -95,7 +97,6 @@ private fun NavHostContent(
             ExpensesScreen(
                 onAddExpense = { navActions.navigateToAddExpense() },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
-                navController = navController,
             )
         }
 
@@ -103,6 +104,11 @@ private fun NavHostContent(
             NotesScreen(
                 onAddNote = { navActions.navigateToAddNote() },
                 onNoteClick = { navActions.navigateToEditNote(it.id) },
+            )
+        }
+
+        composable(TrackersDestination.route) {
+            TrackersScreen(
                 navController = navController,
             )
         }
@@ -168,14 +174,26 @@ private fun NavHostContent(
 
 
 @Composable
-private fun DoubleBackToExitApp() {
+private fun DoubleBackToExitApp(
+    navController: NavHostController
+) {
     val context = LocalContext.current
     var backPressedOnce by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     BackHandler {
+        val isAtRootLevel = bottomNavigationScreens.any { it.route == currentRoute }
+
+        if (!isAtRootLevel) {
+            navController.popBackStack()
+            return@BackHandler
+        }
+
         if (backPressedOnce) {
-            (context as? android.app.Activity)?.finish()
+            (context as? Activity)?.finish()
             return@BackHandler
         }
 

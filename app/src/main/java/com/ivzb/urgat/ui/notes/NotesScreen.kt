@@ -34,15 +34,13 @@ import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun NotesScreen(
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
-
-    navController: NavHostController,
-
     modifier: Modifier = Modifier,
     viewModel: NotesViewModel = hiltViewModel()
 ) {
@@ -54,7 +52,6 @@ fun NotesScreen(
         onIntent = viewModel::onIntent,
         onAddNote = onAddNote,
         onNoteClick = onNoteClick,
-        navController = navController,
         modifier = modifier
     )
 }
@@ -65,16 +62,14 @@ private fun NotesScreenScaffold(
     onIntent: (NotesIntent) -> Unit,
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
-    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
 
-    MenuScaffold(
+    UrgatScaffold(
         selectedDestination = NotesDestination,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         withTopAppBarActions = false,
-        navController = navController,
         modifier = modifier
     ) { listState ->
 
@@ -246,7 +241,6 @@ private fun NotesScreenScaffoldPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -267,7 +261,6 @@ private fun NotesScreenScaffoldEmptyPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -288,7 +281,6 @@ private fun NotesScreenScaffoldLoadingPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -309,7 +301,6 @@ private fun NotesScreenScaffoldErrorPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }

@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
@@ -41,7 +40,7 @@ import com.ivzb.urgat.ui.components.FilterExpensesMenu
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
@@ -50,9 +49,6 @@ import java.math.BigDecimal
 fun ExpensesScreen(
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
-
-    navController: NavHostController,
-
     modifier: Modifier = Modifier,
     viewModel: ExpensesViewModel = hiltViewModel()
 ) {
@@ -64,7 +60,6 @@ fun ExpensesScreen(
         onIntent = viewModel::onIntent,
         onAddExpense = onAddExpense,
         onExpenseClick = onExpenseClick,
-        navController = navController,
         modifier = modifier
     )
 }
@@ -75,11 +70,10 @@ private fun ExpensesScreenScaffold(
     onIntent: (ExpensesIntent) -> Unit,
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
-    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
 
-    MenuScaffold(
+    UrgatScaffold(
         selectedDestination = ExpensesDestination,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
@@ -91,7 +85,6 @@ private fun ExpensesScreenScaffold(
                 onFilterCostExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.COST_EXPENSES)) },
             )
         },
-        navController = navController,
         modifier = modifier
     ) { listState ->
 
@@ -276,7 +269,6 @@ private fun ExpensesScreenScaffoldPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -297,7 +289,6 @@ private fun ExpensesScreenScaffoldEmptyPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -318,7 +309,6 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }
@@ -339,7 +329,6 @@ private fun ExpensesScreenScaffoldErrorPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
-            navController = rememberNavController(),
             modifier = Modifier
         )
     }

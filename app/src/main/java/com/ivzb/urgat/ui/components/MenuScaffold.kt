@@ -30,12 +30,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.navigation.OverviewDestination
+import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.navigation.UrgatMenuDestination
 import com.ivzb.urgat.navigation.bottomNavigationScreens
-import com.ivzb.urgat.navigation.navigateSingleTopTo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -52,7 +53,6 @@ fun MenuScaffold(
     content: @Composable (LazyListState) -> Unit
 ) {
     val navigationLayoutType = calculateNavigationSuiteType()
-    val lazyListState = rememberLazyListState()
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -81,35 +81,57 @@ fun MenuScaffold(
             .fillMaxSize()
     ) {
 
-        Scaffold(
-            topBar = {
-                TopAppBarContent(
-                    selectedDestination = selectedDestination,
-                    onSearchQueryChanged = onSearchQueryChanged,
-                    withTopAppBarActions = withTopAppBarActions,
-                    actionsContent = topAppBarActionsContent
+        UrgatScaffold(
+            selectedDestination = selectedDestination,
+            onSearchQueryChanged = onSearchQueryChanged,
+            onAddItem = onAddItem,
+            withTopAppBarActions = withTopAppBarActions,
+            topAppBarActionsContent = topAppBarActionsContent,
+            content = content
+        )
+    }
+}
+
+@Composable
+fun UrgatScaffold(
+    selectedDestination: UrgatDestination,
+    onSearchQueryChanged: (String) -> Unit,
+    onAddItem: (() -> Unit)? = null,
+    withTopAppBarActions: Boolean = true,
+    topAppBarActionsContent: (@Composable () -> Unit)? = null,
+    lazyListState: LazyListState = rememberLazyListState(),
+    modifier: Modifier = Modifier,
+    content: @Composable (LazyListState) -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBarContent(
+                selectedDestination = selectedDestination,
+                onSearchQueryChanged = onSearchQueryChanged,
+                withTopAppBarActions = withTopAppBarActions,
+                actionsContent = topAppBarActionsContent
+            )
+        },
+        floatingActionButton = {
+            if (selectedDestination.withFAB) {
+                FloatingActionButtonContent(
+                    extended = lazyListState.isScrollingUp(),
+                    onClick = {
+                        onAddItem?.invoke()
+                    }
                 )
-            },
-            floatingActionButton = {
-                if (selectedDestination.withFAB) {
-                    FloatingActionButtonContent(
-                        extended = lazyListState.isScrollingUp(),
-                        onClick = {
-                            onAddItem?.invoke()
-                        }
-                    )
-                }
-            },
-            contentWindowInsets = WindowInsets.systemBars,
-        ) { innerPadding ->
-
-            Box(
-                modifier = Modifier
-                    .padding(innerPadding)
-            ) {
-
-                content(lazyListState)
             }
+        },
+        contentWindowInsets = WindowInsets.systemBars,
+        modifier = modifier
+    ) { innerPadding ->
+
+        Box(
+            modifier = Modifier
+                .padding(innerPadding)
+        ) {
+
+            content(lazyListState)
         }
     }
 }
@@ -164,6 +186,24 @@ private fun calculateNavigationSuiteType(): NavigationSuiteType {
 
     return layoutType
 }
+
+private fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestination, popInclusive: Boolean = false) =
+    this.navigate(destination.route) {
+        // Pop up to the start destination of the graph to
+        // avoid building up a large stack of destinations
+        // on the back stack as users select items
+        popUpTo(
+            this@navigateSingleTopTo.graph.findStartDestination().id
+        ) {
+            saveState = true
+            inclusive = popInclusive
+        }
+        // Avoid multiple copies of the same destination when
+        // reselecting the same item
+        launchSingleTop = true
+        // Restore state when reselecting a previously selected item
+        restoreState = true
+    }
 
 @Preview
 @LandscapePreview

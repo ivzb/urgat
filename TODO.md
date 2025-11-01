@@ -8,3 +8,5 @@ improve empty state for each of the features in the overview screen with adding 
 add onboarding screen
 write view models unit tests
 consider moving uiEvent into the uiState
+remove MenuScaffold from todo, expenses and notes screens because it shows bottom bar
+change add/edit screens scaffold to UrgatScaffold

@@ -10,14 +10,15 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.ivzb.urgat.R
 
-sealed interface UrgatDestination {
-    val icon: ImageVector
-    val route: String
+sealed class UrgatDestination {
+    abstract val label: Int
+    abstract val icon: ImageVector
+    abstract val route: String
+    open val withFAB: Boolean = false
 }
 
-sealed class UrgatMenuDestination: UrgatDestination {
-    abstract val label: Int
-    open val withFAB: Boolean = true
+sealed class UrgatMenuDestination: UrgatDestination() {
+    override val withFAB: Boolean = true
 }
 
 data object OverviewDestination: UrgatMenuDestination() {
@@ -27,22 +28,11 @@ data object OverviewDestination: UrgatMenuDestination() {
     override val withFAB = false
 }
 
-data object TodoDestination: UrgatMenuDestination() {
-    override val label = R.string.todo
-    override val icon = Icons.Filled.Done
-    override val route = "todo"
-}
-
-data object ExpensesDestination: UrgatMenuDestination() {
-    override val label = R.string.expenses
-    override val icon = Icons.Filled.ShoppingCart
-    override val route = "expenses"
-}
-
-data object NotesDestination: UrgatMenuDestination() {
-    override val label = R.string.notes
+data object TrackersDestination: UrgatMenuDestination() {
+    override val label = R.string.trackers
     override val icon = Icons.Filled.Person
-    override val route = "notes"
+    override val route = "trackers"
+    override val withFAB = false
 }
 
 data object WeatherDestination: UrgatMenuDestination() {
@@ -52,7 +42,26 @@ data object WeatherDestination: UrgatMenuDestination() {
     override val withFAB = false
 }
 
-data object AddEditTodoDestination: UrgatDestination {
+data object TodoDestination: UrgatDestination() {
+    override val label = R.string.todo
+    override val icon = Icons.Filled.Done
+    override val route = "todo"
+}
+
+data object ExpensesDestination: UrgatDestination() {
+    override val label = R.string.expenses
+    override val icon = Icons.Filled.ShoppingCart
+    override val route = "expenses"
+}
+
+data object NotesDestination: UrgatDestination() {
+    override val label = R.string.notes
+    override val icon = Icons.Filled.Person
+    override val route = "notes"
+}
+
+data object AddEditTodoDestination: UrgatDestination() {
+    override val label = R.string.add_todo
     override val icon = Icons.Filled.Add
     override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
 
@@ -63,7 +72,8 @@ data object AddEditTodoDestination: UrgatDestination {
     }
 }
 
-data object AddEditExpenseDestination: UrgatDestination {
+data object AddEditExpenseDestination: UrgatDestination() {
+    override val label = R.string.add_expense
     override val icon = Icons.Filled.Add
     override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
 
@@ -74,7 +84,8 @@ data object AddEditExpenseDestination: UrgatDestination {
     }
 }
 
-data object AddEditNoteDestination: UrgatDestination {
+data object AddEditNoteDestination: UrgatDestination() {
+    override val label = R.string.add_note
     override val icon = Icons.Filled.Add
     override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
 
@@ -86,4 +97,4 @@ data object AddEditNoteDestination: UrgatDestination {
 }
 
 // Screens to be displayed in the top UrgatTabRow
-val bottomNavigationScreens = listOf(OverviewDestination, TodoDestination, ExpensesDestination, NotesDestination, WeatherDestination)
+val bottomNavigationScreens = listOf(OverviewDestination, TrackersDestination, WeatherDestination)
