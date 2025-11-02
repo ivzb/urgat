@@ -38,6 +38,7 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.Header
+import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
@@ -178,8 +179,8 @@ private fun OverviewScreenScaffold(
 
 @Composable
 private fun OverviewContent(
-    headerItems: List<HeaderItem>,
-    onHeaderItemClick: (HeaderItem) -> Unit,
+    headerItems: List<OverviewHeaderItem>,
+    onHeaderItemClick: (OverviewHeaderItem) -> Unit,
 
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
@@ -417,18 +418,18 @@ fun OverviewScreenScaffoldTodosPreview() {
         OverviewScreenScaffold(
             uiState = OverviewUiState(
                 headerItems = listOf(
-                    HeaderItem(
-                        HeaderItemId.Todo,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    HeaderItem(
-                        HeaderItemId.Expense,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Expense,
                         Icons.Filled.ShoppingCart,
                         R.string.add_expense
                     ),
-                    HeaderItem(
-                        HeaderItemId.Note,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -482,18 +483,18 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
         OverviewScreenScaffold(
             uiState = OverviewUiState(
                 headerItems = listOf(
-                    HeaderItem(
-                        HeaderItemId.Todo,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    HeaderItem(
-                        HeaderItemId.Expense,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Expense,
                         Icons.Filled.ShoppingCart,
                         R.string.add_expense
                     ),
-                    HeaderItem(
-                        HeaderItemId.Note,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -525,18 +526,18 @@ fun OverviewScreenScaffoldLoadingPreview() {
         OverviewScreenScaffold(
             uiState = OverviewUiState(
                 headerItems = listOf(
-                    HeaderItem(
-                        HeaderItemId.Todo,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    HeaderItem(
-                        HeaderItemId.Expense,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Expense,
                         Icons.Filled.ShoppingCart,
                         R.string.add_expense
                     ),
-                    HeaderItem(
-                        HeaderItemId.Note,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -568,18 +569,18 @@ fun OverviewScreenScaffoldErrorPreview() {
         OverviewScreenScaffold(
             uiState = OverviewUiState(
                 headerItems = listOf(
-                    HeaderItem(
-                        HeaderItemId.Todo,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    HeaderItem(
-                        HeaderItemId.Expense,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Expense,
                         Icons.Filled.ShoppingCart,
                         R.string.add_expense
                     ),
-                    HeaderItem(
-                        HeaderItemId.Note,
+                    OverviewHeaderItem(
+                        OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -611,17 +612,17 @@ fun OverviewContentPreview() {
         OverviewContent(
             headerItems = listOf(
                 HeaderItem(
-                    HeaderItemId.Todo,
+                    OverviewHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    HeaderItemId.Expense,
+                    OverviewHeaderItemId.Expense,
                     Icons.Filled.ShoppingCart,
                     R.string.add_expense
                 ),
                 HeaderItem(
-                    HeaderItemId.Note,
+                    OverviewHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),

@@ -14,6 +14,7 @@ import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
 import com.ivzb.urgat.data.todo.useCase.CompleteTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
+import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
@@ -39,19 +40,16 @@ class OverviewViewModel @Inject constructor(
     private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
 ) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow(false)
-
     private val _searchQuery = MutableStateFlow("")
 
     private val _uiEvent = MutableSharedFlow<OverviewUiEvent>()
     val uiEvent = _uiEvent.asSharedFlow()
 
     val uiState: StateFlow<OverviewUiState> = combine(
-        _isLoading,
         observeTodosUseCase(_searchQuery, null, LIMIT),
         observeExpensesUseCase(_searchQuery, null, LIMIT),
         observeNotesUseCase(_searchQuery, null, LIMIT),
-    ) { isLoading, todos, expenses, notes ->
+    ) { todos, expenses, notes ->
         val items = listOf(todos, expenses, notes)
 
         when {
@@ -67,17 +65,17 @@ class OverviewViewModel @Inject constructor(
                 OverviewUiState(
                     headerItems = listOf(
                         HeaderItem(
-                            HeaderItemId.Todo,
+                            OverviewHeaderItemId.Todo,
                             Icons.Filled.Done,
                             R.string.add_todo
                         ),
                         HeaderItem(
-                            HeaderItemId.Expense,
+                            OverviewHeaderItemId.Expense,
                             Icons.Filled.ShoppingCart,
                             R.string.add_expense
                         ),
                         HeaderItem(
-                            HeaderItemId.Note,
+                            OverviewHeaderItemId.Note,
                             Icons.Filled.Person,
                             R.string.add_note
                         ),
@@ -100,11 +98,11 @@ class OverviewViewModel @Inject constructor(
                         if (_searchQuery.value.isEmpty()) R.string.no_notes else R.string.no_notes_search,
                         R.drawable.logo_no_fill
                     ),
-                    isLoading = isLoading,
+                    isLoading = false,
                 )
             }
 
-            else -> throw Exception("undefined state: $isLoading, $todos, $expenses")
+            else -> throw Exception("undefined state: $todos, $expenses, $notes")
         }
     }
     .stateIn(
@@ -140,13 +138,13 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
-    private fun onHeaderItemClick(item: HeaderItem) {
+    private fun onHeaderItemClick(item: HeaderItem<OverviewHeaderItemId>) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (item.id) {
-                    HeaderItemId.Todo -> OverviewUiEvent.AddTodo()
-                    HeaderItemId.Expense -> OverviewUiEvent.AddExpense()
-                    HeaderItemId.Note -> OverviewUiEvent.AddNote()
+                    OverviewHeaderItemId.Todo -> OverviewUiEvent.AddTodo()
+                    OverviewHeaderItemId.Expense -> OverviewUiEvent.AddExpense()
+                    OverviewHeaderItemId.Note -> OverviewUiEvent.AddNote()
                 }
             )
         }

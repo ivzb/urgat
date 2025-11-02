@@ -109,6 +109,7 @@ private fun NavHostContent(
 
         composable(TrackersDestination.route) {
             TrackersScreen(
+                onTrackWeight = { /*navActions.navigateToTrackWeight()*/ },
                 navController = navController,
             )
         }

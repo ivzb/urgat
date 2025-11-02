@@ -31,14 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.overview.HeaderItem
-import com.ivzb.urgat.ui.overview.HeaderItemId
+import com.ivzb.urgat.ui.overview.OverviewHeaderItemId
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun Header(
-    items: List<HeaderItem>,
-    onItemClick: (HeaderItem) -> Unit,
+fun <T> Header(
+    items: List<HeaderItem<T>>,
+    onItemClick: (HeaderItem<T>) -> Unit,
     orientation: Int,
     modifier: Modifier = Modifier
 ) {
@@ -82,9 +81,9 @@ fun Header(
 }
 
 @Composable
-private fun HeaderContent(
-    items: List<HeaderItem>,
-    onItemClick: (HeaderItem) -> Unit,
+private fun <T> HeaderContent(
+    items: List<HeaderItem<T>>,
+    onItemClick: (HeaderItem<T>) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -98,9 +97,9 @@ private fun HeaderContent(
 }
 
 @Composable
-private fun HeaderItem(
-    item: HeaderItem,
-    onClick: (HeaderItem) -> Unit,
+private fun <T> HeaderItem(
+    item: HeaderItem<T>,
+    onClick: (HeaderItem<T>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Button(
@@ -146,17 +145,17 @@ fun HeaderPreview() {
         Header(
             items = listOf(
                 HeaderItem(
-                    HeaderItemId.Todo,
+                    OverviewHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    HeaderItemId.Expense,
+                    OverviewHeaderItemId.Expense,
                     Icons.Filled.ShoppingCart,
                     R.string.add_expense
                 ),
                 HeaderItem(
-                    HeaderItemId.Note,
+                    OverviewHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),
@@ -174,17 +173,17 @@ fun HeaderLandscapePreview() {
         Header(
             items = listOf(
                 HeaderItem(
-                    HeaderItemId.Todo,
+                    OverviewHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    HeaderItemId.Expense,
+                    OverviewHeaderItemId.Expense,
                     Icons.Filled.ShoppingCart,
                     R.string.add_expense
                 ),
                 HeaderItem(
-                    HeaderItemId.Note,
+                    OverviewHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),
@@ -201,7 +200,7 @@ fun HeaderItemPreview() {
     UrgatTheme {
         HeaderItem(
             item = HeaderItem(
-                HeaderItemId.Todo,
+                OverviewHeaderItemId.Todo,
                 Icons.Filled.Done,
                 R.string.add_todo
             ),
