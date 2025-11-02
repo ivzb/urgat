@@ -1,48 +1,32 @@
 package com.ivzb.urgat.ui.overview
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -53,11 +37,12 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.Header
+import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.components.SeeAllHeader
 import com.ivzb.urgat.ui.expenses.ExpenseItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NoteItem
@@ -297,110 +282,6 @@ private fun OverviewContent(
     }
 }
 
-@Composable
-private fun Header(
-    items: List<HeaderItem>,
-    onItemClick: (HeaderItem) -> Unit,
-    orientation: Int,
-    modifier: Modifier = Modifier
-) {
-
-    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
-            modifier = modifier
-                .fillMaxHeight()
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(dimensionResource(R.dimen.overview_header_item_padding))
-        ) {
-
-            HeaderContent(
-                items = items,
-                onItemClick = onItemClick,
-                modifier = Modifier
-                    .defaultMinSize(minWidth = dimensionResource(R.dimen.overview_header_item_min_width))
-                    .weight(1f)
-            )
-        }
-    } else {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(dimensionResource(R.dimen.overview_header_item_padding))
-        ) {
-
-            HeaderContent(
-                items = items,
-                onItemClick = onItemClick,
-                modifier = Modifier
-                    .weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun HeaderContent(
-    items: List<HeaderItem>,
-    onItemClick: (HeaderItem) -> Unit,
-    modifier: Modifier = Modifier
-) {
-
-    items.forEach {
-        HeaderItem(
-            item = it,
-            onClick = onItemClick,
-            modifier = modifier
-        )
-    }
-}
-
-@Composable
-private fun HeaderItem(
-    item: HeaderItem,
-    onClick: (HeaderItem) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = { onClick(item) },
-        contentPadding = PaddingValues(
-            horizontal = 0.dp,
-            vertical = dimensionResource(R.dimen.menu_content_padding)
-        ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.primary
-        ),
-        shape = RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)),
-        modifier = modifier
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(dimensionResource(R.dimen.menu_icon_size))
-                    .padding(dimensionResource(R.dimen.menu_item_padding))
-            )
-
-            Text(
-                text = stringResource(item.label),
-                style = MaterialTheme.typography.labelMedium
-                    .copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.menu_item_padding))
-            )
-        }
-    }
-}
-
 private fun LazyListScope.itemTodo(
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
@@ -422,7 +303,7 @@ private fun LazyListScope.itemTodo(
 
         else -> {
             item {
-                SeeAllHeader(
+                ItemHeaderWithSeeAll(
                     title = stringResource(todoFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllTodos,
                     modifier = Modifier.padding(
@@ -462,7 +343,7 @@ private fun LazyListScope.itemExpenses(
 
         else -> {
             item {
-                SeeAllHeader(
+                ItemHeaderWithSeeAll(
                     title = stringResource(expensesFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllExpenses,
                     modifier = Modifier.padding(
@@ -501,7 +382,7 @@ private fun LazyListScope.itemNotes(
 
         else -> {
             item {
-                SeeAllHeader(
+                ItemHeaderWithSeeAll(
                     title = stringResource(notesFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllNotes,
                     modifier = Modifier.padding(
@@ -841,77 +722,6 @@ fun OverviewContentPreview() {
             onSeeAllNotes = {},
             onNoteClick = {},
             listState = rememberLazyListState()
-        )
-    }
-}
-
-@Preview
-@Composable
-fun OverviewHeaderPreview() {
-    UrgatTheme {
-        Header(
-            items = listOf(
-                HeaderItem(
-                    HeaderItemId.Todo,
-                    Icons.Filled.Done,
-                    R.string.add_todo
-                ),
-                HeaderItem(
-                    HeaderItemId.Expense,
-                    Icons.Filled.ShoppingCart,
-                    R.string.add_expense
-                ),
-                HeaderItem(
-                    HeaderItemId.Note,
-                    Icons.Filled.Person,
-                    R.string.add_note
-                ),
-            ),
-            onItemClick = {},
-            orientation = Configuration.ORIENTATION_PORTRAIT
-        )
-    }
-}
-
-@LandscapePreview
-@Composable
-fun OverviewHeaderLandscapePreview() {
-    UrgatTheme {
-        Header(
-            items = listOf(
-                HeaderItem(
-                    HeaderItemId.Todo,
-                    Icons.Filled.Done,
-                    R.string.add_todo
-                ),
-                HeaderItem(
-                    HeaderItemId.Expense,
-                    Icons.Filled.ShoppingCart,
-                    R.string.add_expense
-                ),
-                HeaderItem(
-                    HeaderItemId.Note,
-                    Icons.Filled.Person,
-                    R.string.add_note
-                ),
-            ),
-            onItemClick = {},
-            orientation = Configuration.ORIENTATION_LANDSCAPE
-        )
-    }
-}
-
-@Preview
-@Composable
-fun OverviewHeaderItemPreview() {
-    UrgatTheme {
-        HeaderItem(
-            item = HeaderItem(
-                HeaderItemId.Todo,
-                Icons.Filled.Done,
-                R.string.add_todo
-            ),
-            onClick = {},
         )
     }
 }

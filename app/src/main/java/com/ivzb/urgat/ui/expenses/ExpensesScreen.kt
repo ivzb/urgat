@@ -31,13 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.navigation.ExpensesDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterExpensesMenu
-import com.ivzb.urgat.ui.components.Header
+import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.UrgatScaffold
@@ -139,7 +138,7 @@ internal fun ExpensesContent(
             state = listState
         ) {
             item {
-                Header(title = stringResource(currentFilteringLabel))
+                ItemHeader(title = stringResource(currentFilteringLabel))
             }
 
             item {
