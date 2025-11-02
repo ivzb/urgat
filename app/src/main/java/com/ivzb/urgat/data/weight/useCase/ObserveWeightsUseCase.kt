@@ -12,8 +12,14 @@ class ObserveWeightsUseCase @Inject constructor(
 
     override val errorMessage: Int = R.string.error_weights
 
-    override fun filter(items: List<Weight>, filteringType: Unit): List<Weight> {
-        return items
+    override fun transform(items: List<Weight>): List<Weight> =
+        items
+            .groupBy { it.createdAt / MILLIES_PER_DAY }
+            .map { (_, items) -> items.last() }
+            .sortedBy { it.createdAt }
+
+    companion object {
+        private const val MILLIES_PER_DAY = 86_400_000L
     }
 
 }

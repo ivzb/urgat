@@ -17,4 +17,8 @@
     <dimen name="grid_horizontal_margin">8dp</dimen>
     <dimen name="grid_vertical_margin">16dp</dimen>
     <dimen name="grid_padding">8dp</dimen>
+    <dimen name="chart_horizontal_padding">32dp</dimen>
+    <dimen name="chart_vertical_padding">32dp</dimen>
+    <dimen name="chart_point_radius">8dp</dimen>
+    <dimen name="chart_line_stroke_width">4dp</dimen>
 </resources>

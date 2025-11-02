@@ -34,11 +34,14 @@ abstract class BaseObserveUseCase<T, FilterType>(
                     filter(items, filteringType)
                 }
             }
+            .map(::transform)
         }
         .map<List<T>, Async<List<T>>> { Async.Success(it) }
         .catch { emit(Async.Error(errorMessage)) }
 
-    protected abstract fun filter(items: List<T>, filteringType: FilterType): List<T>
+    protected open fun filter(items: List<T>, filteringType: FilterType): List<T> = items
+
+    protected open fun transform(items: List<T>): List<T> = items
 
     companion object {
 

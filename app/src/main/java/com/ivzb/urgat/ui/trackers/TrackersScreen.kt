@@ -1,26 +1,33 @@
 package com.ivzb.urgat.ui.trackers
 
 import android.content.res.Configuration
+import android.text.Layout
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -30,10 +37,12 @@ import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.navigation.TrackersDestination
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.Header
-import com.ivzb.urgat.ui.components.LandscapePreview
-import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.HeaderItem
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.charts.LineChart
+import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -120,7 +129,7 @@ private fun TrackersContent(
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
 
-    Row (
+    Row(
         modifier = Modifier.fillMaxSize()
     ) {
 
@@ -152,12 +161,43 @@ private fun TrackersContent(
                 }
             }
 
-            items(weights) {
-                Text("Weight item ${it.value}")
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+
+            itemWeightsChart(
+                items = weights,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
             }
         }
     }
 }
+
+private fun LazyListScope.itemWeightsChart(
+    items: List<Weight>,
+    modifier: Modifier = Modifier
+) {
+    item {
+        LineChart(
+            items = items.map { LineChartItem(it.value.toFloat(), it.createdAt) },
+            modifier = modifier
+        )
+    }
+}
+
+
 
 @Composable
 @Preview
@@ -184,25 +224,25 @@ private fun TrackersScreenScaffoldPreview() {
                         id = "ID 2",
                         value = 81.3.toBigDecimal(),
                         isDeleted = false,
-                        createdAt = 0,
+                        createdAt = 1,
                     ),
                     Weight(
                         id = "ID 3",
                         value = 82.1.toBigDecimal(),
                         isDeleted = false,
-                        createdAt = 0,
+                        createdAt = 2,
                     ),
                     Weight(
                         id = "ID 4",
                         value = 79.9.toBigDecimal(),
                         isDeleted = false,
-                        createdAt = 0,
+                        createdAt = 3,
                     ),
                     Weight(
                         id = "ID 5",
                         value = 78.5.toBigDecimal(),
                         isDeleted = false,
-                        createdAt = 0,
+                        createdAt = 4,
                     ),
                 ),
             ),
@@ -264,31 +304,31 @@ private fun TrackersContentPreview() {
                     id = "ID 1",
                     value = 79.5.toBigDecimal(),
                     isDeleted = false,
-                    createdAt = 0,
+                    createdAt = 1,
                 ),
                 Weight(
                     id = "ID 2",
                     value = 81.3.toBigDecimal(),
                     isDeleted = false,
-                    createdAt = 0,
+                    createdAt = 2,
                 ),
                 Weight(
                     id = "ID 3",
                     value = 82.1.toBigDecimal(),
                     isDeleted = false,
-                    createdAt = 0,
+                    createdAt = 3,
                 ),
                 Weight(
                     id = "ID 4",
                     value = 79.9.toBigDecimal(),
                     isDeleted = false,
-                    createdAt = 0,
+                    createdAt = 4,
                 ),
                 Weight(
                     id = "ID 5",
                     value = 78.5.toBigDecimal(),
                     isDeleted = false,
-                    createdAt = 0,
+                    createdAt = 5,
                 ),
             ),
             listState = rememberLazyListState(),
