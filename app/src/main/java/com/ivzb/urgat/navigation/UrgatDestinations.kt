@@ -4,9 +4,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.ivzb.urgat.R
 
@@ -30,7 +33,7 @@ data object OverviewDestination: UrgatMenuDestination() {
 
 data object TrackersDestination: UrgatMenuDestination() {
     override val label = R.string.trackers
-    override val icon = Icons.Filled.Person
+    override val icon = Icons.Filled.Timer
     override val route = "trackers"
     override val withFAB = false
 }
@@ -94,6 +97,12 @@ data object AddEditNoteDestination: UrgatDestination() {
         const val ARG_TITLE = "title"
         const val ARG_ID = "id"
     }
+}
+
+data object TrackWeightDestination: UrgatDestination() {
+    override val label = R.string.track_weight
+    override val icon = Icons.Filled.FitnessCenter
+    override val route = "trackWeight"
 }
 
 // Screens to be displayed in the top UrgatTabRow

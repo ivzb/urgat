@@ -38,22 +38,22 @@ class DefaultNotesRepository @Inject constructor(
         val id = withContext(dispatcher) {
             UUID.randomUUID().toString()
         }
-        val Note = Note(
+        val note = Note(
             id = id,
             content = content,
             isDeleted =  false,
             createdAt = System.currentTimeMillis()
         )
-        localDataSource.upsert(Note.toEntity())
+        localDataSource.upsert(note.toEntity())
         return id
     }
 
     override suspend fun update(id: String, content: String) {
-        val Note = get(id)?.copy(
+        val note = get(id)?.copy(
             content = content
         ) ?: throw Exception("Todo (id $id) not found")
 
-        localDataSource.upsert(Note.toEntity())
+        localDataSource.upsert(note.toEntity())
     }
 
     override suspend fun get(id: String): Note? {

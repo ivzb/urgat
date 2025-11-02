@@ -62,4 +62,9 @@ class UrgatNavActions(private val navController: NavHostController) {
         }
         navController.navigate(route)
     }
+
+    fun navigateToTrackWeight() {
+        navController.navigate(TrackWeightDestination.route)
+    }
+
 }

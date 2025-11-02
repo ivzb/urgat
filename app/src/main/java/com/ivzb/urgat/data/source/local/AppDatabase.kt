@@ -9,11 +9,14 @@ import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.weight.WeightDao
+import com.ivzb.urgat.data.weight.WeightEntity
 
 @Database(entities = [
     TodoEntity::class,
     ExpenseEntity::class,
     NoteEntity::class,
+    WeightEntity::class,
  ], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -23,4 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
 
     abstract fun noteDao(): NoteDao
+
+    abstract fun weightDao(): WeightDao
+
 }

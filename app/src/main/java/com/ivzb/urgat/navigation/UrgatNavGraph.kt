@@ -32,6 +32,7 @@ import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoScreen
+import com.ivzb.urgat.ui.trackWeight.TrackWeightScreen
 import com.ivzb.urgat.ui.trackers.TrackersScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
 import kotlinx.coroutines.delay
@@ -109,7 +110,7 @@ private fun NavHostContent(
 
         composable(TrackersDestination.route) {
             TrackersScreen(
-                onTrackWeight = { /*navActions.navigateToTrackWeight()*/ },
+                onTrackWeight = { navActions.navigateToTrackWeight() },
                 navController = navController,
             )
         }
@@ -167,6 +168,13 @@ private fun NavHostContent(
 
             AddEditNoteScreen(
                 screenTitle = title,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(TrackWeightDestination.route) {
+            TrackWeightScreen(
+                screenTitle = R.string.track_weight,
                 onBack = { navController.popBackStack() }
             )
         }

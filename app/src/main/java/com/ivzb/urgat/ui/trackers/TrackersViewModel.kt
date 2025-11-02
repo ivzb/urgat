@@ -1,11 +1,13 @@
 package com.ivzb.urgat.ui.trackers
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.weight.useCase.ObserveWeightsUseCase
 import com.ivzb.urgat.ui.components.HeaderItem
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TrackersViewModel @Inject constructor() : ViewModel() {
+class TrackersViewModel @Inject constructor(
+    observeWeightsUseCase: ObserveWeightsUseCase,
+) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
 
@@ -25,20 +29,39 @@ class TrackersViewModel @Inject constructor() : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<TrackersUiState> = combine(
-        _isLoading, _uiEvent
-    ) { isLoading, uiEvent ->
+        _isLoading,
+        _uiEvent,
+        observeWeightsUseCase(_searchQuery),
+    ) { isLoading, uiEvent, weightsAsync ->
 
-        TrackersUiState(
-            headerItems = listOf(
-                HeaderItem(
-                    TrackersHeaderItemId.Weight,
-                    Icons.Filled.Timeline,
-                    R.string.track_weight
-                ),
-            ),
-            isLoading = false,
-            uiEvent = uiEvent,
-        )
+        when (weightsAsync) {
+            Async.Loading -> {
+                TrackersUiState(
+                    isLoading = true
+                )
+            }
+
+            is Async.Error -> {
+                TrackersUiState(
+                    hasError = true
+                )
+            }
+
+            is Async.Success -> {
+                TrackersUiState(
+                    headerItems = listOf(
+                        HeaderItem(
+                            TrackersHeaderItemId.Weight,
+                            Icons.Filled.FitnessCenter,
+                            R.string.track_weight
+                        ),
+                    ),
+                    weights = weightsAsync.data,
+                    isLoading = false,
+                    uiEvent = uiEvent,
+                )
+            }
+        }
     }
     .stateIn(
         scope = viewModelScope,
@@ -58,7 +81,7 @@ class TrackersViewModel @Inject constructor() : ViewModel() {
         _searchQuery.value = newQuery
     }
 
-    private fun onHeaderItemClick(item: TrackerHeaderItem) {
+    private fun onHeaderItemClick(item: TrackersHeaderItem) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (item.id) {

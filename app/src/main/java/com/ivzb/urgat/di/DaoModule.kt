@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.weight.WeightDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +18,12 @@ class DaoModule {
     fun provideTodoDao(database: AppDatabase): TodoDao = database.todoDao()
 
     @Provides
-    fun provideExpensesDao(appDatabase: AppDatabase): ExpenseDao = appDatabase.expenseDao()
+    fun provideExpenseDao(appDatabase: AppDatabase): ExpenseDao = appDatabase.expenseDao()
 
     @Provides
-    fun provideNotesDao(appDatabase: AppDatabase): NoteDao = appDatabase.noteDao()
+    fun provideNoteDao(appDatabase: AppDatabase): NoteDao = appDatabase.noteDao()
+
+    @Provides
+    fun provideWeightDao(appDatabase: AppDatabase): WeightDao = appDatabase.weightDao()
 
 }

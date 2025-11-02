@@ -10,3 +10,4 @@ write view models unit tests
 consider moving uiEvent into the uiState
 remove MenuScaffold from todo, expenses and notes screens because it shows bottom bar
 change add/edit screens scaffold to UrgatScaffold
+improve loading of add/edit screens

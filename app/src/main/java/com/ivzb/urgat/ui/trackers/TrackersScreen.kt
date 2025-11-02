@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,11 +26,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.navigation.TrackersDestination
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.HeaderItem
+import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -39,11 +46,8 @@ fun TrackersScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TrackersScreenScaffold(
-        headerItems = uiState.headerItems,
-        onHeaderItemClick = { item -> viewModel.onIntent(TrackersIntent.HeaderItemClick(item)) },
-        onSearchQueryChanged = {
-            TODO("search")
-        },
+        uiState = uiState,
+        onIntent = viewModel::onIntent,
         navController = navController,
         modifier = modifier
     )
@@ -61,60 +65,97 @@ fun TrackersScreen(
 
 @Composable
 private fun TrackersScreenScaffold(
-    headerItems: List<TrackerHeaderItem>,
-    onHeaderItemClick: (TrackerHeaderItem) -> Unit,
+    uiState: TrackersUiState,
+    onIntent: (TrackersIntent) -> Unit,
 
-    onSearchQueryChanged: (String) -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
 
     MenuScaffold(
         selectedDestination = TrackersDestination,
-        onSearchQueryChanged = onSearchQueryChanged,
+        onSearchQueryChanged = { onIntent(TrackersIntent.SearchQueryChanged(it)) },
         withTopAppBarActions = false,
         navController = navController,
         modifier = modifier
     ) { listState ->
 
-        val screenName = stringResource(R.string.overview)
-        val configuration = LocalConfiguration.current
-        val orientation = configuration.orientation
-
-        Row (
-            modifier = Modifier.fillMaxSize()
-        ) {
-
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                Header(
-                    items = headerItems,
-                    onItemClick = onHeaderItemClick,
-                    orientation
+        when {
+            uiState.isLoading -> {
+                LoadingState(
+                    uiState.filteringUiInfo.loadingLabel
                 )
             }
 
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxSize()
-                    .semantics { contentDescription = screenName },
-                contentPadding = PaddingValues(
-                    horizontal = dimensionResource(R.dimen.horizontal_margin),
-                    vertical = dimensionResource(R.dimen.vertical_margin)
-                ),
-                state = listState
-            ) {
-                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    item {
-                        Header(
-                            items = headerItems,
-                            onItemClick = onHeaderItemClick,
-                            orientation
-                        )
-                    }
-                }
+            uiState.hasError -> {
+                EmptyState(
+                    label = uiState.filteringUiInfo.errorLabel,
+                    iconRes = uiState.filteringUiInfo.errorIconRes,
+                )
+            }
+
+            else -> {
+                TrackersContent(
+                    uiState.headerItems,
+                    onHeaderItemClick = { onIntent(TrackersIntent.HeaderItemClick(it)) },
+                    weights = uiState.weights,
+                    listState = listState,
+                )
             }
         }
+    }
+}
 
+@Composable
+private fun TrackersContent(
+    headerItems: List<TrackersHeaderItem>,
+    onHeaderItemClick: (TrackersHeaderItem) -> Unit,
+
+    weights: List<Weight>,
+
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
+    val screenName = stringResource(R.string.overview)
+    val configuration = LocalConfiguration.current
+    val orientation = configuration.orientation
+
+    Row (
+        modifier = Modifier.fillMaxSize()
+    ) {
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Header(
+                items = headerItems,
+                onItemClick = { onHeaderItemClick(it) },
+                orientation
+            )
+        }
+
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.horizontal_margin),
+                vertical = dimensionResource(R.dimen.vertical_margin)
+            ),
+            state = listState
+        ) {
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                item {
+                    Header(
+                        items = headerItems,
+                        onItemClick = { onHeaderItemClick(it) },
+                        orientation
+                    )
+                }
+            }
+
+            items(weights) {
+                Text("Weight item ${it.value}")
+            }
+        }
     }
 }
 
@@ -124,16 +165,133 @@ private fun TrackersScreenScaffold(
 private fun TrackersScreenScaffoldPreview() {
     UrgatTheme {
         TrackersScreenScaffold(
-            onSearchQueryChanged = {},
+            uiState = TrackersUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        TrackersHeaderItemId.Weight,
+                        Icons.Filled.FitnessCenter,
+                        R.string.track_weight
+                    ),
+                ),
+                weights = listOf(
+                    Weight(
+                        id = "ID 1",
+                        value = 79.5.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Weight(
+                        id = "ID 2",
+                        value = 81.3.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Weight(
+                        id = "ID 3",
+                        value = 82.1.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Weight(
+                        id = "ID 4",
+                        value = 79.9.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                    Weight(
+                        id = "ID 5",
+                        value = 78.5.toBigDecimal(),
+                        isDeleted = false,
+                        createdAt = 0,
+                    ),
+                ),
+            ),
+            onIntent = {},
             navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Composable
+@Preview
+@LandscapePreview
+private fun TrackersScreenScaffoldLoadingPreview() {
+    UrgatTheme {
+        TrackersScreenScaffold(
+            uiState = TrackersUiState(
+                isLoading = true,
+            ),
+            onIntent = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Composable
+@Preview
+@LandscapePreview
+private fun TrackersScreenScaffoldErrorPreview() {
+    UrgatTheme {
+        TrackersScreenScaffold(
+            uiState = TrackersUiState(
+                hasError = true,
+            ),
+            onIntent = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Composable
+@Preview
+@LandscapePreview
+private fun TrackersContentPreview() {
+    UrgatTheme {
+        TrackersContent(
             headerItems = listOf(
                 HeaderItem(
                     TrackersHeaderItemId.Weight,
-                    Icons.Filled.Timeline,
+                    Icons.Filled.FitnessCenter,
                     R.string.track_weight
                 ),
             ),
             onHeaderItemClick = {},
+            weights = listOf(
+                Weight(
+                    id = "ID 1",
+                    value = 79.5.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Weight(
+                    id = "ID 2",
+                    value = 81.3.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Weight(
+                    id = "ID 3",
+                    value = 82.1.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Weight(
+                    id = "ID 4",
+                    value = 79.9.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+                Weight(
+                    id = "ID 5",
+                    value = 78.5.toBigDecimal(),
+                    isDeleted = false,
+                    createdAt = 0,
+                ),
+            ),
+            listState = rememberLazyListState(),
             modifier = Modifier
         )
     }

@@ -6,6 +6,8 @@ import com.ivzb.urgat.data.note.DefaultNotesRepository
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.data.todo.DefaultTodoRepository
 import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.weight.DefaultWeightsRepository
+import com.ivzb.urgat.data.weight.WeightsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -27,5 +29,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsNotesRepository(notesRepository: DefaultNotesRepository): NotesRepository
+
+    @Singleton
+    @Binds
+    fun bindsWeightsRepository(weightsRepository: DefaultWeightsRepository): WeightsRepository
 
 }
