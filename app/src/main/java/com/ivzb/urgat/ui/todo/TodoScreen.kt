@@ -33,7 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
-import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterTodosMenu
 import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
@@ -96,14 +96,14 @@ private fun TodoScreenScaffold(
             }
 
             !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.emptyLabel,
                     iconRes = uiState.filteringUiInfo.emptyIconRes
                 )
             }
 
             uiState.hasError -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
                     iconRes = uiState.filteringUiInfo.errorIconRes
                 )

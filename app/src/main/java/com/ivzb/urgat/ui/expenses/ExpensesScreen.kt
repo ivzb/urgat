@@ -34,7 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.navigation.ExpensesDestination
-import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterExpensesMenu
 import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
@@ -95,14 +95,14 @@ private fun ExpensesScreenScaffold(
             }
 
             !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.emptyLabel,
                     iconRes = uiState.filteringUiInfo.emptyIconRes
                 )
             }
 
             uiState.hasError -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
                     iconRes = uiState.filteringUiInfo.errorIconRes
                 )

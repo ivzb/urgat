@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,7 +35,8 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
-import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.EmptyStateCard
+import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
@@ -142,7 +142,7 @@ private fun OverviewScreenScaffold(
             }
 
             uiState.hasError -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
                     iconRes = uiState.filteringUiInfo.errorIconRes,
                 )
@@ -151,8 +151,7 @@ private fun OverviewScreenScaffold(
             else -> {
                 OverviewContent(
                     headerItems = uiState.headerItems,
-                    onHeaderItemClick = { item -> onIntent(OverviewIntent.HeaderItemClick(item)) },
-
+                    onHeaderItemClick = { id -> onIntent(OverviewIntent.HeaderItemClick(id)) },
                     todos = uiState.todoItems,
                     todoFilteringUiInfo = uiState.todoFilteringUiInfo,
                     onSeeAllTodos = onSeeAllTodos,
@@ -180,7 +179,7 @@ private fun OverviewScreenScaffold(
 @Composable
 private fun OverviewContent(
     headerItems: List<OverviewHeaderItem>,
-    onHeaderItemClick: (OverviewHeaderItem) -> Unit,
+    onHeaderItemClick: (OverviewHeaderItemId) -> Unit,
 
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
@@ -212,7 +211,7 @@ private fun OverviewContent(
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Header(
                 items = headerItems,
-                onItemClick = onHeaderItemClick,
+                onItemClick = { onHeaderItemClick(it.id) },
                 orientation
             )
         }
@@ -231,7 +230,7 @@ private fun OverviewContent(
                 item {
                     Header(
                         items = headerItems,
-                        onItemClick = onHeaderItemClick,
+                        onItemClick = { onHeaderItemClick(it.id) },
                         orientation
                     )
                 }
@@ -240,6 +239,7 @@ private fun OverviewContent(
             itemTodo(
                 todos = todos,
                 todoFilteringUiInfo = todoFilteringUiInfo,
+                onAddTodo = { onHeaderItemClick(OverviewHeaderItemId.Todo) },
                 onSeeAllTodos = onSeeAllTodos,
                 onTodoClick = onTodoClick,
                 onTodoCheckedChange = onTodoCheckedChange,
@@ -255,6 +255,7 @@ private fun OverviewContent(
             itemExpenses(
                 expenses = expenses,
                 expensesFilteringUiInfo = expensesFilteringUiInfo,
+                onAddExpense = { onHeaderItemClick(OverviewHeaderItemId.Expense) },
                 onSeeAllExpenses = onSeeAllExpenses,
                 onExpenseClick = onExpenseClick
             )
@@ -269,6 +270,7 @@ private fun OverviewContent(
             itemNotes(
                 notes = notes,
                 notesFilteringUiInfo = notesFilteringUiInfo,
+                onAddNote = { onHeaderItemClick(OverviewHeaderItemId.Note) },
                 onSeeAllNotes = onSeeAllNotes,
                 onNoteClick = onNoteClick
             )
@@ -286,6 +288,7 @@ private fun OverviewContent(
 private fun LazyListScope.itemTodo(
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
+    onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
@@ -294,10 +297,14 @@ private fun LazyListScope.itemTodo(
     when {
         todos.isEmpty() -> {
             item {
-                EmptyState(
-                    label = todoFilteringUiInfo.emptyLabel,
+                EmptyStateCard(
                     iconRes = todoFilteringUiInfo.emptyIconRes,
-                    modifier = modifier
+                    label = todoFilteringUiInfo.emptyLabel,
+                    message = todoFilteringUiInfo.emptyMessage,
+                    buttonLabel = todoFilteringUiInfo.emptyButtonLabel,
+                    onButtonClick = onAddTodo,
+                    modifier = Modifier
+                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -327,6 +334,7 @@ private fun LazyListScope.itemTodo(
 private fun LazyListScope.itemExpenses(
     expenses: List<Expense>,
     expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onAddExpense: () -> Unit,
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
     modifier: Modifier = Modifier
@@ -334,10 +342,14 @@ private fun LazyListScope.itemExpenses(
     when {
         expenses.isEmpty() -> {
             item {
-                EmptyState(
-                    label = expensesFilteringUiInfo.emptyLabel,
+                EmptyStateCard(
                     iconRes = expensesFilteringUiInfo.emptyIconRes,
-                    modifier = modifier
+                    label = expensesFilteringUiInfo.emptyLabel,
+                    message = expensesFilteringUiInfo.emptyMessage,
+                    buttonLabel = expensesFilteringUiInfo.emptyButtonLabel,
+                    onButtonClick = onAddExpense,
+                    modifier = Modifier
+                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -366,6 +378,7 @@ private fun LazyListScope.itemExpenses(
 private fun LazyListScope.itemNotes(
     notes: List<Note>,
     notesFilteringUiInfo: NotesFilteringUiInfo,
+    onAddNote: () -> Unit,
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
     modifier: Modifier = Modifier
@@ -373,10 +386,14 @@ private fun LazyListScope.itemNotes(
     when {
         notes.isEmpty() -> {
             item {
-                EmptyState(
-                    label = notesFilteringUiInfo.emptyLabel,
+                EmptyStateCard(
                     iconRes = notesFilteringUiInfo.emptyIconRes,
-                    modifier = modifier
+                    label = notesFilteringUiInfo.emptyLabel,
+                    message = notesFilteringUiInfo.emptyMessage,
+                    buttonLabel = notesFilteringUiInfo.emptyButtonLabel,
+                    onButtonClick = onAddNote,
+                    modifier = Modifier
+                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -400,14 +417,6 @@ private fun LazyListScope.itemNotes(
             }
         }
     }
-}
-
-@Composable
-private fun WeatherCard(
-    onSeeAllWeather: () -> Unit
-) {
-
-    Text("Weather card")
 }
 
 @Preview
@@ -757,6 +766,7 @@ fun TodoCardPreview() {
                     ),
                 ),
                 todoFilteringUiInfo = TodoFilteringUiInfo(),
+                onAddTodo = {},
                 onSeeAllTodos = {},
                 onTodoClick = {},
                 onTodoCheckedChange = { _, _ -> }
@@ -801,6 +811,7 @@ fun ExpensesCardPreview() {
                     )
                 ),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
+                onAddExpense = {},
                 onSeeAllExpenses = {},
                 onExpenseClick = {}
             )
@@ -847,19 +858,10 @@ fun NotesCardPreview() {
                     )
                 ),
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
+                onAddNote = {},
                 onSeeAllNotes = {},
                 onNoteClick = {}
             )
         }
-    }
-}
-
-@Preview
-@Composable
-fun WeatherCardPreview() {
-    UrgatTheme {
-        WeatherCard(
-            onSeeAllWeather = {}
-        )
     }
 }

@@ -20,7 +20,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun EmptyState(
+fun EmptyStateScreen(
     @StringRes label: Int,
     @DrawableRes iconRes: Int,
     modifier: Modifier = Modifier
@@ -46,7 +46,7 @@ fun EmptyState(
 private fun EmptyTodosPreview() {
     UrgatTheme {
         Surface {
-            EmptyState(
+            EmptyStateScreen(
                 label = R.string.no_todos,
                 iconRes = R.drawable.logo_no_fill,
             )
@@ -59,7 +59,7 @@ private fun EmptyTodosPreview() {
 private fun ErrorTodosPreview() {
     UrgatTheme {
         Surface {
-            EmptyState(
+            EmptyStateScreen(
                 label = R.string.error_todos,
                 iconRes = R.drawable.ic_error,
             )

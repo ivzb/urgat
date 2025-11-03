@@ -25,15 +25,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.navigation.NotesDestination
-import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
@@ -81,14 +78,14 @@ private fun NotesScreenScaffold(
             }
 
             !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.emptyLabel,
                     iconRes = uiState.filteringUiInfo.emptyIconRes
                 )
             }
 
             uiState.hasError -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
                     iconRes = uiState.filteringUiInfo.errorIconRes
                 )

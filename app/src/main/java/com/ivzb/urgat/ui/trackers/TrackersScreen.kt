@@ -1,7 +1,6 @@
 package com.ivzb.urgat.ui.trackers
 
 import android.content.res.Configuration
-import android.text.Layout
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,13 +13,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -35,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.navigation.TrackersDestination
-import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.LandscapePreview
@@ -97,7 +93,7 @@ private fun TrackersScreenScaffold(
             }
 
             uiState.hasError -> {
-                EmptyState(
+                EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
                     iconRes = uiState.filteringUiInfo.errorIconRes,
                 )

@@ -83,20 +83,26 @@ class OverviewViewModel @Inject constructor(
                     todoItems = (todos as Async.Success).data,
                     todoFilteringUiInfo = TodoFilteringUiInfo(
                         R.string.recent_todos,
-                        if (_searchQuery.value.isEmpty()) R.string.no_todos else R.string.no_todos_search,
-                        R.drawable.logo_no_fill
+                        if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
+                        R.drawable.logo_no_fill,
+                        R.string.no_todos_message,
+                        R.string.add_todo,
                     ),
                     expensesItems = (expenses as Async.Success).data,
                     expensesFilteringUiInfo = ExpensesFilteringUiInfo(
                         R.string.recent_expenses,
-                        if (_searchQuery.value.isEmpty()) R.string.no_expenses else R.string.no_expenses_search,
-                        R.drawable.logo_no_fill
+                        if (_searchQuery.value.isEmpty()) R.string.no_expenses_label else R.string.no_expenses_search,
+                        R.drawable.logo_no_fill,
+                        R.string.no_expenses_message,
+                        R.string.add_expense,
                     ),
                     notesItems = (notes as Async.Success).data,
                     notesFilteringUiInfo = NotesFilteringUiInfo(
                         R.string.recent_notes,
-                        if (_searchQuery.value.isEmpty()) R.string.no_notes else R.string.no_notes_search,
-                        R.drawable.logo_no_fill
+                        if (_searchQuery.value.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
+                        R.drawable.logo_no_fill,
+                        R.string.no_notes_message,
+                        R.string.add_note,
                     ),
                     isLoading = false,
                 )
@@ -116,7 +122,7 @@ class OverviewViewModel @Inject constructor(
             OverviewIntent.ClearCompletedTodos -> clearCompletedTodos()
             is OverviewIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
             is OverviewIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is OverviewIntent.HeaderItemClick -> onHeaderItemClick(intent.item)
+            is OverviewIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
         }
     }
 
@@ -138,10 +144,10 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
-    private fun onHeaderItemClick(item: HeaderItem<OverviewHeaderItemId>) {
+    private fun onHeaderItemClick(id: OverviewHeaderItemId) {
         viewModelScope.launch {
             _uiEvent.emit(
-                when (item.id) {
+                when (id) {
                     OverviewHeaderItemId.Todo -> OverviewUiEvent.AddTodo()
                     OverviewHeaderItemId.Expense -> OverviewUiEvent.AddExpense()
                     OverviewHeaderItemId.Note -> OverviewUiEvent.AddNote()

@@ -7,5 +7,5 @@ sealed class OverviewIntent {
     data class SearchQueryChanged(val query: String): OverviewIntent()
     object ClearCompletedTodos: OverviewIntent()
     data class CompleteTodo(val todo: Todo, val completed: Boolean): OverviewIntent()
-    data class HeaderItemClick(val item: OverviewHeaderItem): OverviewIntent()
+    data class HeaderItemClick(val itemId: OverviewHeaderItemId): OverviewIntent()
 }
