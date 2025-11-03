@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
@@ -104,7 +105,10 @@ private fun TrackWeightContent(
                 .verticalScroll(rememberScrollState())
         ) {
             if (uiState.isLoading) {
-                Text("Loading...")
+                LoadingState(
+                    label = R.string.loading,
+                    modifier = Modifier.weight(1f)
+                )
             } else {
                 var weightTextFieldValue by remember {
                     mutableStateOf(
