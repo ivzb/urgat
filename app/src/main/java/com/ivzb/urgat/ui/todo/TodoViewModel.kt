@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.base.BaseObserveUseCase.Companion.NO_LIMIT
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
@@ -42,7 +43,7 @@ class TodoViewModel @Inject constructor(
     val uiState: StateFlow<TodoUiState> = combine(
         _filterUiInfo,
         _isLoading,
-        observeTodosUseCase(_searchQuery, _savedFilterType)
+        observeTodosUseCase(_searchQuery, _savedFilterType, NO_LIMIT)
     ) { filterUiInfo, isLoading, todosAsync ->
         when (todosAsync) {
             Async.Loading -> {

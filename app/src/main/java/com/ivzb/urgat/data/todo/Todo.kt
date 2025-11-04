@@ -6,7 +6,7 @@ data class Todo(
     val description: String = "",
     val isCompleted: Boolean = false,
     val isDeleted: Boolean = false,
-    val createdAt: Long
+    val createdAt: Long = 0
 ) {
 
     val isActive

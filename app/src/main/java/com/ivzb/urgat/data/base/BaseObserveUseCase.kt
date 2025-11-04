@@ -47,7 +47,7 @@ abstract class BaseObserveUseCase<T, FilterType>(
 
         private const val DEBOUNCE_TIME_MILLIS = 300L
 
-        private const val NO_LIMIT = -1
+        const val NO_LIMIT = -1
 
     }
 }

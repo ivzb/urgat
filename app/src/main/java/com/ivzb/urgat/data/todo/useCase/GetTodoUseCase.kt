@@ -5,6 +5,12 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import javax.inject.Inject
 
-class GetTodoUseCase @Inject constructor(
+interface GetTodoUseCase {
+
+    suspend operator fun invoke(id: String): Todo?
+
+}
+
+class DefaultGetTodoUseCase @Inject constructor(
     todoRepository: TodoRepository
-): BaseGetUseCase<Todo>(todoRepository)
+): GetTodoUseCase, BaseGetUseCase<Todo>(todoRepository)

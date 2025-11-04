@@ -3,11 +3,17 @@ package com.ivzb.urgat.data.todo.useCase
 import com.ivzb.urgat.data.todo.TodoRepository
 import javax.inject.Inject
 
-class CompleteTodoUseCase @Inject constructor(
-    private val todoRepository: TodoRepository
-) {
+interface CompleteTodoUseCase {
 
-    suspend operator fun invoke(id: String) {
+    suspend operator fun invoke(id: String)
+
+}
+
+class DefaultCompleteTodoUseCase @Inject constructor(
+    private val todoRepository: TodoRepository
+): CompleteTodoUseCase {
+
+    override suspend operator fun invoke(id: String) {
         todoRepository.complete(id)
     }
 

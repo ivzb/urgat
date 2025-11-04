@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.note.useCase.CreateTodoUseCase
-import com.ivzb.urgat.data.note.useCase.UpdateTodoUseCase
+import com.ivzb.urgat.data.todo.useCase.CreateTodoUseCase
+import com.ivzb.urgat.data.todo.useCase.UpdateTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.GetTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
