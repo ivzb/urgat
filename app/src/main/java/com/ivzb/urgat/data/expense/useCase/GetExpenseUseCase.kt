@@ -5,6 +5,12 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import javax.inject.Inject
 
-class GetExpenseUseCase @Inject constructor(
+interface GetExpenseUseCase {
+
+    suspend operator fun invoke(id: String): Expense?
+
+}
+
+class DefaultGetExpenseUseCase @Inject constructor(
     expensesRepository: ExpensesRepository
-): BaseGetUseCase<Expense>(expensesRepository)
+): GetExpenseUseCase, BaseGetUseCase<Expense>(expensesRepository)

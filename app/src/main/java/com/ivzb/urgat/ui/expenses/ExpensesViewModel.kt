@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.base.BaseObserveUseCase.Companion.NO_LIMIT
 import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
     observeExpensesUseCase: ObserveExpensesUseCase,
-    private val savedStateHandle: SavedStateHandle
+    val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _savedFilterType = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, ALL_EXPENSES)
@@ -36,7 +37,7 @@ class ExpensesViewModel @Inject constructor(
     val uiState: StateFlow<ExpensesUiState> = combine(
         _filterUiInfo,
         _isLoading,
-        observeExpensesUseCase(_searchQuery, _savedFilterType)
+        observeExpensesUseCase(_searchQuery, _savedFilterType, NO_LIMIT)
     ) { filterUiInfo, isLoading, expensesAsync ->
         when (expensesAsync) {
             Async.Loading -> {

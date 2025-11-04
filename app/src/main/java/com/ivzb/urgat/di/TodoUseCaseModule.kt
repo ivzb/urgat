@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface UseCaseModule {
+interface TodoUseCaseModule {
 
     @Singleton
     @Binds

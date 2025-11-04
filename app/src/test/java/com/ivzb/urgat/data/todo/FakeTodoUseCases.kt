@@ -1,6 +1,5 @@
-package com.ivzb.urgat.data
+package com.ivzb.urgat.data.todo
 
-import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.useCase.CreateTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.GetTodoUseCase
 import com.ivzb.urgat.data.todo.useCase.UpdateTodoUseCase

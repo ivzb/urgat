@@ -2,9 +2,9 @@ package com.ivzb.urgat.ui.addEditTodo
 
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.data.FakeCreateTodoUseCase
-import com.ivzb.urgat.data.FakeGetTodoUseCase
-import com.ivzb.urgat.data.FakeUpdateTodoUseCase
+import com.ivzb.urgat.data.todo.FakeCreateTodoUseCase
+import com.ivzb.urgat.data.todo.FakeGetTodoUseCase
+import com.ivzb.urgat.data.todo.FakeUpdateTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
 import com.ivzb.urgat.R
 import kotlinx.coroutines.*

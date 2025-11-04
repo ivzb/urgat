@@ -8,12 +8,24 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
 
-class ObserveExpensesUseCase @Inject constructor(
+interface ObserveExpensesUseCase {
+
+    operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<ExpensesFilterType>?,
+        limit: Int
+    ): Flow<Async<List<Expense>>>
+
+}
+
+class DefaultObserveExpensesUseCase @Inject constructor(
     expensesRepository: ExpensesRepository
-): BaseObserveUseCase<Expense, ExpensesFilterType>(expensesRepository) {
+): ObserveExpensesUseCase, BaseObserveUseCase<Expense, ExpensesFilterType>(expensesRepository) {
 
     override val errorMessage: Int = R.string.error_expenses
 
