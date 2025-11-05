@@ -13,7 +13,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.test.*
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExpensesViewModelTest {
 
