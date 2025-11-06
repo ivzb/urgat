@@ -5,6 +5,12 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import javax.inject.Inject
 
-class GetNoteUseCase @Inject constructor(
+interface GetNoteUseCase {
+
+    suspend operator fun invoke(id: String): Note?
+
+}
+
+class DefaultGetNoteUseCase @Inject constructor(
     notesRepository: NotesRepository
-): BaseGetUseCase<Note>(notesRepository)
+): GetNoteUseCase, BaseGetUseCase<Note>(notesRepository)

@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.notes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.data.base.BaseObserveUseCase.Companion.NO_LIMIT
 import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -25,7 +26,7 @@ class NotesViewModel @Inject constructor(
 
     val uiState: StateFlow<NotesUiState> = combine(
         _isLoading,
-        observeNotesUseCase(_searchQuery, null)
+        observeNotesUseCase(_searchQuery, null, NO_LIMIT)
     ) { isLoading, notesAsync ->
         when (notesAsync) {
             Async.Loading -> {

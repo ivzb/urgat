@@ -5,11 +5,23 @@ import com.ivzb.urgat.data.base.BaseObserveUseCase
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.ui.notes.NotesFilterType
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserveNotesUseCase @Inject constructor(
+interface ObserveNotesUseCase {
+
+    operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<NotesFilterType>?,
+        limit: Int
+    ): Flow<Async<List<Note>>>
+
+}
+
+class DefaultObserveNotesUseCase @Inject constructor(
     notesRepository: NotesRepository
-): BaseObserveUseCase<Note, NotesFilterType>(notesRepository) {
+): ObserveNotesUseCase, BaseObserveUseCase<Note, NotesFilterType>(notesRepository) {
 
     override val errorMessage: Int = R.string.error_notes
 
