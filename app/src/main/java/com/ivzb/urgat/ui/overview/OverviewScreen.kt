@@ -236,6 +236,13 @@ private fun OverviewContent(
                 }
             }
 
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+
             itemTodo(
                 todos = todos,
                 todoFilteringUiInfo = todoFilteringUiInfo,
@@ -248,7 +255,7 @@ private fun OverviewContent(
             item {
                 Spacer(
                     modifier = Modifier
-                        .height(dimensionResource(R.dimen.list_item_padding))
+                        .height(dimensionResource(R.dimen.vertical_margin))
                 )
             }
 
@@ -263,7 +270,7 @@ private fun OverviewContent(
             item {
                 Spacer(
                     modifier = Modifier
-                        .height(dimensionResource(R.dimen.list_item_padding))
+                        .height(dimensionResource(R.dimen.vertical_margin))
                 )
             }
 
@@ -278,7 +285,7 @@ private fun OverviewContent(
             item {
                 Spacer(
                     modifier = Modifier
-                        .height(dimensionResource(R.dimen.list_item_padding))
+                        .height(dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -291,8 +298,7 @@ private fun LazyListScope.itemTodo(
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-    onTodoCheckedChange: (Todo, Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    onTodoCheckedChange: (Todo, Boolean) -> Unit
 ) {
     when {
         todos.isEmpty() -> {
@@ -303,8 +309,6 @@ private fun LazyListScope.itemTodo(
                     message = todoFilteringUiInfo.emptyMessage,
                     buttonLabel = todoFilteringUiInfo.emptyButtonLabel,
                     onButtonClick = onAddTodo,
-                    modifier = Modifier
-                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -314,9 +318,6 @@ private fun LazyListScope.itemTodo(
                 ItemHeaderWithSeeAll(
                     title = stringResource(todoFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllTodos,
-                    modifier = Modifier.padding(
-                        vertical = dimensionResource(id = R.dimen.vertical_margin)
-                    ),
                 )
             }
 
@@ -337,7 +338,6 @@ private fun LazyListScope.itemExpenses(
     onAddExpense: () -> Unit,
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     when {
         expenses.isEmpty() -> {
@@ -348,8 +348,6 @@ private fun LazyListScope.itemExpenses(
                     message = expensesFilteringUiInfo.emptyMessage,
                     buttonLabel = expensesFilteringUiInfo.emptyButtonLabel,
                     onButtonClick = onAddExpense,
-                    modifier = Modifier
-                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -359,9 +357,6 @@ private fun LazyListScope.itemExpenses(
                 ItemHeaderWithSeeAll(
                     title = stringResource(expensesFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllExpenses,
-                    modifier = Modifier.padding(
-                        vertical = dimensionResource(id = R.dimen.vertical_margin)
-                    ),
                 )
             }
 
@@ -392,8 +387,6 @@ private fun LazyListScope.itemNotes(
                     message = notesFilteringUiInfo.emptyMessage,
                     buttonLabel = notesFilteringUiInfo.emptyButtonLabel,
                     onButtonClick = onAddNote,
-                    modifier = Modifier
-                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )
             }
         }
@@ -403,9 +396,6 @@ private fun LazyListScope.itemNotes(
                 ItemHeaderWithSeeAll(
                     title = stringResource(notesFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllNotes,
-                    modifier = Modifier.padding(
-                        vertical = dimensionResource(id = R.dimen.vertical_margin)
-                    ),
                 )
             }
 
