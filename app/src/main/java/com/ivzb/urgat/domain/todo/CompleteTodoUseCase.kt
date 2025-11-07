@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.todo.useCase
+package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.TodoRepository
 import javax.inject.Inject

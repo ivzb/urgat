@@ -1,6 +1,6 @@
-package com.ivzb.urgat.data.expense.useCase
+package com.ivzb.urgat.domain.expense
 
-import com.ivzb.urgat.data.base.BaseGetUseCase
+import com.ivzb.urgat.domain.base.BaseGetUseCase
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import javax.inject.Inject

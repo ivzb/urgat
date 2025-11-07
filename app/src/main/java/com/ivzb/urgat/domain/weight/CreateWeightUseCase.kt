@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.weight.useCase
+package com.ivzb.urgat.domain.weight
 
 import com.ivzb.urgat.data.weight.WeightsRepository
 import java.math.BigDecimal

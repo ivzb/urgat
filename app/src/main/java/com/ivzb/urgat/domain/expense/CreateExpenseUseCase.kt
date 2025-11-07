@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.expense.useCase
+package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import java.math.BigDecimal

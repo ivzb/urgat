@@ -4,12 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseObserveUseCase.Companion.NO_LIMIT
+import com.ivzb.urgat.domain.base.BaseObserveUseCase.Companion.NO_LIMIT
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.data.todo.useCase.ActivateTodoUseCase
-import com.ivzb.urgat.data.todo.useCase.ClearCompletedTodosUseCase
-import com.ivzb.urgat.data.todo.useCase.CompleteTodoUseCase
-import com.ivzb.urgat.data.todo.useCase.ObserveTodosUseCase
+import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
+import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
+import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
+import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.ui.todo.TodosFilterType.*
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed

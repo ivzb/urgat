@@ -5,7 +5,7 @@ import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.weight.useCase.ObserveWeightsUseCase
+import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed

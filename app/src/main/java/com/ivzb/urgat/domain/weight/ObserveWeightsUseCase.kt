@@ -1,7 +1,7 @@
-package com.ivzb.urgat.data.weight.useCase
+package com.ivzb.urgat.domain.weight
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseObserveUseCase
+import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
 import javax.inject.Inject

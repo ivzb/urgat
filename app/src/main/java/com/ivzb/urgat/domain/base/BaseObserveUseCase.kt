@@ -1,5 +1,6 @@
-package com.ivzb.urgat.data.base
+package com.ivzb.urgat.domain.base
 
+import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

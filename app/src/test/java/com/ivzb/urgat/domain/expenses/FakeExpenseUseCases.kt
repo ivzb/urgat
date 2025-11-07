@@ -1,10 +1,42 @@
-package com.ivzb.urgat.data.expenses
+package com.ivzb.urgat.domain.expenses
 
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.expense.useCase.CreateExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.GetExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.UpdateExpenseUseCase
+import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.GetExpenseUseCase
+import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
+
+class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
+
+    private val flow = MutableStateFlow<Async<List<Expense>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<Expense>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<ExpensesFilterType>?,
+        limit: Int
+    ): Flow<Async<List<Expense>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
 
 class FakeGetExpenseUseCase : GetExpenseUseCase {
     var expenseToReturn: Expense? = null

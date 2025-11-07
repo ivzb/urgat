@@ -1,13 +1,13 @@
 package com.ivzb.urgat.di
 
-import com.ivzb.urgat.data.note.useCase.CreateNoteUseCase
-import com.ivzb.urgat.data.note.useCase.DefaultCreateNoteUseCase
-import com.ivzb.urgat.data.note.useCase.DefaultGetNoteUseCase
-import com.ivzb.urgat.data.note.useCase.DefaultObserveNotesUseCase
-import com.ivzb.urgat.data.note.useCase.DefaultUpdateNoteUseCase
-import com.ivzb.urgat.data.note.useCase.GetNoteUseCase
-import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
-import com.ivzb.urgat.data.note.useCase.UpdateNoteUseCase
+import com.ivzb.urgat.domain.note.CreateNoteUseCase
+import com.ivzb.urgat.domain.note.DefaultCreateNoteUseCase
+import com.ivzb.urgat.domain.note.DefaultGetNoteUseCase
+import com.ivzb.urgat.domain.note.DefaultObserveNotesUseCase
+import com.ivzb.urgat.domain.note.DefaultUpdateNoteUseCase
+import com.ivzb.urgat.domain.note.GetNoteUseCase
+import com.ivzb.urgat.domain.note.ObserveNotesUseCase
+import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

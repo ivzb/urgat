@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.note.useCase.CreateNoteUseCase
-import com.ivzb.urgat.data.note.useCase.GetNoteUseCase
-import com.ivzb.urgat.data.note.useCase.UpdateNoteUseCase
+import com.ivzb.urgat.domain.note.CreateNoteUseCase
+import com.ivzb.urgat.domain.note.GetNoteUseCase
+import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import com.ivzb.urgat.navigation.AddEditNoteDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

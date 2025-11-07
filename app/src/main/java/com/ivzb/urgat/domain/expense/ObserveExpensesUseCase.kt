@@ -1,7 +1,7 @@
-package com.ivzb.urgat.data.expense.useCase
+package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseObserveUseCase
+import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType

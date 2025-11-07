@@ -1,7 +1,7 @@
-package com.ivzb.urgat.data.note.useCase
+package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseObserveUseCase
+import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.ui.notes.NotesFilterType

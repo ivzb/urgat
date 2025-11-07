@@ -1,8 +1,6 @@
-package com.ivzb.urgat.data.todo
+package com.ivzb.urgat.domain.todo
 
-import com.ivzb.urgat.data.todo.useCase.CreateTodoUseCase
-import com.ivzb.urgat.data.todo.useCase.GetTodoUseCase
-import com.ivzb.urgat.data.todo.useCase.UpdateTodoUseCase
+import com.ivzb.urgat.data.todo.Todo
 
 class FakeGetTodoUseCase(
     private val todo: Todo? = null

@@ -3,7 +3,7 @@ package com.ivzb.urgat.ui.trackWeight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.weight.useCase.CreateWeightUseCase
+import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

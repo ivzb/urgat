@@ -1,13 +1,13 @@
 package com.ivzb.urgat.di
 
-import com.ivzb.urgat.data.expense.useCase.CreateExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.DefaultCreateExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.DefaultGetExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.DefaultObserveExpensesUseCase
-import com.ivzb.urgat.data.expense.useCase.DefaultUpdateExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.GetExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.ObserveExpensesUseCase
-import com.ivzb.urgat.data.expense.useCase.UpdateExpenseUseCase
+import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.DefaultCreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.DefaultGetExpenseUseCase
+import com.ivzb.urgat.domain.expense.DefaultObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.DefaultUpdateExpenseUseCase
+import com.ivzb.urgat.domain.expense.GetExpenseUseCase
+import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

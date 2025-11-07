@@ -3,8 +3,8 @@ package com.ivzb.urgat.ui.notes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.data.base.BaseObserveUseCase.Companion.NO_LIMIT
-import com.ivzb.urgat.data.note.useCase.ObserveNotesUseCase
+import com.ivzb.urgat.domain.base.BaseObserveUseCase.Companion.NO_LIMIT
+import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel

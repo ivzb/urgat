@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.expense.useCase.CreateExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.GetExpenseUseCase
-import com.ivzb.urgat.data.expense.useCase.UpdateExpenseUseCase
+import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.GetExpenseUseCase
+import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

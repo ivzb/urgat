@@ -1,6 +1,6 @@
-package com.ivzb.urgat.data.todo.useCase
+package com.ivzb.urgat.domain.todo
 
-import com.ivzb.urgat.data.base.BaseGetUseCase
+import com.ivzb.urgat.domain.base.BaseGetUseCase
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import javax.inject.Inject

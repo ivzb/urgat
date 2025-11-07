@@ -2,9 +2,9 @@ package com.ivzb.urgat.ui.addEditExpense
 
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.expenses.FakeCreateExpenseUseCase
-import com.ivzb.urgat.data.expenses.FakeGetExpenseUseCase
-import com.ivzb.urgat.data.expenses.FakeUpdateExpenseUseCase
+import com.ivzb.urgat.domain.expenses.FakeCreateExpenseUseCase
+import com.ivzb.urgat.domain.expenses.FakeGetExpenseUseCase
+import com.ivzb.urgat.domain.expenses.FakeUpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.StandardTestDispatcher

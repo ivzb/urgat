@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.note.useCase
+package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.data.note.NotesRepository
 import javax.inject.Inject

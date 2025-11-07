@@ -1,9 +1,9 @@
-package com.ivzb.urgat.data.notes
+package com.ivzb.urgat.domain.notes
 
 import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.data.note.useCase.CreateNoteUseCase
-import com.ivzb.urgat.data.note.useCase.GetNoteUseCase
-import com.ivzb.urgat.data.note.useCase.UpdateNoteUseCase
+import com.ivzb.urgat.domain.note.CreateNoteUseCase
+import com.ivzb.urgat.domain.note.GetNoteUseCase
+import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 
 class FakeGetNoteUseCase(
     private val note: Note? = null

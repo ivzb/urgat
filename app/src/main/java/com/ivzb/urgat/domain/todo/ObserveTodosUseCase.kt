@@ -1,7 +1,7 @@
-package com.ivzb.urgat.data.todo.useCase
+package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseObserveUseCase
+import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.ui.todo.TodosFilterType
