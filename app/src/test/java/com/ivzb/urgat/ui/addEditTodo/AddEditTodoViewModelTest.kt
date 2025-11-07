@@ -19,7 +19,7 @@ import org.junit.Assert.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditTodoViewModelTest {
 
-    private val dispatcher = StandardTestDispatcher()
+    private val testDispatcher = StandardTestDispatcher()
     
     private lateinit var getTodoUseCase: FakeGetTodoUseCase
     
@@ -29,13 +29,18 @@ class AddEditTodoViewModelTest {
     
     private lateinit var savedStateHandle: SavedStateHandle
 
+    private lateinit var viewModel: AddEditTodoViewModel
+
     @Before
     fun setup() {
-        Dispatchers.setMain(dispatcher)
+        Dispatchers.setMain(testDispatcher)
+
         getTodoUseCase = FakeGetTodoUseCase()
         createTodoUseCase = FakeCreateTodoUseCase()
         updateTodoUseCase = FakeUpdateTodoUseCase()
         savedStateHandle = SavedStateHandle()
+
+        viewModel = createViewModel()
     }
 
     @After
@@ -45,17 +50,21 @@ class AddEditTodoViewModelTest {
 
     @Test
     fun `init without id does not load todo`() = runTest {
-        val viewModel = createViewModel()
-
         assertNull(getTodoUseCase.calledWithId)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
     @Test
     fun `init with id loads todo`() = runTest {
-        val todo = Todo("123", "Hello", "World", false)
+        val todoId = "123"
+        val todo = Todo(
+            id = todoId,
+            title = "Hello",
+            description = "World",
+            isCompleted = false
+        )
 
-        getTodoUseCase = FakeGetTodoUseCase(todo)
+        getTodoUseCase.toReturn = todo
         savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = "123"
 
         val viewModel = createViewModel()
@@ -71,63 +80,70 @@ class AddEditTodoViewModelTest {
 
     @Test
     fun `updateTitle updates ui state`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditTodoIntent.UpdateTitle("New Title"))
         assertEquals("New Title", viewModel.uiState.value.title)
     }
 
     @Test
     fun `updateDescription updates ui state`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditTodoIntent.UpdateDescription("Desc"))
         assertEquals("Desc", viewModel.uiState.value.description)
     }
 
     @Test
     fun `saveTodo with empty fields shows message`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
         assertEquals(R.string.empty_todo_message, viewModel.uiState.value.userMessage)
     }
 
     @Test
-    fun `createNewTodo calls create usecase and sets isTodoSaved`() = runTest {
-        val viewModel = createViewModel()
-
+    fun `saveTodo creates new todo`() = runTest {
         viewModel.onIntent(AddEditTodoIntent.UpdateTitle("Title"))
         viewModel.onIntent(AddEditTodoIntent.UpdateDescription("Desc"))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
 
         advanceUntilIdle()
 
-        assertEquals(listOf("Title" to "Desc"), createTodoUseCase.created)
+        val created = createTodoUseCase.created
+        assertEquals("Title" to "Desc", created)
         assertTrue(viewModel.uiState.value.isTodoSaved)
     }
 
     @Test
-    fun `updateTodo calls update usecase and sets isTodoSaved`() = runTest {
+    fun `saveTodo updates existing todo`() = runTest {
         val todoId = "abc"
         savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = todoId
 
-        val todo = Todo(todoId, "Old", "Desc", false)
-        getTodoUseCase = FakeGetTodoUseCase(todo)
+        val todo = Todo(
+            id = todoId,
+            title = "Old",
+            description = "Desc",
+            isCompleted = false
+        )
+        getTodoUseCase.toReturn = todo
 
         val viewModel = createViewModel()
 
         advanceUntilIdle()
 
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle("Updated"))
+        val uiState = viewModel.uiState.value
+        assertEquals(todo.title, uiState.title)
+        assertEquals(todo.description, uiState.description)
+        assertEquals(todo.isCompleted, uiState.isTodoCompleted)
+        assertFalse(uiState.isLoading)
+
+        viewModel.onIntent(AddEditTodoIntent.UpdateTitle("Updated Title"))
+        viewModel.onIntent(AddEditTodoIntent.UpdateDescription("Updated Desc"))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
 
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.isTodoSaved)
-        assertEquals(listOf(Triple(todoId, "Updated", "Desc")), updateTodoUseCase.updated)
+        assertEquals(Triple(todoId, "Updated Title", "Updated Desc"), updateTodoUseCase.updated)
     }
 
     @Test
     fun `userMessageShown clears message`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
         assertNotNull(viewModel.uiState.value.userMessage)
 

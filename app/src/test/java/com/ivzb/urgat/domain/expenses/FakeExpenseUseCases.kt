@@ -39,18 +39,19 @@ class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
 }
 
 class FakeGetExpenseUseCase : GetExpenseUseCase {
-    var expenseToReturn: Expense? = null
+
+    var toReturn: Expense? = null
     var calledWithId: String? = null
 
-    override suspend fun invoke(expenseId: String): Expense? {
-        calledWithId = expenseId
-        return expenseToReturn
+    override suspend fun invoke(id: String): Expense? {
+        calledWithId = id
+        return toReturn
     }
 }
 
 class FakeCreateExpenseUseCase : CreateExpenseUseCase {
-    var createdExpense: Triple<String, BigDecimal, String>? = null
-    var date: Long? = null
+
+    var created: Triple<String, BigDecimal, String>? = null
 
     override suspend fun invoke(
         name: String,
@@ -58,14 +59,13 @@ class FakeCreateExpenseUseCase : CreateExpenseUseCase {
         category: String,
         date: Long
     ) {
-        createdExpense = Triple(name, amount, category)
-        this.date = date
+        created = Triple(name, amount, category)
     }
 }
 
 class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
-    var updatedExpense: Quadruple<String, String, BigDecimal, String>? = null
-    var date: Long? = null
+
+    var updated: Quadruple<String, String, BigDecimal, String>? = null
 
     override suspend fun invoke(
         id: String,
@@ -74,8 +74,7 @@ class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
         category: String,
         date: Long
     ) {
-        updatedExpense = Quadruple(id, name, amount, category)
-        this.date = date
+        updated = Quadruple(id, name, amount, category)
     }
 }
 

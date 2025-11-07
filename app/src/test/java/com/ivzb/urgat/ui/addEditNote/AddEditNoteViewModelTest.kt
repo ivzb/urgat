@@ -16,13 +16,13 @@ import com.ivzb.urgat.navigation.AddEditNoteDestination
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditNoteViewModelTest {
@@ -37,13 +37,18 @@ class AddEditNoteViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
 
+    private lateinit var viewModel: AddEditNoteViewModel
+
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
+
         getNoteUseCase = FakeGetNoteUseCase()
         createNoteUseCase = FakeCreateNoteUseCase()
         updateNoteUseCase = FakeUpdateNoteUseCase()
         savedStateHandle = SavedStateHandle()
+
+        viewModel = createViewModel()
     }
 
     @After
@@ -53,67 +58,77 @@ class AddEditNoteViewModelTest {
 
     @Test
     fun `init without id does not load note`() = runTest {
-        val viewModel = createViewModel()
-
-        Assert.assertNull(getNoteUseCase.calledWithId)
+        assertNull(getNoteUseCase.calledWithId)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
     @Test
     fun `init with id loads note`() = runTest {
-        val note = Note("123", "Note", false, 123)
+        val noteId = "123"
+        val note = Note(
+            id = noteId,
+            content = "Note",
+            isDeleted = false,
+            createdAt = 123
+        )
 
-        getNoteUseCase = FakeGetNoteUseCase(note)
-        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = "123"
+        getNoteUseCase.toReturn = note
+        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
 
-        val viewModel = createViewModel()
+        viewModel = createViewModel()
 
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        Assert.assertEquals("Note", state.content)
+        assertEquals("Note", state.content)
         assertFalse(state.isLoading)
-        Assert.assertEquals("123", getNoteUseCase.calledWithId)
+        assertEquals("123", getNoteUseCase.calledWithId)
     }
 
     @Test
     fun `updateContent updates ui state`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditNoteIntent.UpdateContent("New Content"))
         Assert.assertEquals("New Content", viewModel.uiState.value.content)
     }
 
     @Test
     fun `saveNote with empty fields shows message`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditNoteIntent.SaveNote)
         assertEquals(R.string.empty_note_message, viewModel.uiState.value.userMessage)
     }
 
     @Test
-    fun `createNewNote calls create usecase and sets isNoteSaved`() = runTest {
-        val viewModel = createViewModel()
-
+    fun `saveNote creates new note`() = runTest {
         viewModel.onIntent(AddEditNoteIntent.UpdateContent("Note"))
         viewModel.onIntent(AddEditNoteIntent.SaveNote)
 
         advanceUntilIdle()
 
-        assertEquals(listOf("Note"), createNoteUseCase.created)
+        val created = createNoteUseCase.created
+        assertEquals("Note", created)
         assertTrue(viewModel.uiState.value.isNoteSaved)
     }
 
     @Test
-    fun `updateNote calls update usecase and sets isNoteSaved`() = runTest {
+    fun `saveNote updates existing note`() = runTest {
         val noteId = "abc"
         savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
 
-        val note = Note(noteId, "Old", false, 123)
-        getNoteUseCase = FakeGetNoteUseCase(note)
+        val note = Note(
+            id = noteId,
+            content = "Old",
+            isDeleted = false,
+            createdAt = 123
+        )
+        getNoteUseCase.toReturn = note
 
-        val viewModel = createViewModel()
+        viewModel = createViewModel()
 
         advanceUntilIdle()
+
+        val uiState = viewModel.uiState.value
+        assertEquals(note.content, uiState.content)
+        assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditNoteIntent.UpdateContent("Updated"))
         viewModel.onIntent(AddEditNoteIntent.SaveNote)
@@ -121,12 +136,11 @@ class AddEditNoteViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.isNoteSaved)
-        assertEquals(listOf(Pair(noteId, "Updated")), updateNoteUseCase.updated)
+        assertEquals(Pair(noteId, "Updated"), updateNoteUseCase.updated)
     }
 
     @Test
     fun `userMessageShown clears message`() = runTest {
-        val viewModel = createViewModel()
         viewModel.onIntent(AddEditNoteIntent.SaveNote)
         assertNotNull(viewModel.uiState.value.userMessage)
 

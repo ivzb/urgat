@@ -5,32 +5,31 @@ import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 
-class FakeGetNoteUseCase(
-    private val note: Note? = null
-) : GetNoteUseCase {
+class FakeGetNoteUseCase : GetNoteUseCase {
 
+    var toReturn: Note? = null
     var calledWithId: String? = null
 
     override suspend fun invoke(id: String): Note? {
         calledWithId = id
-        return note
+        return toReturn
     }
 }
 
 class FakeCreateNoteUseCase : CreateNoteUseCase {
 
-    val created = mutableListOf<String>()
+    var created: String? = null
 
     override suspend fun invoke(content: String) {
-        created += content
+        created = content
     }
 }
 
 class FakeUpdateNoteUseCase : UpdateNoteUseCase {
 
-    val updated = mutableListOf<Pair<String, String>>()
+    var updated: Pair<String, String>? = null
 
     override suspend fun invoke(id: String, content: String) {
-        updated += Pair(id, content)
+        updated = Pair(id, content)
     }
 }

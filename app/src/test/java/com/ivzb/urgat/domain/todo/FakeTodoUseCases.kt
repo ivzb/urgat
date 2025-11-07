@@ -2,32 +2,31 @@ package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.Todo
 
-class FakeGetTodoUseCase(
-    private val todo: Todo? = null
-) : GetTodoUseCase {
+class FakeGetTodoUseCase : GetTodoUseCase {
 
+    var toReturn: Todo? = null
     var calledWithId: String? = null
 
     override suspend fun invoke(id: String): Todo? {
         calledWithId = id
-        return todo
+        return toReturn
     }
 }
 
 class FakeCreateTodoUseCase : CreateTodoUseCase {
 
-    val created = mutableListOf<Pair<String, String>>()
+    var created: Pair<String, String>? = null
 
     override suspend fun invoke(name: String, description: String) {
-        created += name to description
+        created = name to description
     }
 }
 
 class FakeUpdateTodoUseCase : UpdateTodoUseCase {
 
-    val updated = mutableListOf<Triple<String, String, String>>()
+    var updated: Triple<String, String, String>? = null
 
     override suspend fun invoke(id: String, title: String, description: String) {
-        updated += Triple(id, title, description)
+        updated = Triple(id, title, description)
     }
 }
