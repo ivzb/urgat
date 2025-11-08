@@ -1,6 +1,37 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.ui.todo.TodosFilterType
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+
+class FakeObserveTodosUseCase : ObserveTodosUseCase {
+
+    private val flow = MutableStateFlow<Async<List<Todo>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<Todo>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<TodosFilterType>?,
+        limit: Int
+    ): Flow<Async<List<Todo>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
 
 class FakeGetTodoUseCase : GetTodoUseCase {
 
@@ -28,5 +59,33 @@ class FakeUpdateTodoUseCase : UpdateTodoUseCase {
 
     override suspend fun invoke(id: String, title: String, description: String) {
         updated = Triple(id, title, description)
+    }
+}
+
+
+class FakeCompleteTodoUseCase : CompleteTodoUseCase {
+
+    var completedId: String? = null
+
+    override suspend fun invoke(id: String) {
+        completedId = id
+    }
+}
+
+class FakeActivateTodoUseCase : ActivateTodoUseCase {
+
+    var activatedId: String? = null
+
+    override suspend fun invoke(id: String) {
+        activatedId = id
+    }
+}
+
+class FakeClearCompletedTodosUseCase : ClearCompletedTodosUseCase {
+
+    var cleared: Boolean = false
+
+    override suspend fun invoke() {
+        cleared = true
     }
 }

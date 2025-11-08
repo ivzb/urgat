@@ -18,6 +18,7 @@ class ExpensesViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
+
     private lateinit var viewModel: ExpensesViewModel
 
     private val testDispatcher = StandardTestDispatcher()
@@ -37,7 +38,7 @@ class ExpensesViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Loading)
-        viewModel = ExpensesViewModel(fakeObserveExpensesUseCase, savedStateHandle)
+        viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -55,7 +56,7 @@ class ExpensesViewModelTest {
     fun `emits success state when use case returns data`() = runTest {
         val fakeExpenses = listOf(Expense("1", "Lunch"))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        viewModel = ExpensesViewModel(fakeObserveExpensesUseCase, savedStateHandle)
+        viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -64,7 +65,7 @@ class ExpensesViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-       assertEquals(fakeExpenses, state.items)
+        assertEquals(fakeExpenses, state.items)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -74,7 +75,7 @@ class ExpensesViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Error(R.string.error_expenses))
-        viewModel = ExpensesViewModel(fakeObserveExpensesUseCase, savedStateHandle)
+        viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -93,7 +94,7 @@ class ExpensesViewModelTest {
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeExpenses = listOf(Expense("2", "Coffee"))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        viewModel = ExpensesViewModel(fakeObserveExpensesUseCase, savedStateHandle)
+        viewModel = createViewModel()
 
         viewModel.onIntent(ExpensesIntent.SearchQueryChanged("coffee"))
 
@@ -106,11 +107,16 @@ class ExpensesViewModelTest {
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Success(emptyList()))
-        viewModel = ExpensesViewModel(fakeObserveExpensesUseCase, savedStateHandle)
+        viewModel = createViewModel()
 
         viewModel.onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.DEBIT_EXPENSES))
         advanceUntilIdle()
 
         assertEquals(ExpensesFilterType.DEBIT_EXPENSES, savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY])
     }
+
+    private fun createViewModel() = ExpensesViewModel(
+        fakeObserveExpensesUseCase,
+        savedStateHandle
+    )
 }
