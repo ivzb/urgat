@@ -1,14 +1,28 @@
 package com.ivzb.urgat.domain.weight
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
+import com.ivzb.urgat.ui.todo.TodosFilterType
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserveWeightsUseCase @Inject constructor(
+interface ObserveWeightsUseCase {
+
+    operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<Unit>?,
+        limit: Int
+    ): Flow<Async<List<Weight>>>
+
+}
+
+class DefaultObserveWeightsUseCase @Inject constructor(
     weightsRepository: WeightsRepository
-): BaseObserveUseCase<Weight, Unit>(weightsRepository) {
+): ObserveWeightsUseCase, BaseObserveUseCase<Weight, Unit>(weightsRepository) {
 
     override val errorMessage: Int = R.string.error_weights
 

@@ -4,11 +4,17 @@ import com.ivzb.urgat.data.weight.WeightsRepository
 import java.math.BigDecimal
 import javax.inject.Inject
 
-class CreateWeightUseCase @Inject constructor(
-    private val weightsRepository: WeightsRepository
-) {
+interface CreateWeightUseCase {
 
-    suspend operator fun invoke(value: BigDecimal) {
+    suspend operator fun invoke(value: BigDecimal)
+
+}
+
+class DefaultCreateWeightUseCase @Inject constructor(
+    private val weightsRepository: WeightsRepository
+): CreateWeightUseCase {
+
+    override suspend operator fun invoke(value: BigDecimal) {
         weightsRepository.create(value)
     }
 

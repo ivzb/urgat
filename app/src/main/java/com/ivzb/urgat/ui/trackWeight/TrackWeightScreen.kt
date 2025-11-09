@@ -110,23 +110,23 @@ private fun TrackWeightContent(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var weightTextFieldValue by remember {
+                var valueTextFieldValue by remember {
                     mutableStateOf(
                         TextFieldValue(
-                            text = uiState.weight,
-                            selection = TextRange(uiState.weight.length)
+                            text = uiState.value,
+                            selection = TextRange(uiState.value.length)
                         )
                     )
                 }
 
                 TextField(
-                    value = weightTextFieldValue,
+                    value = valueTextFieldValue,
                     onValueChange = {
-                        weightTextFieldValue = it.copy(
+                        valueTextFieldValue = it.copy(
                             selection = TextRange(it.text.length)
                         )
 
-                        onIntent(TrackWeightIntent.UpdateWeight(it.text))
+                        onIntent(TrackWeightIntent.UpdateValue(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.weight_hint)) },
                     maxLines = 1,

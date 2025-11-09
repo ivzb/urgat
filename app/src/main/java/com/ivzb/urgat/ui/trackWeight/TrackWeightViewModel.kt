@@ -22,21 +22,21 @@ class TrackWeightViewModel @Inject constructor(
 
     fun onIntent(intent: TrackWeightIntent) {
         when (intent) {
-            is TrackWeightIntent.UpdateWeight -> updateWeight(intent.value)
+            is TrackWeightIntent.UpdateValue -> updateValue(intent.value)
             TrackWeightIntent.SaveWeight -> saveWeight()
             TrackWeightIntent.UserMessageShown -> userMessageShown()
         }
     }
 
-    private fun updateWeight(weight: String) {
+    private fun updateValue(value: String) {
         _uiState.update {
-            it.copy(weight = weight)
+            it.copy(value = value)
         }
     }
 
     private fun saveWeight() {
         val fields = listOf(
-            uiState.value.weight,
+            uiState.value.value,
         )
 
         val emptyIndex = fields.indexOfFirst { it.isEmpty() }
@@ -57,7 +57,7 @@ class TrackWeightViewModel @Inject constructor(
 
     private fun createNewWeight() = viewModelScope.launch {
         createWeightUseCase(
-           value = uiState.value.weight.toBigDecimal(),
+           value = uiState.value.value.toBigDecimal(),
         )
 
         _uiState.update {
