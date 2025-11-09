@@ -23,17 +23,14 @@ class TrackersViewModel @Inject constructor(
     observeWeightsUseCase: ObserveWeightsUseCase,
 ) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow(false)
-
     private val _uiEvent = MutableStateFlow<TrackersUiEvent?>(null)
 
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<TrackersUiState> = combine(
-        _isLoading,
         _uiEvent,
         observeWeightsUseCase(_searchQuery, null, NO_LIMIT),
-    ) { isLoading, uiEvent, weightsAsync ->
+    ) { uiEvent, weightsAsync ->
 
         when (weightsAsync) {
             Async.Loading -> {

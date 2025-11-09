@@ -100,7 +100,6 @@ class NotesViewModelTest {
 
         advanceUntilIdle()
 
-        // Verify flow changed — fake use case records last query
         assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
     }
 

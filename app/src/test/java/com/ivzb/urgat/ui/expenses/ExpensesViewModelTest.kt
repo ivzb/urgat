@@ -100,7 +100,6 @@ class ExpensesViewModelTest {
 
         advanceUntilIdle()
 
-        // Verify flow changed — fake use case records last query
         assertEquals("coffee", fakeObserveExpensesUseCase.lastQuery)
     }
 
