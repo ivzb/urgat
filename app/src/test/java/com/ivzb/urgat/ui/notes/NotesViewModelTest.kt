@@ -1,0 +1,111 @@
+package com.ivzb.urgat.ui.notes
+
+import androidx.lifecycle.SavedStateHandle
+import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.domain.notes.FakeObserveNotesUseCase
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+import com.ivzb.urgat.R
+import kotlinx.coroutines.flow.collect
+import org.junit.*
+import org.junit.Assert.assertEquals
+import org.junit.Test
+import kotlin.test.*
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class NotesViewModelTest {
+
+    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeObserveNotesUseCase: FakeObserveNotesUseCase
+
+    private lateinit var viewModel: NotesViewModel
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(testDispatcher)
+        savedStateHandle = SavedStateHandle()
+        fakeObserveNotesUseCase = FakeObserveNotesUseCase()
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `initial state is loading`() = runTest {
+        fakeObserveNotesUseCase.emit(Async.Loading)
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        val initial = viewModel.uiState.value
+        assertTrue(initial.isLoading)
+        assertFalse(initial.hasError)
+        assertTrue(initial.items.isEmpty())
+
+        job.cancel()
+    }
+
+    @Test
+    fun `emits success state when use case returns data`() = runTest {
+        val fakeNotes = listOf(Note("1", "Note"))
+        fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(fakeNotes, state.items)
+        assertFalse(state.isLoading)
+        assertFalse(state.hasError)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `emits error state when use case returns error`() = runTest {
+        fakeObserveNotesUseCase.emit(Async.Error(R.string.error_notes))
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.hasError)
+        assertFalse(state.isLoading)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
+        val fakeNotes = listOf(Note("2", "Note"))
+        fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
+        viewModel = createViewModel()
+
+        viewModel.onIntent(NotesIntent.SearchQueryChanged("coffee"))
+
+        advanceUntilIdle()
+
+        // Verify flow changed — fake use case records last query
+        assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
+    }
+
+    private fun createViewModel() = NotesViewModel(
+        fakeObserveNotesUseCase,
+        savedStateHandle
+    )
+}

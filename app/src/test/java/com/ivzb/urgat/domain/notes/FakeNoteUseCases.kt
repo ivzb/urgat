@@ -3,7 +3,39 @@ package com.ivzb.urgat.domain.notes
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
+import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
+import com.ivzb.urgat.ui.notes.NotesFilterType
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+
+class FakeObserveNotesUseCase : ObserveNotesUseCase {
+
+    private val flow = MutableStateFlow<Async<List<Note>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<Note>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<NotesFilterType>?,
+        limit: Int
+    ): Flow<Async<List<Note>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
 
 class FakeGetNoteUseCase : GetNoteUseCase {
 
