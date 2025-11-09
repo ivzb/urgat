@@ -7,9 +7,9 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
-import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
@@ -21,10 +21,8 @@ import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -40,16 +38,16 @@ class OverviewViewModel @Inject constructor(
     private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
 ) : ViewModel() {
 
-    private val _searchQuery = MutableStateFlow("")
+    private val _uiEvent = MutableStateFlow<OverviewUiEvent?>(null)
 
-    private val _uiEvent = MutableSharedFlow<OverviewUiEvent>()
-    val uiEvent = _uiEvent.asSharedFlow()
+    private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<OverviewUiState> = combine(
         observeTodosUseCase(_searchQuery, null, LIMIT),
         observeExpensesUseCase(_searchQuery, null, LIMIT),
         observeNotesUseCase(_searchQuery, null, LIMIT),
-    ) { todos, expenses, notes ->
+        _uiEvent,
+    ) { todos, expenses, notes, uiEvent ->
         val items = listOf(todos, expenses, notes)
 
         when {
@@ -105,6 +103,7 @@ class OverviewViewModel @Inject constructor(
                         R.string.add_note,
                     ),
                     isLoading = false,
+                    uiEvent = uiEvent,
                 )
             }
 
@@ -123,6 +122,7 @@ class OverviewViewModel @Inject constructor(
             is OverviewIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
             is OverviewIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is OverviewIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
+            is OverviewIntent.EventConsumed -> onEventConsumed()
         }
     }
 
@@ -148,11 +148,17 @@ class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(
                 when (id) {
-                    OverviewHeaderItemId.Todo -> OverviewUiEvent.AddTodo()
-                    OverviewHeaderItemId.Expense -> OverviewUiEvent.AddExpense()
-                    OverviewHeaderItemId.Note -> OverviewUiEvent.AddNote()
+                    OverviewHeaderItemId.Todo -> OverviewUiEvent.AddTodo
+                    OverviewHeaderItemId.Expense -> OverviewUiEvent.AddExpense
+                    OverviewHeaderItemId.Note -> OverviewUiEvent.AddNote
                 }
             )
+        }
+    }
+
+    private fun onEventConsumed() {
+        viewModelScope.launch {
+            _uiEvent.emit(null)
         }
     }
 

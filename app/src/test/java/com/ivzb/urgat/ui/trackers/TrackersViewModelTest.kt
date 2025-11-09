@@ -25,7 +25,7 @@ import org.junit.Test
 import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class WeightsViewModelTest {
+class TrackersViewModelTest {
 
     private lateinit var fakeObserveWeightsUseCase: FakeObserveWeightsUseCase
 

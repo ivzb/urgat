@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -28,6 +27,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
@@ -51,7 +51,6 @@ import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun OverviewScreen(
@@ -92,13 +91,15 @@ fun OverviewScreen(
         modifier = modifier
     )
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEvent.collectLatest { event ->
+    LaunchedEffect(uiState.uiEvent) {
+        uiState.uiEvent?.let { event ->
             when (event) {
                 is OverviewUiEvent.AddTodo -> onAddTodo()
                 is OverviewUiEvent.AddExpense -> onAddExpense()
                 is OverviewUiEvent.AddNote -> onAddNote()
             }
+
+            viewModel.onIntent(OverviewIntent.EventConsumed)
         }
     }
 }
