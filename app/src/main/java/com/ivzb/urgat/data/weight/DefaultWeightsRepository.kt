@@ -26,12 +26,8 @@ class DefaultWeightsRepository @Inject constructor(
     }
 
     override fun getStream(limit: Int, searchQuery: String): Flow<List<Weight>> {
-        // todo: pass searchQuery from-to
-        return localDataSource.observeAll(limit).map { weights ->
-            withContext(dispatcher) {
-                weights.toExternal()
-            }
-        }
+        // todo: use searchQuery
+        return getStream(limit)
     }
 
     override suspend fun create(value: BigDecimal): String {

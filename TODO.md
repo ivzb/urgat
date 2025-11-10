@@ -8,4 +8,4 @@ add onboarding screen
 consider moving uiEvent into the uiState
 allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
 setup github build pipeline
-write data layer unit tests
+write domain layer unit tests

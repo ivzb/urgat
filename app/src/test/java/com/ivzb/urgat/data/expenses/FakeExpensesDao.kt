@@ -11,14 +11,6 @@ class FakeExpenseDao : ExpenseDao {
     private val items = mutableListOf<ExpenseEntity>()
     private val _flow = MutableStateFlow<List<ExpenseEntity>>(emptyList())
 
-    override fun observeAll(): Flow<List<ExpenseEntity>> =
-        _flow
-
-    override fun observeAll(searchQuery: String): Flow<List<ExpenseEntity>> =
-        _flow.map { list ->
-            list.filter { it.name.contains(searchQuery, ignoreCase = true) }
-        }
-
     override fun observeAll(limit: Int): Flow<List<ExpenseEntity>> =
         _flow.map { it.take(limit) }
 
