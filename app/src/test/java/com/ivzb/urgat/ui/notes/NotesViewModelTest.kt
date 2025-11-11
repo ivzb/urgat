@@ -2,7 +2,7 @@ package com.ivzb.urgat.ui.notes
 
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.domain.notes.FakeObserveNotesUseCase
+import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*

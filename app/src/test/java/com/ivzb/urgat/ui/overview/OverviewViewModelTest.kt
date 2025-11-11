@@ -4,8 +4,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.expenses.FakeObserveExpensesUseCase
-import com.ivzb.urgat.domain.notes.FakeObserveNotesUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
+import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
 import com.ivzb.urgat.domain.todo.FakeActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase

@@ -1,9 +1,9 @@
 package com.ivzb.urgat.ui.addEditNote
 
 import androidx.lifecycle.SavedStateHandle
-import com.ivzb.urgat.domain.notes.FakeCreateNoteUseCase
-import com.ivzb.urgat.domain.notes.FakeGetNoteUseCase
-import com.ivzb.urgat.domain.notes.FakeUpdateNoteUseCase
+import com.ivzb.urgat.domain.note.FakeCreateNoteUseCase
+import com.ivzb.urgat.domain.note.FakeGetNoteUseCase
+import com.ivzb.urgat.domain.note.FakeUpdateNoteUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

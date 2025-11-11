@@ -1,10 +1,6 @@
-package com.ivzb.urgat.domain.notes
+package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.domain.note.CreateNoteUseCase
-import com.ivzb.urgat.domain.note.GetNoteUseCase
-import com.ivzb.urgat.domain.note.ObserveNotesUseCase
-import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import com.ivzb.urgat.ui.notes.NotesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope

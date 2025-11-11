@@ -2,7 +2,7 @@ package com.ivzb.urgat.ui.expenses
 
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.domain.expenses.FakeObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*

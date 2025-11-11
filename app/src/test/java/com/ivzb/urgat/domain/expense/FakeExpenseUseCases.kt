@@ -1,10 +1,6 @@
-package com.ivzb.urgat.domain.expenses
+package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
-import com.ivzb.urgat.domain.expense.GetExpenseUseCase
-import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
-import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
