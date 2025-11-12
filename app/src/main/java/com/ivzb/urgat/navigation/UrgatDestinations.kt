@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Timer
@@ -28,6 +29,13 @@ data object OverviewDestination: UrgatMenuDestination() {
     override val label = R.string.overview
     override val icon = Icons.Filled.Home
     override val route = "overview"
+    override val withFAB = false
+}
+
+data object InvestmentsDestination: UrgatMenuDestination() {
+    override val label = R.string.investments
+    override val icon = Icons.Filled.MonetizationOn
+    override val route = "investments"
     override val withFAB = false
 }
 
@@ -106,4 +114,9 @@ data object TrackWeightDestination: UrgatDestination() {
 }
 
 // Screens to be displayed in the top UrgatTabRow
-val bottomNavigationScreens = listOf(OverviewDestination, TrackersDestination, WeatherDestination)
+val bottomNavigationScreens = listOf(
+    OverviewDestination,
+    InvestmentsDestination,
+    TrackersDestination,
+    WeatherDestination
+)

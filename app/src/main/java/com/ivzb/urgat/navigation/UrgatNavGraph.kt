@@ -28,6 +28,7 @@ import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseScreen
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteScreen
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
+import com.ivzb.urgat.ui.investments.InvestmentsScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -105,6 +106,12 @@ private fun NavHostContent(
             NotesScreen(
                 onAddNote = { navActions.navigateToAddNote() },
                 onNoteClick = { navActions.navigateToEditNote(it.id) },
+            )
+        }
+
+        composable(InvestmentsDestination.route) {
+            InvestmentsScreen(
+                navController = navController
             )
         }
 
