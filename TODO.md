@@ -7,3 +7,4 @@ add onboarding screen
 consider moving uiEvent into the uiState
 allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
 setup github build pipeline
+add button to add/edit investment screen from investments screen

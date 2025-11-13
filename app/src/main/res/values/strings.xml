@@ -29,6 +29,7 @@
     <string name="empty_expense_message">Please fill in all expense fields.</string>
     <string name="empty_note_message">Please enter a note.</string>
     <string name="empty_weight_message">Please fill in weight.</string>
+    <string name="empty_investment_message">Please enter a investment.</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
     <string name="expense_hint">Expense</string>
@@ -36,12 +37,16 @@
     <string name="category_hint">Category</string>
     <string name="date_hint" translatable="false">dd/MM/yyyy</string>
     <string name="note_hint">Enter your note here.</string>
+    <string name="investment_hint">Enter your investment here.</string>
+    <string name="currency_hint">Currency</string>
     <string name="save">Save</string>
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>
     <string name="add_expense">Add Expense</string>
     <string name="edit_expense">Edit Expense</string>
     <string name="add_note">Add Note</string>
+    <string name="add_investment">Add Investment</string>
+    <string name="edit_investment">Edit Investment</string>
     <string name="edit_note">Edit Note</string>
     <string name="search">Search</string>
     <string name="clear_completed">Clear completed</string>

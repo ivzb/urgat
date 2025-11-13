@@ -113,6 +113,18 @@ data object TrackWeightDestination: UrgatDestination() {
     override val route = "trackWeight"
 }
 
+data object AddEditInvestmentDestination: UrgatDestination() {
+    override val label = R.string.add_investment
+    override val icon = Icons.Filled.Add
+    override val route = "${Args.ROUTE}/{${Args.ARG_TITLE}}?${Args.ARG_ID}={${Args.ARG_ID}}"
+
+    object Args {
+        const val ROUTE = "addEditInvestment"
+        const val ARG_TITLE = "title"
+        const val ARG_ID = "id"
+    }
+}
+
 // Screens to be displayed in the top UrgatTabRow
 val bottomNavigationScreens = listOf(
     OverviewDestination,

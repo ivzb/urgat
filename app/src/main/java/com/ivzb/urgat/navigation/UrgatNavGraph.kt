@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseScreen
+import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentScreen
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteScreen
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
@@ -182,6 +183,23 @@ private fun NavHostContent(
         composable(TrackWeightDestination.route) {
             TrackWeightScreen(
                 screenTitle = R.string.track_weight,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            AddEditInvestmentDestination.route, arguments = listOf(
+                navArgument(AddEditInvestmentDestination.Args.ARG_TITLE) { type = NavType.IntType },
+                navArgument(AddEditInvestmentDestination.Args.ARG_ID) {
+                    type = NavType.StringType; nullable = true
+                },
+            )
+        ) { entry ->
+            val title = entry.arguments?.getInt(AddEditInvestmentDestination.Args.ARG_TITLE) ?: 0
+            val investmentId = entry.arguments?.getString(AddEditInvestmentDestination.Args.ARG_ID)
+
+            AddEditInvestmentScreen(
+                screenTitle = title,
                 onBack = { navController.popBackStack() }
             )
         }

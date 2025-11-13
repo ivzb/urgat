@@ -1,0 +1,277 @@
+package com.ivzb.urgat.ui.addEditInvestment
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.DatePicker
+import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.TextTopAppBar
+import com.ivzb.urgat.ui.theme.UrgatTheme
+import kotlinx.coroutines.launch
+
+enum class FieldId {
+    Name,
+    Currency,
+    Amount,
+}
+
+@Composable
+fun AddEditInvestmentScreen(
+    @StringRes screenTitle: Int,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AddEditInvestmentViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    AddEditInvestmentContent(
+        screenTitle = screenTitle,
+        onBack = onBack,
+        uiState = uiState,
+        onIntent = viewModel::onIntent,
+        modifier = modifier
+    )
+
+    // Check if the task is saved and call onTaskUpdate event
+    LaunchedEffect(uiState.isInvestmentSaved) {
+        if (uiState.isInvestmentSaved) {
+            onBack()
+        }
+    }
+}
+
+@Composable
+private fun AddEditInvestmentContent(
+    screenTitle: Int,
+    onBack: () -> Unit,
+    uiState: AddEditInvestmentUiState,
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val focusRequesters = remember {
+        List(FieldId.entries.size) { FocusRequester() }
+    }
+    val focusManager = LocalFocusManager.current
+
+    Scaffold(
+        topBar = {
+            TextTopAppBar(screenTitle, onBack)
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+    ) { innerPadding ->
+
+        Column(
+            modifier = modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(dimensionResource(R.dimen.content_padding))
+                .verticalScroll(rememberScrollState())
+        ) {
+            if (uiState.isLoading) {
+                LoadingState(
+                    label = R.string.loading,
+                    modifier = Modifier.weight(1f)
+                )
+            } else {
+                var nameTextFieldValue by remember {
+                    mutableStateOf(
+                        TextFieldValue(
+                            text = uiState.name,
+                            selection = TextRange(uiState.name.length)
+                        )
+                    )
+                }
+
+                TextField(
+                    value = nameTextFieldValue,
+                    onValueChange = {
+                        nameTextFieldValue = it.copy(
+                            selection = TextRange(it.text.length)
+                        )
+
+                        onIntent(AddEditInvestmentIntent.UpdateName(it.text))
+                    },
+                    placeholder = { Text(text = stringResource(id = R.string.investment_hint)) },
+                    maxLines = 1,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+                ) {
+                    TextField(
+                        value = uiState.currency,
+                        onValueChange = {
+                            onIntent(AddEditInvestmentIntent.UpdateCurrency(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.category_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+                    )
+
+                    TextField(
+                        value = uiState.amount,
+                        onValueChange = {
+                            onIntent(AddEditInvestmentIntent.UpdateAmount(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                )
+
+                Button(
+                    onClick = {
+                        onIntent(AddEditInvestmentIntent.SaveInvestment)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.save))
+                }
+
+                LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+                }
+            }
+        }
+    }
+
+    uiState.userMessage?.let { userMessage ->
+        val snackbarText = stringResource(userMessage)
+
+        LaunchedEffect(userMessage) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(snackbarText)
+                onIntent(AddEditInvestmentIntent.UserMessageShown)
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AddContentPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditInvestmentContent(
+                screenTitle = R.string.add_investment,
+                onBack = {},
+                uiState = AddEditInvestmentUiState(),
+                onIntent = {},
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun EditInvestmentContentPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditInvestmentContent(
+                screenTitle = R.string.edit_investment,
+                onBack = {},
+                uiState = AddEditInvestmentUiState(
+                    name = "SNP 500",
+                    currency = "USD",
+                    amount = "500",
+                ),
+                onIntent = {},
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LoadingContentPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditInvestmentContent(
+                screenTitle = R.string.add_investment,
+                onBack = {},
+                uiState = AddEditInvestmentUiState(
+                    isLoading = true
+                ),
+                onIntent = {},
+                modifier = Modifier
+            )
+        }
+    }
+}
