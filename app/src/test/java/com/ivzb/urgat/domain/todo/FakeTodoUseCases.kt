@@ -46,19 +46,19 @@ class FakeGetTodoUseCase : GetTodoUseCase {
 
 class FakeCreateTodoUseCase : CreateTodoUseCase {
 
-    var created: Pair<String, String>? = null
+    var created: List<Any> = listOf()
 
     override suspend fun invoke(name: String, description: String) {
-        created = name to description
+        created = listOf(name, description)
     }
 }
 
 class FakeUpdateTodoUseCase : UpdateTodoUseCase {
 
-    var updated: Triple<String, String, String>? = null
+    var updated: List<Any> = listOf()
 
     override suspend fun invoke(id: String, title: String, description: String) {
-        updated = Triple(id, title, description)
+        updated = listOf(id, title, description)
     }
 }
 

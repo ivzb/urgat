@@ -109,10 +109,10 @@ class AddEditExpenseViewModelTest {
         
         advanceUntilIdle()
 
-        val created = createExpenseUseCase.created
-        assertEquals("Dinner", created?.first)
-        assertEquals(BigDecimal("25"), created?.second)
-        assertEquals("Food", created?.third)
+        val (name, amount, category) = createExpenseUseCase.created
+        assertEquals("Dinner", name)
+        assertEquals(BigDecimal("25"), amount)
+        assertEquals("Food", category)
         assertTrue(viewModel.uiState.value.isExpenseSaved)
     }
 
@@ -148,11 +148,11 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val updated = updateExpenseUseCase.updated
-        assertEquals(expenseId, updated?.first)
-        assertEquals("Edit", updated?.second)
-        assertEquals(BigDecimal("35"), updated?.third)
-        assertEquals("Math", updated?.fourth)
+        val (id, name, amount, category) = updateExpenseUseCase.updated
+        assertEquals(expenseId, id)
+        assertEquals("Edit", name)
+        assertEquals(BigDecimal("35"), amount)
+        assertEquals("Math", category)
         assertEquals(true, viewModel.uiState.value.isExpenseSaved)
     }
 

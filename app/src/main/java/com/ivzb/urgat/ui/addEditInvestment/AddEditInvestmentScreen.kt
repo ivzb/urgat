@@ -41,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -51,6 +50,7 @@ enum class FieldId {
     Name,
     Currency,
     Amount,
+    Category,
 }
 
 @Composable
@@ -160,10 +160,10 @@ private fun AddEditInvestmentContent(
                         onValueChange = {
                             onIntent(AddEditInvestmentIntent.UpdateCurrency(it))
                         },
-                        placeholder = { Text(stringResource(id = R.string.category_hint)) },
+                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         maxLines = 1,
                         modifier = Modifier
@@ -187,6 +187,27 @@ private fun AddEditInvestmentContent(
                             .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
                     )
                 }
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                TextField(
+                    value = uiState.category,
+                    onValueChange = {
+                        onIntent(AddEditInvestmentIntent.UpdateCategory(it))
+                    },
+                    placeholder = { Text(stringResource(id = R.string.category_hint)) },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    maxLines = 1,
+                    modifier = Modifier
+                        .weight(1f)
+                        .focusRequester(focusRequesters[FieldId.Category.ordinal]),
+                )
 
                 Spacer(
                     modifier = Modifier

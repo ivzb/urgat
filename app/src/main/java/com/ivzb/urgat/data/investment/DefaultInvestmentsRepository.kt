@@ -1,0 +1,73 @@
+package com.ivzb.urgat.data.investment
+
+import com.ivzb.urgat.di.ApplicationScope
+import com.ivzb.urgat.di.DefaultDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import java.math.BigDecimal
+import java.util.UUID
+import javax.inject.Inject
+
+class DefaultInvestmentsRepository @Inject constructor(
+    private val localDataSource: InvestmentDao,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val scope: CoroutineScope,
+) : InvestmentsRepository {
+
+    override fun getStream(limit: Int): Flow<List<Investment>> {
+        return localDataSource.observeAll(limit).map { investments ->
+            withContext(dispatcher) {
+                investments.toExternal()
+            }
+        }
+    }
+
+    override fun getStream(limit: Int, searchQuery: String): Flow<List<Investment>> {
+        return localDataSource.observeAll(limit, searchQuery).map { investments ->
+            withContext(dispatcher) {
+                investments.toExternal()
+            }
+        }
+    }
+
+    override suspend fun create(name: String, currency: String, amount: BigDecimal, category: String): String {
+        // ID creation might be a complex operation so it's executed using the supplied
+        // coroutine dispatcher
+        val id = withContext(dispatcher) {
+            UUID.randomUUID().toString()
+        }
+        val investment = Investment(
+            id = id,
+            name = name,
+            currency = currency,
+            amount = amount,
+            category = category,
+            isDeleted = false,
+            createdAt = System.currentTimeMillis()
+        )
+        localDataSource.upsert(investment.toEntity())
+        return id
+    }
+
+    override suspend fun update(id: String, name: String, currency: String, amount: BigDecimal, category: String) {
+        val investment = get(id)?.copy(
+            name = name,
+            amount = amount,
+            currency = currency,
+            category = category,
+        ) ?: throw Exception("Investment (id $id) not found")
+
+        localDataSource.upsert(investment.toEntity())
+    }
+
+    override suspend fun get(id: String): Investment? {
+        return localDataSource.getById(id)?.toExternal()
+    }
+
+    override suspend fun delete(id: String) {
+        localDataSource.deleteById(id)
+    }
+}

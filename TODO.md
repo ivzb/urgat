@@ -8,3 +8,5 @@ consider moving uiEvent into the uiState
 allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
 setup github build pipeline
 add button to add/edit investment screen from investments screen
+check if DB search is case insensitive
+create investments UI and write unit tests for its view model

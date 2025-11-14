@@ -47,7 +47,7 @@ class FakeGetExpenseUseCase : GetExpenseUseCase {
 
 class FakeCreateExpenseUseCase : CreateExpenseUseCase {
 
-    var created: Triple<String, BigDecimal, String>? = null
+    var created: List<Any> = listOf()
 
     override suspend fun invoke(
         name: String,
@@ -55,13 +55,13 @@ class FakeCreateExpenseUseCase : CreateExpenseUseCase {
         category: String,
         date: Long
     ) {
-        created = Triple(name, amount, category)
+        created = listOf(name, amount, category)
     }
 }
 
 class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
 
-    var updated: Quadruple<String, String, BigDecimal, String>? = null
+    var updated: List<Any> = listOf()
 
     override suspend fun invoke(
         id: String,
@@ -70,9 +70,6 @@ class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
         category: String,
         date: Long
     ) {
-        updated = Quadruple(id, name, amount, category)
+        updated = listOf(id, name, amount, category)
     }
 }
-
-// Helper data class for 4 values
-data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

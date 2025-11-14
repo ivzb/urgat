@@ -104,8 +104,9 @@ class AddEditTodoViewModelTest {
 
         advanceUntilIdle()
 
-        val created = createTodoUseCase.created
-        assertEquals("Title" to "Desc", created)
+        val (title, description) = createTodoUseCase.created
+        assertEquals("Title", title)
+        assertEquals("Desc", description)
         assertTrue(viewModel.uiState.value.isTodoSaved)
     }
 
@@ -139,7 +140,10 @@ class AddEditTodoViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.isTodoSaved)
-        assertEquals(Triple(todoId, "Updated Title", "Updated Desc"), updateTodoUseCase.updated)
+        val (id, title, description) = updateTodoUseCase.updated
+        assertEquals(todoId, id)
+        assertEquals("Updated Title", title)
+        assertEquals("Updated Desc", description)
     }
 
     @Test

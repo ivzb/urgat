@@ -55,9 +55,9 @@ class FakeCreateNoteUseCase : CreateNoteUseCase {
 
 class FakeUpdateNoteUseCase : UpdateNoteUseCase {
 
-    var updated: Pair<String, String>? = null
+    var updated: List<Any> = listOf()
 
     override suspend fun invoke(id: String, content: String) {
-        updated = Pair(id, content)
+        updated = listOf(id, content)
     }
 }

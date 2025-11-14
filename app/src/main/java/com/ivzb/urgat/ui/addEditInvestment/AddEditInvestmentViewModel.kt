@@ -5,10 +5,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-//import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
-//import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
-//import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
-//import com.ivzb.urgat.navigation.AddEditInvestmentDestination
+import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
+import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
+import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
+import com.ivzb.urgat.navigation.AddEditInvestmentDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,9 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEditInvestmentViewModel @Inject constructor(
-//    private val getInvestmentUseCase: GetInvestmentUseCase,
-//    private val createInvestmentUseCase: CreateInvestmentUseCase,
-//    private val updateInvestmentUseCase: UpdateInvestmentUseCase,
+    private val getInvestmentUseCase: GetInvestmentUseCase,
+    private val createInvestmentUseCase: CreateInvestmentUseCase,
+    private val updateInvestmentUseCase: UpdateInvestmentUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -31,9 +31,9 @@ class AddEditInvestmentViewModel @Inject constructor(
     val uiState: StateFlow<AddEditInvestmentUiState> = _uiState.asStateFlow()
 
     init {
-//        if (investmentId != null) {
-//            loadInvestment(investmentId)
-//        }
+        if (investmentId != null) {
+            loadInvestment(investmentId)
+        }
     }
 
     fun onIntent(intent: AddEditInvestmentIntent) {
@@ -41,6 +41,7 @@ class AddEditInvestmentViewModel @Inject constructor(
             is AddEditInvestmentIntent.UpdateName -> updateName(intent.value)
             is AddEditInvestmentIntent.UpdateCurrency -> updateCurrency(intent.value)
             is AddEditInvestmentIntent.UpdateAmount -> updateAmount(intent.value)
+            is AddEditInvestmentIntent.UpdateCategory -> updateCategory(intent.value)
             AddEditInvestmentIntent.SaveInvestment -> saveInvestment()
             AddEditInvestmentIntent.UserMessageShown -> userMessageShown()
         }
@@ -64,11 +65,18 @@ class AddEditInvestmentViewModel @Inject constructor(
         }
     }
 
+    private fun updateCategory(category: String) {
+        _uiState.update {
+            it.copy(category = category)
+        }
+    }
+
     private fun saveInvestment() {
         val fields = listOf(
             uiState.value.name,
             uiState.value.currency,
             uiState.value.amount,
+            uiState.value.category,
         )
 
         val emptyIndex = fields.indexOfFirst { it.isEmpty() }
@@ -92,11 +100,12 @@ class AddEditInvestmentViewModel @Inject constructor(
     }
 
     private fun createNewInvestment() = viewModelScope.launch {
-//        createInvestmentUseCase(
-//            name = uiState.value.name,
-//            currency = uiState.value.currency,
-//            amount = uiState.value.amount.toBigDecimal(),
-//        )
+        createInvestmentUseCase(
+            name = uiState.value.name,
+            currency = uiState.value.currency,
+            amount = uiState.value.amount.toBigDecimal(),
+            category = uiState.value.category,
+        )
 
         _uiState.update {
             it.copy(isInvestmentSaved = true)
@@ -116,12 +125,13 @@ class AddEditInvestmentViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-//            updateInvestmentUseCase(
-//                investmentId,
-//                name = uiState.value.name,
-//                currency = uiState.value.currency,
-//                amount = uiState.value.amount.toBigDecimal(),
-//            )
+            updateInvestmentUseCase(
+                investmentId,
+                name = uiState.value.name,
+                currency = uiState.value.currency,
+                amount = uiState.value.amount.toBigDecimal(),
+                category = uiState.value.category,
+            )
 
             _uiState.update {
                 it.copy(isInvestmentSaved = true)
@@ -135,22 +145,23 @@ class AddEditInvestmentViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-//            getInvestmentUseCase(investmentId).let { investment ->
-//                if (investment != null) {
-//                    _uiState.update {
-//                        it.copy(
-//                            name = investment.name,
-//                            currency = investment.currency,
-//                            amount = investment.amount.toString(),
-//                            isLoading = false
-//                        )
-//                    }
-//                } else {
-//                    _uiState.update {
-//                        it.copy(isLoading = false)
-//                    }
-//                }
-//            }
+            getInvestmentUseCase(investmentId).let { investment ->
+                if (investment != null) {
+                    _uiState.update {
+                        it.copy(
+                            name = investment.name,
+                            currency = investment.currency,
+                            amount = investment.amount.toString(),
+                            category = investment.category,
+                            isLoading = false,
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(isLoading = false)
+                    }
+                }
+            }
         }
     }
 

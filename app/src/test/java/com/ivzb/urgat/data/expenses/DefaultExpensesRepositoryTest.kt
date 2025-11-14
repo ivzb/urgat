@@ -49,6 +49,7 @@ class DefaultExpensesRepositoryTest {
         assertNotNull(stored)
         assertEquals("Coffee", stored?.name)
         assertEquals(BigDecimal("3.50"), stored?.amount)
+        assertEquals(1000L, stored?.date)
         assertTrue(stored?.isDeleted == false)
     }
 
@@ -64,6 +65,8 @@ class DefaultExpensesRepositoryTest {
         val expense = repository.get(id)
         assertNotNull(expense)
         assertEquals("Lunch", expense?.name)
+        assertEquals(BigDecimal("10.0"), expense?.amount)
+        assertEquals(2000L, expense?.date)
     }
 
     @Test
@@ -85,7 +88,7 @@ class DefaultExpensesRepositoryTest {
             repository.update("missing", "A", BigDecimal.ONE, "Cat", 0L)
         }
 
-        assertTrue(exception.message!!.contains("not found"))
+        assertTrue(exception.message?.contains("not found") == true)
     }
 
     @Test

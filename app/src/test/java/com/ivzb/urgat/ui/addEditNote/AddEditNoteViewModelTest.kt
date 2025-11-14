@@ -136,7 +136,9 @@ class AddEditNoteViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.isNoteSaved)
-        assertEquals(Pair(noteId, "Updated"), updateNoteUseCase.updated)
+        val (id, content) = updateNoteUseCase.updated
+        assertEquals(noteId, id)
+        assertEquals("Updated", content)
     }
 
     @Test

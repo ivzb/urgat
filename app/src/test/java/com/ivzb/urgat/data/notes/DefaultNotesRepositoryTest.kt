@@ -75,7 +75,7 @@ class DefaultNotesRepositoryTest {
             repository.update("missing", "A")
         }
 
-        assertTrue(exception.message!!.contains("not found"))
+        assertTrue(exception.message?.contains("not found") == true)
     }
 
     @Test
@@ -106,7 +106,6 @@ class DefaultNotesRepositoryTest {
 
         val result = repository.getStream(limit = 10, searchQuery = "Lu").first()
 
-        // Should match "Lunch" only (case-insensitive substring)
         assertEquals(1, result.size)
         assertEquals("Lunch", result.first().content)
     }

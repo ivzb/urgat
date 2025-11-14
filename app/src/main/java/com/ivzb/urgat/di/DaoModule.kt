@@ -1,6 +1,7 @@
 package com.ivzb.urgat.di
 
 import com.ivzb.urgat.data.expense.ExpenseDao
+import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.todo.TodoDao
@@ -25,5 +26,8 @@ class DaoModule {
 
     @Provides
     fun provideWeightDao(appDatabase: AppDatabase): WeightDao = appDatabase.weightDao()
+
+    @Provides
+    fun provideInvestmentDao(appDatabase: AppDatabase): InvestmentDao = appDatabase.investmentDao()
 
 }

@@ -80,7 +80,7 @@ class DefaultTodoRepositoryTest {
             repository.update("missing", "A", "B")
         }
 
-        assertTrue(exception.message!!.contains("not found"))
+        assertTrue(exception.message?.contains("not found") == true)
     }
 
     @Test
@@ -120,22 +120,47 @@ class DefaultTodoRepositoryTest {
     @Test
     fun `complete updates todo correctly`() = runTest {
         val id = repository.create("Taxi", "Desc")
-        assertFalse(dao.getById(id)!!.isCompleted)
+
+        var todo = dao.getById(id)
+        assertNotNull(todo)
+        todo?.let {
+            assertFalse(it.isCompleted)
+        }
 
         repository.complete(id)
-        assertTrue(dao.getById(id)!!.isCompleted)
+
+        todo = dao.getById(id)
+        assertNotNull(todo)
+        todo?.let {
+            assertTrue(it.isCompleted)
+        }
     }
 
     @Test
     fun `activate updates todo correctly`() = runTest {
         val id = repository.create("Taxi", "Desc")
-        assertFalse(dao.getById(id)!!.isCompleted)
+        var todo = dao.getById(id)
+
+        assertNotNull(todo)
+        todo?.let {
+            assertFalse(it.isCompleted)
+        }
 
         repository.complete(id)
-        assertTrue(dao.getById(id)!!.isCompleted)
+
+        assertNotNull(todo)
+        todo = dao.getById(id)
+        todo?.let {
+            assertTrue(it.isCompleted)
+        }
 
         repository.activate(id)
-        assertFalse(dao.getById(id)!!.isCompleted)
+
+        todo = dao.getById(id)
+        assertNotNull(todo)
+        todo?.let {
+            assertFalse(it.isCompleted)
+        }
     }
 
     @Test
