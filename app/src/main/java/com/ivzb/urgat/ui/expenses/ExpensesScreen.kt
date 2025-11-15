@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.expenses
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +75,6 @@ private fun ExpensesScreenScaffold(
         selectedDestination = ExpensesDestination,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
-        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterExpensesMenu(
                 onFilterAllExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.ALL_EXPENSES)) },
@@ -94,13 +92,6 @@ private fun ExpensesScreenScaffold(
                 )
             }
 
-            !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
             uiState.hasError -> {
                 EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
@@ -111,8 +102,8 @@ private fun ExpensesScreenScaffold(
             else -> {
                 ExpensesContent(
                     expenses = uiState.items,
-                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
                     onExpenseClick = onExpenseClick,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState
                 )
             }
@@ -123,8 +114,8 @@ private fun ExpensesScreenScaffold(
 @Composable
 internal fun ExpensesContent(
     expenses: List<Expense>,
-    @StringRes currentFilteringLabel: Int,
     onExpenseClick: (Expense) -> Unit,
+    filteringUiInfo: ExpensesFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -138,7 +129,7 @@ internal fun ExpensesContent(
             state = listState
         ) {
             item {
-                ItemHeader(title = stringResource(currentFilteringLabel))
+                ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
             }
 
             item {
@@ -152,6 +143,15 @@ internal fun ExpensesContent(
                     expense = expense,
                     onExpenseClick = onExpenseClick
                 )
+            }
+
+            if (expenses.isEmpty()) {
+                item {
+                    EmptyStateScreen(
+                        label = filteringUiInfo.emptyLabel,
+                        iconRes = filteringUiInfo.emptyIconRes
+                    )
+                }
             }
 
             item {
@@ -359,8 +359,8 @@ private fun ExpensesScreenContentPreview() {
                     createdAt = 0,
                 )
             ),
-            currentFilteringLabel = R.string.all_expenses,
             onExpenseClick = {},
+            filteringUiInfo = ExpensesFilteringUiInfo(),
             listState = rememberLazyListState()
         )
     }

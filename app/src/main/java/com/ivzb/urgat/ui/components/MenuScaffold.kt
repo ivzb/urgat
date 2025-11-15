@@ -2,7 +2,6 @@ package com.ivzb.urgat.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -46,7 +45,6 @@ fun MenuScaffold(
     onAddItem: (() -> Unit)? = null,
 
     navController: NavHostController,
-    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
@@ -85,7 +83,6 @@ fun MenuScaffold(
             selectedDestination = selectedDestination,
             onSearchQueryChanged = onSearchQueryChanged,
             onAddItem = onAddItem,
-            withTopAppBarActions = withTopAppBarActions,
             topAppBarActionsContent = topAppBarActionsContent,
             content = content
         )
@@ -97,7 +94,6 @@ fun UrgatScaffold(
     selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
     onAddItem: (() -> Unit)? = null,
-    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     lazyListState: LazyListState = rememberLazyListState(),
     modifier: Modifier = Modifier,
@@ -108,7 +104,6 @@ fun UrgatScaffold(
             TopAppBarContent(
                 selectedDestination = selectedDestination,
                 onSearchQueryChanged = onSearchQueryChanged,
-                withTopAppBarActions = withTopAppBarActions,
                 actionsContent = topAppBarActionsContent
             )
         },
@@ -219,7 +214,6 @@ fun MenuScaffoldPreview() {
             onSearchQueryChanged = {},
             onAddItem = {},
             navController = rememberNavController(),
-            withTopAppBarActions = true,
             topAppBarActionsContent = {},
             modifier = Modifier
         ) { }

@@ -66,7 +66,6 @@ private fun NotesScreenScaffold(
         selectedDestination = NotesDestination,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
-        withTopAppBarActions = false,
         modifier = modifier
     ) { listState ->
 
@@ -74,13 +73,6 @@ private fun NotesScreenScaffold(
             uiState.isLoading -> {
                 LoadingState(
                     label = uiState.filteringUiInfo.loadingLabel,
-                )
-            }
-
-            !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
                 )
             }
 
@@ -95,6 +87,7 @@ private fun NotesScreenScaffold(
                 NotesContent(
                     notes = uiState.items,
                     onNoteClick = onNoteClick,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState
                 )
             }
@@ -106,6 +99,7 @@ private fun NotesScreenScaffold(
 internal fun NotesContent(
     notes: List<Note>,
     onNoteClick: (Note) -> Unit,
+    filteringUiInfo: NotesFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -131,6 +125,14 @@ internal fun NotesContent(
             onNoteClick,
             listState,
             modifier = Modifier.weight(1f)
+        )
+    }
+
+
+    if (notes.isEmpty()) {
+        EmptyStateScreen(
+            label = filteringUiInfo.emptyLabel,
+            iconRes = filteringUiInfo.emptyIconRes
         )
     }
 
@@ -342,6 +344,7 @@ private fun NotesScreenContentPreview() {
                 )
             ),
             onNoteClick = {},
+            filteringUiInfo = NotesFilteringUiInfo(),
             listState = rememberLazyListState()
         )
     }

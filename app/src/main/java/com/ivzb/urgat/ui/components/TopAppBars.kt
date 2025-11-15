@@ -40,7 +40,6 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 fun TopAppBarContent(
     selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
-    withTopAppBarActions: Boolean = true,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
@@ -55,7 +54,6 @@ fun TopAppBarContent(
             onSearchQueryChanged(it)
         },
         titleResId = selectedDestination.label,
-        withTopAppBarActions = withTopAppBarActions,
         actionsContent = actionsContent
     )
 }
@@ -230,7 +228,6 @@ fun TopAppBarContentOverviewDestinationPreview() {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
-            withTopAppBarActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -250,7 +247,6 @@ fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
-            withTopAppBarActions = false,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -270,7 +266,6 @@ fun TopAppBarContentTrackersDestinationPreview() {
         TopAppBarContent(
             selectedDestination = TrackersDestination,
             onSearchQueryChanged = {},
-            withTopAppBarActions = true,
             actionsContent = {}
         )
     }

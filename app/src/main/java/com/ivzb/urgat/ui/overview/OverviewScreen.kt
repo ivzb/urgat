@@ -27,7 +27,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
@@ -122,16 +121,19 @@ private fun OverviewScreenScaffold(
     modifier: Modifier = Modifier
 ) {
 
+    val topAppBarActionsContent: (@Composable () -> Unit)? = if (uiState.todoItems.isNotEmpty()) {
+        {
+            MoreTodosMenu(
+                onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
+            )
+        }
+    } else null
+
     MenuScaffold(
         selectedDestination = OverviewDestination,
         onSearchQueryChanged = { query -> onIntent(OverviewIntent.SearchQueryChanged(query)) },
         navController = navController,
-        withTopAppBarActions = uiState.todoItems.isNotEmpty(),
-        topAppBarActionsContent = {
-            MoreTodosMenu(
-                onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
-            )
-        },
+        topAppBarActionsContent = topAppBarActionsContent,
         modifier = modifier
     ) { listState ->
 

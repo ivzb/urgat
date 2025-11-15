@@ -48,7 +48,6 @@ fun SearchableTopBar(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     titleResId: Int,
-    withTopAppBarActions: Boolean = true,
     actionsContent: @Composable (() -> Unit)? = null
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -64,6 +63,8 @@ fun SearchableTopBar(
                     Text(stringResource(titleResId))
                 },
                 actions = {
+                    val withTopAppBarActions = actionsContent != null
+
                     if (withTopAppBarActions || searchQuery.isNotEmpty()) {
                         IconButton(onClick = {
                             onIsSearchingChanged(!isSearching)
@@ -175,7 +176,6 @@ fun SearchableTopBarPreview() {
                     )
                 }
             },
-            withTopAppBarActions = true
         )
     }
 }
@@ -198,7 +198,6 @@ fun SearchableTopBarWithoutActionsPreview() {
                     )
                 }
             },
-            withTopAppBarActions = false
         )
     }
 }
@@ -214,7 +213,6 @@ fun SearchableTopBarSearchingEmptyStatePreview() {
             onSearchQueryChanged = {},
             titleResId = R.string.search,
             actionsContent = {},
-            withTopAppBarActions = true
         )
     }
 }
@@ -230,7 +228,6 @@ fun SearchableTopBarSearchingTextStatePreview() {
             onSearchQueryChanged = {},
             titleResId = R.string.search,
             actionsContent = {},
-            withTopAppBarActions = true
         )
     }
 }

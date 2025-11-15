@@ -42,6 +42,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.navigation.InvestmentsDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterInvestmentsMenu
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.LandscapePreview
@@ -90,7 +91,6 @@ private fun InvestmentsScreenScaffold(
     MenuScaffold(
         selectedDestination = InvestmentsDestination,
         onSearchQueryChanged = { onIntent(InvestmentsIntent.SearchQueryChanged(it)) },
-        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterInvestmentsMenu(
                 onFilterAllInvestments = { onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.ALL_INVESTMENTS)) },
@@ -111,13 +111,6 @@ private fun InvestmentsScreenScaffold(
                 )
             }
 
-            !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
             uiState.hasError -> {
                 EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
@@ -131,6 +124,7 @@ private fun InvestmentsScreenScaffold(
                     onHeaderItemClick = { onIntent(InvestmentsIntent.HeaderItemClick(it)) },
                     investments = uiState.items,
                     onInvestmentClick = onInvestmentClick,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState,
                 )
             }
@@ -146,6 +140,7 @@ private fun InvestmentsContent(
     investments: List<Investment>,
     onInvestmentClick: (Investment) -> Unit,
 
+    filteringUiInfo: FilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -190,6 +185,15 @@ private fun InvestmentsContent(
                     modifier = Modifier
                         .height(dimensionResource(R.dimen.vertical_margin))
                 )
+            }
+
+            if (investments.isEmpty()) {
+                item {
+                    EmptyStateScreen(
+                        label = filteringUiInfo.emptyLabel,
+                        iconRes = filteringUiInfo.emptyIconRes
+                    )
+                }
             }
 
             items(investments) { investment ->
@@ -396,6 +400,7 @@ private fun InvestmentsContentPreview() {
                 ),
             ),
             onInvestmentClick = {},
+            filteringUiInfo = InvestmentsFilteringUiInfo(),
             listState = rememberLazyListState(),
             modifier = Modifier
         )

@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.todo
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -73,7 +72,6 @@ private fun TodoScreenScaffold(
         selectedDestination = TodoDestination,
         onSearchQueryChanged = { query -> onIntent(TodoIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
-        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterTodosMenu(
                 onFilterAllTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.ALL_TODOS)) },
@@ -95,13 +93,6 @@ private fun TodoScreenScaffold(
                 )
             }
 
-            !uiState.isLoading && uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
             uiState.hasError -> {
                 EmptyStateScreen(
                     label = uiState.filteringUiInfo.errorLabel,
@@ -112,9 +103,9 @@ private fun TodoScreenScaffold(
             else -> {
                 TodoContent(
                     todos = uiState.items,
-                    currentFilteringLabel = uiState.filteringUiInfo.currentFilteringLabel,
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = { todo, completed -> onIntent(TodoIntent.CompleteTodo(todo, completed)) },
+                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState
                 )
             }
@@ -125,9 +116,9 @@ private fun TodoScreenScaffold(
 @Composable
 fun TodoContent(
     todos: List<Todo>,
-    @StringRes currentFilteringLabel: Int,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
+    filteringUiInfo: TodoFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -143,7 +134,7 @@ fun TodoContent(
     ) {
 
         item {
-            ItemHeader(title = stringResource(currentFilteringLabel))
+            ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
         }
 
         item {
@@ -158,6 +149,15 @@ fun TodoContent(
                 onTodoClick = onTodoClick,
                 onCheckedChange = { onTodoCheckedChange(todo, it) }
             )
+        }
+
+        if (todos.isEmpty()) {
+            item {
+                EmptyStateScreen(
+                    label = filteringUiInfo.emptyLabel,
+                    iconRes = filteringUiInfo.emptyIconRes
+                )
+            }
         }
 
         item {
@@ -430,9 +430,9 @@ private fun TodoContentPreview() {
                         createdAt = 7
                     ),
                 ),
-                currentFilteringLabel = R.string.all_todos,
                 onTodoClick = { },
                 onTodoCheckedChange = { _, _ -> },
+                filteringUiInfo = TodoFilteringUiInfo(),
                 listState = rememberLazyListState()
             )
         }

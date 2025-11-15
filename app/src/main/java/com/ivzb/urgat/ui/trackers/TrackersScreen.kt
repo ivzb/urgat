@@ -80,7 +80,6 @@ private fun TrackersScreenScaffold(
     MenuScaffold(
         selectedDestination = TrackersDestination,
         onSearchQueryChanged = { onIntent(TrackersIntent.SearchQueryChanged(it)) },
-        withTopAppBarActions = false,
         navController = navController,
         modifier = modifier
     ) { listState ->
