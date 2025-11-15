@@ -9,4 +9,6 @@ allow only one weight per day and update current one if added - also remove Obse
 setup github build pipeline
 add button to add/edit investment screen from investments screen
 check if DB search is case insensitive
-create investments UI and write unit tests for its view model
+make the filter type dynamic so it doesn't rely on hard-coded values but on actual values from the db
+refactor TopAppBars which is currently using hard-coded values, make it generic
+make empty state after filtering part of the success content because it hides the top bar and top buttons

@@ -89,4 +89,10 @@
     <string name="no_data_yet">No data yet</string>
     <string name="loading">Loading</string>
     <string name="error_investments">Error while loading investments</string>
+    <string name="loading_investments">Loading investments</string>
+    <string name="nav_stocks">Stocks</string>
+    <string name="nav_etfs">ETFs</string>
+    <string name="nav_gold">Gold</string>
+    <string name="nav_crypto">Crypto</string>
+    <string name="no_investments">You have no investments</string>
 </resources>

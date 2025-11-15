@@ -30,15 +30,12 @@ class ExpensesViewModel @Inject constructor(
 
     private val _filterUiInfo = _savedFilterType.map { getFilterUiInfo(it) }.distinctUntilChanged()
 
-    private val _isLoading = MutableStateFlow(false)
-
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<ExpensesUiState> = combine(
         _filterUiInfo,
-        _isLoading,
         observeExpensesUseCase(_searchQuery, _savedFilterType, NO_LIMIT)
-    ) { filterUiInfo, isLoading, expensesAsync ->
+    ) { filterUiInfo, expensesAsync ->
         when (expensesAsync) {
             Async.Loading -> {
                 ExpensesUiState(isLoading = true)
@@ -52,7 +49,7 @@ class ExpensesViewModel @Inject constructor(
                 ExpensesUiState(
                     items = expensesAsync.data,
                     filteringUiInfo = filterUiInfo,
-                    isLoading = isLoading
+                    isLoading = false
                 )
             }
         }

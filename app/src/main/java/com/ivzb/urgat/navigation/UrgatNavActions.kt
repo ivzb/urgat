@@ -63,6 +63,21 @@ class UrgatNavActions(private val navController: NavHostController) {
         navController.navigate(route)
     }
 
+    fun navigateToAddInvestment() {
+        navigateToAddEditInvestment(R.string.add_investment, null)
+    }
+
+    fun navigateToEditInvestment(expenseId: String) {
+        navigateToAddEditInvestment(R.string.edit_investment, expenseId)
+    }
+
+    private fun navigateToAddEditInvestment(@StringRes title: Int, id: String?) {
+        val route = "${AddEditInvestmentDestination.Args.ROUTE}/$title".let {
+            if (id != null) "$it?${AddEditInvestmentDestination.Args.ARG_ID}=$id" else it
+        }
+        navController.navigate(route)
+    }
+
     fun navigateToTrackWeight() {
         navController.navigate(TrackWeightDestination.route)
     }

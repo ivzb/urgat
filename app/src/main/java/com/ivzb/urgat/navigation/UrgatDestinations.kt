@@ -2,11 +2,11 @@ package com.ivzb.urgat.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.MonetizationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -34,7 +34,7 @@ data object OverviewDestination: UrgatMenuDestination() {
 
 data object InvestmentsDestination: UrgatMenuDestination() {
     override val label = R.string.investments
-    override val icon = Icons.Filled.MonetizationOn
+    override val icon = Icons.Filled.AttachMoney
     override val route = "investments"
     override val withFAB = false
 }

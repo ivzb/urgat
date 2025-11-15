@@ -91,7 +91,6 @@ private fun AddEditInvestmentContent(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -183,7 +182,7 @@ private fun AddEditInvestmentContent(
                         ),
                         maxLines = 1,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .weight(1f)
                             .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
                     )
                 }
@@ -205,7 +204,7 @@ private fun AddEditInvestmentContent(
                     ),
                     maxLines = 1,
                     modifier = Modifier
-                        .weight(1f)
+                        .fillMaxWidth()
                         .focusRequester(focusRequesters[FieldId.Category.ordinal]),
                 )
 

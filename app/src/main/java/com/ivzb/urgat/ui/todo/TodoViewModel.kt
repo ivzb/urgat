@@ -36,15 +36,12 @@ class TodoViewModel @Inject constructor(
 
     private val _filterUiInfo = _savedFilterType.map { getFilterUiInfo(it) }.distinctUntilChanged()
 
-    private val _isLoading = MutableStateFlow(false)
-
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<TodoUiState> = combine(
         _filterUiInfo,
-        _isLoading,
         observeTodosUseCase(_searchQuery, _savedFilterType, NO_LIMIT)
-    ) { filterUiInfo, isLoading, todosAsync ->
+    ) { filterUiInfo, todosAsync ->
         when (todosAsync) {
             Async.Loading -> {
                 TodoUiState(isLoading = true)
@@ -58,7 +55,7 @@ class TodoViewModel @Inject constructor(
                 TodoUiState(
                     items = todosAsync.data,
                     filteringUiInfo = filterUiInfo,
-                    isLoading = isLoading,
+                    isLoading = false,
                 )
             }
         }

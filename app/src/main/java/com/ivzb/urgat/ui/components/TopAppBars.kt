@@ -162,6 +162,49 @@ fun FilterExpensesMenu(
 }
 
 @Composable
+fun FilterInvestmentsMenu(
+    onFilterAllInvestments: () -> Unit,
+    onFilterStocksInvestments: () -> Unit,
+    onFilterEtfsInvestments: () -> Unit,
+    onFilterGoldInvestments: () -> Unit,
+    onFilterCryptoInvestments: () -> Unit
+) {
+    TopAppBarDropdownMenu(
+        iconContent = {
+            Icon(
+                painterResource(id = R.drawable.ic_filter_list),
+                stringResource(id = R.string.menu_filter)
+            )
+        }
+    ) { closeMenu ->
+        DropdownMenuItem(
+            onClick = { onFilterAllInvestments(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_all)) }
+        )
+
+        DropdownMenuItem(
+            onClick = { onFilterStocksInvestments(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_stocks)) }
+        )
+
+        DropdownMenuItem(
+            onClick = { onFilterEtfsInvestments(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_etfs)) }
+        )
+
+        DropdownMenuItem(
+            onClick = { onFilterGoldInvestments(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_gold)) }
+        )
+
+        DropdownMenuItem(
+            onClick = { onFilterCryptoInvestments(); closeMenu() },
+            text = { Text(text = stringResource(id = R.string.nav_crypto)) }
+        )
+    }
+}
+
+@Composable
 fun MoreTodosMenu(
     onClearCompletedTodos: () -> Unit
 ) {

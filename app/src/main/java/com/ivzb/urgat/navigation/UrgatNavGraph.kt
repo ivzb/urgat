@@ -112,6 +112,8 @@ private fun NavHostContent(
 
         composable(InvestmentsDestination.route) {
             InvestmentsScreen(
+                onAddInvestment = { navActions.navigateToAddInvestment() },
+                onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
                 navController = navController
             )
         }
