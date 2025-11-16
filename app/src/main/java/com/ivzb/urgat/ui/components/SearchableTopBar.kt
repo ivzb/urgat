@@ -48,6 +48,7 @@ fun SearchableTopBar(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     titleResId: Int,
+    onBack: (() -> Unit)? = null,
     actionsContent: @Composable (() -> Unit)? = null
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -61,6 +62,18 @@ fun SearchableTopBar(
             TopAppBar(
                 title = {
                     Text(stringResource(titleResId))
+                },
+                navigationIcon = {
+                    val withBackButton = onBack != null
+
+                    if (withBackButton) {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                stringResource(id = R.string.menu_back)
+                            )
+                        }
+                    }
                 },
                 actions = {
                     val withTopAppBarActions = actionsContent != null
@@ -77,7 +90,7 @@ fun SearchableTopBar(
                     }
 
                     if (withTopAppBarActions) {
-                        actionsContent?.invoke()
+                        actionsContent()
                     }
                 },
                 windowInsets = WindowInsets()
@@ -182,7 +195,7 @@ fun SearchableTopBarPreview() {
 
 @Preview
 @Composable
-fun SearchableTopBarWithoutActionsPreview() {
+fun SearchableTopBarPreviewWithBackButton() {
     UrgatTheme {
         SearchableTopBar(
             isSearching = false,
@@ -190,6 +203,7 @@ fun SearchableTopBarWithoutActionsPreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
+            onBack = {},
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -198,6 +212,35 @@ fun SearchableTopBarWithoutActionsPreview() {
                     )
                 }
             },
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SearchableTopBarWithoutActionsPreview() {
+    UrgatTheme {
+        SearchableTopBar(
+            isSearching = false,
+            onIsSearchingChanged = {},
+            searchQuery = "",
+            onSearchQueryChanged = {},
+            titleResId = R.string.search,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun SearchableTopBarWithoutActionsPreviewWithBackButton() {
+    UrgatTheme {
+        SearchableTopBar(
+            isSearching = false,
+            onIsSearchingChanged = {},
+            searchQuery = "",
+            onSearchQueryChanged = {},
+            titleResId = R.string.search,
+            onBack = {}
         )
     }
 }

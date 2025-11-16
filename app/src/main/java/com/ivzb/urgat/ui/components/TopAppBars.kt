@@ -40,6 +40,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 fun TopAppBarContent(
     selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
+    onBack: (() -> Unit)? = null,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
@@ -54,6 +55,7 @@ fun TopAppBarContent(
             onSearchQueryChanged(it)
         },
         titleResId = selectedDestination.label,
+        onBack = onBack,
         actionsContent = actionsContent
     )
 }
@@ -228,6 +230,26 @@ fun TopAppBarContentOverviewDestinationPreview() {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
+            onBack = {},
+            actionsContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_filter_list),
+                        stringResource(id = R.string.menu_filter)
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarContentOverviewDestinationPreviewWithoutBack() {
+    UrgatTheme {
+        TopAppBarContent(
+            selectedDestination = OverviewDestination,
+            onSearchQueryChanged = {},
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -247,14 +269,18 @@ fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
-            actionsContent = {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_filter_list),
-                        stringResource(id = R.string.menu_filter)
-                    )
-                }
-            }
+            onBack = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun TopAppBarContentOverviewDestinationWithoutActionsPreviewWithoutBack() {
+    UrgatTheme {
+        TopAppBarContent(
+            selectedDestination = OverviewDestination,
+            onSearchQueryChanged = {},
         )
     }
 }

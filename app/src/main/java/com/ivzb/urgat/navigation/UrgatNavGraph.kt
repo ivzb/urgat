@@ -93,6 +93,7 @@ private fun NavHostContent(
             TodoScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -100,6 +101,7 @@ private fun NavHostContent(
             ExpensesScreen(
                 onAddExpense = { navActions.navigateToAddExpense() },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -107,6 +109,7 @@ private fun NavHostContent(
             NotesScreen(
                 onAddNote = { navActions.navigateToAddNote() },
                 onNoteClick = { navActions.navigateToEditNote(it.id) },
+                onBack = { navController.popBackStack() }
             )
         }
 

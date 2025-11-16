@@ -45,6 +45,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 fun TodoScreen(
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodoViewModel = hiltViewModel()
 ) {
@@ -55,6 +56,7 @@ fun TodoScreen(
         onIntent = viewModel::onIntent,
         onAddTodo = onAddTodo,
         onTodoClick = onTodoClick,
+        onBack = onBack,
         modifier = modifier
     )
 }
@@ -65,6 +67,7 @@ private fun TodoScreenScaffold(
     onIntent: (TodoIntent) -> Unit,
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -72,6 +75,7 @@ private fun TodoScreenScaffold(
         selectedDestination = TodoDestination,
         onSearchQueryChanged = { query -> onIntent(TodoIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
+        onBack = onBack,
         topAppBarActionsContent = {
             FilterTodosMenu(
                 onFilterAllTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.ALL_TODOS)) },
@@ -300,6 +304,7 @@ private fun TodoScreenScaffoldPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -320,6 +325,7 @@ private fun TodoScreenScaffoldEmptyPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -340,6 +346,7 @@ private fun TodoScreenScaffoldLoadingPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -360,6 +367,7 @@ private fun TodoScreenScaffoldErrorPreview() {
             onIntent = {},
             onAddTodo = {},
             onTodoClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }

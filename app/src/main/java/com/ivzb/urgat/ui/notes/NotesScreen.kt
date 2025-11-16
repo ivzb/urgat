@@ -38,6 +38,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 fun NotesScreen(
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NotesViewModel = hiltViewModel()
 ) {
@@ -49,6 +50,7 @@ fun NotesScreen(
         onIntent = viewModel::onIntent,
         onAddNote = onAddNote,
         onNoteClick = onNoteClick,
+        onBack = onBack,
         modifier = modifier
     )
 }
@@ -59,6 +61,7 @@ private fun NotesScreenScaffold(
     onIntent: (NotesIntent) -> Unit,
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -66,6 +69,7 @@ private fun NotesScreenScaffold(
         selectedDestination = NotesDestination,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
+        onBack = onBack,
         modifier = modifier
     ) { listState ->
 
@@ -240,6 +244,7 @@ private fun NotesScreenScaffoldPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -260,6 +265,7 @@ private fun NotesScreenScaffoldEmptyPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -280,6 +286,7 @@ private fun NotesScreenScaffoldLoadingPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -300,6 +307,7 @@ private fun NotesScreenScaffoldErrorPreview() {
             onIntent = {},
             onAddNote = {},
             onNoteClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }

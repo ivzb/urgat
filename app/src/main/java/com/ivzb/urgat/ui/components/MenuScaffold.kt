@@ -94,6 +94,7 @@ fun UrgatScaffold(
     selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
     onAddItem: (() -> Unit)? = null,
+    onBack: (() -> Unit)? = null,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     lazyListState: LazyListState = rememberLazyListState(),
     modifier: Modifier = Modifier,
@@ -104,7 +105,8 @@ fun UrgatScaffold(
             TopAppBarContent(
                 selectedDestination = selectedDestination,
                 onSearchQueryChanged = onSearchQueryChanged,
-                actionsContent = topAppBarActionsContent
+                onBack = onBack,
+                actionsContent = topAppBarActionsContent,
             )
         },
         floatingActionButton = {

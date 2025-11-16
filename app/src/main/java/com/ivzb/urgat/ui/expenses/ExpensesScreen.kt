@@ -47,6 +47,7 @@ import java.math.BigDecimal
 fun ExpensesScreen(
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ExpensesViewModel = hiltViewModel()
 ) {
@@ -58,6 +59,7 @@ fun ExpensesScreen(
         onIntent = viewModel::onIntent,
         onAddExpense = onAddExpense,
         onExpenseClick = onExpenseClick,
+        onBack = onBack,
         modifier = modifier
     )
 }
@@ -68,6 +70,7 @@ private fun ExpensesScreenScaffold(
     onIntent: (ExpensesIntent) -> Unit,
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -75,6 +78,7 @@ private fun ExpensesScreenScaffold(
         selectedDestination = ExpensesDestination,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
+        onBack = onBack,
         topAppBarActionsContent = {
             FilterExpensesMenu(
                 onFilterAllExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.ALL_EXPENSES)) },
@@ -268,6 +272,7 @@ private fun ExpensesScreenScaffoldPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -288,6 +293,7 @@ private fun ExpensesScreenScaffoldEmptyPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -308,6 +314,7 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -328,6 +335,7 @@ private fun ExpensesScreenScaffoldErrorPreview() {
             onIntent = {},
             onAddExpense = {},
             onExpenseClick = {},
+            onBack = {},
             modifier = Modifier
         )
     }
