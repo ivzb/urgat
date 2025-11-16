@@ -103,6 +103,7 @@ private fun TrackersScreenScaffold(
                     uiState.headerItems,
                     onHeaderItemClick = { onIntent(TrackersIntent.HeaderItemClick(it)) },
                     weights = uiState.weights,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState,
                 )
             }
@@ -114,9 +115,8 @@ private fun TrackersScreenScaffold(
 private fun TrackersContent(
     headerItems: List<TrackersHeaderItem>,
     onHeaderItemClick: (TrackersHeaderItem) -> Unit,
-
     weights: List<Weight>,
-
+    filteringUiInfo: TrackersFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -169,6 +169,15 @@ private fun TrackersContent(
                     .fillMaxWidth()
                     .height(300.dp)
             )
+
+            if (weights.isEmpty()) {
+                item {
+                    EmptyStateScreen(
+                        label = filteringUiInfo.emptyLabel,
+                        iconRes = filteringUiInfo.emptyIconRes
+                    )
+                }
+            }
 
             item {
                 Spacer(
@@ -326,6 +335,7 @@ private fun TrackersContentPreview() {
                     createdAt = 5,
                 ),
             ),
+            filteringUiInfo = TrackersFilteringUiInfo(),
             listState = rememberLazyListState(),
             modifier = Modifier
         )

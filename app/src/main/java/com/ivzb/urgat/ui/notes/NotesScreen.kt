@@ -70,6 +70,7 @@ private fun NotesScreenScaffold(
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         onBack = onBack,
+        topAppBarActionsContent = {},
         modifier = modifier
     ) { listState ->
 
@@ -114,7 +115,8 @@ internal fun NotesContent(
             .padding(horizontal = dimensionResource(R.dimen.grid_padding))
     ) {
 
-        val (leftNotes, rightNotes) = notes.chunked((notes.size + 1) / 2)
+        val chunkSize = if (notes.isEmpty()) 1 else (notes.size + 1) / 2
+        val (leftNotes, rightNotes) = notes.chunked(chunkSize)
             .let { it.getOrNull(0).orEmpty() to it.getOrNull(1).orEmpty() }
 
         NotesColumn(
@@ -131,7 +133,6 @@ internal fun NotesContent(
             modifier = Modifier.weight(1f)
         )
     }
-
 
     if (notes.isEmpty()) {
         EmptyStateScreen(

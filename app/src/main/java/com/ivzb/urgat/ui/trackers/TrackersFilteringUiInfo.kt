@@ -4,8 +4,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class TrackersFilteringUiInfo(
-    override val emptyLabel: Int = 0,
-    override val emptyIconRes: Int = 0,
+    override val emptyLabel: Int = R.string.no_weights,
+    override val emptyIconRes: Int = R.drawable.logo_no_fill,
 
     override val loadingLabel: Int = R.string.loading_trackers,
 

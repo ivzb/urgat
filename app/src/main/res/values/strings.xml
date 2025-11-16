@@ -95,4 +95,5 @@
     <string name="nav_gold">Gold</string>
     <string name="nav_crypto">Crypto</string>
     <string name="no_investments">You have no investments</string>
+    <string name="no_weights">You have no weights</string>
 </resources>
