@@ -22,53 +22,52 @@ sealed class UrgatDestination {
 }
 
 sealed class UrgatMenuDestination: UrgatDestination() {
-    override val withFAB: Boolean = true
+    override val withFAB: Boolean = false
 }
 
 data object OverviewDestination: UrgatMenuDestination() {
     override val label = R.string.overview
     override val icon = Icons.Filled.Home
     override val route = "overview"
-    override val withFAB = false
 }
 
 data object InvestmentsDestination: UrgatMenuDestination() {
     override val label = R.string.investments
     override val icon = Icons.Filled.AttachMoney
     override val route = "investments"
-    override val withFAB = false
 }
 
 data object TrackersDestination: UrgatMenuDestination() {
     override val label = R.string.trackers
     override val icon = Icons.Filled.Timer
     override val route = "trackers"
-    override val withFAB = false
 }
 
 data object WeatherDestination: UrgatMenuDestination() {
     override val label = R.string.weather
     override val icon = Icons.Filled.DateRange
     override val route = "weather"
-    override val withFAB = false
 }
 
 data object TodoDestination: UrgatDestination() {
     override val label = R.string.todo
     override val icon = Icons.Filled.Done
     override val route = "todo"
+    override val withFAB = true
 }
 
 data object ExpensesDestination: UrgatDestination() {
     override val label = R.string.expenses
     override val icon = Icons.Filled.ShoppingCart
     override val route = "expenses"
+    override val withFAB = true
 }
 
 data object NotesDestination: UrgatDestination() {
     override val label = R.string.notes
     override val icon = Icons.Filled.Person
     override val route = "notes"
+    override val withFAB = true
 }
 
 data object AddEditTodoDestination: UrgatDestination() {

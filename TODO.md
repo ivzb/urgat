@@ -15,5 +15,4 @@ check if DB search is case insensitive
 refactor TopAppBars which is currently using hard-coded values, make it generic
 add trackers screen empty state
 make the filter type dynamic so it doesn't rely on hard-coded values but on actual values from the db
-add fab button to overview inner screens
 delete functionality
