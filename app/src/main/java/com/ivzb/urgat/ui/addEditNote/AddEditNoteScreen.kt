@@ -41,6 +41,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseUiState
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
+import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.transparentTextFieldColors
 import kotlinx.coroutines.launch
@@ -147,7 +148,9 @@ private fun AddEditNoteContent(
                 )
 
                 Button(
-                    onClick = { onIntent(AddEditNoteIntent.SaveNote) },
+                    onClick = rememberDebouncedClick {
+                        onIntent(AddEditNoteIntent.SaveNote)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {

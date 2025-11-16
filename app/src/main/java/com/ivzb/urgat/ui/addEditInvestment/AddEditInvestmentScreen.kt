@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
+import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
@@ -214,7 +215,7 @@ private fun AddEditInvestmentContent(
                 )
 
                 Button(
-                    onClick = {
+                    onClick = rememberDebouncedClick {
                         onIntent(AddEditInvestmentIntent.SaveInvestment)
                     },
                     modifier = Modifier

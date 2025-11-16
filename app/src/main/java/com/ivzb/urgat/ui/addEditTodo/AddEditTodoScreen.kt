@@ -42,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
+import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.transparentTextFieldColors
 import kotlinx.coroutines.launch
@@ -168,7 +169,9 @@ private fun AddEditTodoContent(
                 )
 
                 Button(
-                    onClick = { onIntent(AddEditTodoIntent.SaveTodo) },
+                    onClick = rememberDebouncedClick {
+                        onIntent(AddEditTodoIntent.SaveTodo)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {

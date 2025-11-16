@@ -48,6 +48,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
+import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
@@ -236,7 +237,7 @@ private fun AddEditExpenseContent(
                 )
 
                 Button(
-                    onClick = {
+                    onClick = rememberDebouncedClick {
                         onIntent(AddEditExpenseIntent.SaveExpense)
                     },
                     modifier = Modifier

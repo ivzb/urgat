@@ -1,3 +1,6 @@
+consider moving expenses and investments to finance tab
+consider moving todo and notes to notes tab
+consider moving weight tracker to wellbeing tab
 name and category should be auto-suggested in a dropdown while typing name
 make main screens more generic
 add preview screens instead of direct edit for todo, expense and note
@@ -11,6 +14,6 @@ add button to add/edit investment screen from investments screen
 check if DB search is case insensitive
 refactor TopAppBars which is currently using hard-coded values, make it generic
 add trackers screen empty state
-add debounce to add/edit save button because it's possible to click it multiple times and it created multiple entities
-add back button to inner screens
 make the filter type dynamic so it doesn't rely on hard-coded values but on actual values from the db
+add fab button to overview inner screens
+delete functionality

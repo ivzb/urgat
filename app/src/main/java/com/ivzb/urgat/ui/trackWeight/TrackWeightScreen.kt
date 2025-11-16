@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
+import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
@@ -85,7 +86,6 @@ private fun TrackWeightContent(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
@@ -145,7 +145,7 @@ private fun TrackWeightContent(
                 )
 
                 Button(
-                    onClick = {
+                    onClick = rememberDebouncedClick {
                         onIntent(TrackWeightIntent.SaveWeight)
                     },
                     modifier = Modifier
