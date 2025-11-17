@@ -103,6 +103,7 @@ fun TextTopAppBar(
     )
 }
 
+@Deprecated("Use FilterMenu instead")
 @Composable
 fun FilterTodosMenu(
     onFilterAllTodos: () -> Unit,
@@ -132,6 +133,7 @@ fun FilterTodosMenu(
     }
 }
 
+@Deprecated("Use FilterMenu instead")
 @Composable
 fun FilterExpensesMenu(
     onFilterAllExpenses: () -> Unit,
@@ -161,13 +163,20 @@ fun FilterExpensesMenu(
     }
 }
 
+data class FilterMenuItem(
+    val label: String,
+    val size: Int,
+) {
+
+    override fun toString(): String {
+        return "$label ($size)"
+    }
+}
+
 @Composable
-fun FilterInvestmentsMenu(
-    onFilterAllInvestments: () -> Unit,
-    onFilterStocksInvestments: () -> Unit,
-    onFilterEtfsInvestments: () -> Unit,
-    onFilterGoldInvestments: () -> Unit,
-    onFilterCryptoInvestments: () -> Unit
+fun FilterMenu(
+    items: List<FilterMenuItem>,
+    onFilter: (FilterMenuItem) -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
@@ -177,30 +186,18 @@ fun FilterInvestmentsMenu(
             )
         }
     ) { closeMenu ->
-        DropdownMenuItem(
-            onClick = { onFilterAllInvestments(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_all)) }
-        )
 
-        DropdownMenuItem(
-            onClick = { onFilterStocksInvestments(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_stocks)) }
-        )
-
-        DropdownMenuItem(
-            onClick = { onFilterEtfsInvestments(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_etfs)) }
-        )
-
-        DropdownMenuItem(
-            onClick = { onFilterGoldInvestments(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_gold)) }
-        )
-
-        DropdownMenuItem(
-            onClick = { onFilterCryptoInvestments(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_crypto)) }
-        )
+        for (item in items) {
+            DropdownMenuItem(
+                onClick = {
+                    onFilter(item);
+                    closeMenu()
+                },
+                text = {
+                    Text(text = item.toString())
+                }
+            )
+        }
     }
 }
 

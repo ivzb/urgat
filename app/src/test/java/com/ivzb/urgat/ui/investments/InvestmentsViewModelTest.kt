@@ -5,7 +5,10 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER
+import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,6 +33,7 @@ class InvestmentsViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveInvestmentsUseCase: FakeObserveInvestmentsUseCase
+    private lateinit var fakeObserveInvestmentsFilteringUseCase: FakeObserveInvestmentsFilteringUseCase
 
     private lateinit var viewModel: InvestmentsViewModel
 
@@ -38,8 +42,9 @@ class InvestmentsViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to InvestmentsFilterType.ALL_INVESTMENTS))
+        savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to CLEAR_FILTER))
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
+        fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()
     }
 
     @After
@@ -50,6 +55,7 @@ class InvestmentsViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveInvestmentsUseCase.emit(Async.Loading)
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -67,7 +73,12 @@ class InvestmentsViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", "USD", 500.toBigDecimal(), "etfs"))
+        val fakeInvestmentsFiltering = listOf(
+            FilterMenuItem("stocks", 1),
+        )
+
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -78,15 +89,16 @@ class InvestmentsViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals(fakeInvestments, state.items)
+        assertEquals(fakeInvestmentsFiltering, state.filteringUiInfo.filterMenuItems)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
-
         job.cancel()
     }
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveInvestmentsUseCase.emit(Async.Error(R.string.error_expenses))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -106,6 +118,7 @@ class InvestmentsViewModelTest {
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", "USD", 500.toBigDecimal(), "etfs"))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(InvestmentsIntent.SearchQueryChanged("snp"))
@@ -117,21 +130,23 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
-        fakeObserveInvestmentsUseCase.emit(Async.Success(emptyList()))
+        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.ETFS))
+        viewModel.onIntent(InvestmentsIntent.SetFiltering(FilterMenuItem("etfs", 1)))
         advanceUntilIdle()
 
         assertEquals(
-            InvestmentsFilterType.ETFS,
+            "etfs",
             savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY]
         )
     }
 
     @Test
     fun `header item click emits TrackWeight event`() = runTest {
-        fakeObserveInvestmentsUseCase.emit(Async.Success(emptyList()))
+        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(
@@ -154,7 +169,8 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `onEventConsumed clears uiEvent`() = runTest {
-        fakeObserveInvestmentsUseCase.emit(Async.Success(emptyList()))
+        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(
@@ -180,6 +196,7 @@ class InvestmentsViewModelTest {
 
     private fun createViewModel() = InvestmentsViewModel(
         fakeObserveInvestmentsUseCase,
+        fakeObserveInvestmentsFilteringUseCase,
         savedStateHandle
     )
 }

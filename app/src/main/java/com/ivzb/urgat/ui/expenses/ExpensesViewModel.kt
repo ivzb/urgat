@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.domain.base.BaseObserveUseCase.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES

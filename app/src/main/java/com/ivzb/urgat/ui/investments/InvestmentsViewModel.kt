@@ -6,10 +6,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.domain.base.BaseObserveUseCase.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER
+import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.HeaderItem
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType.*
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,10 +26,11 @@ import javax.inject.Inject
 @HiltViewModel
 class InvestmentsViewModel @Inject constructor(
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
+    observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType = savedStateHandle.getStateFlow(INVESTMENTS_FILTER_SAVED_STATE_KEY, ALL_INVESTMENTS)
+    private val _savedFilterType = savedStateHandle.getStateFlow(INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = CLEAR_FILTER)
 
     private val _uiEvent = MutableStateFlow<InvestmentsUiEvent?>(null)
 
@@ -35,22 +39,25 @@ class InvestmentsViewModel @Inject constructor(
     val uiState: StateFlow<InvestmentsUiState> = combine(
         _uiEvent,
         observeInvestmentsUseCase(_searchQuery, _savedFilterType, NO_LIMIT),
-    ) { uiEvent, weightsAsync ->
+        observeInvestmentsFilteringUseCase(),
+    ) { uiEvent, investmentsAsync, investmentsFilteringAsync ->
 
-        when (weightsAsync) {
-            Async.Loading -> {
+        val items = listOf(investmentsAsync, investmentsFilteringAsync)
+
+        when {
+            items.any { it is Async.Loading } -> {
                 InvestmentsUiState(
                     isLoading = true
                 )
             }
 
-            is Async.Error -> {
+            items.any { it is Async.Error } -> {
                 InvestmentsUiState(
                     hasError = true
                 )
             }
 
-            is Async.Success -> {
+            items.all { it is Async.Success } -> {
                 InvestmentsUiState(
                     headerItems = listOf(
                         HeaderItem(
@@ -59,11 +66,16 @@ class InvestmentsViewModel @Inject constructor(
                             R.string.add_investment
                         ),
                     ),
-                    items = weightsAsync.data,
+                    items = (investmentsAsync as Async.Success<List<Investment>>).data,
                     isLoading = false,
                     uiEvent = uiEvent,
+                    filteringUiInfo = InvestmentsFilteringUiInfo(
+                        filterMenuItems = (investmentsFilteringAsync as Async.Success<List<FilterMenuItem>>).data
+                    )
                 )
             }
+
+            else -> throw Exception("undefined state: $items")
         }
     }
         .stateIn(
@@ -75,7 +87,7 @@ class InvestmentsViewModel @Inject constructor(
     fun onIntent(intent: InvestmentsIntent) {
         when (intent) {
             is InvestmentsIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is InvestmentsIntent.SetFiltering -> setFiltering(intent.filterType)
+            is InvestmentsIntent.SetFiltering -> setFiltering(intent.filter)
             is InvestmentsIntent.HeaderItemClick -> onHeaderItemClick(intent.item)
             is InvestmentsIntent.EventConsumed -> onEventConsumed()
         }
@@ -85,8 +97,8 @@ class InvestmentsViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(requestType: InvestmentsFilterType) {
-        savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = requestType
+    private fun setFiltering(filter: FilterMenuItem) {
+        savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = filter.label
     }
 
     private fun onHeaderItemClick(item: InvestmentsHeaderItem) {

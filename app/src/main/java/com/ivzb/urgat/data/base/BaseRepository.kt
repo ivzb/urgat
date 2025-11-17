@@ -11,4 +11,9 @@ interface BaseRepository<T> {
     suspend fun get(id: String): T?
 
     suspend fun delete(id: String)
+
+    companion object {
+
+        const val NO_LIMIT = -1
+    }
 }

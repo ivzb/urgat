@@ -41,7 +41,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.navigation.InvestmentsDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.FilterInvestmentsMenu
+import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
@@ -92,12 +92,9 @@ private fun InvestmentsScreenScaffold(
         selectedDestination = InvestmentsDestination,
         onSearchQueryChanged = { onIntent(InvestmentsIntent.SearchQueryChanged(it)) },
         topAppBarActionsContent = {
-            FilterInvestmentsMenu(
-                onFilterAllInvestments = { onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.ALL_INVESTMENTS)) },
-                onFilterStocksInvestments = { onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.STOCKS)) },
-                onFilterEtfsInvestments = { onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.ETFS)) },
-                onFilterGoldInvestments = { onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.GOLD)) },
-                onFilterCryptoInvestments = { onIntent(InvestmentsIntent.SetFiltering(InvestmentsFilterType.CRYPTO)) },
+            FilterMenu(
+                items = uiState.filteringUiInfo.filterMenuItems,
+                onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
             )
         },
         navController = navController,

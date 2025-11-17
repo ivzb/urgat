@@ -107,7 +107,7 @@ class OverviewViewModel @Inject constructor(
                 )
             }
 
-            else -> throw Exception("undefined state: $todos, $expenses, $notes")
+            else -> throw Exception("undefined state: $items")
         }
     }
     .stateIn(

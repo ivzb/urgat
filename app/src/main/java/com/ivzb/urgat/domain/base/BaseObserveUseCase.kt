@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.base
 
 import com.ivzb.urgat.data.base.BaseRepository
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -47,8 +48,6 @@ abstract class BaseObserveUseCase<T, FilterType>(
     companion object {
 
         private const val DEBOUNCE_TIME_MILLIS = 300L
-
-        const val NO_LIMIT = -1
 
     }
 }

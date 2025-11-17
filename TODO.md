@@ -9,6 +9,6 @@ consider moving uiEvent into the uiState
 allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
 setup github build pipeline
 refactor TopAppBars which is currently using hard-coded values, make it generic
-make the filter type dynamic so it doesn't rely on hard-coded values but on actual values from the db
 delete functionality when there is a details screen for each entity
 add preview screens instead of direct edit for todo, expense, note and investment
+use generic FilterMenu for all screens with filtering
