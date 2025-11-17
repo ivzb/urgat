@@ -53,7 +53,7 @@
     <string name="more">More</string>
     <string name="close">Close</string>
     <string name="menu_filter">Filter</string>
-    <string name="nav_all">All</string>
+    <string name="filter_all">All</string>
     <string name="nav_active">Active</string>
     <string name="nav_completed">Completed</string>
     <string name="nav_debit">Debit</string>

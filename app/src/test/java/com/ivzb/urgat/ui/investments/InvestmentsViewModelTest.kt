@@ -7,7 +7,6 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +23,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import kotlin.math.exp
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -42,7 +42,7 @@ class InvestmentsViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to CLEAR_FILTER))
+        savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to null))
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
         fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()
     }
@@ -74,7 +74,7 @@ class InvestmentsViewModelTest {
     fun `emits success state when use case returns data`() = runTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", "USD", 500.toBigDecimal(), "etfs"))
         val fakeInvestmentsFiltering = listOf(
-            FilterMenuItem("stocks", 1),
+            FilterMenuItem(label = "stocks", size = 1),
         )
 
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
@@ -134,11 +134,13 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(InvestmentsIntent.SetFiltering(FilterMenuItem("etfs", 1)))
+        val expected = FilterMenuItem(id = "etfs", label = "etfs", size = 1)
+
+        viewModel.onIntent(InvestmentsIntent.SetFiltering(expected))
         advanceUntilIdle()
 
         assertEquals(
-            "etfs",
+            expected,
             savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY]
         )
     }

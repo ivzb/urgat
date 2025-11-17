@@ -10,7 +10,6 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.util.Async
@@ -30,7 +29,7 @@ class InvestmentsViewModel @Inject constructor(
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType = savedStateHandle.getStateFlow(INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = CLEAR_FILTER)
+    private val _savedFilterType = savedStateHandle.getStateFlow(INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = null)
 
     private val _uiEvent = MutableStateFlow<InvestmentsUiEvent?>(null)
 
@@ -98,7 +97,7 @@ class InvestmentsViewModel @Inject constructor(
     }
 
     private fun setFiltering(filter: FilterMenuItem) {
-        savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = filter.label
+        savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = filter
     }
 
     private fun onHeaderItemClick(item: InvestmentsHeaderItem) {

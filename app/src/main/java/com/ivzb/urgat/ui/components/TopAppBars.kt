@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.components
 
+import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -34,6 +35,7 @@ import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.navigation.TrackersDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,7 +122,7 @@ fun FilterTodosMenu(
     ) { closeMenu ->
         DropdownMenuItem(
             onClick = { onFilterAllTodos(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_all)) }
+            text = { Text(text = stringResource(id = R.string.filter_all)) }
         )
         DropdownMenuItem(
             onClick = { onFilterActiveTodos(); closeMenu() },
@@ -150,7 +152,7 @@ fun FilterExpensesMenu(
     ) { closeMenu ->
         DropdownMenuItem(
             onClick = { onFilterAllExpenses(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_all)) }
+            text = { Text(text = stringResource(id = R.string.filter_all)) }
         )
         DropdownMenuItem(
             onClick = { onFilterDebitExpenses(); closeMenu() },
@@ -163,13 +165,18 @@ fun FilterExpensesMenu(
     }
 }
 
+@Parcelize
 data class FilterMenuItem(
-    val label: String,
+    val id: String? = null,
+    val labelResId: Int? = null,
+    val label: String = "",
     val size: Int,
-) {
+): Parcelable {
 
-    override fun toString(): String {
-        return "$label ($size)"
+    @Composable
+    fun text(): String {
+        val text = labelResId?.let { stringResource(it) } ?: label
+        return "$text ($size)"
     }
 }
 
@@ -194,7 +201,7 @@ fun FilterMenu(
                     closeMenu()
                 },
                 text = {
-                    Text(text = item.toString())
+                    Text(text = item.text())
                 }
             )
         }
@@ -322,6 +329,21 @@ private fun MoreTodosMenuPreview() {
     UrgatTheme {
         MoreTodosMenu(
             onClearCompletedTodos = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FilterMenuPreview() {
+    UrgatTheme {
+        FilterMenu(
+            items = listOf(
+                FilterMenuItem(label = "All", size = 10),
+                FilterMenuItem(label = "Active", size = 5),
+                FilterMenuItem(label = "Completed", size = 2),
+            ),
+            onFilter = {}
         )
     }
 }
