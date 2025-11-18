@@ -74,7 +74,7 @@ class InvestmentsViewModel @Inject constructor(
                 )
             }
 
-            else -> throw Exception("undefined state: $items")
+            else -> error("undefined state: $items")
         }
     }
         .stateIn(

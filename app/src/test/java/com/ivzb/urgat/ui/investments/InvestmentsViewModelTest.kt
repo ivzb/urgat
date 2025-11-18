@@ -23,7 +23,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.math.exp
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -42,6 +41,7 @@ class InvestmentsViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+
         savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to null))
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
         fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()

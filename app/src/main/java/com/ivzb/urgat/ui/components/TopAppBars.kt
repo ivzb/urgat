@@ -105,36 +105,7 @@ fun TextTopAppBar(
     )
 }
 
-@Deprecated("Use FilterMenu instead")
-@Composable
-fun FilterTodosMenu(
-    onFilterAllTodos: () -> Unit,
-    onFilterActiveTodos: () -> Unit,
-    onFilterCompletedTodos: () -> Unit
-) {
-    TopAppBarDropdownMenu(
-        iconContent = {
-            Icon(
-                painterResource(id = R.drawable.ic_filter_list),
-                stringResource(id = R.string.menu_filter)
-            )
-        }
-    ) { closeMenu ->
-        DropdownMenuItem(
-            onClick = { onFilterAllTodos(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.filter_all)) }
-        )
-        DropdownMenuItem(
-            onClick = { onFilterActiveTodos(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_active)) }
-        )
-        DropdownMenuItem(
-            onClick = { onFilterCompletedTodos(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_completed)) }
-        )
-    }
-}
-
+// todo: remove and replace with FilterMenu
 @Deprecated("Use FilterMenu instead")
 @Composable
 fun FilterExpensesMenu(
@@ -308,18 +279,6 @@ private fun TextTopAppBarPreview() {
         Surface {
             TextTopAppBar(R.string.add_todo) { }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun FilterTodosMenuPreview() {
-    UrgatTheme {
-        FilterTodosMenu(
-            onFilterAllTodos = {},
-            onFilterActiveTodos = {},
-            onFilterCompletedTodos = {}
-        )
     }
 }
 

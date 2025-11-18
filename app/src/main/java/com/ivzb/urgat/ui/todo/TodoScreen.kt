@@ -33,7 +33,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.FilterTodosMenu
+import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
@@ -77,10 +77,9 @@ private fun TodoScreenScaffold(
         onAddItem = onAddTodo,
         onBack = onBack,
         topAppBarActionsContent = {
-            FilterTodosMenu(
-                onFilterAllTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.ALL_TODOS)) },
-                onFilterActiveTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.ACTIVE_TODOS)) },
-                onFilterCompletedTodos = { onIntent(TodoIntent.SetFiltering(TodosFilterType.COMPLETED_TODOS)) },
+            FilterMenu(
+                items = uiState.filteringUiInfo.filterMenuItems,
+                onFilter = { item -> onIntent(TodoIntent.SetFiltering(item)) },
             )
 
             MoreTodosMenu(

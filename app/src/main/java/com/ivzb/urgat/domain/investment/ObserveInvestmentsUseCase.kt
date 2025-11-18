@@ -20,6 +20,7 @@ interface ObserveInvestmentsUseCase {
 
     companion object {
 
+        // todo: move to common place
         const val CLEAR_FILTER_ID = "all"
     }
 
