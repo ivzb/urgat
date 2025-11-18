@@ -137,8 +137,9 @@ fun FilterExpensesMenu(
 }
 
 @Parcelize
-data class FilterMenuItem(
-    val id: String? = null,
+data class FilterMenuItem<T: Parcelable>(
+    val type: T? = null,
+    val content: String? = null,
     val labelResId: Int? = null,
     val label: String = "",
     val size: Int,
@@ -152,9 +153,9 @@ data class FilterMenuItem(
 }
 
 @Composable
-fun FilterMenu(
-    items: List<FilterMenuItem>,
-    onFilter: (FilterMenuItem) -> Unit,
+fun <T: Parcelable> FilterMenu(
+    items: List<FilterMenuItem<T>>,
+    onFilter: (FilterMenuItem<T>) -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {

@@ -11,7 +11,4 @@ setup github build pipeline
 refactor TopAppBars which is currently using hard-coded values, make it generic
 delete functionality when there is a details screen for each entity
 add preview screens instead of direct edit for todo, expense, note and investment
-move CLEAR_FILTER_ID, ACTIVE_FILTER_ID and COMPLETED_FILTER_ID to common place
 use generic FilterMenu for all screens with filtering
-rename CLEAR_FILTER_ID, ACTIVE_FILTER_ID and COMPLETED_FILTER_ID to FILTER_ID_*
-instead of using consts revert enum filter type

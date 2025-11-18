@@ -3,14 +3,11 @@ package com.ivzb.urgat.ui.todo
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER_ID
 import com.ivzb.urgat.domain.todo.FakeActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeObserveTodosFilteringUseCase
 import com.ivzb.urgat.domain.todo.FakeObserveTodosUseCase
-import com.ivzb.urgat.domain.todo.ObserveTodosUseCase.Companion.ACTIVE_FILTER_ID
-import com.ivzb.urgat.domain.todo.ObserveTodosUseCase.Companion.COMPLETED_FILTER_ID
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.*
@@ -73,10 +70,10 @@ class TodoViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeTodo = listOf(Todo("1", "Lunch"))
-        val fakeTodoFiltering = listOf(
-            FilterMenuItem(id = CLEAR_FILTER_ID, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(id = ACTIVE_FILTER_ID, labelResId = R.string.filter_active, size = 1),
-            FilterMenuItem(id = COMPLETED_FILTER_ID, labelResId = R.string.filter_completed, size = 0),
+        val fakeTodoFiltering = listOf<TodoFilterMenuItem>(
+            FilterMenuItem(type = TodoFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = TodoFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
+            FilterMenuItem(type = TodoFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
         )
 
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
@@ -137,7 +134,7 @@ class TodoViewModelTest {
         fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        val expected = FilterMenuItem(id = ACTIVE_FILTER_ID, labelResId = R.string.filter_active, size = 1)
+        val expected = FilterMenuItem<TodoFilterType>(type = TodoFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1)
 
         viewModel.onIntent(TodoIntent.SetFiltering(expected))
         advanceUntilIdle()

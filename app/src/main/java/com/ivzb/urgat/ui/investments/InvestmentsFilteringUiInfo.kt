@@ -1,7 +1,6 @@
 package com.ivzb.urgat.ui.investments
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class InvestmentsFilteringUiInfo(
@@ -13,5 +12,5 @@ data class InvestmentsFilteringUiInfo(
     override val errorLabel: Int = R.string.error_investments,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val filterMenuItems: List<FilterMenuItem> = listOf()
+    val filterMenuItems: List<InvestmentsFilterMenuItem> = listOf()
 ) : FilteringUiInfo

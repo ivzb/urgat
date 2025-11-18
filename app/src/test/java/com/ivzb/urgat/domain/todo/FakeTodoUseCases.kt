@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.todo.TodoFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ class FakeObserveTodosUseCase : ObserveTodosUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<FilterMenuItem?>?,
+        filterTypeFlow: Flow<TodoFilterMenuItem?>?,
         limit: Int
     ): Flow<Async<List<Todo>>> {
         // Record query changes for assertions
@@ -92,13 +93,13 @@ class FakeClearCompletedTodosUseCase : ClearCompletedTodosUseCase {
 
 class FakeObserveTodosFilteringUseCase : ObserveTodosFilteringUseCase {
 
-    private val flow = MutableStateFlow<Async<List<FilterMenuItem>>>(Async.Loading)
+    private val flow = MutableStateFlow<Async<List<TodoFilterMenuItem>>>(Async.Loading)
 
-    fun emit(value: Async<List<FilterMenuItem>>) {
+    fun emit(value: Async<List<TodoFilterMenuItem>>) {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<FilterMenuItem>>> {
+    override operator fun invoke(): Flow<Async<List<TodoFilterMenuItem>>> {
         return flow
     }
 

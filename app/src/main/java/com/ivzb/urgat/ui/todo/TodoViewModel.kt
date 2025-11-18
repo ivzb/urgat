@@ -6,15 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER_ID
 import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosFilteringUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
-import com.ivzb.urgat.domain.todo.ObserveTodosUseCase.Companion.ACTIVE_FILTER_ID
-import com.ivzb.urgat.domain.todo.ObserveTodosUseCase.Companion.COMPLETED_FILTER_ID
-import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -64,7 +60,7 @@ class TodoViewModel @Inject constructor(
                     items = (todosAsync as Async.Success<List<Todo>>).data,
                     isLoading = false,
                     filteringUiInfo = getFilterUiInfo(
-                        filterMenuItems = (todosFilteringAsync as Async.Success<List<FilterMenuItem>>).data
+                        filterMenuItems = (todosFilteringAsync as Async.Success<List<TodoFilterMenuItem>>).data
                     ),
                 )
             }
@@ -91,7 +87,7 @@ class TodoViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(filter: FilterMenuItem) {
+    private fun setFiltering(filter: TodoFilterMenuItem) {
         savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = filter
     }
 
@@ -109,12 +105,12 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    private fun getFilterUiInfo(filterMenuItems: List<FilterMenuItem>): TodoFilteringUiInfo {
-        val filter: FilterMenuItem? = savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY]
-        val filterId = filter?.id ?: CLEAR_FILTER_ID
+    private fun getFilterUiInfo(filterMenuItems: List<TodoFilterMenuItem>): TodoFilteringUiInfo {
+        val filter: TodoFilterMenuItem? = savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY]
+        val filterId = filter?.type ?: TodoFilterType.ALL_TODOS
 
         return when (filterId) {
-            CLEAR_FILTER_ID -> {
+            TodoFilterType.ALL_TODOS -> {
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.all_todos,
                     emptyLabel = R.string.no_todos,
@@ -123,7 +119,7 @@ class TodoViewModel @Inject constructor(
                 )
             }
 
-            ACTIVE_FILTER_ID -> {
+            TodoFilterType.ACTIVE_TODOS -> {
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.active_todos,
                     emptyLabel = R.string.no_active_todos,
@@ -132,7 +128,7 @@ class TodoViewModel @Inject constructor(
                 )
             }
 
-            COMPLETED_FILTER_ID -> {
+            TodoFilterType.COMPLETED_TODOS -> {
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.completed_todos,
                     emptyLabel = R.string.no_completed_todos,
@@ -140,8 +136,6 @@ class TodoViewModel @Inject constructor(
                     filterMenuItems = filterMenuItems,
                 )
             }
-
-            else -> error("unsupported filter id: ${filter?.id}")
         }
     }
 }

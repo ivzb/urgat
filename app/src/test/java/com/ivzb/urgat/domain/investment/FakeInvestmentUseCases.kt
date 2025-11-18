@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,7 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<FilterMenuItem?>?,
+        filterTypeFlow: Flow<InvestmentsFilterMenuItem?>?,
         limit: Int
     ): Flow<Async<List<Investment>>> {
         // Record query changes for assertions
@@ -76,13 +77,13 @@ class FakeUpdateInvestmentUseCase : UpdateInvestmentUseCase {
 
 class FakeObserveInvestmentsFilteringUseCase : ObserveInvestmentsFilteringUseCase {
 
-    private val flow = MutableStateFlow<Async<List<FilterMenuItem>>>(Async.Loading)
+    private val flow = MutableStateFlow<Async<List<InvestmentsFilterMenuItem>>>(Async.Loading)
 
-    fun emit(value: Async<List<FilterMenuItem>>) {
+    fun emit(value: Async<List<InvestmentsFilterMenuItem>>) {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<FilterMenuItem>>> {
+    override operator fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
         return flow
     }
 

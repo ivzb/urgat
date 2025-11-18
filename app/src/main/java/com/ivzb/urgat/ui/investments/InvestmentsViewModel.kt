@@ -10,7 +10,6 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
-import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -69,7 +68,7 @@ class InvestmentsViewModel @Inject constructor(
                     isLoading = false,
                     uiEvent = uiEvent,
                     filteringUiInfo = InvestmentsFilteringUiInfo(
-                        filterMenuItems = (investmentsFilteringAsync as Async.Success<List<FilterMenuItem>>).data
+                        filterMenuItems = (investmentsFilteringAsync as Async.Success<List<InvestmentsFilterMenuItem>>).data
                     )
                 )
             }
@@ -96,7 +95,7 @@ class InvestmentsViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(filter: FilterMenuItem) {
+    private fun setFiltering(filter: InvestmentsFilterMenuItem) {
         savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = filter
     }
 

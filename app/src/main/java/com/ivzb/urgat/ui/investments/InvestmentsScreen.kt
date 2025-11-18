@@ -92,7 +92,7 @@ private fun InvestmentsScreenScaffold(
         selectedDestination = InvestmentsDestination,
         onSearchQueryChanged = { onIntent(InvestmentsIntent.SearchQueryChanged(it)) },
         topAppBarActionsContent = {
-            FilterMenu(
+            FilterMenu<InvestmentsFilterType>(
                 items = uiState.filteringUiInfo.filterMenuItems,
                 onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
             )

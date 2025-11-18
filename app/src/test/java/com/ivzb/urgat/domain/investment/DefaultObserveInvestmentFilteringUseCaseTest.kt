@@ -5,8 +5,9 @@ import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase.Companion.CLEAR_FILTER_ID
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
+import com.ivzb.urgat.ui.investments.InvestmentsFilterType
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,11 +37,11 @@ class ObserveInvestmentsFilteringUseCaseTest {
 
     @Test
     fun `invoke should return Success with grouped items`() = runTest(testDispatcher) {
-        val expected = listOf(
-            FilterMenuItem(id = CLEAR_FILTER_ID, labelResId = R.string.filter_all, size = 5),
-            FilterMenuItem(id = "etfs", label = "etfs", size = 2),
-            FilterMenuItem(id = "stocks", label = "stocks", size = 2),
-            FilterMenuItem(id = "gold", label = "gold", size = 1),
+        val expected = listOf<InvestmentsFilterMenuItem>(
+            FilterMenuItem(type = InvestmentsFilterType.ALL_INVESTMENTS, labelResId = R.string.filter_all, size = 5),
+            FilterMenuItem(content = "etfs", label = "etfs", size = 2),
+            FilterMenuItem(content = "stocks", label = "stocks", size = 2),
+            FilterMenuItem(content = "gold", label = "gold", size = 1),
         )
 
         val repositoryStream = flowOf(

@@ -73,7 +73,7 @@ class InvestmentsViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", "USD", 500.toBigDecimal(), "etfs"))
-        val fakeInvestmentsFiltering = listOf(
+        val fakeInvestmentsFiltering = listOf<InvestmentsFilterMenuItem>(
             FilterMenuItem(label = "stocks", size = 1),
         )
 
@@ -134,7 +134,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        val expected = FilterMenuItem(id = "etfs", label = "etfs", size = 1)
+        val expected = FilterMenuItem<InvestmentsFilterType>(content = "etfs", label = "etfs", size = 1)
 
         viewModel.onIntent(InvestmentsIntent.SetFiltering(expected))
         advanceUntilIdle()
