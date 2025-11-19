@@ -34,7 +34,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.navigation.ExpensesDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.FilterExpensesMenu
+import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
@@ -80,10 +80,9 @@ private fun ExpensesScreenScaffold(
         onAddItem = onAddExpense,
         onBack = onBack,
         topAppBarActionsContent = {
-            FilterExpensesMenu(
-                onFilterAllExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.ALL_EXPENSES)) },
-                onFilterDebitExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.DEBIT_EXPENSES)) },
-                onFilterCostExpenses = { onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.COST_EXPENSES)) },
+            FilterMenu(
+                items = uiState.filteringUiInfo.filterMenuItems,
+                onFilter = { item -> onIntent(ExpensesIntent.SetFiltering(item)) },
             )
         },
         modifier = modifier

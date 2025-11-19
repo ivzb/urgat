@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<ExpensesFilterType>?,
+        filterTypeFlow: Flow<ExpensesFilterMenuItem?>?,
         limit: Int
     ): Flow<Async<List<Expense>>> {
         // Record query changes for assertions
@@ -72,4 +72,18 @@ class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
     ) {
         updated = listOf(id, name, amount, category)
     }
+}
+
+class FakeObserveExpensesFilteringUseCase : ObserveExpensesFilteringUseCase {
+
+    private val flow = MutableStateFlow<Async<List<ExpensesFilterMenuItem>>>(Async.Loading)
+
+    fun emit(value: Async<List<ExpensesFilterMenuItem>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(): Flow<Async<List<ExpensesFilterMenuItem>>> {
+        return flow
+    }
+
 }

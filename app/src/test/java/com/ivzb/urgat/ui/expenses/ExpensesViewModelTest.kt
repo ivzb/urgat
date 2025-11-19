@@ -7,6 +7,10 @@ import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import com.ivzb.urgat.R
+import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
+import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.todo.TodoFilterMenuItem
+import com.ivzb.urgat.ui.todo.TodoFilterType
 import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -18,6 +22,7 @@ class ExpensesViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
+    private lateinit var fakeObserveExpensesFilteringUseCase: FakeObserveExpensesFilteringUseCase
 
     private lateinit var viewModel: ExpensesViewModel
 
@@ -26,8 +31,9 @@ class ExpensesViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf(EXPENSES_FILTER_SAVED_STATE_KEY to ExpensesFilterType.ALL_EXPENSES))
+        savedStateHandle = SavedStateHandle(mapOf(EXPENSES_FILTER_SAVED_STATE_KEY to null))
         fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
+        fakeObserveExpensesFilteringUseCase = FakeObserveExpensesFilteringUseCase()
     }
 
     @After
@@ -38,6 +44,7 @@ class ExpensesViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Loading)
+        fakeObserveExpensesFilteringUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -55,7 +62,14 @@ class ExpensesViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeExpenses = listOf(Expense("1", "Lunch"))
+        val fakeExpensesFiltering = listOf(
+            FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
+            FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
+        )
+
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
+        fakeObserveExpensesFilteringUseCase.emit(Async.Success(fakeExpensesFiltering))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -66,6 +80,7 @@ class ExpensesViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals(fakeExpenses, state.items)
+        assertEquals(fakeExpensesFiltering, state.filteringUiInfo.filterMenuItems)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -75,6 +90,7 @@ class ExpensesViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Error(R.string.error_expenses))
+        fakeObserveExpensesFilteringUseCase.emit(Async.Error(R.string.error_expenses_filtering))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -94,6 +110,7 @@ class ExpensesViewModelTest {
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeExpenses = listOf(Expense("2", "Coffee"))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
+        fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(ExpensesIntent.SearchQueryChanged("coffee"))
@@ -106,16 +123,20 @@ class ExpensesViewModelTest {
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Success(emptyList()))
+        fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.DEBIT_EXPENSES))
+        val expected = FilterMenuItem<ExpensesFilterType>(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1)
+
+        viewModel.onIntent(ExpensesIntent.SetFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(ExpensesFilterType.DEBIT_EXPENSES, savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY])
+        assertEquals(expected, savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY])
     }
 
     private fun createViewModel() = ExpensesViewModel(
         fakeObserveExpensesUseCase,
+        fakeObserveExpensesFilteringUseCase,
         savedStateHandle
     )
 }

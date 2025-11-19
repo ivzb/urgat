@@ -105,37 +105,6 @@ fun TextTopAppBar(
     )
 }
 
-// todo: remove and replace with FilterMenu
-@Deprecated("Use FilterMenu instead")
-@Composable
-fun FilterExpensesMenu(
-    onFilterAllExpenses: () -> Unit,
-    onFilterDebitExpenses: () -> Unit,
-    onFilterCostExpenses: () -> Unit
-) {
-    TopAppBarDropdownMenu(
-        iconContent = {
-            Icon(
-                painterResource(id = R.drawable.ic_filter_list),
-                stringResource(id = R.string.menu_filter)
-            )
-        }
-    ) { closeMenu ->
-        DropdownMenuItem(
-            onClick = { onFilterAllExpenses(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.filter_all)) }
-        )
-        DropdownMenuItem(
-            onClick = { onFilterDebitExpenses(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_debit)) }
-        )
-        DropdownMenuItem(
-            onClick = { onFilterCostExpenses(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_cost)) }
-        )
-    }
-}
-
 @Parcelize
 data class FilterMenuItem<T: Parcelable>(
     val type: T? = null,

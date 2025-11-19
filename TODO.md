@@ -11,4 +11,4 @@ setup github build pipeline
 refactor TopAppBars which is currently using hard-coded values, make it generic
 delete functionality when there is a details screen for each entity
 add preview screens instead of direct edit for todo, expense, note and investment
-use generic FilterMenu for all screens with filtering
+check insests on lower android API

@@ -25,6 +25,10 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
     override fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
         return investmentsRepository.getStream(NO_LIMIT)
             .map {
+                if (it.isEmpty()) {
+                    return@map listOf()
+                }
+
                 listOf(FilterMenuItem(type = InvestmentsFilterType.ALL_INVESTMENTS, labelResId = R.string.filter_all, size = it.size)) +
                     it.groupBy { it.category }
                         .entries

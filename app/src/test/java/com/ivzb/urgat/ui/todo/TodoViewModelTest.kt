@@ -70,7 +70,7 @@ class TodoViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeTodo = listOf(Todo("1", "Lunch"))
-        val fakeTodoFiltering = listOf<TodoFilterMenuItem>(
+        val fakeTodoFiltering = listOf(
             FilterMenuItem(type = TodoFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = TodoFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
             FilterMenuItem(type = TodoFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),

@@ -92,10 +92,14 @@ private fun InvestmentsScreenScaffold(
         selectedDestination = InvestmentsDestination,
         onSearchQueryChanged = { onIntent(InvestmentsIntent.SearchQueryChanged(it)) },
         topAppBarActionsContent = {
-            FilterMenu<InvestmentsFilterType>(
-                items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
-            )
+            val filterMenuItems = uiState.filteringUiInfo.filterMenuItems
+
+            if (filterMenuItems.isNotEmpty()) {
+                FilterMenu(
+                    items = uiState.filteringUiInfo.filterMenuItems,
+                    onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
+                )
+            }
         },
         navController = navController,
         modifier = modifier

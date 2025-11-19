@@ -56,8 +56,8 @@
     <string name="filter_all">All</string>
     <string name="filter_active">Active</string>
     <string name="filter_completed">Completed</string>
-    <string name="nav_debit">Debit</string>
-    <string name="nav_cost">Cost</string>
+    <string name="filter_debit">Debit</string>
+    <string name="filter_cost">Cost</string>
     <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>
     <string name="no_expenses_label">No spending yet.</string>
@@ -94,4 +94,5 @@
     <string name="no_investments">You have no investments</string>
     <string name="no_weights">You have no weights</string>
     <string name="error_todos_filtering">Error while loading todo filtering</string>
+    <string name="error_expenses_filtering">Error while loading expenses filtering</string>
 </resources>

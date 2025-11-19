@@ -10,4 +10,10 @@ data class Expense(
     val date: Long = 0,
     val isDeleted: Boolean = false,
     val createdAt: Long = 0
-)
+) {
+
+    val isCost by lazy { amount > BigDecimal.ZERO }
+
+    val isDebit by lazy { amount < BigDecimal.ZERO }
+
+}
