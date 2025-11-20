@@ -87,3 +87,14 @@ class FakeObserveExpensesFilteringUseCase : ObserveExpensesFilteringUseCase {
     }
 
 }
+
+class FakeDeleteExpenseUseCase : DeleteExpenseUseCase {
+
+    var deleted: List<Any> = listOf()
+
+    override suspend fun invoke(
+        id: String,
+    ) {
+        deleted = listOf(id)
+    }
+}

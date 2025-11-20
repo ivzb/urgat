@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.FakeCreateInvestmentUseCase
+import com.ivzb.urgat.domain.investment.FakeDeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeGetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeUpdateInvestmentUseCase
 import com.ivzb.urgat.navigation.AddEditInvestmentDestination
@@ -23,6 +24,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditInvestmentViewModelTest {
@@ -35,6 +37,8 @@ class AddEditInvestmentViewModelTest {
 
     private lateinit var updateInvestmentUseCase: FakeUpdateInvestmentUseCase
 
+    private lateinit var deleteInvestmentUseCase: FakeDeleteInvestmentUseCase
+
     private lateinit var savedStateHandle: SavedStateHandle
 
     private lateinit var viewModel: AddEditInvestmentViewModel
@@ -46,6 +50,7 @@ class AddEditInvestmentViewModelTest {
         getInvestmentUseCase = FakeGetInvestmentUseCase()
         createInvestmentUseCase = FakeCreateInvestmentUseCase()
         updateInvestmentUseCase = FakeUpdateInvestmentUseCase()
+        deleteInvestmentUseCase = FakeDeleteInvestmentUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -85,6 +90,8 @@ class AddEditInvestmentViewModelTest {
         assertEquals("USD", state.currency)
         assertEquals("150", state.amount)
         assertEquals("etfs", state.category)
+        assertEquals(true, state.withDelete)
+        assertEquals(false, state.shouldNavigateBack)
     }
 
     @Test
@@ -132,7 +139,7 @@ class AddEditInvestmentViewModelTest {
         assertEquals("USD", currency)
         assertEquals(BigDecimal("250"), amount)
         assertEquals("etfs", category)
-        assertTrue(viewModel.uiState.value.isInvestmentSaved)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
@@ -174,7 +181,29 @@ class AddEditInvestmentViewModelTest {
         assertEquals("EUR", currency)
         assertEquals(BigDecimal("370"), amount)
         assertEquals("stocks", category)
-        assertEquals(true, viewModel.uiState.value.isInvestmentSaved)
+        assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `deleteInvestment deletes existing investment`() = runTest {
+        val investmentId = "123"
+        savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
+
+        viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditInvestmentIntent.DeleteInvestment)
+        advanceUntilIdle()
+
+        val (id) = deleteInvestmentUseCase.deleted
+        assertEquals(investmentId, id)
+    }
+
+    @Test
+    fun `deleteInvestment deletes non-existing investment`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditInvestmentIntent.DeleteInvestment)
+        }
     }
 
     @Test
@@ -190,6 +219,7 @@ class AddEditInvestmentViewModelTest {
         getInvestmentUseCase,
         createInvestmentUseCase,
         updateInvestmentUseCase,
+        deleteInvestmentUseCase,
         savedStateHandle
     )
 }

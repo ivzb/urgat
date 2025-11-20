@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseUiState
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -67,9 +66,8 @@ fun AddEditNoteScreen(
         modifier = modifier
     )
 
-    // Check if the task is saved and call onTaskUpdate event
-    LaunchedEffect(uiState.isNoteSaved) {
-        if (uiState.isNoteSaved) {
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
             onBack()
         }
     }
@@ -91,7 +89,12 @@ private fun AddEditNoteContent(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(screenTitle, onBack)
+            TextTopAppBar(
+                title = screenTitle,
+                onBack = onBack,
+                withDelete = uiState.withDelete,
+                onDelete = { onIntent(AddEditNoteIntent.DeleteNote) },
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier

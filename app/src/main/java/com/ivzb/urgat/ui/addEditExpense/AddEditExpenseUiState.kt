@@ -8,5 +8,6 @@ data class AddEditExpenseUiState(
     val focusIndex: Int = 0,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
-    val isExpenseSaved: Boolean = false
+    val withDelete: Boolean = false,
+    val shouldNavigateBack: Boolean = false
 )

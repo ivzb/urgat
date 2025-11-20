@@ -5,5 +5,6 @@ data class AddEditNoteUiState(
     val focusIndex: Int = 0,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
-    val isNoteSaved: Boolean = false
+    val withDelete: Boolean = false,
+    val shouldNavigateBack: Boolean = false
 )

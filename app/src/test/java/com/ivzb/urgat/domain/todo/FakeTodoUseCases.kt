@@ -1,7 +1,6 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.todo.TodoFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
@@ -103,4 +102,15 @@ class FakeObserveTodosFilteringUseCase : ObserveTodosFilteringUseCase {
         return flow
     }
 
+}
+
+class FakeDeleteTodoUseCase : DeleteTodoUseCase {
+
+    var deleted: List<Any> = listOf()
+
+    override suspend fun invoke(
+        id: String,
+    ) {
+        deleted = listOf(id)
+    }
 }

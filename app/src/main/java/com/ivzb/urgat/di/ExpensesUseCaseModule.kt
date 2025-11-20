@@ -2,10 +2,12 @@ package com.ivzb.urgat.di
 
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultCreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.DefaultDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesUseCase
 import com.ivzb.urgat.domain.expense.DefaultUpdateExpenseUseCase
+import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
@@ -38,5 +40,9 @@ interface ExpensesUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveExpensesFilteringUseCase(useCase: DefaultObserveExpensesFilteringUseCase): ObserveExpensesFilteringUseCase
+
+    @Singleton
+    @Binds
+    fun bindsDeleteExpenseUseCase(useCase: DefaultDeleteExpenseUseCase): DeleteExpenseUseCase
 
 }

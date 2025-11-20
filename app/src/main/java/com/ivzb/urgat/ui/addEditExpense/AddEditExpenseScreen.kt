@@ -76,9 +76,8 @@ fun AddEditExpenseScreen(
         modifier = modifier
     )
 
-    // Check if the task is saved and call onTaskUpdate event
-    LaunchedEffect(uiState.isExpenseSaved) {
-        if (uiState.isExpenseSaved) {
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
             onBack()
         }
     }
@@ -101,7 +100,12 @@ private fun AddEditExpenseContent(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(screenTitle, onBack)
+            TextTopAppBar(
+                title = screenTitle,
+                onBack = onBack,
+                withDelete = uiState.withDelete,
+                onDelete = { onIntent(AddEditExpenseIntent.DeleteExpense) },
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier

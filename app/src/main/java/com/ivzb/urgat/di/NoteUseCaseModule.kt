@@ -2,9 +2,11 @@ package com.ivzb.urgat.di
 
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.note.DefaultCreateNoteUseCase
+import com.ivzb.urgat.domain.note.DefaultDeleteNoteUseCase
 import com.ivzb.urgat.domain.note.DefaultGetNoteUseCase
 import com.ivzb.urgat.domain.note.DefaultObserveNotesUseCase
 import com.ivzb.urgat.domain.note.DefaultUpdateNoteUseCase
+import com.ivzb.urgat.domain.note.DeleteNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
@@ -33,5 +35,9 @@ interface NoteUseCaseModule {
     @Singleton
     @Binds
     fun bindsCreateNoteUseCase(useCase: DefaultCreateNoteUseCase): CreateNoteUseCase
+
+    @Singleton
+    @Binds
+    fun bindsDeleteNoteUseCase(useCase: DefaultDeleteNoteUseCase): DeleteNoteUseCase
 
 }

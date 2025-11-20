@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
@@ -21,6 +22,7 @@ class AddEditExpenseViewModel @Inject constructor(
     private val getExpenseUseCase: GetExpenseUseCase,
     private val createExpenseUseCase: CreateExpenseUseCase,
     private val updateExpenseUseCase: UpdateExpenseUseCase,
+    private val deleteExpenseUseCase: DeleteExpenseUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -42,6 +44,7 @@ class AddEditExpenseViewModel @Inject constructor(
             is AddEditExpenseIntent.UpdateCategory -> updateCategory(intent.value)
             is AddEditExpenseIntent.UpdateDate -> updateDate(intent.value)
             AddEditExpenseIntent.SaveExpense -> saveExpense()
+            AddEditExpenseIntent.DeleteExpense -> deleteExpense()
             AddEditExpenseIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -106,14 +109,21 @@ class AddEditExpenseViewModel @Inject constructor(
         )
 
         _uiState.update {
-            it.copy(isExpenseSaved = true)
+            it.copy(shouldNavigateBack = true)
         }
     }
 
+    private fun deleteExpense() {
+        if (expenseId == null) {
+            throw RuntimeException("deleteExpense() was called but expense is new.")
+        }
 
-    private fun userMessageShown() {
-        _uiState.update {
-            it.copy(userMessage = null)
+        viewModelScope.launch {
+            deleteExpenseUseCase(expenseId)
+
+            _uiState.update {
+                it.copy(shouldNavigateBack = true)
+            }
         }
     }
 
@@ -132,8 +142,14 @@ class AddEditExpenseViewModel @Inject constructor(
             )
 
             _uiState.update {
-                it.copy(isExpenseSaved = true)
+                it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun userMessageShown() {
+        _uiState.update {
+            it.copy(userMessage = null)
         }
     }
 
@@ -151,7 +167,8 @@ class AddEditExpenseViewModel @Inject constructor(
                             amount = expense.amount.toString(),
                             category = expense.category,
                             date = expense.date,
-                            isLoading = false
+                            isLoading = false,
+                            withDelete = true,
                         )
                     }
                 } else {

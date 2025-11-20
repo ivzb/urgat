@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
+import com.ivzb.urgat.domain.investment.DeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
 import com.ivzb.urgat.navigation.AddEditInvestmentDestination
@@ -22,6 +23,7 @@ class AddEditInvestmentViewModel @Inject constructor(
     private val getInvestmentUseCase: GetInvestmentUseCase,
     private val createInvestmentUseCase: CreateInvestmentUseCase,
     private val updateInvestmentUseCase: UpdateInvestmentUseCase,
+    private val deleteInvestmentUseCase: DeleteInvestmentUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -43,6 +45,7 @@ class AddEditInvestmentViewModel @Inject constructor(
             is AddEditInvestmentIntent.UpdateAmount -> updateAmount(intent.value)
             is AddEditInvestmentIntent.UpdateCategory -> updateCategory(intent.value)
             AddEditInvestmentIntent.SaveInvestment -> saveInvestment()
+            AddEditInvestmentIntent.DeleteInvestment -> deleteInvestment()
             AddEditInvestmentIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -108,14 +111,7 @@ class AddEditInvestmentViewModel @Inject constructor(
         )
 
         _uiState.update {
-            it.copy(isInvestmentSaved = true)
-        }
-    }
-
-
-    private fun userMessageShown() {
-        _uiState.update {
-            it.copy(userMessage = null)
+            it.copy(shouldNavigateBack = true)
         }
     }
 
@@ -134,8 +130,28 @@ class AddEditInvestmentViewModel @Inject constructor(
             )
 
             _uiState.update {
-                it.copy(isInvestmentSaved = true)
+                it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun deleteInvestment() {
+        if (investmentId == null) {
+            throw RuntimeException("deleteInvestment() was called but investment is new.")
+        }
+
+        viewModelScope.launch {
+            deleteInvestmentUseCase(investmentId)
+
+            _uiState.update {
+                it.copy(shouldNavigateBack = true)
+            }
+        }
+    }
+
+    private fun userMessageShown() {
+        _uiState.update {
+            it.copy(userMessage = null)
         }
     }
 
@@ -154,6 +170,7 @@ class AddEditInvestmentViewModel @Inject constructor(
                             amount = investment.amount.toString(),
                             category = investment.category,
                             isLoading = false,
+                            withDelete = true
                         )
                     }
                 } else {

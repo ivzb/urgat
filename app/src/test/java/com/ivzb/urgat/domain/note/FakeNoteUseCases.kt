@@ -61,3 +61,14 @@ class FakeUpdateNoteUseCase : UpdateNoteUseCase {
         updated = listOf(id, content)
     }
 }
+
+class FakeDeleteNoteUseCase : DeleteNoteUseCase {
+
+    var deleted: List<Any> = listOf()
+
+    override suspend fun invoke(
+        id: String,
+    ) {
+        deleted = listOf(id)
+    }
+}

@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -71,9 +70,8 @@ fun AddEditInvestmentScreen(
         modifier = modifier
     )
 
-    // Check if the task is saved and call onTaskUpdate event
-    LaunchedEffect(uiState.isInvestmentSaved) {
-        if (uiState.isInvestmentSaved) {
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
             onBack()
         }
     }
@@ -95,7 +93,12 @@ private fun AddEditInvestmentContent(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(screenTitle, onBack)
+            TextTopAppBar(
+                title = screenTitle,
+                onBack = onBack,
+                withDelete = uiState.withDelete,
+                onDelete = { onIntent(AddEditInvestmentIntent.DeleteInvestment) },
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
+import com.ivzb.urgat.domain.note.DeleteNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import com.ivzb.urgat.navigation.AddEditNoteDestination
@@ -21,6 +22,7 @@ class AddEditNoteViewModel @Inject constructor(
     private val getNoteUseCase: GetNoteUseCase,
     private val createNoteUseCase: CreateNoteUseCase,
     private val updateNoteUseCase: UpdateNoteUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -39,6 +41,7 @@ class AddEditNoteViewModel @Inject constructor(
         when (intent) {
             is AddEditNoteIntent.UpdateContent -> updateContent(intent.value)
             AddEditNoteIntent.SaveNote -> saveNote()
+            AddEditNoteIntent.DeleteNote -> deleteNote()
             AddEditNoteIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -74,6 +77,47 @@ class AddEditNoteViewModel @Inject constructor(
         }
     }
 
+    private fun createNewNote() = viewModelScope.launch {
+        createNoteUseCase(
+            content = uiState.value.content
+        )
+
+        _uiState.update {
+            it.copy(shouldNavigateBack = true)
+        }
+    }
+
+    private fun updateNote() {
+        if (noteId == null) {
+            throw RuntimeException("updateNote() was called but note is new.")
+        }
+
+        viewModelScope.launch {
+            updateNoteUseCase(
+                noteId,
+                content = uiState.value.content
+            )
+
+            _uiState.update {
+                it.copy(shouldNavigateBack = true)
+            }
+        }
+    }
+
+    private fun deleteNote() {
+        if (noteId == null) {
+            throw RuntimeException("deleteNote() was called but note is new.")
+        }
+
+        viewModelScope.launch {
+            deleteNoteUseCase(noteId)
+
+            _uiState.update {
+                it.copy(shouldNavigateBack = true)
+            }
+        }
+    }
+
     private fun userMessageShown() {
         _uiState.update {
             it.copy(userMessage = null)
@@ -91,7 +135,8 @@ class AddEditNoteViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             content = note.content,
-                            isLoading = false
+                            isLoading = false,
+                            withDelete = true
                         )
                     }
                 } else {
@@ -99,33 +144,6 @@ class AddEditNoteViewModel @Inject constructor(
                         it.copy(isLoading = false)
                     }
                 }
-            }
-        }
-    }
-
-    private fun createNewNote() = viewModelScope.launch {
-        createNoteUseCase(
-            content = uiState.value.content
-        )
-
-        _uiState.update {
-            it.copy(isNoteSaved = true)
-        }
-    }
-
-    private fun updateNote() {
-        if (noteId == null) {
-            throw RuntimeException("updateNote() was called but note is new.")
-        }
-
-        viewModelScope.launch {
-            updateNoteUseCase(
-                noteId,
-                content = uiState.value.content
-            )
-
-            _uiState.update {
-                it.copy(isNoteSaved = true)
             }
         }
     }

@@ -2,10 +2,12 @@ package com.ivzb.urgat.di
 
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DefaultCreateInvestmentUseCase
+import com.ivzb.urgat.domain.investment.DefaultDeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DefaultGetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.DefaultUpdateInvestmentUseCase
+import com.ivzb.urgat.domain.investment.DeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
@@ -38,5 +40,9 @@ interface InvestmentsUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveInvestmentsFilteringUseCase(useCase: DefaultObserveInvestmentsFilteringUseCase): ObserveInvestmentsFilteringUseCase
+
+    @Singleton
+    @Binds
+    fun bindsDeleteInvestmentUseCase(useCase: DefaultDeleteInvestmentUseCase): DeleteInvestmentUseCase
 
 }

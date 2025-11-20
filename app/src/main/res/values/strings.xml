@@ -95,4 +95,5 @@
     <string name="no_weights">You have no weights</string>
     <string name="error_todos_filtering">Error while loading todo filtering</string>
     <string name="error_expenses_filtering">Error while loading expenses filtering</string>
+    <string name="delete">Delete</string>
 </resources>

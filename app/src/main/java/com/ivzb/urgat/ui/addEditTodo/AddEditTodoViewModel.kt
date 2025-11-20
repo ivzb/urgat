@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
+import com.ivzb.urgat.domain.todo.DeleteTodoUseCase
 import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import com.ivzb.urgat.domain.todo.GetTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
@@ -21,6 +22,7 @@ class AddEditTodoViewModel @Inject constructor(
     private val getTodoUseCase: GetTodoUseCase,
     private val createTodoUseCase: CreateTodoUseCase,
     private val updateTodoUseCase: UpdateTodoUseCase,
+    private val deleteTodoUseCase: DeleteTodoUseCase,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -40,6 +42,7 @@ class AddEditTodoViewModel @Inject constructor(
             is AddEditTodoIntent.UpdateTitle -> updateTitle(intent.value)
             is AddEditTodoIntent.UpdateDescription -> updateDescription(intent.value)
             AddEditTodoIntent.SaveTodo -> saveTodo()
+            AddEditTodoIntent.DeleteTodo -> deleteTodo()
             AddEditTodoIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -72,16 +75,10 @@ class AddEditTodoViewModel @Inject constructor(
         }
     }
 
-    private fun userMessageShown() {
-        _uiState.update {
-            it.copy(userMessage = null)
-        }
-    }
-
     private fun createNewTodo() = viewModelScope.launch {
         createTodoUseCase(uiState.value.title, uiState.value.description)
         _uiState.update {
-            it.copy(isTodoSaved = true)
+            it.copy(shouldNavigateBack = true)
         }
     }
 
@@ -98,8 +95,28 @@ class AddEditTodoViewModel @Inject constructor(
             )
 
             _uiState.update {
-                it.copy(isTodoSaved = true)
+                it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun deleteTodo() {
+        if (todoId == null) {
+            throw RuntimeException("deleteTodo() was called but todo is new.")
+        }
+
+        viewModelScope.launch {
+            deleteTodoUseCase(todoId)
+
+            _uiState.update {
+                it.copy(shouldNavigateBack = true)
+            }
+        }
+    }
+
+    private fun userMessageShown() {
+        _uiState.update {
+            it.copy(userMessage = null)
         }
     }
 
@@ -109,14 +126,15 @@ class AddEditTodoViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getTodoUseCase(todoId)?.let { todo ->
+            getTodoUseCase(todoId).let { todo ->
                 if (todo != null) {
                     _uiState.update {
                         it.copy(
                             title = todo.title,
                             description = todo.description,
                             isTodoCompleted = todo.isCompleted,
-                            isLoading = false
+                            isLoading = false,
+                            withDelete = true,
                         )
                     }
                 } else {

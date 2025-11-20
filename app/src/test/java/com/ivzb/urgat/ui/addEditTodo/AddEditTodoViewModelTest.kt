@@ -7,6 +7,7 @@ import com.ivzb.urgat.domain.todo.FakeGetTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeUpdateTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
 import com.ivzb.urgat.R
+import com.ivzb.urgat.domain.todo.FakeDeleteTodoUseCase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import org.junit.*
@@ -15,6 +16,8 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import kotlin.collections.component1
+import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditTodoViewModelTest {
@@ -26,7 +29,9 @@ class AddEditTodoViewModelTest {
     private lateinit var createTodoUseCase: FakeCreateTodoUseCase
     
     private lateinit var updateTodoUseCase: FakeUpdateTodoUseCase
-    
+
+    private lateinit var deleteTodoUseCase: FakeDeleteTodoUseCase
+
     private lateinit var savedStateHandle: SavedStateHandle
 
     private lateinit var viewModel: AddEditTodoViewModel
@@ -38,6 +43,7 @@ class AddEditTodoViewModelTest {
         getTodoUseCase = FakeGetTodoUseCase()
         createTodoUseCase = FakeCreateTodoUseCase()
         updateTodoUseCase = FakeUpdateTodoUseCase()
+        deleteTodoUseCase = FakeDeleteTodoUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -76,6 +82,8 @@ class AddEditTodoViewModelTest {
         assertEquals("World", state.description)
         assertFalse(state.isLoading)
         assertEquals("123", getTodoUseCase.calledWithId)
+        assertEquals(true, state.withDelete)
+        assertEquals(false, state.shouldNavigateBack)
     }
 
     @Test
@@ -107,7 +115,7 @@ class AddEditTodoViewModelTest {
         val (title, description) = createTodoUseCase.created
         assertEquals("Title", title)
         assertEquals("Desc", description)
-        assertTrue(viewModel.uiState.value.isTodoSaved)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
@@ -139,11 +147,33 @@ class AddEditTodoViewModelTest {
 
         advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.isTodoSaved)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
         val (id, title, description) = updateTodoUseCase.updated
         assertEquals(todoId, id)
         assertEquals("Updated Title", title)
         assertEquals("Updated Desc", description)
+    }
+
+    @Test
+    fun `deleteTodo deletes existing todo`() = runTest {
+        val todoId = "123"
+        savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = todoId
+
+        viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditTodoIntent.DeleteTodo)
+        advanceUntilIdle()
+
+        val (id) = deleteTodoUseCase.deleted
+        assertEquals(todoId, id)
+    }
+
+    @Test
+    fun `deleteTodo deletes non-existing todo`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditTodoIntent.DeleteTodo)
+        }
     }
 
     @Test
@@ -159,6 +189,7 @@ class AddEditTodoViewModelTest {
         getTodoUseCase,
         createTodoUseCase,
         updateTodoUseCase,
+        deleteTodoUseCase,
         savedStateHandle
     )
 }

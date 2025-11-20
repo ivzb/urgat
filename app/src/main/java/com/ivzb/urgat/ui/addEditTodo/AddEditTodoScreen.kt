@@ -64,9 +64,8 @@ fun AddEditTodoScreen(
         modifier = modifier
     )
 
-    // Check if the task is saved and call onTaskUpdate event
-    LaunchedEffect(uiState.isTodoSaved) {
-        if (uiState.isTodoSaved) {
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
             onBack()
         }
     }
@@ -86,7 +85,12 @@ private fun AddEditTodoContent(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(screenTitle, onBack)
+            TextTopAppBar(
+                title = screenTitle,
+                onBack = onBack,
+                withDelete = uiState.withDelete,
+                onDelete = { onIntent(AddEditTodoIntent.DeleteTodo) },
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier

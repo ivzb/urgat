@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.domain.note.FakeDeleteNoteUseCase
 import com.ivzb.urgat.navigation.AddEditNoteDestination
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
@@ -23,6 +24,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditNoteViewModelTest {
@@ -35,6 +37,8 @@ class AddEditNoteViewModelTest {
 
     private lateinit var updateNoteUseCase: FakeUpdateNoteUseCase
 
+    private lateinit var deleteNoteUseCase: FakeDeleteNoteUseCase
+
     private lateinit var savedStateHandle: SavedStateHandle
 
     private lateinit var viewModel: AddEditNoteViewModel
@@ -46,6 +50,7 @@ class AddEditNoteViewModelTest {
         getNoteUseCase = FakeGetNoteUseCase()
         createNoteUseCase = FakeCreateNoteUseCase()
         updateNoteUseCase = FakeUpdateNoteUseCase()
+        deleteNoteUseCase = FakeDeleteNoteUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -83,6 +88,8 @@ class AddEditNoteViewModelTest {
         assertEquals("Note", state.content)
         assertFalse(state.isLoading)
         assertEquals("123", getNoteUseCase.calledWithId)
+        assertEquals(true, state.withDelete)
+        assertEquals(false, state.shouldNavigateBack)
     }
 
     @Test
@@ -106,7 +113,7 @@ class AddEditNoteViewModelTest {
 
         val created = createNoteUseCase.created
         assertEquals("Note", created)
-        assertTrue(viewModel.uiState.value.isNoteSaved)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
@@ -135,10 +142,32 @@ class AddEditNoteViewModelTest {
 
         advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.isNoteSaved)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
         val (id, content) = updateNoteUseCase.updated
         assertEquals(noteId, id)
         assertEquals("Updated", content)
+    }
+
+    @Test
+    fun `deleteNote deletes existing note`() = runTest {
+        val noteId = "123"
+        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
+
+        viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditNoteIntent.DeleteNote)
+        advanceUntilIdle()
+
+        val (id) = deleteNoteUseCase.deleted
+        assertEquals(noteId, id)
+    }
+
+    @Test
+    fun `deleteNote deletes non-existing note`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditNoteIntent.DeleteNote)
+        }
     }
 
     @Test
@@ -154,6 +183,7 @@ class AddEditNoteViewModelTest {
         getNoteUseCase,
         createNoteUseCase,
         updateNoteUseCase,
+        deleteNoteUseCase,
         savedStateHandle
     )
 }

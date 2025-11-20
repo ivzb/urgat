@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -88,7 +89,10 @@ fun TopAppBarDropdownMenu(
 @Composable
 fun TextTopAppBar(
     @StringRes title: Int,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+
+    withDelete: Boolean,
+    onDelete: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -97,6 +101,16 @@ fun TextTopAppBar(
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
+            }
+        },
+        actions = {
+            if (withDelete) {
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.delete)
+                    )
+                }
             }
         },
         windowInsets = WindowInsets(-1.dp),
@@ -247,7 +261,27 @@ fun TopAppBarContentTrackersDestinationPreview() {
 private fun TextTopAppBarPreview() {
     UrgatTheme {
         Surface {
-            TextTopAppBar(R.string.add_todo) { }
+            TextTopAppBar(
+                title = R.string.add_todo,
+                onBack = {},
+                withDelete = false,
+                onDelete = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TextTopAppBarPreviewWithDelete() {
+    UrgatTheme {
+        Surface {
+            TextTopAppBar(
+                title = R.string.add_todo,
+                onBack = {},
+                withDelete = true,
+                onDelete = {},
+            )
         }
     }
 }

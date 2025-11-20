@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.domain.expense.FakeCreateExpenseUseCase
+import com.ivzb.urgat.domain.expense.FakeDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeUpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
@@ -23,6 +24,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditExpenseViewModelTest {
@@ -35,6 +37,8 @@ class AddEditExpenseViewModelTest {
 
     private lateinit var updateExpenseUseCase: FakeUpdateExpenseUseCase
 
+    private lateinit var deleteExpenseUseCase: FakeDeleteExpenseUseCase
+
     private lateinit var savedStateHandle: SavedStateHandle
 
     private lateinit var viewModel: AddEditExpenseViewModel
@@ -46,6 +50,7 @@ class AddEditExpenseViewModelTest {
         getExpenseUseCase = FakeGetExpenseUseCase()
         createExpenseUseCase = FakeCreateExpenseUseCase()
         updateExpenseUseCase = FakeUpdateExpenseUseCase()
+        deleteExpenseUseCase = FakeDeleteExpenseUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -86,6 +91,8 @@ class AddEditExpenseViewModelTest {
         assertEquals("Transport", state.category)
         assertEquals(123L, state.date)
         assertEquals(false, state.isLoading)
+        assertEquals(true, state.withDelete)
+        assertEquals(false, state.shouldNavigateBack)
     }
 
     @Test
@@ -113,7 +120,7 @@ class AddEditExpenseViewModelTest {
         assertEquals("Dinner", name)
         assertEquals(BigDecimal("25"), amount)
         assertEquals("Food", category)
-        assertTrue(viewModel.uiState.value.isExpenseSaved)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
@@ -153,7 +160,29 @@ class AddEditExpenseViewModelTest {
         assertEquals("Edit", name)
         assertEquals(BigDecimal("35"), amount)
         assertEquals("Math", category)
-        assertEquals(true, viewModel.uiState.value.isExpenseSaved)
+        assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `deleteExpense deletes existing expense`() = runTest {
+        val expenseId = "123"
+        savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
+
+        viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditExpenseIntent.DeleteExpense)
+        advanceUntilIdle()
+
+        val (id) = deleteExpenseUseCase.deleted
+        assertEquals(expenseId, id)
+    }
+
+    @Test
+    fun `deleteExpense deletes non-existing expense`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditExpenseIntent.DeleteExpense)
+        }
     }
 
     @Test
@@ -169,6 +198,7 @@ class AddEditExpenseViewModelTest {
         getExpenseUseCase,
         createExpenseUseCase,
         updateExpenseUseCase,
+        deleteExpenseUseCase,
         savedStateHandle
     )
 }

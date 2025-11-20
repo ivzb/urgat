@@ -6,5 +6,6 @@ data class AddEditTodoUiState(
     val isTodoCompleted: Boolean = false,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
-    val isTodoSaved: Boolean = false
+    val withDelete: Boolean = false,
+    val shouldNavigateBack: Boolean = false
 )

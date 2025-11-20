@@ -65,7 +65,6 @@ fun TrackWeightScreen(
         modifier = modifier
     )
 
-    // Check if the task is saved and call onTaskUpdate event
     LaunchedEffect(uiState.isWeightSaved) {
         if (uiState.isWeightSaved) {
             onBack()
@@ -89,7 +88,14 @@ private fun TrackWeightContent(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(screenTitle, onBack)
+            TextTopAppBar(
+                title = screenTitle,
+                onBack = onBack,
+                withDelete = false,
+                onDelete = {
+                    // NOOP
+                }
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = Modifier
