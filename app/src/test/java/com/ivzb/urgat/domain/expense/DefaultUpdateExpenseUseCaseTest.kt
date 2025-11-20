@@ -10,13 +10,13 @@ import java.math.BigDecimal
 
 class DefaultUpdateExpenseUseCaseTest {
 
-    private lateinit var expensesRepository: ExpensesRepository
-    private lateinit var updateExpenseUseCase: UpdateExpenseUseCase
+    private lateinit var repository: ExpensesRepository
+    private lateinit var updateUseCase: UpdateExpenseUseCase
 
     @Before
     fun setUp() {
-        expensesRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        updateExpenseUseCase = DefaultUpdateExpenseUseCase(expensesRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        updateUseCase = DefaultUpdateExpenseUseCase(repository)
     }
 
     @Test
@@ -27,10 +27,10 @@ class DefaultUpdateExpenseUseCaseTest {
         val category = "Food"
         val date = 1731268800000L
 
-        updateExpenseUseCase(id, name, amount, category, date)
+        updateUseCase(id, name, amount, category, date)
 
         coVerify(exactly = 1) {
-            expensesRepository.update(id, name, amount, category, date)
+            repository.update(id, name, amount, category, date)
         }
     }
 }

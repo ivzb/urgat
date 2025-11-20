@@ -9,13 +9,13 @@ import org.junit.Test
 
 class DefaultCreateTodoUseCaseTest {
 
-    private lateinit var todoRepository: TodoRepository
-    private lateinit var createTodoUseCase: CreateTodoUseCase
+    private lateinit var repository: TodoRepository
+    private lateinit var createUseCase: CreateTodoUseCase
 
     @Before
     fun setUp() {
-        todoRepository = mockk(relaxed = true)
-        createTodoUseCase = DefaultCreateTodoUseCase(todoRepository)
+        repository = mockk(relaxed = true)
+        createUseCase = DefaultCreateTodoUseCase(repository)
     }
 
     @Test
@@ -23,10 +23,10 @@ class DefaultCreateTodoUseCaseTest {
         val title = "Todo"
         val desc = "Desc"
 
-        createTodoUseCase(title, desc)
+        createUseCase(title, desc)
 
         coVerify(exactly = 1) {
-            todoRepository.create(title, desc)
+            repository.create(title, desc)
         }
     }
 }

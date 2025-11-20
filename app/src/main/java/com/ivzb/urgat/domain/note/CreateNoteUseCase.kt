@@ -10,11 +10,11 @@ interface CreateNoteUseCase {
 }
 
 class DefaultCreateNoteUseCase @Inject constructor(
-    private val notesRepository: NotesRepository
+    private val repository: NotesRepository
 ): CreateNoteUseCase {
 
     override suspend operator fun invoke(content: String) {
-        notesRepository.create(content)
+        repository.create(content)
     }
 
 }

@@ -12,5 +12,5 @@ interface GetExpenseUseCase {
 }
 
 class DefaultGetExpenseUseCase @Inject constructor(
-    expensesRepository: ExpensesRepository
-): GetExpenseUseCase, BaseGetUseCase<Expense>(expensesRepository)
+    repository: ExpensesRepository
+): GetExpenseUseCase, BaseGetUseCase<Expense>(repository)

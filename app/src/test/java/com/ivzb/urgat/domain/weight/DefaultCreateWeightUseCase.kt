@@ -9,23 +9,23 @@ import org.junit.Test
 
 class DefaultCreateWeightUseCaseTest {
 
-    private lateinit var weightsRepository: WeightsRepository
-    private lateinit var createWeightUseCase: CreateWeightUseCase
+    private lateinit var repository: WeightsRepository
+    private lateinit var createUseCase: CreateWeightUseCase
 
     @Before
     fun setUp() {
-        weightsRepository = mockk(relaxed = true)
-        createWeightUseCase = DefaultCreateWeightUseCase(weightsRepository)
+        repository = mockk(relaxed = true)
+        createUseCase = DefaultCreateWeightUseCase(repository)
     }
 
     @Test
     fun `invoke should call repository create with correct parameters`() = runTest {
         val value = 79.5.toBigDecimal()
 
-        createWeightUseCase(value)
+        createUseCase(value)
 
         coVerify(exactly = 1) {
-            weightsRepository.create(value)
+            repository.create(value)
         }
     }
 }

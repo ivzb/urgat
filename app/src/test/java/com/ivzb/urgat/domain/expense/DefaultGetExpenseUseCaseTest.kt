@@ -14,35 +14,35 @@ import kotlin.test.assertNull
 
 class DefaultGetExpenseUseCaseTest {
 
-    private lateinit var expensesRepository: ExpensesRepository
-    private lateinit var getExpenseUseCase: GetExpenseUseCase
+    private lateinit var repository: ExpensesRepository
+    private lateinit var getUseCase: GetExpenseUseCase
 
     @Before
     fun setUp() {
-        expensesRepository = mockk()
-        getExpenseUseCase = DefaultGetExpenseUseCase(expensesRepository)
+        repository = mockk()
+        getUseCase = DefaultGetExpenseUseCase(repository)
     }
 
     @Test
     fun `invoke should return expense when repository returns expense`() = runTest {
         val id = "123"
         val expectedExpense = Expense(id, "Coffee", BigDecimal("3.50"), "Food", 1731268800000L)
-        coEvery { expensesRepository.get(id) } returns expectedExpense
+        coEvery { repository.get(id) } returns expectedExpense
 
-        val result = getExpenseUseCase(id)
+        val result = getUseCase(id)
 
         assertEquals(expectedExpense, result)
-        coVerify(exactly = 1) { expensesRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 
     @Test
     fun `invoke should return null when repository returns null`() = runTest {
         val id = "999"
-        coEvery { expensesRepository.get(id) } returns null
+        coEvery { repository.get(id) } returns null
 
-        val result = getExpenseUseCase(id)
+        val result = getUseCase(id)
 
         assertNull(result)
-        coVerify(exactly = 1) { expensesRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 }

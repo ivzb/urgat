@@ -10,13 +10,13 @@ import java.math.BigDecimal
 
 class DefaultCreateExpenseUseCaseTest {
 
-    private lateinit var expensesRepository: ExpensesRepository
-    private lateinit var createExpenseUseCase: CreateExpenseUseCase
+    private lateinit var repository: ExpensesRepository
+    private lateinit var createUseCase: CreateExpenseUseCase
 
     @Before
     fun setUp() {
-        expensesRepository = mockk(relaxed = true)
-        createExpenseUseCase = DefaultCreateExpenseUseCase(expensesRepository)
+        repository = mockk(relaxed = true)
+        createUseCase = DefaultCreateExpenseUseCase(repository)
     }
 
     @Test
@@ -26,10 +26,10 @@ class DefaultCreateExpenseUseCaseTest {
         val category = "Food"
         val date = 1731268800000L
 
-        createExpenseUseCase(name, amount, category, date)
+        createUseCase(name, amount, category, date)
 
         coVerify(exactly = 1) {
-            expensesRepository.create(name, amount, category, date)
+            repository.create(name, amount, category, date)
         }
     }
 }

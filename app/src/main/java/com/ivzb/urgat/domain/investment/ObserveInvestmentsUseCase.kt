@@ -21,8 +21,8 @@ interface ObserveInvestmentsUseCase {
 }
 
 class DefaultObserveInvestmentsUseCase @Inject constructor(
-    investmentsRepository: InvestmentsRepository
-): ObserveInvestmentsUseCase, BaseObserveUseCase<Investment, InvestmentsFilterMenuItem?>(investmentsRepository) {
+    repository: InvestmentsRepository
+): ObserveInvestmentsUseCase, BaseObserveUseCase<Investment, InvestmentsFilterMenuItem?>(repository) {
 
     override val errorMessage: Int = R.string.error_investments
 

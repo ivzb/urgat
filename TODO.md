@@ -10,7 +10,6 @@ setup github build pipeline
 delete functionality when there is a details screen for each entity
 add preview screens instead of direct edit for todo, expense, note and investment
 check insets on lower android API
-rename each concrete repo to repository (e.g. expensesRepository becomes repository in /domain)
 consider making generic add/edit screen with forms abstraction
 add assertion function which is executed only in debug mode
 add multiselect delete

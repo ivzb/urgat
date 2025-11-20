@@ -12,5 +12,5 @@ interface GetInvestmentUseCase {
 }
 
 class DefaultGetInvestmentUseCase @Inject constructor(
-    investmentsRepository: InvestmentsRepository
-): GetInvestmentUseCase, BaseGetUseCase<Investment>(investmentsRepository)
+    repository: InvestmentsRepository
+): GetInvestmentUseCase, BaseGetUseCase<Investment>(repository)

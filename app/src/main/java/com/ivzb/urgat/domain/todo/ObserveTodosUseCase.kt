@@ -21,8 +21,8 @@ interface ObserveTodosUseCase {
 }
 
 class DefaultObserveTodosUseCase @Inject constructor(
-    todoRepository: TodoRepository
-): ObserveTodosUseCase, BaseObserveUseCase<Todo, TodoFilterMenuItem?>(todoRepository) {
+    repository: TodoRepository
+): ObserveTodosUseCase, BaseObserveUseCase<Todo, TodoFilterMenuItem?>(repository) {
 
     override val errorMessage: Int = R.string.error_todos
 

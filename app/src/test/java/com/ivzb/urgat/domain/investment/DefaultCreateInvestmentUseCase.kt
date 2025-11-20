@@ -10,13 +10,13 @@ import java.math.BigDecimal
 
 class DefaultCreateInvestmentUseCaseTest {
 
-    private lateinit var investmentsRepository: InvestmentsRepository
-    private lateinit var createInvestmentUseCase: CreateInvestmentUseCase
+    private lateinit var repository: InvestmentsRepository
+    private lateinit var createUseCase: CreateInvestmentUseCase
 
     @Before
     fun setUp() {
-        investmentsRepository = mockk(relaxed = true)
-        createInvestmentUseCase = DefaultCreateInvestmentUseCase(investmentsRepository)
+        repository = mockk(relaxed = true)
+        createUseCase = DefaultCreateInvestmentUseCase(repository)
     }
 
     @Test
@@ -26,10 +26,10 @@ class DefaultCreateInvestmentUseCaseTest {
         val amount = BigDecimal("450")
         val category = "etfs"
 
-        createInvestmentUseCase(name, currency, amount, category)
+        createUseCase(name, currency, amount, category)
 
         coVerify(exactly = 1) {
-            investmentsRepository.create(name, currency, amount, category)
+            repository.create(name, currency, amount, category)
         }
     }
 }

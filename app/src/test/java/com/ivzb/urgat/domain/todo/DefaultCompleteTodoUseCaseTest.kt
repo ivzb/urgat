@@ -9,23 +9,23 @@ import org.junit.Test
 
 class DefaultCompleteTodoUseCaseTest {
 
-    private lateinit var todoRepository: TodoRepository
-    private lateinit var completeTodoUseCase: CompleteTodoUseCase
+    private lateinit var repository: TodoRepository
+    private lateinit var completeUseCase: CompleteTodoUseCase
 
     @Before
     fun setUp() {
-        todoRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        completeTodoUseCase = DefaultCompleteTodoUseCase(todoRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        completeUseCase = DefaultCompleteTodoUseCase(repository)
     }
 
     @Test
     fun `invoke should call repository update with correct parameters`() = runTest {
         val id = "123"
 
-        completeTodoUseCase(id)
+        completeUseCase(id)
 
         coVerify(exactly = 1) {
-            todoRepository.complete(id)
+            repository.complete(id)
         }
     }
 }

@@ -10,13 +10,13 @@ import java.math.BigDecimal
 
 class DefaultUpdateInvestmentUseCaseTest {
 
-    private lateinit var investmentsRepository: InvestmentsRepository
-    private lateinit var updateInvestmentUseCase: UpdateInvestmentUseCase
+    private lateinit var repository: InvestmentsRepository
+    private lateinit var updateUseCase: UpdateInvestmentUseCase
 
     @Before
     fun setUp() {
-        investmentsRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        updateInvestmentUseCase = DefaultUpdateInvestmentUseCase(investmentsRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        updateUseCase = DefaultUpdateInvestmentUseCase(repository)
     }
 
     @Test
@@ -27,10 +27,10 @@ class DefaultUpdateInvestmentUseCaseTest {
         val amount = BigDecimal("1550")
         val category = "etfs"
 
-        updateInvestmentUseCase(id, name, currency, amount, category)
+        updateUseCase(id, name, currency, amount, category)
 
         coVerify(exactly = 1) {
-            investmentsRepository.update(id, name, currency, amount, category)
+            repository.update(id, name, currency, amount, category)
         }
     }
 }

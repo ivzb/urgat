@@ -1,8 +1,6 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
-import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope

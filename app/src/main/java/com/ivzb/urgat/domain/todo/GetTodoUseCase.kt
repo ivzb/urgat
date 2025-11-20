@@ -12,5 +12,5 @@ interface GetTodoUseCase {
 }
 
 class DefaultGetTodoUseCase @Inject constructor(
-    todoRepository: TodoRepository
-): GetTodoUseCase, BaseGetUseCase<Todo>(todoRepository)
+    repository: TodoRepository
+): GetTodoUseCase, BaseGetUseCase<Todo>(repository)

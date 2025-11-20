@@ -13,35 +13,35 @@ import kotlin.test.assertNull
 
 class DefaultGetNoteUseCaseTest {
 
-    private lateinit var notesRepository: NotesRepository
-    private lateinit var getNoteUseCase: GetNoteUseCase
+    private lateinit var repository: NotesRepository
+    private lateinit var getUseCase: GetNoteUseCase
 
     @Before
     fun setUp() {
-        notesRepository = mockk()
-        getNoteUseCase = DefaultGetNoteUseCase(notesRepository)
+        repository = mockk()
+        getUseCase = DefaultGetNoteUseCase(repository)
     }
 
     @Test
     fun `invoke should return note when repository returns note`() = runTest {
         val id = "123"
         val expectedNote = Note(id, "Note")
-        coEvery { notesRepository.get(id) } returns expectedNote
+        coEvery { repository.get(id) } returns expectedNote
 
-        val result = getNoteUseCase(id)
+        val result = getUseCase(id)
 
         assertEquals(expectedNote, result)
-        coVerify(exactly = 1) { notesRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 
     @Test
     fun `invoke should return null when repository returns null`() = runTest {
         val id = "999"
-        coEvery { notesRepository.get(id) } returns null
+        coEvery { repository.get(id) } returns null
 
-        val result = getNoteUseCase(id)
+        val result = getUseCase(id)
 
         assertNull(result)
-        coVerify(exactly = 1) { notesRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 }

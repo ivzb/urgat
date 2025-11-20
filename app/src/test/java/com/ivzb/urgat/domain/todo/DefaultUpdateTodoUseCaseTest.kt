@@ -9,13 +9,13 @@ import org.junit.Test
 
 class DefaultUpdateTodoUseCaseTest {
 
-    private lateinit var todoRepository: TodoRepository
-    private lateinit var updateTodoUseCase: UpdateTodoUseCase
+    private lateinit var repository: TodoRepository
+    private lateinit var updateUseCase: UpdateTodoUseCase
 
     @Before
     fun setUp() {
-        todoRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        updateTodoUseCase = DefaultUpdateTodoUseCase(todoRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        updateUseCase = DefaultUpdateTodoUseCase(repository)
     }
 
     @Test
@@ -24,10 +24,10 @@ class DefaultUpdateTodoUseCaseTest {
         val title = "Title"
         val desc = "Desc"
 
-        updateTodoUseCase(id, title, desc)
+        updateUseCase(id, title, desc)
 
         coVerify(exactly = 1) {
-            todoRepository.update(id, title, desc)
+            repository.update(id, title, desc)
         }
     }
 }

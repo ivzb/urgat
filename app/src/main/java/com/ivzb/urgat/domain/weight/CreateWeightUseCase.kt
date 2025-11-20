@@ -11,11 +11,11 @@ interface CreateWeightUseCase {
 }
 
 class DefaultCreateWeightUseCase @Inject constructor(
-    private val weightsRepository: WeightsRepository
+    private val repository: WeightsRepository
 ): CreateWeightUseCase {
 
     override suspend operator fun invoke(value: BigDecimal) {
-        weightsRepository.create(value)
+        repository.create(value)
     }
 
 }

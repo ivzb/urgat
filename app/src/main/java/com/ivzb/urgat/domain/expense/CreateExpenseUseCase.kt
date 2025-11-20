@@ -11,11 +11,11 @@ interface CreateExpenseUseCase {
 }
 
 class DefaultCreateExpenseUseCase @Inject constructor(
-    private val expensesRepository: ExpensesRepository
+    private val repository: ExpensesRepository
 ): CreateExpenseUseCase {
 
     override suspend operator fun invoke(name: String, amount: BigDecimal, category: String, date: Long) {
-        expensesRepository.create(name, amount, category, date)
+        repository.create(name, amount, category, date)
     }
 
 }

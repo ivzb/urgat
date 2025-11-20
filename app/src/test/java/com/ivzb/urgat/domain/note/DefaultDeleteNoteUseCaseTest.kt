@@ -9,23 +9,23 @@ import org.junit.Test
 
 class DefaultDeleteNoteUseCaseTest {
 
-    private lateinit var notesRepository: NotesRepository
-    private lateinit var deleteNoteUseCase: DeleteNoteUseCase
+    private lateinit var repository: NotesRepository
+    private lateinit var deleteUseCase: DeleteNoteUseCase
 
     @Before
     fun setUp() {
-        notesRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        deleteNoteUseCase = DefaultDeleteNoteUseCase(notesRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        deleteUseCase = DefaultDeleteNoteUseCase(repository)
     }
 
     @Test
     fun `invoke should call repository delete with correct parameters`() = runTest {
         val id = "123"
 
-        deleteNoteUseCase(id)
+        deleteUseCase(id)
 
         coVerify(exactly = 1) {
-            notesRepository.delete(id)
+            repository.delete(id)
         }
     }
 }

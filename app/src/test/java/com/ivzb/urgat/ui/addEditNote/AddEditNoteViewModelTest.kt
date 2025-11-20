@@ -31,13 +31,13 @@ class AddEditNoteViewModelTest {
 
     private val dispatcher = StandardTestDispatcher()
 
-    private lateinit var getNoteUseCase: FakeGetNoteUseCase
+    private lateinit var getUseCase: FakeGetNoteUseCase
 
-    private lateinit var createNoteUseCase: FakeCreateNoteUseCase
+    private lateinit var createUseCase: FakeCreateNoteUseCase
 
-    private lateinit var updateNoteUseCase: FakeUpdateNoteUseCase
+    private lateinit var updateUseCase: FakeUpdateNoteUseCase
 
-    private lateinit var deleteNoteUseCase: FakeDeleteNoteUseCase
+    private lateinit var deleteUseCase: FakeDeleteNoteUseCase
 
     private lateinit var savedStateHandle: SavedStateHandle
 
@@ -47,10 +47,10 @@ class AddEditNoteViewModelTest {
     fun setup() {
         Dispatchers.setMain(dispatcher)
 
-        getNoteUseCase = FakeGetNoteUseCase()
-        createNoteUseCase = FakeCreateNoteUseCase()
-        updateNoteUseCase = FakeUpdateNoteUseCase()
-        deleteNoteUseCase = FakeDeleteNoteUseCase()
+        getUseCase = FakeGetNoteUseCase()
+        createUseCase = FakeCreateNoteUseCase()
+        updateUseCase = FakeUpdateNoteUseCase()
+        deleteUseCase = FakeDeleteNoteUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -63,7 +63,7 @@ class AddEditNoteViewModelTest {
 
     @Test
     fun `init without id does not load note`() = runTest {
-        assertNull(getNoteUseCase.calledWithId)
+        assertNull(getUseCase.calledWithId)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -77,7 +77,7 @@ class AddEditNoteViewModelTest {
             createdAt = 123
         )
 
-        getNoteUseCase.toReturn = note
+        getUseCase.toReturn = note
         savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
 
         viewModel = createViewModel()
@@ -87,7 +87,7 @@ class AddEditNoteViewModelTest {
         val state = viewModel.uiState.value
         assertEquals("Note", state.content)
         assertFalse(state.isLoading)
-        assertEquals("123", getNoteUseCase.calledWithId)
+        assertEquals("123", getUseCase.calledWithId)
         assertEquals(true, state.withDelete)
         assertEquals(false, state.shouldNavigateBack)
     }
@@ -111,7 +111,7 @@ class AddEditNoteViewModelTest {
 
         advanceUntilIdle()
 
-        val created = createNoteUseCase.created
+        val created = createUseCase.created
         assertEquals("Note", created)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -127,7 +127,7 @@ class AddEditNoteViewModelTest {
             isDeleted = false,
             createdAt = 123
         )
-        getNoteUseCase.toReturn = note
+        getUseCase.toReturn = note
 
         viewModel = createViewModel()
 
@@ -143,7 +143,7 @@ class AddEditNoteViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
-        val (id, content) = updateNoteUseCase.updated
+        val (id, content) = updateUseCase.updated
         assertEquals(noteId, id)
         assertEquals("Updated", content)
     }
@@ -159,7 +159,7 @@ class AddEditNoteViewModelTest {
         viewModel.onIntent(AddEditNoteIntent.DeleteNote)
         advanceUntilIdle()
 
-        val (id) = deleteNoteUseCase.deleted
+        val (id) = deleteUseCase.deleted
         assertEquals(noteId, id)
     }
 
@@ -180,10 +180,10 @@ class AddEditNoteViewModelTest {
     }
 
     private fun createViewModel() = AddEditNoteViewModel(
-        getNoteUseCase,
-        createNoteUseCase,
-        updateNoteUseCase,
-        deleteNoteUseCase,
+        getUseCase,
+        createUseCase,
+        updateUseCase,
+        deleteUseCase,
         savedStateHandle
     )
 }

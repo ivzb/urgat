@@ -13,35 +13,35 @@ import kotlin.test.assertNull
 
 class DefaultGetTodoUseCaseTest {
 
-    private lateinit var todoRepository: TodoRepository
-    private lateinit var getTodoUseCase: GetTodoUseCase
+    private lateinit var repository: TodoRepository
+    private lateinit var getUseCase: GetTodoUseCase
 
     @Before
     fun setUp() {
-        todoRepository = mockk()
-        getTodoUseCase = DefaultGetTodoUseCase(todoRepository)
+        repository = mockk()
+        getUseCase = DefaultGetTodoUseCase(repository)
     }
 
     @Test
     fun `invoke should return todo when repository returns todo`() = runTest {
         val id = "123"
         val expectedTodo = Todo(id, "Todo")
-        coEvery { todoRepository.get(id) } returns expectedTodo
+        coEvery { repository.get(id) } returns expectedTodo
 
-        val result = getTodoUseCase(id)
+        val result = getUseCase(id)
 
         assertEquals(expectedTodo, result)
-        coVerify(exactly = 1) { todoRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 
     @Test
     fun `invoke should return null when repository returns null`() = runTest {
         val id = "999"
-        coEvery { todoRepository.get(id) } returns null
+        coEvery { repository.get(id) } returns null
 
-        val result = getTodoUseCase(id)
+        val result = getUseCase(id)
 
         assertNull(result)
-        coVerify(exactly = 1) { todoRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 }

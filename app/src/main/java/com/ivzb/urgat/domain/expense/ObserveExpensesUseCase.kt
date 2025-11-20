@@ -21,8 +21,8 @@ interface ObserveExpensesUseCase {
 }
 
 class DefaultObserveExpensesUseCase @Inject constructor(
-    expensesRepository: ExpensesRepository
-): ObserveExpensesUseCase, BaseObserveUseCase<Expense, ExpensesFilterMenuItem?>(expensesRepository) {
+    repository: ExpensesRepository
+): ObserveExpensesUseCase, BaseObserveUseCase<Expense, ExpensesFilterMenuItem?>(repository) {
 
     override val errorMessage: Int = R.string.error_expenses
 

@@ -9,23 +9,23 @@ import org.junit.Test
 
 class DefaultDeleteInvestmentUseCaseTest {
 
-    private lateinit var investmentsRepository: InvestmentsRepository
-    private lateinit var deleteInvestmentUseCase: DeleteInvestmentUseCase
+    private lateinit var repository: InvestmentsRepository
+    private lateinit var deleteUseCase: DeleteInvestmentUseCase
 
     @Before
     fun setUp() {
-        investmentsRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        deleteInvestmentUseCase = DefaultDeleteInvestmentUseCase(investmentsRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        deleteUseCase = DefaultDeleteInvestmentUseCase(repository)
     }
 
     @Test
     fun `invoke should call repository delete with correct parameters`() = runTest {
         val id = "123"
 
-        deleteInvestmentUseCase(id)
+        deleteUseCase(id)
 
         coVerify(exactly = 1) {
-            investmentsRepository.delete(id)
+            repository.delete(id)
         }
     }
 }

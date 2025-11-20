@@ -20,8 +20,8 @@ interface ObserveNotesUseCase {
 }
 
 class DefaultObserveNotesUseCase @Inject constructor(
-    notesRepository: NotesRepository
-): ObserveNotesUseCase, BaseObserveUseCase<Note, NotesFilterType>(notesRepository) {
+    repository: NotesRepository
+): ObserveNotesUseCase, BaseObserveUseCase<Note, NotesFilterType>(repository) {
 
     override val errorMessage: Int = R.string.error_notes
 

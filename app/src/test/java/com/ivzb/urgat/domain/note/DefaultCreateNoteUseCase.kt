@@ -9,23 +9,23 @@ import org.junit.Test
 
 class DefaultCreateNoteUseCaseTest {
 
-    private lateinit var notesRepository: NotesRepository
-    private lateinit var createNoteUseCase: CreateNoteUseCase
+    private lateinit var repository: NotesRepository
+    private lateinit var createUseCase: CreateNoteUseCase
 
     @Before
     fun setUp() {
-        notesRepository = mockk(relaxed = true)
-        createNoteUseCase = DefaultCreateNoteUseCase(notesRepository)
+        repository = mockk(relaxed = true)
+        createUseCase = DefaultCreateNoteUseCase(repository)
     }
 
     @Test
     fun `invoke should call repository create with correct parameters`() = runTest {
         val name = "Note"
 
-        createNoteUseCase(name)
+        createUseCase(name)
 
         coVerify(exactly = 1) {
-            notesRepository.create(name)
+            repository.create(name)
         }
     }
 }

@@ -12,5 +12,5 @@ interface GetNoteUseCase {
 }
 
 class DefaultGetNoteUseCase @Inject constructor(
-    notesRepository: NotesRepository
-): GetNoteUseCase, BaseGetUseCase<Note>(notesRepository)
+    repository: NotesRepository
+): GetNoteUseCase, BaseGetUseCase<Note>(repository)

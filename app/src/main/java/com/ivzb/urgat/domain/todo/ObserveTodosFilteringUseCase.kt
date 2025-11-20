@@ -20,11 +20,11 @@ interface ObserveTodosFilteringUseCase {
 }
 
 class DefaultObserveTodosFilteringUseCase @Inject constructor(
-    private val todoRepository: TodoRepository
+    private val repository: TodoRepository
 ) : ObserveTodosFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<TodoFilterMenuItem>>> {
-        return todoRepository.getStream(NO_LIMIT)
+        return repository.getStream(NO_LIMIT)
             .map {
                 listOf(
                     FilterMenuItem(type = TodoFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = it.size),

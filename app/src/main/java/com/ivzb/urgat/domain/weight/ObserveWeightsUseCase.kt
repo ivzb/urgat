@@ -19,8 +19,8 @@ interface ObserveWeightsUseCase {
 }
 
 class DefaultObserveWeightsUseCase @Inject constructor(
-    weightsRepository: WeightsRepository
-): ObserveWeightsUseCase, BaseObserveUseCase<Weight, Unit>(weightsRepository) {
+    repository: WeightsRepository
+): ObserveWeightsUseCase, BaseObserveUseCase<Weight, Unit>(repository) {
 
     override val errorMessage: Int = R.string.error_weights
 

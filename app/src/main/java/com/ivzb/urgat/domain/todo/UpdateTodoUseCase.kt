@@ -10,11 +10,11 @@ interface UpdateTodoUseCase {
 }
 
 class DefaultUpdateTodoUseCase @Inject constructor(
-    private val todoRepository: TodoRepository
+    private val repository: TodoRepository
 ): UpdateTodoUseCase {
 
     override suspend operator fun invoke(id: String, title: String, description: String) {
-        todoRepository.update(id, title, description)
+        repository.update(id, title, description)
     }
 
 }

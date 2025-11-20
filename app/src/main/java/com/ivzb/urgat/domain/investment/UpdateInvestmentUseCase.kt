@@ -11,11 +11,11 @@ interface UpdateInvestmentUseCase {
 }
 
 class DefaultUpdateInvestmentUseCase @Inject constructor(
-    private val investmentsRepository: InvestmentsRepository
+    private val repository: InvestmentsRepository
 ): UpdateInvestmentUseCase {
 
     override suspend operator fun invoke(id: String, name: String, currency: String, amount: BigDecimal, category: String) {
-        investmentsRepository.update(id, name, currency, amount, category)
+        repository.update(id, name, currency, amount, category)
     }
 
 }

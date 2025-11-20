@@ -31,13 +31,13 @@ class AddEditInvestmentViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var getInvestmentUseCase: FakeGetInvestmentUseCase
+    private lateinit var getUseCase: FakeGetInvestmentUseCase
 
-    private lateinit var createInvestmentUseCase: FakeCreateInvestmentUseCase
+    private lateinit var createUseCase: FakeCreateInvestmentUseCase
 
-    private lateinit var updateInvestmentUseCase: FakeUpdateInvestmentUseCase
+    private lateinit var updateUseCase: FakeUpdateInvestmentUseCase
 
-    private lateinit var deleteInvestmentUseCase: FakeDeleteInvestmentUseCase
+    private lateinit var deleteUseCase: FakeDeleteInvestmentUseCase
 
     private lateinit var savedStateHandle: SavedStateHandle
 
@@ -47,10 +47,10 @@ class AddEditInvestmentViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        getInvestmentUseCase = FakeGetInvestmentUseCase()
-        createInvestmentUseCase = FakeCreateInvestmentUseCase()
-        updateInvestmentUseCase = FakeUpdateInvestmentUseCase()
-        deleteInvestmentUseCase = FakeDeleteInvestmentUseCase()
+        getUseCase = FakeGetInvestmentUseCase()
+        createUseCase = FakeCreateInvestmentUseCase()
+        updateUseCase = FakeUpdateInvestmentUseCase()
+        deleteUseCase = FakeDeleteInvestmentUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -63,7 +63,7 @@ class AddEditInvestmentViewModelTest {
 
     @Test
     fun `init without id does not load investment`() = runTest {
-        assertNull(getInvestmentUseCase.calledWithId)
+        assertNull(getUseCase.calledWithId)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -78,7 +78,7 @@ class AddEditInvestmentViewModelTest {
             category = "etfs"
         )
 
-        getInvestmentUseCase.toReturn = investment
+        getUseCase.toReturn = investment
         savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
 
         viewModel = createViewModel()
@@ -134,7 +134,7 @@ class AddEditInvestmentViewModelTest {
         
         advanceUntilIdle()
 
-        val (name, currency, amount, category) = createInvestmentUseCase.created
+        val (name, currency, amount, category) = createUseCase.created
         assertEquals("SNP 500", name)
         assertEquals("USD", currency)
         assertEquals(BigDecimal("250"), amount)
@@ -154,7 +154,7 @@ class AddEditInvestmentViewModelTest {
             amount = BigDecimal("150"),
             category = "etfs",
         )
-        getInvestmentUseCase.toReturn = investment
+        getUseCase.toReturn = investment
 
         viewModel = createViewModel()
 
@@ -175,7 +175,7 @@ class AddEditInvestmentViewModelTest {
 
         advanceUntilIdle()
 
-        val (id, name, currency, amount, category) = updateInvestmentUseCase.updated
+        val (id, name, currency, amount, category) = updateUseCase.updated
         assertEquals(investmentId, id)
         assertEquals("NVDA", name)
         assertEquals("EUR", currency)
@@ -195,7 +195,7 @@ class AddEditInvestmentViewModelTest {
         viewModel.onIntent(AddEditInvestmentIntent.DeleteInvestment)
         advanceUntilIdle()
 
-        val (id) = deleteInvestmentUseCase.deleted
+        val (id) = deleteUseCase.deleted
         assertEquals(investmentId, id)
     }
 
@@ -216,10 +216,10 @@ class AddEditInvestmentViewModelTest {
     }
 
     private fun createViewModel() = AddEditInvestmentViewModel(
-        getInvestmentUseCase,
-        createInvestmentUseCase,
-        updateInvestmentUseCase,
-        deleteInvestmentUseCase,
+        getUseCase,
+        createUseCase,
+        updateUseCase,
+        deleteUseCase,
         savedStateHandle
     )
 }

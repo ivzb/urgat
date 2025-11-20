@@ -24,14 +24,14 @@ class TrackWeightViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var createWeightUseCase: FakeCreateWeightUseCase
+    private lateinit var createUseCase: FakeCreateWeightUseCase
 
     private lateinit var viewModel: TrackWeightViewModel
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        createWeightUseCase = FakeCreateWeightUseCase()
+        createUseCase = FakeCreateWeightUseCase()
         viewModel = createViewModel()
     }
 
@@ -62,7 +62,7 @@ class TrackWeightViewModelTest {
         
         advanceUntilIdle()
 
-        val created = createWeightUseCase.created
+        val created = createUseCase.created
         assertEquals(BigDecimal("80"), created)
         assertTrue(viewModel.uiState.value.isWeightSaved)
     }
@@ -77,6 +77,6 @@ class TrackWeightViewModelTest {
     }
 
     private fun createViewModel() = TrackWeightViewModel(
-        createWeightUseCase,
+        createUseCase,
     )
 }

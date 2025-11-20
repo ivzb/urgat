@@ -24,13 +24,13 @@ class AddEditTodoViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
     
-    private lateinit var getTodoUseCase: FakeGetTodoUseCase
+    private lateinit var getUseCase: FakeGetTodoUseCase
     
-    private lateinit var createTodoUseCase: FakeCreateTodoUseCase
+    private lateinit var createUseCase: FakeCreateTodoUseCase
     
-    private lateinit var updateTodoUseCase: FakeUpdateTodoUseCase
+    private lateinit var updateUseCase: FakeUpdateTodoUseCase
 
-    private lateinit var deleteTodoUseCase: FakeDeleteTodoUseCase
+    private lateinit var deleteUseCase: FakeDeleteTodoUseCase
 
     private lateinit var savedStateHandle: SavedStateHandle
 
@@ -40,10 +40,10 @@ class AddEditTodoViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        getTodoUseCase = FakeGetTodoUseCase()
-        createTodoUseCase = FakeCreateTodoUseCase()
-        updateTodoUseCase = FakeUpdateTodoUseCase()
-        deleteTodoUseCase = FakeDeleteTodoUseCase()
+        getUseCase = FakeGetTodoUseCase()
+        createUseCase = FakeCreateTodoUseCase()
+        updateUseCase = FakeUpdateTodoUseCase()
+        deleteUseCase = FakeDeleteTodoUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -56,7 +56,7 @@ class AddEditTodoViewModelTest {
 
     @Test
     fun `init without id does not load todo`() = runTest {
-        assertNull(getTodoUseCase.calledWithId)
+        assertNull(getUseCase.calledWithId)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -70,7 +70,7 @@ class AddEditTodoViewModelTest {
             isCompleted = false
         )
 
-        getTodoUseCase.toReturn = todo
+        getUseCase.toReturn = todo
         savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = "123"
 
         val viewModel = createViewModel()
@@ -81,7 +81,7 @@ class AddEditTodoViewModelTest {
         assertEquals("Hello", state.title)
         assertEquals("World", state.description)
         assertFalse(state.isLoading)
-        assertEquals("123", getTodoUseCase.calledWithId)
+        assertEquals("123", getUseCase.calledWithId)
         assertEquals(true, state.withDelete)
         assertEquals(false, state.shouldNavigateBack)
     }
@@ -112,7 +112,7 @@ class AddEditTodoViewModelTest {
 
         advanceUntilIdle()
 
-        val (title, description) = createTodoUseCase.created
+        val (title, description) = createUseCase.created
         assertEquals("Title", title)
         assertEquals("Desc", description)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
@@ -129,7 +129,7 @@ class AddEditTodoViewModelTest {
             description = "Desc",
             isCompleted = false
         )
-        getTodoUseCase.toReturn = todo
+        getUseCase.toReturn = todo
 
         val viewModel = createViewModel()
 
@@ -148,7 +148,7 @@ class AddEditTodoViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
-        val (id, title, description) = updateTodoUseCase.updated
+        val (id, title, description) = updateUseCase.updated
         assertEquals(todoId, id)
         assertEquals("Updated Title", title)
         assertEquals("Updated Desc", description)
@@ -165,7 +165,7 @@ class AddEditTodoViewModelTest {
         viewModel.onIntent(AddEditTodoIntent.DeleteTodo)
         advanceUntilIdle()
 
-        val (id) = deleteTodoUseCase.deleted
+        val (id) = deleteUseCase.deleted
         assertEquals(todoId, id)
     }
 
@@ -186,10 +186,10 @@ class AddEditTodoViewModelTest {
     }
 
     private fun createViewModel() = AddEditTodoViewModel(
-        getTodoUseCase,
-        createTodoUseCase,
-        updateTodoUseCase,
-        deleteTodoUseCase,
+        getUseCase,
+        createUseCase,
+        updateUseCase,
+        deleteUseCase,
         savedStateHandle
     )
 }

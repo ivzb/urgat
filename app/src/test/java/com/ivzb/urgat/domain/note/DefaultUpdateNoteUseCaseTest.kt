@@ -9,13 +9,13 @@ import org.junit.Test
 
 class DefaultUpdateNoteUseCaseTest {
 
-    private lateinit var notesRepository: NotesRepository
-    private lateinit var updateNoteUseCase: UpdateNoteUseCase
+    private lateinit var repository: NotesRepository
+    private lateinit var updateUseCase: UpdateNoteUseCase
 
     @Before
     fun setUp() {
-        notesRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        updateNoteUseCase = DefaultUpdateNoteUseCase(notesRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        updateUseCase = DefaultUpdateNoteUseCase(repository)
     }
 
     @Test
@@ -23,10 +23,10 @@ class DefaultUpdateNoteUseCaseTest {
         val id = "123"
         val content = "Note"
 
-        updateNoteUseCase(id, content)
+        updateUseCase(id, content)
 
         coVerify(exactly = 1) {
-            notesRepository.update(id, content)
+            repository.update(id, content)
         }
     }
 }

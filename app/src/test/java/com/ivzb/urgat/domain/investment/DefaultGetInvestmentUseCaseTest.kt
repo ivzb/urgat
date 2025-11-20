@@ -14,35 +14,35 @@ import kotlin.test.assertNull
 
 class DefaultGetInvestmentUseCaseTest {
 
-    private lateinit var investmentsRepository: InvestmentsRepository
-    private lateinit var getInvestmentUseCase: GetInvestmentUseCase
+    private lateinit var repository: InvestmentsRepository
+    private lateinit var getUseCase: GetInvestmentUseCase
 
     @Before
     fun setUp() {
-        investmentsRepository = mockk()
-        getInvestmentUseCase = DefaultGetInvestmentUseCase(investmentsRepository)
+        repository = mockk()
+        getUseCase = DefaultGetInvestmentUseCase(repository)
     }
 
     @Test
     fun `invoke should return investment when repository returns investment`() = runTest {
         val id = "123"
         val expectedInvestment = Investment(id, "SNP 500",  "USD", BigDecimal("350"), "etfs")
-        coEvery { investmentsRepository.get(id) } returns expectedInvestment
+        coEvery { repository.get(id) } returns expectedInvestment
 
-        val result = getInvestmentUseCase(id)
+        val result = getUseCase(id)
 
         assertEquals(expectedInvestment, result)
-        coVerify(exactly = 1) { investmentsRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 
     @Test
     fun `invoke should return null when repository returns null`() = runTest {
         val id = "999"
-        coEvery { investmentsRepository.get(id) } returns null
+        coEvery { repository.get(id) } returns null
 
-        val result = getInvestmentUseCase(id)
+        val result = getUseCase(id)
 
         assertNull(result)
-        coVerify(exactly = 1) { investmentsRepository.get(id) }
+        coVerify(exactly = 1) { repository.get(id) }
     }
 }

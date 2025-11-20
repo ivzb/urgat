@@ -9,21 +9,21 @@ import org.junit.Test
 
 class DefaultClearCompletedTodoUseCaseTest {
 
-    private lateinit var todoRepository: TodoRepository
-    private lateinit var clearCompletedTodoUseCase: ClearCompletedTodosUseCase
+    private lateinit var repository: TodoRepository
+    private lateinit var clearTodoUseCase: ClearCompletedTodosUseCase
 
     @Before
     fun setUp() {
-        todoRepository = mockk(relaxed = true) // relaxed to ignore unmocked calls
-        clearCompletedTodoUseCase = DefaultClearCompletedTodosUseCase(todoRepository)
+        repository = mockk(relaxed = true) // relaxed to ignore unmocked calls
+        clearTodoUseCase = DefaultClearCompletedTodosUseCase(repository)
     }
 
     @Test
     fun `invoke should call repository update with correct parameters`() = runTest {
-        clearCompletedTodoUseCase()
+        clearTodoUseCase()
 
         coVerify(exactly = 1) {
-            todoRepository.clearCompleted()
+            repository.clearCompleted()
         }
     }
 }

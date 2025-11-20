@@ -10,11 +10,11 @@ interface CompleteTodoUseCase {
 }
 
 class DefaultCompleteTodoUseCase @Inject constructor(
-    private val todoRepository: TodoRepository
+    private val repository: TodoRepository
 ): CompleteTodoUseCase {
 
     override suspend operator fun invoke(id: String) {
-        todoRepository.complete(id)
+        repository.complete(id)
     }
 
 }

@@ -31,13 +31,13 @@ class AddEditExpenseViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var getExpenseUseCase: FakeGetExpenseUseCase
+    private lateinit var getUseCase: FakeGetExpenseUseCase
 
-    private lateinit var createExpenseUseCase: FakeCreateExpenseUseCase
+    private lateinit var createUseCase: FakeCreateExpenseUseCase
 
-    private lateinit var updateExpenseUseCase: FakeUpdateExpenseUseCase
+    private lateinit var updateUseCase: FakeUpdateExpenseUseCase
 
-    private lateinit var deleteExpenseUseCase: FakeDeleteExpenseUseCase
+    private lateinit var deleteUseCase: FakeDeleteExpenseUseCase
 
     private lateinit var savedStateHandle: SavedStateHandle
 
@@ -47,10 +47,10 @@ class AddEditExpenseViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        getExpenseUseCase = FakeGetExpenseUseCase()
-        createExpenseUseCase = FakeCreateExpenseUseCase()
-        updateExpenseUseCase = FakeUpdateExpenseUseCase()
-        deleteExpenseUseCase = FakeDeleteExpenseUseCase()
+        getUseCase = FakeGetExpenseUseCase()
+        createUseCase = FakeCreateExpenseUseCase()
+        updateUseCase = FakeUpdateExpenseUseCase()
+        deleteUseCase = FakeDeleteExpenseUseCase()
         savedStateHandle = SavedStateHandle()
 
         viewModel = createViewModel()
@@ -63,7 +63,7 @@ class AddEditExpenseViewModelTest {
 
     @Test
     fun `init without id does not load expense`() = runTest {
-        assertNull(getExpenseUseCase.calledWithId)
+        assertNull(getUseCase.calledWithId)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -78,7 +78,7 @@ class AddEditExpenseViewModelTest {
             date = 123L
         )
 
-        getExpenseUseCase.toReturn = expense
+        getUseCase.toReturn = expense
         savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
 
         viewModel = createViewModel()
@@ -116,7 +116,7 @@ class AddEditExpenseViewModelTest {
         
         advanceUntilIdle()
 
-        val (name, amount, category) = createExpenseUseCase.created
+        val (name, amount, category) = createUseCase.created
         assertEquals("Dinner", name)
         assertEquals(BigDecimal("25"), amount)
         assertEquals("Food", category)
@@ -135,7 +135,7 @@ class AddEditExpenseViewModelTest {
             category = "Transport",
             date = 123L
         )
-        getExpenseUseCase.toReturn = expense
+        getUseCase.toReturn = expense
 
         viewModel = createViewModel()
 
@@ -155,7 +155,7 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (id, name, amount, category) = updateExpenseUseCase.updated
+        val (id, name, amount, category) = updateUseCase.updated
         assertEquals(expenseId, id)
         assertEquals("Edit", name)
         assertEquals(BigDecimal("35"), amount)
@@ -174,7 +174,7 @@ class AddEditExpenseViewModelTest {
         viewModel.onIntent(AddEditExpenseIntent.DeleteExpense)
         advanceUntilIdle()
 
-        val (id) = deleteExpenseUseCase.deleted
+        val (id) = deleteUseCase.deleted
         assertEquals(expenseId, id)
     }
 
@@ -195,10 +195,10 @@ class AddEditExpenseViewModelTest {
     }
 
     private fun createViewModel() = AddEditExpenseViewModel(
-        getExpenseUseCase,
-        createExpenseUseCase,
-        updateExpenseUseCase,
-        deleteExpenseUseCase,
+        getUseCase,
+        createUseCase,
+        updateUseCase,
+        deleteUseCase,
         savedStateHandle
     )
 }

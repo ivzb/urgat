@@ -19,11 +19,11 @@ interface ObserveInvestmentsFilteringUseCase {
 }
 
 class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
-    private val investmentsRepository: InvestmentsRepository
+    private val repository: InvestmentsRepository
 ) : ObserveInvestmentsFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
-        return investmentsRepository.getStream(NO_LIMIT)
+        return repository.getStream(NO_LIMIT)
             .map {
                 if (it.isEmpty()) {
                     return@map listOf()
