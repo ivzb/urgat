@@ -122,3 +122,25 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
 }
+
+tasks {
+    withType<Test> {
+        // always re-run tests
+        outputs.upToDateWhen { false }
+
+        // tests are still running very fast
+        // adding more cores is adding unnecessary JVM startup overhead
+        maxParallelForks = 1
+        forkEvery = 0
+
+        // print tests executing time
+        afterSuite(
+            KotlinClosure2({ desc: TestDescriptor, result: TestResult ->
+                if (desc.parent == null) {
+                    val timeMs = result.endTime - result.startTime
+                    println("✅ Tests executed in $timeMs ms")
+                }
+            })
+        )
+    }
+}
