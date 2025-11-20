@@ -18,6 +18,7 @@ import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
+import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -107,7 +108,10 @@ class OverviewViewModel @Inject constructor(
                 )
             }
 
-            else -> throw Exception("undefined state: $items")
+            else -> {
+                Assert.fail("overview undefined state: $items")
+                OverviewUiState(hasError = true)
+            }
         }
     }
     .stateIn(

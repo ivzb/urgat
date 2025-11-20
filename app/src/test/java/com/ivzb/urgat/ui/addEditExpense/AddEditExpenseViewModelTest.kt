@@ -182,6 +182,9 @@ class AddEditExpenseViewModelTest {
     fun `deleteExpense deletes non-existing expense`() = runTest {
         assertFailsWith<Exception> {
             viewModel.onIntent(AddEditExpenseIntent.DeleteExpense)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
 

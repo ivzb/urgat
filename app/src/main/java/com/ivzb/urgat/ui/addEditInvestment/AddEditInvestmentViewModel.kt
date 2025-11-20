@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.investment.DeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
 import com.ivzb.urgat.navigation.AddEditInvestmentDestination
+import com.ivzb.urgat.util.Assert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -117,7 +118,13 @@ class AddEditInvestmentViewModel @Inject constructor(
 
     private fun updateInvestment() {
         if (investmentId == null) {
-            throw RuntimeException("updateInvestment() was called but investment is new.")
+            Assert.fail("updateInvestment() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {
@@ -137,7 +144,13 @@ class AddEditInvestmentViewModel @Inject constructor(
 
     private fun deleteInvestment() {
         if (investmentId == null) {
-            throw RuntimeException("deleteInvestment() was called but investment is new.")
+            Assert.fail("deleteInvestment() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {

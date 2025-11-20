@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.todo
 
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
+import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -38,7 +39,12 @@ class DefaultTodoRepository @Inject constructor(
         val todo = get(id)?.copy(
             title = title,
             description = description
-        ) ?: throw Exception("Todo (id $id) not found")
+        )
+
+        if (todo == null) {
+            Assert.fail("Todo (id $id) not found while update")
+            return
+        }
 
         localDataSource.upsert(todo.toEntity())
     }

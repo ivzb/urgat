@@ -9,6 +9,7 @@ import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
+import com.ivzb.urgat.util.Assert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -115,7 +116,13 @@ class AddEditExpenseViewModel @Inject constructor(
 
     private fun deleteExpense() {
         if (expenseId == null) {
-            throw RuntimeException("deleteExpense() was called but expense is new.")
+            Assert.fail("deleteExpense() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {
@@ -129,7 +136,13 @@ class AddEditExpenseViewModel @Inject constructor(
 
     private fun updateExpense() {
         if (expenseId == null) {
-            throw RuntimeException("updateExpense() was called but expense is new.")
+            Assert.fail("updateExpense() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {

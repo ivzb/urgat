@@ -173,6 +173,9 @@ class AddEditTodoViewModelTest {
     fun `deleteTodo deletes non-existing todo`() = runTest {
         assertFailsWith<Exception> {
             viewModel.onIntent(AddEditTodoIntent.DeleteTodo)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
 

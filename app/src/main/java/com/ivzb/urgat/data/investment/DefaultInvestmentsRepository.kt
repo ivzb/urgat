@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
+import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +59,12 @@ class DefaultInvestmentsRepository @Inject constructor(
             amount = amount,
             currency = currency,
             category = category,
-        ) ?: throw Exception("Investment (id $id) not found")
+        )
+
+        if (investment == null) {
+            Assert.fail("Investment (id $id) not found while update")
+            return
+        }
 
         localDataSource.upsert(investment.toEntity())
     }

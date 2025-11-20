@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.expense
 
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
+import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +59,12 @@ class DefaultExpensesRepository @Inject constructor(
             amount = amount,
             category = category,
             date = date
-        ) ?: throw Exception("Expense (id $id) not found")
+        )
+
+        if (expense == null) {
+            Assert.fail("Expense (id $id) not found while update")
+            return
+        }
 
         localDataSource.upsert(expense.toEntity())
     }

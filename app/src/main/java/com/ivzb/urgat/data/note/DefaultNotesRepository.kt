@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.note
 
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
+import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +52,12 @@ class DefaultNotesRepository @Inject constructor(
     override suspend fun update(id: String, content: String) {
         val note = get(id)?.copy(
             content = content
-        ) ?: throw Exception("Todo (id $id) not found")
+        )
+
+        if (note == null) {
+            Assert.fail("Note (id $id) not found while update")
+            return
+        }
 
         localDataSource.upsert(note.toEntity())
     }

@@ -96,4 +96,5 @@
     <string name="error_todos_filtering">Error while loading todo filtering</string>
     <string name="error_expenses_filtering">Error while loading expenses filtering</string>
     <string name="delete">Delete</string>
+    <string name="something_went_wrong">Something went wrong.</string>
 </resources>

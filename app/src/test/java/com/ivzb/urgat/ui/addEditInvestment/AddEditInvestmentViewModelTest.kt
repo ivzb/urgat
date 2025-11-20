@@ -203,6 +203,9 @@ class AddEditInvestmentViewModelTest {
     fun `deleteInvestment deletes non-existing investment`() = runTest {
         assertFailsWith<Exception> {
             viewModel.onIntent(AddEditInvestmentIntent.DeleteInvestment)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
 

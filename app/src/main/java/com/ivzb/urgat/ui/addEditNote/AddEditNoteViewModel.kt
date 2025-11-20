@@ -9,6 +9,7 @@ import com.ivzb.urgat.domain.note.DeleteNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import com.ivzb.urgat.navigation.AddEditNoteDestination
+import com.ivzb.urgat.util.Assert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -89,7 +90,13 @@ class AddEditNoteViewModel @Inject constructor(
 
     private fun updateNote() {
         if (noteId == null) {
-            throw RuntimeException("updateNote() was called but note is new.")
+            Assert.fail("updateNote() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {
@@ -106,7 +113,13 @@ class AddEditNoteViewModel @Inject constructor(
 
     private fun deleteNote() {
         if (noteId == null) {
-            throw RuntimeException("deleteNote() was called but note is new.")
+            Assert.fail("deleteNote() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {

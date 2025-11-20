@@ -9,6 +9,7 @@ import com.ivzb.urgat.domain.todo.DeleteTodoUseCase
 import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import com.ivzb.urgat.domain.todo.GetTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
+import com.ivzb.urgat.util.Assert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -84,7 +85,13 @@ class AddEditTodoViewModel @Inject constructor(
 
     private fun updateTodo() {
         if (todoId == null) {
-            throw RuntimeException("updateTodo() was called but todo is new.")
+            Assert.fail("updateTodo() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {
@@ -102,7 +109,13 @@ class AddEditTodoViewModel @Inject constructor(
 
     private fun deleteTodo() {
         if (todoId == null) {
-            throw RuntimeException("deleteTodo() was called but todo is new.")
+            Assert.fail("deleteTodo() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
         }
 
         viewModelScope.launch {

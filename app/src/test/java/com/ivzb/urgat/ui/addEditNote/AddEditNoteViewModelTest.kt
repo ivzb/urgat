@@ -167,6 +167,9 @@ class AddEditNoteViewModelTest {
     fun `deleteNote deletes non-existing note`() = runTest {
         assertFailsWith<Exception> {
             viewModel.onIntent(AddEditNoteIntent.DeleteNote)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
 
