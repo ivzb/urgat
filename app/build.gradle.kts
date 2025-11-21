@@ -130,7 +130,7 @@ tasks {
 
         // tests are still running very fast
         // adding more cores is adding unnecessary JVM startup overhead
-        maxParallelForks = 1
+        maxParallelForks = 1 // Runtime.getRuntime().availableProcessors()
         forkEvery = 0
 
         // print tests executing time

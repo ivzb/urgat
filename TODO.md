@@ -12,4 +12,3 @@ delete functionality when there is a details screen for each entity
 check insets on lower android API
 consider making generic add/edit screen with forms abstraction
 add multiselect delete
-test add/edit user message when assertion happens
