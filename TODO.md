@@ -9,6 +9,5 @@ add onboarding screen
 allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
 setup github build pipeline
 delete functionality when there is a details screen for each entity
-check insets on lower android API
 consider making generic add/edit screen with forms abstraction
 add multiselect delete
