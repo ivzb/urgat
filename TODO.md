@@ -11,3 +11,7 @@ setup github build pipeline
 delete functionality when there is a details screen for each entity
 consider making generic add/edit screen with forms abstraction
 add multiselect delete
+trim end of todos and notes
+create mock data to use for google play store
+split todos, expenses in 2 column in 10" tablet
+make sample data use case and move everything there

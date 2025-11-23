@@ -129,5 +129,5 @@ val bottomNavigationScreens = listOf(
     OverviewDestination,
     InvestmentsDestination,
     TrackersDestination,
-    WeatherDestination
+//    WeatherDestination
 )
