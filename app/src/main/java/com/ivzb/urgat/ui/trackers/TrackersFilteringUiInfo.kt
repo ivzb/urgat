@@ -5,7 +5,7 @@ import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class TrackersFilteringUiInfo(
     override val emptyLabel: Int = R.string.no_weights,
-    override val emptyIconRes: Int = R.drawable.logo_no_fill,
+    override val emptyIconRes: Int = R.drawable.ic_empty_state_card_weights,
 
     override val loadingLabel: Int = R.string.loading_trackers,
 

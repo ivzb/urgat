@@ -114,7 +114,6 @@ class TodoViewModel @Inject constructor(
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.all_todos,
                     emptyLabel = R.string.no_todos,
-                    emptyIconRes = R.drawable.logo_no_fill,
                     filterMenuItems = filterMenuItems,
                 )
             }
@@ -123,7 +122,6 @@ class TodoViewModel @Inject constructor(
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.active_todos,
                     emptyLabel = R.string.no_active_todos,
-                    emptyIconRes = R.drawable.logo_no_fill,
                     filterMenuItems = filterMenuItems,
                 )
             }
@@ -132,7 +130,6 @@ class TodoViewModel @Inject constructor(
                 TodoFilteringUiInfo(
                     currentFilteringLabel = R.string.completed_todos,
                     emptyLabel = R.string.no_completed_todos,
-                    emptyIconRes = R.drawable.logo_no_fill,
                     filterMenuItems = filterMenuItems,
                 )
             }

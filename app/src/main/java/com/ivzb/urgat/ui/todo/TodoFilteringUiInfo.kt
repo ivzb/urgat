@@ -7,7 +7,7 @@ data class TodoFilteringUiInfo(
     val currentFilteringLabel: Int = R.string.all_todos,
 
     override val emptyLabel: Int = R.string.no_todos,
-    override val emptyIconRes: Int = R.drawable.logo_no_fill,
+    override val emptyIconRes: Int = R.drawable.ic_empty_state_card_todos,
     val emptyMessage: Int = R.string.no_todos_message,
     val emptyButtonLabel: Int = R.string.add_todo,
 

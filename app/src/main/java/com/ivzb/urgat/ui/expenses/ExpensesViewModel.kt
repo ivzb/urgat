@@ -94,7 +94,6 @@ class ExpensesViewModel @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.all_expenses,
                     emptyLabel = R.string.no_expenses,
-                    emptyIconRes = R.drawable.logo_no_fill,
                     filterMenuItems = filterMenuItems,
                 )
             }
@@ -103,7 +102,6 @@ class ExpensesViewModel @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.debit_expenses,
                     emptyLabel = R.string.no_debit_expenses,
-                    emptyIconRes = R.drawable.logo_no_fill,
                     filterMenuItems = filterMenuItems,
                 )
             }
@@ -112,7 +110,6 @@ class ExpensesViewModel @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.cost_expenses,
                     emptyLabel = R.string.no_cost_expenses,
-                    emptyIconRes = R.drawable.logo_no_fill,
                     filterMenuItems = filterMenuItems,
                 )
             }

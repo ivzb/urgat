@@ -7,7 +7,7 @@ data class NotesFilteringUiInfo(
     val currentFilteringLabel: Int = R.string.all_notes,
 
     override val emptyLabel: Int = R.string.no_notes_label,
-    override val emptyIconRes: Int = R.drawable.logo_no_fill,
+    override val emptyIconRes: Int = R.drawable.ic_empty_state_card_notes,
     val emptyMessage: Int = R.string.no_notes_message,
     val emptyButtonLabel: Int = R.string.add_note,
 

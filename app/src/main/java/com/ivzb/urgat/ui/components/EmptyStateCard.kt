@@ -111,7 +111,7 @@ private fun EmptyTodosPreview() {
     UrgatTheme {
         Surface {
             EmptyStateCard(
-                iconRes = R.drawable.logo_no_fill,
+                iconRes = R.drawable.ic_empty_state_card_todos,
                 label = R.string.no_todos_label,
                 message = R.string.no_todos_message,
                 buttonLabel = R.string.add_todo,

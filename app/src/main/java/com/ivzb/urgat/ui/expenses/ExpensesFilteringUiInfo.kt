@@ -7,7 +7,7 @@ data class ExpensesFilteringUiInfo(
     val currentFilteringLabel: Int = R.string.all_expenses,
 
     override val emptyLabel: Int = R.string.no_expenses_label,
-    override val emptyIconRes: Int = R.drawable.logo_no_fill,
+    override val emptyIconRes: Int = R.drawable.ic_empty_state_card_expenses,
     val emptyMessage: Int = R.string.no_expenses_message,
     val emptyButtonLabel: Int = R.string.add_expense,
 
