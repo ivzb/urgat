@@ -12,10 +12,11 @@ delete functionality when there is a details screen for each entity
 consider making generic add/edit screen with forms abstraction
 add multiselect delete
 split todos, expenses in 2 column in 10" tablet
-Change "Nothing here yet." for notes empty state
-Change "All clear." for todo empty state
 check which weight is taken when there are multiple for the same day
 add localizations
 add budgeting (split into income and expenses)
 add budgeting pie charts (for income and expenses)
 change investment type - should support amount and cost
+hide clear todos when there are no todos
+write script to extract release notes between tags
+change empty state cards icons 

@@ -13,7 +13,7 @@
     <string name="active_todos">Active todos</string>
     <string name="completed_todos">Completed todos</string>
     <string name="recent_todos">Recent todos</string>
-    <string name="no_todos_label">All clear!</string>
+    <string name="no_todos_label">Let\'s get things done.</string>
     <string name="no_todos_message">Tap "Add Todo" to plan your next task.</string>
     <string name="no_todos">You have no todos!</string>
     <string name="no_todos_search">You have no todos with this search criteria!</string>
@@ -60,7 +60,7 @@
     <string name="filter_cost">Cost</string>
     <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>
-    <string name="no_expenses_label">No spending yet.</string>
+    <string name="no_expenses_label">Your savings journey starts here.</string>
     <string name="no_expenses_message">Tap "Add Expense to track your first one.</string>
     <string name="loading_expenses">Loading expenses</string>
     <string name="error_expenses">Error while loading expenses</string>
@@ -75,7 +75,7 @@
     <string name="select_date">Select date</string>
     <string name="all_notes">All notes</string>
     <string name="no_notes">You have no notes!</string>
-    <string name="no_notes_label">Nothing here yet.</string>
+    <string name="no_notes_label">Write something to remember.</string>
     <string name="no_notes_message">Tap "Add Note" to write down your thoughts.</string>
     <string name="loading_notes">Loading notes</string>
     <string name="error_notes">Error while loading notes</string>
