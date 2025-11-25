@@ -11,6 +11,11 @@ setup github build pipeline
 delete functionality when there is a details screen for each entity
 consider making generic add/edit screen with forms abstraction
 add multiselect delete
-trim end of todos and notes
-create mock data to use for google play store
 split todos, expenses in 2 column in 10" tablet
+Change "Nothing here yet." for notes empty state
+Change "All clear." for todo empty state
+check which weight is taken when there are multiple for the same day
+add localizations
+add budgeting (split into income and expenses)
+add budgeting pie charts (for income and expenses)
+change investment type - should support amount and cost

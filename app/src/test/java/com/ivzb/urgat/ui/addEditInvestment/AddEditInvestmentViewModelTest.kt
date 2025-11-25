@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.addEditInvestment
 
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.FakeCreateInvestmentUseCase
@@ -125,6 +126,22 @@ class AddEditInvestmentViewModelTest {
     }
 
     @Test
+    fun `saveInvestment with spaces shows message`() = runTest {
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount(" "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" "))
+        viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isEmpty())
+        val uiState = viewModel.uiState.value
+        assertEquals(R.string.empty_investment_message, uiState.userMessage)
+        assertFalse(uiState.shouldNavigateBack)
+    }
+
+    @Test
     fun `saveInvestment creates new investment`() = runTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName("SNP 500"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("USD"))
@@ -132,6 +149,24 @@ class AddEditInvestmentViewModelTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory("etfs"))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
         
+        advanceUntilIdle()
+
+        val (name, currency, amount, category) = createUseCase.created
+        assertEquals("SNP 500", name)
+        assertEquals("USD", currency)
+        assertEquals(BigDecimal("250"), amount)
+        assertEquals("etfs", category)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `saveInvestment creates new investment trimmed`() = runTest {
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" SNP 500 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" USD "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount(" 250 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" etfs "))
+        viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
+
         advanceUntilIdle()
 
         val (name, currency, amount, category) = createUseCase.created
@@ -171,6 +206,48 @@ class AddEditInvestmentViewModelTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount("370"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory("stocks"))
+        viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
+
+        advanceUntilIdle()
+
+        val (id, name, currency, amount, category) = updateUseCase.updated
+        assertEquals(investmentId, id)
+        assertEquals("NVDA", name)
+        assertEquals("EUR", currency)
+        assertEquals(BigDecimal("370"), amount)
+        assertEquals("stocks", category)
+        assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `saveInvestment updates existing investment trimmed`() = runTest {
+        val investmentId = "123"
+        savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
+
+        val investment = Investment(
+            id = investmentId,
+            name = "SNP 500",
+            currency = "USD",
+            amount = BigDecimal("150"),
+            category = "etfs",
+        )
+        getUseCase.toReturn = investment
+
+        viewModel = createViewModel()
+
+        advanceUntilIdle()
+
+        val uiState = viewModel.uiState.value
+        assertEquals(investment.name, uiState.name)
+        assertEquals(investment.currency, uiState.currency)
+        assertEquals(investment.amount.toString(), uiState.amount)
+        assertEquals(investment.category, uiState.category)
+        assertFalse(uiState.isLoading)
+
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" NVDA "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" EUR "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount(" 370 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" stocks "))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
 
         advanceUntilIdle()

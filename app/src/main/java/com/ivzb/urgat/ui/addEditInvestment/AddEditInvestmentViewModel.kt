@@ -11,6 +11,7 @@ import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
 import com.ivzb.urgat.navigation.AddEditInvestmentDestination
 import com.ivzb.urgat.util.Assert
+import com.ivzb.urgat.util.sanitize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -83,7 +84,7 @@ class AddEditInvestmentViewModel @Inject constructor(
             uiState.value.category,
         )
 
-        val emptyIndex = fields.indexOfFirst { it.isEmpty() }
+        val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }
 
         if (emptyIndex != -1) {
             _uiState.update {
@@ -105,10 +106,10 @@ class AddEditInvestmentViewModel @Inject constructor(
 
     private fun createNewInvestment() = viewModelScope.launch {
         createInvestmentUseCase(
-            name = uiState.value.name,
-            currency = uiState.value.currency,
-            amount = uiState.value.amount.toBigDecimal(),
-            category = uiState.value.category,
+            name = uiState.value.name.sanitize(),
+            currency = uiState.value.currency.sanitize(),
+            amount = uiState.value.amount.sanitize().toBigDecimal(),
+            category = uiState.value.category.sanitize(),
         )
 
         _uiState.update {
@@ -130,10 +131,10 @@ class AddEditInvestmentViewModel @Inject constructor(
         viewModelScope.launch {
             updateInvestmentUseCase(
                 investmentId,
-                name = uiState.value.name,
-                currency = uiState.value.currency,
-                amount = uiState.value.amount.toBigDecimal(),
-                category = uiState.value.category,
+                name = uiState.value.name.sanitize(),
+                currency = uiState.value.currency.sanitize(),
+                amount = uiState.value.amount.sanitize().toBigDecimal(),
+                category = uiState.value.category.sanitize(),
             )
 
             _uiState.update {

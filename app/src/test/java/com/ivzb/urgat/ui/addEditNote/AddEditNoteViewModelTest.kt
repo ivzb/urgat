@@ -95,7 +95,7 @@ class AddEditNoteViewModelTest {
     @Test
     fun `updateContent updates ui state`() = runTest {
         viewModel.onIntent(AddEditNoteIntent.UpdateContent("New Content"))
-        Assert.assertEquals("New Content", viewModel.uiState.value.content)
+        assertEquals("New Content", viewModel.uiState.value.content)
     }
 
     @Test
@@ -105,8 +105,27 @@ class AddEditNoteViewModelTest {
     }
 
     @Test
+    fun `saveNote with spaces shows message`() = runTest {
+        viewModel.onIntent(AddEditNoteIntent.UpdateContent(" "))
+        viewModel.onIntent(AddEditNoteIntent.SaveNote)
+        assertEquals(R.string.empty_note_message, viewModel.uiState.value.userMessage)
+    }
+
+    @Test
     fun `saveNote creates new note`() = runTest {
         viewModel.onIntent(AddEditNoteIntent.UpdateContent("Note"))
+        viewModel.onIntent(AddEditNoteIntent.SaveNote)
+
+        advanceUntilIdle()
+
+        val created = createUseCase.created
+        assertEquals("Note", created)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `saveNote creates new note trimmed`() = runTest {
+        viewModel.onIntent(AddEditNoteIntent.UpdateContent(" Note "))
         viewModel.onIntent(AddEditNoteIntent.SaveNote)
 
         advanceUntilIdle()
@@ -138,6 +157,38 @@ class AddEditNoteViewModelTest {
         assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditNoteIntent.UpdateContent("Updated"))
+        viewModel.onIntent(AddEditNoteIntent.SaveNote)
+
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        val (id, content) = updateUseCase.updated
+        assertEquals(noteId, id)
+        assertEquals("Updated", content)
+    }
+
+    @Test
+    fun `saveNote updates existing note trimmed`() = runTest {
+        val noteId = "abc"
+        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
+
+        val note = Note(
+            id = noteId,
+            content = "Old",
+            isDeleted = false,
+            createdAt = 123
+        )
+        getUseCase.toReturn = note
+
+        viewModel = createViewModel()
+
+        advanceUntilIdle()
+
+        val uiState = viewModel.uiState.value
+        assertEquals(note.content, uiState.content)
+        assertFalse(uiState.isLoading)
+
+        viewModel.onIntent(AddEditNoteIntent.UpdateContent(" Updated "))
         viewModel.onIntent(AddEditNoteIntent.SaveNote)
 
         advanceUntilIdle()

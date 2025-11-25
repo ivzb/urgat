@@ -8,6 +8,7 @@ import com.ivzb.urgat.domain.expense.FakeDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeUpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
+import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -108,12 +109,43 @@ class AddEditExpenseViewModelTest {
     }
 
     @Test
+    fun `saveExpense with spaces shows message`() = runTest {
+        viewModel.onIntent(AddEditExpenseIntent.UpdateName(" "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateAmount(" "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateCategory(" "))
+        viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isEmpty())
+        val uiState = viewModel.uiState.value
+        assertEquals(R.string.empty_expense_message, uiState.userMessage)
+        assertFalse(uiState.shouldNavigateBack)
+    }
+
+    @Test
     fun `saveExpense creates new expense`() = runTest {
         viewModel.onIntent(AddEditExpenseIntent.UpdateName("Dinner"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateAmount("25"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateCategory("Food"))
         viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
         
+        advanceUntilIdle()
+
+        val (name, amount, category) = createUseCase.created
+        assertEquals("Dinner", name)
+        assertEquals(BigDecimal("25"), amount)
+        assertEquals("Food", category)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `saveExpense creates new expense trimmed`() = runTest {
+        viewModel.onIntent(AddEditExpenseIntent.UpdateName(" Dinner "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateAmount(" 25 "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateCategory(" Food "))
+        viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
+
         advanceUntilIdle()
 
         val (name, amount, category) = createUseCase.created
@@ -151,6 +183,46 @@ class AddEditExpenseViewModelTest {
         viewModel.onIntent(AddEditExpenseIntent.UpdateName("Edit"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateAmount("35"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateCategory("Math"))
+        viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
+
+        advanceUntilIdle()
+
+        val (id, name, amount, category) = updateUseCase.updated
+        assertEquals(expenseId, id)
+        assertEquals("Edit", name)
+        assertEquals(BigDecimal("35"), amount)
+        assertEquals("Math", category)
+        assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `saveExpense updates existing expense trimmed`() = runTest {
+        val expenseId = "123"
+        savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
+
+        val expense = Expense(
+            id = expenseId,
+            name = "Taxi",
+            amount = BigDecimal("15"),
+            category = "Transport",
+            date = 123L
+        )
+        getUseCase.toReturn = expense
+
+        viewModel = createViewModel()
+
+        advanceUntilIdle()
+
+        val uiState = viewModel.uiState.value
+        assertEquals(expense.name, uiState.name)
+        assertEquals(expense.amount.toString(), uiState.amount)
+        assertEquals(expense.category, uiState.category)
+        assertEquals(expense.date, uiState.date)
+        assertFalse(uiState.isLoading)
+
+        viewModel.onIntent(AddEditExpenseIntent.UpdateName(" Edit "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateAmount(" 35 "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateCategory(" Math "))
         viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
 
         advanceUntilIdle()

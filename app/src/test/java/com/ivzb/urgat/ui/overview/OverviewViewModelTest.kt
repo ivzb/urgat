@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
+import com.ivzb.urgat.domain.sample.FakeSampleUseCase
 import com.ivzb.urgat.domain.todo.FakeActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase
@@ -38,6 +39,7 @@ class TodoViewModelTest {
     private lateinit var fakeCompleteTodoUseCase: FakeCompleteTodoUseCase
     private lateinit var fakeActivateTodoUseCase: FakeActivateTodoUseCase
     private lateinit var fakeClearCompletedTodosUseCase: FakeClearCompletedTodosUseCase
+    private lateinit var fakeSampleUseCase: FakeSampleUseCase
 
     private lateinit var viewModel: OverviewViewModel
 
@@ -53,6 +55,7 @@ class TodoViewModelTest {
         fakeCompleteTodoUseCase = FakeCompleteTodoUseCase()
         fakeActivateTodoUseCase = FakeActivateTodoUseCase()
         fakeClearCompletedTodosUseCase = FakeClearCompletedTodosUseCase()
+        fakeSampleUseCase = FakeSampleUseCase()
     }
 
     @After
@@ -227,6 +230,7 @@ class TodoViewModelTest {
         fakeObserveNotesUseCase,
         fakeCompleteTodoUseCase,
         fakeActivateTodoUseCase,
-        fakeClearCompletedTodosUseCase
+        fakeClearCompletedTodosUseCase,
+        fakeSampleUseCase,
     )
 }

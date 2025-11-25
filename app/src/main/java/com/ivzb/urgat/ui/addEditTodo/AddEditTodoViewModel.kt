@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import com.ivzb.urgat.domain.todo.GetTodoUseCase
 import com.ivzb.urgat.navigation.AddEditTodoDestination
 import com.ivzb.urgat.util.Assert
+import com.ivzb.urgat.util.sanitize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,7 +62,7 @@ class AddEditTodoViewModel @Inject constructor(
     }
 
     private fun saveTodo() {
-        if (uiState.value.title.isEmpty() && uiState.value.description.isEmpty()) {
+        if (uiState.value.title.sanitize().isEmpty() && uiState.value.description.sanitize().isEmpty()) {
             _uiState.update {
                 it.copy(userMessage = R.string.empty_todo_message)
             }
@@ -77,7 +78,11 @@ class AddEditTodoViewModel @Inject constructor(
     }
 
     private fun createNewTodo() = viewModelScope.launch {
-        createTodoUseCase(uiState.value.title, uiState.value.description)
+        createTodoUseCase(
+            name = uiState.value.title.sanitize(),
+            description = uiState.value.description.sanitize()
+        )
+
         _uiState.update {
             it.copy(shouldNavigateBack = true)
         }
@@ -97,8 +102,8 @@ class AddEditTodoViewModel @Inject constructor(
         viewModelScope.launch {
             updateTodoUseCase(
                 todoId,
-                title = uiState.value.title,
-                description = uiState.value.description,
+                title = uiState.value.title.sanitize(),
+                description = uiState.value.description.sanitize(),
             )
 
             _uiState.update {

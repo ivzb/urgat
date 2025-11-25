@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import com.ivzb.urgat.navigation.AddEditExpenseDestination
 import com.ivzb.urgat.util.Assert
+import com.ivzb.urgat.util.sanitize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -81,7 +82,7 @@ class AddEditExpenseViewModel @Inject constructor(
             uiState.value.category,
         )
 
-        val emptyIndex = fields.indexOfFirst { it.isEmpty() }
+        val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }
 
         if (emptyIndex != -1) {
             _uiState.update {
@@ -103,9 +104,9 @@ class AddEditExpenseViewModel @Inject constructor(
 
     private fun createNewExpense() = viewModelScope.launch {
         createExpenseUseCase(
-            name = uiState.value.name,
-            amount = uiState.value.amount.toBigDecimal(),
-            category = uiState.value.category,
+            name = uiState.value.name.sanitize(),
+            amount = uiState.value.amount.sanitize().toBigDecimal(),
+            category = uiState.value.category.sanitize(),
             date = uiState.value.date
         )
 
@@ -148,9 +149,9 @@ class AddEditExpenseViewModel @Inject constructor(
         viewModelScope.launch {
             updateExpenseUseCase(
                 expenseId,
-                name = uiState.value.name,
-                amount = uiState.value.amount.toBigDecimal(),
-                category = uiState.value.category,
+                name = uiState.value.name.sanitize(),
+                amount = uiState.value.amount.sanitize().toBigDecimal(),
+                category = uiState.value.category.sanitize(),
                 date = uiState.value.date
             )
 

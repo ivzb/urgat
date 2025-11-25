@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.note.GetNoteUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import com.ivzb.urgat.navigation.AddEditNoteDestination
 import com.ivzb.urgat.util.Assert
+import com.ivzb.urgat.util.sanitize
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -58,7 +59,7 @@ class AddEditNoteViewModel @Inject constructor(
             uiState.value.content
         )
 
-        val emptyIndex = fields.indexOfFirst { it.isEmpty() }
+        val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }
 
         if (emptyIndex != -1) {
             _uiState.update {
@@ -80,7 +81,7 @@ class AddEditNoteViewModel @Inject constructor(
 
     private fun createNewNote() = viewModelScope.launch {
         createNoteUseCase(
-            content = uiState.value.content
+            content = uiState.value.content.sanitize()
         )
 
         _uiState.update {
@@ -102,7 +103,7 @@ class AddEditNoteViewModel @Inject constructor(
         viewModelScope.launch {
             updateNoteUseCase(
                 noteId,
-                content = uiState.value.content
+                content = uiState.value.content.sanitize()
             )
 
             _uiState.update {
