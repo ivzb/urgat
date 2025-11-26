@@ -44,6 +44,7 @@ fun TopAppBarContent(
     selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
     onBack: (() -> Unit)? = null,
+    withActions: Boolean = true,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
@@ -59,6 +60,7 @@ fun TopAppBarContent(
         },
         titleResId = selectedDestination.label,
         onBack = onBack,
+        withActions = withActions,
         actionsContent = actionsContent
     )
 }
@@ -190,6 +192,7 @@ fun TopAppBarContentOverviewDestinationPreview() {
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
             onBack = {},
+            withActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -209,6 +212,7 @@ fun TopAppBarContentOverviewDestinationPreviewWithoutBack() {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
+            withActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -228,6 +232,7 @@ fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
             onSearchQueryChanged = {},
+            withActions = false,
             onBack = {},
         )
     }
@@ -239,6 +244,7 @@ fun TopAppBarContentOverviewDestinationWithoutActionsPreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
             selectedDestination = OverviewDestination,
+            withActions = false,
             onSearchQueryChanged = {},
         )
     }
@@ -251,6 +257,7 @@ fun TopAppBarContentTrackersDestinationPreview() {
         TopAppBarContent(
             selectedDestination = TrackersDestination,
             onSearchQueryChanged = {},
+            withActions = false,
             actionsContent = {}
         )
     }

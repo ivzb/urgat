@@ -17,6 +17,6 @@ add localizations
 add budgeting (split into income and expenses)
 add budgeting pie charts (for income and expenses)
 change investment type - should support amount and cost
-hide clear todos when there are no todos
 write script to extract release notes between tags
-change empty state cards icons 
+generate screenshots for google play store via UI tests
+check why the submit button is not ime positioned on top of the keyboard

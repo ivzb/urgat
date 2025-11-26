@@ -70,7 +70,6 @@ private fun NotesScreenScaffold(
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         onBack = onBack,
-        topAppBarActionsContent = {},
         modifier = modifier
     ) { listState ->
 

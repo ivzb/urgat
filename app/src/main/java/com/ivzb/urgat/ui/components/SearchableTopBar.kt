@@ -49,6 +49,7 @@ fun SearchableTopBar(
     onSearchQueryChanged: (String) -> Unit,
     titleResId: Int,
     onBack: (() -> Unit)? = null,
+    withActions: Boolean = true,
     actionsContent: @Composable (() -> Unit)? = null
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -76,7 +77,7 @@ fun SearchableTopBar(
                     }
                 },
                 actions = {
-                    val withTopAppBarActions = actionsContent != null
+                    val withTopAppBarActions = withActions && actionsContent != null
 
                     if (withTopAppBarActions || searchQuery.isNotEmpty()) {
                         IconButton(onClick = {
@@ -90,7 +91,7 @@ fun SearchableTopBar(
                     }
 
                     if (withTopAppBarActions) {
-                        actionsContent()
+                        actionsContent.invoke()
                     }
                 },
                 windowInsets = WindowInsets()
@@ -181,6 +182,7 @@ fun SearchableTopBarPreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
+            withActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -204,6 +206,7 @@ fun SearchableTopBarPreviewWithBackButton() {
             onSearchQueryChanged = {},
             titleResId = R.string.search,
             onBack = {},
+            withActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -225,6 +228,7 @@ fun SearchableTopBarWithoutActionsPreview() {
             onIsSearchingChanged = {},
             searchQuery = "",
             onSearchQueryChanged = {},
+            withActions = false,
             titleResId = R.string.search,
         )
     }
@@ -240,6 +244,7 @@ fun SearchableTopBarWithoutActionsPreviewWithBackButton() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
+            withActions = false,
             onBack = {}
         )
     }
@@ -255,6 +260,7 @@ fun SearchableTopBarSearchingEmptyStatePreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
+            withActions = false,
             actionsContent = {},
         )
     }
@@ -270,6 +276,7 @@ fun SearchableTopBarSearchingTextStatePreview() {
             searchQuery = "John",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
+            withActions = false,
             actionsContent = {},
         )
     }

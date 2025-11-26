@@ -121,19 +121,16 @@ private fun OverviewScreenScaffold(
     modifier: Modifier = Modifier
 ) {
 
-    val topAppBarActionsContent: (@Composable () -> Unit)? = if (uiState.todoItems.isNotEmpty()) {
-        {
-            MoreTodosMenu(
-                onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
-            )
-        }
-    } else null
-
     MenuScaffold(
         selectedDestination = OverviewDestination,
         onSearchQueryChanged = { query -> onIntent(OverviewIntent.SearchQueryChanged(query)) },
         navController = navController,
-        topAppBarActionsContent = topAppBarActionsContent,
+        withTopAppBarActions = uiState.todoItems.isNotEmpty(),
+        topAppBarActionsContent = {
+            MoreTodosMenu(
+                onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
+            )
+        },
         modifier = modifier
     ) { listState ->
 

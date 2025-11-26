@@ -45,6 +45,7 @@ fun MenuScaffold(
     onAddItem: (() -> Unit)? = null,
 
     navController: NavHostController,
+    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
@@ -83,6 +84,7 @@ fun MenuScaffold(
             selectedDestination = selectedDestination,
             onSearchQueryChanged = onSearchQueryChanged,
             onAddItem = onAddItem,
+            withTopAppBarActions = withTopAppBarActions,
             topAppBarActionsContent = topAppBarActionsContent,
             content = content
         )
@@ -95,6 +97,7 @@ fun UrgatScaffold(
     onSearchQueryChanged: (String) -> Unit,
     onAddItem: (() -> Unit)? = null,
     onBack: (() -> Unit)? = null,
+    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     lazyListState: LazyListState = rememberLazyListState(),
     modifier: Modifier = Modifier,
@@ -106,6 +109,7 @@ fun UrgatScaffold(
                 selectedDestination = selectedDestination,
                 onSearchQueryChanged = onSearchQueryChanged,
                 onBack = onBack,
+                withActions = withTopAppBarActions,
                 actionsContent = topAppBarActionsContent,
             )
         },
@@ -216,6 +220,7 @@ fun MenuScaffoldPreview() {
             onSearchQueryChanged = {},
             onAddItem = {},
             navController = rememberNavController(),
+            withTopAppBarActions = false,
             topAppBarActionsContent = {},
             modifier = Modifier
         ) { }
