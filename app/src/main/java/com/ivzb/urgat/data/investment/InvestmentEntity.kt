@@ -8,9 +8,11 @@ import java.math.BigDecimal
 data class InvestmentEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val currency: String,
     val amount: BigDecimal,
+    val cost: BigDecimal,
     val category: String,
+    val currency: String,
+    val date: Long,
     var isDeleted: Boolean,
     var createdAt: Long
 )

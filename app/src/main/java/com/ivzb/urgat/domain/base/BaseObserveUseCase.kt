@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.base
 
+import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.util.Async
@@ -39,7 +40,15 @@ abstract class BaseObserveUseCase<T, FilterType>(
             .map(::transform)
         }
         .map<List<T>, Async<List<T>>> { Async.Success(it) }
-        .catch { emit(Async.Error(errorMessage)) }
+        .catch { e ->
+            // todo: use error tracker instead
+
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace()
+            }
+
+            emit(Async.Error(errorMessage, e))
+        }
 
     protected open fun filter(items: List<T>, filteringType: FilterType): List<T> = items
 

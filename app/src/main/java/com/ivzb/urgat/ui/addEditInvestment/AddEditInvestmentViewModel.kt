@@ -43,9 +43,11 @@ class AddEditInvestmentViewModel @Inject constructor(
     fun onIntent(intent: AddEditInvestmentIntent) {
         when (intent) {
             is AddEditInvestmentIntent.UpdateName -> updateName(intent.value)
-            is AddEditInvestmentIntent.UpdateCurrency -> updateCurrency(intent.value)
             is AddEditInvestmentIntent.UpdateAmount -> updateAmount(intent.value)
+            is AddEditInvestmentIntent.UpdateCost -> updateCost(intent.value)
             is AddEditInvestmentIntent.UpdateCategory -> updateCategory(intent.value)
+            is AddEditInvestmentIntent.UpdateCurrency -> updateCurrency(intent.value)
+            is AddEditInvestmentIntent.UpdateDate -> updateDate(intent.value)
             AddEditInvestmentIntent.SaveInvestment -> saveInvestment()
             AddEditInvestmentIntent.DeleteInvestment -> deleteInvestment()
             AddEditInvestmentIntent.UserMessageShown -> userMessageShown()
@@ -58,15 +60,15 @@ class AddEditInvestmentViewModel @Inject constructor(
         }
     }
 
-    private fun updateCurrency(currency: String) {
-        _uiState.update {
-            it.copy(currency = currency)
-        }
-    }
-
     private fun updateAmount(amount: String) {
         _uiState.update {
             it.copy(amount = amount)
+        }
+    }
+
+    private fun updateCost(cost: String) {
+        _uiState.update {
+            it.copy(cost = cost)
         }
     }
 
@@ -76,12 +78,25 @@ class AddEditInvestmentViewModel @Inject constructor(
         }
     }
 
+    private fun updateCurrency(currency: String) {
+        _uiState.update {
+            it.copy(currency = currency)
+        }
+    }
+
+    private fun updateDate(date: Long) {
+        _uiState.update {
+            it.copy(date = date)
+        }
+    }
+
     private fun saveInvestment() {
         val fields = listOf(
             uiState.value.name,
-            uiState.value.currency,
             uiState.value.amount,
+            uiState.value.cost,
             uiState.value.category,
+            uiState.value.currency,
         )
 
         val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }
@@ -107,9 +122,11 @@ class AddEditInvestmentViewModel @Inject constructor(
     private fun createNewInvestment() = viewModelScope.launch {
         createInvestmentUseCase(
             name = uiState.value.name.sanitize(),
-            currency = uiState.value.currency.sanitize(),
             amount = uiState.value.amount.sanitize().toBigDecimal(),
+            cost = uiState.value.cost.sanitize().toBigDecimal(),
             category = uiState.value.category.sanitize(),
+            currency = uiState.value.currency.sanitize(),
+            date = uiState.value.date,
         )
 
         _uiState.update {
@@ -132,9 +149,11 @@ class AddEditInvestmentViewModel @Inject constructor(
             updateInvestmentUseCase(
                 investmentId,
                 name = uiState.value.name.sanitize(),
-                currency = uiState.value.currency.sanitize(),
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
+                cost = uiState.value.cost.sanitize().toBigDecimal(),
                 category = uiState.value.category.sanitize(),
+                currency = uiState.value.currency.sanitize(),
+                date = uiState.value.date,
             )
 
             _uiState.update {
@@ -180,9 +199,11 @@ class AddEditInvestmentViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             name = investment.name,
-                            currency = investment.currency,
                             amount = investment.amount.toString(),
+                            cost = investment.cost.toString(),
                             category = investment.category,
+                            currency = investment.currency,
+                            date = investment.date,
                             isLoading = false,
                             withDelete = true
                         )

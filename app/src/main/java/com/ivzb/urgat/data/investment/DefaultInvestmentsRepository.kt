@@ -34,7 +34,14 @@ class DefaultInvestmentsRepository @Inject constructor(
         }
     }
 
-    override suspend fun create(name: String, currency: String, amount: BigDecimal, category: String): String {
+    override suspend fun create(
+        name: String,
+        amount: BigDecimal,
+        cost: BigDecimal,
+        category: String,
+        currency: String,
+        date: Long,
+    ): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
         val id = withContext(dispatcher) {
@@ -43,9 +50,11 @@ class DefaultInvestmentsRepository @Inject constructor(
         val investment = Investment(
             id = id,
             name = name,
-            currency = currency,
             amount = amount,
+            cost = cost,
             category = category,
+            currency = currency,
+            date = date,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
@@ -53,12 +62,22 @@ class DefaultInvestmentsRepository @Inject constructor(
         return id
     }
 
-    override suspend fun update(id: String, name: String, currency: String, amount: BigDecimal, category: String) {
+    override suspend fun update(
+        id: String,
+        name: String,
+        amount: BigDecimal,
+        cost: BigDecimal,
+        category: String,
+        currency: String,
+        date: Long,
+    ) {
         val investment = get(id)?.copy(
             name = name,
             amount = amount,
-            currency = currency,
+            cost = cost,
             category = category,
+            currency = currency,
+            date = date,
         )
 
         if (investment == null) {

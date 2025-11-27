@@ -3,9 +3,11 @@ package com.ivzb.urgat.data.investment
 fun Investment.toEntity() = InvestmentEntity(
     id = id,
     name = name,
-    currency = currency,
     amount = amount,
+    cost = cost,
     category = category,
+    currency = currency,
+    date = date,
     isDeleted = isDeleted,
     createdAt = createdAt
 )
@@ -15,9 +17,11 @@ fun List<Investment>.toEntity() = map(Investment::toEntity)
 fun InvestmentEntity.toExternal() = Investment(
     id = id,
     name = name,
-    currency = currency,
     amount = amount,
+    cost = cost,
     category = category,
+    currency = currency,
+    date = date,
     isDeleted = isDeleted,
     createdAt = createdAt
 )

@@ -36,7 +36,7 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
                         .map { FilterMenuItem(content = it.key, label = it.key, size = it.value.size) }
             }
             .map<List<InvestmentsFilterMenuItem>, Async<List<InvestmentsFilterMenuItem>>> { Async.Success(it) }
-            .catch { emit(Async.Error(R.string.error_investments_filtering)) }
+            .catch { e -> emit(Async.Error(R.string.error_investments_filtering, e)) }
     }
 
 }

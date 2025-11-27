@@ -33,7 +33,7 @@ class DefaultObserveTodosFilteringUseCase @Inject constructor(
                 )
             }
             .map<List<TodoFilterMenuItem>, Async<List<TodoFilterMenuItem>>> { Async.Success(it) }
-            .catch { emit(Async.Error(R.string.error_todos_filtering)) }
+            .catch { e -> emit(Async.Error(R.string.error_todos_filtering, e)) }
     }
 
 }

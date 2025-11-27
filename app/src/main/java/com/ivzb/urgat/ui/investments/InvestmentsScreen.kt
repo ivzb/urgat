@@ -39,6 +39,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.InvestmentsDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -284,36 +285,7 @@ private fun InvestmentsScreenScaffoldPreview() {
                         R.string.add_investment
                     ),
                 ),
-                items = listOf(
-                    Investment(
-                        id = "ID 1",
-                        name = "SNP 500",
-                        currency = "USD",
-                        amount = 530.toBigDecimal(),
-                        category = "etfs"
-                    ),
-                    Investment(
-                        id = "ID 2",
-                        name = "BRK.B",
-                        currency = "USD",
-                        amount = 470.toBigDecimal(),
-                        category = "etfs"
-                    ),
-                    Investment(
-                        id = "ID 3",
-                        name = "NVDA",
-                        currency = "USD",
-                        amount = 270.toBigDecimal(),
-                        category = "stocks"
-                    ),
-                    Investment(
-                        id = "ID 4",
-                        name = "GOOG",
-                        currency = "USD",
-                        amount = 310.toBigDecimal(),
-                        category = "stocks"
-                    ),
-                ),
+                items = SampleData.SAMPLE_INVESTMENTS
             ),
             onIntent = {},
             onInvestmentClick = {},
@@ -371,36 +343,7 @@ private fun InvestmentsContentPreview() {
                 ),
             ),
             onHeaderItemClick = {},
-            investments = listOf(
-                Investment(
-                    id = "ID 1",
-                    name = "SNP 500",
-                    currency = "USD",
-                    amount = 530.toBigDecimal(),
-                    category = "etfs"
-                ),
-                Investment(
-                    id = "ID 2",
-                    name = "BRK.B",
-                    currency = "USD",
-                    amount = 470.toBigDecimal(),
-                    category = "etfs"
-                ),
-                Investment(
-                    id = "ID 3",
-                    name = "NVDA",
-                    currency = "USD",
-                    amount = 270.toBigDecimal(),
-                    category = "stocks"
-                ),
-                Investment(
-                    id = "ID 4",
-                    name = "GOOG",
-                    currency = "USD",
-                    amount = 310.toBigDecimal(),
-                    category = "stocks"
-                ),
-            ),
+            investments = SampleData.SAMPLE_INVESTMENTS,
             onInvestmentClick = {},
             filteringUiInfo = InvestmentsFilteringUiInfo(),
             listState = rememberLazyListState(),
