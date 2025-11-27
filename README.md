@@ -4,41 +4,41 @@ add the following format to your commit message:
 
 - What's new: 
 ```
-<release-notes-feature>
+<new>
 Notes: Add titles and tags to organize your thoughts better.
 Expenses: Track recurring expenses automatically for smarter budgeting.
 To-Dos: Create subtasks and set priorities for easier task management.
-</release-notes-feature>
+</new>
 ```
 
 - Improvements:
 ```
-<release-notes-improvement>
+<improved>
 Faster app startup and smoother navigation throughout the app.
 Enhanced search functionality across Notes, To-Dos, and Expenses.
-</release-notes-improvement>
+</improved>
 ```
 
 - Bug fixes:
 ```
-<release-notes-bugfix>
+<fixed>
 Fixed an issue where some notifications were not appearing.
-</release-notes-bugfix>
+</fixed>
 ```
 
 
 The following release notes will be generated:
 
 ```
-What’s New
+New
 - Notes: Add titles and tags to organize your thoughts better.
 - Expenses: Track recurring expenses automatically for smarter budgeting.
 - To-Dos: Create subtasks and set priorities for easier task management.
 
-Improvements
+Improved
 - Faster app startup and smoother navigation throughout the app.
 - Enhanced search functionality across Notes, To-Dos, and Expenses.
 
-Bug Fixes
+Fixed
 - Fixed an issue where some notifications were not appearing.
 ```

@@ -22,10 +22,10 @@ check why the submit button is not ime positioned on top of the keyboard for sdk
 update to jetpack navigation 3
 extract ADD_SAMPLE_DATA to build config
 add trackers to sample data
-write unit tests for db migration
 make error tracker
 consider showing text field labels because editing investment is unclear
 convert all SampleData to actual objects
 remove default values from all /data entities like done for Investment.kt
 replace all preview list of objects with sample data
 update investments screen ui to include cost and date
+write unit tests for db migration
