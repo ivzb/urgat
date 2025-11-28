@@ -51,11 +51,13 @@ class FakeCreateInvestmentUseCase : CreateInvestmentUseCase {
 
     override suspend fun invoke(
         name: String,
-        currency: String,
         amount: BigDecimal,
-        category: String
+        cost: BigDecimal,
+        category: String,
+        currency: String,
+        date: Long,
     ) {
-        created = listOf(name, currency, amount, category)
+        created = listOf(name, amount, cost, category, currency, date)
     }
 }
 
@@ -66,11 +68,13 @@ class FakeUpdateInvestmentUseCase : UpdateInvestmentUseCase {
     override suspend fun invoke(
         id: String,
         name: String,
-        currency: String,
         amount: BigDecimal,
+        cost: BigDecimal,
         category: String,
+        currency: String,
+        date: Long,
     ) {
-        updated = listOf(id, name, currency, amount, category)
+        updated = listOf(id, name, amount, cost, category, currency, date)
     }
 }
 

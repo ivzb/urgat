@@ -74,9 +74,13 @@ class AddEditInvestmentViewModelTest {
         val investment = Investment(
             id = investmentId,
             name = "SNP 500",
-            currency = "USD",
             amount = BigDecimal("150"),
-            category = "etfs"
+            cost = BigDecimal("250"),
+            category = "etfs",
+            currency = "USD",
+            date = 1L,
+            isDeleted = false,
+            createdAt = 1L,
         )
 
         getUseCase.toReturn = investment
@@ -88,9 +92,11 @@ class AddEditInvestmentViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals("SNP 500", state.name)
-        assertEquals("USD", state.currency)
         assertEquals("150", state.amount)
+        assertEquals("250", state.cost)
         assertEquals("etfs", state.category)
+        assertEquals("USD", state.currency)
+        assertEquals(1L, state.date)
         assertEquals(true, state.withDelete)
         assertEquals(false, state.shouldNavigateBack)
     }
@@ -144,36 +150,36 @@ class AddEditInvestmentViewModelTest {
     @Test
     fun `saveInvestment creates new investment`() = runTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName("SNP 500"))
-        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("USD"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount("250"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost("120"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory("etfs"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("USD"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
         
         advanceUntilIdle()
 
-        val (name, currency, amount, category) = createUseCase.created
-        assertEquals("SNP 500", name)
-        assertEquals("USD", currency)
-        assertEquals(BigDecimal("250"), amount)
-        assertEquals("etfs", category)
+        val expected = listOf("SNP 500", BigDecimal("250"), BigDecimal("120"), "etfs", "USD", 1L)
+        val actual = createUseCase.created
+        assertEquals(expected, actual)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
     fun `saveInvestment creates new investment trimmed`() = runTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" SNP 500 "))
-        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" USD "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount(" 250 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost(" 370 "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" etfs "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" USD "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
 
         advanceUntilIdle()
 
-        val (name, currency, amount, category) = createUseCase.created
-        assertEquals("SNP 500", name)
-        assertEquals("USD", currency)
-        assertEquals(BigDecimal("250"), amount)
-        assertEquals("etfs", category)
+        val expected = listOf("SNP 500", BigDecimal("250"), BigDecimal("370"), "etfs", "USD", 1L)
+        val actual = createUseCase.created
+        assertEquals(expected, actual)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -185,9 +191,13 @@ class AddEditInvestmentViewModelTest {
         val investment = Investment(
             id = investmentId,
             name = "SNP 500",
-            currency = "USD",
             amount = BigDecimal("150"),
+            cost = BigDecimal("250"),
             category = "etfs",
+            currency = "USD",
+            date = 1L,
+            isDeleted = false,
+            createdAt = 1L,
         )
         getUseCase.toReturn = investment
 
@@ -197,9 +207,11 @@ class AddEditInvestmentViewModelTest {
 
         val uiState = viewModel.uiState.value
         assertEquals(investment.name, uiState.name)
-        assertEquals(investment.currency, uiState.currency)
         assertEquals(investment.amount.toString(), uiState.amount)
+        assertEquals(investment.cost.toString(), uiState.cost)
         assertEquals(investment.category, uiState.category)
+        assertEquals(investment.currency, uiState.currency)
+        assertEquals(investment.date, uiState.date)
         assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName("NVDA"))
@@ -210,12 +222,9 @@ class AddEditInvestmentViewModelTest {
 
         advanceUntilIdle()
 
-        val (id, name, currency, amount, category) = updateUseCase.updated
-        assertEquals(investmentId, id)
-        assertEquals("NVDA", name)
-        assertEquals("EUR", currency)
-        assertEquals(BigDecimal("370"), amount)
-        assertEquals("stocks", category)
+        val expected = updateUseCase.updated
+        val actual = listOf(investmentId, "NVDA", BigDecimal("370"), BigDecimal("250"), "stocks", "EUR", 1L)
+        assertEquals(expected, actual)
         assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -227,9 +236,13 @@ class AddEditInvestmentViewModelTest {
         val investment = Investment(
             id = investmentId,
             name = "SNP 500",
-            currency = "USD",
             amount = BigDecimal("150"),
+            cost = BigDecimal("250"),
             category = "etfs",
+            currency = "USD",
+            date = 1L,
+            isDeleted = false,
+            createdAt = 1L,
         )
         getUseCase.toReturn = investment
 
@@ -239,25 +252,26 @@ class AddEditInvestmentViewModelTest {
 
         val uiState = viewModel.uiState.value
         assertEquals(investment.name, uiState.name)
-        assertEquals(investment.currency, uiState.currency)
         assertEquals(investment.amount.toString(), uiState.amount)
+        assertEquals(investment.cost.toString(), uiState.cost)
         assertEquals(investment.category, uiState.category)
+        assertEquals(investment.currency, uiState.currency)
+        assertEquals(investment.date, uiState.date)
         assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" NVDA "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" EUR "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateAmount(" 370 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost(" 250 "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" stocks "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
 
         advanceUntilIdle()
 
-        val (id, name, currency, amount, category) = updateUseCase.updated
-        assertEquals(investmentId, id)
-        assertEquals("NVDA", name)
-        assertEquals("EUR", currency)
-        assertEquals(BigDecimal("370"), amount)
-        assertEquals("stocks", category)
+        val expected = updateUseCase.updated
+        val actual = listOf(investmentId, "NVDA", BigDecimal("370"), BigDecimal("250"), "stocks", "EUR", 1L)
+        assertEquals(expected, actual)
         assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
 

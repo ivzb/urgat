@@ -39,8 +39,8 @@ class ObserveInvestmentsUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Investment("1", "SNP 500", "USD", BigDecimal("350"), "etfs"),
-                Investment("2", "BRK.B", "USD", BigDecimal("430"), "etfs"),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 1L, false, 1L),
             )
         )
 

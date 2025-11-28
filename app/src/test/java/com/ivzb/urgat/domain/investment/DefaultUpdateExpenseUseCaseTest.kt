@@ -23,14 +23,16 @@ class DefaultUpdateInvestmentUseCaseTest {
     fun `invoke should call repository update with correct parameters`() = runTest {
         val id = "123"
         val name = "SNP 500"
-        val currency = "USD"
         val amount = BigDecimal("1550")
+        val cost = BigDecimal("330")
         val category = "etfs"
+        val currency = "USD"
+        val date = 1L
 
-        updateUseCase(id, name, currency, amount, category)
+        updateUseCase(id, name, amount, cost, category, currency, date)
 
         coVerify(exactly = 1) {
-            repository.update(id, name, currency, amount, category)
+            repository.update(id, name, amount, cost, category, currency, date)
         }
     }
 }

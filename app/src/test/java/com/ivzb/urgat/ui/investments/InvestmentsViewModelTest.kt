@@ -72,7 +72,7 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeInvestments = listOf(Investment("1", "SNP 500", "USD", 500.toBigDecimal(), "etfs"))
+        val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         val fakeInvestmentsFiltering = listOf<InvestmentsFilterMenuItem>(
             FilterMenuItem(label = "stocks", size = 1),
         )
@@ -116,7 +116,7 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeInvestments = listOf(Investment("1", "SNP 500", "USD", 500.toBigDecimal(), "etfs"))
+        val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()

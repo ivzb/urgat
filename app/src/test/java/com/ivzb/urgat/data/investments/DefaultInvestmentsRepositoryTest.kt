@@ -40,17 +40,21 @@ class DefaultInvestmentsRepositoryTest {
     fun `create adds new investment and returns its id`() = runTest {
         val id = repository.create(
             name = "SNP 500",
-            currency = "USD",
             amount = BigDecimal("350"),
+            cost = BigDecimal("200"),
             category = "etfs",
+            currency = "USD",
+            date = 1L,
         )
 
         val stored = dao.getById(id)
         assertNotNull(stored)
         assertEquals("SNP 500", stored?.name)
-        assertEquals("USD", stored?.currency)
         assertEquals(BigDecimal("350"), stored?.amount)
+        assertEquals(BigDecimal("200"), stored?.cost)
         assertEquals("etfs", stored?.category)
+        assertEquals("USD", stored?.currency)
+        assertEquals(1L, stored?.date)
         assertTrue(stored?.isDeleted == false)
     }
 
@@ -58,37 +62,43 @@ class DefaultInvestmentsRepositoryTest {
     fun `get retrieves correct investment`() = runTest {
         val id = repository.create(
             name = "SNP 500",
-            currency = "USD",
             amount = BigDecimal("350"),
+            cost = BigDecimal("200"),
             category = "etfs",
+            currency = "USD",
+            date = 1L,
         )
 
         val investment = repository.get(id)
         assertNotNull(investment)
         assertEquals("SNP 500", investment?.name)
-        assertEquals("USD", investment?.currency)
         assertEquals(BigDecimal("350"), investment?.amount)
+        assertEquals(BigDecimal("200"), investment?.cost)
         assertEquals("etfs", investment?.category)
+        assertEquals("USD", investment?.currency)
+        assertEquals(1L, investment?.date)
     }
 
     @Test
     fun `update modifies existing investment`() = runTest {
-        val id = repository.create("SNP 500", "USD", 300.toBigDecimal(), "etfs")
+        val id = repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1L)
 
-        repository.update(id, "S&P 500", "USD", 550.toBigDecimal(), "etfs")
+        repository.update(id, "S&P 500", 550.toBigDecimal(), 250.toBigDecimal(), "etfs", "EUR", 2L)
 
         val updated = repository.get(id)
         assertNotNull(updated)
         assertEquals("S&P 500", updated?.name)
-        assertEquals("USD", updated?.currency)
         assertEquals(BigDecimal("550"), updated?.amount)
+        assertEquals(BigDecimal("250"), updated?.cost)
         assertEquals("etfs", updated?.category)
+        assertEquals("EUR", updated?.currency)
+        assertEquals(2L, updated?.date)
     }
 
     @Test
     fun `update throws when investment does not exist`() = runTest {
         val exception = assertFailsWith<Exception> {
-            repository.update("missing", "SNP 500", "USD", BigDecimal.ONE, "etfs")
+            repository.update("missing", "S&P 500", 550.toBigDecimal(), 250.toBigDecimal(), "etfs", "EUR", 2)
         }
 
         assertTrue(exception.message?.contains("not found") == true)
@@ -96,7 +106,7 @@ class DefaultInvestmentsRepositoryTest {
 
     @Test
     fun `delete removes investment`() = runTest {
-        val id = repository.create("Temp", "USD", BigDecimal.ONE, "etfs")
+        val id = repository.create("Temp", BigDecimal.ONE, BigDecimal.ONE, "etfs", "USD", 1)
         assertNotNull(dao.getById(id))
 
         repository.delete(id)
@@ -105,8 +115,8 @@ class DefaultInvestmentsRepositoryTest {
 
     @Test
     fun `getStream emits mapped investments`() = runTest {
-        repository.create("SNP 500", "USD", 300.toBigDecimal(), "etfs")
-        repository.create("BRK.B", "USD", 440.toBigDecimal(), "etfs")
+        repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
+        repository.create("BRK.B", 440.toBigDecimal(), 330.toBigDecimal(), "etfs", "USD", 2)
 
         val result = repository.getStream(limit = 10).first()
 
@@ -116,8 +126,8 @@ class DefaultInvestmentsRepositoryTest {
 
     @Test
     fun `getStream with searchQuery filters correctly`() = runTest {
-        repository.create("SNP 500", "USD", 300.toBigDecimal(), "etfs")
-        repository.create("BRK.B", "USD", 440.toBigDecimal(), "etfs")
+        repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
+        repository.create("BRK.B", 440.toBigDecimal(), 330.toBigDecimal(), "etfs", "USD", 2)
 
         val result = repository.getStream(limit = 10, searchQuery = "SNP").first()
 
