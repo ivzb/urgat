@@ -29,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.navigation.TrackersDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
@@ -217,38 +218,7 @@ private fun TrackersScreenScaffoldPreview() {
                         R.string.track_weight
                     ),
                 ),
-                weights = listOf(
-                    Weight(
-                        id = "ID 1",
-                        value = 79.5.toBigDecimal(),
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Weight(
-                        id = "ID 2",
-                        value = 81.3.toBigDecimal(),
-                        isDeleted = false,
-                        createdAt = 1,
-                    ),
-                    Weight(
-                        id = "ID 3",
-                        value = 82.1.toBigDecimal(),
-                        isDeleted = false,
-                        createdAt = 2,
-                    ),
-                    Weight(
-                        id = "ID 4",
-                        value = 79.9.toBigDecimal(),
-                        isDeleted = false,
-                        createdAt = 3,
-                    ),
-                    Weight(
-                        id = "ID 5",
-                        value = 78.5.toBigDecimal(),
-                        isDeleted = false,
-                        createdAt = 4,
-                    ),
-                ),
+                weights = SampleData.SAMPLE_WEIGHTS,
             ),
             onIntent = {},
             navController = rememberNavController(),
@@ -303,38 +273,7 @@ private fun TrackersContentPreview() {
                 ),
             ),
             onHeaderItemClick = {},
-            weights = listOf(
-                Weight(
-                    id = "ID 1",
-                    value = 79.5.toBigDecimal(),
-                    isDeleted = false,
-                    createdAt = 1,
-                ),
-                Weight(
-                    id = "ID 2",
-                    value = 81.3.toBigDecimal(),
-                    isDeleted = false,
-                    createdAt = 2,
-                ),
-                Weight(
-                    id = "ID 3",
-                    value = 82.1.toBigDecimal(),
-                    isDeleted = false,
-                    createdAt = 3,
-                ),
-                Weight(
-                    id = "ID 4",
-                    value = 79.9.toBigDecimal(),
-                    isDeleted = false,
-                    createdAt = 4,
-                ),
-                Weight(
-                    id = "ID 5",
-                    value = 78.5.toBigDecimal(),
-                    isDeleted = false,
-                    createdAt = 5,
-                ),
-            ),
+            weights = SampleData.SAMPLE_WEIGHTS,
             filteringUiInfo = TrackersFilteringUiInfo(),
             listState = rememberLazyListState(),
             modifier = Modifier

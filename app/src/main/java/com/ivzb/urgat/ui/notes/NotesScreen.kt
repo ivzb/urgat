@@ -27,6 +27,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.NotesDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.LandscapePreview
@@ -205,38 +206,7 @@ private fun NotesScreenScaffoldPreview() {
     UrgatTheme {
         NotesScreenScaffold(
             uiState = NotesUiState(
-                items = listOf(
-                    Note(
-                        id = "ID 1",
-                        content = "Remember to buy milk and eggs before the store closes.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 2",
-                        content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 3",
-                        content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 4",
-                        content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 5",
-                        content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                ),
+                items = SampleData.SAMPLE_NOTES,
                 filteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -319,38 +289,7 @@ private fun NotesScreenScaffoldErrorPreview() {
 private fun NotesScreenContentPreview() {
     UrgatTheme {
         NotesContent(
-            notes = listOf(
-                Note(
-                    id = "ID 1",
-                    content = "Remember to buy milk and eggs before the store closes.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 2",
-                    content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 3",
-                    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 4",
-                    content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 5",
-                    content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
-                    isDeleted = false,
-                    createdAt = 0,
-                )
-            ),
+            notes = SampleData.SAMPLE_NOTES,
             onNoteClick = {},
             filteringUiInfo = NotesFilteringUiInfo(),
             listState = rememberLazyListState()
@@ -364,38 +303,7 @@ private fun NotesScreenContentPreview() {
 private fun NotesColumnPreview() {
     UrgatTheme {
         NotesColumn(
-            notes = listOf(
-                Note(
-                    id = "ID 1",
-                    content = "Remember to buy milk and eggs before the store closes.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 2",
-                    content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 3",
-                    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 4",
-                    content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 5",
-                    content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
-                    isDeleted = false,
-                    createdAt = 0,
-                )
-            ),
+            notes = SampleData.SAMPLE_NOTES,
             onNoteClick = {},
             listState = rememberLazyListState()
         )
@@ -408,12 +316,7 @@ private fun NotesColumnPreview() {
 private fun NoteItemPreview() {
     UrgatTheme {
         NoteItem(
-            note = Note(
-                id = "ID 1",
-                content = "Note 1",
-                isDeleted = false,
-                createdAt = 0,
-            ),
+            note = SampleData.SAMPLE_NOTES.first(),
             onNoteClick = {}
         )
     }

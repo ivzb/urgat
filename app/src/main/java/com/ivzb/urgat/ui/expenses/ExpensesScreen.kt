@@ -32,6 +32,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.ExpensesDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -236,35 +237,7 @@ private fun ExpensesScreenScaffoldPreview() {
     UrgatTheme {
         ExpensesScreenScaffold(
             uiState = ExpensesUiState(
-                items = listOf(
-                    Expense(
-                        id = "ID 1",
-                        name = "Food",
-                        amount = 10.toBigDecimal(),
-                        category = "food",
-                        date = 1761335214,
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Expense(
-                        id = "ID 2",
-                        name = "Stuff",
-                        amount = 23.23.toBigDecimal(),
-                        category = "transport",
-                        date = 1761335214,
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Expense(
-                        id = "ID 3",
-                        name = "Salary",
-                        amount = -920.toBigDecimal(),
-                        category = "income",
-                        date = 1761335214,
-                        isDeleted = false,
-                        createdAt = 0,
-                    )
-                ),
+                items = SampleData.SAMPLE_EXPENSES,
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -347,26 +320,7 @@ private fun ExpensesScreenScaffoldErrorPreview() {
 private fun ExpensesScreenContentPreview() {
     UrgatTheme {
         ExpensesContent(
-            expenses = listOf(
-                Expense(
-                    id = "ID 1",
-                    name = "Food",
-                    amount = 10.toBigDecimal(),
-                    category = "food",
-                    date = 1761335214,
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Expense(
-                    id = "ID 1",
-                    name = "Stuff",
-                    amount = 23.23.toBigDecimal(),
-                    category = "transport",
-                    date = 1761335214,
-                    isDeleted = false,
-                    createdAt = 0,
-                )
-            ),
+            expenses = SampleData.SAMPLE_EXPENSES,
             onExpenseClick = {},
             filteringUiInfo = ExpensesFilteringUiInfo(),
             listState = rememberLazyListState()
@@ -380,15 +334,7 @@ private fun ExpensesScreenContentPreview() {
 private fun ExpenseItemPreview() {
     UrgatTheme {
         ExpenseItem(
-            expense = Expense(
-                id = "ID 1",
-                name = "Food",
-                amount = 10.toBigDecimal(),
-                category = "food",
-                date = 1761335214,
-                isDeleted = false,
-                createdAt = 0,
-            ),
+            expense = SampleData.SAMPLE_EXPENSES.first(),
             onExpenseClick = {}
         )
     }

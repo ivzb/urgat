@@ -611,70 +611,11 @@ fun OverviewContentPreview() {
             onSeeAllTodos = {},
             onTodoClick = {},
             onTodoCheckedChange = { _, _ -> },
-            expenses =  listOf(
-                Expense(
-                    id = "ID 1",
-                    name = "Food",
-                    amount = 10.toBigDecimal(),
-                    category = "food",
-                    date = 1761335417,
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Expense(
-                    id = "ID 2",
-                    name = "Stuff",
-                    amount = 23.23.toBigDecimal(),
-                    category = "transport",
-                    date = 1761335417,
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Expense(
-                    id = "ID 3",
-                    name = "Salary",
-                    amount = -920.toBigDecimal(),
-                    category = "income",
-                    date = 1761335417,
-                    isDeleted = false,
-                    createdAt = 0,
-                )
-            ),
+            expenses = SampleData.SAMPLE_EXPENSES,
             expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
             onSeeAllExpenses = {},
             onExpenseClick = {},
-            notes = listOf(
-                Note(
-                    id = "ID 1",
-                    content = "Remember to buy milk and eggs before the store closes.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 2",
-                    content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 3",
-                    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 4",
-                    content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
-                    isDeleted = false,
-                    createdAt = 0,
-                ),
-                Note(
-                    id = "ID 5",
-                    content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
-                    isDeleted = false,
-                    createdAt = 0,
-                )
-            ),
+            notes = SampleData.SAMPLE_NOTES,
             notesFilteringUiInfo = NotesFilteringUiInfo(),
             onSeeAllNotes = {},
             onNoteClick = {},
@@ -706,35 +647,7 @@ fun ExpensesCardPreview() {
     UrgatTheme {
         LazyColumn {
             itemExpenses(
-                expenses = listOf(
-                    Expense(
-                        id = "ID 1",
-                        name = "Food",
-                        amount = 10.toBigDecimal(),
-                        category = "food",
-                        date = 1761335417,
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Expense(
-                        id = "ID 2",
-                        name = "Stuff",
-                        amount = 23.23.toBigDecimal(),
-                        category = "transport",
-                        date = 1761335417,
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Expense(
-                        id = "ID 3",
-                        name = "Salary",
-                        amount = -920.toBigDecimal(),
-                        category = "income",
-                        date = 1761335417,
-                        isDeleted = false,
-                        createdAt = 0,
-                    )
-                ),
+                expenses = SampleData.SAMPLE_EXPENSES,
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
                 onAddExpense = {},
                 onSeeAllExpenses = {},
@@ -750,38 +663,7 @@ fun NotesCardPreview() {
     UrgatTheme {
         LazyColumn {
             itemNotes(
-                notes = listOf(
-                    Note(
-                        id = "ID 1",
-                        content = "Remember to buy milk and eggs before the store closes.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 2",
-                        content = "Meeting notes: Discuss project milestones, finalize design specs, and assign tasks for the next sprint. Don’t forget to update the documentation.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 3",
-                        content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt egestas, justo nulla facilisis mauris, nec rhoncus erat massa vel urna. Curabitur id sagittis mi, in viverra libero. Suspendisse potenti.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 4",
-                        content = "Call the electrician tomorrow morning about the kitchen lights — mention the flickering issue.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    ),
-                    Note(
-                        id = "ID 5",
-                        content = "Books to read: Atomic Habits, Deep Work, and The Pragmatic Programmer.",
-                        isDeleted = false,
-                        createdAt = 0,
-                    )
-                ),
+                notes = SampleData.SAMPLE_NOTES,
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 onAddNote = {},
                 onSeeAllNotes = {},

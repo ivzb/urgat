@@ -26,8 +26,6 @@ make error tracker
 consider showing text field labels because editing investment is unclear
 convert all SampleData to actual objects
 remove default values from all /data entities like done for Investment.kt
-replace all preview list of objects with sample data
 update investments screen ui to include cost and date
 update dependencies
 write UI tests
-write DB tests
