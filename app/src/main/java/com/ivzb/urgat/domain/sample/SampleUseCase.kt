@@ -6,6 +6,7 @@ import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
+import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import javax.inject.Inject
 
 interface SampleUseCase {
@@ -19,15 +20,19 @@ class DefaultSampleUseCase @Inject constructor(
     private val createExpenseUseCase: CreateExpenseUseCase,
     private val createNoteUseCase: CreateNoteUseCase,
     private val createInvestmentUseCase: CreateInvestmentUseCase,
+    private val createWeightUseCase: CreateWeightUseCase,
 ): SampleUseCase {
 
     override suspend operator fun invoke() {
-        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG || !BuildConfig.WITH_SAMPLE_DATA) {
             return
         }
 
         SampleData.SAMPLE_TODOS.forEach {
-            createTodoUseCase(it.title, it.description)
+            createTodoUseCase(
+                it.title,
+                it.description,
+            )
         }
 
         SampleData.SAMPLE_EXPENSES.forEach {
@@ -40,7 +45,9 @@ class DefaultSampleUseCase @Inject constructor(
         }
 
         SampleData.SAMPLE_NOTES.forEach {
-            createNoteUseCase(it.content)
+            createNoteUseCase(
+                it.content,
+            )
         }
 
         SampleData.SAMPLE_INVESTMENTS.forEach {
@@ -51,6 +58,12 @@ class DefaultSampleUseCase @Inject constructor(
                 it.category,
                 it.currency,
                 it.date,
+            )
+        }
+
+        SampleData.SAMPLE_WEIGHTS.forEach {
+            createWeightUseCase(
+                it.value,
             )
         }
     }

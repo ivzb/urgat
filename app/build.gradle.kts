@@ -32,9 +32,15 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("Boolean", "WITH_SAMPLE_DATA", "false")
+        }
+
+        debug {
+            isMinifyEnabled = false
+            buildConfigField("Boolean", "WITH_SAMPLE_DATA", "false")
         }
     }
 

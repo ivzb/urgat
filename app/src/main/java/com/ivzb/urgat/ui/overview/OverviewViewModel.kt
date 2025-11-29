@@ -6,18 +6,15 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
-import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
-import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.domain.sample.SampleUseCase
 import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
-import com.ivzb.urgat.domain.todo.CreateTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
@@ -46,7 +43,7 @@ class OverviewViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        if (ADD_SAMPLE_DATA) {
+        if (BuildConfig.WITH_SAMPLE_DATA) {
             viewModelScope.launch {
                 sampleUseCase()
             }
@@ -180,8 +177,6 @@ class OverviewViewModel @Inject constructor(
     companion object {
 
         private const val LIMIT = 3
-
-        private const val ADD_SAMPLE_DATA = false
 
     }
 

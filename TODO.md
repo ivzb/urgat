@@ -20,9 +20,11 @@ write script to extract release notes between tags
 generate screenshots for google play store via UI tests
 check why the submit button is not ime positioned on top of the keyboard for sdk 31
 update to jetpack navigation 3
-extract ADD_SAMPLE_DATA to build config
 make error tracker
 consider showing text field labels because editing investment is unclear
 update investments screen ui to include cost and date
 update dependencies
 write UI tests
+add unit tests for OverviewViewModel sample data use case
+add date to weight
+deal with too many items - pagination?
