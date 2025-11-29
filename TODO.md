@@ -28,4 +28,5 @@ convert all SampleData to actual objects
 remove default values from all /data entities like done for Investment.kt
 replace all preview list of objects with sample data
 update investments screen ui to include cost and date
-write unit tests for db migration
+update dependencies
+write UI tests

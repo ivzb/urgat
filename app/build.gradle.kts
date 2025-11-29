@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
@@ -25,7 +26,6 @@ android {
             useSupportLibrary = true
         }
 
-        // Enable room auto-migrations
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
@@ -60,6 +60,13 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    sourceSets {
+        sourceSets {
+            // Adds exported schema location as test app assets.
+            getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        }
+    }
 }
 
 dependencies {
@@ -91,6 +98,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.room.testing)
 
     // Compose
     implementation(libs.androidx.compose.ui)
@@ -104,6 +112,9 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
 
+    // Json Serialization
+    implementation(libs.kotlinx.serialization.json)
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
 
@@ -113,6 +124,7 @@ dependencies {
 
     // Local tests: jUnit, coroutines, Android runner
     testImplementation(libs.junit)
+    implementation(libs.junit.ktx)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
