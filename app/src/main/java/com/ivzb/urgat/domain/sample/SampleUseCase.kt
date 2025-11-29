@@ -26,16 +26,21 @@ class DefaultSampleUseCase @Inject constructor(
             return
         }
 
-        SampleData.SAMPLE_TODOS.forEach { (title, description) ->
-            createTodoUseCase(title, description)
+        SampleData.SAMPLE_TODOS.forEach {
+            createTodoUseCase(it.title, it.description)
         }
 
-        SampleData.SAMPLE_EXPENSES.forEach { (name, amount, category) ->
-            createExpenseUseCase(name, amount.toBigDecimal(), category, System.currentTimeMillis())
+        SampleData.SAMPLE_EXPENSES.forEach {
+            createExpenseUseCase(
+                it.name,
+                it.amount,
+                it.category,
+                it.date,
+            )
         }
 
-        SampleData.SAMPLE_NOTES.forEach { (content) ->
-            createNoteUseCase(content)
+        SampleData.SAMPLE_NOTES.forEach {
+            createNoteUseCase(it.content)
         }
 
         SampleData.SAMPLE_INVESTMENTS.forEach {
@@ -45,7 +50,7 @@ class DefaultSampleUseCase @Inject constructor(
                 it.cost,
                 it.category,
                 it.currency,
-                System.currentTimeMillis()
+                it.date,
             )
         }
     }

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
@@ -239,64 +240,7 @@ private fun TodoScreenScaffoldPreview() {
     UrgatTheme {
         TodoScreenScaffold(
             uiState = TodoUiState(
-                items = listOf(
-                    Todo(
-                        id = "ID 1",
-                        title = "Title 1",
-                        description = "Description 1",
-                        isCompleted = false,
-                        createdAt = 0
-                    ),
-                    Todo(
-                        id = "ID 2",
-                        title = "Title 2",
-                        description = "Description 2",
-                        isCompleted = true,
-                        createdAt = 1
-                    ),
-                    Todo(
-                        id = "ID 3",
-                        title = "Title 3",
-                        description = "Description 3",
-                        isCompleted = true,
-                        createdAt = 2
-                    ),
-                    Todo(
-                        id = "ID 4",
-                        title = "Title 4",
-                        description = "Description 4",
-                        isCompleted = false,
-                        createdAt = 3
-                    ),
-                    Todo(
-                        id = "ID 5",
-                        title = "Title 5",
-                        description = "Description 5",
-                        isCompleted = true,
-                        createdAt = 4
-                    ),
-                    Todo(
-                        id = "ID 6",
-                        title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        isCompleted = false,
-                        createdAt = 5
-                    ),
-                    Todo(
-                        id = "ID 7",
-                        title = "Test",
-                        description = "",
-                        isCompleted = false,
-                        createdAt = 6
-                    ),
-                    Todo(
-                        id = "ID 8",
-                        title = "",
-                        description = "Test",
-                        isCompleted = false,
-                        createdAt = 7
-                    ),
-                ),
+                items = SampleData.SAMPLE_TODOS,
                 filteringUiInfo = TodoFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -380,64 +324,7 @@ private fun TodoContentPreview() {
     UrgatTheme {
         Surface {
             TodoContent(
-                todos = listOf(
-                    Todo(
-                        id = "ID 1",
-                        title = "Title 1",
-                        description = "Description 1",
-                        isCompleted = false,
-                        createdAt = 0
-                    ),
-                    Todo(
-                        id = "ID 2",
-                        title = "Title 2",
-                        description = "Description 2",
-                        isCompleted = true,
-                        createdAt = 1
-                    ),
-                    Todo(
-                        id = "ID 3",
-                        title = "Title 3",
-                        description = "Description 3",
-                        isCompleted = true,
-                        createdAt = 2
-                    ),
-                    Todo(
-                        id = "ID 4",
-                        title = "Title 4",
-                        description = "Description 4",
-                        isCompleted = false,
-                        createdAt = 3
-                    ),
-                    Todo(
-                        id = "ID 5",
-                        title = "Title 5",
-                        description = "Description 5",
-                        isCompleted = true,
-                        createdAt = 4
-                    ),
-                    Todo(
-                        id = "ID 6",
-                        title = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                        isCompleted = false,
-                        createdAt = 5
-                    ),
-                    Todo(
-                        id = "ID 7",
-                        title = "Test",
-                        description = "",
-                        isCompleted = false,
-                        createdAt = 6
-                    ),
-                    Todo(
-                        id = "ID 8",
-                        title = "",
-                        description = "Test",
-                        isCompleted = false,
-                        createdAt = 7
-                    ),
-                ),
+                todos = SampleData.SAMPLE_TODOS,
                 onTodoClick = { },
                 onTodoCheckedChange = { _, _ -> },
                 filteringUiInfo = TodoFilteringUiInfo(),
@@ -454,12 +341,7 @@ private fun TodoItemPreview() {
     UrgatTheme {
         Surface {
             TodoItem(
-                todo = Todo(
-                    id = "ID",
-                    title = "Title",
-                    description = "Description",
-                    createdAt = 0
-                ),
+                todo = SampleData.SAMPLE_TODOS.first().copy(isCompleted = false),
                 onTodoClick = { },
                 onCheckedChange = { }
             )
@@ -474,13 +356,7 @@ private fun TodoItemCompletedPreview() {
     UrgatTheme {
         Surface {
             TodoItem(
-                todo = Todo(
-                    id = "ID",
-                    title = "Title",
-                    description = "Description",
-                    isCompleted = true,
-                    createdAt = 0
-                ),
+                todo = SampleData.SAMPLE_TODOS.first().copy(isCompleted = true),
                 onTodoClick = { },
                 onCheckedChange = { }
             )

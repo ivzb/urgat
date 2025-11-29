@@ -29,6 +29,8 @@ class DefaultTodoRepository @Inject constructor(
             id = id,
             title = title,
             description = description,
+            isCompleted = false,
+            isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
         localDataSource.upsert(todo.toEntity())

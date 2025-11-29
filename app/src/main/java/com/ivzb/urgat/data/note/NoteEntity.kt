@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class NoteEntity(
     @PrimaryKey val id: String,
     val content: String,
-    var isDeleted: Boolean,
-    var createdAt: Long
+    val isDeleted: Boolean,
+    val createdAt: Long
 )

@@ -32,6 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.OverviewDestination
 import com.ivzb.urgat.ui.components.EmptyStateCard
@@ -433,29 +434,7 @@ fun OverviewScreenScaffoldTodosPreview() {
                         R.string.add_note
                     ),
                 ),
-                todoItems = listOf(
-                    Todo(
-                        id = "ID 1",
-                        title = "Title 1",
-                        description = "Description 1",
-                        isCompleted = false,
-                        createdAt = 0
-                    ),
-                    Todo(
-                        id = "ID 2",
-                        title = "Title 2",
-                        description = "Description 2",
-                        isCompleted = true,
-                        createdAt = 1
-                    ),
-                    Todo(
-                        id = "ID 3",
-                        title = "Title 3",
-                        description = "Description 3",
-                        isCompleted = true,
-                        createdAt = 2
-                    ),
-                ),
+                todoItems = SampleData.SAMPLE_TODOS,
                 todoFilteringUiInfo = TodoFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,
@@ -627,29 +606,7 @@ fun OverviewContentPreview() {
                 ),
             ),
             onHeaderItemClick = {},
-            todos = listOf(
-                Todo(
-                    id = "ID 1",
-                    title = "Title 1",
-                    description = "Description 1",
-                    isCompleted = false,
-                    createdAt = 0
-                ),
-                Todo(
-                    id = "ID 2",
-                    title = "Title 2",
-                    description = "Description 2",
-                    isCompleted = true,
-                    createdAt = 1
-                ),
-                Todo(
-                    id = "ID 3",
-                    title = "Title 3",
-                    description = "Description 3",
-                    isCompleted = true,
-                    createdAt = 2
-                ),
-            ),
+            todos = SampleData.SAMPLE_TODOS,
             todoFilteringUiInfo = TodoFilteringUiInfo(),
             onSeeAllTodos = {},
             onTodoClick = {},
@@ -732,29 +689,7 @@ fun TodoCardPreview() {
     UrgatTheme {
         LazyColumn {
             itemTodo(
-                todos = listOf(
-                    Todo(
-                        id = "ID 1",
-                        title = "Title 1",
-                        description = "Description 1",
-                        isCompleted = false,
-                        createdAt = 0
-                    ),
-                    Todo(
-                        id = "ID 2",
-                        title = "Title 2",
-                        description = "Description 2",
-                        isCompleted = true,
-                        createdAt = 1
-                    ),
-                    Todo(
-                        id = "ID 3",
-                        title = "Title 3",
-                        description = "Description 3",
-                        isCompleted = true,
-                        createdAt = 2
-                    ),
-                ),
+                todos = SampleData.SAMPLE_TODOS,
                 todoFilteringUiInfo = TodoFilteringUiInfo(),
                 onAddTodo = {},
                 onSeeAllTodos = {},

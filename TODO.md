@@ -30,3 +30,4 @@ replace all preview list of objects with sample data
 update investments screen ui to include cost and date
 update dependencies
 write UI tests
+write DB tests

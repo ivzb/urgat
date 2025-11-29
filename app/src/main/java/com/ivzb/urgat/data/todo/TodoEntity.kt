@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "todo")
 data class TodoEntity(
     @PrimaryKey val id: String,
-    var title: String,
-    var description: String,
-    var isCompleted: Boolean,
-    var isDeleted: Boolean,
-    var createdAt: Long
+    val title: String,
+    val description: String,
+    val isCompleted: Boolean,
+    val isDeleted: Boolean,
+    val createdAt: Long
 )

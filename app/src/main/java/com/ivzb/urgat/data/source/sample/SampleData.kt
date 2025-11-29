@@ -1,27 +1,40 @@
 package com.ivzb.urgat.data.source.sample
 
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.data.weight.Weight
 import kotlin.collections.component1
 
 object SampleData {
 
     val SAMPLE_TODOS = listOf(
-        listOf("Buy groceries", "Milk, eggs, bread, and fruits"),
-        listOf("Read a book", "Finish reading 'Atomic Habits'"),
-        listOf("Morning workout", "30 minutes of cardio and stretching"),
-        listOf("Call plumber", "Fix leaking sink in the kitchen"),
-        listOf("Plan weekend trip", "Decide on destination and book hotel"),
-        listOf("Send work report", "Monthly sales report to manager"),
-        listOf("Clean kitchen", "Wash dishes, wipe counters, sweep floor"),
-        listOf("Update resume", "Add latest projects and experiences"),
-        listOf("Meditation", "10 minutes of morning meditation"),
-        listOf("Water plants", "Water all indoor and outdoor plants"),
-        listOf("Prepare presentation", "Slides for Monday's team meeting"),
-        listOf("Pay electricity bill", "Due by the end of the month"),
-        listOf("Organize closet", "Sort clothes and donate unused items"),
-        listOf("Write journal", "Reflect on today's achievements and challenges"),
-        listOf("Grocery meal prep", "Cook meals for the next 3 days")
-    )
+        listOf("Buy groceries", "Milk, eggs, bread, and fruits", "false"),
+        listOf("Read a book", "Finish reading 'Atomic Habits'", "false"),
+        listOf("Morning workout", "30 minutes of cardio and stretching", "true"),
+        listOf("Call plumber", "Fix leaking sink in the kitchen", "false"),
+        listOf("Plan weekend trip", "Decide on destination and book hotel", "false"),
+        listOf("Send work report", "Monthly sales report to manager", "true"),
+        listOf("Clean kitchen", "Wash dishes, wipe counters, sweep floor", "false"),
+        listOf("Update resume", "Add latest projects and experiences", "false"),
+        listOf("Meditation", "10 minutes of morning meditation", "true"),
+        listOf("Water plants", "Water all indoor and outdoor plants", "false"),
+        listOf("Prepare presentation", "Slides for Monday's team meeting", "false"),
+        listOf("Pay electricity bill", "Due by the end of the month", "true"),
+        listOf("Organize closet", "Sort clothes and donate unused items", "false"),
+        listOf("Write journal", "Reflect on today's achievements and challenges", "false"),
+        listOf("Grocery meal prep", "Cook meals for the next 3 days", "true")
+    ).mapIndexed { index, (title, description, isCompleted) ->
+        Todo(
+            id = index.toString(),
+            title = title,
+            description = description,
+            isCompleted = isCompleted.toBoolean(),
+            isDeleted = false,
+            createdAt = System.currentTimeMillis(),
+        )
+    }
 
     val SAMPLE_EXPENSES = listOf(
         listOf("Groceries", "75.50", "Food"),
@@ -39,7 +52,17 @@ object SampleData {
         listOf("Pet food", "25.50", "Pets"),
         listOf("Birthday gift", "80", "Gifts"),
         listOf("Salary", "-1500", "Job")
-    )
+    ).mapIndexed { index, (name, amount, category) ->
+        Expense(
+            id = index.toString(),
+            name = name,
+            amount = amount.toBigDecimal(),
+            category = category,
+            date = System.currentTimeMillis(),
+            isDeleted = false,
+            createdAt = System.currentTimeMillis(),
+        )
+    }
 
     val SAMPLE_NOTES = listOf(
         listOf("Meeting notes about Q4 goals and deadlines"),
@@ -83,6 +106,14 @@ object SampleData {
         ),
         listOf("Long-term goals list for next year")
     )
+    .mapIndexed { index, (content) ->
+        Note(
+            id = index.toString(),
+            content = content,
+            isDeleted = false,
+            createdAt = System.currentTimeMillis(),
+        )
+    }
 
     val SAMPLE_INVESTMENTS = listOf(
         listOf("Apple Inc.", "2000", "276.97", "Stocks", "USD"),
@@ -112,6 +143,27 @@ object SampleData {
             date = System.currentTimeMillis(),
             isDeleted = false,
             createdAt = System.currentTimeMillis(),
+        )
+    }
+
+    val SAMPLE_WEIGHTS = listOf(
+        listOf("70.5", "1700000000"),
+        listOf("70.7", "1700086400"),
+        listOf("70.6", "1700172800"),
+        listOf("70.8", "1700259200"),
+        listOf("70.9", "1700345600"),
+        listOf("71.0", "1700432000"),
+        listOf("70.8", "1700518400"),
+        listOf("70.7", "1700604800"),
+        listOf("70.6", "1700691200"),
+        listOf("70.5", "1700777600"),
+    )
+    .mapIndexed { index, (weight, timestamp) ->
+        Weight(
+            id = index.toString(),
+            value = weight.toBigDecimal(),
+            isDeleted = false,
+            createdAt = timestamp.toLong(),
         )
     }
 

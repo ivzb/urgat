@@ -13,6 +13,6 @@ data class InvestmentEntity(
     val category: String,
     val currency: String,
     val date: Long,
-    var isDeleted: Boolean,
-    var createdAt: Long
+    val isDeleted: Boolean,
+    val createdAt: Long
 )
