@@ -26,6 +26,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -85,13 +86,13 @@ class TodoViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeTodo = listOf(Todo("1", "Lunch"))
+        val fakeTodo = listOf(Todo("1", "Lunch", "", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
 
-        val fakeExpenses = listOf(Expense("1", "Lunch"))
+        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
 
-        val fakeNotes = listOf(Note("1", "Note"))
+        val fakeNotes = listOf(Note("1", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
 
         viewModel = createViewModel()
@@ -116,10 +117,10 @@ class TodoViewModelTest {
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveTodosUseCase.emit(Async.Error(R.string.error_todos))
 
-        val fakeExpenses = listOf(Expense("1", "Lunch"))
+        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
 
-        val fakeNotes = listOf(Note("1", "Note"))
+        val fakeNotes = listOf(Note("1", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
 
         viewModel = createViewModel()
@@ -139,7 +140,7 @@ class TodoViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeTodo = listOf(Todo("2", "Coffee"))
+        val fakeTodo = listOf(Todo("2", "Coffee", "", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
         fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
@@ -156,7 +157,7 @@ class TodoViewModelTest {
 
     @Test
     fun `completeTodo calls completeUseCase`() = runTest {
-        val todo = Todo("2", "Coffee")
+        val todo = Todo("2", "Coffee", "", false, false, 1L)
 
         viewModel = createViewModel()
 
@@ -168,7 +169,7 @@ class TodoViewModelTest {
 
     @Test
     fun `activateTodo calls activateUseCase`() = runTest {
-        val todo = Todo("2", "Coffee")
+        val todo = Todo("2", "Coffee", "", false, false, 1L)
 
         viewModel = createViewModel()
 

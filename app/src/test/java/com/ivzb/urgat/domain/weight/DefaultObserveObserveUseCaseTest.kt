@@ -35,8 +35,8 @@ class ObserveWeightsUseCaseTest {
         val limit = 10
         val repositoryStream = flowOf(
             listOf(
-                Weight("1", 79.5.toBigDecimal(), createdAt = 100_000_000),
-                Weight("2", 81.3.toBigDecimal(), createdAt = 200_000_000)
+                Weight("1", 79.5.toBigDecimal(), false, createdAt = 100_000_000),
+                Weight("2", 81.3.toBigDecimal(), false, createdAt = 200_000_000)
             )
         )
 

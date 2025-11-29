@@ -67,7 +67,9 @@ class AddEditTodoViewModelTest {
             id = todoId,
             title = "Hello",
             description = "World",
-            isCompleted = false
+            isCompleted = false,
+            isDeleted = false,
+            createdAt = 1L,
         )
 
         getUseCase.toReturn = todo
@@ -149,7 +151,9 @@ class AddEditTodoViewModelTest {
             id = todoId,
             title = "Old",
             description = "Desc",
-            isCompleted = false
+            isCompleted = false,
+            isDeleted = false,
+            createdAt = 1L,
         )
         getUseCase.toReturn = todo
 
@@ -185,7 +189,9 @@ class AddEditTodoViewModelTest {
             id = todoId,
             title = "Old",
             description = "Desc",
-            isCompleted = false
+            isCompleted = false,
+            isDeleted = false,
+            createdAt = 1L,
         )
         getUseCase.toReturn = todo
 

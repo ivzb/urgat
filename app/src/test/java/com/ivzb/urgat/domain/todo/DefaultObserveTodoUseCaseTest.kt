@@ -35,8 +35,8 @@ class ObserveTodosUseCaseTest {
         val limit = 10
         val repositoryStream = flowOf(
             listOf(
-                Todo("1", "Todo 1"),
-                Todo("2", "Todo 2")
+                Todo("1", "Todo 1", "", false, false, 1L),
+                Todo("2", "Todo 2", "", false, false, 1L)
             )
         )
 

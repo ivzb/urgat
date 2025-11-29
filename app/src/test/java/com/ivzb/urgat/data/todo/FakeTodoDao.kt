@@ -33,7 +33,8 @@ class FakeTodoDao : TodoDao {
     }
 
     override suspend fun updateCompleted(id: String, completed: Boolean) {
-        items.find { it.id == id }?.isCompleted = completed
+        val item = items.first { it.id == id }
+        items[items.indexOf(item)] = item.copy(isCompleted = completed)
     }
 
     override suspend fun deleteCompleted(): Int {

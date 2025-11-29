@@ -25,7 +25,7 @@ class DefaultGetTodoUseCaseTest {
     @Test
     fun `invoke should return todo when repository returns todo`() = runTest {
         val id = "123"
-        val expectedTodo = Todo(id, "Todo")
+        val expectedTodo = Todo(id, "Todo", "", false, false, 1L)
         coEvery { repository.get(id) } returns expectedTodo
 
         val result = getUseCase(id)

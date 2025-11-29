@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -61,7 +62,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeExpenses = listOf(Expense("1", "Lunch"))
+        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))
         val fakeExpensesFiltering = listOf(
             FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
@@ -108,7 +109,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeExpenses = listOf(Expense("2", "Coffee"))
+        val fakeExpenses = listOf(Expense("2", "Coffee", BigDecimal.TEN, "food", 1L, false, 1L))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()

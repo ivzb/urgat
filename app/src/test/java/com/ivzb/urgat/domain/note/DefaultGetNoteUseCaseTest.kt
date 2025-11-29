@@ -25,7 +25,7 @@ class DefaultGetNoteUseCaseTest {
     @Test
     fun `invoke should return note when repository returns note`() = runTest {
         val id = "123"
-        val expectedNote = Note(id, "Note")
+        val expectedNote = Note(id, "Note", false, 1L)
         coEvery { repository.get(id) } returns expectedNote
 
         val result = getUseCase(id)

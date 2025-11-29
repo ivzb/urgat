@@ -21,11 +21,8 @@ generate screenshots for google play store via UI tests
 check why the submit button is not ime positioned on top of the keyboard for sdk 31
 update to jetpack navigation 3
 extract ADD_SAMPLE_DATA to build config
-add trackers to sample data
 make error tracker
 consider showing text field labels because editing investment is unclear
-convert all SampleData to actual objects
-remove default values from all /data entities like done for Investment.kt
 update investments screen ui to include cost and date
 update dependencies
 write UI tests

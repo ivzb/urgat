@@ -35,8 +35,8 @@ class ObserveNotesUseCaseTest {
         val limit = 10
         val repositoryStream = flowOf(
             listOf(
-                Note("1", "Note 1"),
-                Note("2", "Note 2")
+                Note("1", "Note 1", false, 1L),
+                Note("2", "Note 2", false, 1L)
             )
         )
 

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -54,7 +55,7 @@ class NotesViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeNotes = listOf(Note("1", "Note"))
+        val fakeNotes = listOf(Note("1", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
         viewModel = createViewModel()
 
@@ -92,7 +93,7 @@ class NotesViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeNotes = listOf(Note("2", "Note"))
+        val fakeNotes = listOf(Note("2", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
         viewModel = createViewModel()
 

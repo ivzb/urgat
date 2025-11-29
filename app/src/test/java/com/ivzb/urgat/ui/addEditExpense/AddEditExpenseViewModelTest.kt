@@ -76,7 +76,9 @@ class AddEditExpenseViewModelTest {
             name = "Taxi",
             amount = BigDecimal("15"),
             category = "Transport",
-            date = 123L
+            date = 123L,
+            isDeleted = false,
+            createdAt = 1L,
         )
 
         getUseCase.toReturn = expense
@@ -165,7 +167,9 @@ class AddEditExpenseViewModelTest {
             name = "Taxi",
             amount = BigDecimal("15"),
             category = "Transport",
-            date = 123L
+            date = 123L,
+            isDeleted = false,
+            createdAt = 1L,
         )
         getUseCase.toReturn = expense
 
@@ -205,7 +209,9 @@ class AddEditExpenseViewModelTest {
             name = "Taxi",
             amount = BigDecimal("15"),
             category = "Transport",
-            date = 123L
+            date = 123L,
+            isDeleted = false,
+            createdAt = 1L,
         )
         getUseCase.toReturn = expense
 
