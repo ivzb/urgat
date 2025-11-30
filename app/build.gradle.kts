@@ -67,6 +67,7 @@ android {
         }
 
         debug {
+            applicationIdSuffix = ".debug"
             isMinifyEnabled = false
             buildConfigField("Boolean", "WITH_SAMPLE_DATA", "false")
         }
