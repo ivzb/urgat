@@ -35,3 +35,5 @@ text field selection doesn't work
 add preview to notes because long notes are not readable
 longpress on a note should copy it
 select today's weight from DB if exists
+add export to csv
+rename todo app id to -debug
