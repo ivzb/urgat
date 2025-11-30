@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,7 +29,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
@@ -44,8 +42,6 @@ import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.expenses.ExpenseItem
-import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -57,10 +53,6 @@ fun OverviewScreen(
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-
-    onAddExpense: () -> Unit,
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
 
     onAddNote: () -> Unit,
     onSeeAllNotes: () -> Unit,
@@ -81,9 +73,6 @@ fun OverviewScreen(
         onSeeAllTodos = onSeeAllTodos,
         onTodoClick = onTodoClick,
 
-        onSeeAllExpenses = onSeeAllExpenses,
-        onExpenseClick = onExpenseClick,
-
         onSeeAllNotes = onSeeAllNotes,
         onNoteClick = onNoteClick,
 
@@ -95,7 +84,6 @@ fun OverviewScreen(
         uiState.uiEvent?.let { event ->
             when (event) {
                 is OverviewUiEvent.AddTodo -> onAddTodo()
-                is OverviewUiEvent.AddExpense -> onAddExpense()
                 is OverviewUiEvent.AddNote -> onAddNote()
             }
 
@@ -112,9 +100,6 @@ private fun OverviewScreenScaffold(
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
 
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
@@ -126,7 +111,7 @@ private fun OverviewScreenScaffold(
         selectedDestination = OverviewDestination,
         onSearchQueryChanged = { query -> onIntent(OverviewIntent.SearchQueryChanged(query)) },
         navController = navController,
-        withTopAppBarActions = uiState.todoItems.isNotEmpty(),
+        withTopAppBarActions = uiState.todos.isNotEmpty() || uiState.notes.isNotEmpty(),
         topAppBarActionsContent = {
             MoreTodosMenu(
                 onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
@@ -153,18 +138,13 @@ private fun OverviewScreenScaffold(
                 OverviewContent(
                     headerItems = uiState.headerItems,
                     onHeaderItemClick = { id -> onIntent(OverviewIntent.HeaderItemClick(id)) },
-                    todos = uiState.todoItems,
-                    todoFilteringUiInfo = uiState.todoFilteringUiInfo,
+                    todos = uiState.todos,
+                    todoFilteringUiInfo = uiState.todosFilteringUiInfo,
                     onSeeAllTodos = onSeeAllTodos,
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = { todo, completed -> onIntent(OverviewIntent.CompleteTodo(todo, completed)) },
 
-                    expenses = uiState.expensesItems,
-                    expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
-                    onSeeAllExpenses = onSeeAllExpenses,
-                    onExpenseClick = onExpenseClick,
-
-                    notes = uiState.notesItems,
+                    notes = uiState.notes,
                     notesFilteringUiInfo = uiState.notesFilteringUiInfo,
                     onSeeAllNotes = onSeeAllNotes,
                     onNoteClick = onNoteClick,
@@ -187,11 +167,6 @@ private fun OverviewContent(
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
-
-    expenses: List<Expense>,
-    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
 
     notes: List<Note>,
     notesFilteringUiInfo: NotesFilteringUiInfo,
@@ -260,21 +235,6 @@ private fun OverviewContent(
                 )
             }
 
-            itemExpenses(
-                expenses = expenses,
-                expensesFilteringUiInfo = expensesFilteringUiInfo,
-                onAddExpense = { onHeaderItemClick(OverviewHeaderItemId.Expense) },
-                onSeeAllExpenses = onSeeAllExpenses,
-                onExpenseClick = onExpenseClick
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
             itemNotes(
                 notes = notes,
                 notesFilteringUiInfo = notesFilteringUiInfo,
@@ -333,44 +293,6 @@ private fun LazyListScope.itemTodo(
     }
 }
 
-private fun LazyListScope.itemExpenses(
-    expenses: List<Expense>,
-    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
-    onAddExpense: () -> Unit,
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-) {
-    when {
-        expenses.isEmpty() -> {
-            item {
-                EmptyStateCard(
-                    iconRes = expensesFilteringUiInfo.emptyIconRes,
-                    label = expensesFilteringUiInfo.emptyLabel,
-                    message = expensesFilteringUiInfo.emptyMessage,
-                    buttonLabel = expensesFilteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onAddExpense,
-                )
-            }
-        }
-
-        else -> {
-            item {
-                ItemHeaderWithSeeAll(
-                    title = stringResource(expensesFilteringUiInfo.currentFilteringLabel),
-                    onSeeAllClick = onSeeAllExpenses,
-                )
-            }
-
-            items(expenses) { expense ->
-                ExpenseItem(
-                    expense = expense,
-                    onExpenseClick = onExpenseClick
-                )
-            }
-        }
-    }
-}
-
 private fun LazyListScope.itemNotes(
     notes: List<Note>,
     notesFilteringUiInfo: NotesFilteringUiInfo,
@@ -413,7 +335,7 @@ private fun LazyListScope.itemNotes(
 @Preview
 @LandscapePreview
 @Composable
-fun OverviewScreenScaffoldTodosPreview() {
+fun OverviewScreenScaffoldPreview() {
     UrgatTheme {
         OverviewScreenScaffold(
             uiState = OverviewUiState(
@@ -424,18 +346,15 @@ fun OverviewScreenScaffoldTodosPreview() {
                         R.string.add_todo
                     ),
                     OverviewHeaderItem(
-                        OverviewHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    OverviewHeaderItem(
                         OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
                 ),
-                todoItems = SampleData.SAMPLE_TODOS,
-                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                todos = SampleData.SAMPLE_TODOS.take(3),
+                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                notes = SampleData.SAMPLE_NOTES.take(3),
+                notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = OverviewFilteringUiInfo()
@@ -443,8 +362,6 @@ fun OverviewScreenScaffoldTodosPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllExpenses = {},
-            onExpenseClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -467,18 +384,15 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
                         R.string.add_todo
                     ),
                     OverviewHeaderItem(
-                        OverviewHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    OverviewHeaderItem(
                         OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
                 ),
-                todoItems = listOf(),
-                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                todos = listOf(),
+                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                notes = listOf(),
+                notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = OverviewFilteringUiInfo()
@@ -486,8 +400,6 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllExpenses = {},
-            onExpenseClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -510,18 +422,15 @@ fun OverviewScreenScaffoldLoadingPreview() {
                         R.string.add_todo
                     ),
                     OverviewHeaderItem(
-                        OverviewHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    OverviewHeaderItem(
                         OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
                 ),
-                todoItems = listOf(),
-                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                todos = listOf(),
+                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                notes = listOf(),
+                notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = true,
                 hasError = false,
                 filteringUiInfo = OverviewFilteringUiInfo()
@@ -529,8 +438,6 @@ fun OverviewScreenScaffoldLoadingPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllExpenses = {},
-            onExpenseClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -553,18 +460,15 @@ fun OverviewScreenScaffoldErrorPreview() {
                         R.string.add_todo
                     ),
                     OverviewHeaderItem(
-                        OverviewHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    OverviewHeaderItem(
                         OverviewHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
                 ),
-                todoItems = listOf(),
-                todoFilteringUiInfo = TodoFilteringUiInfo(),
+                todos = listOf(),
+                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                notes = listOf(),
+                notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = true,
                 filteringUiInfo = OverviewFilteringUiInfo()
@@ -572,8 +476,6 @@ fun OverviewScreenScaffoldErrorPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllExpenses = {},
-            onExpenseClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
             navController = rememberNavController(),
@@ -595,27 +497,18 @@ fun OverviewContentPreview() {
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    OverviewHeaderItemId.Expense,
-                    Icons.Filled.ShoppingCart,
-                    R.string.add_expense
-                ),
-                HeaderItem(
                     OverviewHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),
             ),
             onHeaderItemClick = {},
-            todos = SampleData.SAMPLE_TODOS,
+            todos = SampleData.SAMPLE_TODOS.take(3),
             todoFilteringUiInfo = TodoFilteringUiInfo(),
             onSeeAllTodos = {},
             onTodoClick = {},
             onTodoCheckedChange = { _, _ -> },
-            expenses = SampleData.SAMPLE_EXPENSES,
-            expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
-            onSeeAllExpenses = {},
-            onExpenseClick = {},
-            notes = SampleData.SAMPLE_NOTES,
+            notes = SampleData.SAMPLE_NOTES.take(3),
             notesFilteringUiInfo = NotesFilteringUiInfo(),
             onSeeAllNotes = {},
             onNoteClick = {},
@@ -630,7 +523,7 @@ fun TodoCardPreview() {
     UrgatTheme {
         LazyColumn {
             itemTodo(
-                todos = SampleData.SAMPLE_TODOS,
+                todos = SampleData.SAMPLE_TODOS.take(3),
                 todoFilteringUiInfo = TodoFilteringUiInfo(),
                 onAddTodo = {},
                 onSeeAllTodos = {},
@@ -643,27 +536,11 @@ fun TodoCardPreview() {
 
 @Preview
 @Composable
-fun ExpensesCardPreview() {
-    UrgatTheme {
-        LazyColumn {
-            itemExpenses(
-                expenses = SampleData.SAMPLE_EXPENSES,
-                expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
-                onAddExpense = {},
-                onSeeAllExpenses = {},
-                onExpenseClick = {}
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
 fun NotesCardPreview() {
     UrgatTheme {
         LazyColumn {
             itemNotes(
-                notes = SampleData.SAMPLE_NOTES,
+                notes = SampleData.SAMPLE_NOTES.take(3),
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 onAddNote = {},
                 onSeeAllNotes = {},

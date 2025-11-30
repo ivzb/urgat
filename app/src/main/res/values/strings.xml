@@ -43,6 +43,8 @@
     <string name="save">Save</string>
     <string name="loading_overview">Loading overview</string>
     <string name="error_overview">Error while loading overview</string>
+    <string name="loading_finance">Loading finance</string>
+    <string name="error_finance">Error while loading finance</string>
     <string name="add_expense">Add Expense</string>
     <string name="edit_expense">Edit Expense</string>
     <string name="add_note">Add Note</string>
@@ -61,8 +63,8 @@
     <string name="filter_cost">Cost</string>
     <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>
-    <string name="no_expenses_label">Your savings journey starts here.</string>
-    <string name="no_expenses_message">Tap "Add Expense to track your first one.</string>
+    <string name="no_expenses_label">See where your money goes.</string>
+    <string name="no_expenses_message">Tap "Add Expense" to track your first one.</string>
     <string name="loading_expenses">Loading expenses</string>
     <string name="error_expenses">Error while loading expenses</string>
     <string name="debit_expenses">Debit expenses</string>
@@ -92,10 +94,16 @@
     <string name="error_investments">Error while loading investments</string>
     <string name="error_investments_filtering">Error while loading investments filtering</string>
     <string name="loading_investments">Loading investments</string>
+    <string name="all_investments">All investments</string>
     <string name="no_investments">You have no investments</string>
+    <string name="no_investments_label">Your savings journey starts here.</string>
+    <string name="no_investments_message">Tap "Add Investment" to track your first one.</string>
+    <string name="no_investments_search">You have no investments with this search criteria!</string>
     <string name="no_weights">You have no weights</string>
     <string name="error_todos_filtering">Error while loading todo filtering</string>
     <string name="error_expenses_filtering">Error while loading expenses filtering</string>
     <string name="delete">Delete</string>
     <string name="something_went_wrong">Something went wrong.</string>
+    <string name="recent_investments">Recent investments</string>
+    <string name="finance">Finance</string>
 </resources>

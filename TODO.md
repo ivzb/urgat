@@ -1,7 +1,4 @@
 add preview screens instead of direct edit for todo, expense, note and investment
-consider moving expenses and investments to finance tab
-consider moving todo and notes to notes tab
-consider moving weight tracker to wellbeing tab
 name and category should be auto-suggested in a dropdown while typing name
 make main screens more generic
 add focus index to todo view model
@@ -21,13 +18,10 @@ check why the submit button is not ime positioned on top of the keyboard for sdk
 update to jetpack navigation 3
 make error tracker
 consider showing text field labels because editing investment is unclear
-update investments screen ui to include cost and date
 update dependencies
 write UI tests
 add unit tests for OverviewViewModel sample data use case
-add date to weight
 deal with too many items - pagination?
-make app version year.month.build
 check if app db is accessible in release and encrypt it
 announce that the info in the app is encrypted
 text field selection doesn't work
@@ -35,3 +29,8 @@ add preview to notes because long notes are not readable
 longpress on a note should copy it
 select today's weight from DB if exists
 add export to csv
+consider having sample use case for each entity and use appropriate one in each main view model
+rename todo to todos
+improve add buttons (e.g. add todo, add note) in landscape
+move todo and notes to notes tab
+move weight tracker to wellbeing tab

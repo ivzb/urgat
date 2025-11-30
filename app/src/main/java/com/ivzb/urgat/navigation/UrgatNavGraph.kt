@@ -29,6 +29,7 @@ import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentScreen
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteScreen
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreen
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
+import com.ivzb.urgat.ui.finance.FinanceScreen
 import com.ivzb.urgat.ui.investments.InvestmentsScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.overview.OverviewScreen
@@ -78,13 +79,24 @@ private fun NavHostContent(
                 onSeeAllTodos = { navActions.navigateToTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
 
+                onAddNote = { navActions.navigateToAddNote() },
+                onSeeAllNotes = { navActions.navigateToNotes() },
+                onNoteClick = { navActions.navigateToEditNote(it.id) },
+
+                navController = navController,
+            )
+        }
+
+        composable(FinanceDestination.route) {
+            FinanceScreen(
                 onAddExpense = { navActions.navigateToAddExpense() },
                 onSeeAllExpenses = { navActions.navigateToExpenses() },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
 
-                onAddNote = { navActions.navigateToAddNote() },
-                onSeeAllNotes = { navActions.navigateToNotes() },
-                onNoteClick = { navActions.navigateToEditNote(it.id) },
+                onAddInvestment = { navActions.navigateToAddInvestment() },
+                onSeeAllInvestments = { navActions.navigateToInvestments() },
+                onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
+
                 navController = navController,
             )
         }
@@ -97,14 +109,6 @@ private fun NavHostContent(
             )
         }
 
-        composable(ExpensesDestination.route) {
-            ExpensesScreen(
-                onAddExpense = { navActions.navigateToAddExpense() },
-                onExpenseClick = { navActions.navigateToEditExpense(it.id) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
         composable(NotesDestination.route) {
             NotesScreen(
                 onAddNote = { navActions.navigateToAddNote() },
@@ -113,11 +117,19 @@ private fun NavHostContent(
             )
         }
 
+        composable(ExpensesDestination.route) {
+            ExpensesScreen(
+                onAddExpense = { navActions.navigateToAddExpense() },
+                onExpenseClick = { navActions.navigateToEditExpense(it.id) },
+                onBack = { navController.popBackStack() },
+            )
+        }
+
         composable(InvestmentsDestination.route) {
             InvestmentsScreen(
                 onAddInvestment = { navActions.navigateToAddInvestment() },
                 onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
-                navController = navController
+                onBack = { navController.popBackStack() },
             )
         }
 
@@ -147,7 +159,7 @@ private fun NavHostContent(
 
             AddEditTodoScreen(
                 screenTitle = title,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
 
@@ -164,7 +176,7 @@ private fun NavHostContent(
 
             AddEditExpenseScreen(
                 screenTitle = title,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
 
@@ -181,14 +193,14 @@ private fun NavHostContent(
 
             AddEditNoteScreen(
                 screenTitle = title,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
 
         composable(TrackWeightDestination.route) {
             TrackWeightScreen(
                 screenTitle = R.string.track_weight,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
 

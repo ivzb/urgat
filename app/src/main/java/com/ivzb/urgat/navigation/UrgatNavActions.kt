@@ -63,6 +63,10 @@ class UrgatNavActions(private val navController: NavHostController) {
         navController.navigate(route)
     }
 
+    fun navigateToInvestments() {
+        navController.navigate(InvestmentsDestination.route)
+    }
+
     fun navigateToAddInvestment() {
         navigateToAddEditInvestment(R.string.add_investment, null)
     }

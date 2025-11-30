@@ -31,6 +31,12 @@ data object OverviewDestination: UrgatMenuDestination() {
     override val route = "overview"
 }
 
+data object FinanceDestination: UrgatMenuDestination() {
+    override val label = R.string.finance
+    override val icon = Icons.Filled.AttachMoney
+    override val route = "finance"
+}
+
 data object InvestmentsDestination: UrgatMenuDestination() {
     override val label = R.string.investments
     override val icon = Icons.Filled.AttachMoney
@@ -127,7 +133,7 @@ data object AddEditInvestmentDestination: UrgatDestination() {
 // Screens to be displayed in the top UrgatTabRow
 val bottomNavigationScreens = listOf(
     OverviewDestination,
-    InvestmentsDestination,
+    FinanceDestination,
     TrackersDestination,
 //    WeatherDestination
 )

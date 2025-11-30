@@ -34,7 +34,6 @@ import javax.inject.Inject
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
-    observeExpensesUseCase: ObserveExpensesUseCase,
     observeNotesUseCase: ObserveNotesUseCase,
     private val completeTodoUseCase: CompleteTodoUseCase,
     private val activateTodoUseCase: ActivateTodoUseCase,
@@ -56,11 +55,10 @@ class OverviewViewModel @Inject constructor(
 
     val uiState: StateFlow<OverviewUiState> = combine(
         observeTodosUseCase(_searchQuery, null, LIMIT),
-        observeExpensesUseCase(_searchQuery, null, LIMIT),
         observeNotesUseCase(_searchQuery, null, LIMIT),
         _uiEvent,
-    ) { todos, expenses, notes, uiEvent ->
-        val items = listOf(todos, expenses, notes)
+    ) { todos, notes, uiEvent ->
+        val items = listOf(todos, notes)
 
         when {
             items.any { it is Async.Loading } -> {
@@ -80,31 +78,19 @@ class OverviewViewModel @Inject constructor(
                             R.string.add_todo
                         ),
                         HeaderItem(
-                            OverviewHeaderItemId.Expense,
-                            Icons.Filled.ShoppingCart,
-                            R.string.add_expense
-                        ),
-                        HeaderItem(
                             OverviewHeaderItemId.Note,
                             Icons.Filled.Person,
                             R.string.add_note
                         ),
                     ),
-                    todoItems = (todos as Async.Success).data,
-                    todoFilteringUiInfo = TodoFilteringUiInfo(
+                    todos = (todos as Async.Success).data,
+                    todosFilteringUiInfo = TodoFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_todos,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
                         emptyMessage = R.string.no_todos_message,
                         emptyButtonLabel = R.string.add_todo,
                     ),
-                    expensesItems = (expenses as Async.Success).data,
-                    expensesFilteringUiInfo = ExpensesFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_expenses,
-                        emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_expenses_label else R.string.no_expenses_search,
-                        emptyMessage = R.string.no_expenses_message,
-                        emptyButtonLabel = R.string.add_expense,
-                    ),
-                    notesItems = (notes as Async.Success).data,
+                    notes = (notes as Async.Success).data,
                     notesFilteringUiInfo = NotesFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_notes,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
@@ -161,7 +147,6 @@ class OverviewViewModel @Inject constructor(
             _uiEvent.emit(
                 when (id) {
                     OverviewHeaderItemId.Todo -> OverviewUiEvent.AddTodo
-                    OverviewHeaderItemId.Expense -> OverviewUiEvent.AddExpense
                     OverviewHeaderItemId.Note -> OverviewUiEvent.AddNote
                 }
             )

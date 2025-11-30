@@ -150,11 +150,6 @@ fun HeaderPreview() {
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    OverviewHeaderItemId.Expense,
-                    Icons.Filled.ShoppingCart,
-                    R.string.add_expense
-                ),
-                HeaderItem(
                     OverviewHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
@@ -176,11 +171,6 @@ fun HeaderLandscapePreview() {
                     OverviewHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
-                ),
-                HeaderItem(
-                    OverviewHeaderItemId.Expense,
-                    Icons.Filled.ShoppingCart,
-                    R.string.add_expense
                 ),
                 HeaderItem(
                     OverviewHeaderItemId.Note,

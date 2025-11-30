@@ -27,7 +27,7 @@ fun ItemHeader(
         text = title,
         modifier = modifier
             .semantics { heading() },
-        style = MaterialTheme.typography.headlineSmall
+        style = MaterialTheme.typography.titleLarge
     )
 }
 

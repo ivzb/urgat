@@ -35,8 +35,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -48,14 +46,14 @@ import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun InvestmentsScreen(
     onAddInvestment: () -> Unit,
-    navController: NavHostController,
     onInvestmentClick: (Investment) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: InvestmentsViewModel = hiltViewModel()
 ) {
@@ -64,8 +62,8 @@ fun InvestmentsScreen(
     InvestmentsScreenScaffold(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        navController = navController,
         onInvestmentClick = onInvestmentClick,
+        onBack = onBack,
         modifier = modifier
     )
 
@@ -85,13 +83,14 @@ private fun InvestmentsScreenScaffold(
     uiState: InvestmentsUiState,
     onIntent: (InvestmentsIntent) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
-    navController: NavHostController,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
-    MenuScaffold(
+    UrgatScaffold(
         selectedDestination = InvestmentsDestination,
         onSearchQueryChanged = { onIntent(InvestmentsIntent.SearchQueryChanged(it)) },
+        onBack = onBack,
         withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             val filterMenuItems = uiState.filteringUiInfo.filterMenuItems
@@ -103,7 +102,6 @@ private fun InvestmentsScreenScaffold(
                 )
             }
         },
-        navController = navController,
         modifier = modifier
     ) { listState ->
 
@@ -289,7 +287,7 @@ private fun InvestmentsScreenScaffoldPreview() {
             ),
             onIntent = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -306,7 +304,7 @@ private fun InvestmentsScreenScaffoldLoadingPreview() {
             ),
             onIntent = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            onBack = {},
             modifier = Modifier
         )
     }
@@ -323,7 +321,7 @@ private fun InvestmentsScreenScaffoldErrorPreview() {
             ),
             onIntent = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            onBack = {},
             modifier = Modifier
         )
     }

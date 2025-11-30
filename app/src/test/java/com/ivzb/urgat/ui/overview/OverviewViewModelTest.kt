@@ -1,10 +1,8 @@
 package com.ivzb.urgat.ui.overview
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
 import com.ivzb.urgat.domain.sample.FakeSampleUseCase
 import com.ivzb.urgat.domain.todo.FakeActivateTodoUseCase
@@ -26,7 +24,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -35,7 +32,6 @@ import kotlin.test.assertTrue
 class TodoViewModelTest {
 
     private lateinit var fakeObserveTodosUseCase: FakeObserveTodosUseCase
-    private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
     private lateinit var fakeObserveNotesUseCase: FakeObserveNotesUseCase
     private lateinit var fakeCompleteTodoUseCase: FakeCompleteTodoUseCase
     private lateinit var fakeActivateTodoUseCase: FakeActivateTodoUseCase
@@ -51,7 +47,6 @@ class TodoViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         fakeObserveTodosUseCase = FakeObserveTodosUseCase()
-        fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
         fakeObserveNotesUseCase = FakeObserveNotesUseCase()
         fakeCompleteTodoUseCase = FakeCompleteTodoUseCase()
         fakeActivateTodoUseCase = FakeActivateTodoUseCase()
@@ -76,9 +71,8 @@ class TodoViewModelTest {
         val initial = viewModel.uiState.value
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
-        assertTrue(initial.todoItems.isEmpty())
-        assertTrue(initial.expensesItems.isEmpty())
-        assertTrue(initial.notesItems.isEmpty())
+        assertTrue(initial.todos.isEmpty())
+        assertTrue(initial.notes.isEmpty())
         assertNull(initial.uiEvent)
 
         job.cancel()
@@ -88,9 +82,6 @@ class TodoViewModelTest {
     fun `emits success state when use case returns data`() = runTest {
         val fakeTodo = listOf(Todo("1", "Lunch", "", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
-
-        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
 
         val fakeNotes = listOf(Note("1", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
@@ -104,9 +95,8 @@ class TodoViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeTodo, state.todoItems)
-        assertEquals(fakeExpenses, state.expensesItems)
-        assertEquals(fakeNotes, state.notesItems)
+        assertEquals(fakeTodo, state.todos)
+        assertEquals(fakeNotes, state.notes)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -116,9 +106,6 @@ class TodoViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveTodosUseCase.emit(Async.Error(R.string.error_todos))
-
-        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
 
         val fakeNotes = listOf(Note("1", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
@@ -142,7 +129,6 @@ class TodoViewModelTest {
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeTodo = listOf(Todo("2", "Coffee", "", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
-        fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -151,7 +137,6 @@ class TodoViewModelTest {
         advanceUntilIdle()
 
         assertEquals("coffee", fakeObserveTodosUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveExpensesUseCase.lastQuery)
         assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
     }
 
@@ -195,18 +180,12 @@ class TodoViewModelTest {
     }
 
     @Test
-    fun `header item click emits AddExpense event`() = runTest {
-        `header item click emits event`(OverviewHeaderItemId.Expense, OverviewUiEvent.AddExpense)
-    }
-
-    @Test
     fun `header item click emits AddNote event`() = runTest {
         `header item click emits event`(OverviewHeaderItemId.Note, OverviewUiEvent.AddNote)
     }
 
     private fun `header item click emits event`(itemId: OverviewHeaderItemId, expectedEvent: OverviewUiEvent) = runTest {
         fakeObserveTodosUseCase.emit(Async.Success(listOf()))
-        fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -227,7 +206,6 @@ class TodoViewModelTest {
 
     private fun createViewModel() = OverviewViewModel(
         fakeObserveTodosUseCase,
-        fakeObserveExpensesUseCase,
         fakeObserveNotesUseCase,
         fakeCompleteTodoUseCase,
         fakeActivateTodoUseCase,

@@ -4,8 +4,12 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class InvestmentsFilteringUiInfo(
+    val currentFilteringLabel: Int = R.string.all_investments,
+
     override val emptyLabel: Int = R.string.no_investments,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_investments,
+    val emptyMessage: Int = R.string.no_investments_message,
+    val emptyButtonLabel: Int = R.string.add_investment,
 
     override val loadingLabel: Int = R.string.loading_investments,
 
