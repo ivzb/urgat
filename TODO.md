@@ -34,3 +34,6 @@ rename todo to todos
 improve add buttons (e.g. add todo, add note) in landscape
 move todo and notes to notes tab
 move weight tracker to wellbeing tab
+add investments overview / dashboard
+order investments by date not created at
+change /investments button to fab
