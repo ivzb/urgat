@@ -35,11 +35,12 @@ class FakeObserveWeightsUseCase : ObserveWeightsUseCase {
 
 class FakeCreateWeightUseCase : CreateWeightUseCase {
 
-    var created: BigDecimal? = null
+    var created: List<Any> = listOf()
 
     override suspend fun invoke(
-        value: BigDecimal
+        value: BigDecimal,
+        date: Long,
     ) {
-        created = value
+        created = listOf(value, date)
     }
 }

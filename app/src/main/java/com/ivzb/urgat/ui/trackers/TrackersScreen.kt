@@ -196,7 +196,7 @@ private fun LazyListScope.itemWeightsChart(
 ) {
     item {
         LineChart(
-            items = items.map { LineChartItem(it.value.toFloat(), it.createdAt) },
+            items = items.map { LineChartItem(it.value.toFloat(), it.date) },
             modifier = modifier
         )
     }

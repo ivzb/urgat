@@ -30,7 +30,7 @@ class DefaultWeightsRepository @Inject constructor(
         return getStream(limit)
     }
 
-    override suspend fun create(value: BigDecimal): String {
+    override suspend fun create(value: BigDecimal, date: Long): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
         val id = withContext(dispatcher) {
@@ -39,6 +39,7 @@ class DefaultWeightsRepository @Inject constructor(
         val note = Weight(
             id = id,
             value = value,
+            date = date,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
         )

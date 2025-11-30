@@ -5,6 +5,9 @@ import java.math.BigDecimal
 
 interface WeightsRepository: BaseRepository<Weight> {
 
-    suspend fun create(value: BigDecimal): String
+    suspend fun create(
+        value: BigDecimal,
+        date: Long
+    ): String
 
 }

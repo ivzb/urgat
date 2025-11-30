@@ -10,12 +10,12 @@ interface WeightDao {
 
     @Query("SELECT * FROM weights " +
             "WHERE isDeleted = 0 " +
-            "ORDER BY createdAt DESC LIMIT :limit")
+            "ORDER BY date DESC LIMIT :limit")
     fun observeAll(limit: Int): Flow<List<WeightEntity>>
 
     @Query("SELECT * FROM weights WHERE " +
-            "isDeleted = 0 AND createdAt >= :from AND createdAt <= :to " +
-            "ORDER BY createdAt DESC " +
+            "isDeleted = 0 AND date >= :from AND date <= :to " +
+            "ORDER BY date DESC " +
             "LIMIT :limit")
     fun observeAll(limit: Int, from: Long, to: Long): Flow<List<WeightEntity>>
 

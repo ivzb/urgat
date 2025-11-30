@@ -2,8 +2,8 @@ package com.ivzb.urgat.di
 
 import android.content.Context
 import androidx.room.Room
+import com.ivzb.urgat.data.source.local.ALL_MIGRATIONS
 import com.ivzb.urgat.data.source.local.AppDatabase
-import com.ivzb.urgat.data.source.local.MIGRATION_1_2
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +20,7 @@ class DatabaseModule {
     fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
         return Room
             .databaseBuilder(appContext, AppDatabase::class.java, "Urgat")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(*ALL_MIGRATIONS)
             .build()
     }
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal
 data class Weight(
     val id: String,
     val value: BigDecimal,
+    val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long,
 )

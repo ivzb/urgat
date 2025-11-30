@@ -8,6 +8,7 @@ import java.math.BigDecimal
 data class WeightEntity(
     @PrimaryKey val id: String,
     val value: BigDecimal,
+    val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long
 )

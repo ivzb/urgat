@@ -35,8 +35,8 @@ class ObserveWeightsUseCaseTest {
         val limit = 10
         val repositoryStream = flowOf(
             listOf(
-                Weight("1", 79.5.toBigDecimal(), false, createdAt = 100_000_000),
-                Weight("2", 81.3.toBigDecimal(), false, createdAt = 200_000_000)
+                Weight("1", 79.5.toBigDecimal(), 100_000_000, false, createdAt = 100_000_000),
+                Weight("2", 81.3.toBigDecimal(), 200_000_000, false, createdAt = 200_000_000)
             )
         )
 
@@ -51,8 +51,12 @@ class ObserveWeightsUseCaseTest {
         assert(first is Async.Success)
         val items = (first as Async.Success).data
         assertEquals(2, items.size)
+
         assertEquals(79.5.toBigDecimal(), items[0].value)
+        assertEquals(100_000_000L, items[0].date)
+
         assertEquals(81.3.toBigDecimal(), items[1].value)
+        assertEquals(200_000_000L, items[1].date)
     }
 
     @Test

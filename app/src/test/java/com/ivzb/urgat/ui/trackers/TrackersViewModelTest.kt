@@ -64,7 +64,7 @@ class TrackersViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeWeights = listOf(Weight("1", 80.toBigDecimal(), false, 1L))
+        val fakeWeights = listOf(Weight("1", 80.toBigDecimal(), 1764523811, false, 1L))
         fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
         viewModel = createViewModel()
 
@@ -121,7 +121,7 @@ class TrackersViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeWeights = listOf(Weight("2", 80.toBigDecimal(), false, 1L))
+        val fakeWeights = listOf(Weight("2", 80.toBigDecimal(), 1764523811, false, 1L))
         fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
         viewModel = createViewModel()
 

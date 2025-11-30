@@ -58,12 +58,14 @@ class TrackWeightViewModelTest {
     @Test
     fun `saveWeight creates new weight`() = runTest {
         viewModel.onIntent(TrackWeightIntent.UpdateValue("80"))
+        viewModel.onIntent(TrackWeightIntent.UpdateDate(1764523811))
         viewModel.onIntent(TrackWeightIntent.SaveWeight)
         
         advanceUntilIdle()
 
-        val created = createUseCase.created
-        assertEquals(BigDecimal("80"), created)
+        val (value, date) = createUseCase.created
+        assertEquals(BigDecimal("80"), value)
+        assertEquals(1764523811L, date)
         assertTrue(viewModel.uiState.value.isWeightSaved)
     }
 

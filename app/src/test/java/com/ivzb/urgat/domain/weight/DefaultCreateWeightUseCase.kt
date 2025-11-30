@@ -21,11 +21,12 @@ class DefaultCreateWeightUseCaseTest {
     @Test
     fun `invoke should call repository create with correct parameters`() = runTest {
         val value = 79.5.toBigDecimal()
+        val date = 1764523811L
 
-        createUseCase(value)
+        createUseCase(value, date)
 
         coVerify(exactly = 1) {
-            repository.create(value)
+            repository.create(value, date)
         }
     }
 }

@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 interface CreateWeightUseCase {
 
-    suspend operator fun invoke(value: BigDecimal)
+    suspend operator fun invoke(value: BigDecimal, date: Long)
 
 }
 
@@ -14,8 +14,8 @@ class DefaultCreateWeightUseCase @Inject constructor(
     private val repository: WeightsRepository
 ): CreateWeightUseCase {
 
-    override suspend operator fun invoke(value: BigDecimal) {
-        repository.create(value)
+    override suspend operator fun invoke(value: BigDecimal, date: Long) {
+        repository.create(value, date)
     }
 
 }

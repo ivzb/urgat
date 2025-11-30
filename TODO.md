@@ -28,3 +28,10 @@ write UI tests
 add unit tests for OverviewViewModel sample data use case
 add date to weight
 deal with too many items - pagination?
+make app version year.month.build
+check if app db is accessible in release and encrypt it
+announce that the info in the app is encrypted
+text field selection doesn't work
+add preview to notes because long notes are not readable
+longpress on a note should copy it
+select today's weight from DB if exists

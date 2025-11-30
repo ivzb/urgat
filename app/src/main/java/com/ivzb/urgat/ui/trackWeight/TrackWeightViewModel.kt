@@ -23,6 +23,7 @@ class TrackWeightViewModel @Inject constructor(
     fun onIntent(intent: TrackWeightIntent) {
         when (intent) {
             is TrackWeightIntent.UpdateValue -> updateValue(intent.value)
+            is TrackWeightIntent.UpdateDate -> updateDate(intent.date)
             TrackWeightIntent.SaveWeight -> saveWeight()
             TrackWeightIntent.UserMessageShown -> userMessageShown()
         }
@@ -31,6 +32,12 @@ class TrackWeightViewModel @Inject constructor(
     private fun updateValue(value: String) {
         _uiState.update {
             it.copy(value = value)
+        }
+    }
+
+    private fun updateDate(date: Long) {
+        _uiState.update {
+            it.copy(date = date)
         }
     }
 
@@ -58,6 +65,7 @@ class TrackWeightViewModel @Inject constructor(
     private fun createNewWeight() = viewModelScope.launch {
         createWeightUseCase(
            value = uiState.value.value.toBigDecimal(),
+           date = uiState.value.date,
         )
 
         _uiState.update {

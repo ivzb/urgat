@@ -26,9 +26,9 @@ class DefaultObserveWeightsUseCase @Inject constructor(
 
     override fun transform(items: List<Weight>): List<Weight> =
         items
-            .groupBy { it.createdAt / MILLISECONDS_PER_DAY }
+            .groupBy { it.date / MILLISECONDS_PER_DAY }
             .map { (_, items) -> items.last() }
-            .sortedBy { it.createdAt }
+            .sortedBy { it.date }
 
     companion object {
         private const val MILLISECONDS_PER_DAY = 86_400_000L

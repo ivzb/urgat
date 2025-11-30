@@ -64,6 +64,7 @@ class DefaultSampleUseCase @Inject constructor(
         SampleData.SAMPLE_WEIGHTS.forEach {
             createWeightUseCase(
                 it.value,
+                it.date
             )
         }
     }

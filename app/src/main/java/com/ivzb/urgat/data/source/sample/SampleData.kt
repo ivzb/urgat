@@ -170,8 +170,9 @@ object SampleData {
         Weight(
             id = index.toString(),
             value = weight.toBigDecimal(),
+            date = timestamp.toLong() * 1000,
             isDeleted = false,
-            createdAt = timestamp.toLong(),
+            createdAt = timestamp.toLong() * 1000,
         )
     }
 
