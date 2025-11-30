@@ -16,7 +16,6 @@ check which weight is taken when there are multiple for the same day
 add localizations
 add budgeting (split into income and expenses)
 add budgeting pie charts (for income and expenses)
-write script to extract release notes between tags
 generate screenshots for google play store via UI tests
 check why the submit button is not ime positioned on top of the keyboard for sdk 31
 update to jetpack navigation 3

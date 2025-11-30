@@ -1,4 +1,11 @@
 ### Release notes
+Use the following command to generate release notes for app release to Google Play store.
+`release_notes.sh` script accepts two arguments: start and end git tags.
+
+```bash
+./release_notes.sh v25.11.0 v25.12.1
+```
+
 To include release notes for a feature, improvement, or bug fix on the Google Play Store, 
 add the following format to your commit message:
 
