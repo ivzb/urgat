@@ -41,6 +41,7 @@ data object InvestmentsDestination: UrgatMenuDestination() {
     override val label = R.string.investments
     override val icon = Icons.Filled.AttachMoney
     override val route = "investments"
+    override val withFAB = true
 }
 
 data object TrackersDestination: UrgatMenuDestination() {

@@ -80,7 +80,6 @@ private fun ExpensesScreenScaffold(
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
         onBack = onBack,
-        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
@@ -120,12 +119,14 @@ private fun ExpensesScreenScaffold(
 internal fun ExpensesContent(
     expenses: List<Expense>,
     onExpenseClick: (Expense) -> Unit,
+
     filteringUiInfo: ExpensesFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
 
     Box(modifier = modifier) {
+
         LazyColumn(
             contentPadding = PaddingValues(
                 horizontal = dimensionResource(R.dimen.horizontal_margin),
@@ -133,6 +134,7 @@ internal fun ExpensesContent(
             ),
             state = listState
         ) {
+
             item {
                 ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
             }

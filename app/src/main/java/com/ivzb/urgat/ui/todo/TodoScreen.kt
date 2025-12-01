@@ -77,7 +77,6 @@ private fun TodoScreenScaffold(
         onSearchQueryChanged = { query -> onIntent(TodoIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
         onBack = onBack,
-        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,

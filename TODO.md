@@ -35,4 +35,4 @@ improve add buttons (e.g. add todo, add note) in landscape
 move todo and notes to notes tab
 move weight tracker to wellbeing tab
 add investments overview / dashboard
-change /investments button to fab
+check why search if missing from finance screen, but visible for overview

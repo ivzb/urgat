@@ -1,7 +1,5 @@
 package com.ivzb.urgat.ui.investments
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
@@ -24,7 +22,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -143,57 +140,6 @@ class InvestmentsViewModelTest {
             expected,
             savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY]
         )
-    }
-
-    @Test
-    fun `header item click emits TrackWeight event`() = runTest {
-        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
-        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
-        viewModel = createViewModel()
-
-        viewModel.onIntent(
-            InvestmentsIntent.HeaderItemClick(
-                InvestmentsHeaderItem(InvestmentsHeaderItemId.Investment, Icons.Filled.AttachMoney, R.string.add_investment)
-            )
-        )
-
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect()
-        }
-
-        advanceUntilIdle()
-
-        val event = viewModel.uiState.value.uiEvent
-        assertEquals(InvestmentsUiEvent.AddInvestment, event)
-
-        job.cancel()
-    }
-
-    @Test
-    fun `onEventConsumed clears uiEvent`() = runTest {
-        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
-        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
-        viewModel = createViewModel()
-
-        viewModel.onIntent(
-            InvestmentsIntent.HeaderItemClick(
-                InvestmentsHeaderItem(InvestmentsHeaderItemId.Investment, Icons.Filled.AttachMoney, R.string.add_investment)
-            )
-        )
-
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect()
-        }
-
-        advanceUntilIdle()
-        assertEquals(InvestmentsUiEvent.AddInvestment, viewModel.uiState.value.uiEvent)
-
-        viewModel.onIntent(InvestmentsIntent.EventConsumed)
-        advanceUntilIdle()
-
-        assertNull(viewModel.uiState.value.uiEvent)
-
-        job.cancel()
     }
 
     private fun createViewModel() = InvestmentsViewModel(

@@ -1,12 +1,11 @@
 package com.ivzb.urgat.ui.investments
 
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,21 +14,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,9 +34,7 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.InvestmentsDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.FilteringUiInfo
-import com.ivzb.urgat.ui.components.Header
-import com.ivzb.urgat.ui.components.HeaderItem
+import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.UrgatScaffold
@@ -62,26 +53,18 @@ fun InvestmentsScreen(
     InvestmentsScreenScaffold(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+        onAddInvestment = onAddInvestment,
         onInvestmentClick = onInvestmentClick,
         onBack = onBack,
         modifier = modifier
     )
-
-    LaunchedEffect(uiState.uiEvent) {
-        uiState.uiEvent?.let { event ->
-            when (event) {
-                is InvestmentsUiEvent.AddInvestment -> onAddInvestment()
-            }
-
-            viewModel.onIntent(InvestmentsIntent.EventConsumed)
-        }
-    }
 }
 
 @Composable
 private fun InvestmentsScreenScaffold(
     uiState: InvestmentsUiState,
     onIntent: (InvestmentsIntent) -> Unit,
+    onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -89,18 +72,14 @@ private fun InvestmentsScreenScaffold(
 
     UrgatScaffold(
         selectedDestination = InvestmentsDestination,
-        onSearchQueryChanged = { onIntent(InvestmentsIntent.SearchQueryChanged(it)) },
+        onSearchQueryChanged = { query -> onIntent(InvestmentsIntent.SearchQueryChanged(query)) },
+        onAddItem = onAddInvestment,
         onBack = onBack,
-        withTopAppBarActions = uiState.items.isNotEmpty(),
         topAppBarActionsContent = {
-            val filterMenuItems = uiState.filteringUiInfo.filterMenuItems
-
-            if (filterMenuItems.isNotEmpty()) {
-                FilterMenu(
-                    items = uiState.filteringUiInfo.filterMenuItems,
-                    onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
-                )
-            }
+            FilterMenu(
+                items = uiState.filteringUiInfo.filterMenuItems,
+                onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
+            )
         },
         modifier = modifier
     ) { listState ->
@@ -121,8 +100,6 @@ private fun InvestmentsScreenScaffold(
 
             else -> {
                 InvestmentsContent(
-                    uiState.headerItems,
-                    onHeaderItemClick = { onIntent(InvestmentsIntent.HeaderItemClick(it)) },
                     investments = uiState.items,
                     onInvestmentClick = onInvestmentClick,
                     filteringUiInfo = uiState.filteringUiInfo,
@@ -135,56 +112,40 @@ private fun InvestmentsScreenScaffold(
 
 @Composable
 private fun InvestmentsContent(
-    headerItems: List<InvestmentsHeaderItem>,
-    onHeaderItemClick: (InvestmentsHeaderItem) -> Unit,
-
     investments: List<Investment>,
     onInvestmentClick: (Investment) -> Unit,
 
-    filteringUiInfo: FilteringUiInfo,
+    filteringUiInfo: InvestmentsFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val screenName = stringResource(R.string.investments)
-    val configuration = LocalConfiguration.current
-    val orientation = configuration.orientation
 
-    Row(
-        modifier = Modifier.fillMaxSize()
+    Box(
+        modifier = modifier
     ) {
 
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Header(
-                items = headerItems,
-                onItemClick = { onHeaderItemClick(it) },
-                orientation
-            )
-        }
-
         LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .semantics { contentDescription = screenName },
             contentPadding = PaddingValues(
                 horizontal = dimensionResource(R.dimen.horizontal_margin),
                 vertical = dimensionResource(R.dimen.vertical_margin)
             ),
             state = listState
         ) {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                item {
-                    Header(
-                        items = headerItems,
-                        onItemClick = { onHeaderItemClick(it) },
-                        orientation
-                    )
-                }
+
+            item {
+                ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
             }
 
             item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
+                Spacer(modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+
+            items(investments) { investment ->
+                InvestmentItem(
+                    investment = investment,
+                    onInvestmentClick = onInvestmentClick
                 )
             }
 
@@ -195,13 +156,6 @@ private fun InvestmentsContent(
                         iconRes = filteringUiInfo.emptyIconRes
                     )
                 }
-            }
-
-            items(investments) { investment ->
-                InvestmentItem(
-                    investment = investment,
-                    onInvestmentClick = onInvestmentClick
-                )
             }
 
             item {
@@ -276,16 +230,34 @@ private fun InvestmentsScreenScaffoldPreview() {
     UrgatTheme {
         InvestmentsScreenScaffold(
             uiState = InvestmentsUiState(
-                headerItems = listOf(
-                    HeaderItem(
-                        InvestmentsHeaderItemId.Investment,
-                        Icons.Filled.AttachMoney,
-                        R.string.add_investment
-                    ),
-                ),
-                items = SampleData.SAMPLE_INVESTMENTS
+                items = SampleData.SAMPLE_INVESTMENTS,
+                filteringUiInfo = InvestmentsFilteringUiInfo(),
+                isLoading = false,
+                hasError = false
             ),
             onIntent = {},
+            onAddInvestment = {},
+            onInvestmentClick = {},
+            onBack = {},
+            modifier = Modifier
+        )
+    }
+}
+
+@Preview
+@LandscapePreview
+@Composable
+private fun InvestmentsScreenScaffoldEmptyPreview() {
+    UrgatTheme {
+        InvestmentsScreenScaffold(
+            uiState = InvestmentsUiState(
+                items = SampleData.SAMPLE_INVESTMENTS,
+                filteringUiInfo = InvestmentsFilteringUiInfo(),
+                isLoading = false,
+                hasError = false
+            ),
+            onIntent = {},
+            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier
@@ -300,9 +272,13 @@ private fun InvestmentsScreenScaffoldLoadingPreview() {
     UrgatTheme {
         InvestmentsScreenScaffold(
             uiState = InvestmentsUiState(
+                items = listOf(),
+                filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = true,
+                hasError = false,
             ),
             onIntent = {},
+            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier
@@ -317,9 +293,13 @@ private fun InvestmentsScreenScaffoldErrorPreview() {
     UrgatTheme {
         InvestmentsScreenScaffold(
             uiState = InvestmentsUiState(
+                items = listOf(),
+                filteringUiInfo = InvestmentsFilteringUiInfo(),
+                isLoading = false,
                 hasError = true,
             ),
             onIntent = {},
+            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier
@@ -333,14 +313,6 @@ private fun InvestmentsScreenScaffoldErrorPreview() {
 private fun InvestmentsContentPreview() {
     UrgatTheme {
         InvestmentsContent(
-            headerItems = listOf(
-                HeaderItem(
-                    InvestmentsHeaderItemId.Investment,
-                    Icons.Filled.AttachMoney,
-                    R.string.add_investment
-                ),
-            ),
-            onHeaderItemClick = {},
             investments = SampleData.SAMPLE_INVESTMENTS,
             onInvestmentClick = {},
             filteringUiInfo = InvestmentsFilteringUiInfo(),
