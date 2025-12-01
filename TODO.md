@@ -24,7 +24,6 @@ add unit tests for LibraryViewModel sample data use case
 deal with too many items - pagination?
 check if app db is accessible in release and encrypt it
 announce that the info in the app is encrypted
-text field selection doesn't work
 add preview to notes because long notes are not readable
 longpress on a note should copy it
 select today's weight from DB if exists

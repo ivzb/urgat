@@ -126,22 +126,12 @@ private fun AddEditExpenseContent(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = uiState.name,
-                            selection = TextRange(uiState.name.length)
-                        )
-                    )
-                }
+                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
 
                 TextField(
                     value = nameTextFieldValue,
                     onValueChange = {
-                        nameTextFieldValue = it.copy(
-                            selection = TextRange(it.text.length)
-                        )
-
+                        nameTextFieldValue = it
                         onIntent(AddEditExpenseIntent.UpdateName(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.expense_hint)) },
@@ -251,6 +241,15 @@ private fun AddEditExpenseContent(
                 }
 
                 LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+                }
+
+                LaunchedEffect(uiState.isLoading) {
+                    nameTextFieldValue = TextFieldValue(
+                        text = uiState.name,
+                        selection = TextRange(uiState.name.length)
+                    )
+
                     focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
                 }
             }

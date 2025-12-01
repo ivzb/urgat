@@ -128,22 +128,12 @@ private fun AddEditInvestmentContent(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = uiState.name,
-                            selection = TextRange(uiState.name.length)
-                        )
-                    )
-                }
+                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
 
                 TextField(
                     value = nameTextFieldValue,
                     onValueChange = {
-                        nameTextFieldValue = it.copy(
-                            selection = TextRange(it.text.length)
-                        )
-
+                        nameTextFieldValue = it
                         onIntent(AddEditInvestmentIntent.UpdateName(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.investment_hint)) },
@@ -296,6 +286,15 @@ private fun AddEditInvestmentContent(
                 }
 
                 LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+                }
+
+                LaunchedEffect(uiState.isLoading) {
+                    nameTextFieldValue = TextFieldValue(
+                        text = uiState.name,
+                        selection = TextRange(uiState.name.length)
+                    )
+
                     focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
                 }
             }

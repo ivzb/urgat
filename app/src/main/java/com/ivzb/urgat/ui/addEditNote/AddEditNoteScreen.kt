@@ -115,22 +115,12 @@ private fun AddEditNoteContent(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var contentTextFieldValue by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = uiState.content,
-                            selection = TextRange(uiState.content.length)
-                        )
-                    )
-                }
+                var contentTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
 
                 TextField(
                     value = contentTextFieldValue,
                     onValueChange = {
-                        contentTextFieldValue = it.copy(
-                            selection = TextRange(it.text.length)
-                        )
-
+                        contentTextFieldValue = it
                         onIntent(AddEditNoteIntent.UpdateContent(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.note_hint)) },
@@ -161,6 +151,15 @@ private fun AddEditNoteContent(
                 }
 
                 LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+                }
+
+                LaunchedEffect(uiState.isLoading) {
+                    contentTextFieldValue = TextFieldValue(
+                        text = uiState.content,
+                        selection = TextRange(uiState.content.length)
+                    )
+
                     focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
                 }
             }

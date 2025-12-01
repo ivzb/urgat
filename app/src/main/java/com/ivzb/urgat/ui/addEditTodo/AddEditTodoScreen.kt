@@ -111,22 +111,12 @@ private fun AddEditTodoContent(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var titleTextFieldValue by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = uiState.title,
-                            selection = TextRange(uiState.title.length)
-                        )
-                    )
-                }
+                var titleTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
 
                 TextField(
                     value = titleTextFieldValue,
                     onValueChange = {
-                        titleTextFieldValue = it.copy(
-                            selection = TextRange(it.text.length)
-                        )
-
+                        titleTextFieldValue = it
                         onIntent(AddEditTodoIntent.UpdateTitle(it.text))
                     },
                     placeholder = {
@@ -182,7 +172,12 @@ private fun AddEditTodoContent(
                     Text(stringResource(R.string.save))
                 }
 
-                LaunchedEffect(Unit) {
+                LaunchedEffect(uiState.isLoading) {
+                    titleTextFieldValue = TextFieldValue(
+                        text = uiState.title,
+                        selection = TextRange(uiState.title.length)
+                    )
+
                     focusRequester.requestFocus()
                 }
             }
