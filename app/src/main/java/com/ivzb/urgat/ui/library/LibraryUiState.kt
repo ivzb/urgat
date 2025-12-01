@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.overview
+package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
@@ -6,8 +6,8 @@ import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 
-data class OverviewUiState(
-    val headerItems: List<OverviewHeaderItem> = emptyList(),
+data class LibraryUiState(
+    val headerItems: List<LibraryHeaderItem> = emptyList(),
 
     val todos: List<Todo> = emptyList(),
     val todosFilteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo(),
@@ -17,7 +17,7 @@ data class OverviewUiState(
 
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
-    val filteringUiInfo: FilteringUiInfo = OverviewFilteringUiInfo(),
+    val filteringUiInfo: FilteringUiInfo = LibraryFilteringUiInfo(),
 
-    val uiEvent: OverviewUiEvent? = null,
+    val uiEvent: LibraryUiEvent? = null,
 )

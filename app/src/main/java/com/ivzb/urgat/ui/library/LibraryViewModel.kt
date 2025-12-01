@@ -1,15 +1,13 @@
-package com.ivzb.urgat.ui.overview
+package com.ivzb.urgat.ui.library
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.domain.sample.SampleUseCase
 import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
@@ -17,7 +15,6 @@ import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.ui.components.HeaderItem
-import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Assert
@@ -32,7 +29,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OverviewViewModel @Inject constructor(
+class LibraryViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
     observeNotesUseCase: ObserveNotesUseCase,
     private val completeTodoUseCase: CompleteTodoUseCase,
@@ -49,11 +46,11 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
-    private val _uiEvent = MutableStateFlow<OverviewUiEvent?>(null)
+    private val _uiEvent = MutableStateFlow<LibraryUiEvent?>(null)
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<OverviewUiState> = combine(
+    val uiState: StateFlow<LibraryUiState> = combine(
         observeTodosUseCase(_searchQuery, null, LIMIT),
         observeNotesUseCase(_searchQuery, null, LIMIT),
         _uiEvent,
@@ -62,23 +59,23 @@ class OverviewViewModel @Inject constructor(
 
         when {
             items.any { it is Async.Loading } -> {
-                OverviewUiState(isLoading = true)
+                LibraryUiState(isLoading = true)
             }
 
             items.any { it is Async.Error } -> {
-                OverviewUiState(hasError = true)
+                LibraryUiState(hasError = true)
             }
 
             items.all { it is Async.Success } -> {
-                OverviewUiState(
+                LibraryUiState(
                     headerItems = listOf(
                         HeaderItem(
-                            OverviewHeaderItemId.Todo,
+                            LibraryHeaderItemId.Todo,
                             Icons.Filled.Done,
                             R.string.add_todo
                         ),
                         HeaderItem(
-                            OverviewHeaderItemId.Note,
+                            LibraryHeaderItemId.Note,
                             Icons.Filled.Person,
                             R.string.add_note
                         ),
@@ -103,24 +100,24 @@ class OverviewViewModel @Inject constructor(
             }
 
             else -> {
-                Assert.fail("overview undefined state: $items")
-                OverviewUiState(hasError = true)
+                Assert.fail("library undefined state: $items")
+                LibraryUiState(hasError = true)
             }
         }
     }
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,
-        initialValue = OverviewUiState(isLoading = true)
+        initialValue = LibraryUiState(isLoading = true)
     )
 
-    fun onIntent(intent: OverviewIntent) {
+    fun onIntent(intent: LibraryIntent) {
         when (intent) {
-            OverviewIntent.ClearCompletedTodos -> clearCompletedTodos()
-            is OverviewIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
-            is OverviewIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is OverviewIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
-            is OverviewIntent.EventConsumed -> onEventConsumed()
+            LibraryIntent.ClearCompletedTodos -> clearCompletedTodos()
+            is LibraryIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
+            is LibraryIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+            is LibraryIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
+            is LibraryIntent.EventConsumed -> onEventConsumed()
         }
     }
 
@@ -142,12 +139,12 @@ class OverviewViewModel @Inject constructor(
         }
     }
 
-    private fun onHeaderItemClick(id: OverviewHeaderItemId) {
+    private fun onHeaderItemClick(id: LibraryHeaderItemId) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (id) {
-                    OverviewHeaderItemId.Todo -> OverviewUiEvent.AddTodo
-                    OverviewHeaderItemId.Note -> OverviewUiEvent.AddNote
+                    LibraryHeaderItemId.Todo -> LibraryUiEvent.AddTodo
+                    LibraryHeaderItemId.Note -> LibraryUiEvent.AddNote
                 }
             )
         }

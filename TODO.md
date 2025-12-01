@@ -20,7 +20,7 @@ make error tracker
 consider showing text field labels because editing investment is unclear
 update dependencies
 write UI tests
-add unit tests for OverviewViewModel sample data use case
+add unit tests for LibraryViewModel sample data use case
 deal with too many items - pagination?
 check if app db is accessible in release and encrypt it
 announce that the info in the app is encrypted
@@ -32,7 +32,7 @@ add export to csv
 consider having sample use case for each entity and use appropriate one in each main view model
 rename todo to todos
 improve add buttons (e.g. add todo, add note) in landscape
-move todo and notes to notes tab
 move weight tracker to wellbeing tab
 add investments overview / dashboard
 check why search if missing from finance screen, but visible for overview
+make trackers empty state same as library and finance

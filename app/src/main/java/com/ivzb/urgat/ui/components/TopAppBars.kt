@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
-import com.ivzb.urgat.navigation.OverviewDestination
+import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.navigation.TrackersDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -186,10 +186,10 @@ fun MoreTodosMenu(
 
 @Preview
 @Composable
-fun TopAppBarContentOverviewDestinationPreview() {
+fun TopAppBarContentLibraryDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = OverviewDestination,
+            selectedDestination = LibraryDestination,
             onSearchQueryChanged = {},
             onBack = {},
             withActions = true,
@@ -207,10 +207,10 @@ fun TopAppBarContentOverviewDestinationPreview() {
 
 @Preview
 @Composable
-fun TopAppBarContentOverviewDestinationPreviewWithoutBack() {
+fun TopAppBarContentLibraryDestinationPreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = OverviewDestination,
+            selectedDestination = LibraryDestination,
             onSearchQueryChanged = {},
             withActions = true,
             actionsContent = {
@@ -227,10 +227,10 @@ fun TopAppBarContentOverviewDestinationPreviewWithoutBack() {
 
 @Preview
 @Composable
-fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
+fun TopAppBarContentLibraryDestinationWithoutActionsPreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = OverviewDestination,
+            selectedDestination = LibraryDestination,
             onSearchQueryChanged = {},
             withActions = false,
             onBack = {},
@@ -240,10 +240,10 @@ fun TopAppBarContentOverviewDestinationWithoutActionsPreview() {
 
 @Preview
 @Composable
-fun TopAppBarContentOverviewDestinationWithoutActionsPreviewWithoutBack() {
+fun TopAppBarContentLibraryDestinationWithoutActionsPreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = OverviewDestination,
+            selectedDestination = LibraryDestination,
             withActions = false,
             onSearchQueryChanged = {},
         )

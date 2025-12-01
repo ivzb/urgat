@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -31,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.overview.OverviewHeaderItemId
+import com.ivzb.urgat.ui.library.LibraryHeaderItemId
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -44,30 +43,30 @@ fun <T> Header(
 
     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.library_header_item_padding)),
             modifier = modifier
                 .fillMaxHeight()
                 .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(dimensionResource(R.dimen.overview_header_item_padding))
+                .padding(dimensionResource(R.dimen.library_header_item_padding))
         ) {
 
             HeaderContent(
                 items = items,
                 onItemClick = onItemClick,
                 modifier = Modifier
-                    .defaultMinSize(minWidth = dimensionResource(R.dimen.overview_header_item_min_width))
+                    .defaultMinSize(minWidth = dimensionResource(R.dimen.library_header_item_min_width))
                     .weight(1f)
             )
         }
     } else {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.overview_header_item_padding)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.library_header_item_padding)),
             modifier = modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(dimensionResource(R.dimen.overview_header_item_padding))
+                .padding(dimensionResource(R.dimen.library_header_item_padding))
         ) {
 
             HeaderContent(
@@ -145,12 +144,12 @@ fun HeaderPreview() {
         Header(
             items = listOf(
                 HeaderItem(
-                    OverviewHeaderItemId.Todo,
+                    LibraryHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    OverviewHeaderItemId.Note,
+                    LibraryHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),
@@ -168,12 +167,12 @@ fun HeaderLandscapePreview() {
         Header(
             items = listOf(
                 HeaderItem(
-                    OverviewHeaderItemId.Todo,
+                    LibraryHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    OverviewHeaderItemId.Note,
+                    LibraryHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),
@@ -190,7 +189,7 @@ fun HeaderItemPreview() {
     UrgatTheme {
         HeaderItem(
             item = HeaderItem(
-                OverviewHeaderItemId.Todo,
+                LibraryHeaderItemId.Todo,
                 Icons.Filled.Done,
                 R.string.add_todo
             ),

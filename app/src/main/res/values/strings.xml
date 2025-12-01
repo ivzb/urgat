@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Urgat</string>
     <string name="add">Add</string>
-    <string name="overview">Overview</string>
+    <string name="library">Library</string>
     <string name="investments">Investments</string>
     <string name="todo">Todo</string>
     <string name="expenses">Expenses</string>
@@ -41,8 +41,8 @@
     <string name="investment_hint">Enter your investment here.</string>
     <string name="currency_hint">Currency</string>
     <string name="save">Save</string>
-    <string name="loading_overview">Loading overview</string>
-    <string name="error_overview">Error while loading overview</string>
+    <string name="loading_library">Loading library</string>
+    <string name="error_library">Error while loading library</string>
     <string name="loading_finance">Loading finance</string>
     <string name="error_finance">Error while loading finance</string>
     <string name="add_expense">Add Expense</string>

@@ -25,10 +25,10 @@ sealed class UrgatMenuDestination: UrgatDestination() {
     override val withFAB: Boolean = false
 }
 
-data object OverviewDestination: UrgatMenuDestination() {
-    override val label = R.string.overview
+data object LibraryDestination: UrgatMenuDestination() {
+    override val label = R.string.library
     override val icon = Icons.Filled.Home
-    override val route = "overview"
+    override val route = "library"
 }
 
 data object FinanceDestination: UrgatMenuDestination() {
@@ -133,7 +133,7 @@ data object AddEditInvestmentDestination: UrgatDestination() {
 
 // Screens to be displayed in the top UrgatTabRow
 val bottomNavigationScreens = listOf(
-    OverviewDestination,
+    LibraryDestination,
     FinanceDestination,
     TrackersDestination,
 //    WeatherDestination

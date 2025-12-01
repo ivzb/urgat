@@ -32,7 +32,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.finance.FinanceScreen
 import com.ivzb.urgat.ui.investments.InvestmentsScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
-import com.ivzb.urgat.ui.overview.OverviewScreen
+import com.ivzb.urgat.ui.library.LibraryScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoScreen
 import com.ivzb.urgat.ui.trackWeight.TrackWeightScreen
@@ -68,13 +68,13 @@ private fun NavHostContent(
 ) {
     NavHost(
         navController = navController,
-        startDestination = OverviewDestination.route,
+        startDestination = LibraryDestination.route,
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        composable(OverviewDestination.route) {
-            OverviewScreen(
+        composable(LibraryDestination.route) {
+            LibraryScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onSeeAllTodos = { navActions.navigateToTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },

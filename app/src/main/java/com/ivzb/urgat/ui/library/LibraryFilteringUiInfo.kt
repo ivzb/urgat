@@ -1,14 +1,14 @@
-package com.ivzb.urgat.ui.overview
+package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
-data class OverviewFilteringUiInfo(
+data class LibraryFilteringUiInfo(
     override val emptyLabel: Int = 0,
     override val emptyIconRes: Int = 0,
 
-    override val loadingLabel: Int = R.string.loading_overview,
+    override val loadingLabel: Int = R.string.loading_library,
 
-    override val errorLabel: Int = R.string.error_overview,
+    override val errorLabel: Int = R.string.error_library,
     override val errorIconRes: Int = R.drawable.ic_error,
 ) : FilteringUiInfo

@@ -121,7 +121,7 @@ private fun TrackersContent(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val screenName = stringResource(R.string.overview)
+    val screenName = stringResource(R.string.trackers)
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
 

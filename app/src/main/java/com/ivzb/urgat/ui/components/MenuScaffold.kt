@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.ivzb.urgat.navigation.OverviewDestination
+import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.navigation.UrgatMenuDestination
 import com.ivzb.urgat.navigation.bottomNavigationScreens
@@ -216,7 +216,7 @@ private fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestinat
 fun MenuScaffoldPreview() {
     UrgatTheme {
         MenuScaffold(
-            selectedDestination = OverviewDestination,
+            selectedDestination = LibraryDestination,
             onSearchQueryChanged = {},
             onAddItem = {},
             navController = rememberNavController(),

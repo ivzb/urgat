@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.overview
+package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
@@ -29,7 +29,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TodoViewModelTest {
+class LibraryViewModelTest {
 
     private lateinit var fakeObserveTodosUseCase: FakeObserveTodosUseCase
     private lateinit var fakeObserveNotesUseCase: FakeObserveNotesUseCase
@@ -38,7 +38,7 @@ class TodoViewModelTest {
     private lateinit var fakeClearCompletedTodosUseCase: FakeClearCompletedTodosUseCase
     private lateinit var fakeSampleUseCase: FakeSampleUseCase
 
-    private lateinit var viewModel: OverviewViewModel
+    private lateinit var viewModel: LibraryViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -132,7 +132,7 @@ class TodoViewModelTest {
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(OverviewIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
 
         advanceUntilIdle()
 
@@ -146,7 +146,7 @@ class TodoViewModelTest {
 
         viewModel = createViewModel()
 
-        viewModel.onIntent(OverviewIntent.CompleteTodo(todo, completed = true))
+        viewModel.onIntent(LibraryIntent.CompleteTodo(todo, completed = true))
         advanceUntilIdle()
 
         assertEquals(todo.id, fakeCompleteTodoUseCase.completedId)
@@ -158,7 +158,7 @@ class TodoViewModelTest {
 
         viewModel = createViewModel()
 
-        viewModel.onIntent(OverviewIntent.CompleteTodo(todo, completed = false))
+        viewModel.onIntent(LibraryIntent.CompleteTodo(todo, completed = false))
         advanceUntilIdle()
 
         assertEquals(todo.id, fakeActivateTodoUseCase.activatedId)
@@ -168,7 +168,7 @@ class TodoViewModelTest {
     fun `clearCompletedTodos calls clearCompletedUseCase`() = runTest {
         viewModel = createViewModel()
 
-        viewModel.onIntent(OverviewIntent.ClearCompletedTodos)
+        viewModel.onIntent(LibraryIntent.ClearCompletedTodos)
         advanceUntilIdle()
 
         assertTrue(fakeClearCompletedTodosUseCase.cleared)
@@ -176,20 +176,20 @@ class TodoViewModelTest {
 
     @Test
     fun `header item click emits AddTodo event`() = runTest {
-        `header item click emits event`(OverviewHeaderItemId.Todo, OverviewUiEvent.AddTodo)
+        `header item click emits event`(LibraryHeaderItemId.Todo, LibraryUiEvent.AddTodo)
     }
 
     @Test
     fun `header item click emits AddNote event`() = runTest {
-        `header item click emits event`(OverviewHeaderItemId.Note, OverviewUiEvent.AddNote)
+        `header item click emits event`(LibraryHeaderItemId.Note, LibraryUiEvent.AddNote)
     }
 
-    private fun `header item click emits event`(itemId: OverviewHeaderItemId, expectedEvent: OverviewUiEvent) = runTest {
+    private fun `header item click emits event`(itemId: LibraryHeaderItemId, expectedEvent: LibraryUiEvent) = runTest {
         fakeObserveTodosUseCase.emit(Async.Success(listOf()))
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(OverviewIntent.HeaderItemClick(itemId))
+        viewModel.onIntent(LibraryIntent.HeaderItemClick(itemId))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -204,7 +204,7 @@ class TodoViewModelTest {
     }
 
 
-    private fun createViewModel() = OverviewViewModel(
+    private fun createViewModel() = LibraryViewModel(
         fakeObserveTodosUseCase,
         fakeObserveNotesUseCase,
         fakeCompleteTodoUseCase,

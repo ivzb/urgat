@@ -82,7 +82,7 @@ class FinanceViewModel @Inject constructor(
             }
 
             else -> {
-                Assert.fail("overview undefined state: $items")
+                Assert.fail("finance undefined state: $items")
                 FinanceUiState(hasError = true)
             }
         }

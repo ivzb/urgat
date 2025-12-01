@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.overview
+package com.ivzb.urgat.ui.library
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +32,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.navigation.OverviewDestination
+import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
@@ -49,7 +49,7 @@ import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoItem
 
 @Composable
-fun OverviewScreen(
+fun LibraryScreen(
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
@@ -61,12 +61,12 @@ fun OverviewScreen(
     navController: NavHostController,
 
     modifier: Modifier = Modifier,
-    viewModel: OverviewViewModel = hiltViewModel()
+    viewModel: LibraryViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    OverviewScreenScaffold(
+    LibraryScreenScaffold(
         uiState = uiState,
         onIntent = viewModel::onIntent,
 
@@ -83,19 +83,19 @@ fun OverviewScreen(
     LaunchedEffect(uiState.uiEvent) {
         uiState.uiEvent?.let { event ->
             when (event) {
-                is OverviewUiEvent.AddTodo -> onAddTodo()
-                is OverviewUiEvent.AddNote -> onAddNote()
+                is LibraryUiEvent.AddTodo -> onAddTodo()
+                is LibraryUiEvent.AddNote -> onAddNote()
             }
 
-            viewModel.onIntent(OverviewIntent.EventConsumed)
+            viewModel.onIntent(LibraryIntent.EventConsumed)
         }
     }
 }
 
 @Composable
-private fun OverviewScreenScaffold(
-    uiState: OverviewUiState,
-    onIntent: (OverviewIntent) -> Unit,
+private fun LibraryScreenScaffold(
+    uiState: LibraryUiState,
+    onIntent: (LibraryIntent) -> Unit,
 
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
@@ -108,13 +108,13 @@ private fun OverviewScreenScaffold(
 ) {
 
     MenuScaffold(
-        selectedDestination = OverviewDestination,
-        onSearchQueryChanged = { query -> onIntent(OverviewIntent.SearchQueryChanged(query)) },
+        selectedDestination = LibraryDestination,
+        onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
         navController = navController,
         withTopAppBarActions = uiState.todos.isNotEmpty() || uiState.notes.isNotEmpty(),
         topAppBarActionsContent = {
             MoreTodosMenu(
-                onClearCompletedTodos = { onIntent(OverviewIntent.ClearCompletedTodos) }
+                onClearCompletedTodos = { onIntent(LibraryIntent.ClearCompletedTodos) }
             )
         },
         modifier = modifier
@@ -135,14 +135,14 @@ private fun OverviewScreenScaffold(
             }
 
             else -> {
-                OverviewContent(
+                LibraryContent(
                     headerItems = uiState.headerItems,
-                    onHeaderItemClick = { id -> onIntent(OverviewIntent.HeaderItemClick(id)) },
+                    onHeaderItemClick = { id -> onIntent(LibraryIntent.HeaderItemClick(id)) },
                     todos = uiState.todos,
                     todoFilteringUiInfo = uiState.todosFilteringUiInfo,
                     onSeeAllTodos = onSeeAllTodos,
                     onTodoClick = onTodoClick,
-                    onTodoCheckedChange = { todo, completed -> onIntent(OverviewIntent.CompleteTodo(todo, completed)) },
+                    onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
 
                     notes = uiState.notes,
                     notesFilteringUiInfo = uiState.notesFilteringUiInfo,
@@ -158,9 +158,9 @@ private fun OverviewScreenScaffold(
 }
 
 @Composable
-private fun OverviewContent(
-    headerItems: List<OverviewHeaderItem>,
-    onHeaderItemClick: (OverviewHeaderItemId) -> Unit,
+private fun LibraryContent(
+    headerItems: List<LibraryHeaderItem>,
+    onHeaderItemClick: (LibraryHeaderItemId) -> Unit,
 
     todos: List<Todo>,
     todoFilteringUiInfo: TodoFilteringUiInfo,
@@ -176,7 +176,7 @@ private fun OverviewContent(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val screenName = stringResource(R.string.overview)
+    val screenName = stringResource(R.string.library)
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
 
@@ -222,7 +222,7 @@ private fun OverviewContent(
             itemTodo(
                 todos = todos,
                 todoFilteringUiInfo = todoFilteringUiInfo,
-                onAddTodo = { onHeaderItemClick(OverviewHeaderItemId.Todo) },
+                onAddTodo = { onHeaderItemClick(LibraryHeaderItemId.Todo) },
                 onSeeAllTodos = onSeeAllTodos,
                 onTodoClick = onTodoClick,
                 onTodoCheckedChange = onTodoCheckedChange,
@@ -238,7 +238,7 @@ private fun OverviewContent(
             itemNotes(
                 notes = notes,
                 notesFilteringUiInfo = notesFilteringUiInfo,
-                onAddNote = { onHeaderItemClick(OverviewHeaderItemId.Note) },
+                onAddNote = { onHeaderItemClick(LibraryHeaderItemId.Note) },
                 onSeeAllNotes = onSeeAllNotes,
                 onNoteClick = onNoteClick
             )
@@ -335,18 +335,18 @@ private fun LazyListScope.itemNotes(
 @Preview
 @LandscapePreview
 @Composable
-fun OverviewScreenScaffoldPreview() {
+fun LibraryScreenScaffoldPreview() {
     UrgatTheme {
-        OverviewScreenScaffold(
-            uiState = OverviewUiState(
+        LibraryScreenScaffold(
+            uiState = LibraryUiState(
                 headerItems = listOf(
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Todo,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Note,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -357,7 +357,7 @@ fun OverviewScreenScaffoldPreview() {
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,
-                filteringUiInfo = OverviewFilteringUiInfo()
+                filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
             onSeeAllTodos = {},
@@ -373,18 +373,18 @@ fun OverviewScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun OverviewScreenScaffoldEmptyTodosPreview() {
+fun LibraryScreenScaffoldEmptyTodosPreview() {
     UrgatTheme {
-        OverviewScreenScaffold(
-            uiState = OverviewUiState(
+        LibraryScreenScaffold(
+            uiState = LibraryUiState(
                 headerItems = listOf(
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Todo,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Note,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -395,7 +395,7 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,
-                filteringUiInfo = OverviewFilteringUiInfo()
+                filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
             onSeeAllTodos = {},
@@ -411,18 +411,18 @@ fun OverviewScreenScaffoldEmptyTodosPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun OverviewScreenScaffoldLoadingPreview() {
+fun LibraryScreenScaffoldLoadingPreview() {
     UrgatTheme {
-        OverviewScreenScaffold(
-            uiState = OverviewUiState(
+        LibraryScreenScaffold(
+            uiState = LibraryUiState(
                 headerItems = listOf(
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Todo,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Note,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -433,7 +433,7 @@ fun OverviewScreenScaffoldLoadingPreview() {
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = true,
                 hasError = false,
-                filteringUiInfo = OverviewFilteringUiInfo()
+                filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
             onSeeAllTodos = {},
@@ -449,18 +449,18 @@ fun OverviewScreenScaffoldLoadingPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun OverviewScreenScaffoldErrorPreview() {
+fun LibraryScreenScaffoldErrorPreview() {
     UrgatTheme {
-        OverviewScreenScaffold(
-            uiState = OverviewUiState(
+        LibraryScreenScaffold(
+            uiState = LibraryUiState(
                 headerItems = listOf(
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Todo,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Todo,
                         Icons.Filled.Done,
                         R.string.add_todo
                     ),
-                    OverviewHeaderItem(
-                        OverviewHeaderItemId.Note,
+                    LibraryHeaderItem(
+                        LibraryHeaderItemId.Note,
                         Icons.Filled.Person,
                         R.string.add_note
                     ),
@@ -471,7 +471,7 @@ fun OverviewScreenScaffoldErrorPreview() {
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
                 hasError = true,
-                filteringUiInfo = OverviewFilteringUiInfo()
+                filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
             onSeeAllTodos = {},
@@ -487,17 +487,17 @@ fun OverviewScreenScaffoldErrorPreview() {
 
 @Preview
 @Composable
-fun OverviewContentPreview() {
+fun LibraryContentPreview() {
     UrgatTheme {
-        OverviewContent(
+        LibraryContent(
             headerItems = listOf(
                 HeaderItem(
-                    OverviewHeaderItemId.Todo,
+                    LibraryHeaderItemId.Todo,
                     Icons.Filled.Done,
                     R.string.add_todo
                 ),
                 HeaderItem(
-                    OverviewHeaderItemId.Note,
+                    LibraryHeaderItemId.Note,
                     Icons.Filled.Person,
                     R.string.add_note
                 ),
