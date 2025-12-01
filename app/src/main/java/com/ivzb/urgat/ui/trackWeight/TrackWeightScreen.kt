@@ -147,7 +147,7 @@ private fun TrackWeightContent(
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Done
                     ),
                     modifier = Modifier
                         .fillMaxWidth()

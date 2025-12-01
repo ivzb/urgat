@@ -136,7 +136,7 @@ private fun AddEditNoteContent(
                     placeholder = { Text(text = stringResource(id = R.string.note_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Done
                     ),
                     colors = transparentTextFieldColors(),
                     modifier = Modifier
