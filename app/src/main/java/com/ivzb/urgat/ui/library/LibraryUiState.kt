@@ -7,7 +7,7 @@ import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 
 data class LibraryUiState(
-    val headerItems: List<LibraryHeaderItem> = emptyList(),
+    val headerItems: List<LibraryHeaderItem> = LIBRARY_HEADER_ITEMS,
 
     val todos: List<Todo> = emptyList(),
     val todosFilteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo(),

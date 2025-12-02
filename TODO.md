@@ -18,7 +18,6 @@ update to jetpack navigation 3
 make error tracker
 consider showing text field labels because editing investment is unclear
 update dependencies
-write UI tests
 add unit tests for LibraryViewModel sample data use case
 deal with too many items - pagination?
 check if app db is accessible in release and encrypt it
@@ -34,3 +33,4 @@ add investments overview / dashboard
 check why search if missing from finance screen, but visible for overview
 remove the background color from empty state images - it has some kind of white
 generate screenshots for google play store via UI tests
+write UI tests

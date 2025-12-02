@@ -11,9 +11,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -327,18 +324,6 @@ fun FinanceScreenScaffoldPreview() {
     UrgatTheme {
         FinanceScreenScaffold(
             uiState = FinanceUiState(
-                headerItems = listOf(
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Investment,
-                        Icons.Filled.AttachMoney,
-                        R.string.add_investment
-                    ),
-                ),
                 expenses = SampleData.SAMPLE_EXPENSES.take(3),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
                 investments = SampleData.SAMPLE_INVESTMENTS.take(3),
@@ -365,18 +350,6 @@ fun FinanceScreenScaffoldEmptyPreview() {
     UrgatTheme {
         FinanceScreenScaffold(
             uiState = FinanceUiState(
-                headerItems = listOf(
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Investment,
-                        Icons.Filled.AttachMoney,
-                        R.string.add_investment
-                    ),
-                ),
                 expenses = listOf(),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
                 investments = listOf(),
@@ -403,18 +376,6 @@ fun FinanceScreenScaffoldLoadingPreview() {
     UrgatTheme {
         FinanceScreenScaffold(
             uiState = FinanceUiState(
-                headerItems = listOf(
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Investment,
-                        Icons.Filled.AttachMoney,
-                        R.string.add_investment
-                    ),
-                ),
                 expenses = listOf(),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
                 investments = listOf(),
@@ -441,18 +402,6 @@ fun FinanceScreenScaffoldErrorPreview() {
     UrgatTheme {
         FinanceScreenScaffold(
             uiState = FinanceUiState(
-                headerItems = listOf(
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Expense,
-                        Icons.Filled.ShoppingCart,
-                        R.string.add_expense
-                    ),
-                    FinanceHeaderItem(
-                        FinanceHeaderItemId.Investment,
-                        Icons.Filled.AttachMoney,
-                        R.string.add_investment
-                    ),
-                ),
                 expenses = listOf(),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
                 investments = listOf(),
@@ -478,18 +427,7 @@ fun FinanceScreenScaffoldErrorPreview() {
 fun FinanceContentPreview() {
     UrgatTheme {
         FinanceContent(
-            headerItems = listOf(
-                FinanceHeaderItem(
-                    FinanceHeaderItemId.Expense,
-                    Icons.Filled.ShoppingCart,
-                    R.string.add_expense
-                ),
-                FinanceHeaderItem(
-                    FinanceHeaderItemId.Investment,
-                    Icons.Filled.AttachMoney,
-                    R.string.add_investment
-                ),
-            ),
+            headerItems = FINANCE_HEADER_ITEMS,
             onHeaderItemClick = {},
             expenses = SampleData.SAMPLE_EXPENSES.take(3),
             expensesFilteringUiInfo = ExpensesFilteringUiInfo(),

@@ -68,18 +68,6 @@ class LibraryViewModel @Inject constructor(
 
             items.all { it is Async.Success } -> {
                 LibraryUiState(
-                    headerItems = listOf(
-                        HeaderItem(
-                            LibraryHeaderItemId.Todo,
-                            Icons.Filled.Done,
-                            R.string.add_todo
-                        ),
-                        HeaderItem(
-                            LibraryHeaderItemId.Note,
-                            Icons.Filled.Person,
-                            R.string.add_note
-                        ),
-                    ),
                     todos = (todos as Async.Success).data,
                     todosFilteringUiInfo = TodoFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_todos,

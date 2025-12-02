@@ -47,13 +47,6 @@ class WellbeingViewModel @Inject constructor(
 
             is Async.Success -> {
                 WellbeingUiState(
-                    headerItems = listOf(
-                        HeaderItem(
-                            WellbeingHeaderItemId.Weight,
-                            Icons.Filled.FitnessCenter,
-                            R.string.track_weight
-                        ),
-                    ),
                     weights = weightsAsync.data,
                     isLoading = false,
                     uiEvent = uiEvent,

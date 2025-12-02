@@ -50,18 +50,6 @@ class FinanceViewModel @Inject constructor(
 
             items.all { it is Async.Success } -> {
                 FinanceUiState(
-                    headerItems = listOf(
-                        HeaderItem(
-                            FinanceHeaderItemId.Expense,
-                            Icons.Filled.ShoppingCart,
-                            R.string.add_expense
-                        ),
-                        HeaderItem(
-                            FinanceHeaderItemId.Investment,
-                            Icons.Filled.AttachMoney,
-                            R.string.add_investment
-                        ),
-                    ),
                     expenses = (expenses as Async.Success).data,
                     expensesFilteringUiInfo = ExpensesFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_expenses,

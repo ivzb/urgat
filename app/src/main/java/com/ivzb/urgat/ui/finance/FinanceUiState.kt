@@ -7,7 +7,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 
 data class FinanceUiState(
-    val headerItems: List<FinanceHeaderItem> = emptyList(),
+    val headerItems: List<FinanceHeaderItem> = FINANCE_HEADER_ITEMS,
 
     val expenses: List<Expense> = emptyList(),
     val expensesFilteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo(),

@@ -11,8 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +33,6 @@ import com.ivzb.urgat.navigation.WellbeingDestination
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
-import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
@@ -230,13 +227,6 @@ private fun WellbeingScreenScaffoldPreview() {
     UrgatTheme {
         WellbeingScreenScaffold(
             uiState = WellbeingUiState(
-                headerItems = listOf(
-                    HeaderItem(
-                        WellbeingHeaderItemId.Weight,
-                        Icons.Filled.FitnessCenter,
-                        R.string.track_weight
-                    ),
-                ),
                 weights = SampleData.SAMPLE_WEIGHTS,
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
@@ -257,13 +247,6 @@ private fun WellbeingScreenScaffoldEmptyPreview() {
     UrgatTheme {
         WellbeingScreenScaffold(
             uiState = WellbeingUiState(
-                headerItems = listOf(
-                    HeaderItem(
-                        WellbeingHeaderItemId.Weight,
-                        Icons.Filled.FitnessCenter,
-                        R.string.track_weight
-                    ),
-                ),
                 weights = listOf(),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
@@ -284,13 +267,6 @@ private fun WellbeingScreenScaffoldLoadingPreview() {
     UrgatTheme {
         WellbeingScreenScaffold(
             uiState = WellbeingUiState(
-                headerItems = listOf(
-                    HeaderItem(
-                        WellbeingHeaderItemId.Weight,
-                        Icons.Filled.FitnessCenter,
-                        R.string.track_weight
-                    ),
-                ),
                 weights = listOf(),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = true,
@@ -311,13 +287,6 @@ private fun WellbeingScreenScaffoldErrorPreview() {
     UrgatTheme {
         WellbeingScreenScaffold(
             uiState = WellbeingUiState(
-                headerItems = listOf(
-                    HeaderItem(
-                        WellbeingHeaderItemId.Weight,
-                        Icons.Filled.FitnessCenter,
-                        R.string.track_weight
-                    ),
-                ),
                 weights = listOf(),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
@@ -337,13 +306,7 @@ private fun WellbeingScreenScaffoldErrorPreview() {
 private fun WellbeingContentPreview() {
     UrgatTheme {
         WellbeingContent(
-            headerItems = listOf(
-                HeaderItem(
-                    WellbeingHeaderItemId.Weight,
-                    Icons.Filled.FitnessCenter,
-                    R.string.track_weight
-                ),
-            ),
+            headerItems = WELLBEING_HEADER_ITEMS,
             onHeaderItemClick = {},
             weights = SampleData.SAMPLE_WEIGHTS,
             weightsFilteringUiInfo = WeightsFilteringUiInfo(),

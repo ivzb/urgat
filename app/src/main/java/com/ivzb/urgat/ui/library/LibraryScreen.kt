@@ -11,9 +11,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,7 +33,6 @@ import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
-import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
@@ -299,7 +295,6 @@ private fun LazyListScope.itemNotes(
     onAddNote: () -> Unit,
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     when {
         notes.isEmpty() -> {
@@ -339,18 +334,6 @@ fun LibraryScreenScaffoldPreview() {
     UrgatTheme {
         LibraryScreenScaffold(
             uiState = LibraryUiState(
-                headerItems = listOf(
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Todo,
-                        Icons.Filled.Done,
-                        R.string.add_todo
-                    ),
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Note,
-                        Icons.Filled.Person,
-                        R.string.add_note
-                    ),
-                ),
                 todos = SampleData.SAMPLE_TODOS.take(3),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
                 notes = SampleData.SAMPLE_NOTES.take(3),
@@ -377,18 +360,6 @@ fun LibraryScreenScaffoldEmptyTodosPreview() {
     UrgatTheme {
         LibraryScreenScaffold(
             uiState = LibraryUiState(
-                headerItems = listOf(
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Todo,
-                        Icons.Filled.Done,
-                        R.string.add_todo
-                    ),
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Note,
-                        Icons.Filled.Person,
-                        R.string.add_note
-                    ),
-                ),
                 todos = listOf(),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
                 notes = listOf(),
@@ -415,18 +386,6 @@ fun LibraryScreenScaffoldLoadingPreview() {
     UrgatTheme {
         LibraryScreenScaffold(
             uiState = LibraryUiState(
-                headerItems = listOf(
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Todo,
-                        Icons.Filled.Done,
-                        R.string.add_todo
-                    ),
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Note,
-                        Icons.Filled.Person,
-                        R.string.add_note
-                    ),
-                ),
                 todos = listOf(),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
                 notes = listOf(),
@@ -453,18 +412,6 @@ fun LibraryScreenScaffoldErrorPreview() {
     UrgatTheme {
         LibraryScreenScaffold(
             uiState = LibraryUiState(
-                headerItems = listOf(
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Todo,
-                        Icons.Filled.Done,
-                        R.string.add_todo
-                    ),
-                    LibraryHeaderItem(
-                        LibraryHeaderItemId.Note,
-                        Icons.Filled.Person,
-                        R.string.add_note
-                    ),
-                ),
                 todos = listOf(),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
                 notes = listOf(),
@@ -490,18 +437,7 @@ fun LibraryScreenScaffoldErrorPreview() {
 fun LibraryContentPreview() {
     UrgatTheme {
         LibraryContent(
-            headerItems = listOf(
-                HeaderItem(
-                    LibraryHeaderItemId.Todo,
-                    Icons.Filled.Done,
-                    R.string.add_todo
-                ),
-                HeaderItem(
-                    LibraryHeaderItemId.Note,
-                    Icons.Filled.Person,
-                    R.string.add_note
-                ),
-            ),
+            headerItems = LIBRARY_HEADER_ITEMS,
             onHeaderItemClick = {},
             todos = SampleData.SAMPLE_TODOS.take(3),
             todoFilteringUiInfo = TodoFilteringUiInfo(),
