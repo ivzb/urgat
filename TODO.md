@@ -31,7 +31,7 @@ add export to csv
 consider having sample use case for each entity and use appropriate one in each main view model
 rename todo to todos
 improve add buttons (e.g. add todo, add note) in landscape
-move weight tracker to wellbeing tab
 add investments overview / dashboard
 check why search if missing from finance screen, but visible for overview
 make trackers empty state same as library and finance
+remove empty state images background - it has some kind of white

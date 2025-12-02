@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.trackers
+package com.ivzb.urgat.ui.wellbeing
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -19,37 +19,37 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TrackersViewModel @Inject constructor(
+class WellbeingViewModel @Inject constructor(
     observeWeightsUseCase: ObserveWeightsUseCase,
 ) : ViewModel() {
 
-    private val _uiEvent = MutableStateFlow<TrackersUiEvent?>(null)
+    private val _uiEvent = MutableStateFlow<WellbeingUiEvent?>(null)
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<TrackersUiState> = combine(
+    val uiState: StateFlow<WellbeingUiState> = combine(
         _uiEvent,
         observeWeightsUseCase(_searchQuery, null, NO_LIMIT),
     ) { uiEvent, weightsAsync ->
 
         when (weightsAsync) {
             Async.Loading -> {
-                TrackersUiState(
+                WellbeingUiState(
                     isLoading = true
                 )
             }
 
             is Async.Error -> {
-                TrackersUiState(
+                WellbeingUiState(
                     hasError = true
                 )
             }
 
             is Async.Success -> {
-                TrackersUiState(
+                WellbeingUiState(
                     headerItems = listOf(
                         HeaderItem(
-                            TrackersHeaderItemId.Weight,
+                            WellbeingHeaderItemId.Weight,
                             Icons.Filled.FitnessCenter,
                             R.string.track_weight
                         ),
@@ -64,14 +64,14 @@ class TrackersViewModel @Inject constructor(
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,
-        initialValue = TrackersUiState(isLoading = true)
+        initialValue = WellbeingUiState(isLoading = true)
     )
 
-    fun onIntent(intent: TrackersIntent) {
+    fun onIntent(intent: WellbeingIntent) {
         when (intent) {
-            is TrackersIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is TrackersIntent.HeaderItemClick -> onHeaderItemClick(intent.item)
-            is TrackersIntent.EventConsumed -> onEventConsumed()
+            is WellbeingIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+            is WellbeingIntent.HeaderItemClick -> onHeaderItemClick(intent.item)
+            is WellbeingIntent.EventConsumed -> onEventConsumed()
         }
     }
 
@@ -79,11 +79,11 @@ class TrackersViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun onHeaderItemClick(item: TrackersHeaderItem) {
+    private fun onHeaderItemClick(item: WellbeingHeaderItem) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (item.id) {
-                    TrackersHeaderItemId.Weight -> TrackersUiEvent.TrackWeight
+                    WellbeingHeaderItemId.Weight -> WellbeingUiEvent.TrackWeight
                 }
             )
         }

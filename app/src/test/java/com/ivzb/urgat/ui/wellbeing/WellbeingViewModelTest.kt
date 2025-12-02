@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.trackers
+package com.ivzb.urgat.ui.wellbeing
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -25,11 +25,11 @@ import org.junit.Test
 import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TrackersViewModelTest {
+class WellbeingViewModelTest {
 
     private lateinit var fakeObserveWeightsUseCase: FakeObserveWeightsUseCase
 
-    private lateinit var viewModel: TrackersViewModel
+    private lateinit var viewModel: WellbeingViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -125,7 +125,7 @@ class TrackersViewModelTest {
         fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
         viewModel = createViewModel()
 
-        viewModel.onIntent(TrackersIntent.SearchQueryChanged("80"))
+        viewModel.onIntent(WellbeingIntent.SearchQueryChanged("80"))
 
         advanceUntilIdle()
 
@@ -138,8 +138,8 @@ class TrackersViewModelTest {
         viewModel = createViewModel()
 
         viewModel.onIntent(
-            TrackersIntent.HeaderItemClick(
-                TrackersHeaderItem(TrackersHeaderItemId.Weight, Icons.Filled.FitnessCenter, R.string.track_weight)
+            WellbeingIntent.HeaderItemClick(
+                WellbeingHeaderItem(WellbeingHeaderItemId.Weight, Icons.Filled.FitnessCenter, R.string.track_weight)
             )
         )
 
@@ -150,7 +150,7 @@ class TrackersViewModelTest {
         advanceUntilIdle()
 
         val event = viewModel.uiState.value.uiEvent
-        assertEquals(TrackersUiEvent.TrackWeight, event)
+        assertEquals(WellbeingUiEvent.TrackWeight, event)
 
         job.cancel()
     }
@@ -161,8 +161,8 @@ class TrackersViewModelTest {
         viewModel = createViewModel()
 
         viewModel.onIntent(
-            TrackersIntent.HeaderItemClick(
-                TrackersHeaderItem(TrackersHeaderItemId.Weight, Icons.Filled.FitnessCenter, R.string.track_weight)
+            WellbeingIntent.HeaderItemClick(
+                WellbeingHeaderItem(WellbeingHeaderItemId.Weight, Icons.Filled.FitnessCenter, R.string.track_weight)
             )
         )
 
@@ -171,9 +171,9 @@ class TrackersViewModelTest {
         }
 
         advanceUntilIdle()
-        assertEquals(TrackersUiEvent.TrackWeight, viewModel.uiState.value.uiEvent)
+        assertEquals(WellbeingUiEvent.TrackWeight, viewModel.uiState.value.uiEvent)
 
-        viewModel.onIntent(TrackersIntent.EventConsumed)
+        viewModel.onIntent(WellbeingIntent.EventConsumed)
         advanceUntilIdle()
 
         assertNull(viewModel.uiState.value.uiEvent)
@@ -181,7 +181,7 @@ class TrackersViewModelTest {
         job.cancel()
     }
 
-    private fun createViewModel() = TrackersViewModel(
+    private fun createViewModel() = WellbeingViewModel(
         fakeObserveWeightsUseCase
     )
 }

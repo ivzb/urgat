@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.LibraryDestination
-import com.ivzb.urgat.navigation.TrackersDestination
+import com.ivzb.urgat.navigation.WellbeingDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.parcelize.Parcelize
@@ -252,10 +252,10 @@ fun TopAppBarContentLibraryDestinationWithoutActionsPreviewWithoutBack() {
 
 @Preview
 @Composable
-fun TopAppBarContentTrackersDestinationPreview() {
+fun TopAppBarContentWellbeingDestinationPreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = TrackersDestination,
+            selectedDestination = WellbeingDestination,
             onSearchQueryChanged = {},
             withActions = false,
             actionsContent = {}

@@ -7,7 +7,7 @@
     <string name="todo">Todo</string>
     <string name="expenses">Expenses</string>
     <string name="notes">Notes</string>
-    <string name="trackers">Trackers</string>
+    <string name="wellbeing">Wellbeing</string>
     <string name="weather">Weather</string>
     <string name="all_todos">All todos</string>
     <string name="active_todos">Active todos</string>
@@ -87,8 +87,8 @@
     <string name="track_weight">Track weight</string>
     <string name="weight_hint">Weight</string>
     <string name="error_weights">Error while loading weights</string>
-    <string name="loading_trackers">Loading trackers</string>
-    <string name="error_trackers">Error while loading trackers</string>
+    <string name="loading_wellbeing">Loading wellbeing</string>
+    <string name="error_wellbeing">Error while loading wellbeing</string>
     <string name="no_data_yet">No data yet</string>
     <string name="loading">Loading</string>
     <string name="error_investments">Error while loading investments</string>

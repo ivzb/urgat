@@ -1,6 +1,7 @@
 package com.ivzb.urgat.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.DateRange
@@ -44,10 +45,10 @@ data object InvestmentsDestination: UrgatMenuDestination() {
     override val withFAB = true
 }
 
-data object TrackersDestination: UrgatMenuDestination() {
-    override val label = R.string.trackers
-    override val icon = Icons.Filled.Timer
-    override val route = "trackers"
+data object WellbeingDestination: UrgatMenuDestination() {
+    override val label = R.string.wellbeing
+    override val icon = Icons.Filled.Accessibility
+    override val route = "wellbeing"
 }
 
 data object WeatherDestination: UrgatMenuDestination() {
@@ -135,6 +136,6 @@ data object AddEditInvestmentDestination: UrgatDestination() {
 val bottomNavigationScreens = listOf(
     LibraryDestination,
     FinanceDestination,
-    TrackersDestination,
+    WellbeingDestination,
 //    WeatherDestination
 )

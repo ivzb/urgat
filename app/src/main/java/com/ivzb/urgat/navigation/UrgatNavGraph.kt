@@ -36,7 +36,7 @@ import com.ivzb.urgat.ui.library.LibraryScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todo.TodoScreen
 import com.ivzb.urgat.ui.trackWeight.TrackWeightScreen
-import com.ivzb.urgat.ui.trackers.TrackersScreen
+import com.ivzb.urgat.ui.wellbeing.WellbeingScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -133,8 +133,8 @@ private fun NavHostContent(
             )
         }
 
-        composable(TrackersDestination.route) {
-            TrackersScreen(
+        composable(WellbeingDestination.route) {
+            WellbeingScreen(
                 onTrackWeight = { navActions.navigateToTrackWeight() },
                 navController = navController,
             )

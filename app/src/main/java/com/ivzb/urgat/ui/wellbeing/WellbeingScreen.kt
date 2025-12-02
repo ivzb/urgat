@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.trackers
+package com.ivzb.urgat.ui.wellbeing
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.navigation.TrackersDestination
+import com.ivzb.urgat.navigation.WellbeingDestination
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
@@ -43,15 +43,15 @@ import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun TrackersScreen(
+fun WellbeingScreen(
     onTrackWeight: () -> Unit,
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: TrackersViewModel = hiltViewModel()
+    viewModel: WellbeingViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    TrackersScreenScaffold(
+    WellbeingScreenScaffold(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         navController = navController,
@@ -61,26 +61,26 @@ fun TrackersScreen(
     LaunchedEffect(uiState.uiEvent) {
         uiState.uiEvent?.let { event ->
             when (event) {
-                is TrackersUiEvent.TrackWeight -> onTrackWeight()
+                is WellbeingUiEvent.TrackWeight -> onTrackWeight()
             }
 
-            viewModel.onIntent(TrackersIntent.EventConsumed)
+            viewModel.onIntent(WellbeingIntent.EventConsumed)
         }
     }
 }
 
 @Composable
-private fun TrackersScreenScaffold(
-    uiState: TrackersUiState,
-    onIntent: (TrackersIntent) -> Unit,
+private fun WellbeingScreenScaffold(
+    uiState: WellbeingUiState,
+    onIntent: (WellbeingIntent) -> Unit,
 
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
 
     MenuScaffold(
-        selectedDestination = TrackersDestination,
-        onSearchQueryChanged = { onIntent(TrackersIntent.SearchQueryChanged(it)) },
+        selectedDestination = WellbeingDestination,
+        onSearchQueryChanged = { onIntent(WellbeingIntent.SearchQueryChanged(it)) },
         navController = navController,
         modifier = modifier
     ) { listState ->
@@ -100,9 +100,9 @@ private fun TrackersScreenScaffold(
             }
 
             else -> {
-                TrackersContent(
+                WellbeingContent(
                     uiState.headerItems,
-                    onHeaderItemClick = { onIntent(TrackersIntent.HeaderItemClick(it)) },
+                    onHeaderItemClick = { onIntent(WellbeingIntent.HeaderItemClick(it)) },
                     weights = uiState.weights,
                     filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState,
@@ -113,15 +113,15 @@ private fun TrackersScreenScaffold(
 }
 
 @Composable
-private fun TrackersContent(
-    headerItems: List<TrackersHeaderItem>,
-    onHeaderItemClick: (TrackersHeaderItem) -> Unit,
+private fun WellbeingContent(
+    headerItems: List<WellbeingHeaderItem>,
+    onHeaderItemClick: (WellbeingHeaderItem) -> Unit,
     weights: List<Weight>,
-    filteringUiInfo: TrackersFilteringUiInfo,
+    filteringUiInfo: WellbeingFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val screenName = stringResource(R.string.trackers)
+    val screenName = stringResource(R.string.wellbeing)
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
 
@@ -207,13 +207,13 @@ private fun LazyListScope.itemWeightsChart(
 @Composable
 @Preview
 @LandscapePreview
-private fun TrackersScreenScaffoldPreview() {
+private fun WellbeingScreenScaffoldPreview() {
     UrgatTheme {
-        TrackersScreenScaffold(
-            uiState = TrackersUiState(
+        WellbeingScreenScaffold(
+            uiState = WellbeingUiState(
                 headerItems = listOf(
                     HeaderItem(
-                        TrackersHeaderItemId.Weight,
+                        WellbeingHeaderItemId.Weight,
                         Icons.Filled.FitnessCenter,
                         R.string.track_weight
                     ),
@@ -230,10 +230,10 @@ private fun TrackersScreenScaffoldPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun TrackersScreenScaffoldLoadingPreview() {
+private fun WellbeingScreenScaffoldLoadingPreview() {
     UrgatTheme {
-        TrackersScreenScaffold(
-            uiState = TrackersUiState(
+        WellbeingScreenScaffold(
+            uiState = WellbeingUiState(
                 isLoading = true,
             ),
             onIntent = {},
@@ -246,10 +246,10 @@ private fun TrackersScreenScaffoldLoadingPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun TrackersScreenScaffoldErrorPreview() {
+private fun WellbeingScreenScaffoldErrorPreview() {
     UrgatTheme {
-        TrackersScreenScaffold(
-            uiState = TrackersUiState(
+        WellbeingScreenScaffold(
+            uiState = WellbeingUiState(
                 hasError = true,
             ),
             onIntent = {},
@@ -262,19 +262,19 @@ private fun TrackersScreenScaffoldErrorPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun TrackersContentPreview() {
+private fun WellbeingContentPreview() {
     UrgatTheme {
-        TrackersContent(
+        WellbeingContent(
             headerItems = listOf(
                 HeaderItem(
-                    TrackersHeaderItemId.Weight,
+                    WellbeingHeaderItemId.Weight,
                     Icons.Filled.FitnessCenter,
                     R.string.track_weight
                 ),
             ),
             onHeaderItemClick = {},
             weights = SampleData.SAMPLE_WEIGHTS,
-            filteringUiInfo = TrackersFilteringUiInfo(),
+            filteringUiInfo = WellbeingFilteringUiInfo(),
             listState = rememberLazyListState(),
             modifier = Modifier
         )
