@@ -100,6 +100,9 @@
     <string name="no_investments_message">Tap "Add Investment" to track your first one.</string>
     <string name="no_investments_search">You have no investments with this search criteria!</string>
     <string name="no_weights">You have no weights</string>
+    <string name="no_weights_label">See how your weight changes.</string>
+    <string name="no_weights_message">Tap "Track weight" to track your first one.</string>
+    <string name="loading_weights">Loading weights</string>
     <string name="error_todos_filtering">Error while loading todo filtering</string>
     <string name="error_expenses_filtering">Error while loading expenses filtering</string>
     <string name="delete">Delete</string>

@@ -137,11 +137,7 @@ class WellbeingViewModelTest {
         fakeObserveWeightsUseCase.emit(Async.Success(emptyList()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(
-            WellbeingIntent.HeaderItemClick(
-                WellbeingHeaderItem(WellbeingHeaderItemId.Weight, Icons.Filled.FitnessCenter, R.string.track_weight)
-            )
-        )
+        viewModel.onIntent(WellbeingIntent.HeaderItemClick(WellbeingHeaderItemId.Weight))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -160,11 +156,7 @@ class WellbeingViewModelTest {
         fakeObserveWeightsUseCase.emit(Async.Success(emptyList()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(
-            WellbeingIntent.HeaderItemClick(
-                WellbeingHeaderItem(WellbeingHeaderItemId.Weight, Icons.Filled.FitnessCenter, R.string.track_weight)
-            )
-        )
+        viewModel.onIntent(WellbeingIntent.HeaderItemClick(WellbeingHeaderItemId.Weight))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()

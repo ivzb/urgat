@@ -288,7 +288,6 @@ private fun LazyListScope.itemInvestments(
     onAddInvestment: () -> Unit,
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     when {
         investments.isEmpty() -> {

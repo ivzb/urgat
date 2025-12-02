@@ -32,6 +32,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.navigation.WellbeingDestination
+import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.HeaderItem
@@ -41,6 +42,7 @@ import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 
 @Composable
 fun WellbeingScreen(
@@ -102,9 +104,9 @@ private fun WellbeingScreenScaffold(
             else -> {
                 WellbeingContent(
                     uiState.headerItems,
-                    onHeaderItemClick = { onIntent(WellbeingIntent.HeaderItemClick(it)) },
+                    onHeaderItemClick = { id -> onIntent(WellbeingIntent.HeaderItemClick(id)) },
                     weights = uiState.weights,
-                    filteringUiInfo = uiState.filteringUiInfo,
+                    weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
                     listState = listState,
                 )
             }
@@ -115,9 +117,9 @@ private fun WellbeingScreenScaffold(
 @Composable
 private fun WellbeingContent(
     headerItems: List<WellbeingHeaderItem>,
-    onHeaderItemClick: (WellbeingHeaderItem) -> Unit,
+    onHeaderItemClick: (WellbeingHeaderItemId) -> Unit,
     weights: List<Weight>,
-    filteringUiInfo: WellbeingFilteringUiInfo,
+    weightsFilteringUiInfo: WeightsFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -132,7 +134,7 @@ private fun WellbeingContent(
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Header(
                 items = headerItems,
-                onItemClick = { onHeaderItemClick(it) },
+                onItemClick = { onHeaderItemClick(it.id) },
                 orientation
             )
         }
@@ -151,7 +153,7 @@ private fun WellbeingContent(
                 item {
                     Header(
                         items = headerItems,
-                        onItemClick = { onHeaderItemClick(it) },
+                        onItemClick = { onHeaderItemClick(it.id) },
                         orientation
                     )
                 }
@@ -164,21 +166,11 @@ private fun WellbeingContent(
                 )
             }
 
-            itemWeightsChart(
-                items = weights,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
+            itemWeights(
+                weights = weights,
+                weightsFilteringUiInfo = weightsFilteringUiInfo,
+                onTrackWeight = { onHeaderItemClick(WellbeingHeaderItemId.Weight) },
             )
-
-            if (weights.isEmpty()) {
-                item {
-                    EmptyStateScreen(
-                        label = filteringUiInfo.emptyLabel,
-                        iconRes = filteringUiInfo.emptyIconRes
-                    )
-                }
-            }
 
             item {
                 Spacer(
@@ -186,6 +178,35 @@ private fun WellbeingContent(
                         .height(dimensionResource(R.dimen.vertical_margin))
                 )
             }
+        }
+    }
+}
+
+private fun LazyListScope.itemWeights(
+    weights: List<Weight>,
+    weightsFilteringUiInfo: WeightsFilteringUiInfo,
+    onTrackWeight: () -> Unit,
+) {
+    when {
+        weights.isEmpty() -> {
+            item {
+                EmptyStateCard(
+                    iconRes = weightsFilteringUiInfo.emptyIconRes,
+                    label = weightsFilteringUiInfo.emptyLabel,
+                    message = weightsFilteringUiInfo.emptyMessage,
+                    buttonLabel = weightsFilteringUiInfo.emptyButtonLabel,
+                    onButtonClick = onTrackWeight,
+                )
+            }
+        }
+
+        else -> {
+            itemWeightsChart(
+                items = weights,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            )
         }
     }
 }
@@ -202,8 +223,6 @@ private fun LazyListScope.itemWeightsChart(
     }
 }
 
-
-
 @Composable
 @Preview
 @LandscapePreview
@@ -219,6 +238,37 @@ private fun WellbeingScreenScaffoldPreview() {
                     ),
                 ),
                 weights = SampleData.SAMPLE_WEIGHTS,
+                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                isLoading = false,
+                hasError = false,
+                filteringUiInfo = WellbeingFilteringUiInfo(),
+            ),
+            onIntent = {},
+            navController = rememberNavController(),
+            modifier = Modifier
+        )
+    }
+}
+
+@Composable
+@Preview
+@LandscapePreview
+private fun WellbeingScreenScaffoldEmptyPreview() {
+    UrgatTheme {
+        WellbeingScreenScaffold(
+            uiState = WellbeingUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        WellbeingHeaderItemId.Weight,
+                        Icons.Filled.FitnessCenter,
+                        R.string.track_weight
+                    ),
+                ),
+                weights = listOf(),
+                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                isLoading = false,
+                hasError = false,
+                filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
             navController = rememberNavController(),
@@ -234,7 +284,18 @@ private fun WellbeingScreenScaffoldLoadingPreview() {
     UrgatTheme {
         WellbeingScreenScaffold(
             uiState = WellbeingUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        WellbeingHeaderItemId.Weight,
+                        Icons.Filled.FitnessCenter,
+                        R.string.track_weight
+                    ),
+                ),
+                weights = listOf(),
+                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = true,
+                hasError = false,
+                filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
             navController = rememberNavController(),
@@ -250,7 +311,18 @@ private fun WellbeingScreenScaffoldErrorPreview() {
     UrgatTheme {
         WellbeingScreenScaffold(
             uiState = WellbeingUiState(
+                headerItems = listOf(
+                    HeaderItem(
+                        WellbeingHeaderItemId.Weight,
+                        Icons.Filled.FitnessCenter,
+                        R.string.track_weight
+                    ),
+                ),
+                weights = listOf(),
+                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                isLoading = false,
                 hasError = true,
+                filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
             navController = rememberNavController(),
@@ -274,9 +346,23 @@ private fun WellbeingContentPreview() {
             ),
             onHeaderItemClick = {},
             weights = SampleData.SAMPLE_WEIGHTS,
-            filteringUiInfo = WellbeingFilteringUiInfo(),
+            weightsFilteringUiInfo = WeightsFilteringUiInfo(),
             listState = rememberLazyListState(),
             modifier = Modifier
         )
+    }
+}
+
+@Preview
+@Composable
+fun WeightsCardPreview() {
+    UrgatTheme {
+        LazyColumn {
+            itemWeights(
+                weights = SampleData.SAMPLE_WEIGHTS,
+                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                onTrackWeight = {},
+            )
+        }
     }
 }

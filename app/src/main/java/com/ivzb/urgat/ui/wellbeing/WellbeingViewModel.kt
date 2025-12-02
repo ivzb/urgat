@@ -70,7 +70,7 @@ class WellbeingViewModel @Inject constructor(
     fun onIntent(intent: WellbeingIntent) {
         when (intent) {
             is WellbeingIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is WellbeingIntent.HeaderItemClick -> onHeaderItemClick(intent.item)
+            is WellbeingIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
             is WellbeingIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -79,10 +79,10 @@ class WellbeingViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun onHeaderItemClick(item: WellbeingHeaderItem) {
+    private fun onHeaderItemClick(id: WellbeingHeaderItemId) {
         viewModelScope.launch {
             _uiEvent.emit(
-                when (item.id) {
+                when (id) {
                     WellbeingHeaderItemId.Weight -> WellbeingUiEvent.TrackWeight
                 }
             )
