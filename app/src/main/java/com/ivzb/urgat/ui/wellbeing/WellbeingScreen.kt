@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.wellbeing
 
 import android.content.res.Configuration
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,7 +51,7 @@ fun WellbeingScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    WellbeingScreenScaffold(
+    WellbeingScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         navController = navController,
@@ -68,8 +69,9 @@ fun WellbeingScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun WellbeingScreenScaffold(
+fun WellbeingScreen(
     uiState: WellbeingUiState,
     onIntent: (WellbeingIntent) -> Unit,
 
@@ -223,9 +225,9 @@ private fun LazyListScope.itemWeightsChart(
 @Composable
 @Preview
 @LandscapePreview
-private fun WellbeingScreenScaffoldPreview() {
+private fun WellbeingScreenPreview() {
     UrgatTheme {
-        WellbeingScreenScaffold(
+        WellbeingScreen(
             uiState = WellbeingUiState(
                 weights = SampleData.SAMPLE_WEIGHTS,
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
@@ -243,9 +245,9 @@ private fun WellbeingScreenScaffoldPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun WellbeingScreenScaffoldEmptyPreview() {
+private fun WellbeingScreenEmptyPreview() {
     UrgatTheme {
-        WellbeingScreenScaffold(
+        WellbeingScreen(
             uiState = WellbeingUiState(
                 weights = listOf(),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
@@ -263,9 +265,9 @@ private fun WellbeingScreenScaffoldEmptyPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun WellbeingScreenScaffoldLoadingPreview() {
+private fun WellbeingScreenLoadingPreview() {
     UrgatTheme {
-        WellbeingScreenScaffold(
+        WellbeingScreen(
             uiState = WellbeingUiState(
                 weights = listOf(),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
@@ -283,9 +285,9 @@ private fun WellbeingScreenScaffoldLoadingPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun WellbeingScreenScaffoldErrorPreview() {
+private fun WellbeingScreenErrorPreview() {
     UrgatTheme {
-        WellbeingScreenScaffold(
+        WellbeingScreen(
             uiState = WellbeingUiState(
                 weights = listOf(),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),

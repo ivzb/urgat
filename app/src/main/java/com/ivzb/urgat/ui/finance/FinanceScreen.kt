@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.finance
 
 import android.content.res.Configuration
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -61,7 +62,7 @@ fun FinanceScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    FinanceScreenScaffold(
+    FinanceScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
 
@@ -87,8 +88,9 @@ fun FinanceScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun FinanceScreenScaffold(
+fun FinanceScreen(
     uiState: FinanceUiState,
     onIntent: (FinanceIntent) -> Unit,
 
@@ -320,9 +322,9 @@ private fun LazyListScope.itemInvestments(
 @Preview
 @LandscapePreview
 @Composable
-fun FinanceScreenScaffoldPreview() {
+fun FinanceScreenPreview() {
     UrgatTheme {
-        FinanceScreenScaffold(
+        FinanceScreen(
             uiState = FinanceUiState(
                 expenses = SampleData.SAMPLE_EXPENSES.take(3),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
@@ -346,9 +348,9 @@ fun FinanceScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun FinanceScreenScaffoldEmptyPreview() {
+fun FinanceScreenEmptyPreview() {
     UrgatTheme {
-        FinanceScreenScaffold(
+        FinanceScreen(
             uiState = FinanceUiState(
                 expenses = listOf(),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
@@ -372,9 +374,9 @@ fun FinanceScreenScaffoldEmptyPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun FinanceScreenScaffoldLoadingPreview() {
+fun FinanceScreenLoadingPreview() {
     UrgatTheme {
-        FinanceScreenScaffold(
+        FinanceScreen(
             uiState = FinanceUiState(
                 expenses = listOf(),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
@@ -398,9 +400,9 @@ fun FinanceScreenScaffoldLoadingPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun FinanceScreenScaffoldErrorPreview() {
+fun FinanceScreenErrorPreview() {
     UrgatTheme {
-        FinanceScreenScaffold(
+        FinanceScreen(
             uiState = FinanceUiState(
                 expenses = listOf(),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(),

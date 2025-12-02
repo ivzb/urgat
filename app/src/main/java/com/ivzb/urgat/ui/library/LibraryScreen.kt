@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.library
 
 import android.content.res.Configuration
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -62,7 +63,7 @@ fun LibraryScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LibraryScreenScaffold(
+    LibraryScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
 
@@ -88,8 +89,9 @@ fun LibraryScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun LibraryScreenScaffold(
+fun LibraryScreen(
     uiState: LibraryUiState,
     onIntent: (LibraryIntent) -> Unit,
 
@@ -330,9 +332,9 @@ private fun LazyListScope.itemNotes(
 @Preview
 @LandscapePreview
 @Composable
-fun LibraryScreenScaffoldPreview() {
+fun LibraryScreenPreview() {
     UrgatTheme {
-        LibraryScreenScaffold(
+        LibraryScreen(
             uiState = LibraryUiState(
                 todos = SampleData.SAMPLE_TODOS.take(3),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
@@ -356,9 +358,9 @@ fun LibraryScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun LibraryScreenScaffoldEmptyTodosPreview() {
+fun LibraryScreenEmptyTodosPreview() {
     UrgatTheme {
-        LibraryScreenScaffold(
+        LibraryScreen(
             uiState = LibraryUiState(
                 todos = listOf(),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
@@ -382,9 +384,9 @@ fun LibraryScreenScaffoldEmptyTodosPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun LibraryScreenScaffoldLoadingPreview() {
+fun LibraryScreenLoadingPreview() {
     UrgatTheme {
-        LibraryScreenScaffold(
+        LibraryScreen(
             uiState = LibraryUiState(
                 todos = listOf(),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
@@ -408,9 +410,9 @@ fun LibraryScreenScaffoldLoadingPreview() {
 @Preview
 @LandscapePreview
 @Composable
-fun LibraryScreenScaffoldErrorPreview() {
+fun LibraryScreenErrorPreview() {
     UrgatTheme {
-        LibraryScreenScaffold(
+        LibraryScreen(
             uiState = LibraryUiState(
                 todos = listOf(),
                 todosFilteringUiInfo = TodoFilteringUiInfo(),
