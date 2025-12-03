@@ -40,6 +40,9 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        // screenshot tests
+        testInstrumentationRunnerArguments["useTestStorageService"] = "true"
     }
 
     signingConfigs {
@@ -168,6 +171,9 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+
+    // Screenshot tests
+    androidTestUtil(libs.androidx.test.services)
 }
 
 tasks {
