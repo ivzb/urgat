@@ -1,17 +1,13 @@
 package com.ivzb.urgat.ui.finance
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import org.junit.Rule
 import org.junit.Test
 
-class FinanceScreenshotTest {
-
-    @get:Rule
-    val composeTestRule = createComposeRule()
+class FinanceScreenshotTest: ScreenshotTest() {
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData() = screenshotTest(
@@ -69,10 +65,7 @@ class FinanceScreenshotTest {
             }
         }
 
-        Thread.sleep(2_000)
-
-        // todo: screenshot
-        // todo: do both light and dark mode
+        screenshot()
     }
 
 }

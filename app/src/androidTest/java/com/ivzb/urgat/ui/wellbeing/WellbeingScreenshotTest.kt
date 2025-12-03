@@ -1,17 +1,13 @@
 package com.ivzb.urgat.ui.wellbeing
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import org.junit.Rule
 import org.junit.Test
 
-class WellbeingScreenshotTest {
-
-    @get:Rule
-    val composeTestRule = createComposeRule()
+class WellbeingScreenshotTest: ScreenshotTest() {
 
     @Test
     fun screenshotTest_WellbeingScreen_sampleData() = screenshotTest(
@@ -61,10 +57,7 @@ class WellbeingScreenshotTest {
             }
         }
 
-        Thread.sleep(2_000)
-
-        // todo: screenshot
-        // todo: do both light and dark mode
+        screenshot()
     }
 
 }

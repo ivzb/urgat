@@ -37,6 +37,4 @@ write UI tests
 add PlayStoreScreenshot annotation to screenshot tests to indicate which screenshots to be uploaded
 do both light and dark mode for screenshot tests
 add screenshot tests for all screens
-check if thread.sleep is needed when taking screenshots in ui tests
 setup emulator for running ui tests in the script
-make the screenshots without a status bar so it won't trigger a diff every time - I want a diff only if something changed
