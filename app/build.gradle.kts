@@ -172,6 +172,9 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
 
+    // Espresso
+    androidTestImplementation(libs.androidx.espresso.core)
+
     // Screenshot tests
     androidTestUtil(libs.androidx.test.services)
 }

@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.addEditTodo
 
-import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,18 +49,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditTodoScreen(
-    @StringRes screenTitle: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditTodoViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AddEditTodoContent(
-        screenTitle = screenTitle,
-        onBack = onBack,
+    AddEditTodoScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+        onBack = onBack,
         modifier = modifier
     )
 
@@ -71,12 +69,12 @@ fun AddEditTodoScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun AddEditTodoContent(
-    screenTitle: Int,
-    onBack: () -> Unit,
+fun AddEditTodoScreen(
     uiState: AddEditTodoUiState,
     onIntent: (AddEditTodoIntent) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -86,7 +84,7 @@ private fun AddEditTodoContent(
     Scaffold(
         topBar = {
             TextTopAppBar(
-                title = screenTitle,
+                title = uiState.screenTitleResId,
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditTodoIntent.DeleteTodo) },
@@ -198,14 +196,15 @@ private fun AddEditTodoContent(
 
 @Preview
 @Composable
-private fun AddContentPreview() {
+private fun AddTodoScreen() {
     UrgatTheme {
         Surface {
-            AddEditTodoContent(
-                screenTitle = R.string.add_todo,
-                onBack = {},
-                uiState = AddEditTodoUiState(),
+            AddEditTodoScreen(
+                uiState = AddEditTodoUiState(
+                    screenTitleResId = R.string.add_todo,
+                ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -214,17 +213,17 @@ private fun AddContentPreview() {
 
 @Preview
 @Composable
-private fun EditTodoContentPreview() {
+private fun EditTodoScreen() {
     UrgatTheme {
         Surface {
-            AddEditTodoContent(
-                screenTitle = R.string.edit_todo,
-                onBack = {},
+            AddEditTodoScreen(
                 uiState = AddEditTodoUiState(
+                    screenTitleResId = R.string.edit_todo,
                     title = "Title",
                     description = "Description"
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -233,16 +232,16 @@ private fun EditTodoContentPreview() {
 
 @Preview
 @Composable
-private fun LoadingContentPreview() {
+private fun LoadingTodoScreen() {
     UrgatTheme {
         Surface {
-            AddEditTodoContent(
-                screenTitle = R.string.add_todo,
-                onBack = {},
+            AddEditTodoScreen(
                 uiState = AddEditTodoUiState(
+                    screenTitleResId = R.string.edit_todo,
                     isLoading = true
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }

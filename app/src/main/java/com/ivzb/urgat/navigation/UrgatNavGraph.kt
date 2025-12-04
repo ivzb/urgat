@@ -73,6 +73,7 @@ private fun NavHostContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+
         composable(LibraryDestination.route) {
             LibraryScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
@@ -153,12 +154,8 @@ private fun NavHostContent(
                     type = NavType.StringType; nullable = true
                 },
             )
-        ) { entry ->
-            val title = entry.arguments?.getInt(AddEditTodoDestination.Args.ARG_TITLE) ?: 0
-            val todoId = entry.arguments?.getString(AddEditTodoDestination.Args.ARG_ID)
-
+        ) {
             AddEditTodoScreen(
-                screenTitle = title,
                 onBack = { navController.popBackStack() },
             )
         }
@@ -170,12 +167,8 @@ private fun NavHostContent(
                     type = NavType.StringType; nullable = true
                 },
             )
-        ) { entry ->
-            val title = entry.arguments?.getInt(AddEditExpenseDestination.Args.ARG_TITLE) ?: 0
-            val expenseId = entry.arguments?.getString(AddEditExpenseDestination.Args.ARG_ID)
-
+        ) {
             AddEditExpenseScreen(
-                screenTitle = title,
                 onBack = { navController.popBackStack() },
             )
         }
@@ -187,19 +180,14 @@ private fun NavHostContent(
                     type = NavType.StringType; nullable = true
                 },
             )
-        ) { entry ->
-            val title = entry.arguments?.getInt(AddEditNoteDestination.Args.ARG_TITLE) ?: 0
-            val noteId = entry.arguments?.getString(AddEditNoteDestination.Args.ARG_ID)
-
+        ) {
             AddEditNoteScreen(
-                screenTitle = title,
                 onBack = { navController.popBackStack() },
             )
         }
 
         composable(TrackWeightDestination.route) {
             TrackWeightScreen(
-                screenTitle = R.string.track_weight,
                 onBack = { navController.popBackStack() },
             )
         }
@@ -211,12 +199,8 @@ private fun NavHostContent(
                     type = NavType.StringType; nullable = true
                 },
             )
-        ) { entry ->
-            val title = entry.arguments?.getInt(AddEditInvestmentDestination.Args.ARG_TITLE) ?: 0
-            val investmentId = entry.arguments?.getString(AddEditInvestmentDestination.Args.ARG_ID)
-
+        ) {
             AddEditInvestmentScreen(
-                screenTitle = title,
                 onBack = { navController.popBackStack() }
             )
         }

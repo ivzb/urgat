@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.trackWeight
 
-import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,18 +57,16 @@ enum class FieldId {
 
 @Composable
 fun TrackWeightScreen(
-    @StringRes screenTitle: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TrackWeightViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    TrackWeightContent(
-        screenTitle = screenTitle,
-        onBack = onBack,
+    TrackWeightScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+        onBack = onBack,
         modifier = modifier
     )
 
@@ -79,12 +77,12 @@ fun TrackWeightScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun TrackWeightContent(
-    screenTitle: Int,
-    onBack: () -> Unit,
+fun TrackWeightScreen(
     uiState: TrackWeightUiState,
     onIntent: (TrackWeightIntent) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -98,7 +96,7 @@ private fun TrackWeightContent(
     Scaffold(
         topBar = {
             TextTopAppBar(
-                title = screenTitle,
+                title = uiState.screenTitleResId,
                 onBack = onBack,
                 withDelete = false,
                 onDelete = {
@@ -227,14 +225,15 @@ private fun TrackWeightContent(
 
 @Preview
 @Composable
-private fun AddContentPreview() {
+private fun TrackWeightScreenPreview() {
     UrgatTheme {
         Surface {
-            TrackWeightContent(
-                screenTitle = R.string.track_weight,
-                onBack = {},
-                uiState = TrackWeightUiState(),
+            TrackWeightScreen(
+                uiState = TrackWeightUiState(
+                    screenTitleResId = R.string.track_weight,
+                ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -243,16 +242,16 @@ private fun AddContentPreview() {
 
 @Preview
 @Composable
-private fun LoadingContentPreview() {
+private fun LoadingWeightScreenPreview() {
     UrgatTheme {
         Surface {
-            TrackWeightContent(
-                screenTitle = R.string.track_weight,
-                onBack = {},
+            TrackWeightScreen(
                 uiState = TrackWeightUiState(
-                    isLoading = true
+                    screenTitleResId = R.string.track_weight,
+                    isLoading = true,
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }

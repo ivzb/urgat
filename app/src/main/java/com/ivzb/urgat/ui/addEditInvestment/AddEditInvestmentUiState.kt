@@ -1,6 +1,10 @@
 package com.ivzb.urgat.ui.addEditInvestment
 
+import androidx.annotation.StringRes
+
 data class AddEditInvestmentUiState(
+    @StringRes
+    val screenTitleResId: Int? = null,
     val name: String = "",
     val amount: String = "",
     val cost: String = "",

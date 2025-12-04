@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.addEditInvestment
 
-import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,18 +63,16 @@ enum class FieldId {
 
 @Composable
 fun AddEditInvestmentScreen(
-    @StringRes screenTitle: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditInvestmentViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AddEditInvestmentContent(
-        screenTitle = screenTitle,
-        onBack = onBack,
+    AddEditInvestmentScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+        onBack = onBack,
         modifier = modifier
     )
 
@@ -85,12 +83,12 @@ fun AddEditInvestmentScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun AddEditInvestmentContent(
-    screenTitle: Int,
-    onBack: () -> Unit,
+fun AddEditInvestmentScreen(
     uiState: AddEditInvestmentUiState,
     onIntent: (AddEditInvestmentIntent) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -103,7 +101,7 @@ private fun AddEditInvestmentContent(
     Scaffold(
         topBar = {
             TextTopAppBar(
-                title = screenTitle,
+                title = uiState.screenTitleResId,
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditInvestmentIntent.DeleteInvestment) },
@@ -315,14 +313,15 @@ private fun AddEditInvestmentContent(
 
 @Preview
 @Composable
-private fun AddContentPreview() {
+private fun AddInvestmentScreenPreview() {
     UrgatTheme {
         Surface {
-            AddEditInvestmentContent(
-                screenTitle = R.string.add_investment,
-                onBack = {},
-                uiState = AddEditInvestmentUiState(),
+            AddEditInvestmentScreen(
+                uiState = AddEditInvestmentUiState(
+                    screenTitleResId = R.string.add_investment,
+                ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -334,15 +333,15 @@ private fun AddContentPreview() {
 private fun EditInvestmentContentPreview() {
     UrgatTheme {
         Surface {
-            AddEditInvestmentContent(
-                screenTitle = R.string.edit_investment,
-                onBack = {},
+            AddEditInvestmentScreen(
                 uiState = AddEditInvestmentUiState(
+                    screenTitleResId = R.string.edit_investment,
                     name = "SNP 500",
                     currency = "USD",
                     amount = "500",
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -354,13 +353,13 @@ private fun EditInvestmentContentPreview() {
 private fun LoadingContentPreview() {
     UrgatTheme {
         Surface {
-            AddEditInvestmentContent(
-                screenTitle = R.string.add_investment,
-                onBack = {},
+            AddEditInvestmentScreen(
                 uiState = AddEditInvestmentUiState(
-                    isLoading = true
+                    screenTitleResId = R.string.edit_investment,
+                    isLoading = true,
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }

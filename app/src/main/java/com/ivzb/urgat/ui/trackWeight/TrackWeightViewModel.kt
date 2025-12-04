@@ -17,7 +17,9 @@ class TrackWeightViewModel @Inject constructor(
     private val createWeightUseCase: CreateWeightUseCase,
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(TrackWeightUiState())
+    private val _uiState = MutableStateFlow(TrackWeightUiState(
+        screenTitleResId = R.string.track_weight,
+    ))
     val uiState: StateFlow<TrackWeightUiState> = _uiState.asStateFlow()
 
     fun onIntent(intent: TrackWeightIntent) {

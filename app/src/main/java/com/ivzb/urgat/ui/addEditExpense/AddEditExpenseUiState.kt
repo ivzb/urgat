@@ -1,6 +1,10 @@
 package com.ivzb.urgat.ui.addEditExpense
 
+import androidx.annotation.StringRes
+
 data class AddEditExpenseUiState(
+    @StringRes
+    val screenTitleResId: Int? = null,
     val name: String = "",
     val amount: String = "",
     val category: String = "",

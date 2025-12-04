@@ -36,5 +36,5 @@ generate screenshots for google play store via UI tests
 write UI tests
 add PlayStoreScreenshot annotation to screenshot tests to indicate which screenshots to be uploaded
 do both light and dark mode for screenshot tests
-add screenshot tests for all screens
 setup emulator for running ui tests in the script
+add screenshot tests for all screens

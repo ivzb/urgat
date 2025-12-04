@@ -90,7 +90,7 @@ fun TopAppBarDropdownMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TextTopAppBar(
-    @StringRes title: Int,
+    @StringRes title: Int?,
     onBack: () -> Unit,
 
     withDelete: Boolean,
@@ -98,7 +98,9 @@ fun TextTopAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(text = stringResource(title))
+            title?.let {
+                Text(text = stringResource(it))
+            }
         },
         navigationIcon = {
             IconButton(onClick = onBack) {

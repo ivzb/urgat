@@ -29,9 +29,12 @@ class AddEditInvestmentViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
+    private val screenTitleResId: Int? = savedStateHandle[AddEditInvestmentDestination.Args.ARG_TITLE]
     private val investmentId: String? = savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID]
 
-    private val _uiState = MutableStateFlow(AddEditInvestmentUiState())
+    private val _uiState = MutableStateFlow(AddEditInvestmentUiState(
+        screenTitleResId = screenTitleResId,
+    ))
     val uiState: StateFlow<AddEditInvestmentUiState> = _uiState.asStateFlow()
 
     init {

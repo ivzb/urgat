@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.addEditExpense
 
-import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,18 +61,16 @@ enum class FieldId {
 
 @Composable
 fun AddEditExpenseScreen(
-    @StringRes screenTitle: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditExpenseViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AddEditExpenseContent(
-        screenTitle = screenTitle,
-        onBack = onBack,
+    AddEditExpenseScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+        onBack = onBack,
         modifier = modifier
     )
 
@@ -83,12 +81,12 @@ fun AddEditExpenseScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun AddEditExpenseContent(
-    screenTitle: Int,
-    onBack: () -> Unit,
+fun AddEditExpenseScreen(
     uiState: AddEditExpenseUiState,
     onIntent: (AddEditExpenseIntent) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -101,7 +99,7 @@ private fun AddEditExpenseContent(
     Scaffold(
         topBar = {
             TextTopAppBar(
-                title = screenTitle,
+                title = uiState.screenTitleResId,
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditExpenseIntent.DeleteExpense) },
@@ -270,14 +268,15 @@ private fun AddEditExpenseContent(
 
 @Preview
 @Composable
-private fun AddContentPreview() {
+private fun AddExpenseScreenPreview() {
     UrgatTheme {
         Surface {
-            AddEditExpenseContent(
-                screenTitle = R.string.add_expense,
-                onBack = {},
-                uiState = AddEditExpenseUiState(),
+            AddEditExpenseScreen(
+                uiState = AddEditExpenseUiState(
+                    screenTitleResId = R.string.add_expense,
+                ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -286,19 +285,19 @@ private fun AddContentPreview() {
 
 @Preview
 @Composable
-private fun EditExpenseContentPreview() {
+private fun EditExpenseScreenPreview() {
     UrgatTheme {
         Surface {
-            AddEditExpenseContent(
-                screenTitle = R.string.edit_expense,
-                onBack = {},
+            AddEditExpenseScreen(
                 uiState = AddEditExpenseUiState(
+                    screenTitleResId = R.string.edit_expense,
                     name = "Title",
                     amount = "12.3",
                     category = "",
                     date = 0L,
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -307,16 +306,16 @@ private fun EditExpenseContentPreview() {
 
 @Preview
 @Composable
-private fun LoadingContentPreview() {
+private fun LoadingExpenseScreenPreview() {
     UrgatTheme {
         Surface {
-            AddEditExpenseContent(
-                screenTitle = R.string.add_expense,
-                onBack = {},
+            AddEditExpenseScreen(
                 uiState = AddEditExpenseUiState(
+                    screenTitleResId = R.string.edit_expense,
                     isLoading = true
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }

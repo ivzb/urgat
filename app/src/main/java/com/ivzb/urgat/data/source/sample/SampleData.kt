@@ -12,9 +12,9 @@ object SampleData {
 
     val SAMPLE_TODOS = debugOnly {
         listOf(
+            listOf("Morning workout", "30 minutes of cardio and stretching", "true"),
             listOf("Buy groceries", "Milk, eggs, bread, and fruits", "false"),
             listOf("Read a book", "Finish reading 'Atomic Habits'", "false"),
-            listOf("Morning workout", "30 minutes of cardio and stretching", "true"),
             listOf("Call plumber", "Fix leaking sink in the kitchen", "false"),
             listOf("Plan weekend trip", "Decide on destination and book hotel", "false"),
             listOf("Send work report", "Monthly sales report to manager", "true"),
@@ -71,12 +71,12 @@ object SampleData {
 
     val SAMPLE_NOTES = debugOnly {
         listOf(
-            listOf("Meeting notes about Q4 goals and deadlines"),
             listOf(
                 "Shopping list: eggs, milk, bread, coffee, yogurt, chicken, vegetables, pasta, rice, snacks. " +
                         "Also remember to buy cleaning supplies like dish soap and paper towels. " +
                         "Check if toiletries like toothpaste or shampoo need restocking."
             ),
+            listOf("Meeting notes about Q4 goals and deadlines"),
             listOf("Idea: build a small habit-tracking Android app"),
             listOf(
                 "Recipe: pasta with tomato sauce and basil. Cook pasta for 10 minutes, prepare sauce using fresh tomatoes, garlic, olive oil, and herbs. " +
@@ -123,12 +123,12 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS = debugOnly {
         listOf(
-            listOf("Apple Inc.", "2000", "276.97", "Stocks", "USD"),
-            listOf("Microsoft Corp.", "1800", "485.5", "Stocks", "USD"),
             listOf("Alphabet (Google)", "2200", "323.44", "Stocks", "USD"),
+            listOf("Microsoft Corp.", "1800", "485.5", "Stocks", "USD"),
             listOf("Amazon.com Inc.", "1700", "229.16", "Stocks", "USD"),
             listOf("Tesla Inc.", "1900", "419.40", "Stocks", "USD"),
             listOf("NVIDIA Corp.", "1600", "180.26", "Stocks", "USD"),
+            listOf("Apple Inc.", "2000", "276.97", "Stocks", "USD"),
             listOf("Meta Platforms", "1500", "636.22", "Stocks", "USD"),
             listOf("Vanguard S&P 500 ETF", "3200", "621.88", "ETF", "USD"),
             listOf("Bitcoin", "2500.50", "90966", "Cryptocurrency", "USD"),

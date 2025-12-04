@@ -28,9 +28,12 @@ class AddEditTodoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
+    private val screenTitleResId: Int? = savedStateHandle[AddEditTodoDestination.Args.ARG_TITLE]
     private val todoId: String? = savedStateHandle[AddEditTodoDestination.Args.ARG_ID]
 
-    private val _uiState = MutableStateFlow(AddEditTodoUiState())
+    private val _uiState = MutableStateFlow(AddEditTodoUiState(
+        screenTitleResId = screenTitleResId,
+    ))
     val uiState: StateFlow<AddEditTodoUiState> = _uiState.asStateFlow()
 
     init {

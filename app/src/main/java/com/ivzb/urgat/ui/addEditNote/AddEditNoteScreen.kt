@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.addEditNote
 
-import androidx.annotation.StringRes
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,18 +51,16 @@ enum class FieldId {
 
 @Composable
 fun AddEditNoteScreen(
-    @StringRes screenTitle: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddEditNoteViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    AddEditNoteContent(
-        screenTitle = screenTitle,
-        onBack = onBack,
+    AddEditNoteScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+        onBack = onBack,
         modifier = modifier
     )
 
@@ -73,12 +71,12 @@ fun AddEditNoteScreen(
     }
 }
 
+@VisibleForTesting
 @Composable
-private fun AddEditNoteContent(
-    screenTitle: Int,
-    onBack: () -> Unit,
+fun AddEditNoteScreen(
     uiState: AddEditNoteUiState,
     onIntent: (AddEditNoteIntent) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -90,7 +88,7 @@ private fun AddEditNoteContent(
     Scaffold(
         topBar = {
             TextTopAppBar(
-                title = screenTitle,
+                title = uiState.screenTitleResId,
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditNoteIntent.DeleteNote) },
@@ -183,11 +181,12 @@ private fun AddEditNoteContent(
 private fun AddContentPreview() {
     UrgatTheme {
         Surface {
-            AddEditNoteContent(
-                screenTitle = R.string.add_note,
-                onBack = {},
-                uiState = AddEditNoteUiState(),
+            AddEditNoteScreen(
+                uiState = AddEditNoteUiState(
+                    screenTitleResId = R.string.add_note,
+                ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -199,13 +198,13 @@ private fun AddContentPreview() {
 private fun EditNoteContentPreview() {
     UrgatTheme {
         Surface {
-            AddEditNoteContent(
-                screenTitle = R.string.edit_note,
-                onBack = {},
+            AddEditNoteScreen(
                 uiState = AddEditNoteUiState(
+                    screenTitleResId = R.string.edit_note,
                     content = "Note content",
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
@@ -217,13 +216,13 @@ private fun EditNoteContentPreview() {
 private fun LoadingContentPreview() {
     UrgatTheme {
         Surface {
-            AddEditNoteContent(
-                screenTitle = R.string.add_note,
-                onBack = {},
+            AddEditNoteScreen(
                 uiState = AddEditNoteUiState(
+                    screenTitleResId = R.string.edit_note,
                     isLoading = true
                 ),
                 onIntent = {},
+                onBack = {},
                 modifier = Modifier
             )
         }
