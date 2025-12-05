@@ -38,3 +38,4 @@ add PlayStoreScreenshot annotation to screenshot tests to indicate which screens
 do both light and dark mode for screenshot tests
 setup emulator for running ui tests in the script
 add screenshot tests for all screens
+make release_notes.sh to automatically get previous tag
