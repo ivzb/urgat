@@ -20,7 +20,7 @@ interface InvestmentDao {
     fun observeAll(limit: Int, searchQuery: String): Flow<List<InvestmentEntity>>
 
     @Upsert
-    suspend fun upsert(investment: InvestmentEntity)
+    suspend fun upsert(entity: InvestmentEntity)
 
     @Query("SELECT * FROM investments WHERE id = :id")
     suspend fun getById(id: String): InvestmentEntity?

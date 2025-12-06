@@ -20,7 +20,7 @@ interface WeightDao {
     fun observeAll(limit: Int, from: Long, to: Long): Flow<List<WeightEntity>>
 
     @Upsert
-    suspend fun upsert(weight: WeightEntity)
+    suspend fun upsert(entity: WeightEntity)
 
     @Query("SELECT * FROM weights WHERE id = :id")
     suspend fun getById(id: String): WeightEntity?

@@ -20,7 +20,7 @@ interface ExpenseDao {
     fun observeAll(limit: Int, searchQuery: String): Flow<List<ExpenseEntity>>
 
     @Upsert
-    suspend fun upsert(expense: ExpenseEntity)
+    suspend fun upsert(entity: ExpenseEntity)
 
     @Query("SELECT * FROM expenses WHERE id = :id")
     suspend fun getById(id: String): ExpenseEntity?

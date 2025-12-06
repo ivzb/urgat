@@ -1,5 +1,15 @@
 #!/bin/bash
 
+set -e
+
+handle_error() {
+    echo "## Urgat - $0 - An error occurred on line $1\n"
+    usage
+    exit 1
+}
+
+trap 'handle_error $LINENO' ERR
+
 if [[ $# -ne 2 ]]; then
     echo "Usage: $0 <start git tag> <end git tag>"
     exit 1

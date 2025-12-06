@@ -23,7 +23,7 @@ interface TodoDao {
     suspend fun getById(id: String): TodoEntity?
 
     @Upsert
-    suspend fun upsert(todo: TodoEntity)
+    suspend fun upsert(entity: TodoEntity)
 
     @Query("UPDATE todo SET isCompleted = :completed WHERE id = :id")
     suspend fun updateCompleted(id: String, completed: Boolean)

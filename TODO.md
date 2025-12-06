@@ -31,10 +31,12 @@ rename todo to todos (internal change)
 improve add buttons UI (e.g. add todo, add note) in landscape
 add investments overview / dashboard
 check why search if missing from finance screen, but visible for overview
-remove the background color from empty state images - it has some kind of white
 generate screenshots for google play store via UI tests
 write UI tests
 make release_notes.sh to automatically get previous tag
 add PlayStoreScreenshot annotation to screenshot tests to indicate which screenshots to be uploaded
-do both light and dark mode for screenshot tests
-setup emulator for running ui tests in the script
+improve dark mode colors
+there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
+run UI tests for 7" and 10" tablet
+write script to pick screenshots for play store
+remove the background color from all images - it has some kind of white - which looks terrible in dark mode
