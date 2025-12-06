@@ -34,8 +34,7 @@ check why search if missing from finance screen, but visible for overview
 remove the background color from empty state images - it has some kind of white
 generate screenshots for google play store via UI tests
 write UI tests
+make release_notes.sh to automatically get previous tag
 add PlayStoreScreenshot annotation to screenshot tests to indicate which screenshots to be uploaded
 do both light and dark mode for screenshot tests
 setup emulator for running ui tests in the script
-add screenshot tests for all screens
-make release_notes.sh to automatically get previous tag

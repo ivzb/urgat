@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.todo
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,7 +53,7 @@ fun TodoScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    TodoScreenScaffold(
+    TodoScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onAddTodo = onAddTodo,
@@ -62,8 +63,9 @@ fun TodoScreen(
     )
 }
 
+@VisibleForTesting
 @Composable
-private fun TodoScreenScaffold(
+fun TodoScreen(
     uiState: TodoUiState,
     onIntent: (TodoIntent) -> Unit,
     onAddTodo: () -> Unit,
@@ -235,9 +237,9 @@ fun TodoItem(
 @Preview
 @LandscapePreview
 @Composable
-private fun TodoScreenScaffoldPreview() {
+private fun TodoScreenPreview() {
     UrgatTheme {
-        TodoScreenScaffold(
+        TodoScreen(
             uiState = TodoUiState(
                 items = SampleData.SAMPLE_TODOS,
                 filteringUiInfo = TodoFilteringUiInfo(),
@@ -256,9 +258,9 @@ private fun TodoScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun TodoScreenScaffoldEmptyPreview() {
+private fun TodoScreenEmptyPreview() {
     UrgatTheme {
-        TodoScreenScaffold(
+        TodoScreen(
             uiState = TodoUiState(
                 items = listOf(),
                 filteringUiInfo = TodoFilteringUiInfo(),
@@ -277,9 +279,9 @@ private fun TodoScreenScaffoldEmptyPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun TodoScreenScaffoldLoadingPreview() {
+private fun TodoScreenLoadingPreview() {
     UrgatTheme {
-        TodoScreenScaffold(
+        TodoScreen(
             uiState = TodoUiState(
                 items = listOf(),
                 filteringUiInfo = TodoFilteringUiInfo(),
@@ -298,9 +300,9 @@ private fun TodoScreenScaffoldLoadingPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun TodoScreenScaffoldErrorPreview() {
+private fun TodoScreenErrorPreview() {
     UrgatTheme {
-        TodoScreenScaffold(
+        TodoScreen(
             uiState = TodoUiState(
                 items = listOf(),
                 filteringUiInfo = TodoFilteringUiInfo(),

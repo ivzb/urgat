@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.expenses
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,7 +56,7 @@ fun ExpensesScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    ExpensesScreenScaffold(
+    ExpensesScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onAddExpense = onAddExpense,
@@ -65,8 +66,9 @@ fun ExpensesScreen(
     )
 }
 
+@VisibleForTesting
 @Composable
-private fun ExpensesScreenScaffold(
+fun ExpensesScreen(
     uiState: ExpensesUiState,
     onIntent: (ExpensesIntent) -> Unit,
     onAddExpense: () -> Unit,
@@ -235,9 +237,9 @@ fun ExpenseItem(
 @Preview
 @LandscapePreview
 @Composable
-private fun ExpensesScreenScaffoldPreview() {
+private fun ExpensesScreenPreview() {
     UrgatTheme {
-        ExpensesScreenScaffold(
+        ExpensesScreen(
             uiState = ExpensesUiState(
                 items = SampleData.SAMPLE_EXPENSES,
                 filteringUiInfo = ExpensesFilteringUiInfo(),
@@ -256,9 +258,9 @@ private fun ExpensesScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun ExpensesScreenScaffoldEmptyPreview() {
+private fun ExpensesScreenEmptyPreview() {
     UrgatTheme {
-        ExpensesScreenScaffold(
+        ExpensesScreen(
             uiState = ExpensesUiState(
                 items = listOf(),
                 filteringUiInfo = ExpensesFilteringUiInfo(),
@@ -277,9 +279,9 @@ private fun ExpensesScreenScaffoldEmptyPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun ExpensesScreenScaffoldLoadingPreview() {
+private fun ExpensesScreenLoadingPreview() {
     UrgatTheme {
-        ExpensesScreenScaffold(
+        ExpensesScreen(
             uiState = ExpensesUiState(
                 items = listOf(),
                 filteringUiInfo = ExpensesFilteringUiInfo(),
@@ -298,9 +300,9 @@ private fun ExpensesScreenScaffoldLoadingPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun ExpensesScreenScaffoldErrorPreview() {
+private fun ExpensesScreenErrorPreview() {
     UrgatTheme {
-        ExpensesScreenScaffold(
+        ExpensesScreen(
             uiState = ExpensesUiState(
                 items = listOf(),
                 filteringUiInfo = ExpensesFilteringUiInfo(),

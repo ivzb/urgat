@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.investments
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,7 +51,7 @@ fun InvestmentsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    InvestmentsScreenScaffold(
+    InvestmentsScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onAddInvestment = onAddInvestment,
@@ -60,8 +61,9 @@ fun InvestmentsScreen(
     )
 }
 
+@VisibleForTesting
 @Composable
-private fun InvestmentsScreenScaffold(
+fun InvestmentsScreen(
     uiState: InvestmentsUiState,
     onIntent: (InvestmentsIntent) -> Unit,
     onAddInvestment: () -> Unit,
@@ -215,7 +217,7 @@ fun InvestmentItem(
                 )
 
                 Text(
-                    text = investment.currency.toString(),
+                    text = investment.currency,
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
@@ -226,9 +228,9 @@ fun InvestmentItem(
 @Composable
 @Preview
 @LandscapePreview
-private fun InvestmentsScreenScaffoldPreview() {
+private fun InvestmentsScreenPreview() {
     UrgatTheme {
-        InvestmentsScreenScaffold(
+        InvestmentsScreen(
             uiState = InvestmentsUiState(
                 items = SampleData.SAMPLE_INVESTMENTS,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
@@ -247,9 +249,9 @@ private fun InvestmentsScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun InvestmentsScreenScaffoldEmptyPreview() {
+private fun InvestmentsScreenEmptyPreview() {
     UrgatTheme {
-        InvestmentsScreenScaffold(
+        InvestmentsScreen(
             uiState = InvestmentsUiState(
                 items = SampleData.SAMPLE_INVESTMENTS,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
@@ -268,9 +270,9 @@ private fun InvestmentsScreenScaffoldEmptyPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun InvestmentsScreenScaffoldLoadingPreview() {
+private fun InvestmentsScreenLoadingPreview() {
     UrgatTheme {
-        InvestmentsScreenScaffold(
+        InvestmentsScreen(
             uiState = InvestmentsUiState(
                 items = listOf(),
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
@@ -289,9 +291,9 @@ private fun InvestmentsScreenScaffoldLoadingPreview() {
 @Composable
 @Preview
 @LandscapePreview
-private fun InvestmentsScreenScaffoldErrorPreview() {
+private fun InvestmentsScreenErrorPreview() {
     UrgatTheme {
-        InvestmentsScreenScaffold(
+        InvestmentsScreen(
             uiState = InvestmentsUiState(
                 items = listOf(),
                 filteringUiInfo = InvestmentsFilteringUiInfo(),

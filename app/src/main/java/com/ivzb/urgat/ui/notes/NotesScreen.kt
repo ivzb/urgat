@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.notes
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,7 +47,7 @@ fun NotesScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    NotesScreenScaffold(
+    NotesScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onAddNote = onAddNote,
@@ -56,8 +57,9 @@ fun NotesScreen(
     )
 }
 
+@VisibleForTesting
 @Composable
-private fun NotesScreenScaffold(
+fun NotesScreen(
     uiState: NotesUiState,
     onIntent: (NotesIntent) -> Unit,
     onAddNote: () -> Unit,
@@ -202,9 +204,9 @@ fun NoteItem(
 @Preview
 @LandscapePreview
 @Composable
-private fun NotesScreenScaffoldPreview() {
+private fun NotesScreenPreview() {
     UrgatTheme {
-        NotesScreenScaffold(
+        NotesScreen(
             uiState = NotesUiState(
                 items = SampleData.SAMPLE_NOTES,
                 filteringUiInfo = NotesFilteringUiInfo(),
@@ -223,9 +225,9 @@ private fun NotesScreenScaffoldPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun NotesScreenScaffoldEmptyPreview() {
+private fun NotesScreenEmptyPreview() {
     UrgatTheme {
-        NotesScreenScaffold(
+        NotesScreen(
             uiState = NotesUiState(
                 items = listOf(),
                 filteringUiInfo = NotesFilteringUiInfo(),
@@ -244,9 +246,9 @@ private fun NotesScreenScaffoldEmptyPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun NotesScreenScaffoldLoadingPreview() {
+private fun NotesScreenLoadingPreview() {
     UrgatTheme {
-        NotesScreenScaffold(
+        NotesScreen(
             uiState = NotesUiState(
                 items = listOf(),
                 filteringUiInfo = NotesFilteringUiInfo(),
@@ -265,9 +267,9 @@ private fun NotesScreenScaffoldLoadingPreview() {
 @Preview
 @LandscapePreview
 @Composable
-private fun NotesScreenScaffoldErrorPreview() {
+private fun NotesScreenErrorPreview() {
     UrgatTheme {
-        NotesScreenScaffold(
+        NotesScreen(
             uiState = NotesUiState(
                 items = listOf(),
                 filteringUiInfo = NotesFilteringUiInfo(),
