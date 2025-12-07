@@ -147,7 +147,7 @@ fun AddEditTodoScreen(
                     placeholder = { Text(stringResource(id = R.string.description_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Default // allow multiline
                     ),
                     colors = transparentTextFieldColors(),
                     modifier = Modifier

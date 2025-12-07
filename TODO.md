@@ -46,6 +46,5 @@ improve dark mode colors - there is no divider for list items
 improve dark mode colors - top buttons need to be inverted?
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 remove the background color from all images - it has some kind of white - which looks terrible in dark mode
-I'm unable to enter new lines
 write script to pick screenshots for play store
 time ./run_ui_tests.sh

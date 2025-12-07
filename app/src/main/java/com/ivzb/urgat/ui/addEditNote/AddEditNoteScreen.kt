@@ -124,7 +124,7 @@ fun AddEditNoteScreen(
                     placeholder = { Text(text = stringResource(id = R.string.note_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Default // allow multiline
                     ),
                     colors = transparentTextFieldColors(),
                     modifier = Modifier
