@@ -12,7 +12,8 @@ trap 'handle_error $LINENO' ERR
 
 DEVICE_TYPES=(
   -phone
-#  -tablet
+  -tablet7
+  -tablet10
 )
 
 MODES=(
@@ -20,31 +21,48 @@ MODES=(
   -dark-mode
 )
 
+ORIENTATIONS=(
+  -portrait
+  -landscape
+)
+
+pushd ..
+
+if [ -d screenshots ]; then
+  rm -r screenshots
+fi
+
+mkdir screenshots
+
+popd
+
 for device in "${DEVICE_TYPES[@]}"; do
   for mode in "${MODES[@]}"; do
-    echo "## Urgat - Running ui tests $device $mode"
+    for orientation in "${ORIENTATIONS[@]}"; do
+      echo "## Urgat - Running ui tests $device $mode $orientation"
 
-    ./start_emulator.sh "$device" "$mode"
+      ./start_emulator.sh "$device" "$mode" "$orientation"
 
-    pushd ..
+      pushd ..
 
-    ./gradlew connectedDebugAndroidTest
+      ./gradlew connectedDebugAndroidTest
 
-    SCREENSHOTS_DIR="screenshots$device$mode"
+      SCREENSHOTS_DIR="screenshots/screenshots$device$mode$orientation"
 
-    if [ -d $SCREENSHOTS_DIR ]; then
-      rm -r $SCREENSHOTS_DIR
-    fi
+      if [ -d $SCREENSHOTS_DIR ]; then
+        rm -r $SCREENSHOTS_DIR
+      fi
 
-    mkdir $SCREENSHOTS_DIR
+      mkdir $SCREENSHOTS_DIR
 
-    adb pull "/storage/emulated/0/googletest/test_outputfiles" $SCREENSHOTS_DIR/
+      adb pull "/storage/emulated/0/googletest/test_outputfiles" $SCREENSHOTS_DIR/
 
-    mv $SCREENSHOTS_DIR/test_outputfiles/* $SCREENSHOTS_DIR/
-    rm -r $SCREENSHOTS_DIR/test_outputfiles
+      mv $SCREENSHOTS_DIR/test_outputfiles/* $SCREENSHOTS_DIR/
+      rm -r $SCREENSHOTS_DIR/test_outputfiles
 
-    popd
+      popd
 
-    ./stop_emulator.sh
+      ./stop_emulator.sh
+    done
   done
 done

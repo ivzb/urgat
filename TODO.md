@@ -1,3 +1,4 @@
+consider extracting a framework
 add preview screens instead of direct edit for todo, expense, note and investment
 name and category should be auto-suggested in a dropdown while typing name
 make main screens more generic
@@ -31,12 +32,20 @@ rename todo to todos (internal change)
 improve add buttons UI (e.g. add todo, add note) in landscape
 add investments overview / dashboard
 check why search if missing from finance screen, but visible for overview
-generate screenshots for google play store via UI tests
+review screenshots and fix obvious UI issues
+make the submit button smaller in landscape
+status bar height in landscape is too big
+add category to notes
+make tablet support list/detail
+take 5 or 7 items if tablet, not 3 as phone since we have more space
 write UI tests
 make release_notes.sh to automatically get previous tag
 add PlayStoreScreenshot annotation to screenshot tests to indicate which screenshots to be uploaded
-improve dark mode colors
+calendar is not themed in dark mode
+improve dark mode colors - there is no divider for list items
+improve dark mode colors - top buttons need to be inverted?
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
-run UI tests for 7" and 10" tablet
-write script to pick screenshots for play store
 remove the background color from all images - it has some kind of white - which looks terrible in dark mode
+I'm unable to enter new lines
+write script to pick screenshots for play store
+time ./run_ui_tests.sh

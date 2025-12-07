@@ -12,8 +12,8 @@ class FinanceScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_FinanceScreen_sampleData() = screenshotTest(
         uiState = FinanceUiState(
-            expenses = SampleData.SAMPLE_EXPENSES,
-            investments = SampleData.SAMPLE_INVESTMENTS,
+            expenses = SampleData.SAMPLE_EXPENSES.take(3),
+            investments = SampleData.SAMPLE_INVESTMENTS.take(3),
             isLoading = false,
             hasError = false,
         ),

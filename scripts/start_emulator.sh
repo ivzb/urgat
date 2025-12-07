@@ -19,18 +19,17 @@ usage()
 {
 cat << EOF
 usage:
-    $0 -phone/-tablet -light-mode/-dark-mode
-        example:
-        - "$ $0 -phone -light-mode
-        - "$ $0 -tablet -dark-mode
+    $0 -phone/-tablet7/-tablet10 -light-mode/-dark-mode -portrait/-landscape
 EOF
 }
 
 getDevice() {
   if [ "$1" = "-phone" ]; then
     IS_PHONE=1
-  elif [ "$1" = "-tablet" ]; then
-    IS_TABLET=1
+  elif [ "$1" = "-tablet7" ]; then
+    IS_TABLET7=1
+  elif [ "$1" = "-tablet10" ]; then
+    IS_TABLET10=1
   else
     usage
     exit 1
@@ -41,7 +40,18 @@ getMode() {
   if [ "$2" = "-light-mode" ]; then
     IS_LIGHT_MODE=1
   elif [ "$2" = "-dark-mode" ]; then
-    IS_DARK_MODE=1
+    IS_LIGHT_MODE=0
+  else
+    usage
+    exit 1
+  fi
+}
+
+getOrientation() {
+  if [ "$3" = "-portrait" ]; then
+    ORIENTATION="portrait"
+  elif [ "$3" = "-landscape" ]; then
+    ORIENTATION="landscape"
   else
     usage
     exit 1
@@ -50,6 +60,7 @@ getMode() {
 
 getDevice "$@"
 getMode "$@"
+getOrientation "$@"
 
 # Add $JAVA_HOME and $ANDROID_HOME to $PATH
 export PATH=$JAVA_HOME/bin:$PATH
@@ -87,6 +98,47 @@ fi
 name=Pixel_Urgat
 echo no | avdmanager create avd --force --name $name --abi $ABI_ARCH --package $sdk
 
+if [[ $IS_PHONE -eq 1 ]]; then
+  lcd=$(cat << 'EOF'
+  hw.lcd.density=480
+  hw.lcd.width=1280
+  hw.lcd.height=2856
+  EOF
+  )
+
+  if [[ $ORIENTATION == "portrait" ]]; then
+    screenSize="1280x2856"
+  else
+    screenSize="2856x1280"
+  fi
+elif [[ $IS_TABLET7 -eq 1 ]]; then
+  lcd=$(cat << 'EOF'
+  hw.lcd.density=320
+  hw.lcd.width=1200
+  hw.lcd.height=1920
+  EOF
+  )
+
+  if [[ $ORIENTATION == "portrait" ]]; then
+    screenSize="1200x1920"
+  else
+    screenSize="1920x1200"
+  fi
+elif [[ $IS_TABLET10 -eq 1 ]]; then
+  lcd=$(cat << 'EOF'
+  hw.lcd.density=320
+  hw.lcd.width=1600
+  hw.lcd.height=2560
+  EOF
+  )
+
+  if [[ $ORIENTATION == "portrait" ]]; then
+    screenSize="1600x2560"
+  else
+    screenSize="2560x1600"
+  fi
+fi
+
 sysDir=$(cat $HOME/.android/avd/$name.avd/config.ini | grep "image.sysdir.1=")
 
 # Edit the created emulator config
@@ -115,12 +167,10 @@ hw.device.name=pixel_9_pro
 hw.gps=yes
 hw.gpu.enabled=no
 hw.gpu.mode=off
-hw.initialOrientation=Portrait
+hw.initialOrientation=$ORIENTATION
 hw.gyroscope=yes
 hw.keyboard=yes
-hw.lcd.density=480
-hw.lcd.height=2856
-hw.lcd.width=1280
+$lcd
 hw.mainKeys=no
 hw.ramSize=12288
 hw.sdCard=yes
@@ -135,7 +185,7 @@ runtime.network.latency=none
 runtime.network.speed=full
 showDeviceFrame=no
 skin.dynamic=yes
-skin.name=1440x2560
+skin.name=$screenSize
 skin.path=_no_skin
 skin.path.backup=_no_skin
 tag.display=Google Play
@@ -171,7 +221,7 @@ adb shell settings put global animator_duration_scale 0.0
 # Set light/dark mode
 if [[ $IS_LIGHT_MODE -eq 1 ]]; then
   adb shell cmd uimode night no
-elif [[ $IS_DARK_MODE -eq 1 ]]; then
+elif [[ $IS_LIGHT_MODE -eq 0 ]]; then
   adb shell cmd uimode night yes
 fi
 
