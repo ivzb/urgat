@@ -1,9 +1,37 @@
-### Release notes
-Use the following command to generate release notes for app release to Google Play store.
-`release_notes.sh` script accepts two arguments: start and end git tags.
+### Play Store release
+Use the following command to generate app release to Google Play store:
 
 ```bash
-./release_notes.sh v25.11.0 v25.12.1
+./play_store_release.sh v25.12.0
+````
+
+### Run unit tests:
+Use the following command to run unit tests:
+
+```bash
+./run_unit_tests.sh
+````
+
+### Run ui tests:
+Use the following command to run ui tests:
+
+```bash
+./run_ui_tests.sh
+````
+
+### Play Store screenshots
+Use the following command to generate screenshots for app release to Google Play store:
+
+```bash
+./play_store_screenshots.sh
+```
+
+### Play Store release notes
+Use the following command to generate release notes for app release to Google Play store.
+`./play_store_release_notes.sh` script accepts two arguments: start and end git tags.
+
+```bash
+./play_store_release_notes.sh v25.11.0 v25.12.1
 ```
 
 To include release notes for a feature, improvement, or bug fix on the Google Play Store, 
@@ -32,7 +60,6 @@ Enhanced search functionality across Notes, To-Dos, and Expenses.
 Fixed an issue where some notifications were not appearing.
 </fixed>
 ```
-
 
 The following release notes will be generated:
 
