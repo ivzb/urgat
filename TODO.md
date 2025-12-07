@@ -49,3 +49,4 @@ remove the background color from all images - it has some kind of white - which 
 time ./run_ui_tests.sh
 check why the first text field of every edit screen is empty in the screenshots
 make `./play_store_release.sh` generate app as well
+calculate total net worth, calculate 25 x yearly costs, calculate % to FI
