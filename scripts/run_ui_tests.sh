@@ -3,66 +3,86 @@
 set -e
 
 handle_error() {
+    echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "#############################"
     usage
     exit 1
 }
 
 trap 'handle_error $LINENO' ERR
 
-DEVICE_TYPES=(
-  -phone
-  -tablet7
-  -tablet10
-)
+usage()
+{
+cat << EOF
+usage:
+    $0 -phone/-tablet7/-tablet10 -light-mode/-dark-mode -portrait/-landscape
+EOF
+}
 
-MODES=(
-  -light-mode
-  -dark-mode
-)
+getDevice() {
+  if [[ "$1" = "-phone" || "$1" = "-tablet7" || "$1" = "-tablet10" ]]; then
+    device="$1"
+  else
+    usage
+    exit 1
+  fi
+}
 
-ORIENTATIONS=(
-  -portrait
-  -landscape
-)
+getMode() {
+  if [[ "$2" = "-light-mode" || "$2" = "-dark0mode" ]]; then
+    mode="$2"
+  else
+    usage
+    exit 1
+  fi
+}
+
+getOrientation() {
+  if [[ "$3" = "-portrait" || "$3" = "-landscape" ]]; then
+    orientation="$3"
+  else
+    usage
+    exit 1
+  fi
+}
+
+getDevice "$@"
+getMode "$@"
+getOrientation "$@"
+testArguments="$4"
 
 pushd ..
 
-if [ -d screenshots ]; then
-  rm -r screenshots
+if [ ! -d screenshots ]; then
+  mkdir creenshots
 fi
-
-mkdir screenshots
 
 popd
 
-for device in "${DEVICE_TYPES[@]}"; do
-  for mode in "${MODES[@]}"; do
-    for orientation in "${ORIENTATIONS[@]}"; do
-      echo "## Urgat - Running ui tests $device $mode $orientation"
+echo "#############################"
+echo "## Urgat - Running ui tests $device $mode $orientation"
+echo "#############################"
 
-      ./start_emulator.sh "$device" "$mode" "$orientation"
+./start_emulator.sh "$device" "$mode" "$orientation"
 
-      pushd ..
+pushd ..
 
-      ./gradlew connectedDebugAndroidTest
+./gradlew connectedDebugAndroidTest $testArguments
 
-      SCREENSHOTS_DIR="screenshots/screenshots$device$mode$orientation"
+SCREENSHOTS_DIR="screenshots/screenshots$device$mode$orientation"
 
-      if [ -d $SCREENSHOTS_DIR ]; then
-        rm -r $SCREENSHOTS_DIR
-      fi
+if [ -d $SCREENSHOTS_DIR ]; then
+  rm -r $SCREENSHOTS_DIR
+fi
 
-      mkdir $SCREENSHOTS_DIR
+mkdir $SCREENSHOTS_DIR
 
-      adb pull "/storage/emulated/0/googletest/test_outputfiles" $SCREENSHOTS_DIR/
+adb pull "/storage/emulated/0/googletest/test_outputfiles" $SCREENSHOTS_DIR/
 
-      mv $SCREENSHOTS_DIR/test_outputfiles/* $SCREENSHOTS_DIR/
-      rm -r $SCREENSHOTS_DIR/test_outputfiles
+mv $SCREENSHOTS_DIR/test_outputfiles/* $SCREENSHOTS_DIR/
+rm -r $SCREENSHOTS_DIR/test_outputfiles
 
-      popd
+popd
 
-      ./stop_emulator.sh
-    done
-  done
-done
+./stop_emulator.sh

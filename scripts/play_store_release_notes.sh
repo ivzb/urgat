@@ -3,7 +3,9 @@
 set -e
 
 handle_error() {
+    echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "#############################"
     usage
     exit 1
 }

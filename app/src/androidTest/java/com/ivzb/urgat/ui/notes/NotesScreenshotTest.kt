@@ -2,13 +2,16 @@ package com.ivzb.urgat.ui.notes
 
 import androidx.compose.ui.Modifier
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
+import org.junit.experimental.categories.Category
 
 class NotesScreenshotTest: ScreenshotTest() {
 
     @Test
+    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_NotesScreen_sampleData() = screenshotTest(
         uiState = NotesUiState(
             items = SampleData.SAMPLE_NOTES,

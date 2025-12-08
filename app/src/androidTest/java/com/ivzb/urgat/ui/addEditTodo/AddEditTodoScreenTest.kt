@@ -4,9 +4,11 @@ import androidx.compose.ui.Modifier
 import androidx.test.espresso.Espresso
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
+import org.junit.experimental.categories.Category
 
 class AddEditTodoScreenTest: ScreenshotTest() {
 
@@ -18,6 +20,7 @@ class AddEditTodoScreenTest: ScreenshotTest() {
     )
 
     @Test
+    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_AddEditTodoScreen_editTodo() = screenshotTest(
         uiState = SampleData.SAMPLE_TODOS.first().let { todo ->
             AddEditTodoUiState(

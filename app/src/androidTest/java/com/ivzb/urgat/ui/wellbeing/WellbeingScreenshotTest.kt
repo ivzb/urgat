@@ -3,13 +3,16 @@ package com.ivzb.urgat.ui.wellbeing
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
+import org.junit.experimental.categories.Category
 
 class WellbeingScreenshotTest: ScreenshotTest() {
 
     @Test
+    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_WellbeingScreen_sampleData() = screenshotTest(
         uiState = WellbeingUiState(
             weights = SampleData.SAMPLE_WEIGHTS,

@@ -3,12 +3,16 @@
 set -e
 
 if [[ -z "${JAVA_HOME}" || -z "${ANDROID_HOME}" ]]; then
-  echo "JAVA_HOME or ANDROID_HOME is undefined"
+  echo "#############################"
+  echo "## Urgat: JAVA_HOME or ANDROID_HOME is undefined"
+  echo "#############################"
   exit 1
 fi
 
 handle_error() {
+    echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "#############################"
     usage
     exit 1
 }
@@ -79,7 +83,9 @@ elif [[ $(uname -m) == 'arm64' ]]; then
   ABI_ARCH=arm64-v8a
   CPU_ARCH=arm64
 else
-  echo "Unsupported CPU architecture"
+  echo "#############################"
+  echo "## Urgat: Unsupported CPU architecture"
+  echo "#############################"
   exit 1
 fi
 
@@ -88,7 +94,9 @@ sdk="system-images;android-36;google_apis;$ABI_ARCH"
 installedImage=$(sdkmanager --list_installed | grep -o $sdk)
 
 if [[ $installedImage = $sdk ]]; then
-  echo "The required SDK is already installed";
+  echo "#############################"
+  echo "## Urgat: The required SDK is already installed";
+  echo "#############################"
 else
   yes | sdkmanager --licenses
   yes | sdkmanager --install $sdk

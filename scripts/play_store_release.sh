@@ -3,19 +3,24 @@
 set -e
 
 handle_error() {
+    echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "#############################"
     usage
     exit 1
 }
 
 trap 'handle_error $LINENO' ERR
 
-if [[ $# -ne 1 ]]; then
-    echo "Usage: $0 <version>"
+if [[ $# -lt 1 ]]; then
+    echo "#############################"
+    echo "## Urgat - Usage: $0 <version> [-skip-screenshots]"
+    echo "#############################"
     exit 1
 fi
 
 VERSION="$1"
+FLAG="$2"
 
 ##
 # Run unit tests
@@ -23,14 +28,11 @@ VERSION="$1"
 ./run_unit_tests.sh
 
 ##
-# Run ui tests
-##
-./run_ui_tests.sh
-
-##
 # Generate play store screenshots
 ##
-./play_store_screenshots.sh
+if [[ "$FLAG" != "-skip-screenshots" ]]; then
+  ./play_store_screenshots.sh
+fi
 
 ##
 # Generate play store release notes

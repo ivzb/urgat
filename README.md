@@ -2,7 +2,8 @@
 Use the following command to generate app release to Google Play store:
 
 ```bash
-./play_store_release.sh v25.12.0
+./play_store_release.sh 25.12.0
+./play_store_release.sh 25.12.0 -skip-screenshots
 ````
 
 ### Run unit tests:

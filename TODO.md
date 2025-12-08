@@ -43,8 +43,7 @@ calendar is not themed in dark mode
 improve dark mode colors - there is no divider for list items
 improve dark mode colors - top buttons need to be inverted?
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
-remove the background color from all images - it has some kind of white - which looks terrible in dark mode
-check why the first text field of every edit screen is empty in the screenshots
 check play console warning about edge-to-edge
 calculate total net worth, calculate 25 x yearly costs, calculate % to FI
-add PlayStoreScreenshot annotation to screenshot tests to indicate which screenshots to be uploaded
+remove the background color from all images - it has some kind of white - which looks terrible in dark mode
+check why the first text field of every edit screen is empty in the screenshots

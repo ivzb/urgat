@@ -3,12 +3,16 @@
 set -e
 
 if [[ -z "${JAVA_HOME}" || -z "${ANDROID_HOME}" ]]; then
-  echo "JAVA_HOME or ANDROID_HOME is undefined"
+  echo "#############################"
+  echo "## Urgat: JAVA_HOME or ANDROID_HOME is undefined"
+  echo "#############################"
   exit 1
 fi
 
 handle_error() {
+    echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "#############################"
     usage
     exit 1
 }
