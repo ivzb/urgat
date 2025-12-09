@@ -45,4 +45,3 @@ improve dark mode colors - top buttons need to be inverted?
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 check play console warning about edge-to-edge
 calculate total net worth, calculate 25 x yearly costs, calculate % to FI
-remove the background color from all images - it has some kind of white - which looks terrible in dark mode
