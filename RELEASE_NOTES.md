@@ -1,3 +1,9 @@
+## Release notes 25.12.1
+
+Improved:
+- Improved colors in dark mode.
+- Improved images for dark mode.
+
 ## Release notes 25.12.0
 
 Improved:
