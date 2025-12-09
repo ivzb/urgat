@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.finance
 
 import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,8 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FinanceDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
@@ -321,6 +324,8 @@ private fun LazyListScope.itemInvestments(
 
 @Preview
 @LandscapePreview
+@DarkModePreview
+@DarkModeLandscapePreview
 @Composable
 fun FinanceScreenPreview() {
     UrgatTheme {

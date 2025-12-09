@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,15 +43,12 @@ fun EmptyStateCard(
     modifier: Modifier = Modifier
 ) {
 
-    Card(
+    ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = dimensionResource(R.dimen.card_min_height)),
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(R.dimen.card_elevation)),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
     ) {
 
         Row(

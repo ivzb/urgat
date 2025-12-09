@@ -1,6 +1,8 @@
 package com.ivzb.urgat.ui.components
 
 import android.app.DatePickerDialog
+import android.view.ContextThemeWrapper
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -20,11 +22,19 @@ fun DatePicker(
     val selectedDate = remember(timestamp) {
         timestamp.toLocalDate()
     }
-
     val formattedDate = selectedDate.format(dateFormat)
+    val isDarkTheme = isSystemInDarkTheme()
+    val themedContext = remember(context, isDarkTheme) {
+        ContextThemeWrapper(context, if (isDarkTheme) {
+            android.R.style.ThemeOverlay_Material_Dark
+        } else {
+            android.R.style.ThemeOverlay_Material_Light
+        })
+    }
+
     val datePickerDialog = remember {
         DatePickerDialog(
-            context,
+            themedContext,
             { _, year, month, dayOfMonth ->
                 val pickedDate = LocalDate.of(year, month + 1, dayOfMonth)
                 val pickedMillis = pickedDate

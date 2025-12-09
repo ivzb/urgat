@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,9 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -47,7 +51,7 @@ fun <T> Header(
             modifier = modifier
                 .fillMaxHeight()
                 .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
-                .background(MaterialTheme.colorScheme.primary)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(dimensionResource(R.dimen.library_header_item_padding))
         ) {
 
@@ -60,21 +64,28 @@ fun <T> Header(
             )
         }
     } else {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.library_header_item_padding)),
+        ElevatedCard(
             modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(dimensionResource(R.dimen.menu_button_corner_radius)))
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(dimensionResource(R.dimen.library_header_item_padding))
+                .fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            elevation = CardDefaults.cardElevation(defaultElevation = dimensionResource(R.dimen.card_elevation)),
         ) {
 
-            HeaderContent(
-                items = items,
-                onItemClick = onItemClick,
-                modifier = Modifier
-                    .weight(1f)
-            )
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.card_padding)),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.library_header_item_padding)),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+
+                HeaderContent(
+                    items = items,
+                    onItemClick = onItemClick,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+            }
         }
     }
 }
@@ -138,6 +149,7 @@ private fun <T> HeaderItem(
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun HeaderPreview() {
     UrgatTheme {
@@ -161,6 +173,7 @@ fun HeaderPreview() {
 }
 
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun HeaderLandscapePreview() {
     UrgatTheme {
@@ -184,6 +197,7 @@ fun HeaderLandscapePreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun HeaderItemPreview() {
     UrgatTheme {

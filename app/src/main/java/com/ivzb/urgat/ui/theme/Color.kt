@@ -33,7 +33,8 @@ val inversePrimaryLight = Color(0xFF8AD0EE)
 val surfaceDimLight = Color(0xFFD6DBDE)
 val surfaceBrightLight = Color(0xFFF5FAFD)
 val surfaceContainerLowestLight = Color(0xFFFFFFFF)
-val surfaceContainerLowLight = Color(0xFFF0F4F8)
+// ElevatedCard
+val surfaceContainerLowLight = backgroundLight
 val surfaceContainerLight = Color(0xFFEAEEF2)
 val surfaceContainerHighLight = Color(0xFFE4E9EC)
 val surfaceContainerHighestLight = Color(0xFFDEE3E6)

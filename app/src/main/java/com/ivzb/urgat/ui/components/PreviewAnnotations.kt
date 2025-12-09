@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(
@@ -36,3 +37,17 @@ annotation class FoldablePreviewUnfolded
     heightDp = 1768
 )
 annotation class FoldablePreviewFolded
+
+@Preview(
+    name = "DarkMode",
+    uiMode = UI_MODE_NIGHT_YES,
+)
+annotation class DarkModePreview
+
+@Preview(
+    name = "Phone Dark Mode Landscape",
+    uiMode = UI_MODE_NIGHT_YES,
+    widthDp = 640,
+    heightDp = 360
+)
+annotation class DarkModeLandscapePreview

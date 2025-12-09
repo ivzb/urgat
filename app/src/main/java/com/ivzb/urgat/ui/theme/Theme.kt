@@ -279,7 +279,7 @@ fun UrgatTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            setStatusBarColor(window, colorScheme.primary.toArgb())
+            setStatusBarColor(window, colorScheme.background.toArgb())
         }
     }
 

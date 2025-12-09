@@ -39,9 +39,9 @@ add category to notes
 make tablet support list/detail
 take 5 or 7 items if tablet, not 3 as phone since we have more space
 write UI tests
-calendar is not themed in dark mode
-improve dark mode colors - there is no divider for list items
-improve dark mode colors - top buttons need to be inverted?
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 check play console warning about edge-to-edge
 calculate total net worth, calculate 25 x yearly costs, calculate % to FI
+improve landscape header items - possibly introduce second rail but on the right side of the screen
+add @DarkMode annotations to all previews
+try to combine light mode / dark mode for playstore screenshots
