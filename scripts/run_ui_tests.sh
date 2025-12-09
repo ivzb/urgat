@@ -30,7 +30,7 @@ getDevice() {
 }
 
 getMode() {
-  if [[ "$2" = "-light-mode" || "$2" = "-dark0mode" ]]; then
+  if [[ "$2" = "-light-mode" || "$2" = "-dark-mode" ]]; then
     mode="$2"
   else
     usage

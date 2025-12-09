@@ -44,4 +44,6 @@ check play console warning about edge-to-edge
 calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 improve landscape header items - possibly introduce second rail but on the right side of the screen
 add @DarkMode annotations to all previews
-try to combine light mode / dark mode for playstore screenshots
+make splash screen dark mode
+check if list items should be improved in dark mode
+consider generating all screenshots and play store screenshots in different folder so that the play store screenshots won't delete all screenshots

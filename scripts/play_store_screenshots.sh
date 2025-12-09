@@ -12,6 +12,13 @@ handle_error() {
 
 trap 'handle_error $LINENO' ERR
 
+# Check for ImageMagick (magick or convert)
+if ! command -v magick >/dev/null 2>&1 && ! command -v convert >/dev/null 2>&1; then
+    echo "❌ ImageMagick is not installed."
+    echo "Install with: brew install imagemagick"
+    exit 1
+fi
+
 pushd ..
 
 SCREENSHOTS_DIR=screenshots
@@ -41,7 +48,7 @@ DEVICE_TYPES=(
 
 MODES=(
   -light-mode
-#  -dark-mode
+  -dark-mode
 )
 
 ORIENTATIONS=(
@@ -65,23 +72,37 @@ done
 
 pushd ..
 
+files=(
+  "LibraryScreenshotTest_screenshotTest_LibraryScreen_sampleData.png:01_library_screen.png"
+  "TodoScreenshotTest_screenshotTest_TodoScreen_sampleData.png:02_todos_screen.png"
+  "AddEditTodoScreenTest_screenshotTest_AddEditTodoScreen_editTodo.png:03_edit_todo_screen.png"
+  "NotesScreenshotTest_screenshotTest_NotesScreen_sampleData.png:04_notes_screen.png"
+  "FinanceScreenshotTest_screenshotTest_FinanceScreen_sampleData.png:05_finance_screen.png"
+  "ExpensesScreenshotTest_screenshotTest_ExpensesScreen_sampleData.png:06_expenses_screen.png"
+  "InvestmentsScreenshotTest_screenshotTest_InvestmentsScreen_sampleData.png:08_investments_screen.png"
+  "WellbeingScreenshotTest_screenshotTest_WellbeingScreen_sampleData.png:10_wellbeing_screen.png"
+)
+
+echo "#############################"
+echo "## Urgat - Copying PlayStore screenshots $device $mode $orientation"
+echo "#############################"
+
 for device in "${DEVICE_TYPES[@]}"; do
   PLAY_STORE_SCREENSHOTS_DEVICE_DIR=$PLAY_STORE_SCREENSHOTS_DIR/screenshots$device
   mkdir $PLAY_STORE_SCREENSHOTS_DEVICE_DIR
 
-  echo "#############################"
-  echo "## Urgat - Copying PlayStore screenshots $device $mode $orientation"
-  echo "#############################"
+  for pair in "${files[@]}"; do
+      src="${pair%%:*}"
+      dest="${pair##*:}"
 
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/LibraryScreenshotTest_screenshotTest_LibraryScreen_sampleData.png $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/01_library_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/TodoScreenshotTest_screenshotTest_TodoScreen_sampleData.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/02_todos_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/AddEditTodoScreenTest_screenshotTest_AddEditTodoScreen_editTodo.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/03_edit_todo_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/NotesScreenshotTest_screenshotTest_NotesScreen_sampleData.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/04_notes_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/FinanceScreenshotTest_screenshotTest_FinanceScreen_sampleData.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/05_finance_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/ExpensesScreenshotTest_screenshotTest_ExpensesScreen_sampleData.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/06_expenses_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/InvestmentsScreenshotTest_screenshotTest_InvestmentsScreen_sampleData.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/08_investments_screen.png
-  cp $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/WellbeingScreenshotTest_screenshotTest_WellbeingScreen_sampleData.png  $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/10_wellbeing_screen.png
+      # combine light/dark mode portrait
+      magick \
+        $SCREENSHOTS_DIR/screenshots$device-light-mode-portrait/$src \
+        $SCREENSHOTS_DIR/screenshots$device-dark-mode-portrait/$src \
+        +append \
+        $PLAY_STORE_SCREENSHOTS_DEVICE_DIR/$dest
 
+  done
 done
 
 popd
