@@ -109,7 +109,7 @@ fun AddEditTodoScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var titleTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+                var titleTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.title)) }
 
                 TextField(
                     value = titleTextFieldValue,

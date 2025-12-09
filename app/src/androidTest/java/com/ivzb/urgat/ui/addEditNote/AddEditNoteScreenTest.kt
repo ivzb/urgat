@@ -25,6 +25,7 @@ class AddEditNoteScreenTest: ScreenshotTest() {
             AddEditNoteUiState(
                 screenTitleResId = R.string.edit_note,
                 content = note.content,
+                focusIndex = -1,
             )
         },
     )

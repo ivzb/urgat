@@ -113,7 +113,7 @@ fun AddEditNoteScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var contentTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+                var contentTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.content)) }
 
                 TextField(
                     value = contentTextFieldValue,

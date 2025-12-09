@@ -28,6 +28,7 @@ class AddEditInvestmentScreenTest: ScreenshotTest() {
                 category = investment.category,
                 currency = investment.currency,
                 date = investment.date,
+                focusIndex = -1,
             )
         },
     )

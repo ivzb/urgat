@@ -26,6 +26,7 @@ class AddEditExpenseScreenTest: ScreenshotTest() {
                 amount = expense.amount.toString(),
                 category = expense.category,
                 date = expense.date,
+                focusIndex = -1,
             )
         },
     )

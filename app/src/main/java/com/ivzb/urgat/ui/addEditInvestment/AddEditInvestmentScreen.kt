@@ -126,7 +126,7 @@ fun AddEditInvestmentScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
 
                 TextField(
                     value = nameTextFieldValue,
