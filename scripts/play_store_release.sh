@@ -75,6 +75,15 @@ fi
 cp app/build/outputs/bundle/release/app-release.aab $APP_BUNDLE
 
 ##
+# Publish to Play Store
+##
+pushd scripts
+
+./play_store_publish.sh
+
+popd
+
+##
 # Commit changes
 ##
 git add .

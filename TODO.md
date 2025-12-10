@@ -53,3 +53,4 @@ consider generating all screenshots and play store screenshots in different fold
 check if list items should be improved in dark mode
 make splash screen dark mode
 review @Previews and fix obvious issues
+make the usage of `play_store_publish.sh` show latest tag
