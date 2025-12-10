@@ -31,6 +31,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.navigation.WellbeingDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
@@ -222,9 +224,11 @@ private fun LazyListScope.itemWeightsChart(
     }
 }
 
-@Composable
 @Preview
 @LandscapePreview
+@DarkModePreview
+@DarkModeLandscapePreview
+@Composable
 private fun WellbeingScreenPreview() {
     UrgatTheme {
         WellbeingScreen(
@@ -242,9 +246,11 @@ private fun WellbeingScreenPreview() {
     }
 }
 
-@Composable
 @Preview
 @LandscapePreview
+@DarkModePreview
+@DarkModeLandscapePreview
+@Composable
 private fun WellbeingScreenEmptyPreview() {
     UrgatTheme {
         WellbeingScreen(
@@ -262,9 +268,11 @@ private fun WellbeingScreenEmptyPreview() {
     }
 }
 
-@Composable
 @Preview
 @LandscapePreview
+@DarkModePreview
+@DarkModeLandscapePreview
+@Composable
 private fun WellbeingScreenLoadingPreview() {
     UrgatTheme {
         WellbeingScreen(
@@ -282,9 +290,11 @@ private fun WellbeingScreenLoadingPreview() {
     }
 }
 
-@Composable
 @Preview
 @LandscapePreview
+@DarkModePreview
+@DarkModeLandscapePreview
+@Composable
 private fun WellbeingScreenErrorPreview() {
     UrgatTheme {
         WellbeingScreen(
@@ -299,35 +309,5 @@ private fun WellbeingScreenErrorPreview() {
             navController = rememberNavController(),
             modifier = Modifier
         )
-    }
-}
-
-@Composable
-@Preview
-@LandscapePreview
-private fun WellbeingContentPreview() {
-    UrgatTheme {
-        WellbeingContent(
-            headerItems = WELLBEING_HEADER_ITEMS,
-            onHeaderItemClick = {},
-            weights = SampleData.SAMPLE_WEIGHTS,
-            weightsFilteringUiInfo = WeightsFilteringUiInfo(),
-            listState = rememberLazyListState(),
-            modifier = Modifier
-        )
-    }
-}
-
-@Preview
-@Composable
-fun WeightsCardPreview() {
-    UrgatTheme {
-        LazyColumn {
-            itemWeights(
-                weights = SampleData.SAMPLE_WEIGHTS,
-                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
-                onTrackWeight = {},
-            )
-        }
     }
 }

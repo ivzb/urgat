@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.components.charts
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,11 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -33,6 +36,7 @@ fun LineChart(
     dateFormatter: DateFormat = remember { SimpleDateFormat("dd/MM", Locale.getDefault()) },
     lineColor: Color = MaterialTheme.colorScheme.primary,
     circleColor: Color = MaterialTheme.colorScheme.primary,
+    textColor: Color = MaterialTheme.colorScheme.onBackground,
     horizontalPadding: Dp = dimensionResource(R.dimen.chart_horizontal_padding),
     verticalPadding: Dp = dimensionResource(R.dimen.chart_vertical_padding),
     pointRadius: Dp = dimensionResource(R.dimen.chart_point_radius),
@@ -49,6 +53,7 @@ fun LineChart(
 
     Canvas(
         modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
             .padding(dimensionResource(R.dimen.content_padding))
     ) {
 
@@ -85,7 +90,7 @@ fun LineChart(
 
         drawContext.canvas.nativeCanvas.apply {
             val paint = android.graphics.Paint().apply {
-                color = android.graphics.Color.BLACK
+                color = textColor.toArgb()
                 textSize = 30f
                 isFakeBoldText = true
             }
@@ -125,6 +130,7 @@ fun catmullRom(points: List<Offset>): Path {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun WeightChartPreview() {
     UrgatTheme {
@@ -144,6 +150,7 @@ fun WeightChartPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun WeightChartSingleItemPreview() {
     UrgatTheme {

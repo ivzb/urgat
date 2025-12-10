@@ -36,6 +36,7 @@ review screenshots and fix obvious UI issues
 make the submit button smaller in landscape
 status bar height in landscape is too big
 add category to notes
+add tags to expenses
 make tablet support list/detail
 take 5 or 7 items if tablet, not 3 as phone since we have more space
 write UI tests
@@ -43,7 +44,11 @@ there is a diff in some pixels when doing screenshots - it might be caused by th
 check play console warning about edge-to-edge
 calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 improve landscape header items - possibly introduce second rail but on the right side of the screen
+make remaining budget which is calculated by salary - investments - expenses
+make proper urgat CLI with multiple commands instead of having multiple scripts
+encrypt the db
+make the investments tab show net worth. then show each investment combined, then show transactions
+consider generating all screenshots and play store screenshots in different folder so that the play store screenshots won't delete all screenshots
+check if list items should be improved in dark mode
 add @DarkMode annotations to all previews
 make splash screen dark mode
-check if list items should be improved in dark mode
-consider generating all screenshots and play store screenshots in different folder so that the play store screenshots won't delete all screenshots

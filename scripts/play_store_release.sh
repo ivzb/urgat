@@ -71,6 +71,7 @@ fi
 ##
 # Build signed App Bundle
 ##
+./gradlew clean bundleRelease
 cp app/build/outputs/bundle/release/app-release.aab $APP_BUNDLE
 
 ##
