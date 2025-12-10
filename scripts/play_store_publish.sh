@@ -31,7 +31,7 @@ pushd ..
 PACKAGE_NAME="com.ivzb.urgat"
 # internal, alpha, beta, production
 TRACK="production"
-AAB_FILE="app/build/outputs/bundle/release/app-release.aab"
+AAB_FILE="/tmp/app-release.aab"
 SERVICE_ACCOUNT_JSON="play_store_service_key.json"
 SCOPES="https://www.googleapis.com/auth/androidpublisher"
 LANGUAGE_CODE="en-US"
@@ -82,7 +82,12 @@ echo "#############################"
 ##
 
 # clear extended attributes
+ls -l "$AAB_FILE"
+xattr -l "$AAB_FILE"
 xattr -c "$AAB_FILE"
+
+ls -l "$AAB_FILE"
+xattr -l "$AAB_FILE"
 
 UPLOAD=$(curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \

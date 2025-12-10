@@ -73,6 +73,7 @@ fi
 ##
 ./gradlew clean bundleRelease
 cp app/build/outputs/bundle/release/app-release.aab $APP_BUNDLE
+cp app/build/outputs/bundle/release/app-release.aab /tmp/$APP_BUNDLE
 
 ##
 # Publish to Play Store

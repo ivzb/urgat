@@ -1,3 +1,8 @@
+## Release notes 25.12.2
+
+Improved:
+- Improved wellbeing tab's colors in dark mode.
+
 ## Release notes 25.12.1
 
 Improved:
