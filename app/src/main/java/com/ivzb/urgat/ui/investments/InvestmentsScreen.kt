@@ -33,6 +33,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.InvestmentsDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
@@ -225,9 +227,11 @@ fun InvestmentItem(
     }
 }
 
-@Composable
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
+@Composable
 private fun InvestmentsScreenPreview() {
     UrgatTheme {
         InvestmentsScreen(
@@ -247,7 +251,9 @@ private fun InvestmentsScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun InvestmentsScreenEmptyPreview() {
     UrgatTheme {
@@ -267,9 +273,11 @@ private fun InvestmentsScreenEmptyPreview() {
     }
 }
 
-@Composable
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
+@Composable
 private fun InvestmentsScreenLoadingPreview() {
     UrgatTheme {
         InvestmentsScreen(
@@ -288,9 +296,11 @@ private fun InvestmentsScreenLoadingPreview() {
     }
 }
 
-@Composable
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
+@Composable
 private fun InvestmentsScreenErrorPreview() {
     UrgatTheme {
         InvestmentsScreen(
@@ -304,21 +314,6 @@ private fun InvestmentsScreenErrorPreview() {
             onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
-            modifier = Modifier
-        )
-    }
-}
-
-@Composable
-@Preview
-@LandscapePreview
-private fun InvestmentsContentPreview() {
-    UrgatTheme {
-        InvestmentsContent(
-            investments = SampleData.SAMPLE_INVESTMENTS,
-            onInvestmentClick = {},
-            filteringUiInfo = InvestmentsFilteringUiInfo(),
-            listState = rememberLazyListState(),
             modifier = Modifier
         )
     }

@@ -30,6 +30,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.NotesDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
@@ -202,7 +204,9 @@ fun NoteItem(
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun NotesScreenPreview() {
     UrgatTheme {
@@ -223,7 +227,9 @@ private fun NotesScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun NotesScreenEmptyPreview() {
     UrgatTheme {
@@ -244,7 +250,9 @@ private fun NotesScreenEmptyPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun NotesScreenLoadingPreview() {
     UrgatTheme {
@@ -265,7 +273,9 @@ private fun NotesScreenLoadingPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun NotesScreenErrorPreview() {
     UrgatTheme {
@@ -281,45 +291,6 @@ private fun NotesScreenErrorPreview() {
             onNoteClick = {},
             onBack = {},
             modifier = Modifier
-        )
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun NotesScreenContentPreview() {
-    UrgatTheme {
-        NotesContent(
-            notes = SampleData.SAMPLE_NOTES,
-            onNoteClick = {},
-            filteringUiInfo = NotesFilteringUiInfo(),
-            listState = rememberLazyListState()
-        )
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun NotesColumnPreview() {
-    UrgatTheme {
-        NotesColumn(
-            notes = SampleData.SAMPLE_NOTES,
-            onNoteClick = {},
-            listState = rememberLazyListState()
-        )
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun NoteItemPreview() {
-    UrgatTheme {
-        NoteItem(
-            note = SampleData.SAMPLE_NOTES.first(),
-            onNoteClick = {}
         )
     }
 }

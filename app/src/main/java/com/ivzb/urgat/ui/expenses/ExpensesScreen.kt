@@ -35,6 +35,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.ExpensesDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
@@ -235,7 +237,9 @@ fun ExpenseItem(
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun ExpensesScreenPreview() {
     UrgatTheme {
@@ -256,7 +260,9 @@ private fun ExpensesScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun ExpensesScreenEmptyPreview() {
     UrgatTheme {
@@ -277,7 +283,9 @@ private fun ExpensesScreenEmptyPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun ExpensesScreenLoadingPreview() {
     UrgatTheme {
@@ -298,7 +306,9 @@ private fun ExpensesScreenLoadingPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun ExpensesScreenErrorPreview() {
     UrgatTheme {
@@ -314,32 +324,6 @@ private fun ExpensesScreenErrorPreview() {
             onExpenseClick = {},
             onBack = {},
             modifier = Modifier
-        )
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun ExpensesScreenContentPreview() {
-    UrgatTheme {
-        ExpensesContent(
-            expenses = SampleData.SAMPLE_EXPENSES,
-            onExpenseClick = {},
-            filteringUiInfo = ExpensesFilteringUiInfo(),
-            listState = rememberLazyListState()
-        )
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun ExpenseItemPreview() {
-    UrgatTheme {
-        ExpenseItem(
-            expense = SampleData.SAMPLE_EXPENSES.first(),
-            onExpenseClick = {}
         )
     }
 }

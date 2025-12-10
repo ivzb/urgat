@@ -323,8 +323,8 @@ private fun LazyListScope.itemInvestments(
 }
 
 @Preview
-@LandscapePreview
 @DarkModePreview
+@LandscapePreview
 @DarkModeLandscapePreview
 @Composable
 fun FinanceScreenPreview() {
@@ -351,7 +351,9 @@ fun FinanceScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun FinanceScreenEmptyPreview() {
     UrgatTheme {
@@ -377,7 +379,9 @@ fun FinanceScreenEmptyPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun FinanceScreenLoadingPreview() {
     UrgatTheme {
@@ -403,7 +407,9 @@ fun FinanceScreenLoadingPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun FinanceScreenErrorPreview() {
     UrgatTheme {
@@ -425,58 +431,5 @@ fun FinanceScreenErrorPreview() {
             navController = rememberNavController(),
             modifier = Modifier
         )
-    }
-}
-
-
-@Preview
-@Composable
-fun FinanceContentPreview() {
-    UrgatTheme {
-        FinanceContent(
-            headerItems = FINANCE_HEADER_ITEMS,
-            onHeaderItemClick = {},
-            expenses = SampleData.SAMPLE_EXPENSES.take(3),
-            expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
-            onSeeAllExpenses = {},
-            onExpenseClick = {},
-            investments = SampleData.SAMPLE_INVESTMENTS.take(3),
-            investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
-            onSeeAllInvestments = {},
-            onInvestmentClick = {},
-            listState = rememberLazyListState()
-        )
-    }
-}
-
-@Preview
-@Composable
-fun ExpensesCardPreview() {
-    UrgatTheme {
-        LazyColumn {
-            itemExpenses(
-                expenses = SampleData.SAMPLE_EXPENSES.take(3),
-                expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
-                onAddExpense = {},
-                onSeeAllExpenses = {},
-                onExpenseClick = {}
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun InvestmentsCardPreview() {
-    UrgatTheme {
-        LazyColumn {
-            itemInvestments(
-                investments = SampleData.SAMPLE_INVESTMENTS.take(3),
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
-                onAddInvestment = {},
-                onSeeAllInvestments = {},
-                onInvestmentClick = {}
-            )
-        }
     }
 }

@@ -47,8 +47,9 @@ improve landscape header items - possibly introduce second rail but on the right
 make remaining budget which is calculated by salary - investments - expenses
 make proper urgat CLI with multiple commands instead of having multiple scripts
 encrypt the db
+check what happens if one side of the nots has a lot more text than the other side
 make the investments tab show net worth. then show each investment combined, then show transactions
 consider generating all screenshots and play store screenshots in different folder so that the play store screenshots won't delete all screenshots
 check if list items should be improved in dark mode
-add @DarkMode annotations to all previews
 make splash screen dark mode
+review @Previews and fix obvious issues

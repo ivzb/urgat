@@ -38,6 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -177,6 +180,9 @@ fun AddEditNoteScreen(
 }
 
 @Preview
+@DarkModePreview
+@LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun AddContentPreview() {
     UrgatTheme {
@@ -194,6 +200,9 @@ private fun AddContentPreview() {
 }
 
 @Preview
+@DarkModePreview
+@LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun EditNoteContentPreview() {
     UrgatTheme {
@@ -212,6 +221,9 @@ private fun EditNoteContentPreview() {
 }
 
 @Preview
+@DarkModePreview
+@LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun LoadingContentPreview() {
     UrgatTheme {

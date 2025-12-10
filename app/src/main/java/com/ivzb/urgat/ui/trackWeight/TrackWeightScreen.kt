@@ -43,7 +43,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.DatePicker
+import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -224,6 +227,9 @@ fun TrackWeightScreen(
 }
 
 @Preview
+@DarkModePreview
+@LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun TrackWeightScreenPreview() {
     UrgatTheme {
@@ -241,6 +247,9 @@ private fun TrackWeightScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
+@LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun LoadingWeightScreenPreview() {
     UrgatTheme {

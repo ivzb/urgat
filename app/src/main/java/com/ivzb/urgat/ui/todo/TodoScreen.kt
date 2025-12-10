@@ -34,6 +34,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.TodoDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
@@ -235,7 +237,9 @@ fun TodoItem(
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun TodoScreenPreview() {
     UrgatTheme {
@@ -256,7 +260,9 @@ private fun TodoScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun TodoScreenEmptyPreview() {
     UrgatTheme {
@@ -277,7 +283,9 @@ private fun TodoScreenEmptyPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun TodoScreenLoadingPreview() {
     UrgatTheme {
@@ -298,7 +306,9 @@ private fun TodoScreenLoadingPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 private fun TodoScreenErrorPreview() {
     UrgatTheme {
@@ -315,52 +325,5 @@ private fun TodoScreenErrorPreview() {
             onBack = {},
             modifier = Modifier
         )
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun TodoContentPreview() {
-    UrgatTheme {
-        Surface {
-            TodoContent(
-                todos = SampleData.SAMPLE_TODOS,
-                onTodoClick = { },
-                onTodoCheckedChange = { _, _ -> },
-                filteringUiInfo = TodoFilteringUiInfo(),
-                listState = rememberLazyListState()
-            )
-        }
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun TodoItemPreview() {
-    UrgatTheme {
-        Surface {
-            TodoItem(
-                todo = SampleData.SAMPLE_TODOS.first().copy(isCompleted = false),
-                onTodoClick = { },
-                onCheckedChange = { }
-            )
-        }
-    }
-}
-
-@Preview
-@LandscapePreview
-@Composable
-private fun TodoItemCompletedPreview() {
-    UrgatTheme {
-        Surface {
-            TodoItem(
-                todo = SampleData.SAMPLE_TODOS.first().copy(isCompleted = true),
-                onTodoClick = { },
-                onCheckedChange = { }
-            )
-        }
     }
 }

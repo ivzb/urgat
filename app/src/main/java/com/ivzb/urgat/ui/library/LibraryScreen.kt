@@ -31,6 +31,8 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.LibraryDestination
+import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
+import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.Header
@@ -330,7 +332,9 @@ private fun LazyListScope.itemNotes(
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun LibraryScreenPreview() {
     UrgatTheme {
@@ -356,9 +360,11 @@ fun LibraryScreenPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
-fun LibraryScreenEmptyTodosPreview() {
+fun LibraryScreenEmptyPreview() {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
@@ -382,7 +388,9 @@ fun LibraryScreenEmptyTodosPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun LibraryScreenLoadingPreview() {
     UrgatTheme {
@@ -408,7 +416,9 @@ fun LibraryScreenLoadingPreview() {
 }
 
 @Preview
+@DarkModePreview
 @LandscapePreview
+@DarkModeLandscapePreview
 @Composable
 fun LibraryScreenErrorPreview() {
     UrgatTheme {
@@ -430,60 +440,5 @@ fun LibraryScreenErrorPreview() {
             navController = rememberNavController(),
             modifier = Modifier
         )
-    }
-}
-
-
-@Preview
-@Composable
-fun LibraryContentPreview() {
-    UrgatTheme {
-        LibraryContent(
-            headerItems = LIBRARY_HEADER_ITEMS,
-            onHeaderItemClick = {},
-            todos = SampleData.SAMPLE_TODOS.take(3),
-            todoFilteringUiInfo = TodoFilteringUiInfo(),
-            onSeeAllTodos = {},
-            onTodoClick = {},
-            onTodoCheckedChange = { _, _ -> },
-            notes = SampleData.SAMPLE_NOTES.take(3),
-            notesFilteringUiInfo = NotesFilteringUiInfo(),
-            onSeeAllNotes = {},
-            onNoteClick = {},
-            listState = rememberLazyListState()
-        )
-    }
-}
-
-@Preview
-@Composable
-fun TodoCardPreview() {
-    UrgatTheme {
-        LazyColumn {
-            itemTodo(
-                todos = SampleData.SAMPLE_TODOS.take(3),
-                todoFilteringUiInfo = TodoFilteringUiInfo(),
-                onAddTodo = {},
-                onSeeAllTodos = {},
-                onTodoClick = {},
-                onTodoCheckedChange = { _, _ -> }
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun NotesCardPreview() {
-    UrgatTheme {
-        LazyColumn {
-            itemNotes(
-                notes = SampleData.SAMPLE_NOTES.take(3),
-                notesFilteringUiInfo = NotesFilteringUiInfo(),
-                onAddNote = {},
-                onSeeAllNotes = {},
-                onNoteClick = {}
-            )
-        }
     }
 }

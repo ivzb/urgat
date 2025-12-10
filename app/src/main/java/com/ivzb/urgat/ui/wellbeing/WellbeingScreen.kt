@@ -225,8 +225,8 @@ private fun LazyListScope.itemWeightsChart(
 }
 
 @Preview
-@LandscapePreview
 @DarkModePreview
+@LandscapePreview
 @DarkModeLandscapePreview
 @Composable
 private fun WellbeingScreenPreview() {
@@ -247,8 +247,8 @@ private fun WellbeingScreenPreview() {
 }
 
 @Preview
-@LandscapePreview
 @DarkModePreview
+@LandscapePreview
 @DarkModeLandscapePreview
 @Composable
 private fun WellbeingScreenEmptyPreview() {
@@ -269,8 +269,8 @@ private fun WellbeingScreenEmptyPreview() {
 }
 
 @Preview
-@LandscapePreview
 @DarkModePreview
+@LandscapePreview
 @DarkModeLandscapePreview
 @Composable
 private fun WellbeingScreenLoadingPreview() {
@@ -291,8 +291,8 @@ private fun WellbeingScreenLoadingPreview() {
 }
 
 @Preview
-@LandscapePreview
 @DarkModePreview
+@LandscapePreview
 @DarkModeLandscapePreview
 @Composable
 private fun WellbeingScreenErrorPreview() {
