@@ -23,4 +23,5 @@
     <dimen name="chart_vertical_padding">32dp</dimen>
     <dimen name="chart_point_radius">8dp</dimen>
     <dimen name="chart_line_stroke_width">4dp</dimen>
+    <dimen name="button_widget">200dp</dimen>
 </resources>

@@ -50,6 +50,4 @@ review @Previews and fix obvious issues
 review screenshots and fix obvious UI issues
 improve landscape header items - possibly introduce second rail but on the right side of the screen
 improve add buttons UI (e.g. add todo, add note) in landscape
-make the submit button smaller in landscape
 status bar height in landscape is too big
-consider generating all screenshots and play store screenshots in different folder so that the play store screenshots won't delete all screenshots

@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -50,6 +51,7 @@ import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
+import com.ivzb.urgat.ui.components.responsiveButtonWidth
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
@@ -118,7 +120,8 @@ fun TrackWeightScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(dimensionResource(R.dimen.content_padding))
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (uiState.isLoading) {
                 LoadingState(
@@ -202,7 +205,7 @@ fun TrackWeightScreen(
                         onIntent(TrackWeightIntent.SaveWeight)
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .responsiveButtonWidth()
                 ) {
                     Text(stringResource(R.string.save))
                 }
