@@ -30,11 +30,13 @@ ORIENTATIONS=(
 
 pushd ..
 
-if [ -d screenshots ]; then
-  rm -r screenshots
+screenshotsDir="screenshots"
+
+if [ -d $screenshotsDir ]; then
+  rm -r $screenshotsDir
 fi
 
-mkdir screenshots
+mkdir $screenshotsDir
 
 popd
 
@@ -45,7 +47,7 @@ for device in "${DEVICE_TYPES[@]}"; do
       echo "## Urgat - Running screenshots tests $device $mode $orientation"
       echo "#############################"
 
-      ./run_ui_tests.sh "$device" "$mode" "$orientation"
+      ./run_ui_tests.sh "$screenshotsDir" "$device" "$mode" "$orientation"
     done
   done
 done

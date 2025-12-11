@@ -1,5 +1,5 @@
 ### Play Store release
-Use the following command to generate app release to Google Play store:
+Use the following command to publish app bundle to Google Play store:
 
 ```bash
 ./play_store_release.sh 25.12.0
@@ -17,7 +17,7 @@ Use the following command to run unit tests:
 Use the following command to run ui tests:
 
 ```bash
-./run_ui_tests.sh
+./run_screenshot_tests.sh screenshots-dir 
 ````
 
 ### Play Store screenshots

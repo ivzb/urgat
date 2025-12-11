@@ -21,14 +21,13 @@ fi
 
 pushd ..
 
-SCREENSHOTS_DIR=screenshots
+SCREENSHOTS_DIR=screenshots_temp
 
-if [ ! -d "$SCREENSHOTS_DIR" ]; then
-    echo "#############################"
-    echo "## Urgat: Error: Screenshots folder does not exist. Run ./run_ui_tests.sh first to generate screenshots."\
-    echo "#############################"
-    exit 1
+if [ -d $SCREENSHOTS_DIR ]; then
+  rm -r $SCREENSHOTS_DIR
 fi
+
+mkdir $SCREENSHOTS_DIR
 
 PLAY_STORE_SCREENSHOTS_DIR=play_store_screenshots
 
@@ -65,7 +64,7 @@ for device in "${DEVICE_TYPES[@]}"; do
       echo "## Urgat - Running PlayStore screenshots tests $device $mode $orientation"
       echo "#############################"
 
-      ./run_ui_tests.sh "$device" "$mode" "$orientation" "$testArguments"
+      ./run_ui_tests.sh "$SCREENSHOTS_DIR" "$device" "$mode" "$orientation" "$testArguments"
     done
   done
 done
@@ -104,5 +103,11 @@ for device in "${DEVICE_TYPES[@]}"; do
 
   done
 done
+
+echo "#############################"
+echo "## Urgat - Removing temp screenshots dir"
+echo "#############################"
+
+rm -r $SCREENSHOTS_DIR
 
 popd

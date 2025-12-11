@@ -16,13 +16,22 @@ usage()
 {
 cat << EOF
 usage:
-    $0 -phone/-tablet7/-tablet10 -light-mode/-dark-mode -portrait/-landscape
+    $0 <output dir> -phone/-tablet7/-tablet10 -light-mode/-dark-mode -portrait/-landscape
 EOF
 }
 
+getScreenshotsDir() {
+  if [ -n "$1" ]; then
+    screenshotsDir="$1"
+  else
+      usage
+      exit 1
+  fi
+}
+
 getDevice() {
-  if [[ "$1" = "-phone" || "$1" = "-tablet7" || "$1" = "-tablet10" ]]; then
-    device="$1"
+  if [[ "$2" = "-phone" || "$2" = "-tablet7" || "$2" = "-tablet10" ]]; then
+    device="$2"
   else
     usage
     exit 1
@@ -30,8 +39,8 @@ getDevice() {
 }
 
 getMode() {
-  if [[ "$2" = "-light-mode" || "$2" = "-dark-mode" ]]; then
-    mode="$2"
+  if [[ "$3" = "-light-mode" || "$3" = "-dark-mode" ]]; then
+    mode="$3"
   else
     usage
     exit 1
@@ -39,23 +48,24 @@ getMode() {
 }
 
 getOrientation() {
-  if [[ "$3" = "-portrait" || "$3" = "-landscape" ]]; then
-    orientation="$3"
+  if [[ "$4" = "-portrait" || "$4" = "-landscape" ]]; then
+    orientation="$4"
   else
     usage
     exit 1
   fi
 }
 
+getScreenshotsDir "$@"
 getDevice "$@"
 getMode "$@"
 getOrientation "$@"
-testArguments="$4"
+testArguments="$5"
 
 pushd ..
 
-if [ ! -d screenshots ]; then
-  mkdir creenshots
+if [ ! -d screenshotsDir ]; then
+  mkdir screenshotsDir
 fi
 
 popd
@@ -70,7 +80,7 @@ pushd ..
 
 ./gradlew connectedDebugAndroidTest $testArguments
 
-SCREENSHOTS_DIR="screenshots/screenshots$device$mode$orientation"
+SCREENSHOTS_DIR="$screenshotsDir/screenshots$device$mode$orientation"
 
 if [ -d $SCREENSHOTS_DIR ]; then
   rm -r $SCREENSHOTS_DIR

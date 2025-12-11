@@ -6,7 +6,6 @@ handle_error() {
     echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
     echo "#############################"
-    usage
     exit 1
 }
 
@@ -28,6 +27,7 @@ pushd ..
 ##
 # Config
 ##
+FLAG="$1"
 PACKAGE_NAME="com.ivzb.urgat"
 # internal, alpha, beta, production
 TRACK="production"
@@ -82,12 +82,7 @@ echo "#############################"
 ##
 
 # clear extended attributes
-ls -l "$AAB_FILE"
-xattr -l "$AAB_FILE"
 xattr -c "$AAB_FILE"
-
-ls -l "$AAB_FILE"
-xattr -l "$AAB_FILE"
 
 UPLOAD=$(curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
@@ -148,95 +143,97 @@ echo "#############################"
 echo "## Urgat: Added release notes for version $VERSION_CODE in $LANGUAGE_CODE."
 echo "#############################"
 
-PLAY_STORE_SCREENSHOTS="play_store_screenshots"
-PLAY_STORE_SCREENSHOTS_PHONE="$PLAY_STORE_SCREENSHOTS/screenshots-phone"
-PLAY_STORE_SCREENSHOTS_TABLET_7="$PLAY_STORE_SCREENSHOTS/screenshots-tablet7"
-PLAY_STORE_SCREENSHOTS_TABLET_10="$PLAY_STORE_SCREENSHOTS/screenshots-tablet10"
+if [[ "$FLAG" != "-skip-screenshots" ]]; then
+  PLAY_STORE_SCREENSHOTS="play_store_screenshots"
+  PLAY_STORE_SCREENSHOTS_PHONE="$PLAY_STORE_SCREENSHOTS/screenshots-phone"
+  PLAY_STORE_SCREENSHOTS_TABLET_7="$PLAY_STORE_SCREENSHOTS/screenshots-tablet7"
+  PLAY_STORE_SCREENSHOTS_TABLET_10="$PLAY_STORE_SCREENSHOTS/screenshots-tablet10"
 
-PLAY_STORE_SCREENSHOTS_DIRECTORIES=(
-  "$PLAY_STORE_SCREENSHOTS_PHONE:phoneScreenshots"
-  "$PLAY_STORE_SCREENSHOTS_TABLET_7:sevenInchScreenshots"
-  "$PLAY_STORE_SCREENSHOTS_TABLET_10:tenInchScreenshots"
-)
+  PLAY_STORE_SCREENSHOTS_DIRECTORIES=(
+    "$PLAY_STORE_SCREENSHOTS_PHONE:phoneScreenshots"
+    "$PLAY_STORE_SCREENSHOTS_TABLET_7:sevenInchScreenshots"
+    "$PLAY_STORE_SCREENSHOTS_TABLET_10:tenInchScreenshots"
+  )
 
-for pair in "${PLAY_STORE_SCREENSHOTS_DIRECTORIES[@]}"; do
-    DIR_PATH="${pair%%:*}"
-    ASSET_TYPE="${pair##*:}"
+  for pair in "${PLAY_STORE_SCREENSHOTS_DIRECTORIES[@]}"; do
+      DIR_PATH="${pair%%:*}"
+      ASSET_TYPE="${pair##*:}"
 
-    echo "#############################"
-    echo "## Urgat: Starting Upload for Device Type: $ASSET_TYPE from $DIR_PATH"
-    echo "#############################"
+      echo "#############################"
+      echo "## Urgat: Starting Upload for Device Type: $ASSET_TYPE from $DIR_PATH"
+      echo "#############################"
 
-    if [ ! -d "$DIR_PATH" ]; then
+      if [ ! -d "$DIR_PATH" ]; then
+          echo "#############################"
+          echo "## Urgat: ❌ Error: Directory not found: $DIR_PATH"
+          echo "#############################"
+          exit 1
+      fi
+
+      echo "#############################"
+      echo "## Urgat: Clearing existing $ASSET_TYPE assets..."
+      echo "#############################"
+
+      DELETED_IMAGES_RESPONSE=$(curl -s -X DELETE \
+        "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID/listings/$LANGUAGE_CODE/$ASSET_TYPE" \
+        -H "Authorization: Bearer ${ACCESS_TOKEN}")
+
+      DELETED_IMAGES=$(echo "$DELETED_IMAGES_RESPONSE" | jq -r '.deleted')
+
+      if [ -z "$DELETED_IMAGES" ] || [ "$DELETED_IMAGES" == "null" ]; then
         echo "#############################"
-        echo "## Urgat: ❌ Error: Directory not found: $DIR_PATH"
+        echo "## Urgat: ❌ Failed to delete images for $ASSET_TYPE: $DELETED_IMAGES_RESPONSE"
         echo "#############################"
         exit 1
-    fi
+      fi
 
-    echo "#############################"
-    echo "## Urgat: Clearing existing $ASSET_TYPE assets..."
-    echo "#############################"
+      for FILE_PATH in "$DIR_PATH"/*; do
+          # Skip directories
+          if [ -d "$FILE_PATH" ]; then
+              continue
+          fi
 
-    DELETED_IMAGES_RESPONSE=$(curl -s -X DELETE \
-      "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID/listings/$LANGUAGE_CODE/$ASSET_TYPE" \
-      -H "Authorization: Bearer ${ACCESS_TOKEN}")
+          FILE_NAME=$(basename "$FILE_PATH")
+          echo "#############################"
+          echo "## Urgat: Uploading $FILE_NAME to $ASSET_TYPE..."
+          echo "#############################"
 
-    DELETED_IMAGES=$(echo "$DELETED_IMAGES_RESPONSE" | jq -r '.deleted')
+          if [[ "$FILE_NAME" == *.png ]]; then
+              CONTENT_TYPE="image/png"
+          elif [[ "$FILE_NAME" == *.jpg || "$FILE_NAME" == *.jpeg ]]; then
+              CONTENT_TYPE="image/jpeg"
+          else
+              echo "#############################"
+              echo "## Urgat: ❌ Error: Unsupported content type: $FILE_NAME"
+              echo "#############################"
+              exit 1
+          fi
 
-    if [ -z "$DELETED_IMAGES" ] || [ "$DELETED_IMAGES" == "null" ]; then
+          UPLOAD_RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: $CONTENT_TYPE" \
+            --data-binary @"$FILE_PATH" \
+            "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID/listings/$LANGUAGE_CODE/$ASSET_TYPE?uploadType=media")
+
+          if echo "$UPLOAD_RESPONSE" | grep -q "error"; then
+              echo "#############################"
+              echo "## Urgat: ❌ ERROR uploading $FILE_NAME: $UPLOAD_RESPONSE"
+              echo "#############################"
+              exit 1
+          else
+              IMAGE_ID=$(echo "$UPLOAD_RESPONSE" | jq -r '.id' 2>/dev/null)
+              echo "#############################"
+              echo "## Urgat: Successfully uploaded $FILE_NAME (Image ID: $IMAGE_ID)"
+              echo "#############################"
+          fi
+
+      done
+
       echo "#############################"
-      echo "## Urgat: ❌ Failed to delete images for $ASSET_TYPE: $DELETED_IMAGES_RESPONSE"
+      echo "## Urgat: Finished Upload for $ASSET_TYPE"
       echo "#############################"
-      exit 1
-    fi
-
-    for FILE_PATH in "$DIR_PATH"/*; do
-        # Skip directories
-        if [ -d "$FILE_PATH" ]; then
-            continue
-        fi
-
-        FILE_NAME=$(basename "$FILE_PATH")
-        echo "#############################"
-        echo "## Urgat: Uploading $FILE_NAME to $ASSET_TYPE..."
-        echo "#############################"
-
-        if [[ "$FILE_NAME" == *.png ]]; then
-            CONTENT_TYPE="image/png"
-        elif [[ "$FILE_NAME" == *.jpg || "$FILE_NAME" == *.jpeg ]]; then
-            CONTENT_TYPE="image/jpeg"
-        else
-            echo "#############################"
-            echo "## Urgat: ❌ Error: Unsupported content type: $FILE_NAME"
-            echo "#############################"
-            exit 1
-        fi
-
-        UPLOAD_RESPONSE=$(curl -s -X POST \
-          -H "Authorization: Bearer $ACCESS_TOKEN" \
-          -H "Content-Type: $CONTENT_TYPE" \
-          --data-binary @"$FILE_PATH" \
-          "https://androidpublisher.googleapis.com/upload/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID/listings/$LANGUAGE_CODE/$ASSET_TYPE?uploadType=media")
-
-        if echo "$UPLOAD_RESPONSE" | grep -q "error"; then
-            echo "#############################"
-            echo "## Urgat: ❌ ERROR uploading $FILE_NAME: $UPLOAD_RESPONSE"
-            echo "#############################"
-            exit 1
-        else
-            IMAGE_ID=$(echo "$UPLOAD_RESPONSE" | jq -r '.id' 2>/dev/null)
-            echo "#############################"
-            echo "## Urgat: Successfully uploaded $FILE_NAME (Image ID: $IMAGE_ID)"
-            echo "#############################"
-        fi
-
-    done
-
-    echo "#############################"
-    echo "## Urgat: Finished Upload for $ASSET_TYPE"
-    echo "#############################"
-done
+  done
+fi
 
 VALIDATE=$(curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
@@ -263,7 +260,7 @@ curl -s -X POST \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID:commit"
 
 echo "#############################"
-echo "## Urgat: Edit committed. Release submitted!"
+echo "## Urgat: Edit committed"
 echo "#############################"
 
 popd

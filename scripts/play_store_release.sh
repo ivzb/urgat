@@ -2,6 +2,16 @@
 
 set -e
 
+usage()
+{
+cat << EOF
+usage:
+    $0 <version> [-skip-screenshots]
+
+    Latest git tag: $(git describe --tags --abbrev=0)
+EOF
+}
+
 handle_error() {
     echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1\n"
@@ -13,14 +23,17 @@ handle_error() {
 trap 'handle_error $LINENO' ERR
 
 if [[ $# -lt 1 ]]; then
-    echo "#############################"
-    echo "## Urgat - Usage: $0 <version> [-skip-screenshots]"
-    echo "#############################"
+    usage
     exit 1
 fi
 
 VERSION="$1"
 FLAG="$2"
+
+if [ "$FLAG" != "" ] && [ "$FLAG" != "-skip-screenshots" ]; then
+    usage
+    exit 1
+fi
 
 ##
 # Run unit tests
@@ -62,7 +75,7 @@ APP_GRADLE=app/build.gradle.kts
 sed -i '' "s/versionCode = .*/versionCode = ${VERSION_CODE}/" "$APP_GRADLE"
 sed -i '' "s/versionName = .*/versionName = \"${VERSION_NAME}\"/" "$APP_GRADLE"
 
-APP_BUNDLE=app-release.aab
+APP_BUNDLE=/tmp/app-release.aab
 
 if [[ -f "$APP_BUNDLE" ]]; then
   rm -r $APP_BUNDLE
@@ -73,14 +86,13 @@ fi
 ##
 ./gradlew clean bundleRelease
 cp app/build/outputs/bundle/release/app-release.aab $APP_BUNDLE
-cp app/build/outputs/bundle/release/app-release.aab /tmp/$APP_BUNDLE
 
 ##
 # Publish to Play Store
 ##
 pushd scripts
 
-./play_store_publish.sh
+./play_store_publish.sh $FLAG
 
 popd
 
