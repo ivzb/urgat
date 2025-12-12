@@ -39,6 +39,7 @@ import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
+import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -74,7 +75,7 @@ fun InvestmentsScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    UrgatScaffold(
+    ListDetailsScaffold(
         selectedDestination = InvestmentsDestination,
         onSearchQueryChanged = { query -> onIntent(InvestmentsIntent.SearchQueryChanged(query)) },
         onAddItem = onAddInvestment,

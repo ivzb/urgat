@@ -2,12 +2,14 @@ package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.ui.components.FabAction
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 
 data class LibraryUiState(
     val headerItems: List<LibraryHeaderItem> = LIBRARY_HEADER_ITEMS,
+    val fabActions: List<FabAction> = LIBRARY_FAB_ACTIONS,
 
     val todos: List<Todo> = emptyList(),
     val todosFilteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo(),

@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.navigation.UrgatMenuDestination
@@ -42,7 +46,9 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 fun MenuScaffold(
     selectedDestination: UrgatMenuDestination,
     onSearchQueryChanged: (String) -> Unit,
+    // todo: remove or change?
     onAddItem: (() -> Unit)? = null,
+    fabActions: List<FabAction>? = null,
 
     navController: NavHostController,
     withTopAppBarActions: Boolean = true,
@@ -83,24 +89,70 @@ fun MenuScaffold(
         UrgatScaffold(
             selectedDestination = selectedDestination,
             onSearchQueryChanged = onSearchQueryChanged,
-            onAddItem = onAddItem,
+//            onAddItem = onAddItem,
             withTopAppBarActions = withTopAppBarActions,
             topAppBarActionsContent = topAppBarActionsContent,
+            floatingActionButtonContent = {
+                fabActions?.let {
+                    ExpandableFab(
+                        actions = it,
+                    )
+                }
+            },
             content = content
         )
     }
 }
 
 @Composable
+fun ListDetailsScaffold(
+    selectedDestination: UrgatDestination,
+    onSearchQueryChanged: (String) -> Unit,
+    onBack: (() -> Unit)? = null,
+    onAddItem: (() -> Unit)? = null,
+
+    withTopAppBarActions: Boolean = true,
+    topAppBarActionsContent: (@Composable () -> Unit)? = null,
+
+    modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
+    content: @Composable (LazyListState) -> Unit
+) {
+
+    UrgatScaffold(
+        selectedDestination = selectedDestination,
+        onSearchQueryChanged = onSearchQueryChanged,
+        onBack = onBack,
+        withTopAppBarActions = withTopAppBarActions,
+        topAppBarActionsContent = topAppBarActionsContent,
+        floatingActionButtonContent = {
+            if (selectedDestination.withFAB) {
+                FloatingActionButtonContent(
+                    extended = lazyListState.isScrollingUp(),
+                    onClick = {
+                        onAddItem?.invoke()
+                    }
+                )
+            }
+        },
+        modifier = modifier,
+        lazyListState = lazyListState,
+        content = content
+    )
+}
+
+@Composable
 fun UrgatScaffold(
     selectedDestination: UrgatDestination,
     onSearchQueryChanged: (String) -> Unit,
-    onAddItem: (() -> Unit)? = null,
     onBack: (() -> Unit)? = null,
+
     withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
-    lazyListState: LazyListState = rememberLazyListState(),
+    floatingActionButtonContent: (@Composable () -> Unit)? = null,
+
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
     content: @Composable (LazyListState) -> Unit
 ) {
     Scaffold(
@@ -114,14 +166,7 @@ fun UrgatScaffold(
             )
         },
         floatingActionButton = {
-            if (selectedDestination.withFAB) {
-                FloatingActionButtonContent(
-                    extended = lazyListState.isScrollingUp(),
-                    onClick = {
-                        onAddItem?.invoke()
-                    }
-                )
-            }
+            floatingActionButtonContent?.invoke()
         },
         contentWindowInsets = WindowInsets.systemBars,
         modifier = modifier

@@ -34,6 +34,7 @@ import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
 import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.LandscapePreview
+import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -70,7 +71,7 @@ fun NotesScreen(
     modifier: Modifier = Modifier
 ) {
 
-    UrgatScaffold(
+    ListDetailsScaffold(
         selectedDestination = NotesDestination,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,

@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -110,6 +109,7 @@ fun LibraryScreen(
     MenuScaffold(
         selectedDestination = LibraryDestination,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
+        fabActions = uiState.fabActions,
         navController = navController,
         withTopAppBarActions = uiState.todos.isNotEmpty() || uiState.notes.isNotEmpty(),
         topAppBarActionsContent = {

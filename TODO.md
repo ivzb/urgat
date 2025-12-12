@@ -51,3 +51,8 @@ review screenshots and fix obvious UI issues
 improve landscape header items - possibly introduce second rail but on the right side of the screen
 improve add buttons UI (e.g. add todo, add note) in landscape
 status bar height in landscape is too big
+make annotation like PreviewLightDark to fit them all
+add info cards on the place of top buttons
+add fab actions to Finance tab
+add callback for click for each fab action in the MenuScaffold
+make the FloatingActionButtonContent reusable with FabAction
