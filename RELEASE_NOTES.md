@@ -1,3 +1,11 @@
+## Release notes 25.12.3
+
+Improved:
+- Optimized UI for landscape orientation
+- Enhanced the Add buttons on the Library, Finance, and Wellbeing tabs.
+- The Add actions are now consolidated into an expandable Floating Action Button (FAB) for a cleaner and more intuitive experience.
+- Enhanced landscape mode experience.
+
 ## Release notes 25.12.2
 
 Improved:
