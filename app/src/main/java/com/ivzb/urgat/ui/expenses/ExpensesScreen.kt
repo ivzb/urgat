@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -43,7 +43,6 @@ import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
@@ -130,47 +129,46 @@ internal fun ExpensesContent(
     modifier: Modifier = Modifier
 ) {
 
-    Box(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
+        ),
+        state = listState
+    ) {
 
-        LazyColumn(
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.horizontal_margin),
-                vertical = dimensionResource(R.dimen.vertical_margin)
-            ),
-            state = listState
-        ) {
+        item {
+            ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
+        }
 
+        item {
+            Spacer(modifier = Modifier
+                .height(dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        items(expenses) { expense ->
+            ExpenseItem(
+                expense = expense,
+                onExpenseClick = onExpenseClick
+            )
+        }
+
+        if (expenses.isEmpty()) {
             item {
-                ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
-            }
-
-            item {
-                Spacer(modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
+                EmptyStateScreen(
+                    label = filteringUiInfo.emptyLabel,
+                    iconRes = filteringUiInfo.emptyIconRes
                 )
             }
+        }
 
-            items(expenses) { expense ->
-                ExpenseItem(
-                    expense = expense,
-                    onExpenseClick = onExpenseClick
-                )
-            }
-
-            if (expenses.isEmpty()) {
-                item {
-                    EmptyStateScreen(
-                        label = filteringUiInfo.emptyLabel,
-                        iconRes = filteringUiInfo.emptyIconRes
-                    )
-                }
-            }
-
-            item {
-                Spacer(modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
+        item {
+            Spacer(modifier = Modifier
+                .height(dimensionResource(R.dimen.vertical_margin))
+            )
         }
     }
 }

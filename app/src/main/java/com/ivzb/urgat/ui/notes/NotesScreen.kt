@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,7 +35,6 @@ import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -162,8 +160,8 @@ private fun NotesColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.grid_vertical_margin)),
         contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.grid_horizontal_margin),
-            vertical = dimensionResource(R.dimen.grid_vertical_margin)
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
         modifier = modifier
     ) {

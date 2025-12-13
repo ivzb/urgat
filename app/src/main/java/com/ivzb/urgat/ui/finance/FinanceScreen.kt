@@ -170,16 +170,12 @@ private fun FinanceContent(
         modifier = modifier
             .fillMaxSize()
             .semantics { contentDescription = screenName },
-        contentPadding = PaddingValues(dimensionResource(R.dimen.content_padding)),
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
+        ),
         state = listState
     ) {
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
 
         itemExpenses(
             expenses = expenses,

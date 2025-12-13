@@ -3,7 +3,8 @@
     <dimen name="horizontal_margin">16dp</dimen>
     <dimen name="vertical_margin">16dp</dimen>
     <dimen name="list_item_padding">12dp</dimen>
-    <dimen name="content_padding">16dp</dimen>
+    <dimen name="content_padding_horizontal">16dp</dimen>
+    <dimen name="content_padding_vertical">8dp</dimen>
     <dimen name="content_corner_radius">16dp</dimen>
     <dimen name="menu_content_padding">8dp</dimen>
     <dimen name="menu_item_padding">4dp</dimen>

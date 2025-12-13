@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -43,7 +42,6 @@ import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.components.UrgatScaffold
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -136,8 +134,8 @@ fun TodoContent(
         modifier = modifier
             .fillMaxSize(),
         contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin)
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
         state = listState
     ) {

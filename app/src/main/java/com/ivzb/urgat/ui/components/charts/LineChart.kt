@@ -54,7 +54,10 @@ fun LineChart(
     Canvas(
         modifier = modifier
             .background(MaterialTheme.colorScheme.background)
-            .padding(dimensionResource(R.dimen.content_padding))
+            .padding(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            )
     ) {
 
         val chartWidth = size.width - (horizontalPadding.toPx() * 2)

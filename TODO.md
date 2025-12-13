@@ -49,7 +49,10 @@ review @Previews and fix obvious issues
 review screenshots and fix obvious UI issues
 status bar height in landscape is too big
 make annotation like PreviewLightDark to fit them all
+add filtering label to wellbeing tab
 add info cards on the place of top buttons (use current design for top header buttons - check git history)
 increase items per page to 5 in portrait and 3 in landscape
 take 5 or 7 items if tablet, not 3 as phone since we have more space
+make the text in status bar inverse because it's blending with the background
+make todos, expenses and investments 2 per row in landscape because there is a lot of empty space
 fix left insets in landscape mode - camera is near items

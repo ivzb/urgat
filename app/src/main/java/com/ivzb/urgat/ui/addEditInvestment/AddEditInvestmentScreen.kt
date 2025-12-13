@@ -122,7 +122,10 @@ fun AddEditInvestmentScreen(
             modifier = modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .padding(dimensionResource(R.dimen.content_padding))
+                .padding(
+                    horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                    vertical = dimensionResource(R.dimen.content_padding_vertical),
+                )
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

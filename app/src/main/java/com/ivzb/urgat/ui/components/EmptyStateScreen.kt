@@ -42,7 +42,7 @@ fun EmptyStateScreen(
 
         Spacer(
             modifier = Modifier
-                .height(dimensionResource(R.dimen.content_padding))
+                .height(dimensionResource(R.dimen.vertical_margin))
         )
 
         Text(stringResource(id = label))
