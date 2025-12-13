@@ -47,7 +47,7 @@ for device in "${DEVICE_TYPES[@]}"; do
       echo "## Urgat - Running screenshots tests $device $mode $orientation"
       echo "#############################"
 
-      ./run_ui_tests.sh "$screenshotsDir" "$device" "$mode" "$orientation"
+      ./run_specific_screenshots_tests.sh "$screenshotsDir" "$device" "$mode" "$orientation"
     done
   done
 done

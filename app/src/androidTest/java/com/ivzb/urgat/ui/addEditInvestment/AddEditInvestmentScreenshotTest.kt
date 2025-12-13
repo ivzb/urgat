@@ -3,12 +3,14 @@ package com.ivzb.urgat.ui.addEditInvestment
 import androidx.compose.ui.Modifier
 import androidx.test.espresso.Espresso
 import com.ivzb.urgat.R
+import com.ivzb.urgat.annotations.Screenshot
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
 
-class AddEditInvestmentScreenTest: ScreenshotTest() {
+@Screenshot
+class AddEditInvestmentScreenshotTest: ScreenshotTest() {
 
     @Test
     fun screenshotTest_AddEditInvestmentScreen_addInvestment() = screenshotTest(

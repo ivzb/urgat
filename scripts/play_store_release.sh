@@ -41,6 +41,11 @@ fi
 ./run_unit_tests.sh
 
 ##
+# Run ui tests
+##
+./run_ui_tests.sh
+
+##
 # Generate play store screenshots
 ##
 if [[ "$FLAG" != "-skip-screenshots" ]]; then

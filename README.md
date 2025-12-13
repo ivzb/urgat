@@ -17,17 +17,32 @@ Use the following command to run unit tests:
 Use the following command to run ui tests:
 
 ```bash
-./run_screenshot_tests.sh screenshots-dir 
+./run_ui_tests.sh
 ````
 
-### Play Store screenshots
+### Run all screenshot tests:
+Use the following command to run all screenshot tests:
+
+```bash
+./run_all_screenshots_tests.sh screenshots-dir 
+````
+
+### Run specific screenshot tests:
+Use the following command to run specific screenshot tests:
+
+```bash
+./run_specific_screenshots_tests.sh screenshots-dir -phone -light-mode -portrait
+./run_specific_screenshots_tests.sh screenshots-dir -phone -light-mode -portrait -Pandroid.testInstrumentationRunnerArguments.class=com.ivzb.urgat.suites.PlayStoreScreenshotTestSuite
+````
+
+### Generate Play Store screenshots
 Use the following command to generate screenshots for app release to Google Play store:
 
 ```bash
 ./play_store_screenshots.sh
 ```
 
-### Play Store release notes
+### Generate Play Store release notes
 Use the following command to generate release notes for app release to Google Play store.
 `./play_store_release_notes.sh` script accepts two arguments: start and end git tags.
 

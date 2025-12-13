@@ -1,11 +1,14 @@
 package com.ivzb.urgat.ui.base
 
+import android.content.Context
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.canTakeScreenshot
 import androidx.test.core.graphics.writeToTestStorage
+import com.ivzb.urgat.R
 import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestName
@@ -18,6 +21,11 @@ abstract class ScreenshotTest {
     @get:Rule
     val nameRule = TestName()
 
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val resources = context.resources
+
+    protected var itemsLimit = resources.getInteger(R.integer.items_limit)
+
     @Before
     fun disableTransitions() {
         composeTestRule.mainClock.autoAdvance = false
@@ -27,20 +35,33 @@ abstract class ScreenshotTest {
     protected fun screenshot() {
         composeTestRule.mainClock.autoAdvance = false
         composeTestRule.waitForIdle()
-        composeTestRule.mainClock.advanceTimeBy(0) // forces deterministic draw
+        composeTestRule.mainClock.advanceTimeBy(16) // forces deterministic draw
 
-        if (canTakeScreenshot()) {
-            /*
-             * Capture a screenshot of the Compose root instead of the full screen.
-             * This prevents false diffs caused by changes in the status bar (e.g., clock updates).
-             * We only want diffs when something in the app actually changes.
-             */
-            composeTestRule.onRoot()
-                .captureToImage()
-                .asAndroidBitmap()
-                .writeToTestStorage("${javaClass.simpleName}_${nameRule.methodName}")
-        } else {
-            throw IllegalStateException("Screenshot cannot be taken.")
+        repeat(3) { attempt ->
+            try {
+                if (canTakeScreenshot()) {
+                    /*
+                     * Capture a screenshot of the Compose root instead of the full screen.
+                     * This prevents false diffs caused by changes in the status bar (e.g., clock updates).
+                     * We only want diffs when something in the app actually changes.
+                     */
+                    composeTestRule.onRoot()
+                        .captureToImage()
+                        .asAndroidBitmap()
+                        .writeToTestStorage("${javaClass.simpleName}_${nameRule.methodName}")
+
+                    return
+                } else {
+                    throw IllegalStateException("Screenshot cannot be taken.")
+                }
+
+            } catch (e: Exception) {
+                if (attempt == 2) {
+                    throw e
+                }
+
+                Thread.sleep(1_000)
+            }
         }
     }
 }

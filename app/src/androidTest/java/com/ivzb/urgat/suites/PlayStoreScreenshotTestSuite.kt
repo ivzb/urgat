@@ -1,6 +1,7 @@
 package com.ivzb.urgat.suites
 
-import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreenTest
+import com.ivzb.urgat.annotations.ExcludeFromUiTests
+import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreenshotTest
 import com.ivzb.urgat.ui.expenses.ExpensesScreenshotTest
 import com.ivzb.urgat.ui.finance.FinanceScreenshotTest
 import com.ivzb.urgat.ui.investments.InvestmentsScreenshotTest
@@ -12,12 +13,13 @@ import org.junit.experimental.categories.Categories
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
+@ExcludeFromUiTests
 @RunWith(Categories::class)
 @Categories.IncludeCategory(PlayStoreScreenshotTest::class)
 @Suite.SuiteClasses(
     LibraryScreenshotTest::class,
     TodoScreenshotTest::class,
-    AddEditTodoScreenTest::class,
+    AddEditTodoScreenshotTest::class,
     NotesScreenshotTest::class,
     FinanceScreenshotTest::class,
     ExpensesScreenshotTest::class,

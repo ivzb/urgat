@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditTodo
 import androidx.compose.ui.Modifier
 import androidx.test.espresso.Espresso
 import com.ivzb.urgat.R
+import com.ivzb.urgat.annotations.Screenshot
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
@@ -10,7 +11,8 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
 import org.junit.experimental.categories.Category
 
-class AddEditTodoScreenTest: ScreenshotTest() {
+@Screenshot
+class AddEditTodoScreenshotTest: ScreenshotTest() {
 
     @Test
     fun screenshotTest_AddEditTodoScreen_addTodo() = screenshotTest(
