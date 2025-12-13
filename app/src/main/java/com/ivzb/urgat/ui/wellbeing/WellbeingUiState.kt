@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 
 data class WellbeingUiState(
-    val headerItems: List<WellbeingHeaderItem> = WELLBEING_HEADER_ITEMS,
+    val fabActions: List<WellbeingFabAction> = WELLBEING_FAB_ACTIONS,
 
     val weights: List<Weight> = listOf(),
     val weightsFilteringUiInfo: WeightsFilteringUiInfo = WeightsFilteringUiInfo(),

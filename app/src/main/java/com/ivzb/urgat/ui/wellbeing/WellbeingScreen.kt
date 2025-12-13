@@ -1,9 +1,7 @@
 package com.ivzb.urgat.ui.wellbeing
 
-import android.content.res.Configuration
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,12 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -35,7 +31,6 @@ import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
 import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
@@ -84,6 +79,8 @@ fun WellbeingScreen(
     MenuScaffold(
         selectedDestination = WellbeingDestination,
         onSearchQueryChanged = { onIntent(WellbeingIntent.SearchQueryChanged(it)) },
+        fabActions = uiState.fabActions,
+        onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
         navController = navController,
         modifier = modifier
     ) { listState ->
@@ -104,9 +101,8 @@ fun WellbeingScreen(
 
             else -> {
                 WellbeingContent(
-                    uiState.headerItems,
-                    onHeaderItemClick = { id -> onIntent(WellbeingIntent.HeaderItemClick(id)) },
                     weights = uiState.weights,
+                    onTrackWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
                     weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
                     listState = listState,
                 )
@@ -117,68 +113,40 @@ fun WellbeingScreen(
 
 @Composable
 private fun WellbeingContent(
-    headerItems: List<WellbeingHeaderItem>,
-    onHeaderItemClick: (WellbeingHeaderItemId) -> Unit,
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
+    onTrackWeight: () -> Unit,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
-    val configuration = LocalConfiguration.current
-    val orientation = configuration.orientation
 
-    Row(
-        modifier = Modifier.fillMaxSize()
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .semantics { contentDescription = screenName },
+        contentPadding = PaddingValues(dimensionResource(R.dimen.content_padding)),
+        state = listState
     ) {
 
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Header(
-                items = headerItems,
-                onItemClick = { onHeaderItemClick(it.id) },
-                orientation
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
         }
 
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.horizontal_margin),
-                vertical = dimensionResource(R.dimen.vertical_margin)
-            ),
-            state = listState
-        ) {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                item {
-                    Header(
-                        items = headerItems,
-                        onItemClick = { onHeaderItemClick(it.id) },
-                        orientation
-                    )
-                }
-            }
+        itemWeights(
+            weights = weights,
+            weightsFilteringUiInfo = weightsFilteringUiInfo,
+            onTrackWeight = onTrackWeight,
+        )
 
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-            itemWeights(
-                weights = weights,
-                weightsFilteringUiInfo = weightsFilteringUiInfo,
-                onTrackWeight = { onHeaderItemClick(WellbeingHeaderItemId.Weight) },
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
         }
     }
 }

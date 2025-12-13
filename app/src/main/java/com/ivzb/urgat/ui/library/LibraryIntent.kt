@@ -6,6 +6,6 @@ sealed class LibraryIntent {
     data class SearchQueryChanged(val query: String): LibraryIntent()
     object ClearCompletedTodos: LibraryIntent()
     data class CompleteTodo(val todo: Todo, val completed: Boolean): LibraryIntent()
-    data class HeaderItemClick(val itemId: LibraryHeaderItemId): LibraryIntent()
+    data class FabActionClick(val itemId: LibraryFabActionId): LibraryIntent()
     object EventConsumed: LibraryIntent()
 }

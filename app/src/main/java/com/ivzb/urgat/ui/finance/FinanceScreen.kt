@@ -1,10 +1,7 @@
 package com.ivzb.urgat.ui.finance
 
-import android.content.res.Configuration
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -12,12 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -36,7 +31,6 @@ import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
 import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.Header
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
@@ -110,6 +104,8 @@ fun FinanceScreen(
     MenuScaffold(
         selectedDestination = FinanceDestination,
         onSearchQueryChanged = { query -> onIntent(FinanceIntent.SearchQueryChanged(query)) },
+        fabActions = uiState.fabActions,
+        onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
         navController = navController,
         withTopAppBarActions = uiState.expenses.isNotEmpty() || uiState.investments.isNotEmpty(),
         modifier = modifier
@@ -131,16 +127,15 @@ fun FinanceScreen(
 
             else -> {
                 FinanceContent(
-                    headerItems = uiState.headerItems,
-                    onHeaderItemClick = { id -> onIntent(FinanceIntent.HeaderItemClick(id)) },
-
                     expenses = uiState.expenses,
                     expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
+                    onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
                     onSeeAllExpenses = onSeeAllExpenses,
                     onExpenseClick = onExpenseClick,
 
                     investments = uiState.investments,
                     investmentsFilteringUiInfo = uiState.investmentsFilteringUiInfo,
+                    onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
                     onSeeAllInvestments = onSeeAllInvestments,
                     onInvestmentClick = onInvestmentClick,
 
@@ -154,16 +149,15 @@ fun FinanceScreen(
 
 @Composable
 private fun FinanceContent(
-    headerItems: List<FinanceHeaderItem>,
-    onHeaderItemClick: (FinanceHeaderItemId) -> Unit,
-
     expenses: List<Expense>,
     expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onAddExpense: () -> Unit,
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
     investments: List<Investment>,
     investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
+    onAddInvestment: () -> Unit,
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
@@ -171,77 +165,50 @@ private fun FinanceContent(
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.finance)
-    val configuration = LocalConfiguration.current
-    val orientation = configuration.orientation
 
-    Row (
-        modifier = Modifier.fillMaxSize()
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .semantics { contentDescription = screenName },
+        contentPadding = PaddingValues(dimensionResource(R.dimen.content_padding)),
+        state = listState
     ) {
 
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Header(
-                items = headerItems,
-                onItemClick = { onHeaderItemClick(it.id) },
-                orientation
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
         }
 
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.horizontal_margin),
-                vertical = dimensionResource(R.dimen.vertical_margin)
-            ),
-            state = listState
-        ) {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                item {
-                    Header(
-                        items = headerItems,
-                        onItemClick = { onHeaderItemClick(it.id) },
-                        orientation
-                    )
-                }
-            }
+        itemExpenses(
+            expenses = expenses,
+            expensesFilteringUiInfo = expensesFilteringUiInfo,
+            onAddExpense = onAddExpense,
+            onSeeAllExpenses = onSeeAllExpenses,
+            onExpenseClick = onExpenseClick
+        )
 
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-            itemExpenses(
-                expenses = expenses,
-                expensesFilteringUiInfo = expensesFilteringUiInfo,
-                onAddExpense = { onHeaderItemClick(FinanceHeaderItemId.Expense) },
-                onSeeAllExpenses = onSeeAllExpenses,
-                onExpenseClick = onExpenseClick
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
+        }
 
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
+        itemInvestments(
+            investments = investments,
+            investmentsFilteringUiInfo = investmentsFilteringUiInfo,
+            onAddInvestment = onAddInvestment,
+            onSeeAllInvestments = onSeeAllInvestments,
+            onInvestmentClick = onInvestmentClick
+        )
 
-            itemInvestments(
-                investments = investments,
-                investmentsFilteringUiInfo = investmentsFilteringUiInfo,
-                onAddInvestment = { onHeaderItemClick(FinanceHeaderItemId.Investment) },
-                onSeeAllInvestments = onSeeAllInvestments,
-                onInvestmentClick = onInvestmentClick
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
         }
     }
 }

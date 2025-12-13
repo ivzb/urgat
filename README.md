@@ -38,7 +38,7 @@ Use the following command to generate release notes for app release to Google Pl
 To include release notes for a feature, improvement, or bug fix on the Google Play Store, 
 add the following format to your commit message:
 
-- What's new: 
+- What's new example: 
 ```
 <new>
 Notes: Add titles and tags to organize your thoughts better.
@@ -47,7 +47,14 @@ To-Dos: Create subtasks and set priorities for easier task management.
 </new>
 ```
 
-- Improvements:
+- What's new template:
+```
+<new>
+
+</new>
+```
+
+- Improvements example:
 ```
 <improved>
 Faster app startup and smoother navigation throughout the app.
@@ -55,10 +62,24 @@ Enhanced search functionality across Notes, To-Dos, and Expenses.
 </improved>
 ```
 
-- Bug fixes:
+- Improvements template:
+```
+<improved>
+
+</improved>
+```
+
+- Bug fixes example:
 ```
 <fixed>
 Fixed an issue where some notifications were not appearing.
+</fixed>
+```
+
+- Bug fixes template:
+```
+<fixed>
+
 </fixed>
 ```
 

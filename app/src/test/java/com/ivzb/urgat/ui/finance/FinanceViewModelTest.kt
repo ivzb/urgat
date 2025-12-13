@@ -130,21 +130,21 @@ class FinanceViewModelTest {
     }
 
     @Test
-    fun `header item click emits AddExpense event`() = runTest {
-        `header item click emits event`(FinanceHeaderItemId.Expense, FinanceUiEvent.AddExpense)
+    fun `fab action click emits AddExpense event`() = runTest {
+        `fab action click emits event`(FinanceFabActionId.Expense, FinanceUiEvent.AddExpense)
     }
 
     @Test
-    fun `header item click emits AddInvestment event`() = runTest {
-        `header item click emits event`(FinanceHeaderItemId.Investment, FinanceUiEvent.AddInvestment)
+    fun `fab action click emits AddInvestment event`() = runTest {
+        `fab action click emits event`(FinanceFabActionId.Investment, FinanceUiEvent.AddInvestment)
     }
 
-    private fun `header item click emits event`(itemId: FinanceHeaderItemId, expectedEvent: FinanceUiEvent) = runTest {
+    private fun `fab action click emits event`(fabActionId: FinanceFabActionId, expectedEvent: FinanceUiEvent) = runTest {
         fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(FinanceIntent.HeaderItemClick(itemId))
+        viewModel.onIntent(FinanceIntent.FabActionClick(fabActionId))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()

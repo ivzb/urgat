@@ -1,14 +1,10 @@
 package com.ivzb.urgat.ui.finance
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
-import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.util.Assert
@@ -84,7 +80,7 @@ class FinanceViewModel @Inject constructor(
     fun onIntent(intent: FinanceIntent) {
         when (intent) {
             is FinanceIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is FinanceIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
+            is FinanceIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is FinanceIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -93,12 +89,12 @@ class FinanceViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun onHeaderItemClick(id: FinanceHeaderItemId) {
+    private fun onFabActionClick(id: FinanceFabActionId) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (id) {
-                    FinanceHeaderItemId.Expense -> FinanceUiEvent.AddExpense
-                    FinanceHeaderItemId.Investment -> FinanceUiEvent.AddInvestment
+                    FinanceFabActionId.Expense -> FinanceUiEvent.AddExpense
+                    FinanceFabActionId.Investment -> FinanceUiEvent.AddInvestment
                 }
             )
         }

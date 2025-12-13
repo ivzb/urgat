@@ -1,8 +1,5 @@
 package com.ivzb.urgat.ui.library
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Person
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.BuildConfig
@@ -14,7 +11,6 @@ import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
-import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
 import com.ivzb.urgat.util.Assert
@@ -104,7 +100,7 @@ class LibraryViewModel @Inject constructor(
             LibraryIntent.ClearCompletedTodos -> clearCompletedTodos()
             is LibraryIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
             is LibraryIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is LibraryIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
+            is LibraryIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is LibraryIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -127,12 +123,12 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun onHeaderItemClick(id: LibraryHeaderItemId) {
+    private fun onFabActionClick(id: LibraryFabActionId) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (id) {
-                    LibraryHeaderItemId.Todo -> LibraryUiEvent.AddTodo
-                    LibraryHeaderItemId.Note -> LibraryUiEvent.AddNote
+                    LibraryFabActionId.Todo -> LibraryUiEvent.AddTodo
+                    LibraryFabActionId.Note -> LibraryUiEvent.AddNote
                 }
             )
         }

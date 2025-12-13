@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,15 +39,16 @@ import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.navigation.UrgatMenuDestination
 import com.ivzb.urgat.navigation.bottomNavigationScreens
+import com.ivzb.urgat.ui.library.LibraryFabActionId
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun MenuScaffold(
+fun <T> MenuScaffold(
     selectedDestination: UrgatMenuDestination,
     onSearchQueryChanged: (String) -> Unit,
-    // todo: remove or change?
-    onAddItem: (() -> Unit)? = null,
-    fabActions: List<FabAction>? = null,
+
+    fabActions: List<FabAction<T>>? = null,
+    onFabActionClick: ((T) -> Unit)? = null,
 
     navController: NavHostController,
     withTopAppBarActions: Boolean = true,
@@ -89,13 +89,15 @@ fun MenuScaffold(
         UrgatScaffold(
             selectedDestination = selectedDestination,
             onSearchQueryChanged = onSearchQueryChanged,
-//            onAddItem = onAddItem,
             withTopAppBarActions = withTopAppBarActions,
             topAppBarActionsContent = topAppBarActionsContent,
             floatingActionButtonContent = {
                 fabActions?.let {
                     ExpandableFab(
-                        actions = it,
+                        fabActions = it,
+                        onFabActionClick = { fabActionId ->
+                            onFabActionClick?.invoke(fabActionId)
+                        }
                     )
                 }
             },
@@ -129,6 +131,8 @@ fun ListDetailsScaffold(
             if (selectedDestination.withFAB) {
                 FloatingActionButtonContent(
                     extended = lazyListState.isScrollingUp(),
+                    icon = Icons.Default.Add,
+                    labelResId = R.string.add,
                     onClick = {
                         onAddItem?.invoke()
                     }
@@ -260,10 +264,9 @@ private fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestinat
 @Composable
 fun MenuScaffoldPreview() {
     UrgatTheme {
-        MenuScaffold(
+        MenuScaffold<LibraryFabActionId>(
             selectedDestination = LibraryDestination,
             onSearchQueryChanged = {},
-            onAddItem = {},
             navController = rememberNavController(),
             withTopAppBarActions = false,
             topAppBarActionsContent = {},

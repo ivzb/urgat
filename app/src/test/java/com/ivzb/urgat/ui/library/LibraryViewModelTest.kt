@@ -175,21 +175,21 @@ class LibraryViewModelTest {
     }
 
     @Test
-    fun `header item click emits AddTodo event`() = runTest {
-        `header item click emits event`(LibraryHeaderItemId.Todo, LibraryUiEvent.AddTodo)
+    fun `fab action click emits AddTodo event`() = runTest {
+        `fab action click emits event`(LibraryFabActionId.Todo, LibraryUiEvent.AddTodo)
     }
 
     @Test
-    fun `header item click emits AddNote event`() = runTest {
-        `header item click emits event`(LibraryHeaderItemId.Note, LibraryUiEvent.AddNote)
+    fun `fab action click emits AddNote event`() = runTest {
+        `fab action click emits event`(LibraryFabActionId.Note, LibraryUiEvent.AddNote)
     }
 
-    private fun `header item click emits event`(itemId: LibraryHeaderItemId, expectedEvent: LibraryUiEvent) = runTest {
+    private fun `fab action click emits event`(itemId: LibraryFabActionId, expectedEvent: LibraryUiEvent) = runTest {
         fakeObserveTodosUseCase.emit(Async.Success(listOf()))
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(LibraryIntent.HeaderItemClick(itemId))
+        viewModel.onIntent(LibraryIntent.FabActionClick(itemId))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()

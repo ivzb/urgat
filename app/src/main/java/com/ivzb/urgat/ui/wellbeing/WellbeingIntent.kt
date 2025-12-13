@@ -2,6 +2,6 @@ package com.ivzb.urgat.ui.wellbeing
 
 sealed class WellbeingIntent {
     data class SearchQueryChanged(val query: String): WellbeingIntent()
-    data class HeaderItemClick(val itemId: WellbeingHeaderItemId): WellbeingIntent()
+    data class FabActionClick(val itemId: WellbeingFabActionId): WellbeingIntent()
     object EventConsumed: WellbeingIntent()
 }

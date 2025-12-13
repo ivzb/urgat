@@ -35,7 +35,6 @@ check why search if missing from finance screen, but visible for overview
 add category to notes
 add tags to expenses
 make tablet support list/detail
-take 5 or 7 items if tablet, not 3 as phone since we have more space
 write UI tests
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 check play console warning about edge-to-edge
@@ -48,11 +47,9 @@ check if list items should be improved in dark mode
 make splash screen dark mode
 review @Previews and fix obvious issues
 review screenshots and fix obvious UI issues
-improve landscape header items - possibly introduce second rail but on the right side of the screen
-improve add buttons UI (e.g. add todo, add note) in landscape
 status bar height in landscape is too big
 make annotation like PreviewLightDark to fit them all
-add info cards on the place of top buttons
-add fab actions to Finance tab
-add callback for click for each fab action in the MenuScaffold
-make the FloatingActionButtonContent reusable with FabAction
+add info cards on the place of top buttons (use current design for top header buttons - check git history)
+increase items per page to 5 in portrait and 3 in landscape
+take 5 or 7 items if tablet, not 3 as phone since we have more space
+fix left insets in landscape mode - camera is near items

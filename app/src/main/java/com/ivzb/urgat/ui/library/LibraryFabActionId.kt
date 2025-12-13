@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.library
 
-enum class LibraryHeaderItemId {
+enum class LibraryFabActionId {
     Todo,
     Note
 }

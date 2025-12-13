@@ -4,18 +4,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.ShoppingCart
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.components.HeaderItem
+import com.ivzb.urgat.ui.components.FabAction
 
-typealias FinanceHeaderItem = HeaderItem<FinanceHeaderItemId>
+typealias FinanceFabAction = FabAction<FinanceFabActionId>
 
-val FINANCE_HEADER_ITEMS = listOf(
-    HeaderItem(
-        FinanceHeaderItemId.Expense,
+val FINANCE_FAB_ACTIONS = listOf(
+    FabAction(
+        FinanceFabActionId.Expense,
         Icons.Filled.ShoppingCart,
         R.string.add_expense
     ),
-    HeaderItem(
-        FinanceHeaderItemId.Investment,
+    FabAction(
+        FinanceFabActionId.Investment,
         Icons.Filled.AttachMoney,
         R.string.add_investment
     ),

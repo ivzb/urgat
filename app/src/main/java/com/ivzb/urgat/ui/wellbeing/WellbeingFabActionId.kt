@@ -1,5 +1,5 @@
 package com.ivzb.urgat.ui.wellbeing
 
-enum class WellbeingHeaderItemId {
+enum class WellbeingFabActionId {
     Weight,
 }

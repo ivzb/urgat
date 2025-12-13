@@ -24,27 +24,31 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.library.LibraryFabActionId
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun ExpandableFab(
-    actions: List<FabAction>
+fun <T> ExpandableFab(
+    fabActions: List<FabAction<T>>,
+    onFabActionClick: (T) -> Unit,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val onToggle = { isExpanded = !isExpanded }
 
     ExpandableFab(
-        actions,
+        fabActions = fabActions,
+        onFabActionClick = onFabActionClick,
         isExpanded = isExpanded,
         onToggle = onToggle
     )
 }
 
 @Composable
-fun ExpandableFab(
-    actions: List<FabAction>,
+fun <T> ExpandableFab(
+    fabActions: List<FabAction<T>>,
+    onFabActionClick: (T) -> Unit,
     isExpanded: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
 ) {
     val rotation by animateFloatAsState(
         targetValue = if (isExpanded) 45f else 0f,
@@ -59,11 +63,13 @@ fun ExpandableFab(
     ) {
 
         if (isExpanded) {
-            actions.reversed().forEach { action ->
+            fabActions.reversed().forEach { fabAction ->
                 FloatingActionButtonContent(
                     extended = true,
+                    icon = fabAction.icon,
+                    labelResId = fabAction.labelResId,
                     onClick = {
-                        action.onClick()
+                        onFabActionClick(fabAction.id)
                         onToggle()
                     }
                 )
@@ -93,18 +99,19 @@ fun ExpandableFab(
 private fun ExpandableFabCollapsedPreview() {
     UrgatTheme {
         ExpandableFab(
-            actions = listOf(
+            fabActions = listOf(
                 FabAction(
+                    id = LibraryFabActionId.Todo,
                     icon = Icons.Filled.Done,
                     labelResId = R.string.add_todo,
-                    onClick = {}
                 ),
                 FabAction(
+                    id = LibraryFabActionId.Note,
                     icon = Icons.Filled.Person,
                     labelResId = R.string.add_note,
-                    onClick = {}
                 )
             ),
+            onFabActionClick = {},
             isExpanded = false,
             onToggle = {}
         )
@@ -116,18 +123,19 @@ private fun ExpandableFabCollapsedPreview() {
 private fun ExpandableFabExpandedPreview() {
     UrgatTheme {
         ExpandableFab(
-            actions = listOf(
+            fabActions = listOf(
                 FabAction(
+                    id = LibraryFabActionId.Todo,
                     icon = Icons.Filled.Done,
                     labelResId = R.string.add_todo,
-                    onClick = {}
                 ),
                 FabAction(
+                    id = LibraryFabActionId.Note,
                     icon = Icons.Filled.Person,
                     labelResId = R.string.add_note,
-                    onClick = {}
                 )
             ),
+            onFabActionClick = {},
             isExpanded = true,
             onToggle = {}
         )

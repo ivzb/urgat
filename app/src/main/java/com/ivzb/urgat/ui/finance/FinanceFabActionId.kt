@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.finance
 
-enum class FinanceHeaderItemId {
+enum class FinanceFabActionId {
     Expense,
-    Investment,
+    Investment
 }

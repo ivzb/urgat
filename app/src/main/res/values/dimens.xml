@@ -14,8 +14,6 @@
     <dimen name="card_min_height">110dp</dimen>
     <dimen name="library_item_content_padding">24dp</dimen>
     <dimen name="search_text_field_padding">4dp</dimen>
-    <dimen name="library_header_item_padding">16dp</dimen>
-    <dimen name="library_header_item_min_width">120dp</dimen>
     <dimen name="grid_horizontal_margin">8dp</dimen>
     <dimen name="grid_vertical_margin">16dp</dimen>
     <dimen name="grid_padding">8dp</dimen>

@@ -1,13 +1,9 @@
 package com.ivzb.urgat.ui.wellbeing
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
-import com.ivzb.urgat.ui.components.HeaderItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,7 +59,7 @@ class WellbeingViewModel @Inject constructor(
     fun onIntent(intent: WellbeingIntent) {
         when (intent) {
             is WellbeingIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is WellbeingIntent.HeaderItemClick -> onHeaderItemClick(intent.itemId)
+            is WellbeingIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is WellbeingIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -72,11 +68,11 @@ class WellbeingViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun onHeaderItemClick(id: WellbeingHeaderItemId) {
+    private fun onFabActionClick(id: WellbeingFabActionId) {
         viewModelScope.launch {
             _uiEvent.emit(
                 when (id) {
-                    WellbeingHeaderItemId.Weight -> WellbeingUiEvent.TrackWeight
+                    WellbeingFabActionId.Weight -> WellbeingUiEvent.TrackWeight
                 }
             )
         }
