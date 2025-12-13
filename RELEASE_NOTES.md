@@ -1,3 +1,8 @@
+## Release notes 25.12.4
+
+Improved:
+- Optimized UI for landscape orientation
+
 ## Release notes 25.12.3
 
 Improved:
