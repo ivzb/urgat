@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.domain.sample.SampleUseCase
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class LibraryViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
     observeNotesUseCase: ObserveNotesUseCase,
+    resourcesProvider: ResourcesProvider,
     private val completeTodoUseCase: CompleteTodoUseCase,
     private val activateTodoUseCase: ActivateTodoUseCase,
     private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
@@ -46,9 +48,11 @@ class LibraryViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
+    private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
+
     val uiState: StateFlow<LibraryUiState> = combine(
-        observeTodosUseCase(_searchQuery, null, LIMIT),
-        observeNotesUseCase(_searchQuery, null, LIMIT),
+        observeTodosUseCase(_searchQuery, null, _itemsLimit),
+        observeNotesUseCase(_searchQuery, null, _itemsLimit),
         _uiEvent,
     ) { todos, notes, uiEvent ->
         val items = listOf(todos, notes)
@@ -97,12 +101,17 @@ class LibraryViewModel @Inject constructor(
 
     fun onIntent(intent: LibraryIntent) {
         when (intent) {
+            is LibraryIntent.ItemsLimitChanged -> onItemsLimitChanged(intent.itemsLimit)
             LibraryIntent.ClearCompletedTodos -> clearCompletedTodos()
             is LibraryIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
             is LibraryIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is LibraryIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is LibraryIntent.EventConsumed -> onEventConsumed()
         }
+    }
+
+    private fun onItemsLimitChanged(newLimit: Int) {
+        _itemsLimit.value = newLimit
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
@@ -138,12 +147,6 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(null)
         }
-    }
-
-    companion object {
-
-        private const val LIMIT = 3
-
     }
 
 }

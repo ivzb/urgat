@@ -15,7 +15,7 @@ interface ObserveExpensesUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterMenuItem?>?,
-        limit: Int
+        limitFlow: Flow<Int>?
     ): Flow<Async<List<Expense>>>
 
 }

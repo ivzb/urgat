@@ -74,7 +74,9 @@ private fun NavHostContent(
             .background(MaterialTheme.colorScheme.background)
     ) {
 
-        composable(LibraryDestination.route) {
+        composable(
+            route = LibraryDestination.route
+        ) {
             LibraryScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onSeeAllTodos = { navActions.navigateToTodo() },
@@ -88,7 +90,9 @@ private fun NavHostContent(
             )
         }
 
-        composable(FinanceDestination.route) {
+        composable(
+            route = FinanceDestination.route
+        ) {
             FinanceScreen(
                 onAddExpense = { navActions.navigateToAddExpense() },
                 onSeeAllExpenses = { navActions.navigateToExpenses() },
@@ -102,7 +106,9 @@ private fun NavHostContent(
             )
         }
 
-        composable(TodoDestination.route) {
+        composable(
+            route = TodoDestination.route
+        ) {
             TodoScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
@@ -110,7 +116,9 @@ private fun NavHostContent(
             )
         }
 
-        composable(NotesDestination.route) {
+        composable(
+            route = NotesDestination.route
+        ) {
             NotesScreen(
                 onAddNote = { navActions.navigateToAddNote() },
                 onNoteClick = { navActions.navigateToEditNote(it.id) },
@@ -118,7 +126,9 @@ private fun NavHostContent(
             )
         }
 
-        composable(ExpensesDestination.route) {
+        composable(
+            route = ExpensesDestination.route
+        ) {
             ExpensesScreen(
                 onAddExpense = { navActions.navigateToAddExpense() },
                 onExpenseClick = { navActions.navigateToEditExpense(it.id) },
@@ -126,7 +136,9 @@ private fun NavHostContent(
             )
         }
 
-        composable(InvestmentsDestination.route) {
+        composable(
+            route = InvestmentsDestination.route
+        ) {
             InvestmentsScreen(
                 onAddInvestment = { navActions.navigateToAddInvestment() },
                 onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
@@ -134,21 +146,26 @@ private fun NavHostContent(
             )
         }
 
-        composable(WellbeingDestination.route) {
+        composable(
+            route = WellbeingDestination.route
+        ) {
             WellbeingScreen(
                 onTrackWeight = { navActions.navigateToTrackWeight() },
                 navController = navController,
             )
         }
 
-        composable(WeatherDestination.route) {
+        composable(
+            route = WeatherDestination.route
+        ) {
             WeatherScreen(
                 navController = navController,
             )
         }
 
         composable(
-            AddEditTodoDestination.route, arguments = listOf(
+            route = AddEditTodoDestination.route,
+            arguments = listOf(
                 navArgument(AddEditTodoDestination.Args.ARG_TITLE) { type = NavType.IntType },
                 navArgument(AddEditTodoDestination.Args.ARG_ID) {
                     type = NavType.StringType; nullable = true
@@ -161,7 +178,8 @@ private fun NavHostContent(
         }
 
         composable(
-            AddEditExpenseDestination.route, arguments = listOf(
+            route = AddEditExpenseDestination.route,
+            arguments = listOf(
                 navArgument(AddEditExpenseDestination.Args.ARG_TITLE) { type = NavType.IntType },
                 navArgument(AddEditExpenseDestination.Args.ARG_ID) {
                     type = NavType.StringType; nullable = true
@@ -174,7 +192,8 @@ private fun NavHostContent(
         }
 
         composable(
-            AddEditNoteDestination.route, arguments = listOf(
+            route = AddEditNoteDestination.route,
+            arguments = listOf(
                 navArgument(AddEditNoteDestination.Args.ARG_TITLE) { type = NavType.IntType },
                 navArgument(AddEditNoteDestination.Args.ARG_ID) {
                     type = NavType.StringType; nullable = true
@@ -186,14 +205,17 @@ private fun NavHostContent(
             )
         }
 
-        composable(TrackWeightDestination.route) {
+        composable(
+            route = TrackWeightDestination.route
+        ) {
             TrackWeightScreen(
                 onBack = { navController.popBackStack() },
             )
         }
 
         composable(
-            AddEditInvestmentDestination.route, arguments = listOf(
+            route = AddEditInvestmentDestination.route,
+            arguments = listOf(
                 navArgument(AddEditInvestmentDestination.Args.ARG_TITLE) { type = NavType.IntType },
                 navArgument(AddEditInvestmentDestination.Args.ARG_ID) {
                     type = NavType.StringType; nullable = true

@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -51,7 +51,7 @@ class ObserveTodosFilteringUseCaseTest {
             )
         )
 
-        every { repository.getStream(NO_LIMIT) } returns repositoryStream
+        every { repository.getStream(NO_ITEMS_LIMIT) } returns repositoryStream
 
         val results = observeUseCase().toList()
 
@@ -66,7 +66,7 @@ class ObserveTodosFilteringUseCaseTest {
 
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
-        every { repository.getStream(NO_LIMIT) } returns flow {
+        every { repository.getStream(NO_ITEMS_LIMIT) } returns flow {
             throw RuntimeException("Test error")
         }
 

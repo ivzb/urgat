@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
@@ -36,7 +35,7 @@ class TodoViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<TodoUiState> = combine(
-        observeTodosUseCase(_searchQuery, _savedFilterType, NO_LIMIT),
+        observeTodosUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeTodosFilteringUseCase(),
     ) { todosAsync, todosFilteringAsync ->
 

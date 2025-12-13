@@ -2,7 +2,7 @@ package com.ivzb.urgat.ui.wellbeing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -25,7 +25,7 @@ class WellbeingViewModel @Inject constructor(
 
     val uiState: StateFlow<WellbeingUiState> = combine(
         _uiEvent,
-        observeWeightsUseCase(_searchQuery, null, NO_LIMIT),
+        observeWeightsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null),
     ) { uiEvent, weightsAsync ->
 
         when (weightsAsync) {

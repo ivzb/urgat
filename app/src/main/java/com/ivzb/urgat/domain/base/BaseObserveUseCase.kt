@@ -2,9 +2,10 @@ package com.ivzb.urgat.domain.base
 
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
@@ -17,17 +18,24 @@ abstract class BaseObserveUseCase<T, FilterType>(
 
     protected abstract val errorMessage: Int
 
+    private val noLimitFlow = MutableStateFlow(NO_ITEMS_LIMIT)
+
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<FilterType>? = null,
-        limit: Int = NO_LIMIT
-    ): Flow<Async<List<T>>> = searchQueryFlow
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<T>>> = combine(
+        searchQueryFlow,
+        limitFlow ?: noLimitFlow
+    ) { searchQuery, limit ->
+            Pair(searchQuery, limit)
+        }
         .debounce(DEBOUNCE_TIME_MILLIS)
-        .flatMapLatest { query ->
-            val stream = if (query.isBlank()) {
+        .flatMapLatest { (searchQuery, limit) ->
+            val stream = if (searchQuery.isBlank()) {
                 repository.getStream(limit)
             } else {
-                repository.getStream(limit, query)
+                repository.getStream(limit, searchQuery)
             }
 
             if (filterTypeFlow == null) {

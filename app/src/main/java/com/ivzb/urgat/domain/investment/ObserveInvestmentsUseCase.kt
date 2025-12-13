@@ -15,7 +15,7 @@ interface ObserveInvestmentsUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<InvestmentsFilterMenuItem?>?,
-        limit: Int
+        limitFlow: Flow<Int>?
     ): Flow<Async<List<Investment>>>
 
 }

@@ -1,11 +1,13 @@
 package com.ivzb.urgat.ui.components
 
+import android.os.Build
 import android.os.Parcelable
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,13 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.LibraryDestination
 import com.ivzb.urgat.navigation.WellbeingDestination
 import com.ivzb.urgat.navigation.UrgatDestination
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.parcelize.Parcelize
+
+@Composable
+fun topBarInsets() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+    WindowInsets()
+} else {
+    WindowInsets.statusBars
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,7 +125,7 @@ fun TextTopAppBar(
                 }
             }
         },
-        windowInsets = WindowInsets(-1.dp),
+        windowInsets = topBarInsets(),
         modifier = Modifier
             .fillMaxWidth()
     )

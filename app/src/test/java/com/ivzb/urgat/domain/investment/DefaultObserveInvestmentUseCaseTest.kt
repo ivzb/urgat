@@ -36,6 +36,7 @@ class ObserveInvestmentsUseCaseTest {
     fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("snp")
         val limit = 10
+        val limitFlow = flowOf(limit)
 
         val repositoryStream = flowOf(
             listOf(
@@ -46,7 +47,7 @@ class ObserveInvestmentsUseCaseTest {
 
         every { repository.getStream(limit, "snp") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, limit).toList()
+        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -62,10 +63,11 @@ class ObserveInvestmentsUseCaseTest {
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
         val limit = 10
+        val limitFlow = flowOf(limit)
 
         every { repository.getStream(limit) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, limit).toList()
+        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
         advanceUntilIdle()
 

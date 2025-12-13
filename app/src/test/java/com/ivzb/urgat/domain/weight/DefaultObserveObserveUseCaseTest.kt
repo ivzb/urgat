@@ -33,6 +33,7 @@ class ObserveWeightsUseCaseTest {
     fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("weight")
         val limit = 10
+        val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
                 Weight("1", 79.5.toBigDecimal(), 100_000_000, false, createdAt = 100_000_000),
@@ -42,7 +43,7 @@ class ObserveWeightsUseCaseTest {
 
         every { repository.getStream(limit, "weight") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, limit).toList()
+        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -63,10 +64,11 @@ class ObserveWeightsUseCaseTest {
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
         val limit = 10
+        val limitFlow = flowOf(limit)
 
         every { repository.getStream(limit) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, limit).toList()
+        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
         advanceUntilIdle()
 

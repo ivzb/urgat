@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType
@@ -54,7 +54,7 @@ class ObserveInvestmentsFilteringUseCaseTest {
             )
         )
 
-        every { repository.getStream(NO_LIMIT) } returns repositoryStream
+        every { repository.getStream(NO_ITEMS_LIMIT) } returns repositoryStream
 
         val results = observeUseCase().toList()
 
@@ -69,7 +69,7 @@ class ObserveInvestmentsFilteringUseCaseTest {
 
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
-        every { repository.getStream(NO_LIMIT) } returns flow {
+        every { repository.getStream(NO_ITEMS_LIMIT) } returns flow {
             throw RuntimeException("Test error")
         }
 

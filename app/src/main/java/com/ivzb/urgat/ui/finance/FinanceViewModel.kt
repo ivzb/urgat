@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.finance
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
@@ -22,15 +23,18 @@ import javax.inject.Inject
 class FinanceViewModel @Inject constructor(
     observeExpensesUseCase: ObserveExpensesUseCase,
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
+    resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
     private val _uiEvent = MutableStateFlow<FinanceUiEvent?>(null)
 
     private val _searchQuery = MutableStateFlow("")
 
+    private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
+
     val uiState: StateFlow<FinanceUiState> = combine(
-        observeExpensesUseCase(_searchQuery, null, LIMIT),
-        observeInvestmentsUseCase(_searchQuery, null, LIMIT),
+        observeExpensesUseCase(_searchQuery, null, _itemsLimit),
+        observeInvestmentsUseCase(_searchQuery, null, _itemsLimit),
         _uiEvent,
     ) { expenses, investments, uiEvent ->
         val items = listOf(expenses, investments)
@@ -79,10 +83,15 @@ class FinanceViewModel @Inject constructor(
 
     fun onIntent(intent: FinanceIntent) {
         when (intent) {
+            is FinanceIntent.ItemsLimitChanged -> onItemsLimitChanged(intent.itemsLimit)
             is FinanceIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is FinanceIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is FinanceIntent.EventConsumed -> onEventConsumed()
         }
+    }
+
+    private fun onItemsLimitChanged(newLimit: Int) {
+        _itemsLimit.value = newLimit
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
@@ -104,12 +113,6 @@ class FinanceViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(null)
         }
-    }
-
-    companion object {
-
-        private const val LIMIT = 3
-
     }
 
 }

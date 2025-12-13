@@ -14,7 +14,7 @@ interface ObserveNotesUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<NotesFilterType>?,
-        limit: Int
+        limitFlow: Flow<Int>?
     ): Flow<Async<List<Note>>>
 
 }

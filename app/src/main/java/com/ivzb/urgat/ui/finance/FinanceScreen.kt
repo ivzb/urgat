@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -82,6 +83,13 @@ fun FinanceScreen(
 
             viewModel.onIntent(FinanceIntent.EventConsumed)
         }
+    }
+
+    val resources = LocalResources.current
+    val itemsLimit = resources.getInteger(R.integer.items_limit)
+
+    LaunchedEffect(itemsLimit) {
+        viewModel.onIntent(FinanceIntent.ItemsLimitChanged(itemsLimit))
     }
 }
 

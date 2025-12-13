@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
 import com.ivzb.urgat.domain.sample.FakeSampleUseCase
@@ -10,6 +11,8 @@ import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeObserveTodosUseCase
 import com.ivzb.urgat.util.Async
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -33,6 +36,7 @@ class LibraryViewModelTest {
 
     private lateinit var fakeObserveTodosUseCase: FakeObserveTodosUseCase
     private lateinit var fakeObserveNotesUseCase: FakeObserveNotesUseCase
+    private lateinit var mockResourcesProvider: ResourcesProvider
     private lateinit var fakeCompleteTodoUseCase: FakeCompleteTodoUseCase
     private lateinit var fakeActivateTodoUseCase: FakeActivateTodoUseCase
     private lateinit var fakeClearCompletedTodosUseCase: FakeClearCompletedTodosUseCase
@@ -48,10 +52,13 @@ class LibraryViewModelTest {
 
         fakeObserveTodosUseCase = FakeObserveTodosUseCase()
         fakeObserveNotesUseCase = FakeObserveNotesUseCase()
+        mockResourcesProvider = mockk()
         fakeCompleteTodoUseCase = FakeCompleteTodoUseCase()
         fakeActivateTodoUseCase = FakeActivateTodoUseCase()
         fakeClearCompletedTodosUseCase = FakeClearCompletedTodosUseCase()
         fakeSampleUseCase = FakeSampleUseCase()
+
+        every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
     }
 
     @After
@@ -207,6 +214,7 @@ class LibraryViewModelTest {
     private fun createViewModel() = LibraryViewModel(
         fakeObserveTodosUseCase,
         fakeObserveNotesUseCase,
+        mockResourcesProvider,
         fakeCompleteTodoUseCase,
         fakeActivateTodoUseCase,
         fakeClearCompletedTodosUseCase,

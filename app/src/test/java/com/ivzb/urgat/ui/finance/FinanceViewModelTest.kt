@@ -3,9 +3,12 @@ package com.ivzb.urgat.ui.finance
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
 import com.ivzb.urgat.util.Async
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -30,6 +33,7 @@ class FinanceViewModelTest {
 
     private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
     private lateinit var fakeObserveInvestmentsUseCase: FakeObserveInvestmentsUseCase
+    private lateinit var mockResourcesProvider: ResourcesProvider
 
     private lateinit var viewModel: FinanceViewModel
 
@@ -41,6 +45,9 @@ class FinanceViewModelTest {
 
         fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
+        mockResourcesProvider = mockk()
+
+        every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
     }
 
     @After
@@ -162,5 +169,6 @@ class FinanceViewModelTest {
     private fun createViewModel() = FinanceViewModel(
         fakeObserveExpensesUseCase,
         fakeObserveInvestmentsUseCase,
+        mockResourcesProvider,
     )
 }

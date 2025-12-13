@@ -37,7 +37,6 @@ add tags to expenses
 make tablet support list/detail
 write UI tests
 there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
-check play console warning about edge-to-edge
 encrypt the db
 check what happens if one side of the nots has a lot more text than the other side
 make the investments tab show net worth. then show each investment combined, then show transactions
@@ -47,11 +46,9 @@ check if list items should be improved in dark mode
 make splash screen dark mode
 review @Previews and fix obvious issues
 review screenshots and fix obvious UI issues
-status bar height in landscape is too big
 make annotation like PreviewLightDark to fit them all
-add filtering label to wellbeing tab
 add info cards on the place of top buttons (use current design for top header buttons - check git history)
 increase items per page to 5 in portrait and 3 in landscape
 take 5 or 7 items if tablet, not 3 as phone since we have more space
-make the text in status bar inverse because it's blending with the background
 make todos, expenses and investments 2 per row in landscape because there is a lot of empty space
+add filtering label to wellbeing tab

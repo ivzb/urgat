@@ -13,7 +13,7 @@ interface ObserveWeightsUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<Unit>?,
-        limit: Int
+        limitFlow: Flow<Int>?
     ): Flow<Async<List<Weight>>>
 
 }

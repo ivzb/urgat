@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
@@ -23,7 +23,7 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
 ) : ObserveInvestmentsFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
-        return repository.getStream(NO_LIMIT)
+        return repository.getStream(NO_ITEMS_LIMIT)
             .map {
                 if (it.isEmpty()) {
                     return@map listOf()

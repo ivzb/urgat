@@ -14,6 +14,7 @@ interface BaseRepository<T> {
 
     companion object {
 
-        const val NO_LIMIT = -1
+        const val NO_ITEMS_LIMIT = -1
+
     }
 }

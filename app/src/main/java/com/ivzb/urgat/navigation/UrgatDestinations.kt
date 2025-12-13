@@ -36,6 +36,10 @@ data object FinanceDestination: UrgatMenuDestination() {
     override val label = R.string.finance
     override val icon = Icons.Filled.AttachMoney
     override val route = "finance"
+
+    object Args {
+        const val ARG_INITIAL_ITEMS_SIZE = "initial_items_size"
+    }
 }
 
 data object InvestmentsDestination: UrgatMenuDestination() {

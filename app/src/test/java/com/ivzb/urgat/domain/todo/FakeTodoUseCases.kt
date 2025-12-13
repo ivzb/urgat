@@ -22,7 +22,7 @@ class FakeObserveTodosUseCase : ObserveTodosUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<TodoFilterMenuItem?>?,
-        limit: Int
+        limitFlow: Flow<Int>?
     ): Flow<Async<List<Todo>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {

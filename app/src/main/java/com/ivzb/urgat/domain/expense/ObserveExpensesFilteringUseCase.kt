@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
@@ -23,7 +23,7 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
 ) : ObserveExpensesFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<ExpensesFilterMenuItem>>> {
-        return repository.getStream(NO_LIMIT)
+        return repository.getStream(NO_ITEMS_LIMIT)
             .map {
                 listOf(
                     FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = it.size),

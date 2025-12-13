@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_LIMIT
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
@@ -32,7 +31,7 @@ class ExpensesViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<ExpensesUiState> = combine(
-        observeExpensesUseCase(_searchQuery, _savedFilterType, NO_LIMIT),
+        observeExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeExpensesFilteringUseCase(),
     ) { expensesAsync, expensesFilteringAsync ->
 
