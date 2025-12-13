@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -172,7 +172,7 @@ fun UrgatScaffold(
         floatingActionButton = {
             floatingActionButtonContent?.invoke()
         },
-        contentWindowInsets = WindowInsets.systemBars,
+        contentWindowInsets = WindowInsets.safeDrawing,
         modifier = modifier
     ) { innerPadding ->
 

@@ -55,4 +55,3 @@ increase items per page to 5 in portrait and 3 in landscape
 take 5 or 7 items if tablet, not 3 as phone since we have more space
 make the text in status bar inverse because it's blending with the background
 make todos, expenses and investments 2 per row in landscape because there is a lot of empty space
-fix left insets in landscape mode - camera is near items

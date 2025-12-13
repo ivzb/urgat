@@ -1,0 +1,2 @@
+screenshots/**/* filter=lfs diff=lfs merge=lfs -text
+play_store_screenshots/**/* filter=lfs diff=lfs merge=lfs -text
