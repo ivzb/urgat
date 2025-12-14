@@ -42,14 +42,11 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
-import com.ivzb.urgat.ui.components.DarkModePreview
+import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.DatePicker
-import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -320,10 +317,7 @@ fun AddEditInvestmentScreen(
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun AddInvestmentScreenPreview() {
     UrgatTheme {
@@ -340,10 +334,7 @@ private fun AddInvestmentScreenPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun EditInvestmentContentPreview() {
     UrgatTheme {
@@ -363,10 +354,7 @@ private fun EditInvestmentContentPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun LoadingContentPreview() {
     UrgatTheme {

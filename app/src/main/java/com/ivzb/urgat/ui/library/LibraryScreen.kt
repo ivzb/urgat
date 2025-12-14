@@ -18,7 +18,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -28,12 +27,10 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.navigation.LibraryDestination
-import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
-import com.ivzb.urgat.ui.components.DarkModePreview
+import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
-import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
@@ -304,10 +301,7 @@ private fun LazyListScope.itemNotes(
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 fun LibraryScreenPreview() {
     UrgatTheme {
@@ -332,10 +326,7 @@ fun LibraryScreenPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 fun LibraryScreenEmptyPreview() {
     UrgatTheme {
@@ -360,10 +351,7 @@ fun LibraryScreenEmptyPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 fun LibraryScreenLoadingPreview() {
     UrgatTheme {
@@ -388,10 +376,7 @@ fun LibraryScreenLoadingPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 fun LibraryScreenErrorPreview() {
     UrgatTheme {

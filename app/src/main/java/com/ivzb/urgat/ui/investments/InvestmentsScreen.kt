@@ -2,7 +2,6 @@ package com.ivzb.urgat.ui.investments
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -33,12 +31,10 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.InvestmentsDestination
-import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
-import com.ivzb.urgat.ui.components.DarkModePreview
+import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeader
-import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -224,10 +220,7 @@ fun InvestmentItem(
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun InvestmentsScreenPreview() {
     UrgatTheme {
@@ -247,10 +240,7 @@ private fun InvestmentsScreenPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun InvestmentsScreenEmptyPreview() {
     UrgatTheme {
@@ -270,10 +260,7 @@ private fun InvestmentsScreenEmptyPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun InvestmentsScreenLoadingPreview() {
     UrgatTheme {
@@ -293,10 +280,7 @@ private fun InvestmentsScreenLoadingPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun InvestmentsScreenErrorPreview() {
     UrgatTheme {

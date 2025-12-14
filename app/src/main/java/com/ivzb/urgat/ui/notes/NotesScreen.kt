@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,10 +28,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.NotesDestination
-import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
-import com.ivzb.urgat.ui.components.DarkModePreview
+import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -202,10 +199,7 @@ fun NoteItem(
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun NotesScreenPreview() {
     UrgatTheme {
@@ -225,10 +219,7 @@ private fun NotesScreenPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun NotesScreenEmptyPreview() {
     UrgatTheme {
@@ -248,10 +239,7 @@ private fun NotesScreenEmptyPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun NotesScreenLoadingPreview() {
     UrgatTheme {
@@ -271,10 +259,7 @@ private fun NotesScreenLoadingPreview() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun NotesScreenErrorPreview() {
     UrgatTheme {

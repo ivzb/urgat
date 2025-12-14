@@ -37,13 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
-import com.ivzb.urgat.ui.components.DarkModePreview
-import com.ivzb.urgat.ui.components.LandscapePreview
+import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -203,10 +200,7 @@ fun AddEditTodoScreen(
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun AddTodoScreen() {
     UrgatTheme {
@@ -223,10 +217,7 @@ private fun AddTodoScreen() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun EditTodoScreen() {
     UrgatTheme {
@@ -245,10 +236,7 @@ private fun EditTodoScreen() {
     }
 }
 
-@Preview
-@DarkModePreview
-@LandscapePreview
-@DarkModeLandscapePreview
+@AllDevicesPreview
 @Composable
 private fun LoadingTodoScreen() {
     UrgatTheme {

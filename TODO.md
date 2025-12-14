@@ -46,6 +46,7 @@ check if list items should be improved in dark mode
 make splash screen dark mode
 review @Previews and fix obvious issues
 review screenshots and fix obvious UI issues
-make annotation like PreviewLightDark to fit them all
 add info cards on the place of top buttons (use current design for top header buttons - check git history)
 make todos, expenses and investments 2 per row in landscape because there is a lot of empty space
+group expenses by month
+add links feature to library
