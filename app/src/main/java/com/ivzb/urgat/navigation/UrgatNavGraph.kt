@@ -34,7 +34,7 @@ import com.ivzb.urgat.ui.investments.InvestmentsScreen
 import com.ivzb.urgat.ui.notes.NotesScreen
 import com.ivzb.urgat.ui.library.LibraryScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.todo.TodoScreen
+import com.ivzb.urgat.ui.todos.TodosScreen
 import com.ivzb.urgat.ui.trackWeight.TrackWeightScreen
 import com.ivzb.urgat.ui.wellbeing.WellbeingScreen
 import com.ivzb.urgat.ui.weather.WeatherScreen
@@ -109,7 +109,7 @@ private fun NavHostContent(
         composable(
             route = TodoDestination.route
         ) {
-            TodoScreen(
+            TodosScreen(
                 onAddTodo = { navActions.navigateToAddTodo() },
                 onTodoClick = { navActions.navigateToEditTodo(it.id) },
                 onBack = { navController.popBackStack() }

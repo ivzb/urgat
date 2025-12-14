@@ -13,7 +13,7 @@ import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
-import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -69,7 +69,7 @@ class LibraryViewModel @Inject constructor(
             items.all { it is Async.Success } -> {
                 LibraryUiState(
                     todos = (todos as Async.Success).data,
-                    todosFilteringUiInfo = TodoFilteringUiInfo(
+                    todosFilteringUiInfo = TodosFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_todos,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
                         emptyMessage = R.string.no_todos_message,

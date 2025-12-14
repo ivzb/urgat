@@ -9,8 +9,6 @@ import kotlinx.coroutines.test.*
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.todo.TodoFilterMenuItem
-import com.ivzb.urgat.ui.todo.TodoFilterType
 import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals

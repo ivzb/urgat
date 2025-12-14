@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.todo
+package com.ivzb.urgat.ui.todos
 
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
@@ -16,7 +16,6 @@ import kotlinx.coroutines.test.*
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.math.BigDecimal
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,7 +28,7 @@ class TodoViewModelTest {
     private lateinit var fakeActivateTodoUseCase: FakeActivateTodoUseCase
     private lateinit var fakeClearCompletedTodosUseCase: FakeClearCompletedTodosUseCase
 
-    private lateinit var viewModel: TodoViewModel
+    private lateinit var viewModel: TodosViewModel
 
     private val testDispatcher = StandardTestDispatcher()
 
@@ -72,9 +71,9 @@ class TodoViewModelTest {
     fun `emits success state when use case returns data`() = runTest {
         val fakeTodo = listOf(Todo("1", "Todo", "", false, false, 1L))
         val fakeTodoFiltering = listOf(
-            FilterMenuItem(type = TodoFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = TodoFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
-            FilterMenuItem(type = TodoFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
+            FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
+            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
         )
 
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
@@ -122,7 +121,7 @@ class TodoViewModelTest {
         fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(TodoIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(TodosIntent.SearchQueryChanged("coffee"))
 
         advanceUntilIdle()
 
@@ -135,9 +134,9 @@ class TodoViewModelTest {
         fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        val expected = FilterMenuItem<TodoFilterType>(type = TodoFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1)
+        val expected = FilterMenuItem<TodosFilterType>(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1)
 
-        viewModel.onIntent(TodoIntent.SetFiltering(expected))
+        viewModel.onIntent(TodosIntent.SetFiltering(expected))
         advanceUntilIdle()
 
         assertEquals(
@@ -152,7 +151,7 @@ class TodoViewModelTest {
 
         viewModel = createViewModel()
 
-        viewModel.onIntent(TodoIntent.CompleteTodo(todo, completed = true))
+        viewModel.onIntent(TodosIntent.CompleteTodos(todo, completed = true))
         advanceUntilIdle()
 
         assertEquals(todo.id, fakeCompleteTodoUseCase.completedId)
@@ -164,7 +163,7 @@ class TodoViewModelTest {
 
         viewModel = createViewModel()
 
-        viewModel.onIntent(TodoIntent.CompleteTodo(todo, completed = false))
+        viewModel.onIntent(TodosIntent.CompleteTodos(todo, completed = false))
         advanceUntilIdle()
 
         assertEquals(todo.id, fakeActivateTodoUseCase.activatedId)
@@ -174,13 +173,13 @@ class TodoViewModelTest {
     fun `clearCompletedTodos calls clearCompletedUseCase`() = runTest {
         viewModel = createViewModel()
 
-        viewModel.onIntent(TodoIntent.ClearCompletedTodos)
+        viewModel.onIntent(TodosIntent.ClearCompletedTodos)
         advanceUntilIdle()
 
         assertTrue(fakeClearCompletedTodosUseCase.cleared)
     }
 
-    private fun createViewModel() = TodoViewModel(
+    private fun createViewModel() = TodosViewModel(
         fakeObserveTodosUseCase,
         fakeObserveTodosFilteringUseCase,
         fakeCompleteTodoUseCase,

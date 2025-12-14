@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.todo.TodoFilterMenuItem
-import com.ivzb.urgat.ui.todo.TodoFilterType
+import com.ivzb.urgat.ui.todos.TodosFilterMenuItem
+import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -36,10 +36,10 @@ class ObserveTodosFilteringUseCaseTest {
 
     @Test
     fun `invoke should return Success with grouped items`() = runTest(testDispatcher) {
-        val expected = listOf<TodoFilterMenuItem>(
-            FilterMenuItem(type = TodoFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 4),
-            FilterMenuItem(type = TodoFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 2),
-            FilterMenuItem(type = TodoFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 2),
+        val expected = listOf<TodosFilterMenuItem>(
+            FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 4),
+            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 2),
+            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 2),
         )
 
         val repositoryStream = flowOf(

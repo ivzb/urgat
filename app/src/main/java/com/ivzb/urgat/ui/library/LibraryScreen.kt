@@ -37,8 +37,8 @@ import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.todo.TodoFilteringUiInfo
-import com.ivzb.urgat.ui.todo.TodoItem
+import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodoItem
 
 @Composable
 fun LibraryScreen(
@@ -139,7 +139,7 @@ fun LibraryScreen(
             else -> {
                 LibraryContent(
                     todos = uiState.todos,
-                    todoFilteringUiInfo = uiState.todosFilteringUiInfo,
+                    todosFilteringUiInfo = uiState.todosFilteringUiInfo,
                     onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
                     onSeeAllTodos = onSeeAllTodos,
                     onTodoClick = onTodoClick,
@@ -162,7 +162,7 @@ fun LibraryScreen(
 @Composable
 private fun LibraryContent(
     todos: List<Todo>,
-    todoFilteringUiInfo: TodoFilteringUiInfo,
+    todosFilteringUiInfo: TodosFilteringUiInfo,
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
@@ -192,7 +192,7 @@ private fun LibraryContent(
 
         itemTodo(
             todos = todos,
-            todoFilteringUiInfo = todoFilteringUiInfo,
+            todosFilteringUiInfo = todosFilteringUiInfo,
             onAddTodo = onAddTodo,
             onSeeAllTodos = onSeeAllTodos,
             onTodoClick = onTodoClick,
@@ -225,7 +225,7 @@ private fun LibraryContent(
 
 private fun LazyListScope.itemTodo(
     todos: List<Todo>,
-    todoFilteringUiInfo: TodoFilteringUiInfo,
+    todosFilteringUiInfo: TodosFilteringUiInfo,
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
@@ -235,10 +235,10 @@ private fun LazyListScope.itemTodo(
         todos.isEmpty() -> {
             item {
                 EmptyStateCard(
-                    iconRes = todoFilteringUiInfo.emptyIconRes,
-                    label = todoFilteringUiInfo.emptyLabel,
-                    message = todoFilteringUiInfo.emptyMessage,
-                    buttonLabel = todoFilteringUiInfo.emptyButtonLabel,
+                    iconRes = todosFilteringUiInfo.emptyIconRes,
+                    label = todosFilteringUiInfo.emptyLabel,
+                    message = todosFilteringUiInfo.emptyMessage,
+                    buttonLabel = todosFilteringUiInfo.emptyButtonLabel,
                     onButtonClick = onAddTodo,
                 )
             }
@@ -247,7 +247,7 @@ private fun LazyListScope.itemTodo(
         else -> {
             item {
                 ItemHeaderWithSeeAll(
-                    title = stringResource(todoFilteringUiInfo.currentFilteringLabel),
+                    title = stringResource(todosFilteringUiInfo.currentFilteringLabel),
                     onSeeAllClick = onSeeAllTodos,
                 )
             }
@@ -308,7 +308,7 @@ fun LibraryScreenPreview() {
         LibraryScreen(
             uiState = LibraryUiState(
                 todos = SampleData.SAMPLE_TODOS.take(3),
-                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                todosFilteringUiInfo = TodosFilteringUiInfo(),
                 notes = SampleData.SAMPLE_NOTES.take(3),
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
@@ -333,7 +333,7 @@ fun LibraryScreenEmptyPreview() {
         LibraryScreen(
             uiState = LibraryUiState(
                 todos = listOf(),
-                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                todosFilteringUiInfo = TodosFilteringUiInfo(),
                 notes = listOf(),
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,
@@ -358,7 +358,7 @@ fun LibraryScreenLoadingPreview() {
         LibraryScreen(
             uiState = LibraryUiState(
                 todos = listOf(),
-                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                todosFilteringUiInfo = TodosFilteringUiInfo(),
                 notes = listOf(),
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = true,
@@ -383,7 +383,7 @@ fun LibraryScreenErrorPreview() {
         LibraryScreen(
             uiState = LibraryUiState(
                 todos = listOf(),
-                todosFilteringUiInfo = TodoFilteringUiInfo(),
+                todosFilteringUiInfo = TodosFilteringUiInfo(),
                 notes = listOf(),
                 notesFilteringUiInfo = NotesFilteringUiInfo(),
                 isLoading = false,

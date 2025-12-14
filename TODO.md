@@ -29,7 +29,6 @@ longpress on a note should copy it
 select today's weight from DB if exists
 add export to csv
 consider having sample use case for each entity and use appropriate one in each main view model
-rename todo to todos (internal change)
 add investments overview / dashboard
 check why search if missing from finance screen, but visible for overview
 add category to notes

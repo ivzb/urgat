@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.todo
+package com.ivzb.urgat.ui.todos
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.clickable
@@ -42,16 +42,16 @@ import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun TodoScreen(
+fun TodosScreen(
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: TodoViewModel = hiltViewModel()
+    viewModel: TodosViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    TodoScreen(
+    TodosScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onAddTodo = onAddTodo,
@@ -63,9 +63,9 @@ fun TodoScreen(
 
 @VisibleForTesting
 @Composable
-fun TodoScreen(
-    uiState: TodoUiState,
-    onIntent: (TodoIntent) -> Unit,
+fun TodosScreen(
+    uiState: TodosUiState,
+    onIntent: (TodosIntent) -> Unit,
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onBack: () -> Unit,
@@ -74,17 +74,17 @@ fun TodoScreen(
 
     ListDetailsScaffold(
         selectedDestination = TodoDestination,
-        onSearchQueryChanged = { query -> onIntent(TodoIntent.SearchQueryChanged(query)) },
+        onSearchQueryChanged = { query -> onIntent(TodosIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
         onBack = onBack,
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { item -> onIntent(TodoIntent.SetFiltering(item)) },
+                onFilter = { item -> onIntent(TodosIntent.SetFiltering(item)) },
             )
 
             MoreTodosMenu(
-                onClearCompletedTodos = { onIntent(TodoIntent.ClearCompletedTodos) }
+                onClearCompletedTodos = { onIntent(TodosIntent.ClearCompletedTodos) }
             )
         },
         modifier = modifier
@@ -105,10 +105,10 @@ fun TodoScreen(
             }
 
             else -> {
-                TodoContent(
+                TodosContent(
                     todos = uiState.items,
                     onTodoClick = onTodoClick,
-                    onTodoCheckedChange = { todo, completed -> onIntent(TodoIntent.CompleteTodo(todo, completed)) },
+                    onTodoCheckedChange = { todo, completed -> onIntent(TodosIntent.CompleteTodos(todo, completed)) },
                     filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState
                 )
@@ -118,11 +118,11 @@ fun TodoScreen(
 }
 
 @Composable
-fun TodoContent(
+fun TodosContent(
     todos: List<Todo>,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
-    filteringUiInfo: TodoFilteringUiInfo,
+    filteringUiInfo: TodosFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -234,12 +234,12 @@ fun TodoItem(
 
 @AllDevicesPreview
 @Composable
-private fun TodoScreenPreview() {
+private fun TodosScreenPreview() {
     UrgatTheme {
-        TodoScreen(
-            uiState = TodoUiState(
+        TodosScreen(
+            uiState = TodosUiState(
                 items = SampleData.SAMPLE_TODOS,
-                filteringUiInfo = TodoFilteringUiInfo(),
+                filteringUiInfo = TodosFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
             ),
@@ -254,12 +254,12 @@ private fun TodoScreenPreview() {
 
 @AllDevicesPreview
 @Composable
-private fun TodoScreenEmptyPreview() {
+private fun TodosScreenEmptyPreview() {
     UrgatTheme {
-        TodoScreen(
-            uiState = TodoUiState(
+        TodosScreen(
+            uiState = TodosUiState(
                 items = listOf(),
-                filteringUiInfo = TodoFilteringUiInfo(),
+                filteringUiInfo = TodosFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
             ),
@@ -274,12 +274,12 @@ private fun TodoScreenEmptyPreview() {
 
 @AllDevicesPreview
 @Composable
-private fun TodoScreenLoadingPreview() {
+private fun TodosScreenLoadingPreview() {
     UrgatTheme {
-        TodoScreen(
-            uiState = TodoUiState(
+        TodosScreen(
+            uiState = TodosUiState(
                 items = listOf(),
-                filteringUiInfo = TodoFilteringUiInfo(),
+                filteringUiInfo = TodosFilteringUiInfo(),
                 isLoading = true,
                 hasError = false
             ),
@@ -294,12 +294,12 @@ private fun TodoScreenLoadingPreview() {
 
 @AllDevicesPreview
 @Composable
-private fun TodoScreenErrorPreview() {
+private fun TodosScreenErrorPreview() {
     UrgatTheme {
-        TodoScreen(
-            uiState = TodoUiState(
+        TodosScreen(
+            uiState = TodosUiState(
                 items = listOf(),
-                filteringUiInfo = TodoFilteringUiInfo(),
+                filteringUiInfo = TodosFilteringUiInfo(),
                 isLoading = false,
                 hasError = true
             ),

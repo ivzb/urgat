@@ -1,9 +1,9 @@
-package com.ivzb.urgat.ui.todo
+package com.ivzb.urgat.ui.todos
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
-data class TodoFilteringUiInfo(
+data class TodosFilteringUiInfo(
     val currentFilteringLabel: Int = R.string.all_todos,
 
     override val emptyLabel: Int = R.string.no_todos,
@@ -16,5 +16,5 @@ data class TodoFilteringUiInfo(
     override val errorLabel: Int = R.string.error_todos,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val filterMenuItems: List<TodoFilterMenuItem> = listOf()
+    val filterMenuItems: List<TodosFilterMenuItem> = listOf()
 ) : FilteringUiInfo

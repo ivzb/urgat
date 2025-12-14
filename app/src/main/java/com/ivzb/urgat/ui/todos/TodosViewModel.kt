@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.todo
+package com.ivzb.urgat.ui.todos
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TodoViewModel @Inject constructor(
+class TodosViewModel @Inject constructor(
     observeTodosUseCase: ObserveTodosUseCase,
     observeTodosFilteringUseCase: ObserveTodosFilteringUseCase,
     private val completeTodoUseCase: CompleteTodoUseCase,
@@ -34,7 +34,7 @@ class TodoViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<TodoUiState> = combine(
+    val uiState: StateFlow<TodosUiState> = combine(
         observeTodosUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeTodosFilteringUseCase(),
     ) { todosAsync, todosFilteringAsync ->
@@ -43,23 +43,23 @@ class TodoViewModel @Inject constructor(
 
         when {
             items.any { it is Async.Loading } -> {
-                TodoUiState(
+                TodosUiState(
                     isLoading = true
                 )
             }
 
             items.any { it is Async.Error } -> {
-                TodoUiState(
+                TodosUiState(
                     hasError = true
                 )
             }
 
             items.all { it is Async.Success } -> {
-                TodoUiState(
+                TodosUiState(
                     items = (todosAsync as Async.Success<List<Todo>>).data,
                     isLoading = false,
                     filteringUiInfo = getFilterUiInfo(
-                        filterMenuItems = (todosFilteringAsync as Async.Success<List<TodoFilterMenuItem>>).data
+                        filterMenuItems = (todosFilteringAsync as Async.Success<List<TodosFilterMenuItem>>).data
                     ),
                 )
             }
@@ -70,15 +70,15 @@ class TodoViewModel @Inject constructor(
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,
-        initialValue = TodoUiState(isLoading = true)
+        initialValue = TodosUiState(isLoading = true)
     )
 
-    fun onIntent(intent: TodoIntent) {
+    fun onIntent(intent: TodosIntent) {
         when (intent) {
-            is TodoIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is TodoIntent.SetFiltering -> setFiltering(intent.filter)
-            is TodoIntent.ClearCompletedTodos -> clearCompletedTodos()
-            is TodoIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
+            is TodosIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
+            is TodosIntent.SetFiltering -> setFiltering(intent.filter)
+            is TodosIntent.ClearCompletedTodos -> clearCompletedTodos()
+            is TodosIntent.CompleteTodos -> completeTodo(intent.todo, intent.completed)
         }
     }
 
@@ -86,7 +86,7 @@ class TodoViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(filter: TodoFilterMenuItem) {
+    private fun setFiltering(filter: TodosFilterMenuItem) {
         savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = filter
     }
 
@@ -104,29 +104,29 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    private fun getFilterUiInfo(filterMenuItems: List<TodoFilterMenuItem>): TodoFilteringUiInfo {
-        val filter: TodoFilterMenuItem? = savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY]
-        val filterId = filter?.type ?: TodoFilterType.ALL_TODOS
+    private fun getFilterUiInfo(filterMenuItems: List<TodosFilterMenuItem>): TodosFilteringUiInfo {
+        val filter: TodosFilterMenuItem? = savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY]
+        val filterId = filter?.type ?: TodosFilterType.ALL_TODOS
 
         return when (filterId) {
-            TodoFilterType.ALL_TODOS -> {
-                TodoFilteringUiInfo(
+            TodosFilterType.ALL_TODOS -> {
+                TodosFilteringUiInfo(
                     currentFilteringLabel = R.string.all_todos,
                     emptyLabel = R.string.no_todos,
                     filterMenuItems = filterMenuItems,
                 )
             }
 
-            TodoFilterType.ACTIVE_TODOS -> {
-                TodoFilteringUiInfo(
+            TodosFilterType.ACTIVE_TODOS -> {
+                TodosFilteringUiInfo(
                     currentFilteringLabel = R.string.active_todos,
                     emptyLabel = R.string.no_active_todos,
                     filterMenuItems = filterMenuItems,
                 )
             }
 
-            TodoFilterType.COMPLETED_TODOS -> {
-                TodoFilteringUiInfo(
+            TodosFilterType.COMPLETED_TODOS -> {
+                TodosFilteringUiInfo(
                     currentFilteringLabel = R.string.completed_todos,
                     emptyLabel = R.string.no_completed_todos,
                     filterMenuItems = filterMenuItems,

@@ -1,10 +1,10 @@
-package com.ivzb.urgat.ui.todo
+package com.ivzb.urgat.ui.todos
 
 import com.ivzb.urgat.data.todo.Todo
 
-data class TodoUiState(
+data class TodosUiState(
     val items: List<Todo> = emptyList(),
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
-    val filteringUiInfo: TodoFilteringUiInfo = TodoFilteringUiInfo()
+    val filteringUiInfo: TodosFilteringUiInfo = TodosFilteringUiInfo()
 )

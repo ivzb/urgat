@@ -4,13 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.ivzb.urgat.data.todo.TodoDao
-import com.ivzb.urgat.data.todo.toEntity
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.source.sample.SampleData
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.internal.decodeStringToJsonTree
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -18,7 +15,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.math.BigDecimal
 
 @RunWith(AndroidJUnit4::class)
 class TodoDaoTest {

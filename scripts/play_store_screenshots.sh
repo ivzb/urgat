@@ -73,7 +73,7 @@ pushd ..
 
 files=(
   "LibraryScreenshotTest_screenshotTest_LibraryScreen_sampleData.png:01_library_screen.png"
-  "TodoScreenshotTest_screenshotTest_TodoScreen_sampleData.png:02_todos_screen.png"
+  "TodosScreenshotTest_screenshotTest_TodosScreen_sampleData.png:02_todos_screen.png"
   "AddEditTodoScreenshotTest_screenshotTest_AddEditTodoScreen_editTodo.png:03_edit_todo_screen.png"
   "NotesScreenshotTest_screenshotTest_NotesScreen_sampleData.png:04_notes_screen.png"
   "FinanceScreenshotTest_screenshotTest_FinanceScreen_sampleData.png:05_finance_screen.png"

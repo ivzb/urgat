@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.todo
+package com.ivzb.urgat.ui.todos
 
 import androidx.compose.ui.Modifier
 import com.ivzb.urgat.annotations.Screenshot
@@ -10,12 +10,12 @@ import org.junit.Test
 import org.junit.experimental.categories.Category
 
 @Screenshot
-class TodoScreenshotTest: ScreenshotTest() {
+class TodosScreenshotTest: ScreenshotTest() {
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_TodoScreen_sampleData() = screenshotTest(
-        uiState = TodoUiState(
+    fun screenshotTest_TodosScreen_sampleData() = screenshotTest(
+        uiState = TodosUiState(
             items = SampleData.SAMPLE_TODOS,
             isLoading = false,
             hasError = false,
@@ -23,8 +23,8 @@ class TodoScreenshotTest: ScreenshotTest() {
     )
 
     @Test
-    fun screenshotTest_TodoScreen_emptyState() = screenshotTest(
-        uiState = TodoUiState(
+    fun screenshotTest_TodosScreen_emptyState() = screenshotTest(
+        uiState = TodosUiState(
             items = listOf(),
             isLoading = false,
             hasError = false,
@@ -32,8 +32,8 @@ class TodoScreenshotTest: ScreenshotTest() {
     )
 
     @Test
-    fun screenshotTest_TodoScreen_loadingState() = screenshotTest(
-        uiState = TodoUiState(
+    fun screenshotTest_TodosScreen_loadingState() = screenshotTest(
+        uiState = TodosUiState(
             items = listOf(),
             isLoading = true,
             hasError = false,
@@ -41,18 +41,18 @@ class TodoScreenshotTest: ScreenshotTest() {
     )
 
     @Test
-    fun screenshotTest_TodoScreen_errorState() = screenshotTest(
-        uiState = TodoUiState(
+    fun screenshotTest_TodosScreen_errorState() = screenshotTest(
+        uiState = TodosUiState(
             items = listOf(),
             isLoading = false,
             hasError = true,
         ),
     )
 
-    private fun screenshotTest(uiState: TodoUiState) {
+    private fun screenshotTest(uiState: TodosUiState) {
         composeTestRule.setContent {
             UrgatTheme {
-                TodoScreen(
+                TodosScreen(
                     uiState = uiState,
                     onIntent = {},
                     onAddTodo = {},
