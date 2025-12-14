@@ -31,6 +31,7 @@ import com.ivzb.urgat.ui.components.DarkModeLandscapePreview
 import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
+import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LandscapePreview
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MenuScaffold
@@ -168,6 +169,7 @@ private fun LazyListScope.itemWeights(
         else -> {
             itemWeightsChart(
                 items = weights,
+                weightsFilteringUiInfo = weightsFilteringUiInfo,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)
@@ -178,8 +180,20 @@ private fun LazyListScope.itemWeights(
 
 private fun LazyListScope.itemWeightsChart(
     items: List<Weight>,
+    weightsFilteringUiInfo: WeightsFilteringUiInfo,
     modifier: Modifier = Modifier
 ) {
+
+    item {
+        ItemHeader(title = stringResource(weightsFilteringUiInfo.currentFilteringLabel))
+    }
+
+    item {
+        Spacer(modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+        )
+    }
+
     item {
         LineChart(
             items = items.map { LineChartItem(it.value.toFloat(), it.date) },

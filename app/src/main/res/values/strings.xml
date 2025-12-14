@@ -109,4 +109,6 @@
     <string name="something_went_wrong">Something went wrong.</string>
     <string name="recent_investments">Recent investments</string>
     <string name="finance">Finance</string>
+    <string name="all_weights">All weights</string>
+    <string name="recent_weights">Recent weights</string>
 </resources>

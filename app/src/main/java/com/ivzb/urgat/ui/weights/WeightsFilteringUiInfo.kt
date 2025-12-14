@@ -4,6 +4,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class WeightsFilteringUiInfo(
+    val currentFilteringLabel: Int = R.string.recent_weights,
+
     override val emptyLabel: Int = R.string.no_weights_label,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_weights,
     val emptyMessage: Int = R.string.no_weights_message,
