@@ -46,6 +46,7 @@ fun FloatingActionButtonContent(
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun FloatingActionButtonContentCollapsedPreview() {
     UrgatTheme {
@@ -59,6 +60,7 @@ fun FloatingActionButtonContentCollapsedPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun FloatingActionButtonContentExtendedPreview() {
     UrgatTheme {

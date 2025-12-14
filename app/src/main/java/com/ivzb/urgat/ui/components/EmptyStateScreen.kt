@@ -49,7 +49,7 @@ fun EmptyStateScreen(
     }
 }
 
-@Preview
+@AllDevicesPreview
 @Composable
 private fun EmptyTodosPreview() {
     UrgatTheme {
@@ -62,7 +62,7 @@ private fun EmptyTodosPreview() {
     }
 }
 
-@Preview
+@AllDevicesPreview
 @Composable
 private fun ErrorTodosPreview() {
     UrgatTheme {

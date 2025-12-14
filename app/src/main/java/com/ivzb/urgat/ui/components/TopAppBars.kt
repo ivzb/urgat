@@ -195,6 +195,7 @@ fun MoreTodosMenu(
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun TopAppBarContentLibraryDestinationPreview() {
     UrgatTheme {
@@ -216,6 +217,7 @@ fun TopAppBarContentLibraryDestinationPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun TopAppBarContentLibraryDestinationPreviewWithoutBack() {
     UrgatTheme {
@@ -236,6 +238,7 @@ fun TopAppBarContentLibraryDestinationPreviewWithoutBack() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun TopAppBarContentLibraryDestinationWithoutActionsPreview() {
     UrgatTheme {
@@ -249,6 +252,7 @@ fun TopAppBarContentLibraryDestinationWithoutActionsPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun TopAppBarContentLibraryDestinationWithoutActionsPreviewWithoutBack() {
     UrgatTheme {
@@ -261,6 +265,7 @@ fun TopAppBarContentLibraryDestinationWithoutActionsPreviewWithoutBack() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun TopAppBarContentWellbeingDestinationPreview() {
     UrgatTheme {
@@ -274,6 +279,7 @@ fun TopAppBarContentWellbeingDestinationPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun TextTopAppBarPreview() {
     UrgatTheme {
@@ -289,6 +295,7 @@ private fun TextTopAppBarPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun TextTopAppBarPreviewWithDelete() {
     UrgatTheme {
@@ -304,6 +311,7 @@ private fun TextTopAppBarPreviewWithDelete() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun MoreTodosMenuPreview() {
     UrgatTheme {
@@ -314,6 +322,7 @@ private fun MoreTodosMenuPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun FilterMenuPreview() {
     UrgatTheme {

@@ -58,6 +58,7 @@ fun ItemHeaderWithSeeAll(
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun ItemHeaderPreview() {
     UrgatTheme {
@@ -69,6 +70,7 @@ private fun ItemHeaderPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun ItemHeaderWithSeeAllPreview() {
     UrgatTheme {

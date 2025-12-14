@@ -176,6 +176,7 @@ fun SearchableTopBar(
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun SearchableTopBarPreview() {
     UrgatTheme {
@@ -199,6 +200,7 @@ fun SearchableTopBarPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun SearchableTopBarPreviewWithBackButton() {
     UrgatTheme {
@@ -223,6 +225,7 @@ fun SearchableTopBarPreviewWithBackButton() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun SearchableTopBarWithoutActionsPreview() {
     UrgatTheme {
@@ -238,6 +241,7 @@ fun SearchableTopBarWithoutActionsPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun SearchableTopBarWithoutActionsPreviewWithBackButton() {
     UrgatTheme {
@@ -254,6 +258,7 @@ fun SearchableTopBarWithoutActionsPreviewWithBackButton() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun SearchableTopBarSearchingEmptyStatePreview() {
     UrgatTheme {
@@ -270,6 +275,7 @@ fun SearchableTopBarSearchingEmptyStatePreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun SearchableTopBarSearchingTextStatePreview() {
     UrgatTheme {

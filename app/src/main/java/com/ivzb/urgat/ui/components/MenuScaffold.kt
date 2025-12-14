@@ -255,12 +255,7 @@ private fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestinat
         restoreState = true
     }
 
-@Preview
-@LandscapePreview
-@TabletPreview
-@TabletLandscapePreview
-@FoldablePreviewFolded
-@FoldablePreviewUnfolded
+@AllDevicesPreview
 @Composable
 fun MenuScaffoldPreview() {
     UrgatTheme {

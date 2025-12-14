@@ -46,6 +46,6 @@ make splash screen dark mode
 review @Previews and fix obvious issues
 review screenshots and fix obvious UI issues
 add info cards on the place of top buttons (use current design for top header buttons - check git history)
-make todos, expenses and investments 2 per row in landscape because there is a lot of empty space
 group expenses by month
 add links feature to library
+add some space between the items in the rail in landscape

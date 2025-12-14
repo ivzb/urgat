@@ -42,7 +42,7 @@ fun LoadingState(
     }
 }
 
-@Preview
+@AllDevicesPreview
 @Composable
 private fun LoadingStatePreview() {
     UrgatTheme {

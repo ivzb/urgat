@@ -1,10 +1,15 @@
 package com.ivzb.urgat.ui.library
 
+import android.content.res.Configuration
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -12,7 +17,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -177,6 +184,66 @@ private fun LibraryContent(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
+
+    val configuration = LocalConfiguration.current
+
+    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        LibraryContentLandscape(
+            todos = todos,
+            todosFilteringUiInfo = todosFilteringUiInfo,
+            onAddTodo = onAddTodo,
+            onSeeAllTodos = onSeeAllTodos,
+            onTodoClick = onTodoClick,
+            onTodoCheckedChange = onTodoCheckedChange,
+
+            notes = notes,
+            notesFilteringUiInfo = notesFilteringUiInfo,
+            onAddNote = onAddNote,
+            onSeeAllNotes = onSeeAllNotes,
+            onNoteClick = onNoteClick,
+
+            listState = listState,
+            modifier = modifier,
+        )
+    } else {
+        LibraryContentPortrait(
+            todos = todos,
+            todosFilteringUiInfo = todosFilteringUiInfo,
+            onAddTodo = onAddTodo,
+            onSeeAllTodos = onSeeAllTodos,
+            onTodoClick = onTodoClick,
+            onTodoCheckedChange = onTodoCheckedChange,
+
+            notes = notes,
+            notesFilteringUiInfo = notesFilteringUiInfo,
+            onAddNote = onAddNote,
+            onSeeAllNotes = onSeeAllNotes,
+            onNoteClick = onNoteClick,
+
+            listState = listState,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun LibraryContentPortrait(
+    todos: List<Todo>,
+    todosFilteringUiInfo: TodosFilteringUiInfo,
+    onAddTodo: () -> Unit,
+    onSeeAllTodos: () -> Unit,
+    onTodoClick: (Todo) -> Unit,
+    onTodoCheckedChange: (Todo, Boolean) -> Unit,
+
+    notes: List<Note>,
+    notesFilteringUiInfo: NotesFilteringUiInfo,
+    onAddNote: () -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onNoteClick: (Note) -> Unit,
+
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
     val screenName = stringResource(R.string.library)
 
     LazyColumn(
@@ -219,6 +286,91 @@ private fun LibraryContent(
                 modifier = Modifier
                     .height(dimensionResource(R.dimen.vertical_margin))
             )
+        }
+    }
+}
+
+@Composable
+private fun LibraryContentLandscape(
+    todos: List<Todo>,
+    todosFilteringUiInfo: TodosFilteringUiInfo,
+    onAddTodo: () -> Unit,
+    onSeeAllTodos: () -> Unit,
+    onTodoClick: (Todo) -> Unit,
+    onTodoCheckedChange: (Todo, Boolean) -> Unit,
+
+    notes: List<Note>,
+    notesFilteringUiInfo: NotesFilteringUiInfo,
+    onAddNote: () -> Unit,
+    onSeeAllNotes: () -> Unit,
+    onNoteClick: (Note) -> Unit,
+
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
+    val screenName = stringResource(R.string.library)
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+    ) {
+
+        LazyColumn(
+            modifier = modifier
+                .weight(1f)
+                .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            ),
+            state = listState
+        ) {
+
+            itemTodo(
+                todos = todos,
+                todosFilteringUiInfo = todosFilteringUiInfo,
+                onAddTodo = onAddTodo,
+                onSeeAllTodos = onSeeAllTodos,
+                onTodoClick = onTodoClick,
+                onTodoCheckedChange = onTodoCheckedChange,
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+        }
+
+        LazyColumn(
+            modifier = modifier
+                .weight(1f)
+                .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            ),
+            state = listState
+        ) {
+
+            itemNotes(
+                notes = notes,
+                notesFilteringUiInfo = notesFilteringUiInfo,
+                onAddNote = onAddNote,
+                onSeeAllNotes = onSeeAllNotes,
+                onNoteClick = onNoteClick
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
         }
     }
 }

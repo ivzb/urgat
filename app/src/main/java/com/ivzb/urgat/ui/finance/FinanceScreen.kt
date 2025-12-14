@@ -1,10 +1,15 @@
 package com.ivzb.urgat.ui.finance
 
+import android.content.res.Configuration
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -12,7 +17,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -169,6 +176,63 @@ private fun FinanceContent(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
+
+    val configuration = LocalConfiguration.current
+
+    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        FinanceContentLandscape(
+            expenses = expenses,
+            expensesFilteringUiInfo = expensesFilteringUiInfo,
+            onAddExpense = onAddExpense,
+            onSeeAllExpenses = onSeeAllExpenses,
+            onExpenseClick = onExpenseClick,
+
+            investments = investments,
+            investmentsFilteringUiInfo = investmentsFilteringUiInfo,
+            onAddInvestment = onAddInvestment,
+            onSeeAllInvestments = onSeeAllInvestments,
+            onInvestmentClick = onInvestmentClick,
+
+            listState = listState,
+            modifier = modifier,
+        )
+    } else {
+        FinanceContentPortrait(
+            expenses = expenses,
+            expensesFilteringUiInfo = expensesFilteringUiInfo,
+            onAddExpense = onAddExpense,
+            onSeeAllExpenses = onSeeAllExpenses,
+            onExpenseClick = onExpenseClick,
+
+            investments = investments,
+            investmentsFilteringUiInfo = investmentsFilteringUiInfo,
+            onAddInvestment = onAddInvestment,
+            onSeeAllInvestments = onSeeAllInvestments,
+            onInvestmentClick = onInvestmentClick,
+
+            listState = listState,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun FinanceContentPortrait(
+    expenses: List<Expense>,
+    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onAddExpense: () -> Unit,
+    onSeeAllExpenses: () -> Unit,
+    onExpenseClick: (Expense) -> Unit,
+
+    investments: List<Investment>,
+    investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
+    onAddInvestment: () -> Unit,
+    onSeeAllInvestments: () -> Unit,
+    onInvestmentClick: (Investment) -> Unit,
+
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
     val screenName = stringResource(R.string.finance)
 
     LazyColumn(
@@ -210,6 +274,89 @@ private fun FinanceContent(
                 modifier = Modifier
                     .height(dimensionResource(R.dimen.vertical_margin))
             )
+        }
+    }
+}
+
+@Composable
+private fun FinanceContentLandscape(
+    expenses: List<Expense>,
+    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
+    onAddExpense: () -> Unit,
+    onSeeAllExpenses: () -> Unit,
+    onExpenseClick: (Expense) -> Unit,
+
+    investments: List<Investment>,
+    investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
+    onAddInvestment: () -> Unit,
+    onSeeAllInvestments: () -> Unit,
+    onInvestmentClick: (Investment) -> Unit,
+
+    listState: LazyListState,
+    modifier: Modifier = Modifier
+) {
+    val screenName = stringResource(R.string.finance)
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+    ) {
+
+        LazyColumn(
+            modifier = modifier
+                .weight(1f)
+                .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            ),
+            state = listState
+        ) {
+
+            itemExpenses(
+                expenses = expenses,
+                expensesFilteringUiInfo = expensesFilteringUiInfo,
+                onAddExpense = onAddExpense,
+                onSeeAllExpenses = onSeeAllExpenses,
+                onExpenseClick = onExpenseClick
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+        }
+
+        LazyColumn(
+            modifier = modifier
+                .weight(1f)
+                .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            ),
+            state = listState
+        ) {
+
+            itemInvestments(
+                investments = investments,
+                investmentsFilteringUiInfo = investmentsFilteringUiInfo,
+                onAddInvestment = onAddInvestment,
+                onSeeAllInvestments = onSeeAllInvestments,
+                onInvestmentClick = onInvestmentClick
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
         }
     }
 }

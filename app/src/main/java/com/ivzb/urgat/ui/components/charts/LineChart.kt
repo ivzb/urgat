@@ -169,6 +169,7 @@ fun WeightChartSingleItemPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 fun WeightChartSingleEmptyPreview() {
     UrgatTheme {

@@ -95,6 +95,7 @@ fun <T> ExpandableFab(
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun ExpandableFabCollapsedPreview() {
     UrgatTheme {
@@ -119,6 +120,7 @@ private fun ExpandableFabCollapsedPreview() {
 }
 
 @Preview
+@DarkModePreview
 @Composable
 private fun ExpandableFabExpandedPreview() {
     UrgatTheme {
