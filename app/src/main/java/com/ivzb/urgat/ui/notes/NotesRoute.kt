@@ -12,6 +12,4 @@ data object NotesRoute: UrgatRoute() {
     override val titleResId: Int
         get() = R.string.notes
 
-    override val withFAB = true
-
 }

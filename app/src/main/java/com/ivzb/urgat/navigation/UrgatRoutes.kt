@@ -13,13 +13,12 @@ import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.wellbeing.WellbeingRoute
 
 abstract class UrgatRoute: NavKey {
+
     abstract val titleResId: Int
-    open val withFAB: Boolean = false
+
 }
 
-abstract class UrgatMenuRoute: UrgatRoute() {
-    override val withFAB: Boolean = false
-}
+abstract class UrgatRootRoute: UrgatRoute()
 
 val BOTTOM_NAVIGATION_SCREENS = listOf(
     BottomNavigationScreen(
@@ -40,7 +39,7 @@ val BOTTOM_NAVIGATION_SCREENS = listOf(
 )
 
 data class BottomNavigationScreen(
-    val route: UrgatMenuRoute,
+    val route: UrgatRootRoute,
     @StringRes
     val label: Int,
     val icon: ImageVector,

@@ -12,6 +12,4 @@ data object ExpensesRoute: UrgatRoute() {
     override val titleResId: Int
         get() = R.string.expenses
 
-    override val withFAB = true
-
 }

@@ -35,14 +35,14 @@ import com.ivzb.urgat.navigation.BOTTOM_NAVIGATION_SCREENS
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.navigation.UrgatRoute
-import com.ivzb.urgat.navigation.UrgatMenuRoute
+import com.ivzb.urgat.navigation.UrgatRootRoute
 import com.ivzb.urgat.ui.library.LibraryFabActionId
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun <T> MenuScaffold(
-    selectedRoute: UrgatMenuRoute,
+fun <T> NavigationScaffold(
+    selectedRoute: UrgatRootRoute,
     onSearchQueryChanged: (String) -> Unit,
 
     fabActions: List<FabAction<T>>? = null,
@@ -108,8 +108,8 @@ fun <T> MenuScaffold(
 fun ListDetailsScaffold(
     selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
-    onBack: (() -> Unit)? = null,
-    onAddItem: (() -> Unit)? = null,
+    onBack: () -> Unit,
+    onAddItem: () -> Unit,
 
     withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
@@ -126,16 +126,12 @@ fun ListDetailsScaffold(
         withTopAppBarActions = withTopAppBarActions,
         topAppBarActionsContent = topAppBarActionsContent,
         floatingActionButtonContent = {
-            if (selectedRoute.withFAB) {
-                FloatingActionButtonContent(
-                    extended = lazyListState.isScrollingUp(),
-                    icon = Icons.Default.Add,
-                    labelResId = R.string.add,
-                    onClick = {
-                        onAddItem?.invoke()
-                    }
-                )
-            }
+            FloatingActionButtonContent(
+                extended = lazyListState.isScrollingUp(),
+                icon = Icons.Default.Add,
+                labelResId = R.string.add,
+                onClick = onAddItem
+            )
         },
         modifier = modifier,
         lazyListState = lazyListState,
@@ -144,7 +140,7 @@ fun ListDetailsScaffold(
 }
 
 @Composable
-fun UrgatScaffold(
+private fun UrgatScaffold(
     selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
     onBack: (() -> Unit)? = null,
@@ -237,12 +233,28 @@ private fun calculateNavigationSuiteType(): NavigationSuiteType {
 
 @AllDevicesPreview
 @Composable
-fun MenuScaffoldPreview() {
+fun NavigationScaffoldPreview() {
     UrgatTheme {
-        MenuScaffold<LibraryFabActionId>(
+        NavigationScaffold<LibraryFabActionId>(
             selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
             navigator = FakeNavigator(),
+            withTopAppBarActions = false,
+            topAppBarActionsContent = {},
+            modifier = Modifier
+        ) { }
+    }
+}
+
+@AllDevicesPreview
+@Composable
+fun ListDetailsScaffoldPreview() {
+    UrgatTheme {
+        ListDetailsScaffold(
+            selectedRoute = LibraryRoute,
+            onSearchQueryChanged = {},
+            onBack = {},
+            onAddItem = {},
             withTopAppBarActions = false,
             topAppBarActionsContent = {},
             modifier = Modifier

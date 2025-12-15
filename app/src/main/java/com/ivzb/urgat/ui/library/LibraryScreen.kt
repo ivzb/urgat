@@ -37,8 +37,8 @@ import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.MenuScaffold
 import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.components.NavigationScaffold
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -113,7 +113,7 @@ fun LibraryScreen(
     modifier: Modifier = Modifier
 ) {
 
-    MenuScaffold(
+    NavigationScaffold(
         selectedRoute = LibraryRoute,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
         fabActions = uiState.fabActions,

@@ -36,7 +36,7 @@ import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeader
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.NavigationScaffold
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -80,7 +80,7 @@ fun WellbeingScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    MenuScaffold(
+    NavigationScaffold(
         selectedRoute = WellbeingRoute,
         onSearchQueryChanged = { onIntent(WellbeingIntent.SearchQueryChanged(it)) },
         fabActions = uiState.fabActions,

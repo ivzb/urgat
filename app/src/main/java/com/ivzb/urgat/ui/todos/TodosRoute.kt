@@ -12,6 +12,4 @@ data object TodosRoute: UrgatRoute() {
     override val titleResId: Int
         get() = R.string.todo
 
-    override val withFAB = true
-
 }

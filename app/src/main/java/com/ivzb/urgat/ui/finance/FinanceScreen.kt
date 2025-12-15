@@ -37,7 +37,7 @@ import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.MenuScaffold
+import com.ivzb.urgat.ui.components.NavigationScaffold
 import com.ivzb.urgat.ui.expenses.ExpenseItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentItem
@@ -111,7 +111,7 @@ fun FinanceScreen(
     modifier: Modifier = Modifier
 ) {
 
-    MenuScaffold(
+    NavigationScaffold(
         selectedRoute = FinanceRoute,
         onSearchQueryChanged = { query -> onIntent(FinanceIntent.SearchQueryChanged(query)) },
         fabActions = uiState.fabActions,
