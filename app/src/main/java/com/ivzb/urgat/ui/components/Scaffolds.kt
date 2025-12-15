@@ -49,7 +49,7 @@ fun <T> NavigationScaffold(
     onFabActionClick: ((T) -> Unit)? = null,
 
     navigator: Navigator,
-    withTopAppBarActions: Boolean = true,
+    withTopAppBarActions: Boolean,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,

@@ -86,6 +86,7 @@ fun WellbeingScreen(
         fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
         navigator = navigator,
+        withTopAppBarActions = false,
         modifier = modifier
     ) { listState ->
 

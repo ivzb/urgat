@@ -1,12 +1,9 @@
 package com.ivzb.urgat.ui.components
 
-import android.os.Build
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -21,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -80,9 +76,7 @@ fun SearchableTopBar(
                     }
                 },
                 actions = {
-                    val withTopAppBarActions = withActions && actionsContent != null
-
-                    if (withTopAppBarActions || searchQuery.isNotEmpty()) {
+                    if (withActions || searchQuery.isNotEmpty()) {
                         IconButton(onClick = {
                             onIsSearchingChanged(!isSearching)
                         }) {
@@ -93,8 +87,8 @@ fun SearchableTopBar(
                         }
                     }
 
-                    if (withTopAppBarActions) {
-                        actionsContent.invoke()
+                    if (withActions) {
+                        actionsContent?.invoke()
                     }
                 },
                 windowInsets = topBarInsets()

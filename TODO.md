@@ -28,9 +28,9 @@
 - check what happens if one side of the nots has a lot more text than the other side
 - review @Previews and documents obvious issues
 - review screenshots and documents obvious UI issues
-- check why search if missing from finance screen, but visible for overview
 
 ## Features
+- add drawer with app version, settings, sample data button, etc
 - encrypt the db and announce that the info in the app is encrypted in play store app description
 - add export to csv
 - make tablet support list/detail
