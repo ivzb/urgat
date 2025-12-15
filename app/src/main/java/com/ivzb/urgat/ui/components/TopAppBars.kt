@@ -164,7 +164,7 @@ fun <T: Parcelable> FilterMenu(
         for (item in items) {
             DropdownMenuItem(
                 onClick = {
-                    onFilter(item);
+                    onFilter(item)
                     closeMenu()
                 },
                 text = {

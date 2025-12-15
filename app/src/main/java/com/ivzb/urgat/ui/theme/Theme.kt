@@ -292,6 +292,7 @@ fun UrgatTheme(
     )
 }
 
+@Suppress("DEPRECATION")
 private fun setStatusBarColor(window: Window, color: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
         // Android 15+

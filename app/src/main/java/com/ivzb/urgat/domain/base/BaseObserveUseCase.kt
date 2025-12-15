@@ -4,6 +4,8 @@ import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 abstract class BaseObserveUseCase<T, FilterType>(
     private val repository: BaseRepository<T>
 ) {

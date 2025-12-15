@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.release
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -81,10 +80,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
         aidl = false
@@ -93,7 +88,7 @@ android {
         shaders = false
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -181,6 +176,16 @@ dependencies {
 
     // Screenshot tests
     androidTestUtil(libs.androidx.test.services)
+}
+
+kotlin {
+    compilerOptions {
+        extraWarnings.set(true)
+        freeCompilerArgs.add(
+            "-Xannotation-default-target=param-property"
+        )
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
 
 tasks {
