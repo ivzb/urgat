@@ -1,3 +1,10 @@
+## Release notes 25.12.5
+
+Improved:
+- Better app navigation for smoother transitions and a more seamless experience.
+- Library and Finance tabs now display content in two columns in landscape mode to better utilize screen space.
+- Added label to wellbeing tab
+
 ## Release notes 25.12.4
 
 Improved:
