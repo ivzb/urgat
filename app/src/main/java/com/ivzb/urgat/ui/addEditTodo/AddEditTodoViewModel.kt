@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.addEditTodo
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -8,28 +7,29 @@ import com.ivzb.urgat.domain.todo.CreateTodoUseCase
 import com.ivzb.urgat.domain.todo.DeleteTodoUseCase
 import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import com.ivzb.urgat.domain.todo.GetTodoUseCase
-import com.ivzb.urgat.navigation.AddEditTodoDestination
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AddEditTodoViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AddEditTodoViewModel.Factory::class)
+class AddEditTodoViewModel @AssistedInject constructor(
+    @Assisted val route: AddEditTodoRoute,
     private val getTodoUseCase: GetTodoUseCase,
     private val createTodoUseCase: CreateTodoUseCase,
     private val updateTodoUseCase: UpdateTodoUseCase,
     private val deleteTodoUseCase: DeleteTodoUseCase,
-    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val screenTitleResId: Int? = savedStateHandle[AddEditTodoDestination.Args.ARG_TITLE]
-    private val todoId: String? = savedStateHandle[AddEditTodoDestination.Args.ARG_ID]
+    private val screenTitleResId: Int = route.titleResId
+    private val todoId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditTodoUiState(
         screenTitleResId = screenTitleResId,
@@ -165,6 +165,11 @@ class AddEditTodoViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(route: AddEditTodoRoute): AddEditTodoViewModel
     }
 
 }

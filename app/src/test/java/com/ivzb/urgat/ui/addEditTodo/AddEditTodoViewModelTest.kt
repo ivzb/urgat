@@ -1,11 +1,9 @@
 package com.ivzb.urgat.ui.addEditTodo
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.todo.FakeCreateTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeGetTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeUpdateTodoUseCase
-import com.ivzb.urgat.navigation.AddEditTodoDestination
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.todo.FakeDeleteTodoUseCase
 import kotlinx.coroutines.*
@@ -32,8 +30,6 @@ class AddEditTodoViewModelTest {
 
     private lateinit var deleteUseCase: FakeDeleteTodoUseCase
 
-    private lateinit var savedStateHandle: SavedStateHandle
-
     private lateinit var viewModel: AddEditTodoViewModel
 
     @Before
@@ -44,9 +40,8 @@ class AddEditTodoViewModelTest {
         createUseCase = FakeCreateTodoUseCase()
         updateUseCase = FakeUpdateTodoUseCase()
         deleteUseCase = FakeDeleteTodoUseCase()
-        savedStateHandle = SavedStateHandle()
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = null)
     }
 
     @After
@@ -73,9 +68,8 @@ class AddEditTodoViewModelTest {
         )
 
         getUseCase.toReturn = todo
-        savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = "123"
 
-        val viewModel = createViewModel()
+        val viewModel = createViewModel(id = todoId)
 
         advanceUntilIdle()
 
@@ -145,8 +139,6 @@ class AddEditTodoViewModelTest {
     @Test
     fun `saveTodo updates existing todo`() = runTest {
         val todoId = "abc"
-        savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = todoId
-
         val todo = Todo(
             id = todoId,
             title = "Old",
@@ -157,7 +149,7 @@ class AddEditTodoViewModelTest {
         )
         getUseCase.toReturn = todo
 
-        val viewModel = createViewModel()
+        val viewModel = createViewModel(id = todoId)
 
         advanceUntilIdle()
 
@@ -183,8 +175,6 @@ class AddEditTodoViewModelTest {
     @Test
     fun `saveTodo updates existing todo trimmed`() = runTest {
         val todoId = "abc"
-        savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = todoId
-
         val todo = Todo(
             id = todoId,
             title = "Old",
@@ -195,7 +185,7 @@ class AddEditTodoViewModelTest {
         )
         getUseCase.toReturn = todo
 
-        val viewModel = createViewModel()
+        val viewModel = createViewModel(id = todoId)
 
         advanceUntilIdle()
 
@@ -221,9 +211,8 @@ class AddEditTodoViewModelTest {
     @Test
     fun `deleteTodo deletes existing todo`() = runTest {
         val todoId = "123"
-        savedStateHandle[AddEditTodoDestination.Args.ARG_ID] = todoId
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = todoId)
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditTodoIntent.DeleteTodo)
@@ -252,11 +241,15 @@ class AddEditTodoViewModelTest {
         assertNull(viewModel.uiState.value.userMessage)
     }
 
-    private fun createViewModel() = AddEditTodoViewModel(
-        getUseCase,
-        createUseCase,
-        updateUseCase,
-        deleteUseCase,
-        savedStateHandle
-    )
+    private fun createViewModel(id: String?): AddEditTodoViewModel {
+        val route = AddEditTodoRoute(id, if (id == null) R.string.add_todo else R.string.edit_todo)
+
+        return AddEditTodoViewModel(
+            route,
+            getUseCase,
+            createUseCase,
+            updateUseCase,
+            deleteUseCase,
+        )
+    }
 }

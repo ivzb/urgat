@@ -42,7 +42,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
@@ -65,10 +64,13 @@ enum class FieldId {
 
 @Composable
 fun AddEditInvestmentScreen(
+    viewModel: AddEditInvestmentViewModel,
+
     onBack: () -> Unit,
+
     modifier: Modifier = Modifier,
-    viewModel: AddEditInvestmentViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     AddEditInvestmentScreen(

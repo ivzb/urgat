@@ -26,12 +26,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.navigation.TodoDestination
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -43,12 +41,15 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun TodosScreen(
+    viewModel: TodosViewModel,
+
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onBack: () -> Unit,
+
     modifier: Modifier = Modifier,
-    viewModel: TodosViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     TodosScreen(
@@ -73,7 +74,7 @@ fun TodosScreen(
 ) {
 
     ListDetailsScaffold(
-        selectedDestination = TodoDestination,
+        selectedRoute = TodosRoute,
         onSearchQueryChanged = { query -> onIntent(TodosIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
         onBack = onBack,

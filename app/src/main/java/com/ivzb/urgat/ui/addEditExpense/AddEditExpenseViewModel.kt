@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.addEditExpense
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -8,28 +7,29 @@ import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
-import com.ivzb.urgat.navigation.AddEditExpenseDestination
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AddEditExpenseViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AddEditExpenseViewModel.Factory::class)
+class AddEditExpenseViewModel @AssistedInject constructor(
+    @Assisted val route: AddEditExpenseRoute,
     private val getExpenseUseCase: GetExpenseUseCase,
     private val createExpenseUseCase: CreateExpenseUseCase,
     private val updateExpenseUseCase: UpdateExpenseUseCase,
     private val deleteExpenseUseCase: DeleteExpenseUseCase,
-    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val screenTitleResId: Int? = savedStateHandle[AddEditExpenseDestination.Args.ARG_TITLE]
-    private val expenseId: String? = savedStateHandle[AddEditExpenseDestination.Args.ARG_ID]
+    private val screenTitleResId: Int = route.titleResId
+    private val expenseId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditExpenseUiState(
         screenTitleResId = screenTitleResId,
@@ -195,6 +195,11 @@ class AddEditExpenseViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(route: AddEditExpenseRoute): AddEditExpenseViewModel
     }
 
 }

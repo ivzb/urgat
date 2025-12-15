@@ -1,89 +1,92 @@
 package com.ivzb.urgat.navigation
 
-import androidx.annotation.StringRes
-import androidx.navigation.NavHostController
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseRoute
+import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
+import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
+import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
+import com.ivzb.urgat.ui.expenses.ExpensesRoute
+import com.ivzb.urgat.ui.investments.InvestmentsRoute
+import com.ivzb.urgat.ui.notes.NotesRoute
+import com.ivzb.urgat.ui.todos.TodosRoute
+import com.ivzb.urgat.ui.trackWeight.TrackWeightRoute
 
-class UrgatNavActions(private val navController: NavHostController) {
+class UrgatNavActions(private val navigator: Navigator) {
 
-    fun navigateToTodo() {
-        navController.navigate(TodoDestination.route)
+    fun navigateToTodos() {
+        navigator.navigate(TodosRoute)
     }
 
     fun navigateToAddTodo() {
-        navigateToAddEditTodo(R.string.add_todo, null)
+        navigator.navigate(AddEditTodoRoute(
+            id = null,
+            titleResId = R.string.add_todo
+        ))
     }
 
     fun navigateToEditTodo(todoId: String) {
-        navigateToAddEditTodo(R.string.edit_todo, todoId)
-    }
-
-    private fun navigateToAddEditTodo(@StringRes title: Int, id: String?) {
-        val route = "${AddEditTodoDestination.Args.ROUTE}/$title".let {
-            if (id != null) "$it?${AddEditTodoDestination.Args.ARG_ID}=$id" else it
-        }
-        navController.navigate(route)
-    }
-
-    fun navigateToExpenses() {
-        navController.navigate(ExpensesDestination.route)
-    }
-
-    fun navigateToAddExpense() {
-        navigateToAddEditExpense(R.string.add_expense, null)
-    }
-
-    fun navigateToEditExpense(expenseId: String) {
-        navigateToAddEditExpense(R.string.edit_expense, expenseId)
-    }
-
-    private fun navigateToAddEditExpense(@StringRes title: Int, id: String?) {
-        val route = "${AddEditExpenseDestination.Args.ROUTE}/$title".let {
-            if (id != null) "$it?${AddEditExpenseDestination.Args.ARG_ID}=$id" else it
-        }
-        navController.navigate(route)
+        navigator.navigate(AddEditTodoRoute(
+            id = todoId,
+            titleResId = R.string.edit_todo
+        ))
     }
 
     fun navigateToNotes() {
-        navController.navigate(NotesDestination.route)
+        navigator.navigate(NotesRoute)
     }
 
     fun navigateToAddNote() {
-        navigateToAddEditNote(R.string.add_note, null)
+        navigator.navigate(AddEditNoteRoute(
+            id = null,
+            titleResId = R.string.add_note
+        ))
     }
 
     fun navigateToEditNote(expenseId: String) {
-        navigateToAddEditNote(R.string.edit_note, expenseId)
+        navigator.navigate(AddEditNoteRoute(
+            id = expenseId,
+            titleResId = R.string.edit_note
+        ))
     }
 
-    private fun navigateToAddEditNote(@StringRes title: Int, id: String?) {
-        val route = "${AddEditNoteDestination.Args.ROUTE}/$title".let {
-            if (id != null) "$it?${AddEditNoteDestination.Args.ARG_ID}=$id" else it
-        }
-        navController.navigate(route)
+    fun navigateToExpenses() {
+        navigator.navigate(ExpensesRoute)
+    }
+
+    fun navigateToAddExpense() {
+        navigator.navigate(AddEditExpenseRoute(
+            id = null,
+            titleResId = R.string.add_expense
+        ))
+    }
+
+    fun navigateToEditExpense(expenseId: String) {
+        navigator.navigate(AddEditExpenseRoute(
+            id = expenseId,
+            titleResId = R.string.edit_expense
+        ))
     }
 
     fun navigateToInvestments() {
-        navController.navigate(InvestmentsDestination.route)
+        navigator.navigate(InvestmentsRoute)
     }
 
     fun navigateToAddInvestment() {
-        navigateToAddEditInvestment(R.string.add_investment, null)
+        navigator.navigate(AddEditInvestmentRoute(
+            id = null,
+            titleResId = R.string.add_investment
+        ))
     }
 
     fun navigateToEditInvestment(expenseId: String) {
-        navigateToAddEditInvestment(R.string.edit_investment, expenseId)
-    }
-
-    private fun navigateToAddEditInvestment(@StringRes title: Int, id: String?) {
-        val route = "${AddEditInvestmentDestination.Args.ROUTE}/$title".let {
-            if (id != null) "$it?${AddEditInvestmentDestination.Args.ARG_ID}=$id" else it
-        }
-        navController.navigate(route)
+        navigator.navigate(AddEditInvestmentRoute(
+            id = expenseId,
+            titleResId = R.string.edit_investment
+        ))
     }
 
     fun navigateToTrackWeight() {
-        navController.navigate(TrackWeightDestination.route)
+        navigator.navigate(TrackWeightRoute)
     }
 
 }

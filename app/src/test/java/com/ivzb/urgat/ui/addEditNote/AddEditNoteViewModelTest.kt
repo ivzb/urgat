@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.addEditNote
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.domain.note.FakeCreateNoteUseCase
 import com.ivzb.urgat.domain.note.FakeGetNoteUseCase
 import com.ivzb.urgat.domain.note.FakeUpdateNoteUseCase
@@ -13,10 +12,8 @@ import kotlinx.coroutines.test.setMain
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.domain.note.FakeDeleteNoteUseCase
-import com.ivzb.urgat.navigation.AddEditNoteDestination
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -39,8 +36,6 @@ class AddEditNoteViewModelTest {
 
     private lateinit var deleteUseCase: FakeDeleteNoteUseCase
 
-    private lateinit var savedStateHandle: SavedStateHandle
-
     private lateinit var viewModel: AddEditNoteViewModel
 
     @Before
@@ -51,9 +46,8 @@ class AddEditNoteViewModelTest {
         createUseCase = FakeCreateNoteUseCase()
         updateUseCase = FakeUpdateNoteUseCase()
         deleteUseCase = FakeDeleteNoteUseCase()
-        savedStateHandle = SavedStateHandle()
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = null)
     }
 
     @After
@@ -78,9 +72,8 @@ class AddEditNoteViewModelTest {
         )
 
         getUseCase.toReturn = note
-        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = noteId)
 
         advanceUntilIdle()
 
@@ -138,8 +131,6 @@ class AddEditNoteViewModelTest {
     @Test
     fun `saveNote updates existing note`() = runTest {
         val noteId = "abc"
-        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
-
         val note = Note(
             id = noteId,
             content = "Old",
@@ -148,7 +139,7 @@ class AddEditNoteViewModelTest {
         )
         getUseCase.toReturn = note
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = noteId)
 
         advanceUntilIdle()
 
@@ -170,8 +161,6 @@ class AddEditNoteViewModelTest {
     @Test
     fun `saveNote updates existing note trimmed`() = runTest {
         val noteId = "abc"
-        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
-
         val note = Note(
             id = noteId,
             content = "Old",
@@ -180,7 +169,7 @@ class AddEditNoteViewModelTest {
         )
         getUseCase.toReturn = note
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = noteId)
 
         advanceUntilIdle()
 
@@ -202,9 +191,7 @@ class AddEditNoteViewModelTest {
     @Test
     fun `deleteNote deletes existing note`() = runTest {
         val noteId = "123"
-        savedStateHandle[AddEditNoteDestination.Args.ARG_ID] = noteId
-
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = noteId)
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditNoteIntent.DeleteNote)
@@ -233,11 +220,15 @@ class AddEditNoteViewModelTest {
         assertNull(viewModel.uiState.value.userMessage)
     }
 
-    private fun createViewModel() = AddEditNoteViewModel(
-        getUseCase,
-        createUseCase,
-        updateUseCase,
-        deleteUseCase,
-        savedStateHandle
-    )
+    private fun createViewModel(id: String?): AddEditNoteViewModel {
+        val route = AddEditNoteRoute(id, if (id == null) R.string.add_note else R.string.edit_note)
+
+        return AddEditNoteViewModel(
+            route,
+            getUseCase,
+            createUseCase,
+            updateUseCase,
+            deleteUseCase,
+        )
+    }
 }

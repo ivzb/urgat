@@ -18,7 +18,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -27,12 +26,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.navigation.WellbeingDestination
+import com.ivzb.urgat.navigation.FakeNavigator
+import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
@@ -46,17 +44,18 @@ import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 
 @Composable
 fun WellbeingScreen(
+    viewModel: WellbeingViewModel,
     onTrackWeight: () -> Unit,
-    navController: NavHostController,
+    navigator: Navigator,
     modifier: Modifier = Modifier,
-    viewModel: WellbeingViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     WellbeingScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        navController = navController,
+        navigator = navigator,
         modifier = modifier
     )
 
@@ -77,16 +76,16 @@ fun WellbeingScreen(
     uiState: WellbeingUiState,
     onIntent: (WellbeingIntent) -> Unit,
 
-    navController: NavHostController,
+    navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
 
     MenuScaffold(
-        selectedDestination = WellbeingDestination,
+        selectedRoute = WellbeingRoute,
         onSearchQueryChanged = { onIntent(WellbeingIntent.SearchQueryChanged(it)) },
         fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
-        navController = navController,
+        navigator = navigator,
         modifier = modifier
     ) { listState ->
 
@@ -308,7 +307,7 @@ private fun WellbeingScreenPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -327,7 +326,7 @@ private fun WellbeingScreenEmptyPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -346,7 +345,7 @@ private fun WellbeingScreenLoadingPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -365,7 +364,7 @@ private fun WellbeingScreenErrorPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }

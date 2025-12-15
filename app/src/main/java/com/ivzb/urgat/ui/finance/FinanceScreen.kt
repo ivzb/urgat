@@ -25,15 +25,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.navigation.FinanceDestination
+import com.ivzb.urgat.navigation.FakeNavigator
+import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
@@ -48,6 +46,8 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun FinanceScreen(
+    viewModel: FinanceViewModel,
+
     onAddExpense: () -> Unit,
     onSeeAllExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
@@ -56,10 +56,8 @@ fun FinanceScreen(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
-    navController: NavHostController,
-
+    navigator: Navigator,
     modifier: Modifier = Modifier,
-    viewModel: FinanceViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -74,7 +72,7 @@ fun FinanceScreen(
         onSeeAllInvestments = onSeeAllInvestments,
         onInvestmentClick = onInvestmentClick,
 
-        navController = navController,
+        navigator = navigator,
         modifier = modifier
     )
 
@@ -109,16 +107,16 @@ fun FinanceScreen(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
-    navController: NavHostController,
+    navigator: Navigator,
     modifier: Modifier = Modifier
 ) {
 
     MenuScaffold(
-        selectedDestination = FinanceDestination,
+        selectedRoute = FinanceRoute,
         onSearchQueryChanged = { query -> onIntent(FinanceIntent.SearchQueryChanged(query)) },
         fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
-        navController = navController,
+        navigator = navigator,
         withTopAppBarActions = uiState.expenses.isNotEmpty() || uiState.investments.isNotEmpty(),
         modifier = modifier
     ) { listState ->
@@ -456,7 +454,7 @@ fun FinanceScreenPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -481,7 +479,7 @@ fun FinanceScreenEmptyPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -506,7 +504,7 @@ fun FinanceScreenLoadingPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -531,7 +529,7 @@ fun FinanceScreenErrorPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }

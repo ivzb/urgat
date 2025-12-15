@@ -1,14 +1,11 @@
 package com.ivzb.urgat.ui.addEditExpense
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.domain.expense.FakeCreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeUpdateExpenseUseCase
-import com.ivzb.urgat.navigation.AddEditExpenseDestination
-import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -40,8 +37,6 @@ class AddEditExpenseViewModelTest {
 
     private lateinit var deleteUseCase: FakeDeleteExpenseUseCase
 
-    private lateinit var savedStateHandle: SavedStateHandle
-
     private lateinit var viewModel: AddEditExpenseViewModel
 
     @Before
@@ -52,9 +47,8 @@ class AddEditExpenseViewModelTest {
         createUseCase = FakeCreateExpenseUseCase()
         updateUseCase = FakeUpdateExpenseUseCase()
         deleteUseCase = FakeDeleteExpenseUseCase()
-        savedStateHandle = SavedStateHandle()
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = null)
     }
 
     @After
@@ -82,9 +76,8 @@ class AddEditExpenseViewModelTest {
         )
 
         getUseCase.toReturn = expense
-        savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = expenseId)
 
         advanceUntilIdle()
 
@@ -160,8 +153,6 @@ class AddEditExpenseViewModelTest {
     @Test
     fun `saveExpense updates existing expense`() = runTest {
         val expenseId = "123"
-        savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
-
         val expense = Expense(
             id = expenseId,
             name = "Taxi",
@@ -173,7 +164,7 @@ class AddEditExpenseViewModelTest {
         )
         getUseCase.toReturn = expense
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(expenseId)
 
         advanceUntilIdle()
 
@@ -202,8 +193,6 @@ class AddEditExpenseViewModelTest {
     @Test
     fun `saveExpense updates existing expense trimmed`() = runTest {
         val expenseId = "123"
-        savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
-
         val expense = Expense(
             id = expenseId,
             name = "Taxi",
@@ -215,7 +204,7 @@ class AddEditExpenseViewModelTest {
         )
         getUseCase.toReturn = expense
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(expenseId)
 
         advanceUntilIdle()
 
@@ -244,9 +233,8 @@ class AddEditExpenseViewModelTest {
     @Test
     fun `deleteExpense deletes existing expense`() = runTest {
         val expenseId = "123"
-        savedStateHandle[AddEditExpenseDestination.Args.ARG_ID] = expenseId
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(expenseId)
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditExpenseIntent.DeleteExpense)
@@ -275,11 +263,15 @@ class AddEditExpenseViewModelTest {
         assertNull(viewModel.uiState.value.userMessage)
     }
 
-    private fun createViewModel() = AddEditExpenseViewModel(
-        getUseCase,
-        createUseCase,
-        updateUseCase,
-        deleteUseCase,
-        savedStateHandle
-    )
+    private fun createViewModel(id: String?): AddEditExpenseViewModel {
+        val route = AddEditExpenseRoute(id, if (id == null) R.string.add_expense else R.string.edit_expense)
+
+        return AddEditExpenseViewModel(
+            route,
+            getUseCase,
+            createUseCase,
+            updateUseCase,
+            deleteUseCase,
+        )
+    }
 }

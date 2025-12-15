@@ -27,12 +27,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.navigation.ExpensesDestination
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -45,11 +43,13 @@ import java.math.BigDecimal
 
 @Composable
 fun ExpensesScreen(
+    viewModel: ExpensesViewModel,
+
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
     onBack: () -> Unit,
+
     modifier: Modifier = Modifier,
-    viewModel: ExpensesViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -76,7 +76,7 @@ fun ExpensesScreen(
 ) {
 
     ListDetailsScaffold(
-        selectedDestination = ExpensesDestination,
+        selectedRoute = ExpensesRoute,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
         onBack = onBack,

@@ -25,12 +25,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.navigation.InvestmentsDestination
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -41,12 +39,15 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun InvestmentsScreen(
+    viewModel: InvestmentsViewModel,
+
     onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onBack: () -> Unit,
+
     modifier: Modifier = Modifier,
-    viewModel: InvestmentsViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     InvestmentsScreen(
@@ -71,7 +72,7 @@ fun InvestmentsScreen(
 ) {
 
     ListDetailsScaffold(
-        selectedDestination = InvestmentsDestination,
+        selectedRoute = InvestmentsRoute,
         onSearchQueryChanged = { query -> onIntent(InvestmentsIntent.SearchQueryChanged(query)) },
         onAddItem = onAddInvestment,
         onBack = onBack,

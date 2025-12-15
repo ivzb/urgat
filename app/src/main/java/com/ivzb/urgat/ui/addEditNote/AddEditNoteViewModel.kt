@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.addEditNote
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -8,28 +7,29 @@ import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.note.DeleteNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
-import com.ivzb.urgat.navigation.AddEditNoteDestination
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AddEditNoteViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AddEditNoteViewModel.Factory::class)
+class AddEditNoteViewModel @AssistedInject constructor(
+    @Assisted val route: AddEditNoteRoute,
     private val getNoteUseCase: GetNoteUseCase,
     private val createNoteUseCase: CreateNoteUseCase,
     private val updateNoteUseCase: UpdateNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val screenTitleResId: Int? = savedStateHandle[AddEditNoteDestination.Args.ARG_TITLE]
-    private val noteId: String? = savedStateHandle[AddEditNoteDestination.Args.ARG_ID]
+    private val screenTitleResId: Int = route.titleResId
+    private val noteId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditNoteUiState(
         screenTitleResId = screenTitleResId,
@@ -163,6 +163,11 @@ class AddEditNoteViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(route: AddEditNoteRoute): AddEditNoteViewModel
     }
 
 }

@@ -1,7 +1,6 @@
 package com.ivzb.urgat.ui.addEditInvestment
 
 import kotlin.text.isEmpty
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -9,28 +8,29 @@ import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
-import com.ivzb.urgat.navigation.AddEditInvestmentDestination
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AddEditInvestmentViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = AddEditInvestmentViewModel.Factory::class)
+class AddEditInvestmentViewModel @AssistedInject constructor(
+    @Assisted val route: AddEditInvestmentRoute,
     private val getInvestmentUseCase: GetInvestmentUseCase,
     private val createInvestmentUseCase: CreateInvestmentUseCase,
     private val updateInvestmentUseCase: UpdateInvestmentUseCase,
     private val deleteInvestmentUseCase: DeleteInvestmentUseCase,
-    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val screenTitleResId: Int? = savedStateHandle[AddEditInvestmentDestination.Args.ARG_TITLE]
-    private val investmentId: String? = savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID]
+    private val screenTitleResId: Int = route.titleResId
+    private val investmentId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditInvestmentUiState(
         screenTitleResId = screenTitleResId,
@@ -218,6 +218,11 @@ class AddEditInvestmentViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(route: AddEditInvestmentRoute): AddEditInvestmentViewModel
     }
 
 }

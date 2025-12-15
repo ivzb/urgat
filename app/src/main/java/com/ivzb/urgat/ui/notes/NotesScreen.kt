@@ -22,12 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.navigation.NotesDestination
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
@@ -36,11 +34,13 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun NotesScreen(
+    viewModel: NotesViewModel,
+
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
     onBack: () -> Unit,
+
     modifier: Modifier = Modifier,
-    viewModel: NotesViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +67,7 @@ fun NotesScreen(
 ) {
 
     ListDetailsScaffold(
-        selectedDestination = NotesDestination,
+        selectedRoute = NotesRoute,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         onBack = onBack,

@@ -28,29 +28,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
-import com.ivzb.urgat.navigation.LibraryDestination
-import com.ivzb.urgat.navigation.UrgatDestination
-import com.ivzb.urgat.navigation.UrgatMenuDestination
-import com.ivzb.urgat.navigation.bottomNavigationScreens
+import com.ivzb.urgat.navigation.BOTTOM_NAVIGATION_SCREENS
+import com.ivzb.urgat.navigation.FakeNavigator
+import com.ivzb.urgat.navigation.Navigator
+import com.ivzb.urgat.navigation.UrgatRoute
+import com.ivzb.urgat.navigation.UrgatMenuRoute
 import com.ivzb.urgat.ui.library.LibraryFabActionId
+import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
 fun <T> MenuScaffold(
-    selectedDestination: UrgatMenuDestination,
+    selectedRoute: UrgatMenuRoute,
     onSearchQueryChanged: (String) -> Unit,
 
     fabActions: List<FabAction<T>>? = null,
     onFabActionClick: ((T) -> Unit)? = null,
 
-    navController: NavHostController,
+    navigator: Navigator,
     withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
@@ -61,11 +59,11 @@ fun <T> MenuScaffold(
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            bottomNavigationScreens.forEach {
+            BOTTOM_NAVIGATION_SCREENS.forEach {
                 item(
-                    selected = it == selectedDestination,
+                    selected = it.route == selectedRoute,
                     onClick = {
-                        navController.navigateSingleTopTo(it)
+                        navigator.navigate(it.route)
                     },
                     icon = {
                         Icon(
@@ -87,7 +85,7 @@ fun <T> MenuScaffold(
     ) {
 
         UrgatScaffold(
-            selectedDestination = selectedDestination,
+            selectedRoute = selectedRoute,
             onSearchQueryChanged = onSearchQueryChanged,
             withTopAppBarActions = withTopAppBarActions,
             topAppBarActionsContent = topAppBarActionsContent,
@@ -108,7 +106,7 @@ fun <T> MenuScaffold(
 
 @Composable
 fun ListDetailsScaffold(
-    selectedDestination: UrgatDestination,
+    selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
     onBack: (() -> Unit)? = null,
     onAddItem: (() -> Unit)? = null,
@@ -122,13 +120,13 @@ fun ListDetailsScaffold(
 ) {
 
     UrgatScaffold(
-        selectedDestination = selectedDestination,
+        selectedRoute = selectedRoute,
         onSearchQueryChanged = onSearchQueryChanged,
         onBack = onBack,
         withTopAppBarActions = withTopAppBarActions,
         topAppBarActionsContent = topAppBarActionsContent,
         floatingActionButtonContent = {
-            if (selectedDestination.withFAB) {
+            if (selectedRoute.withFAB) {
                 FloatingActionButtonContent(
                     extended = lazyListState.isScrollingUp(),
                     icon = Icons.Default.Add,
@@ -147,7 +145,7 @@ fun ListDetailsScaffold(
 
 @Composable
 fun UrgatScaffold(
-    selectedDestination: UrgatDestination,
+    selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
     onBack: (() -> Unit)? = null,
 
@@ -162,7 +160,7 @@ fun UrgatScaffold(
     Scaffold(
         topBar = {
             TopAppBarContent(
-                selectedDestination = selectedDestination,
+                selectedRoute = selectedRoute,
                 onSearchQueryChanged = onSearchQueryChanged,
                 onBack = onBack,
                 withActions = withTopAppBarActions,
@@ -237,32 +235,14 @@ private fun calculateNavigationSuiteType(): NavigationSuiteType {
     return layoutType
 }
 
-private fun NavHostController.navigateSingleTopTo(destination: UrgatMenuDestination, popInclusive: Boolean = false) =
-    this.navigate(destination.route) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
-        // on the back stack as users select items
-        popUpTo(
-            this@navigateSingleTopTo.graph.findStartDestination().id
-        ) {
-            saveState = true
-            inclusive = popInclusive
-        }
-        // Avoid multiple copies of the same destination when
-        // reselecting the same item
-        launchSingleTop = true
-        // Restore state when reselecting a previously selected item
-        restoreState = true
-    }
-
 @AllDevicesPreview
 @Composable
 fun MenuScaffoldPreview() {
     UrgatTheme {
         MenuScaffold<LibraryFabActionId>(
-            selectedDestination = LibraryDestination,
+            selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             withTopAppBarActions = false,
             topAppBarActionsContent = {},
             modifier = Modifier

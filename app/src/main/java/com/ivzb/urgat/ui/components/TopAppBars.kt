@@ -33,10 +33,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ivzb.urgat.R
-import com.ivzb.urgat.navigation.LibraryDestination
-import com.ivzb.urgat.navigation.WellbeingDestination
-import com.ivzb.urgat.navigation.UrgatDestination
+import com.ivzb.urgat.navigation.UrgatRoute
+import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.wellbeing.WellbeingRoute
 import kotlinx.parcelize.Parcelize
 
 @Composable
@@ -49,7 +49,7 @@ fun topBarInsets() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_IC
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBarContent(
-    selectedDestination: UrgatDestination,
+    selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
     onBack: (() -> Unit)? = null,
     withActions: Boolean = true,
@@ -66,7 +66,7 @@ fun TopAppBarContent(
             searchQuery = it
             onSearchQueryChanged(it)
         },
-        titleResId = selectedDestination.label,
+        titleResId = selectedRoute.titleResId,
         onBack = onBack,
         withActions = withActions,
         actionsContent = actionsContent
@@ -197,10 +197,10 @@ fun MoreTodosMenu(
 @Preview
 @DarkModePreview
 @Composable
-fun TopAppBarContentLibraryDestinationPreview() {
+fun TopAppBarContentLibraryRoutePreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = LibraryDestination,
+            selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
             onBack = {},
             withActions = true,
@@ -219,10 +219,10 @@ fun TopAppBarContentLibraryDestinationPreview() {
 @Preview
 @DarkModePreview
 @Composable
-fun TopAppBarContentLibraryDestinationPreviewWithoutBack() {
+fun TopAppBarContentLibraryRoutePreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = LibraryDestination,
+            selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
             withActions = true,
             actionsContent = {
@@ -240,10 +240,10 @@ fun TopAppBarContentLibraryDestinationPreviewWithoutBack() {
 @Preview
 @DarkModePreview
 @Composable
-fun TopAppBarContentLibraryDestinationWithoutActionsPreview() {
+fun TopAppBarContentLibraryRouteWithoutActionsPreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = LibraryDestination,
+            selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
             withActions = false,
             onBack = {},
@@ -254,10 +254,10 @@ fun TopAppBarContentLibraryDestinationWithoutActionsPreview() {
 @Preview
 @DarkModePreview
 @Composable
-fun TopAppBarContentLibraryDestinationWithoutActionsPreviewWithoutBack() {
+fun TopAppBarContentLibraryRouteWithoutActionsPreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = LibraryDestination,
+            selectedRoute = LibraryRoute,
             withActions = false,
             onSearchQueryChanged = {},
         )
@@ -267,10 +267,10 @@ fun TopAppBarContentLibraryDestinationWithoutActionsPreviewWithoutBack() {
 @Preview
 @DarkModePreview
 @Composable
-fun TopAppBarContentWellbeingDestinationPreview() {
+fun TopAppBarContentWellbeingRoutePreview() {
     UrgatTheme {
         TopAppBarContent(
-            selectedDestination = WellbeingDestination,
+            selectedRoute = WellbeingRoute,
             onSearchQueryChanged = {},
             withActions = false,
             actionsContent = {}

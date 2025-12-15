@@ -25,15 +25,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.navigation.LibraryDestination
+import com.ivzb.urgat.navigation.FakeNavigator
+import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
@@ -49,6 +47,8 @@ import com.ivzb.urgat.ui.todos.TodoItem
 
 @Composable
 fun LibraryScreen(
+    viewModel: LibraryViewModel,
+
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
@@ -57,10 +57,9 @@ fun LibraryScreen(
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
-    navController: NavHostController,
+    navigator: Navigator,
 
     modifier: Modifier = Modifier,
-    viewModel: LibraryViewModel = hiltViewModel()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,7 +74,7 @@ fun LibraryScreen(
         onSeeAllNotes = onSeeAllNotes,
         onNoteClick = onNoteClick,
 
-        navController = navController,
+        navigator = navigator,
         modifier = modifier
     )
 
@@ -110,16 +109,16 @@ fun LibraryScreen(
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
-    navController: NavHostController,
+    navigator: Navigator,
     modifier: Modifier = Modifier
 ) {
 
     MenuScaffold(
-        selectedDestination = LibraryDestination,
+        selectedRoute = LibraryRoute,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
         fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(LibraryIntent.FabActionClick(id)) },
-        navController = navController,
+        navigator = navigator,
         withTopAppBarActions = uiState.todos.isNotEmpty() || uiState.notes.isNotEmpty(),
         topAppBarActionsContent = {
             MoreTodosMenu(
@@ -472,7 +471,7 @@ fun LibraryScreenPreview() {
             onTodoClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -497,7 +496,7 @@ fun LibraryScreenEmptyPreview() {
             onTodoClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -522,7 +521,7 @@ fun LibraryScreenLoadingPreview() {
             onTodoClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }
@@ -547,7 +546,7 @@ fun LibraryScreenErrorPreview() {
             onTodoClick = {},
             onSeeAllNotes = {},
             onNoteClick = {},
-            navController = rememberNavController(),
+            navigator = FakeNavigator(),
             modifier = Modifier
         )
     }

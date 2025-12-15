@@ -1,14 +1,11 @@
 package com.ivzb.urgat.ui.addEditInvestment
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.FakeCreateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeDeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeGetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeUpdateInvestmentUseCase
-import com.ivzb.urgat.navigation.AddEditInvestmentDestination
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -40,8 +37,6 @@ class AddEditInvestmentViewModelTest {
 
     private lateinit var deleteUseCase: FakeDeleteInvestmentUseCase
 
-    private lateinit var savedStateHandle: SavedStateHandle
-
     private lateinit var viewModel: AddEditInvestmentViewModel
 
     @Before
@@ -52,9 +47,8 @@ class AddEditInvestmentViewModelTest {
         createUseCase = FakeCreateInvestmentUseCase()
         updateUseCase = FakeUpdateInvestmentUseCase()
         deleteUseCase = FakeDeleteInvestmentUseCase()
-        savedStateHandle = SavedStateHandle()
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = null)
     }
 
     @After
@@ -84,9 +78,8 @@ class AddEditInvestmentViewModelTest {
         )
 
         getUseCase.toReturn = investment
-        savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = investmentId)
 
         advanceUntilIdle()
 
@@ -186,8 +179,6 @@ class AddEditInvestmentViewModelTest {
     @Test
     fun `saveInvestment updates existing investment`() = runTest {
         val investmentId = "123"
-        savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
-
         val investment = Investment(
             id = investmentId,
             name = "SNP 500",
@@ -201,7 +192,7 @@ class AddEditInvestmentViewModelTest {
         )
         getUseCase.toReturn = investment
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = investmentId)
 
         advanceUntilIdle()
 
@@ -231,8 +222,6 @@ class AddEditInvestmentViewModelTest {
     @Test
     fun `saveInvestment updates existing investment trimmed`() = runTest {
         val investmentId = "123"
-        savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
-
         val investment = Investment(
             id = investmentId,
             name = "SNP 500",
@@ -246,7 +235,7 @@ class AddEditInvestmentViewModelTest {
         )
         getUseCase.toReturn = investment
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = investmentId)
 
         advanceUntilIdle()
 
@@ -278,9 +267,8 @@ class AddEditInvestmentViewModelTest {
     @Test
     fun `deleteInvestment deletes existing investment`() = runTest {
         val investmentId = "123"
-        savedStateHandle[AddEditInvestmentDestination.Args.ARG_ID] = investmentId
 
-        viewModel = createViewModel()
+        viewModel = createViewModel(id = investmentId)
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditInvestmentIntent.DeleteInvestment)
@@ -309,11 +297,15 @@ class AddEditInvestmentViewModelTest {
         assertNull(viewModel.uiState.value.userMessage)
     }
 
-    private fun createViewModel() = AddEditInvestmentViewModel(
-        getUseCase,
-        createUseCase,
-        updateUseCase,
-        deleteUseCase,
-        savedStateHandle
-    )
+    private fun createViewModel(id: String?): AddEditInvestmentViewModel {
+        val route = AddEditInvestmentRoute(id, if (id == null) R.string.add_investment else R.string.edit_investment)
+
+        return AddEditInvestmentViewModel(
+            route,
+            getUseCase,
+            createUseCase,
+            updateUseCase,
+            deleteUseCase,
+        )
+    }
 }

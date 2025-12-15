@@ -51,10 +51,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditTodoScreen(
+    viewModel: AddEditTodoViewModel,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AddEditTodoViewModel = hiltViewModel()
 ) {
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     AddEditTodoScreen(
