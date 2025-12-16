@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.expense
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
-import com.ivzb.urgat.domain.default.DefaultObserveUseCase
+import com.ivzb.urgat.domain.default.ObserveUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,7 @@ class DefaultObserveExpensesUseCase @Inject constructor(
     repository: ExpensesRepository
 ): ObserveExpensesUseCase {
 
-    private val defaultObserveUseCase = DefaultObserveUseCase(
+    private val observeUseCase = ObserveUseCase(
         repository = repository,
         filter = ::filter,
         errorMessageResId = R.string.error_expenses,
@@ -33,7 +33,7 @@ class DefaultObserveExpensesUseCase @Inject constructor(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<Expense>>> = defaultObserveUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<Expense>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
     companion object {
 

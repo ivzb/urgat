@@ -25,12 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -40,6 +43,7 @@ import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
+import java.time.YearMonth
 
 @Composable
 fun ExpensesScreen(
@@ -105,7 +109,7 @@ fun ExpensesScreen(
 
             else -> {
                 ExpensesContent(
-                    expenses = uiState.items,
+                    groupedExpenses = uiState.items,
                     onExpenseClick = onExpenseClick,
                     filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState
@@ -117,7 +121,7 @@ fun ExpensesScreen(
 
 @Composable
 internal fun ExpensesContent(
-    expenses: List<Expense>,
+    groupedExpenses: List<GroupedItems<String, Expense>>,
     onExpenseClick: (Expense) -> Unit,
 
     filteringUiInfo: ExpensesFilteringUiInfo,
@@ -139,20 +143,32 @@ internal fun ExpensesContent(
             ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
         }
 
-        item {
-            Spacer(modifier = Modifier
-                .height(dimensionResource(R.dimen.vertical_margin))
-            )
+        groupedExpenses.forEach { (group, expenses) ->
+            item {
+                Text(
+                    text = group,
+                    modifier = modifier
+                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+                        .semantics { heading() },
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+
+            items(expenses) { expense ->
+                ExpenseItem(
+                    expense = expense,
+                    onExpenseClick = onExpenseClick
+                )
+            }
         }
 
-        items(expenses) { expense ->
-            ExpenseItem(
-                expense = expense,
-                onExpenseClick = onExpenseClick
-            )
-        }
+        if (groupedExpenses.isEmpty()) {
+            item {
+                Spacer(modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
 
-        if (expenses.isEmpty()) {
             item {
                 EmptyStateScreen(
                     label = filteringUiInfo.emptyLabel,
@@ -237,7 +253,7 @@ private fun ExpensesScreenPreview() {
     UrgatTheme {
         ExpensesScreen(
             uiState = ExpensesUiState(
-                items = SampleData.SAMPLE_EXPENSES,
+                items = SampleData.SAMPLE_EXPENSES_GROUPED,
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false

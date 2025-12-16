@@ -9,6 +9,8 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
+- remove all casting from view models combine state
+- write unit tests for DefaultGroupedObserveExpensesUseCase
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation

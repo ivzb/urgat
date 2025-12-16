@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
-import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
@@ -19,10 +19,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import kotlin.math.exp
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
-    observeExpensesUseCase: ObserveExpensesUseCase,
+    private val observeGroupedExpensesUseCase: ObserveGroupedExpensesUseCase,
     observeExpensesFilteringUseCase: ObserveExpensesFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,36 +33,34 @@ class ExpensesViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<ExpensesUiState> = combine(
-        observeExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeGroupedExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeExpensesFilteringUseCase(),
     ) { expensesAsync, expensesFilteringAsync ->
 
-        val items = listOf(expensesAsync, expensesFilteringAsync)
-
         when {
-            items.any { it is Async.Loading } -> {
+            expensesAsync is Async.Loading || expensesFilteringAsync is Async.Loading -> {
                 ExpensesUiState(
                     isLoading = true
                 )
             }
 
-            items.any { it is Async.Error } -> {
+            expensesAsync is Async.Error || expensesFilteringAsync is Async.Error -> {
                 ExpensesUiState(
                     hasError = true
                 )
             }
 
-            items.all { it is Async.Success } -> {
+            expensesAsync is Async.Success && expensesFilteringAsync is Async.Success -> {
                 ExpensesUiState(
-                    items = (expensesAsync as Async.Success<List<Expense>>).data,
+                    items = expensesAsync.data,
                     isLoading = false,
                     filteringUiInfo = getFilterUiInfo(
-                        filterMenuItems = (expensesFilteringAsync as Async.Success<List<ExpensesFilterMenuItem>>).data
+                        filterMenuItems = expensesFilteringAsync.data,
                     ),
                 )
             }
 
-            else -> error("undefined state: $items")
+            else -> error("undefined state: $expensesAsync, $expensesFilteringAsync")
         }
      }
     .stateIn(

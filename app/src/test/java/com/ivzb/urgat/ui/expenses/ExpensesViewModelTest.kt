@@ -2,13 +2,14 @@ package com.ivzb.urgat.ui.expenses
 
 import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.GroupedItems
 import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -20,7 +21,7 @@ import kotlin.test.*
 class ExpensesViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
+    private lateinit var fakeObserveExpensesUseCase: FakeObserveGroupedExpensesUseCase
     private lateinit var fakeObserveExpensesFilteringUseCase: FakeObserveExpensesFilteringUseCase
 
     private lateinit var viewModel: ExpensesViewModel
@@ -31,7 +32,7 @@ class ExpensesViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         savedStateHandle = SavedStateHandle(mapOf(EXPENSES_FILTER_SAVED_STATE_KEY to null))
-        fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
+        fakeObserveExpensesUseCase = FakeObserveGroupedExpensesUseCase()
         fakeObserveExpensesFilteringUseCase = FakeObserveExpensesFilteringUseCase()
     }
 
@@ -60,7 +61,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))
+        val fakeExpenses = listOf(GroupedItems("2025/12", listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))))
         val fakeExpensesFiltering = listOf(
             FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
@@ -107,7 +108,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeExpenses = listOf(Expense("2", "Coffee", BigDecimal.TEN, "food", 1L, false, 1L))
+        val fakeExpenses = listOf(GroupedItems("2025/12", listOf(Expense("2", "Coffee", BigDecimal.TEN, "food", 1L, false, 1L))))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()

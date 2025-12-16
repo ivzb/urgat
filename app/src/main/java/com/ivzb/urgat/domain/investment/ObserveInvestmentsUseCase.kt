@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
-import com.ivzb.urgat.domain.default.DefaultObserveUseCase
+import com.ivzb.urgat.domain.default.ObserveUseCase
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,7 @@ class DefaultObserveInvestmentsUseCase @Inject constructor(
     repository: InvestmentsRepository
 ): ObserveInvestmentsUseCase {
 
-    private val defaultObserveUseCase = DefaultObserveUseCase(
+    private val observeUseCase = ObserveUseCase(
         repository = repository,
         filter = ::filter,
         errorMessageResId = R.string.error_investments,
@@ -33,7 +33,7 @@ class DefaultObserveInvestmentsUseCase @Inject constructor(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<Investment>>> = defaultObserveUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<Investment>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
     companion object {
 

@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
+import com.ivzb.urgat.domain.expense.DefaultGroupedObserveExpensesUseCase
 import kotlin.collections.component1
 
 object SampleData {
@@ -41,33 +42,35 @@ object SampleData {
 
     val SAMPLE_EXPENSES = debugOnly {
         listOf(
-            listOf("Groceries", "75.50", "Food"),
-            listOf("Salary", "-1500", "Job"),
-            listOf("Netflix subscription", "12.99", "Entertainment"),
-            listOf("Electricity bill", "45.20", "Utilities"),
-            listOf("Gym membership", "30", "Health"),
-            listOf("Coffee", "4.75", "Food"),
-            listOf("Uber ride", "18.40", "Transport"),
-            listOf("Dinner at restaurant", "60", "Food"),
-            listOf("Internet bill", "50", "Utilities"),
-            listOf("Movie tickets", "25", "Entertainment"),
-            listOf("Phone bill", "35", "Utilities"),
-            listOf("Bus pass", "40", "Transport"),
-            listOf("Clothing", "120", "Shopping"),
-            listOf("Pet food", "25.50", "Pets"),
-            listOf("Birthday gift", "80", "Gifts"),
+            listOf("Groceries", "75.50", "Food", "6048000"),
+            listOf("Clothing", "120", "Shopping", "4752000"),
+            listOf("Netflix subscription", "12.99", "Entertainment", "4752000"),
+            listOf("Electricity bill", "45.20", "Utilities", "3024000"),
+            listOf("Gym membership", "30", "Health", "3024000"),
+            listOf("Coffee", "4.75", "Food", "2160000"),
+            listOf("Uber ride", "18.40", "Transport", "2160000"),
+            listOf("Dinner at restaurant", "60", "Food", "1296000"),
+            listOf("Internet bill", "50", "Utilities", "1296000"),
+            listOf("Movie tickets", "25", "Entertainment", "864000"),
+            listOf("Phone bill", "35", "Utilities", "864000"),
+            listOf("Bus pass", "40", "Transport", "432000"),
+            listOf("Salary", "-1500", "Job", "432000"),
+            listOf("Pet food", "25.50", "Pets", "0"),
+            listOf("Birthday gift", "80", "Gifts", "0"),
         )
-    }.mapIndexed { index, (name, amount, category) ->
+    }.mapIndexed { index, (name, amount, category, dateOffset) ->
         Expense(
             id = index.toString(),
             name = name,
             amount = amount.toBigDecimal(),
             category = category,
-            date = System.currentTimeMillis(),
+            date = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
             isDeleted = false,
-            createdAt = System.currentTimeMillis(),
+            createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
         )
     }
+
+    val SAMPLE_EXPENSES_GROUPED = DefaultGroupedObserveExpensesUseCase.group(SAMPLE_EXPENSES)
 
     val SAMPLE_NOTES = debugOnly {
         listOf(

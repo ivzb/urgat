@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.todo
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
-import com.ivzb.urgat.domain.default.DefaultObserveUseCase
+import com.ivzb.urgat.domain.default.ObserveUseCase
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,7 @@ class DefaultObserveTodosUseCase @Inject constructor(
     repository: TodoRepository
 ): ObserveTodosUseCase {
 
-    private val defaultObserveUseCase = DefaultObserveUseCase(
+    private val observeUseCase = ObserveUseCase(
         repository = repository,
         filter = ::filter,
         errorMessageResId = R.string.error_todos,
@@ -33,7 +33,7 @@ class DefaultObserveTodosUseCase @Inject constructor(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<TodosFilterType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<Todo>>> = defaultObserveUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<Todo>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
     companion object {
 

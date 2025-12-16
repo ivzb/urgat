@@ -181,6 +181,7 @@ kotlin {
     compilerOptions {
         extraWarnings.set(true)
         freeCompilerArgs.add("-Xannotation-default-target=param-property")
+        freeCompilerArgs.add("-Xnested-type-aliases")
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }

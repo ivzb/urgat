@@ -4,6 +4,7 @@ import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultCreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultGetExpenseUseCase
+import com.ivzb.urgat.domain.expense.DefaultGroupedObserveExpensesUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesUseCase
 import com.ivzb.urgat.domain.expense.DefaultUpdateExpenseUseCase
@@ -11,6 +12,7 @@ import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import dagger.Binds
 import dagger.Module
@@ -28,6 +30,10 @@ interface ExpensesUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveExpensesUseCase(useCase: DefaultObserveExpensesUseCase): ObserveExpensesUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedExpensesUseCase(useCase: DefaultGroupedObserveExpensesUseCase): ObserveGroupedExpensesUseCase
 
     @Singleton
     @Binds

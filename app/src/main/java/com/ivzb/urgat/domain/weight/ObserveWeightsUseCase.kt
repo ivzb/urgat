@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.weight
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
-import com.ivzb.urgat.domain.default.DefaultObserveUseCase
+import com.ivzb.urgat.domain.default.ObserveUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class DefaultObserveWeightsUseCase @Inject constructor(
     repository: WeightsRepository
 ): ObserveWeightsUseCase {
 
-    private val defaultObserveUseCase = DefaultObserveUseCase<Weight, Unit>(
+    private val observeUseCase = ObserveUseCase<Weight, Unit>(
         repository = repository,
         transform = ::transform,
         errorMessageResId = R.string.error_weights,
@@ -32,7 +32,7 @@ class DefaultObserveWeightsUseCase @Inject constructor(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<Weight>>> = defaultObserveUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<Weight>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
     companion object {
 

@@ -16,7 +16,7 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_ExpensesScreen_sampleData() = screenshotTest(
         uiState = ExpensesUiState(
-            items = SampleData.SAMPLE_EXPENSES,
+            items = SampleData.SAMPLE_EXPENSES_GROUPED,
             isLoading = false,
             hasError = false,
         ),
