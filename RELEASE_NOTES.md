@@ -1,3 +1,11 @@
+## Release notes 25.12.6
+
+New:
+- Expenses are now organized by month.
+
+Fixed:
+- Restored search functionality on the Finance screen.
+
 ## Release notes 25.12.5
 
 Improved:
