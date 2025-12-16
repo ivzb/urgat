@@ -134,7 +134,7 @@ class TodoViewModelTest {
         fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        val expected = FilterMenuItem<TodosFilterType>(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1)
+        val expected = TodosFilterType.ACTIVE_TODOS
 
         viewModel.onIntent(TodosIntent.SetFiltering(expected))
         advanceUntilIdle()

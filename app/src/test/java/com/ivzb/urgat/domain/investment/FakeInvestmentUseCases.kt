@@ -22,7 +22,7 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<InvestmentsFilterMenuItem?>?,
+        filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Investment>>> {
         // Record query changes for assertions

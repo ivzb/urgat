@@ -23,7 +23,7 @@ class InvestmentsViewModel @Inject constructor(
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType = savedStateHandle.getStateFlow(INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = null)
+    private val _savedFilterType = savedStateHandle.getStateFlow(INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = InvestmentsFilterType_All)
 
     private val _searchQuery = MutableStateFlow("")
 
@@ -71,7 +71,7 @@ class InvestmentsViewModel @Inject constructor(
     fun onIntent(intent: InvestmentsIntent) {
         when (intent) {
             is InvestmentsIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is InvestmentsIntent.SetFiltering -> setFiltering(intent.filter)
+            is InvestmentsIntent.SetFiltering -> setFiltering(intent.filterType)
         }
     }
 
@@ -79,8 +79,8 @@ class InvestmentsViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(filter: InvestmentsFilterMenuItem) {
-        savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = filter
+    private fun setFiltering(filterType: String) {
+        savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY] = filterType
     }
 
 }

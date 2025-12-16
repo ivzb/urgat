@@ -30,7 +30,7 @@ class TodosViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType = savedStateHandle.getStateFlow(TODOS_FILTER_SAVED_STATE_KEY, null)
+    private val _savedFilterType = savedStateHandle.getStateFlow(TODOS_FILTER_SAVED_STATE_KEY, TodosFilterType.ALL_TODOS)
 
     private val _searchQuery = MutableStateFlow("")
 
@@ -76,7 +76,7 @@ class TodosViewModel @Inject constructor(
     fun onIntent(intent: TodosIntent) {
         when (intent) {
             is TodosIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is TodosIntent.SetFiltering -> setFiltering(intent.filter)
+            is TodosIntent.SetFiltering -> setFiltering(intent.filterType)
             is TodosIntent.ClearCompletedTodos -> clearCompletedTodos()
             is TodosIntent.CompleteTodos -> completeTodo(intent.todo, intent.completed)
         }
@@ -86,8 +86,8 @@ class TodosViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(filter: TodosFilterMenuItem) {
-        savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = filter
+    private fun setFiltering(filterType: TodosFilterType) {
+        savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] = filterType
     }
 
     private fun clearCompletedTodos() {
@@ -105,10 +105,9 @@ class TodosViewModel @Inject constructor(
     }
 
     private fun getFilterUiInfo(filterMenuItems: List<TodosFilterMenuItem>): TodosFilteringUiInfo {
-        val filter: TodosFilterMenuItem? = savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY]
-        val filterId = filter?.type ?: TodosFilterType.ALL_TODOS
+        val filterType: TodosFilterType = savedStateHandle[TODOS_FILTER_SAVED_STATE_KEY] ?: TodosFilterType.ALL_TODOS
 
-        return when (filterId) {
+        return when (filterType) {
             TodosFilterType.ALL_TODOS -> {
                 TodosFilteringUiInfo(
                     currentFilteringLabel = R.string.all_todos,

@@ -21,6 +21,7 @@
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
 - check how to show text field labels because editing investment is unclear
 - there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
+- left column scroll doesn't work when there are a lot of notes
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
@@ -28,6 +29,7 @@
 - check what happens if one side of the nots has a lot more text than the other side
 - review @Previews and documents obvious issues
 - review screenshots and documents obvious UI issues
+- inspect all classes using inheritance and change them to composition
 
 ## Features
 - add drawer with app version, settings, sample data button, etc
@@ -45,8 +47,8 @@
 - add investments overview / dashboard
 - add category to notes
 - add tags to expenses
-- group expenses by month
 - add links feature to library
 - make the investments tab show net worth. then show each investment combined, then show transactions
 - calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 - make remaining budget which is calculated by salary - investments - expenses
+- group expenses by month

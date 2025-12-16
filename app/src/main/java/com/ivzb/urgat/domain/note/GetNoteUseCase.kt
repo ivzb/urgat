@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.note
 
-import com.ivzb.urgat.domain.base.BaseGetUseCase
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import javax.inject.Inject
@@ -12,5 +11,11 @@ interface GetNoteUseCase {
 }
 
 class DefaultGetNoteUseCase @Inject constructor(
-    repository: NotesRepository
-): GetNoteUseCase, BaseGetUseCase<Note>(repository)
+    private val repository: NotesRepository
+): GetNoteUseCase {
+
+    override suspend fun invoke(id: String): Note? {
+        return repository.get(id)
+    }
+
+}

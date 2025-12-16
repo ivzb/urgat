@@ -81,7 +81,7 @@ fun TodosScreen(
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { item -> onIntent(TodosIntent.SetFiltering(item)) },
+                onFilter = { onIntent(TodosIntent.SetFiltering(it)) },
             )
 
             MoreTodosMenu(

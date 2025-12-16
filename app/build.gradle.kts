@@ -1,7 +1,6 @@
 import java.io.FileInputStream
 import java.util.Properties
 
-@Suppress("DSL_SCOPE_VIOLATION") // Remove when fixed https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -181,9 +180,7 @@ dependencies {
 kotlin {
     compilerOptions {
         extraWarnings.set(true)
-        freeCompilerArgs.add(
-            "-Xannotation-default-target=param-property"
-        )
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }

@@ -1,7 +1,6 @@
 package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.ui.notes.NotesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +20,7 @@ class FakeObserveNotesUseCase : ObserveNotesUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<NotesFilterType>?,
+        filterTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Note>>> {
         // Record query changes for assertions

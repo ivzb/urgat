@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.todo
 
-import com.ivzb.urgat.domain.base.BaseGetUseCase
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import javax.inject.Inject
@@ -12,5 +11,11 @@ interface GetTodoUseCase {
 }
 
 class DefaultGetTodoUseCase @Inject constructor(
-    repository: TodoRepository
-): GetTodoUseCase, BaseGetUseCase<Todo>(repository)
+    private val repository: TodoRepository
+): GetTodoUseCase {
+
+    override suspend fun invoke(id: String): Todo? {
+        return repository.get(id)
+    }
+
+}

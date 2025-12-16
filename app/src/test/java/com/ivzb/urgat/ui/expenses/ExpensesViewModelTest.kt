@@ -125,7 +125,7 @@ class ExpensesViewModelTest {
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        val expected = FilterMenuItem<ExpensesFilterType>(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1)
+        val expected = ExpensesFilterType.DEBIT_EXPENSES
 
         viewModel.onIntent(ExpensesIntent.SetFiltering(expected))
         advanceUntilIdle()

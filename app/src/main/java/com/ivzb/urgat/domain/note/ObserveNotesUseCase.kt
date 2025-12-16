@@ -1,10 +1,9 @@
 package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
-import com.ivzb.urgat.ui.notes.NotesFilterType
+import com.ivzb.urgat.domain.default.DefaultObserveUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -13,7 +12,7 @@ interface ObserveNotesUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<NotesFilterType>?,
+        filterTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Note>>>
 
@@ -21,12 +20,17 @@ interface ObserveNotesUseCase {
 
 class DefaultObserveNotesUseCase @Inject constructor(
     repository: NotesRepository
-): ObserveNotesUseCase, BaseObserveUseCase<Note, NotesFilterType>(repository) {
+): ObserveNotesUseCase {
 
-    override val errorMessage: Int = R.string.error_notes
+    private val defaultObserveUseCase = DefaultObserveUseCase<Note, Unit>(
+        repository = repository,
+        errorMessageResId = R.string.error_notes,
+    )
 
-    override fun filter(items: List<Note>, filteringType: NotesFilterType): List<Note> {
-        return items
-    }
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<Unit>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<Note>>> = defaultObserveUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
 }

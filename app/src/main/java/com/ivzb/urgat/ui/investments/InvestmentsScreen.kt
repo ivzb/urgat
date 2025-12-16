@@ -79,7 +79,7 @@ fun InvestmentsScreen(
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { item -> onIntent(InvestmentsIntent.SetFiltering(item)) },
+                onFilter = { onIntent(InvestmentsIntent.SetFiltering(it)) },
             )
         },
         modifier = modifier

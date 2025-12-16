@@ -1,5 +1,6 @@
-package com.ivzb.urgat.domain.base
+package com.ivzb.urgat.domain.default
 
+import androidx.annotation.StringRes
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
@@ -14,23 +15,26 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
-@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-abstract class BaseObserveUseCase<T, FilterType>(
-    private val repository: BaseRepository<T>
+class DefaultObserveUseCase<T, FilterType>(
+    private val repository: BaseRepository<T>,
+    private val filter: (List<T>, FilterType) -> List<T> = { items, _ -> items },
+    private val transform: (List<T>) -> List<T> = { items -> items },
+    @StringRes
+    private val errorMessageResId: Int,
 ) {
-
-    protected abstract val errorMessage: Int
 
     private val noLimitFlow = MutableStateFlow(NO_ITEMS_LIMIT)
 
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<FilterType>? = null,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<T>>> = combine(
-        searchQueryFlow,
-        limitFlow ?: noLimitFlow
-    ) { searchQuery, limit ->
+    ): Flow<Async<List<T>>> =
+        combine(
+            searchQueryFlow,
+            limitFlow ?: noLimitFlow
+        ) { searchQuery, limit ->
             Pair(searchQuery, limit)
         }
         .debounce(DEBOUNCE_TIME_MILLIS)
@@ -44,11 +48,11 @@ abstract class BaseObserveUseCase<T, FilterType>(
             if (filterTypeFlow == null) {
                 stream
             } else {
-                combine(stream, filterTypeFlow) { items, filteringType ->
-                    filter(items, filteringType)
+                combine(stream, filterTypeFlow) { items, filterType ->
+                    filter(items, filterType)
                 }
             }
-            .map(::transform)
+            .map { items -> transform(items) }
         }
         .map<List<T>, Async<List<T>>> { Async.Success(it) }
         .catch { e ->
@@ -58,16 +62,13 @@ abstract class BaseObserveUseCase<T, FilterType>(
                 e.printStackTrace()
             }
 
-            emit(Async.Error(errorMessage, e))
+            emit(Async.Error(errorMessageResId, e))
         }
-
-    protected open fun filter(items: List<T>, filteringType: FilterType): List<T> = items
-
-    protected open fun transform(items: List<T>): List<T> = items
 
     companion object {
 
         private const val DEBOUNCE_TIME_MILLIS = 300L
 
     }
+
 }

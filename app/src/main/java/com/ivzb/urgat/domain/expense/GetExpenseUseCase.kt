@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.expense
 
-import com.ivzb.urgat.domain.base.BaseGetUseCase
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import javax.inject.Inject
@@ -12,5 +11,11 @@ interface GetExpenseUseCase {
 }
 
 class DefaultGetExpenseUseCase @Inject constructor(
-    repository: ExpensesRepository
-): GetExpenseUseCase, BaseGetUseCase<Expense>(repository)
+    private val repository: ExpensesRepository
+): GetExpenseUseCase {
+
+    override suspend fun invoke(id: String): Expense? {
+        return repository.get(id)
+    }
+
+}

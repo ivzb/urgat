@@ -1,10 +1,9 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.domain.base.BaseObserveUseCase
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
-import com.ivzb.urgat.ui.todos.TodosFilterMenuItem
+import com.ivzb.urgat.domain.default.DefaultObserveUseCase
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +13,7 @@ interface ObserveTodosUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<TodosFilterMenuItem?>?,
+        filterTypeFlow: Flow<TodosFilterType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Todo>>>
 
@@ -22,24 +21,36 @@ interface ObserveTodosUseCase {
 
 class DefaultObserveTodosUseCase @Inject constructor(
     repository: TodoRepository
-): ObserveTodosUseCase, BaseObserveUseCase<Todo, TodosFilterMenuItem?>(repository) {
+): ObserveTodosUseCase {
 
-    override val errorMessage: Int = R.string.error_todos
+    private val defaultObserveUseCase = DefaultObserveUseCase(
+        repository = repository,
+        filter = ::filter,
+        errorMessageResId = R.string.error_todos,
+    )
 
-    override fun filter(items: List<Todo>, filteringType: TodosFilterMenuItem?): List<Todo> {
-        val type = filteringType?.type ?: TodosFilterType.ALL_TODOS
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<TodosFilterType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<Todo>>> = defaultObserveUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
-        if (type == TodosFilterType.ALL_TODOS) {
-            return items
-        }
+    companion object {
 
-        return items.filter {
-            when (type) {
-                TodosFilterType.ALL_TODOS -> true
-                TodosFilterType.ACTIVE_TODOS -> it.isActive
-                TodosFilterType.COMPLETED_TODOS -> it.isCompleted
+        private fun filter(items: List<Todo>, filterType: TodosFilterType): List<Todo> {
+            if (filterType == TodosFilterType.ALL_TODOS) {
+                return items
+            }
+
+            return items.filter {
+                when (filterType) {
+                    TodosFilterType.ALL_TODOS -> true
+                    TodosFilterType.ACTIVE_TODOS -> it.isActive
+                    TodosFilterType.COMPLETED_TODOS -> it.isCompleted
+                }
             }
         }
+
     }
 
 }

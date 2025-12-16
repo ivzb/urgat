@@ -2,4 +2,4 @@ package com.ivzb.urgat.ui.investments
 
 import com.ivzb.urgat.ui.components.FilterMenuItem
 
-typealias InvestmentsFilterMenuItem = FilterMenuItem<InvestmentsFilterType>
+typealias InvestmentsFilterMenuItem = FilterMenuItem<String>

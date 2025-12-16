@@ -34,10 +34,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.UrgatRoute
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.wellbeing.WellbeingRoute
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Composable
 fun topBarInsets() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
@@ -132,9 +134,8 @@ fun TextTopAppBar(
 }
 
 @Parcelize
-data class FilterMenuItem<T: Parcelable>(
-    val type: T? = null,
-    val content: String? = null,
+data class FilterMenuItem<T>(
+    val type: @RawValue T,
     val labelResId: Int? = null,
     val label: String = "",
     val size: Int,
@@ -148,9 +149,9 @@ data class FilterMenuItem<T: Parcelable>(
 }
 
 @Composable
-fun <T: Parcelable> FilterMenu(
+fun <T> FilterMenu(
     items: List<FilterMenuItem<T>>,
-    onFilter: (FilterMenuItem<T>) -> Unit,
+    onFilter: (T) -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
@@ -164,7 +165,7 @@ fun <T: Parcelable> FilterMenu(
         for (item in items) {
             DropdownMenuItem(
                 onClick = {
-                    onFilter(item)
+                    onFilter(item.type)
                     closeMenu()
                 },
                 text = {
@@ -324,13 +325,29 @@ private fun MoreTodosMenuPreview() {
 @Preview
 @DarkModePreview
 @Composable
-private fun FilterMenuPreview() {
+private fun FilterMenuPreviewExpenses() {
     UrgatTheme {
         FilterMenu(
             items = listOf(
-                FilterMenuItem(label = "All", size = 10),
-                FilterMenuItem(label = "Active", size = 5),
-                FilterMenuItem(label = "Completed", size = 2),
+                FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 10),
+                FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 2),
+                FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 8),
+            ),
+            onFilter = {}
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+private fun FilterMenuPreviewStrings() {
+    UrgatTheme {
+        FilterMenu(
+            items = listOf(
+                FilterMenuItem(type = "All", labelResId = R.string.filter_all, size = 10),
+                FilterMenuItem(type = "Debit", labelResId = R.string.filter_debit, size = 2),
+                FilterMenuItem(type = "Cost", labelResId = R.string.filter_cost, size = 8),
             ),
             onFilter = {}
         )

@@ -83,7 +83,7 @@ fun ExpensesScreen(
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { item -> onIntent(ExpensesIntent.SetFiltering(item)) },
+                onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
             )
         },
         modifier = modifier

@@ -13,6 +13,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -26,7 +27,7 @@ class ExpensesViewModel @Inject constructor(
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, null)
+    private val _savedFilterType: Flow<ExpensesFilterType> = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, ALL_EXPENSES)
 
     private val _searchQuery = MutableStateFlow("")
 
@@ -72,7 +73,7 @@ class ExpensesViewModel @Inject constructor(
     fun onIntent(intent: ExpensesIntent) {
         when (intent) {
             is ExpensesIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is ExpensesIntent.SetFiltering -> setFiltering(intent.filter)
+            is ExpensesIntent.SetFiltering -> setFiltering(intent.filterType)
         }
     }
 
@@ -80,15 +81,14 @@ class ExpensesViewModel @Inject constructor(
         _searchQuery.value = newQuery
     }
 
-    private fun setFiltering(filter: ExpensesFilterMenuItem) {
-        savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] = filter
+    private fun setFiltering(filterType: ExpensesFilterType) {
+        savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] = filterType
     }
 
     private fun getFilterUiInfo(filterMenuItems: List<ExpensesFilterMenuItem>): ExpensesFilteringUiInfo {
-        val filter: ExpensesFilterMenuItem? = savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY]
-        val filterId = filter?.type ?: ExpensesFilterType.ALL_EXPENSES
+        val filterType: ExpensesFilterType = savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] ?: ALL_EXPENSES
 
-        return when (filterId) {
+        return when (filterType) {
             ALL_EXPENSES -> {
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.all_expenses,

@@ -166,7 +166,7 @@ class DefaultTodoRepositoryTest {
     @Test
     fun `clearCompleted deletes completed todos`() = runTest {
         val id1 = repository.create("Taxi", "Desc")
-        val id2 = repository.create("Lunch", "Tamagochi")
+        repository.create("Lunch", "Tamagochi")
         val id3 = repository.create("Bus", "Desc")
 
         repository.complete(id1)
