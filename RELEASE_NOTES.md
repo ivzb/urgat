@@ -1,3 +1,8 @@
+## Release notes 25.12.7
+
+New:
+- Investments are now organized by month.
+
 ## Release notes 25.12.6
 
 New:
