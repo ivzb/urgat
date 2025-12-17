@@ -1,6 +1,10 @@
 package com.ivzb.urgat.domain.investment
 
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
+import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
@@ -25,6 +29,30 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Investment>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedInvestmentsUseCase : ObserveGroupedInvestmentsUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedItems<String, Investment>>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedItems<String, Investment>>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<String>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedItems<String, Investment>>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

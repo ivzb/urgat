@@ -6,8 +6,9 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesUseCase
+import com.ivzb.urgat.domain.default.Group
 import kotlin.collections.component1
+import kotlin.collections.component4
 
 object SampleData {
 
@@ -70,7 +71,7 @@ object SampleData {
         )
     }
 
-    val SAMPLE_EXPENSES_GROUPED = DefaultObserveGroupedExpensesUseCase.group(SAMPLE_EXPENSES)
+    val SAMPLE_EXPENSES_GROUPED = Group.byDate(SAMPLE_EXPENSES, Expense::date)
 
     val SAMPLE_NOTES = debugOnly {
         listOf(
@@ -126,23 +127,23 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS = debugOnly {
         listOf(
-            listOf("Alphabet (Google)", "2200", "323.44", "Stocks", "USD"),
-            listOf("Microsoft Corp.", "1800", "485.5", "Stocks", "USD"),
-            listOf("Amazon.com Inc.", "1700", "229.16", "Stocks", "USD"),
-            listOf("Tesla Inc.", "1900", "419.40", "Stocks", "USD"),
-            listOf("NVIDIA Corp.", "1600", "180.26", "Stocks", "USD"),
-            listOf("Apple Inc.", "2000", "276.97", "Stocks", "USD"),
-            listOf("Meta Platforms", "1500", "636.22", "Stocks", "USD"),
-            listOf("Vanguard S&P 500 ETF", "3200", "621.88", "ETF", "USD"),
-            listOf("Bitcoin", "2500.50", "90966", "Cryptocurrency", "USD"),
-            listOf("Ethereum", "850.75", "3021", "Cryptocurrency", "USD"),
-            listOf("US Government Bonds", "2000", "2000.00", "Bonds", "USD"),
-            listOf("Rental Property Deposit", "10000", "10000.00", "Real Estate", "USD"),
-            listOf("Alibaba Group", "3000", "133", "Stocks", "EUR"),
-            listOf("Samsung Electronics", "2400", "1128", "Stocks", "EUR"),
-            listOf("Toyota Motor Corp.", "1500", "210", "Stocks", "EUR"),
+            listOf("Alphabet (Google)", "2200", "323.44", "Stocks", "USD", "6048000"),
+            listOf("Microsoft Corp.", "1800", "485.5", "Stocks", "USD", "4752000"),
+            listOf("Amazon.com Inc.", "1700", "229.16", "Stocks", "USD", "4752000"),
+            listOf("Tesla Inc.", "1900", "419.40", "Stocks", "USD", "3024000"),
+            listOf("NVIDIA Corp.", "1600", "180.26", "Stocks", "USD", "3024000"),
+            listOf("Apple Inc.", "2000", "276.97", "Stocks", "USD", "2160000"),
+            listOf("Meta Platforms", "1500", "636.22", "Stocks", "USD", "2160000"),
+            listOf("Vanguard S&P 500 ETF", "3200", "621.88", "ETF", "USD", "1296000"),
+            listOf("Bitcoin", "2500.50", "90966", "Cryptocurrency", "USD", "1296000"),
+            listOf("Ethereum", "850.75", "3021", "Cryptocurrency", "USD", "864000"),
+            listOf("US Government Bonds", "2000", "2000.00", "Bonds", "USD", "864000"),
+            listOf("Rental Property Deposit", "10000", "10000.00", "Real Estate", "USD", "432000"),
+            listOf("Alibaba Group", "3000", "133", "Stocks", "EUR", "432000"),
+            listOf("Samsung Electronics", "2400", "1128", "Stocks", "EUR", "0"),
+            listOf("Toyota Motor Corp.", "1500", "210", "Stocks", "EUR", "0"),
         )
-    }.mapIndexed { index, (name, amount, cost, category, currency) ->
+    }.mapIndexed { index, (name, amount, cost, category, currency, dateOffset) ->
         Investment(
             id = index.toString(),
             name = name,
@@ -150,11 +151,13 @@ object SampleData {
             cost = cost.toBigDecimal(),
             category = category,
             currency = currency,
-            date = System.currentTimeMillis(),
+            date = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
             isDeleted = false,
-            createdAt = System.currentTimeMillis(),
+            createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
         )
     }
+
+    val SAMPLE_INVESTMENTS_GROUPED = Group.byDate(SAMPLE_INVESTMENTS, Investment::date)
 
     val SAMPLE_WEIGHTS = debugOnly {
         listOf(
@@ -186,5 +189,8 @@ object SampleData {
 
         return listOf()
     }
+
+    private operator fun <T> List<T>.component6(): T = this[5]
+    private operator fun <T> List<T>.component7(): T = this[6]
 
 }

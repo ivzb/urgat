@@ -52,4 +52,3 @@
 - make the investments tab show net worth. then show each investment combined, then show transactions
 - calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 - make remaining budget which is calculated by salary - investments - expenses
-- group investments by month

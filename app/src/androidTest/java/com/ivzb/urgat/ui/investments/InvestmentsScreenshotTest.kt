@@ -16,7 +16,7 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_InvestmentsScreen_sampleData() = screenshotTest(
         uiState = InvestmentsUiState(
-            items = SampleData.SAMPLE_INVESTMENTS,
+            items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
             isLoading = false,
             hasError = false,
         ),

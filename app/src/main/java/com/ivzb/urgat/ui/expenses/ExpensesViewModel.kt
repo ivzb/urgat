@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
@@ -19,11 +18,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
-import kotlin.math.exp
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
-    private val observeGroupedExpensesUseCase: ObserveGroupedExpensesUseCase,
+    observeGroupedExpensesUseCase: ObserveGroupedExpensesUseCase,
     observeExpensesFilteringUseCase: ObserveExpensesFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {

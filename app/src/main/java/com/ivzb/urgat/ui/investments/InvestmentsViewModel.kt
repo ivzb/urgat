@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.util.Async
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InvestmentsViewModel @Inject constructor(
-    observeInvestmentsUseCase: ObserveInvestmentsUseCase,
+    observeGroupedInvestmentsUseCase: ObserveGroupedInvestmentsUseCase,
     observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -30,28 +31,26 @@ class InvestmentsViewModel @Inject constructor(
     private val _itemsLimit = MutableStateFlow(NO_ITEMS_LIMIT)
 
     val uiState: StateFlow<InvestmentsUiState> = combine(
-        observeInvestmentsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
+        observeGroupedInvestmentsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentsFilteringUseCase(),
     ) { investmentsAsync, investmentsFilteringAsync ->
 
-        val items = listOf(investmentsAsync, investmentsFilteringAsync)
-
         when {
-            items.any { it is Async.Loading } -> {
+            investmentsAsync is Async.Loading || investmentsFilteringAsync is Async.Loading -> {
                 InvestmentsUiState(
                     isLoading = true
                 )
             }
 
-            items.any { it is Async.Error } -> {
+            investmentsAsync is Async.Error || investmentsFilteringAsync is Async.Error -> {
                 InvestmentsUiState(
                     hasError = true
                 )
             }
 
-            items.all { it is Async.Success } -> {
+            investmentsAsync is Async.Success && investmentsFilteringAsync is Async.Success -> {
                 InvestmentsUiState(
-                    items = (investmentsAsync as Async.Success<List<Investment>>).data,
+                    items = investmentsAsync.data,
                     isLoading = false,
                     filteringUiInfo = InvestmentsFilteringUiInfo(
                         filterMenuItems = (investmentsFilteringAsync as Async.Success<List<InvestmentsFilterMenuItem>>).data
@@ -59,7 +58,7 @@ class InvestmentsViewModel @Inject constructor(
                 )
             }
 
-            else -> error("undefined state: $items")
+            else -> error("undefined state: $investmentsAsync, $investmentsFilteringAsync")
         }
     }
         .stateIn(

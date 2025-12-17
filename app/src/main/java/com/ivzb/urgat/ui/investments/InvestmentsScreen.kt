@@ -23,12 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -101,7 +104,7 @@ fun InvestmentsScreen(
 
             else -> {
                 InvestmentsContent(
-                    investments = uiState.items,
+                    groupedInvestments = uiState.items,
                     onInvestmentClick = onInvestmentClick,
                     filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState,
@@ -113,7 +116,7 @@ fun InvestmentsScreen(
 
 @Composable
 private fun InvestmentsContent(
-    investments: List<Investment>,
+    groupedInvestments: List<GroupedItems<String, Investment>>,
     onInvestmentClick: (Investment) -> Unit,
 
     filteringUiInfo: InvestmentsFilteringUiInfo,
@@ -135,20 +138,32 @@ private fun InvestmentsContent(
             ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
         }
 
-        item {
-            Spacer(modifier = Modifier
-                .height(dimensionResource(R.dimen.vertical_margin))
-            )
+        groupedInvestments.forEach { (group, investments) ->
+            item {
+                Text(
+                    text = group,
+                    modifier = modifier
+                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+                        .semantics { heading() },
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+
+            items(investments) { investment ->
+                InvestmentItem(
+                    investment = investment,
+                    onInvestmentClick = onInvestmentClick
+                )
+            }
         }
 
-        items(investments) { investment ->
-            InvestmentItem(
-                investment = investment,
-                onInvestmentClick = onInvestmentClick
-            )
-        }
+        if (groupedInvestments.isEmpty()) {
+            item {
+                Spacer(modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
 
-        if (investments.isEmpty()) {
             item {
                 EmptyStateScreen(
                     label = filteringUiInfo.emptyLabel,
@@ -227,7 +242,7 @@ private fun InvestmentsScreenPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = SampleData.SAMPLE_INVESTMENTS,
+                items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -247,7 +262,7 @@ private fun InvestmentsScreenEmptyPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = SampleData.SAMPLE_INVESTMENTS,
+                items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
