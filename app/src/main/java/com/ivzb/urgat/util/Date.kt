@@ -9,3 +9,10 @@ fun Long.toLocalDate(): LocalDate {
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
 }
+
+fun LocalDate.toTimestamp(): Long {
+    return this
+        .atStartOfDay(ZoneId.systemDefault())
+        .toInstant()
+        .toEpochMilli()
+}

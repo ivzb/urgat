@@ -6,7 +6,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.domain.expense.DefaultGroupedObserveExpensesUseCase
+import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesUseCase
 import kotlin.collections.component1
 
 object SampleData {
@@ -70,7 +70,7 @@ object SampleData {
         )
     }
 
-    val SAMPLE_EXPENSES_GROUPED = DefaultGroupedObserveExpensesUseCase.group(SAMPLE_EXPENSES)
+    val SAMPLE_EXPENSES_GROUPED = DefaultObserveGroupedExpensesUseCase.group(SAMPLE_EXPENSES)
 
     val SAMPLE_NOTES = debugOnly {
         listOf(

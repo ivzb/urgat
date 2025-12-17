@@ -10,7 +10,6 @@
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - remove all casting from view models combine state
-- write unit tests for DefaultGroupedObserveExpensesUseCase
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
@@ -53,4 +52,4 @@
 - make the investments tab show net worth. then show each investment combined, then show transactions
 - calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 - make remaining budget which is calculated by salary - investments - expenses
-- group expenses by month
+- group investments by month

@@ -26,7 +26,7 @@ interface ObserveGroupedExpensesUseCase {
 
 }
 
-class DefaultGroupedObserveExpensesUseCase @Inject constructor(
+class DefaultObserveGroupedExpensesUseCase @Inject constructor(
     repository: ExpensesRepository
 ): ObserveGroupedExpensesUseCase {
 
