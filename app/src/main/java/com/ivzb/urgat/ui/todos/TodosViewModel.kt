@@ -38,33 +38,30 @@ class TodosViewModel @Inject constructor(
         observeTodosUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeTodosFilteringUseCase(),
     ) { todosAsync, todosFilteringAsync ->
-
-        val items = listOf(todosAsync, todosFilteringAsync)
-
         when {
-            items.any { it is Async.Loading } -> {
+            todosAsync is Async.Loading || todosFilteringAsync is Async.Loading -> {
                 TodosUiState(
                     isLoading = true
                 )
             }
 
-            items.any { it is Async.Error } -> {
+            todosAsync is Async.Error || todosFilteringAsync is Async.Error -> {
                 TodosUiState(
                     hasError = true
                 )
             }
 
-            items.all { it is Async.Success } -> {
+            todosAsync is Async.Success && todosFilteringAsync is Async.Success -> {
                 TodosUiState(
-                    items = (todosAsync as Async.Success<List<Todo>>).data,
+                    items = todosAsync.data,
                     isLoading = false,
                     filteringUiInfo = getFilterUiInfo(
-                        filterMenuItems = (todosFilteringAsync as Async.Success<List<TodosFilterMenuItem>>).data
+                        filterMenuItems = todosFilteringAsync.data
                     ),
                 )
             }
 
-            else -> error("undefined state: $items")
+            else -> error("undefined state: $todosAsync, $todosFilteringAsync")
         }
     }
     .stateIn(

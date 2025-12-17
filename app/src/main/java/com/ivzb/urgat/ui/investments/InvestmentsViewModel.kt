@@ -53,7 +53,7 @@ class InvestmentsViewModel @Inject constructor(
                     items = investmentsAsync.data,
                     isLoading = false,
                     filteringUiInfo = InvestmentsFilteringUiInfo(
-                        filterMenuItems = (investmentsFilteringAsync as Async.Success<List<InvestmentsFilterMenuItem>>).data
+                        filterMenuItems = investmentsFilteringAsync.data
                     )
                 )
             }

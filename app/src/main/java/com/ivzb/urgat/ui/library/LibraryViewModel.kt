@@ -55,27 +55,25 @@ class LibraryViewModel @Inject constructor(
         observeNotesUseCase(_searchQuery, null, _itemsLimit),
         _uiEvent,
     ) { todos, notes, uiEvent ->
-        val items = listOf(todos, notes)
-
         when {
-            items.any { it is Async.Loading } -> {
+            todos is Async.Loading || notes is Async.Loading -> {
                 LibraryUiState(isLoading = true)
             }
 
-            items.any { it is Async.Error } -> {
+            todos is Async.Error || notes is Async.Error -> {
                 LibraryUiState(hasError = true)
             }
 
-            items.all { it is Async.Success } -> {
+            todos is Async.Success && notes is Async.Success -> {
                 LibraryUiState(
-                    todos = (todos as Async.Success).data,
+                    todos = todos.data,
                     todosFilteringUiInfo = TodosFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_todos,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
                         emptyMessage = R.string.no_todos_message,
                         emptyButtonLabel = R.string.add_todo,
                     ),
-                    notes = (notes as Async.Success).data,
+                    notes = notes.data,
                     notesFilteringUiInfo = NotesFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_notes,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
@@ -88,7 +86,7 @@ class LibraryViewModel @Inject constructor(
             }
 
             else -> {
-                Assert.fail("library undefined state: $items")
+                Assert.fail("library undefined state: $todos, $notes, $uiEvent")
                 LibraryUiState(hasError = true)
             }
         }

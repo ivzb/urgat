@@ -37,27 +37,25 @@ class FinanceViewModel @Inject constructor(
         observeInvestmentsUseCase(_searchQuery, null, _itemsLimit),
         _uiEvent,
     ) { expenses, investments, uiEvent ->
-        val items = listOf(expenses, investments)
-
         when {
-            items.any { it is Async.Loading } -> {
+            expenses is Async.Loading || investments is Async.Loading -> {
                 FinanceUiState(isLoading = true)
             }
 
-            items.any { it is Async.Error } -> {
+            expenses is Async.Error || investments is Async.Error -> {
                 FinanceUiState(hasError = true)
             }
 
-            items.all { it is Async.Success } -> {
+            expenses is Async.Success && investments is Async.Success -> {
                 FinanceUiState(
-                    expenses = (expenses as Async.Success).data,
+                    expenses = expenses.data,
                     expensesFilteringUiInfo = ExpensesFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_expenses,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_expenses_label else R.string.no_expenses_search,
                         emptyMessage = R.string.no_expenses_message,
                         emptyButtonLabel = R.string.add_expense,
                     ),
-                    investments = (investments as Async.Success).data,
+                    investments = investments.data,
                     investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
                         currentFilteringLabel = R.string.recent_investments,
                         emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
@@ -70,7 +68,7 @@ class FinanceViewModel @Inject constructor(
             }
 
             else -> {
-                Assert.fail("finance undefined state: $items")
+                Assert.fail("finance undefined state: $expenses, $investments, $uiEvent")
                 FinanceUiState(hasError = true)
             }
         }
