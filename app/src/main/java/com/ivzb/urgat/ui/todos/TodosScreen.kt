@@ -33,7 +33,7 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.ItemHeader
+import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MoreTodosMenu
@@ -105,6 +105,13 @@ fun TodosScreen(
                 )
             }
 
+            uiState.items.isEmpty() -> {
+                EmptyStateScreen(
+                    label = uiState.filteringUiInfo.emptyLabel,
+                    iconRes = uiState.filteringUiInfo.emptyIconRes
+                )
+            }
+
             else -> {
                 TodosContent(
                     todos = uiState.items,
@@ -139,7 +146,7 @@ fun TodosContent(
     ) {
 
         item {
-            ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
+            ItemHeaderLarge(text = stringResource(filteringUiInfo.currentFilteringLabel))
         }
 
         item {
@@ -154,15 +161,6 @@ fun TodosContent(
                 onTodoClick = onTodoClick,
                 onCheckedChange = { onTodoCheckedChange(todo, it) }
             )
-        }
-
-        if (todos.isEmpty()) {
-            item {
-                EmptyStateScreen(
-                    label = filteringUiInfo.emptyLabel,
-                    iconRes = filteringUiInfo.emptyIconRes
-                )
-            }
         }
 
         item {

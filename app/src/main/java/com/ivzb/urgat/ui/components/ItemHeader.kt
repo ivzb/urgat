@@ -19,15 +19,41 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
-fun ItemHeader(
-    title: String,
+fun ItemHeaderLarge(
+    text: String,
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = title,
+        text = text,
         modifier = modifier
             .semantics { heading() },
         style = MaterialTheme.typography.titleLarge
+    )
+}
+
+@Composable
+fun ItemHeaderMedium(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        modifier = modifier
+            .semantics { heading() },
+        style = MaterialTheme.typography.titleMedium
+    )
+}
+
+@Composable
+fun ItemHeaderSmall(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        modifier = modifier
+            .semantics { heading() },
+        style = MaterialTheme.typography.titleSmall
     )
 }
 
@@ -44,7 +70,7 @@ fun ItemHeaderWithSeeAll(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        ItemHeader(title = title)
+        ItemHeaderLarge(text = title)
 
         TextButton(
             onClick = onSeeAllClick
@@ -60,10 +86,34 @@ fun ItemHeaderWithSeeAll(
 @Preview
 @DarkModePreview
 @Composable
-private fun ItemHeaderPreview() {
+private fun ItemHeaderLargePreview() {
     UrgatTheme {
-        ItemHeader(
-            title = "Home",
+        ItemHeaderLarge(
+            text = "Home",
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+private fun ItemHeaderMediumPreview() {
+    UrgatTheme {
+        ItemHeaderMedium(
+            text = "Home",
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+private fun ItemHeaderSmallPreview() {
+    UrgatTheme {
+        ItemHeaderSmall(
+            text = "Home",
             modifier = Modifier.padding(16.dp)
         )
     }

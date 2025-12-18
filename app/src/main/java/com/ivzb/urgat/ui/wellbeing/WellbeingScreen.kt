@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -34,7 +33,7 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.ItemHeader
+import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.NavigationScaffold
 import com.ivzb.urgat.ui.components.charts.LineChart
@@ -278,7 +277,7 @@ private fun LazyListScope.itemWeightsChart(
 ) {
 
     item {
-        ItemHeader(title = stringResource(weightsFilteringUiInfo.currentFilteringLabel))
+        ItemHeaderLarge(text = stringResource(weightsFilteringUiInfo.currentFilteringLabel))
     }
 
     item {

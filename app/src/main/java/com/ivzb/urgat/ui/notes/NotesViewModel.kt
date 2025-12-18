@@ -39,8 +39,7 @@ class NotesViewModel @Inject constructor(
             is Async.Success -> {
                 NotesUiState(
                     items = notesAsync.data,
-                    filteringUiInfo = NotesFilteringUiInfo(),
-                    isLoading = isLoading
+                    isLoading = isLoading,
                 )
             }
         }

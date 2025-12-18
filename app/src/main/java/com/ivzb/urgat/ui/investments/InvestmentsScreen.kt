@@ -1,42 +1,34 @@
 package com.ivzb.urgat.ui.investments
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.ItemHeader
+import com.ivzb.urgat.ui.components.ItemHeaderLarge
+import com.ivzb.urgat.ui.components.ItemHeaderMedium
+import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
+import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
@@ -102,9 +94,18 @@ fun InvestmentsScreen(
                 )
             }
 
+            uiState.items.isEmpty() -> {
+               EmptyStateScreen(
+                   label = uiState.filteringUiInfo.emptyLabel,
+                   iconRes = uiState.filteringUiInfo.emptyIconRes
+               )
+            }
+
             else -> {
                 InvestmentsContent(
                     groupedInvestments = uiState.items,
+                    netWorth = uiState.netWorth,
+                    assets = uiState.assets,
                     onInvestmentClick = onInvestmentClick,
                     filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState,
@@ -117,6 +118,8 @@ fun InvestmentsScreen(
 @Composable
 private fun InvestmentsContent(
     groupedInvestments: List<GroupedItems<String, Investment>>,
+    netWorth: List<InvestmentNetWorth>,
+    assets: List<InvestmentAsset>,
     onInvestmentClick: (Investment) -> Unit,
 
     filteringUiInfo: InvestmentsFilteringUiInfo,
@@ -135,17 +138,49 @@ private fun InvestmentsContent(
     ) {
 
         item {
-            ItemHeader(title = stringResource(filteringUiInfo.currentFilteringLabel))
+            ItemHeaderLarge(text = stringResource(filteringUiInfo.currentFilteringLabel))
+        }
+
+        item {
+            ItemHeaderMedium(
+                text = stringResource(R.string.net_worth),
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        items(netWorth) { netWorth ->
+            InvestmentsNetWorth(netWorth)
+        }
+
+        item {
+            ItemHeaderMedium(
+                text = stringResource(R.string.assets),
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        items(assets) { asset ->
+            AssetItem(
+                asset = asset,
+            )
+        }
+
+        item {
+            ItemHeaderMedium(
+                text = stringResource(R.string.transactions),
+                modifier = Modifier
+                    .padding(top = dimensionResource(R.dimen.vertical_margin))
+            )
         }
 
         groupedInvestments.forEach { (group, investments) ->
             item {
-                Text(
+                ItemHeaderSmall(
                     text = group,
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(vertical = dimensionResource(R.dimen.vertical_margin))
-                        .semantics { heading() },
-                    style = MaterialTheme.typography.titleSmall
                 )
             }
 
@@ -153,21 +188,6 @@ private fun InvestmentsContent(
                 InvestmentItem(
                     investment = investment,
                     onInvestmentClick = onInvestmentClick
-                )
-            }
-        }
-
-        if (groupedInvestments.isEmpty()) {
-            item {
-                Spacer(modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-            item {
-                EmptyStateScreen(
-                    label = filteringUiInfo.emptyLabel,
-                    iconRes = filteringUiInfo.emptyIconRes
                 )
             }
         }
@@ -182,58 +202,49 @@ private fun InvestmentsContent(
 }
 
 @Composable
+private fun InvestmentsNetWorth(
+    netWorth: InvestmentNetWorth,
+) {
+    ListItem(
+        textLeft = "",
+        subTextLeft = "",
+
+        textRight = netWorth.amount.toString(),
+        subTextRight = netWorth.currency,
+
+        onClick = { /* NOOP */ },
+    )
+}
+
+@Composable
+fun AssetItem(
+    asset: InvestmentAsset,
+) {
+    ListItem(
+        textLeft = asset.category,
+        subTextLeft = "",
+
+        textRight = asset.amount.toString(),
+        subTextRight = asset.currency,
+
+        onClick = { /* NOOP */ },
+    )
+}
+
+@Composable
 fun InvestmentItem(
     investment: Investment,
     onInvestmentClick: (Investment) -> Unit
 ) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shadowElevation = 2.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onInvestmentClick(investment) }
-                .padding(dimensionResource(R.dimen.list_item_padding)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    ListItem(
+        textLeft = investment.name,
+        subTextLeft = investment.category,
 
-            Column (
-                horizontalAlignment = Alignment.Start
-            ) {
+        textRight = investment.amount.toString(),
+        subTextRight = investment.currency,
 
-                Text(
-                    text = investment.name,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-
-                Text(
-                    text = investment.category,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column (
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                Text(
-                    text = investment.amount.toString(),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-
-                Text(
-                    text = investment.currency,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-        }
-    }
+        onClick = { onInvestmentClick(investment) }
+    )
 }
 
 @AllDevicesPreview
@@ -243,6 +254,8 @@ private fun InvestmentsScreenPreview() {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
                 items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+                netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+                assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -262,10 +275,12 @@ private fun InvestmentsScreenEmptyPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+                items = listOf(),
+                netWorth = listOf(),
+                assets = listOf(),
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
-                hasError = false
+                hasError = false,
             ),
             onIntent = {},
             onAddInvestment = {},

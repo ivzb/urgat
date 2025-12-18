@@ -27,8 +27,8 @@ class DefaultObserveGroupedExpensesUseCase @Inject constructor(
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
-        filter = ::filter,
-        group = ::group,
+        filter = ::filterExpenses,
+        group = { items -> Group.byDate(items, Expense::date) },
         errorMessageResId = R.string.error_expenses,
     )
 
@@ -37,26 +37,5 @@ class DefaultObserveGroupedExpensesUseCase @Inject constructor(
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedItems<String, Expense>>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
-
-    companion object {
-
-        private fun filter(items: List<Expense>, filterType: ExpensesFilterType): List<Expense> {
-            if (filterType == ExpensesFilterType.ALL_EXPENSES) {
-                return items
-            }
-
-            return items.filter {
-                when (filterType) {
-                    ExpensesFilterType.ALL_EXPENSES -> true
-                    ExpensesFilterType.COST_EXPENSES -> it.isCost
-                    ExpensesFilterType.DEBIT_EXPENSES -> it.isDebit
-                }
-            }
-        }
-
-        private fun group(items: List<Expense>): List<GroupedItems<String, Expense>> =
-            Group.byDate(items, Expense::date)
-
-    }
 
 }

@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
-import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class InvestmentsViewModel @Inject constructor(
     observeGroupedInvestmentsUseCase: ObserveGroupedInvestmentsUseCase,
+    observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
+    observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
     observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,25 +34,29 @@ class InvestmentsViewModel @Inject constructor(
 
     val uiState: StateFlow<InvestmentsUiState> = combine(
         observeGroupedInvestmentsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
+        observeInvestmentNetWorthUseCase(_searchQuery, _savedFilterType, _itemsLimit),
+        observeInvestmentAssetsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentsFilteringUseCase(),
-    ) { investmentsAsync, investmentsFilteringAsync ->
+    ) { investmentsAsync, netWorthAsync, assetsAsync, investmentsFilteringAsync ->
 
         when {
-            investmentsAsync is Async.Loading || investmentsFilteringAsync is Async.Loading -> {
+            investmentsAsync is Async.Loading || netWorthAsync is Async.Loading || assetsAsync is Async.Loading || investmentsFilteringAsync is Async.Loading -> {
                 InvestmentsUiState(
                     isLoading = true
                 )
             }
 
-            investmentsAsync is Async.Error || investmentsFilteringAsync is Async.Error -> {
+            investmentsAsync is Async.Error || netWorthAsync is Async.Error || assetsAsync is Async.Error || investmentsFilteringAsync is Async.Error -> {
                 InvestmentsUiState(
                     hasError = true
                 )
             }
 
-            investmentsAsync is Async.Success && investmentsFilteringAsync is Async.Success -> {
+            investmentsAsync is Async.Success && netWorthAsync is Async.Success && assetsAsync is Async.Success && investmentsFilteringAsync is Async.Success -> {
                 InvestmentsUiState(
                     items = investmentsAsync.data,
+                    netWorth = netWorthAsync.data,
+                    assets = assetsAsync.data,
                     isLoading = false,
                     filteringUiInfo = InvestmentsFilteringUiInfo(
                         filterMenuItems = investmentsFilteringAsync.data

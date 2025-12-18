@@ -4,7 +4,6 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.domain.default.ObserveUseCase
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -25,7 +24,7 @@ class DefaultObserveInvestmentsUseCase @Inject constructor(
 
     private val observeUseCase = ObserveUseCase(
         repository = repository,
-        filter = ::filter,
+        filter = ::filterInvestments,
         errorMessageResId = R.string.error_investments,
     )
 
@@ -34,17 +33,5 @@ class DefaultObserveInvestmentsUseCase @Inject constructor(
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Investment>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
-
-    companion object {
-
-        private fun filter(items: List<Investment>, filterType: String): List<Investment> {
-            if (filterType == InvestmentsFilterType_All) {
-                return items
-            }
-
-            return items.filter { it.category == filterType }
-        }
-
-    }
 
 }

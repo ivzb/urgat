@@ -17,6 +17,8 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
     fun screenshotTest_InvestmentsScreen_sampleData() = screenshotTest(
         uiState = InvestmentsUiState(
             items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+            netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+            assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
             isLoading = false,
             hasError = false,
         ),

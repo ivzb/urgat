@@ -88,11 +88,17 @@ fun NotesScreen(
                 )
             }
 
+            uiState.items.isEmpty() -> {
+                EmptyStateScreen(
+                    label = uiState.filteringUiInfo.emptyLabel,
+                    iconRes = uiState.filteringUiInfo.emptyIconRes
+                )
+            }
+
             else -> {
                 NotesContent(
                     notes = uiState.items,
                     onNoteClick = onNoteClick,
-                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState
                 )
             }
@@ -104,7 +110,6 @@ fun NotesScreen(
 internal fun NotesContent(
     notes: List<Note>,
     onNoteClick: (Note) -> Unit,
-    filteringUiInfo: NotesFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -131,13 +136,6 @@ internal fun NotesContent(
             onNoteClick,
             listState,
             modifier = Modifier.weight(1f)
-        )
-    }
-
-    if (notes.isEmpty()) {
-        EmptyStateScreen(
-            label = filteringUiInfo.emptyLabel,
-            iconRes = filteringUiInfo.emptyIconRes
         )
     }
 

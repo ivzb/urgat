@@ -1,5 +1,8 @@
 package com.ivzb.urgat.domain.default
 
+import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
 import java.time.YearMonth
@@ -31,5 +34,31 @@ object Group {
                 )
             }
     }
+
+    fun groupInvestmentAssets(investments: List<Investment>): List<InvestmentAsset> {
+        return investments
+            .groupBy { Pair(it.currency, it.category) }
+            .map { (key, investments) ->
+                val (currency, category) = key
+
+                InvestmentAsset(
+                    category = category,
+                    amount = investments.sumOf { it.amount },
+                    currency = currency,
+                )
+            }
+            .sortedBy { it.category }
+    }
+
+    fun groupInvestmentNetWorth(investments: List<Investment>): List<InvestmentNetWorth> =
+        investments
+            .groupBy { it.currency }
+            .map { (currency, investments) ->
+                InvestmentNetWorth(
+                    amount = investments.sumOf { it.amount },
+                    currency = currency,
+                )
+            }
+            .sortedBy { it.currency }
 
 }

@@ -25,7 +25,7 @@ class DefaultObserveExpensesUseCase @Inject constructor(
 
     private val observeUseCase = ObserveUseCase(
         repository = repository,
-        filter = ::filter,
+        filter = ::filterExpenses,
         errorMessageResId = R.string.error_expenses,
     )
 
@@ -34,23 +34,5 @@ class DefaultObserveExpensesUseCase @Inject constructor(
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Expense>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
-
-    companion object {
-
-        private fun filter(items: List<Expense>, filterType: ExpensesFilterType): List<Expense> {
-            if (filterType == ExpensesFilterType.ALL_EXPENSES) {
-                return items
-            }
-
-            return items.filter {
-                when (filterType) {
-                    ExpensesFilterType.ALL_EXPENSES -> true
-                    ExpensesFilterType.COST_EXPENSES -> it.isCost
-                    ExpensesFilterType.DEBIT_EXPENSES -> it.isDebit
-                }
-            }
-        }
-
-    }
 
 }

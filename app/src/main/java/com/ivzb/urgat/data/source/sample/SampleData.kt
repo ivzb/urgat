@@ -159,6 +159,10 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS_GROUPED = Group.byDate(SAMPLE_INVESTMENTS, Investment::date)
 
+    val SAMPLE_INVESTMENTS_NET_WORTH = Group.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
+
+    val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS)
+
     val SAMPLE_WEIGHTS = debugOnly {
         listOf(
             listOf("70.5", "1700000000"),

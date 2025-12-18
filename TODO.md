@@ -9,6 +9,7 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
+- write unit tests for Group.kt functions
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
@@ -30,6 +31,8 @@
 - review @Previews and documents obvious issues
 - review screenshots and documents obvious UI issues
 - inspect all classes using inheritance and change them to composition
+- consider renaming Investment to InvestmentTransaction
+- check if it's possible to combine all async checks internally and not in the view model (becomes too ugly with many async checks)
 
 ## Features
 - add drawer with app version, settings, sample data button, etc
@@ -48,6 +51,9 @@
 - add category to notes
 - add tags to expenses
 - add links feature to library
-- make the investments tab show net worth. then show each investment combined, then show transactions
 - calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 - make remaining budget which is calculated by salary - investments - expenses
+- make investments net worth calculate current price and show profit/loss in investments screen for each asset
+- make the investments tab show net worth. then show each investment combined, then show transactions
+- make net worth pie chart showing color for each category (list with colors and numbers below) and total net worth in the middler of the chart - https://play.google.com/store/apps/details?id=com.gianmarcodavid.networth&hl=en_AU
+- investments screen: on asset click

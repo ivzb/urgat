@@ -6,7 +6,6 @@ import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.domain.default.Group
 import com.ivzb.urgat.domain.default.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.GroupedItems
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -27,8 +26,8 @@ class DefaultObserveGroupedInvestmentsUseCase @Inject constructor(
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
-        filter = ::filter,
-        group = ::group,
+        filter = ::filterInvestments,
+        group = { items -> Group.byDate(items, Investment::date) },
         errorMessageResId = R.string.error_investments,
     )
 
@@ -37,21 +36,5 @@ class DefaultObserveGroupedInvestmentsUseCase @Inject constructor(
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedItems<String, Investment>>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
-
-    companion object {
-
-
-        private fun filter(items: List<Investment>, filterType: String): List<Investment> {
-            if (filterType == InvestmentsFilterType_All) {
-                return items
-            }
-
-            return items.filter { it.category == filterType }
-        }
-
-        private fun group(items: List<Investment>): List<GroupedItems<String, Investment>> =
-            Group.byDate(items, Investment::date)
-
-    }
 
 }
