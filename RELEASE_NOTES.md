@@ -1,3 +1,8 @@
+## Release notes 25.12.8
+
+New:
+- Enhanced investment data with net worth and consolidated assets
+
 ## Release notes 25.12.7
 
 New:
