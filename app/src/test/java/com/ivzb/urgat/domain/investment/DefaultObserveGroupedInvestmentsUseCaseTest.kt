@@ -3,7 +3,6 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.toTimestamp
 import io.mockk.every
@@ -92,7 +91,6 @@ class ObserveGroupedInvestmentsUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_investments, (first as Async.Error).errorMessage)
     }
 
     private fun timestamp(year: Int, month: Int, day: Int) = LocalDate.of(year, month, day).toTimestamp()

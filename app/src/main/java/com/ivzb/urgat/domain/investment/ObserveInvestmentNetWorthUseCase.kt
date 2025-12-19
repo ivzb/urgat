@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.investment
 
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.domain.default.Group.groupInvestmentNetWorth
@@ -27,7 +26,6 @@ class DefaultObserveInvestmentNetWorthUseCase @Inject constructor(
         repository = repository,
         filter = ::filterInvestments,
         group = ::groupInvestmentNetWorth,
-        errorMessageResId = R.string.error_investments,
     )
 
     override fun invoke(

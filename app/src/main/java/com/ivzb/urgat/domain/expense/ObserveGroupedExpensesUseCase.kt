@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.expense
 
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.domain.default.Group
@@ -29,7 +28,6 @@ class DefaultObserveGroupedExpensesUseCase @Inject constructor(
         repository = repository,
         filter = ::filterExpenses,
         group = { items -> Group.byDate(items, Expense::date) },
-        errorMessageResId = R.string.error_expenses,
     )
 
     override fun invoke(

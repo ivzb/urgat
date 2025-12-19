@@ -1,49 +1,38 @@
 package com.ivzb.urgat.ui.notes
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class NotesViewModel @Inject constructor(
     observeNotesUseCase: ObserveNotesUseCase,
-    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
-    private val _isLoading = MutableStateFlow(false)
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<NotesUiState> = combine(
-        _isLoading,
-        observeNotesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null)
-    ) { isLoading, notesAsync ->
-        when (notesAsync) {
-            Async.Loading -> {
-                NotesUiState(isLoading = true)
-            }
+    val uiState: StateFlow<NotesUiState> = combineUiState(
+        observeNotesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null),
 
-            is Async.Error -> {
-                NotesUiState(hasError = true)
-            }
-
-            is Async.Success -> {
-                NotesUiState(
-                    items = notesAsync.data,
-                    isLoading = isLoading,
-                )
-            }
+        onLoading = {
+            NotesUiState(isLoading = true)
+        },
+        onError = {
+            NotesUiState(hasError = true)
+        },
+        onSuccess = { notes ->
+            NotesUiState(
+                items = notes,
+            )
         }
-    }
+    )
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,

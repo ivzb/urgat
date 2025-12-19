@@ -8,12 +8,11 @@ import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -32,46 +31,34 @@ class InvestmentsViewModel @Inject constructor(
 
     private val _itemsLimit = MutableStateFlow(NO_ITEMS_LIMIT)
 
-    val uiState: StateFlow<InvestmentsUiState> = combine(
+    val uiState: StateFlow<InvestmentsUiState> = combineUiState(
         observeGroupedInvestmentsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentNetWorthUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentAssetsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentsFilteringUseCase(),
-    ) { investmentsAsync, netWorthAsync, assetsAsync, investmentsFilteringAsync ->
 
-        when {
-            investmentsAsync is Async.Loading || netWorthAsync is Async.Loading || assetsAsync is Async.Loading || investmentsFilteringAsync is Async.Loading -> {
-                InvestmentsUiState(
-                    isLoading = true
-                )
-            }
-
-            investmentsAsync is Async.Error || netWorthAsync is Async.Error || assetsAsync is Async.Error || investmentsFilteringAsync is Async.Error -> {
-                InvestmentsUiState(
-                    hasError = true
-                )
-            }
-
-            investmentsAsync is Async.Success && netWorthAsync is Async.Success && assetsAsync is Async.Success && investmentsFilteringAsync is Async.Success -> {
-                InvestmentsUiState(
-                    items = investmentsAsync.data,
-                    netWorth = netWorthAsync.data,
-                    assets = assetsAsync.data,
-                    isLoading = false,
-                    filteringUiInfo = InvestmentsFilteringUiInfo(
-                        filterMenuItems = investmentsFilteringAsync.data
-                    )
-                )
-            }
-
-            else -> error("undefined state: $investmentsAsync, $investmentsFilteringAsync")
+        onLoading = {
+            InvestmentsUiState(isLoading = true)
+        },
+        onError = {
+            InvestmentsUiState(hasError = true)
+        },
+        onSuccess = { items, netWorth, assets, filtering ->
+            InvestmentsUiState(
+                items = items,
+                netWorth = netWorth,
+                assets = assets,
+                filteringUiInfo = InvestmentsFilteringUiInfo(
+                    filterMenuItems = filtering,
+                ),
+            )
         }
-    }
-        .stateIn(
-            scope = viewModelScope,
-            started = WhileUiSubscribed,
-            initialValue = InvestmentsUiState(isLoading = true)
-        )
+    )
+    .stateIn(
+        scope = viewModelScope,
+        started = WhileUiSubscribed,
+        initialValue = InvestmentsUiState(isLoading = true)
+    )
 
     fun onIntent(intent: InvestmentsIntent) {
         when (intent) {

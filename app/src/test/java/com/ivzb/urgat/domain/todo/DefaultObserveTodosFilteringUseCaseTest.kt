@@ -77,6 +77,5 @@ class ObserveTodosFilteringUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_todos_filtering, (first as Async.Error).errorMessage)
     }
 }

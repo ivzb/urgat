@@ -1,23 +1,19 @@
 package com.ivzb.urgat.ui.notes
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
-import com.ivzb.urgat.R
 import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.math.BigDecimal
 import kotlin.test.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotesViewModelTest {
 
-    private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveNotesUseCase: FakeObserveNotesUseCase
 
     private lateinit var viewModel: NotesViewModel
@@ -27,7 +23,6 @@ class NotesViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle()
         fakeObserveNotesUseCase = FakeObserveNotesUseCase()
     }
 
@@ -75,7 +70,7 @@ class NotesViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveNotesUseCase.emit(Async.Error(R.string.error_notes))
+        fakeObserveNotesUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -106,6 +101,5 @@ class NotesViewModelTest {
 
     private fun createViewModel() = NotesViewModel(
         fakeObserveNotesUseCase,
-        savedStateHandle
     )
 }

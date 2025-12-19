@@ -3,7 +3,6 @@ package com.ivzb.urgat.domain.weight
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.R
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,6 +74,5 @@ class ObserveWeightsUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_weights, (first as Async.Error).errorMessage)
     }
 }

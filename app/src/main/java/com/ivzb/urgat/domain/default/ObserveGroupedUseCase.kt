@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.default
 
-import androidx.annotation.StringRes
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.util.Async
@@ -15,8 +14,6 @@ class ObserveGroupedUseCase<T, FilterType, Group>(
     filter: ((List<T>, FilterType) -> List<T>)? = null,
     transform: ((List<T>) -> List<T>)? = null,
     private val group: (List<T>) -> Group,
-    @StringRes
-    private val errorMessageResId: Int,
 ) : DefaultObserveUseCase<T, FilterType>(repository, filter, transform) {
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -35,7 +32,7 @@ class ObserveGroupedUseCase<T, FilterType, Group>(
                     e.printStackTrace()
                 }
 
-                emit(Async.Error(errorMessageResId, e))
+                emit(Async.Error)
             }
 
 }

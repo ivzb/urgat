@@ -32,7 +32,7 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
                 )
             }
             .map<List<ExpensesFilterMenuItem>, Async<List<ExpensesFilterMenuItem>>> { Async.Success(it) }
-            .catch { e -> emit(Async.Error(R.string.error_expenses_filtering, e)) }
+            .catch { emit(Async.Error) }
     }
 
 }

@@ -3,7 +3,6 @@ package com.ivzb.urgat.domain.expense
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.R
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,6 +71,5 @@ class ObserveExpensesUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_expenses, (first as Async.Error).errorMessage)
     }
 }

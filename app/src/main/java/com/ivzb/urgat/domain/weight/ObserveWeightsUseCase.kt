@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.weight
 
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
 import com.ivzb.urgat.domain.default.ObserveUseCase
@@ -25,7 +24,6 @@ class DefaultObserveWeightsUseCase @Inject constructor(
     private val observeUseCase = ObserveUseCase<Weight, Unit>(
         repository = repository,
         transform = ::transform,
-        errorMessageResId = R.string.error_weights,
     )
 
     override fun invoke(

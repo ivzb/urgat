@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.note
 
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.domain.default.ObserveUseCase
@@ -24,7 +23,6 @@ class DefaultObserveNotesUseCase @Inject constructor(
 
     private val observeUseCase = ObserveUseCase<Note, Unit>(
         repository = repository,
-        errorMessageResId = R.string.error_notes,
     )
 
     override fun invoke(

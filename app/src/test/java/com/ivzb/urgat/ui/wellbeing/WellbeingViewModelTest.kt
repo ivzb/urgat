@@ -1,8 +1,5 @@
 package com.ivzb.urgat.ui.wellbeing
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FitnessCenter
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.weight.FakeObserveWeightsUseCase
 import com.ivzb.urgat.util.Async
@@ -103,7 +100,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Error(R.string.error_weights))
+        fakeObserveWeightsUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {

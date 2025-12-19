@@ -2,7 +2,6 @@ package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.TodoRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -71,6 +70,5 @@ class ObserveTodosUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_todos, (first as Async.Error).errorMessage)
     }
 }

@@ -6,7 +6,6 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import io.mockk.every
 import io.mockk.mockk
@@ -80,6 +79,5 @@ class ObserveInvestmentsFilteringUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_investments_filtering, (first as Async.Error).errorMessage)
     }
 }

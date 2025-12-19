@@ -8,13 +8,11 @@ import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
-import com.ivzb.urgat.util.Assert
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,47 +30,38 @@ class FinanceViewModel @Inject constructor(
 
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
-    val uiState: StateFlow<FinanceUiState> = combine(
+    val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeExpensesUseCase(_searchQuery, null, _itemsLimit),
         observeInvestmentsUseCase(_searchQuery, null, _itemsLimit),
         _uiEvent,
-    ) { expenses, investments, uiEvent ->
-        when {
-            expenses is Async.Loading || investments is Async.Loading -> {
-                FinanceUiState(isLoading = true)
-            }
 
-            expenses is Async.Error || investments is Async.Error -> {
-                FinanceUiState(hasError = true)
-            }
-
-            expenses is Async.Success && investments is Async.Success -> {
-                FinanceUiState(
-                    expenses = expenses.data,
-                    expensesFilteringUiInfo = ExpensesFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_expenses,
-                        emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_expenses_label else R.string.no_expenses_search,
-                        emptyMessage = R.string.no_expenses_message,
-                        emptyButtonLabel = R.string.add_expense,
-                    ),
-                    investments = investments.data,
-                    investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_investments,
-                        emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
-                        emptyMessage = R.string.no_investments_message,
-                        emptyButtonLabel = R.string.add_investment,
-                    ),
-                    isLoading = false,
-                    uiEvent = uiEvent,
-                )
-            }
-
-            else -> {
-                Assert.fail("finance undefined state: $expenses, $investments, $uiEvent")
-                FinanceUiState(hasError = true)
-            }
+        onLoading = {
+            FinanceUiState(isLoading = true)
+        },
+        onError = {
+            FinanceUiState(hasError = true)
+        },
+        onSuccess = { expenses, investments, uiEvent ->
+            FinanceUiState(
+                expenses = expenses,
+                expensesFilteringUiInfo = ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_expenses,
+                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_expenses_label else R.string.no_expenses_search,
+                    emptyMessage = R.string.no_expenses_message,
+                    emptyButtonLabel = R.string.add_expense,
+                ),
+                investments = investments,
+                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_investments,
+                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
+                    emptyMessage = R.string.no_investments_message,
+                    emptyButtonLabel = R.string.add_investment,
+                ),
+                isLoading = false,
+                uiEvent = uiEvent,
+            )
         }
-    }
+    )
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,

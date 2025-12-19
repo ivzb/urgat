@@ -89,8 +89,8 @@ class ExpensesViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Error(R.string.error_expenses))
-        fakeObserveExpensesFilteringUseCase.emit(Async.Error(R.string.error_expenses_filtering))
+        fakeObserveExpensesUseCase.emit(Async.Error)
+        fakeObserveExpensesFilteringUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {

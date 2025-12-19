@@ -9,13 +9,12 @@ import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -30,37 +29,26 @@ class ExpensesViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<ExpensesUiState> = combine(
+    val uiState: StateFlow<ExpensesUiState> = combineUiState(
         observeGroupedExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeExpensesFilteringUseCase(),
-    ) { expensesAsync, expensesFilteringAsync ->
 
-        when {
-            expensesAsync is Async.Loading || expensesFilteringAsync is Async.Loading -> {
-                ExpensesUiState(
-                    isLoading = true
-                )
-            }
-
-            expensesAsync is Async.Error || expensesFilteringAsync is Async.Error -> {
-                ExpensesUiState(
-                    hasError = true
-                )
-            }
-
-            expensesAsync is Async.Success && expensesFilteringAsync is Async.Success -> {
-                ExpensesUiState(
-                    items = expensesAsync.data,
-                    isLoading = false,
-                    filteringUiInfo = getFilterUiInfo(
-                        filterMenuItems = expensesFilteringAsync.data,
-                    ),
-                )
-            }
-
-            else -> error("undefined state: $expensesAsync, $expensesFilteringAsync")
+        onLoading = {
+            ExpensesUiState(isLoading = true)
+        },
+        onError = {
+            ExpensesUiState(hasError = true)
+        },
+        onSuccess = { expenses, expensesFiltering ->
+            ExpensesUiState(
+                items = expenses,
+                isLoading = false,
+                filteringUiInfo = getFilterUiInfo(
+                    filterMenuItems = expensesFiltering,
+                ),
+            )
         }
-     }
+    )
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,

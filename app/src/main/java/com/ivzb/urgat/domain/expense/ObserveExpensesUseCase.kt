@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.expense
 
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.domain.default.ObserveUseCase
@@ -26,7 +25,6 @@ class DefaultObserveExpensesUseCase @Inject constructor(
     private val observeUseCase = ObserveUseCase(
         repository = repository,
         filter = ::filterExpenses,
-        errorMessageResId = R.string.error_expenses,
     )
 
     override fun invoke(

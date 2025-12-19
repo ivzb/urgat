@@ -97,7 +97,7 @@ class TodoViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Error(R.string.error_todos))
+        fakeObserveTodosUseCase.emit(Async.Error)
         fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 

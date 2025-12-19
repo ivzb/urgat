@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.todo
 
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.domain.default.ObserveUseCase
@@ -26,7 +25,6 @@ class DefaultObserveTodosUseCase @Inject constructor(
     private val observeUseCase = ObserveUseCase(
         repository = repository,
         filter = ::filter,
-        errorMessageResId = R.string.error_todos,
     )
 
     override fun invoke(

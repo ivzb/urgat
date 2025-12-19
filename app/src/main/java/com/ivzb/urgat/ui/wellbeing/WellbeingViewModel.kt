@@ -2,9 +2,14 @@ package com.ivzb.urgat.ui.wellbeing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
+import com.ivzb.urgat.ui.library.LibraryUiState
+import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,33 +27,26 @@ class WellbeingViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<WellbeingUiState> = combine(
-        _uiEvent,
+    val uiState: StateFlow<WellbeingUiState> = combineUiState(
         observeWeightsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null),
-    ) { uiEvent, weightsAsync ->
+        // dummy Flow<Async> is needed to avoid combineUiState overload clashes
+        MutableStateFlow<Async<Unit>>(Async.Success(Unit)),
+        _uiEvent,
 
-        when (weightsAsync) {
-            Async.Loading -> {
-                WellbeingUiState(
-                    isLoading = true
-                )
-            }
-
-            is Async.Error -> {
-                WellbeingUiState(
-                    hasError = true
-                )
-            }
-
-            is Async.Success -> {
-                WellbeingUiState(
-                    weights = weightsAsync.data,
-                    isLoading = false,
-                    uiEvent = uiEvent,
-                )
-            }
+        onLoading = {
+            WellbeingUiState(isLoading = true)
+        },
+        onError = {
+            WellbeingUiState(hasError = true)
+        },
+        onSuccess = { weights, _, uiEvent ->
+            WellbeingUiState(
+                weights = weights,
+                isLoading = false,
+                uiEvent = uiEvent,
+            )
         }
-    }
+    )
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,

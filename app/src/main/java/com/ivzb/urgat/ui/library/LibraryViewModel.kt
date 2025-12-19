@@ -14,13 +14,11 @@ import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
-import com.ivzb.urgat.util.Assert
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,47 +48,38 @@ class LibraryViewModel @Inject constructor(
 
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
-    val uiState: StateFlow<LibraryUiState> = combine(
+    val uiState: StateFlow<LibraryUiState> = combineUiState(
         observeTodosUseCase(_searchQuery, null, _itemsLimit),
         observeNotesUseCase(_searchQuery, null, _itemsLimit),
         _uiEvent,
-    ) { todos, notes, uiEvent ->
-        when {
-            todos is Async.Loading || notes is Async.Loading -> {
-                LibraryUiState(isLoading = true)
-            }
 
-            todos is Async.Error || notes is Async.Error -> {
-                LibraryUiState(hasError = true)
-            }
-
-            todos is Async.Success && notes is Async.Success -> {
-                LibraryUiState(
-                    todos = todos.data,
-                    todosFilteringUiInfo = TodosFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_todos,
-                        emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
-                        emptyMessage = R.string.no_todos_message,
-                        emptyButtonLabel = R.string.add_todo,
-                    ),
-                    notes = notes.data,
-                    notesFilteringUiInfo = NotesFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_notes,
-                        emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
-                        emptyMessage = R.string.no_notes_message,
-                        emptyButtonLabel = R.string.add_note,
-                    ),
-                    isLoading = false,
-                    uiEvent = uiEvent,
-                )
-            }
-
-            else -> {
-                Assert.fail("library undefined state: $todos, $notes, $uiEvent")
-                LibraryUiState(hasError = true)
-            }
+        onLoading = {
+            LibraryUiState(isLoading = true)
+        },
+        onError = {
+            LibraryUiState(hasError = true)
+        },
+        onSuccess = { todos, notes, uiEvent ->
+            LibraryUiState(
+                todos = todos,
+                todosFilteringUiInfo = TodosFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_todos,
+                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
+                    emptyMessage = R.string.no_todos_message,
+                    emptyButtonLabel = R.string.add_todo,
+                ),
+                notes = notes,
+                notesFilteringUiInfo = NotesFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_notes,
+                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
+                    emptyMessage = R.string.no_notes_message,
+                    emptyButtonLabel = R.string.add_note,
+                ),
+                isLoading = false,
+                uiEvent = uiEvent,
+            )
         }
-    }
+    )
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,

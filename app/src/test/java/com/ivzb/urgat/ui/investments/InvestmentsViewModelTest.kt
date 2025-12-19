@@ -1,7 +1,6 @@
 package com.ivzb.urgat.ui.investments
 
 import androidx.lifecycle.SavedStateHandle
-import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
@@ -139,9 +138,9 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Error(R.string.error_expenses))
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Error(R.string.error_expenses))
-        fakeObserveInvestmentAssetsUseCase.emit(Async.Error(R.string.error_expenses))
+        fakeObserveGroupedInvestmentsUseCase.emit(Async.Error)
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Error)
+        fakeObserveInvestmentAssetsUseCase.emit(Async.Error)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 

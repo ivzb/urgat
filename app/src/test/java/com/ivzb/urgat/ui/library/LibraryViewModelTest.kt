@@ -112,7 +112,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Error(R.string.error_todos))
+        fakeObserveTodosUseCase.emit(Async.Error)
 
         val fakeNotes = listOf(Note("1", "Note", false, 1L))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))

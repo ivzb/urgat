@@ -3,7 +3,6 @@ package com.ivzb.urgat.domain.note
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.R
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,6 +70,5 @@ class ObserveNotesUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
-        assertEquals(R.string.error_notes, (first as Async.Error).errorMessage)
     }
 }

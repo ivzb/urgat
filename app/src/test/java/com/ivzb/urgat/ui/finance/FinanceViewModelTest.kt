@@ -101,7 +101,7 @@ class FinanceViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Error(R.string.error_expenses))
+        fakeObserveExpensesUseCase.emit(Async.Error)
 
         val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))

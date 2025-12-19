@@ -10,12 +10,11 @@ import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosFilteringUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
+import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,36 +33,26 @@ class TodosViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    val uiState: StateFlow<TodosUiState> = combine(
+    val uiState: StateFlow<TodosUiState> = combineUiState(
         observeTodosUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeTodosFilteringUseCase(),
-    ) { todosAsync, todosFilteringAsync ->
-        when {
-            todosAsync is Async.Loading || todosFilteringAsync is Async.Loading -> {
-                TodosUiState(
-                    isLoading = true
-                )
-            }
 
-            todosAsync is Async.Error || todosFilteringAsync is Async.Error -> {
-                TodosUiState(
-                    hasError = true
-                )
-            }
-
-            todosAsync is Async.Success && todosFilteringAsync is Async.Success -> {
-                TodosUiState(
-                    items = todosAsync.data,
-                    isLoading = false,
-                    filteringUiInfo = getFilterUiInfo(
-                        filterMenuItems = todosFilteringAsync.data
-                    ),
-                )
-            }
-
-            else -> error("undefined state: $todosAsync, $todosFilteringAsync")
+        onLoading = {
+            TodosUiState(isLoading = true)
+        },
+        onError = {
+            TodosUiState(hasError = true)
+        },
+        onSuccess = { todos, todosFiltering ->
+            TodosUiState(
+                items = todos,
+                isLoading = false,
+                filteringUiInfo = getFilterUiInfo(
+                    filterMenuItems = todosFiltering
+                ),
+            )
         }
-    }
+    )
     .stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,
