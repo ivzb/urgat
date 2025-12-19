@@ -31,6 +31,7 @@ import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
 
@@ -176,7 +177,7 @@ fun ExpenseItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = expense.name,
-        subTextRight = (expense.amount * -1.toBigDecimal()).toPlainString(),
+        subTextRight = (expense.amount * -1.toBigDecimal()).format(),
 
         subTextRightFontWeight = FontWeight.Bold,
         subTextRightColor = Color(if (expense.amount > BigDecimal.ZERO) {

@@ -31,6 +31,7 @@ import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.format
 
 @Composable
 fun InvestmentsScreen(
@@ -209,7 +210,7 @@ private fun InvestmentsNetWorth(
         textLeft = "",
         subTextLeft = "",
 
-        textRight = netWorth.amount.toString(),
+        textRight = netWorth.amount.format(),
         subTextRight = netWorth.currency,
 
         onClick = { /* NOOP */ },
@@ -224,7 +225,7 @@ fun AssetItem(
         textLeft = asset.category,
         subTextLeft = "",
 
-        textRight = asset.amount.toString(),
+        textRight = asset.amount.format(),
         subTextRight = asset.currency,
 
         onClick = { /* NOOP */ },
@@ -240,7 +241,7 @@ fun InvestmentItem(
         textLeft = investment.name,
         subTextLeft = investment.category,
 
-        textRight = investment.amount.toString(),
+        textRight = investment.marketValue.format(),
         subTextRight = investment.currency,
 
         onClick = { onInvestmentClick(investment) }

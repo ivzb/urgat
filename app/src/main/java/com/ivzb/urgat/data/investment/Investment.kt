@@ -12,4 +12,8 @@ data class Investment(
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long
-)
+) {
+
+    val marketValue: BigDecimal
+        get() = cost * amount
+}

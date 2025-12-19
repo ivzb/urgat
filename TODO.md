@@ -33,6 +33,7 @@
 - inspect all classes using inheritance and change them to composition
 - consider renaming Investment to InvestmentTransaction
 - check if it's possible to combine all async checks internally and not in the view model (becomes too ugly with many async checks)
+- consider renaming amount to shares in Investment
 
 ## Features
 - add drawer with app version, settings, sample data button, etc

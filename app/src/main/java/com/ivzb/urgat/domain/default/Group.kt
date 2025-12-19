@@ -43,7 +43,7 @@ object Group {
 
                 InvestmentAsset(
                     category = category,
-                    amount = investments.sumOf { it.amount },
+                    amount = investments.sumOf { it.amount * it.cost },
                     currency = currency,
                 )
             }
@@ -55,7 +55,7 @@ object Group {
             .groupBy { it.currency }
             .map { (currency, investments) ->
                 InvestmentNetWorth(
-                    amount = investments.sumOf { it.amount },
+                    amount = investments.sumOf { it.amount * it.cost },
                     currency = currency,
                 )
             }
