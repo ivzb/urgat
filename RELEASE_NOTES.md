@@ -1,3 +1,8 @@
+## Release notes 25.12.9
+
+Fixed:
+- Adjust investments to accurately reflect market value.
+
 ## Release notes 25.12.8
 
 New:
