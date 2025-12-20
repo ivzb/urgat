@@ -1,3 +1,8 @@
+## Release notes 25.12.10
+
+New:
+- Enhanced investment data with consolidated assets and categories
+
 ## Release notes 25.12.9
 
 Fixed:
