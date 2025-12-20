@@ -9,7 +9,6 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
-- write unit tests for Group.kt functions
 - check if it's possible to combine Async and non-Async generics in `combineUiState` to avoid overloads clashes
 - if not possible try to convert all non-Async flows to Async?
 

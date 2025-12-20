@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.GroupedItems
-import com.ivzb.urgat.util.toTimestamp
+import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,7 +16,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
-import java.time.LocalDate
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -92,6 +91,4 @@ class ObserveGroupedExpensesUseCaseTest {
         val first = results.first()
         assert(first is Async.Error)
     }
-
-    private fun timestamp(year: Int, month: Int, day: Int) = LocalDate.of(year, month, day).toTimestamp()
 }
