@@ -16,8 +16,9 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_InvestmentsScreen_sampleData() = screenshotTest(
         uiState = InvestmentsUiState(
-            items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+            investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
             netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+            categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
             assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
             isLoading = false,
             hasError = false,
@@ -27,7 +28,7 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_InvestmentsScreen_emptyState() = screenshotTest(
         uiState = InvestmentsUiState(
-            items = listOf(),
+            investments = listOf(),
             isLoading = false,
             hasError = false,
         ),
@@ -36,17 +37,13 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_InvestmentsScreen_loadingState() = screenshotTest(
         uiState = InvestmentsUiState(
-            items = listOf(),
             isLoading = true,
-            hasError = false,
         ),
     )
 
     @Test
     fun screenshotTest_InvestmentsScreen_errorState() = screenshotTest(
         uiState = InvestmentsUiState(
-            items = listOf(),
-            isLoading = false,
             hasError = true,
         ),
     )

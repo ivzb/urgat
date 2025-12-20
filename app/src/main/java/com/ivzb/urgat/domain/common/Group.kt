@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.common
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
@@ -37,17 +38,33 @@ object Group {
 
     fun groupInvestmentAssets(investments: List<Investment>): List<InvestmentAsset> {
         return investments
+            .groupBy { Triple(it.name, it.category, it.currency) }
+            .map { (key, investments) ->
+                val (name, category, currency) = key
+
+                InvestmentAsset(
+                    name = name,
+                    category = category,
+                    marketValue = investments.sumOf { it.marketValue },
+                    currency = currency,
+                )
+            }
+            .sortedBy { it.name }
+    }
+
+    fun groupInvestmentCategories(investments: List<Investment>): List<InvestmentCategory> {
+        return investments
             .groupBy { Pair(it.currency, it.category) }
             .map { (key, investments) ->
                 val (currency, category) = key
 
-                InvestmentAsset(
-                    category = category,
-                    amount = investments.sumOf { it.amount * it.cost },
+                InvestmentCategory(
+                    name = category,
+                    marketValue = investments.sumOf { it.marketValue },
                     currency = currency,
                 )
             }
-            .sortedBy { it.category }
+            .sortedBy { it.name }
     }
 
     fun groupInvestmentNetWorth(investments: List<Investment>): List<InvestmentNetWorth> =
@@ -55,7 +72,7 @@ object Group {
             .groupBy { it.currency }
             .map { (currency, investments) ->
                 InvestmentNetWorth(
-                    amount = investments.sumOf { it.amount * it.cost },
+                    marketValue = investments.sumOf { it.marketValue },
                     currency = currency,
                 )
             }

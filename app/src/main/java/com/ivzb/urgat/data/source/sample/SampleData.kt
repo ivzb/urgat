@@ -161,6 +161,8 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS_NET_WORTH = Group.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
 
+    val SAMPLE_INVESTMENTS_CATEGORIES = Group.groupInvestmentCategories(SAMPLE_INVESTMENTS)
+
     val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS)
 
     val SAMPLE_WEIGHTS = debugOnly {

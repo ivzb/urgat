@@ -36,7 +36,6 @@
 - check if it's possible to combine all async checks internally and not in the view model (becomes too ugly with many async checks)
 - consider renaming amount to shares in Investment
 - check if it's good idea to split investments screen into view pager
-- show individual investments combined between assets and transactions
 
 ## Features
 - add drawer with app version, settings, sample data button, etc

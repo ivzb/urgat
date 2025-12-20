@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
@@ -76,6 +77,30 @@ class FakeObserveInvestmentNetWorthUseCase : ObserveInvestmentNetWorthUseCase {
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<InvestmentNetWorth>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveInvestmentCategoriesUseCase : ObserveInvestmentCategoriesUseCase {
+
+    private val flow = MutableStateFlow<Async<List<InvestmentCategory>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<InvestmentCategory>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<String>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<InvestmentCategory>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.GroupedItems
@@ -95,7 +96,7 @@ fun InvestmentsScreen(
                 )
             }
 
-            uiState.items.isEmpty() -> {
+            uiState.investments.isEmpty() -> {
                EmptyStateScreen(
                    label = uiState.filteringUiInfo.emptyLabel,
                    iconRes = uiState.filteringUiInfo.emptyIconRes
@@ -104,8 +105,9 @@ fun InvestmentsScreen(
 
             else -> {
                 InvestmentsContent(
-                    groupedInvestments = uiState.items,
+                    investments = uiState.investments,
                     netWorth = uiState.netWorth,
+                    categories = uiState.categories,
                     assets = uiState.assets,
                     onInvestmentClick = onInvestmentClick,
                     filteringUiInfo = uiState.filteringUiInfo,
@@ -118,8 +120,9 @@ fun InvestmentsScreen(
 
 @Composable
 private fun InvestmentsContent(
-    groupedInvestments: List<GroupedItems<String, Investment>>,
+    investments: List<GroupedItems<String, Investment>>,
     netWorth: List<InvestmentNetWorth>,
+    categories: List<InvestmentCategory>,
     assets: List<InvestmentAsset>,
     onInvestmentClick: (Investment) -> Unit,
 
@@ -156,6 +159,20 @@ private fun InvestmentsContent(
 
         item {
             ItemHeaderMedium(
+                text = stringResource(R.string.categories),
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        items(categories) { category ->
+            CategoryItem(
+                category = category,
+            )
+        }
+
+        item {
+            ItemHeaderMedium(
                 text = stringResource(R.string.assets),
                 modifier = Modifier
                     .padding(vertical = dimensionResource(R.dimen.vertical_margin))
@@ -176,7 +193,7 @@ private fun InvestmentsContent(
             )
         }
 
-        groupedInvestments.forEach { (group, investments) ->
+        investments.forEach { (group, investments) ->
             item {
                 ItemHeaderSmall(
                     text = group,
@@ -210,8 +227,23 @@ private fun InvestmentsNetWorth(
         textLeft = "",
         subTextLeft = "",
 
-        textRight = netWorth.amount.format(),
+        textRight = netWorth.marketValue.format(),
         subTextRight = netWorth.currency,
+
+        onClick = { /* NOOP */ },
+    )
+}
+
+@Composable
+private fun CategoryItem(
+    category: InvestmentCategory,
+) {
+    ListItem(
+        textLeft = category.name,
+        subTextLeft = "",
+
+        textRight = category.marketValue.format(),
+        subTextRight = category.currency,
 
         onClick = { /* NOOP */ },
     )
@@ -222,13 +254,13 @@ fun AssetItem(
     asset: InvestmentAsset,
 ) {
     ListItem(
-        textLeft = asset.category,
-        subTextLeft = "",
+        textLeft = asset.name,
+        subTextLeft = asset.category,
 
-        textRight = asset.amount.format(),
+        textRight = asset.marketValue.format(),
         subTextRight = asset.currency,
 
-        onClick = { /* NOOP */ },
+        onClick = { /* NOOP */ }
     )
 }
 
@@ -254,8 +286,9 @@ private fun InvestmentsScreenPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+                investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
                 netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+                categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
                 assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
@@ -276,8 +309,9 @@ private fun InvestmentsScreenEmptyPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = listOf(),
+                investments = listOf(),
                 netWorth = listOf(),
+                categories = listOf(),
                 assets = listOf(),
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
@@ -298,10 +332,7 @@ private fun InvestmentsScreenLoadingPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = listOf(),
-                filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = true,
-                hasError = false,
             ),
             onIntent = {},
             onAddInvestment = {},
@@ -318,9 +349,6 @@ private fun InvestmentsScreenErrorPreview() {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
-                items = listOf(),
-                filteringUiInfo = InvestmentsFilteringUiInfo(),
-                isLoading = false,
                 hasError = true,
             ),
             onIntent = {},

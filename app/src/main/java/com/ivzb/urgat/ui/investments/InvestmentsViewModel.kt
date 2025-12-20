@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentCategoriesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class InvestmentsViewModel @Inject constructor(
     observeGroupedInvestmentsUseCase: ObserveGroupedInvestmentsUseCase,
     observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
+    observeInvestmentCategoriesUseCase: ObserveInvestmentCategoriesUseCase,
     observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
     observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     val savedStateHandle: SavedStateHandle
@@ -34,6 +36,7 @@ class InvestmentsViewModel @Inject constructor(
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
         observeGroupedInvestmentsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentNetWorthUseCase(_searchQuery, _savedFilterType, _itemsLimit),
+        observeInvestmentCategoriesUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentAssetsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
         observeInvestmentsFilteringUseCase(),
 
@@ -43,10 +46,11 @@ class InvestmentsViewModel @Inject constructor(
         onError = {
             InvestmentsUiState(hasError = true)
         },
-        onSuccess = { items, netWorth, assets, filtering ->
+        onSuccess = { investments, netWorth, categories, assets, filtering ->
             InvestmentsUiState(
-                items = items,
+                investments = investments,
                 netWorth = netWorth,
+                categories = categories,
                 assets = assets,
                 filteringUiInfo = InvestmentsFilteringUiInfo(
                     filterMenuItems = filtering,
