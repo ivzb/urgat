@@ -1,4 +1,4 @@
-package com.ivzb.urgat.domain.default
+package com.ivzb.urgat.domain.common
 
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository

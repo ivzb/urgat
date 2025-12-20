@@ -9,8 +9,6 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
-- check if it's possible to combine Async and non-Async generics in `combineUiState` to avoid overloads clashes
-- if not possible try to convert all non-Async flows to Async?
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
@@ -18,12 +16,14 @@
 - deal with too many items - pagination?
 - select today's weight from DB if exists
 - make splash screen dark mode
+- add paste from clipboard button for todos and notes
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
 - check how to show text field labels because editing investment is unclear
 - there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 - left column scroll doesn't work when there are a lot of notes
+- fix edge to edge recommendation from play store
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
@@ -35,6 +35,8 @@
 - consider renaming Investment to InvestmentTransaction
 - check if it's possible to combine all async checks internally and not in the view model (becomes too ugly with many async checks)
 - consider renaming amount to shares in Investment
+- check if it's good idea to split investments screen into view pager
+- show individual investments combined between assets and transactions
 
 ## Features
 - add drawer with app version, settings, sample data button, etc
@@ -59,3 +61,4 @@
 - make the investments tab show net worth. then show each investment combined, then show transactions
 - make net worth pie chart showing color for each category (list with colors and numbers below) and total net worth in the middler of the chart - https://play.google.com/store/apps/details?id=com.gianmarcodavid.networth&hl=en_AU
 - investments screen: on asset click
+- add system unlock with biometric/pin when opening the app

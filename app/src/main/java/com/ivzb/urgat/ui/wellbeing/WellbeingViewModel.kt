@@ -2,8 +2,8 @@ package com.ivzb.urgat.ui.wellbeing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.ui.common.UiEventHolder
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,13 +18,14 @@ class WellbeingViewModel @Inject constructor(
     observeWeightsUseCase: ObserveWeightsUseCase,
 ) : ViewModel() {
 
-    private val _uiEvent = MutableStateFlow<Async<WellbeingUiEvent?>>(Async.Success(null))
+    private val uiEventHolder = UiEventHolder<WellbeingUiEvent>()
 
     private val _searchQuery = MutableStateFlow("")
 
+
     val uiState: StateFlow<WellbeingUiState> = combineUiState(
         observeWeightsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null),
-        _uiEvent,
+        uiEventHolder(),
 
         onLoading = {
             WellbeingUiState(isLoading = true)
@@ -60,17 +61,17 @@ class WellbeingViewModel @Inject constructor(
 
     private fun onFabActionClick(id: WellbeingFabActionId) {
         viewModelScope.launch {
-            _uiEvent.emit(Async.Success(
+            uiEventHolder.emit(
                 when (id) {
                     WellbeingFabActionId.Weight -> WellbeingUiEvent.TrackWeight
                 }
-            ))
+            )
         }
     }
 
     private fun onEventConsumed() {
         viewModelScope.launch {
-            _uiEvent.emit(Async.Success(null))
+            uiEventHolder.emit(null)
         }
     }
 

@@ -2,7 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
-import com.ivzb.urgat.domain.default.ObserveUseCase
+import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

@@ -2,8 +2,8 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.investment.InvestmentsRepository
-import com.ivzb.urgat.domain.default.Group.groupInvestmentNetWorth
-import com.ivzb.urgat.domain.default.ObserveGroupedUseCase
+import com.ivzb.urgat.domain.common.Group.groupInvestmentNetWorth
+import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

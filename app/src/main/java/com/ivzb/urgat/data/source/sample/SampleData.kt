@@ -6,7 +6,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.domain.default.Group
+import com.ivzb.urgat.domain.common.Group
 import kotlin.collections.component1
 import kotlin.collections.component4
 

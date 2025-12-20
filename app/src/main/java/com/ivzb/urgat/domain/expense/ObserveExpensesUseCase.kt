@@ -2,7 +2,7 @@ package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
-import com.ivzb.urgat.domain.default.ObserveUseCase
+import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
