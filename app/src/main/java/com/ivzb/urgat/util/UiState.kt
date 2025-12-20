@@ -13,7 +13,7 @@ fun <T1, R> combineUiState(
     onSuccess: (T1) -> R,
 ): Flow<R> = combineUiState(
     // dummy flow is needed because combine requires 2 params
-    arrayOf(flow1, MutableStateFlow(Unit)),
+    arrayOf(flow1, MutableStateFlow(Async.Success(Unit))),
     onLoading,
     onError
 ) { data -> onSuccess(data[0] as T1) }
@@ -33,7 +33,7 @@ fun <T1, T2, R> combineUiState(
 fun <T1, T2, T3, R> combineUiState(
     flow1: Flow<Async<T1>>,
     flow2: Flow<Async<T2>>,
-    flow3: Flow<T3>,
+    flow3: Flow<Async<T3>>,
     onLoading: () -> R,
     onError: () -> R,
     onSuccess: (T1, T2, T3) -> R,
@@ -77,5 +77,5 @@ private fun <R> combineUiState(
 
 private fun Array<Any?>.isLoading() = any { it is Async.Loading }
 private fun Array<Any?>.isError() = any { it is Async.Error }
-private fun Array<Any?>.isSuccess() = filterIsInstance<Async<*>>().all { it is Async.Success<*> }
-private fun Array<Any?>.data() = map { if (it is Async.Success<*>) it.data else it }.toTypedArray()
+private fun Array<Any?>.isSuccess() = all { it is Async.Success<*> }
+private fun Array<Any?>.data() = map { (it as Async.Success<*>).data }.toTypedArray()

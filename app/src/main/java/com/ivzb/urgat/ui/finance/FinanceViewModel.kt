@@ -8,6 +8,7 @@ import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ class FinanceViewModel @Inject constructor(
     resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
-    private val _uiEvent = MutableStateFlow<FinanceUiEvent?>(null)
+    private val _uiEvent = MutableStateFlow<Async<FinanceUiEvent?>>(Async.Success(null))
 
     private val _searchQuery = MutableStateFlow("")
 
@@ -87,18 +88,18 @@ class FinanceViewModel @Inject constructor(
 
     private fun onFabActionClick(id: FinanceFabActionId) {
         viewModelScope.launch {
-            _uiEvent.emit(
+            _uiEvent.emit(Async.Success(
                 when (id) {
                     FinanceFabActionId.Expense -> FinanceUiEvent.AddExpense
                     FinanceFabActionId.Investment -> FinanceUiEvent.AddInvestment
                 }
-            )
+            ))
         }
     }
 
     private fun onEventConsumed() {
         viewModelScope.launch {
-            _uiEvent.emit(null)
+            _uiEvent.emit(Async.Success(null))
         }
     }
 

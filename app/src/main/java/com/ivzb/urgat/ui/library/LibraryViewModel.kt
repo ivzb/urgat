@@ -14,6 +14,7 @@ import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +43,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private val _uiEvent = MutableStateFlow<LibraryUiEvent?>(null)
+    private val _uiEvent = MutableStateFlow<Async<LibraryUiEvent?>>(Async.Success(null))
 
     private val _searchQuery = MutableStateFlow("")
 
@@ -121,18 +122,18 @@ class LibraryViewModel @Inject constructor(
 
     private fun onFabActionClick(id: LibraryFabActionId) {
         viewModelScope.launch {
-            _uiEvent.emit(
+            _uiEvent.emit(Async.Success(
                 when (id) {
                     LibraryFabActionId.Todo -> LibraryUiEvent.AddTodo
                     LibraryFabActionId.Note -> LibraryUiEvent.AddNote
                 }
-            )
+            ))
         }
     }
 
     private fun onEventConsumed() {
         viewModelScope.launch {
-            _uiEvent.emit(null)
+            _uiEvent.emit(Async.Success(null))
         }
     }
 
