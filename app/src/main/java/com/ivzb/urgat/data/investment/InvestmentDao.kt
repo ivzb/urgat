@@ -13,7 +13,12 @@ interface InvestmentDao {
 
     @Query("" +
             "SELECT * FROM investments " +
-            "WHERE isDeleted = 0 AND name LIKE '%' || :searchQuery || '%' OR amount LIKE '%' || :searchQuery || '%'" +
+            "WHERE isDeleted = 0 AND (" +
+                "name LIKE '%' || :searchQuery || '%' OR " +
+                "amount LIKE '%' || :searchQuery || '%' OR " +
+                "category LIKE '%' || :searchQuery || '%' OR " +
+                "currency LIKE '%' || :searchQuery || '%'" +
+            ")" +
             "ORDER BY date DESC " +
             "LIMIT :limit"
     )

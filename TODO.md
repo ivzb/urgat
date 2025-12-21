@@ -17,7 +17,6 @@
 - select today's weight from DB if exists
 - make splash screen dark mode
 - add paste from clipboard button for todos and notes
-- make investments (and others?) search query look at other fields too (category, currency)
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31

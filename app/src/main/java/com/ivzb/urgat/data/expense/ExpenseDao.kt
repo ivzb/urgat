@@ -13,7 +13,11 @@ interface ExpenseDao {
 
     @Query("" +
             "SELECT * FROM expenses " +
-            "WHERE isDeleted = 0 AND name LIKE '%' || :searchQuery || '%' OR amount LIKE '%' || :searchQuery || '%'" +
+            "WHERE isDeleted = 0 AND (" +
+                "name LIKE '%' || :searchQuery || '%' OR " +
+                "amount LIKE '%' || :searchQuery || '%' OR " +
+                "category LIKE '%' || :searchQuery || '%'" +
+            ")" +
             "ORDER BY date DESC " +
             "LIMIT :limit"
     )
