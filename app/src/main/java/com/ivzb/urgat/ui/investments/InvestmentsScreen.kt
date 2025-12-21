@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -14,8 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.PrimaryScrollableTabRow
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,14 +34,13 @@ import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.ItemHeaderLarge
-import com.ivzb.urgat.ui.components.ItemHeaderMedium
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.paddingIf
 import kotlinx.coroutines.launch
 
 @Composable
@@ -171,8 +167,8 @@ private fun InvestmentsContent(
                 modifier = modifier
                     .fillMaxSize(),
                 contentPadding = PaddingValues(
-                    horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                    vertical = dimensionResource(R.dimen.content_padding_vertical),
+                    horizontal = dimensionResource(R.dimen.horizontal_margin),
+                    vertical = dimensionResource(R.dimen.vertical_margin),
                 ),
                 state = listState
             ) {
@@ -211,12 +207,13 @@ private fun LazyListScope.transactionsPage(
     investments: List<GroupedItems<String, Investment>>,
     onInvestmentClick: (Investment) -> Unit,
 ) {
-    investments.forEach { (group, investments) ->
+    investments.forEachIndexed { index, (group, investments) ->
         item {
             ItemHeaderSmall(
                 text = group,
                 modifier = Modifier
-                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
+                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
             )
         }
 
@@ -266,7 +263,7 @@ fun InvestmentItem(
         textLeft = investment.name,
         subTextLeft = investment.category,
 
-        textRight = investment.amount.toString(),
+        textRight = investment.shares.toString(),
         subTextRight = "${investment.marketValue.format()} ${investment.currency}",
 
         onClick = { onInvestmentClick(investment) }

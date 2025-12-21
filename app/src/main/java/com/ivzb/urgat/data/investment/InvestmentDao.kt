@@ -15,7 +15,7 @@ interface InvestmentDao {
             "SELECT * FROM investments " +
             "WHERE isDeleted = 0 AND (" +
                 "name LIKE '%' || :searchQuery || '%' OR " +
-                "amount LIKE '%' || :searchQuery || '%' OR " +
+                "shares LIKE '%' || :searchQuery || '%' OR " +
                 "category LIKE '%' || :searchQuery || '%' OR " +
                 "currency LIKE '%' || :searchQuery || '%'" +
             ")" +

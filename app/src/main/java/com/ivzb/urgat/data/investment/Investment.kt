@@ -5,7 +5,7 @@ import java.math.BigDecimal
 data class Investment(
     val id: String,
     val name: String,
-    val amount: BigDecimal,
+    val shares: BigDecimal,
     val cost: BigDecimal,
     val category: String,
     val currency: String,
@@ -15,5 +15,5 @@ data class Investment(
 ) {
 
     val marketValue: BigDecimal
-        get() = cost * amount
+        get() = cost * shares
 }

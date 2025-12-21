@@ -25,7 +25,7 @@ class AddEditInvestmentScreenshotTest: ScreenshotTest() {
             AddEditInvestmentUiState(
                 screenTitleResId = R.string.edit_investment,
                 name = investment.name,
-                amount = investment.amount.toString(),
+                shares = investment.shares.toString(),
                 cost = investment.cost.toString(),
                 category = investment.category,
                 currency = investment.currency,

@@ -36,7 +36,7 @@ class DefaultInvestmentsRepository @Inject constructor(
 
     override suspend fun create(
         name: String,
-        amount: BigDecimal,
+        shares: BigDecimal,
         cost: BigDecimal,
         category: String,
         currency: String,
@@ -50,7 +50,7 @@ class DefaultInvestmentsRepository @Inject constructor(
         val investment = Investment(
             id = id,
             name = name,
-            amount = amount,
+            shares = shares,
             cost = cost,
             category = category,
             currency = currency,
@@ -65,7 +65,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     override suspend fun update(
         id: String,
         name: String,
-        amount: BigDecimal,
+        shares: BigDecimal,
         cost: BigDecimal,
         category: String,
         currency: String,
@@ -73,7 +73,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     ) {
         val investment = get(id)?.copy(
             name = name,
-            amount = amount,
+            shares = shares,
             cost = cost,
             category = category,
             currency = currency,

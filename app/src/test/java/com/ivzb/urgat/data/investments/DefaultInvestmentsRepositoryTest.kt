@@ -40,7 +40,7 @@ class DefaultInvestmentsRepositoryTest {
     fun `create adds new investment and returns its id`() = runTest {
         val id = repository.create(
             name = "SNP 500",
-            amount = BigDecimal("350"),
+            shares = BigDecimal("350"),
             cost = BigDecimal("200"),
             category = "etfs",
             currency = "USD",
@@ -50,7 +50,7 @@ class DefaultInvestmentsRepositoryTest {
         val stored = dao.getById(id)
         assertNotNull(stored)
         assertEquals("SNP 500", stored?.name)
-        assertEquals(BigDecimal("350"), stored?.amount)
+        assertEquals(BigDecimal("350"), stored?.shares)
         assertEquals(BigDecimal("200"), stored?.cost)
         assertEquals("etfs", stored?.category)
         assertEquals("USD", stored?.currency)
@@ -62,7 +62,7 @@ class DefaultInvestmentsRepositoryTest {
     fun `get retrieves correct investment`() = runTest {
         val id = repository.create(
             name = "SNP 500",
-            amount = BigDecimal("350"),
+            shares = BigDecimal("350"),
             cost = BigDecimal("200"),
             category = "etfs",
             currency = "USD",
@@ -72,7 +72,7 @@ class DefaultInvestmentsRepositoryTest {
         val investment = repository.get(id)
         assertNotNull(investment)
         assertEquals("SNP 500", investment?.name)
-        assertEquals(BigDecimal("350"), investment?.amount)
+        assertEquals(BigDecimal("350"), investment?.shares)
         assertEquals(BigDecimal("200"), investment?.cost)
         assertEquals("etfs", investment?.category)
         assertEquals("USD", investment?.currency)
@@ -88,7 +88,7 @@ class DefaultInvestmentsRepositoryTest {
         val updated = repository.get(id)
         assertNotNull(updated)
         assertEquals("S&P 500", updated?.name)
-        assertEquals(BigDecimal("550"), updated?.amount)
+        assertEquals(BigDecimal("550"), updated?.shares)
         assertEquals(BigDecimal("250"), updated?.cost)
         assertEquals("etfs", updated?.category)
         assertEquals("EUR", updated?.currency)

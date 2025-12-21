@@ -8,7 +8,7 @@ interface CreateInvestmentUseCase {
 
     suspend operator fun invoke(
         name: String,
-        amount: BigDecimal,
+        shares: BigDecimal,
         cost: BigDecimal,
         category: String,
         currency: String,
@@ -23,14 +23,14 @@ class DefaultCreateInvestmentUseCase @Inject constructor(
 
     override suspend operator fun invoke(
         name: String,
-        amount: BigDecimal,
+        shares: BigDecimal,
         cost: BigDecimal,
         category: String,
         currency: String,
         date: Long,
     ) {
 
-        repository.create(name, amount, cost, category, currency, date)
+        repository.create(name, shares, cost, category, currency, date)
     }
 
 }

@@ -53,7 +53,7 @@ class DefaultSampleUseCase @Inject constructor(
         SampleData.SAMPLE_INVESTMENTS.forEach {
             createInvestmentUseCase(
                 it.name,
-                it.amount,
+                it.shares,
                 it.cost,
                 it.category,
                 it.currency,

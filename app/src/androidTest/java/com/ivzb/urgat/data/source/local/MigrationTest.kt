@@ -45,7 +45,7 @@ class MigrationTest {
                 AppDatabase::class.java,
                 TEST_DB
             )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
             .apply {
                 openHelper.writableDatabase.close()
@@ -76,7 +76,7 @@ class MigrationTest {
                 AppDatabase::class.java,
                 TEST_DB
             )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
             .let { db ->
                 // verify data integrity after migration
@@ -110,7 +110,7 @@ class MigrationTest {
                     val expectedInvestment = InvestmentEntity(
                         id = "1",
                         name = "SNP 500",
-                        amount = 500.toBigDecimal(),
+                        shares = 500.toBigDecimal(),
                         cost = 0.toBigDecimal(),
                         category = "ETF",
                         currency = "USD",
@@ -159,13 +159,13 @@ class MigrationTest {
                 db.close()
             }
 
-        // Re-open the database with version 2 and provide
-        // MIGRATION_1_2 as the migration process.
+        // Re-open the database with latest version and provide
+        // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 3,
+            version = 4,
             validateDroppedTables = true,
-            migrations = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
+            migrations = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
         ).close()
 
         // verifications
@@ -179,7 +179,7 @@ class MigrationTest {
                     val expectedInvestment = InvestmentEntity(
                         id = "1",
                         name = "SNP 500",
-                        amount = 500.toBigDecimal(),
+                        shares = 500.toBigDecimal(),
                         cost = 0.toBigDecimal(),
                         category = "ETF",
                         currency = "USD",
@@ -207,7 +207,7 @@ class MigrationTest {
                     val investment = InvestmentEntity(
                         id = "1",
                         name = "SNP 500",
-                        amount = 500.toBigDecimal(),
+                        shares = 500.toBigDecimal(),
                         cost = 250.toBigDecimal(),
                         category = "ETF",
                         currency = "USD",
@@ -235,7 +235,7 @@ class MigrationTest {
                     val expectedInvestment = InvestmentEntity(
                         id = "1",
                         name = "SNP 500",
-                        amount = 500.toBigDecimal(),
+                        shares = 500.toBigDecimal(),
                         cost = 250.toBigDecimal(),
                         category = "ETF",
                         currency = "USD",

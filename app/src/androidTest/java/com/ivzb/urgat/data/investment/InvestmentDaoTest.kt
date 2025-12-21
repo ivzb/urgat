@@ -45,7 +45,7 @@ class InvestmentDaoTest {
 
             val updated = investment.copy(
                 name = investment.name + " updated",
-                amount = investment.amount + BigDecimal.ONE,
+                shares = investment.shares + BigDecimal.ONE,
                 cost = investment.cost + BigDecimal.ONE,
                 category = investment.category + " updated",
                 currency = investment.currency + " updated",

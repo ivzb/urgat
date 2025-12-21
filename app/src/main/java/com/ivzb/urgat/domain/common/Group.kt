@@ -45,7 +45,7 @@ object Group {
                 InvestmentAsset(
                     name = name,
                     category = category,
-                    shares = investments.sumOf { it.amount },
+                    shares = investments.sumOf { it.shares },
                     marketValue = investments.sumOf { it.marketValue },
                     currency = currency,
                 )

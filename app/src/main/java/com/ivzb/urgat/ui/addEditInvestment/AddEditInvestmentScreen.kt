@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 
 enum class FieldId {
     Name,
-    Amount,
+    Shares,
     Cost,
     Category,
     Currency,
@@ -164,11 +164,11 @@ fun AddEditInvestmentScreen(
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
                 ) {
                     TextField(
-                        value = uiState.amount,
+                        value = uiState.shares,
                         onValueChange = {
-                            onIntent(AddEditInvestmentIntent.UpdateAmount(it))
+                            onIntent(AddEditInvestmentIntent.UpdateShares(it))
                         },
-                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+                        placeholder = { Text(stringResource(id = R.string.shares_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next
@@ -176,7 +176,7 @@ fun AddEditInvestmentScreen(
                         maxLines = 1,
                         modifier = Modifier
                             .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
+                            .focusRequester(focusRequesters[FieldId.Shares.ordinal]),
                     )
 
                     TextField(
@@ -346,7 +346,7 @@ private fun EditInvestmentContentPreview() {
                     screenTitleResId = R.string.edit_investment,
                     name = "SNP 500",
                     currency = "USD",
-                    amount = "500",
+                    shares = "500",
                 ),
                 onIntent = {},
                 onBack = {},

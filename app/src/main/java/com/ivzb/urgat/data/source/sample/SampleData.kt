@@ -143,11 +143,11 @@ object SampleData {
             listOf("Samsung Electronics", "2.4", "1128", "Stocks", "EUR", "0"),
             listOf("Toyota Motor Corp.", "15", "210", "Stocks", "EUR", "0"),
         )
-    }.mapIndexed { index, (name, amount, cost, category, currency, dateOffset) ->
+    }.mapIndexed { index, (name, shares, cost, category, currency, dateOffset) ->
         Investment(
             id = index.toString(),
             name = name,
-            amount = amount.toBigDecimal(),
+            shares = shares.toBigDecimal(),
             cost = cost.toBigDecimal(),
             category = category,
             currency = currency,

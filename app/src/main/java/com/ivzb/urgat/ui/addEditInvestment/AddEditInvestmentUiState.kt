@@ -6,7 +6,7 @@ data class AddEditInvestmentUiState(
     @StringRes
     val screenTitleResId: Int? = null,
     val name: String = "",
-    val amount: String = "",
+    val shares: String = "",
     val cost: String = "",
     val category: String = "",
     val currency: String = "",

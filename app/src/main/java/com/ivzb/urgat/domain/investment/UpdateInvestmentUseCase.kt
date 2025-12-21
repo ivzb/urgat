@@ -9,7 +9,7 @@ interface UpdateInvestmentUseCase {
     suspend operator fun invoke(
         id: String,
         name: String,
-        amount: BigDecimal,
+        shares: BigDecimal,
         cost: BigDecimal,
         category: String,
         currency: String,
@@ -25,14 +25,14 @@ class DefaultUpdateInvestmentUseCase @Inject constructor(
     override suspend operator fun invoke(
         id: String,
         name: String,
-        amount: BigDecimal,
+        shares: BigDecimal,
         cost: BigDecimal,
         category: String,
         currency: String,
         date: Long,
     ) {
 
-        repository.update(id, name, amount, cost, category, currency, date)
+        repository.update(id, name, shares, cost, category, currency, date)
     }
 
 }

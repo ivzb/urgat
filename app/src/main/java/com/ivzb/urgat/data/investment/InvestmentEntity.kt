@@ -8,7 +8,7 @@ import java.math.BigDecimal
 data class InvestmentEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val amount: BigDecimal,
+    val shares: BigDecimal,
     val cost: BigDecimal,
     val category: String,
     val currency: String,

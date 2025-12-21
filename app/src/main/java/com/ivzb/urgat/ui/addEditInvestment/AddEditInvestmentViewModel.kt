@@ -46,7 +46,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     fun onIntent(intent: AddEditInvestmentIntent) {
         when (intent) {
             is AddEditInvestmentIntent.UpdateName -> updateName(intent.value)
-            is AddEditInvestmentIntent.UpdateAmount -> updateAmount(intent.value)
+            is AddEditInvestmentIntent.UpdateShares -> updateShares(intent.value)
             is AddEditInvestmentIntent.UpdateCost -> updateCost(intent.value)
             is AddEditInvestmentIntent.UpdateCategory -> updateCategory(intent.value)
             is AddEditInvestmentIntent.UpdateCurrency -> updateCurrency(intent.value)
@@ -63,9 +63,9 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateAmount(amount: String) {
+    private fun updateShares(shares: String) {
         _uiState.update {
-            it.copy(amount = amount)
+            it.copy(shares = shares)
         }
     }
 
@@ -96,7 +96,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     private fun saveInvestment() {
         val fields = listOf(
             uiState.value.name,
-            uiState.value.amount,
+            uiState.value.shares,
             uiState.value.cost,
             uiState.value.category,
             uiState.value.currency,
@@ -125,7 +125,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     private fun createNewInvestment() = viewModelScope.launch {
         createInvestmentUseCase(
             name = uiState.value.name.sanitize(),
-            amount = uiState.value.amount.sanitize().toBigDecimal(),
+            shares = uiState.value.shares.sanitize().toBigDecimal(),
             cost = uiState.value.cost.sanitize().toBigDecimal(),
             category = uiState.value.category.sanitize(),
             currency = uiState.value.currency.sanitize(),
@@ -152,7 +152,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
             updateInvestmentUseCase(
                 investmentId,
                 name = uiState.value.name.sanitize(),
-                amount = uiState.value.amount.sanitize().toBigDecimal(),
+                shares = uiState.value.shares.sanitize().toBigDecimal(),
                 cost = uiState.value.cost.sanitize().toBigDecimal(),
                 category = uiState.value.category.sanitize(),
                 currency = uiState.value.currency.sanitize(),
@@ -202,7 +202,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
                     _uiState.update {
                         it.copy(
                             name = investment.name,
-                            amount = investment.amount.toString(),
+                            shares = investment.shares.toString(),
                             cost = investment.cost.toString(),
                             category = investment.category,
                             currency = investment.currency,
