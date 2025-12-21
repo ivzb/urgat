@@ -127,21 +127,21 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS = debugOnly {
         listOf(
-            listOf("Alphabet (Google)", "2200", "323.44", "Stocks", "USD", "6048000"),
-            listOf("Microsoft Corp.", "1800", "485.5", "Stocks", "USD", "4752000"),
-            listOf("Amazon.com Inc.", "1700", "229.16", "Stocks", "USD", "4752000"),
-            listOf("Tesla Inc.", "1900", "419.40", "Stocks", "USD", "3024000"),
-            listOf("NVIDIA Corp.", "1600", "180.26", "Stocks", "USD", "3024000"),
-            listOf("Apple Inc.", "2000", "276.97", "Stocks", "USD", "2160000"),
-            listOf("Meta Platforms", "1500", "636.22", "Stocks", "USD", "2160000"),
-            listOf("Vanguard S&P 500 ETF", "3200", "621.88", "ETF", "USD", "1296000"),
-            listOf("Bitcoin", "2500.50", "90966", "Cryptocurrency", "USD", "1296000"),
-            listOf("Ethereum", "850.75", "3021", "Cryptocurrency", "USD", "864000"),
-            listOf("US Government Bonds", "2000", "2000.00", "Bonds", "USD", "864000"),
-            listOf("Rental Property Deposit", "10000", "10000.00", "Real Estate", "USD", "432000"),
-            listOf("Alibaba Group", "3000", "133", "Stocks", "EUR", "432000"),
-            listOf("Samsung Electronics", "2400", "1128", "Stocks", "EUR", "0"),
-            listOf("Toyota Motor Corp.", "1500", "210", "Stocks", "EUR", "0"),
+            listOf("Alphabet (Google)", "20", "323.44", "Stocks", "USD", "6048000"),
+            listOf("Microsoft Corp.", "15", "485.5", "Stocks", "USD", "4752000"),
+            listOf("Amazon.com Inc.", "17", "229.16", "Stocks", "USD", "4752000"),
+            listOf("Tesla Inc.", "19", "419.40", "Stocks", "USD", "3024000"),
+            listOf("NVIDIA Corp.", "16", "180.26", "Stocks", "USD", "3024000"),
+            listOf("Apple Inc.", "20", "276.97", "Stocks", "USD", "2160000"),
+            listOf("Meta Platforms", "15", "636.22", "Stocks", "USD", "2160000"),
+            listOf("Vanguard S&P 500 ETF", "32", "621.88", "ETF", "USD", "1296000"),
+            listOf("Bitcoin", "0.025", "90966", "Cryptocurrency", "USD", "1296000"),
+            listOf("Ethereum", "0.08", "3021", "Cryptocurrency", "USD", "864000"),
+            listOf("US Government Bonds", "2", "2000.00", "Bonds", "USD", "864000"),
+            listOf("Rental Property Deposit", "1", "17000.00", "Real Estate", "USD", "432000"),
+            listOf("Alibaba Group", "30", "133", "Stocks", "EUR", "432000"),
+            listOf("Samsung Electronics", "2.4", "1128", "Stocks", "EUR", "0"),
+            listOf("Toyota Motor Corp.", "15", "210", "Stocks", "EUR", "0"),
         )
     }.mapIndexed { index, (name, amount, cost, category, currency, dateOffset) ->
         Investment(

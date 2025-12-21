@@ -227,8 +227,8 @@ private fun InvestmentsNetWorth(
         textLeft = "",
         subTextLeft = "",
 
-        textRight = netWorth.marketValue.format(),
-        subTextRight = netWorth.currency,
+        textRight = "${netWorth.marketValue.format()} ${netWorth.currency}",
+        subTextRight = "",
 
         onClick = { /* NOOP */ },
     )
@@ -242,8 +242,8 @@ private fun CategoryItem(
         textLeft = category.name,
         subTextLeft = "",
 
-        textRight = category.marketValue.format(),
-        subTextRight = category.currency,
+        textRight = "${category.marketValue.format()} ${category.currency}",
+        subTextRight = "",
 
         onClick = { /* NOOP */ },
     )
@@ -257,8 +257,8 @@ fun AssetItem(
         textLeft = asset.name,
         subTextLeft = asset.category,
 
-        textRight = asset.marketValue.format(),
-        subTextRight = asset.currency,
+        textRight = asset.shares.toString(),
+        subTextRight = "${asset.marketValue.format()} ${asset.currency}",
 
         onClick = { /* NOOP */ }
     )
@@ -273,8 +273,8 @@ fun InvestmentItem(
         textLeft = investment.name,
         subTextLeft = investment.category,
 
-        textRight = investment.marketValue.format(),
-        subTextRight = investment.currency,
+        textRight = investment.amount.toString(),
+        subTextRight = "${investment.marketValue.format()} ${investment.currency}",
 
         onClick = { onInvestmentClick(investment) }
     )

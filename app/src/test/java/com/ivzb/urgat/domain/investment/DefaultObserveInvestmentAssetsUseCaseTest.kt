@@ -2,7 +2,6 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
-import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import io.mockk.every
@@ -56,14 +55,14 @@ class ObserveInvestmentAssetsUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            InvestmentAsset(name = "BRK.B", category = "etfs", marketValue = BigDecimal("660"), currency = "USD"),
-            InvestmentAsset(name = "BRK.B", category = "etfs", marketValue = BigDecimal("660"), currency = "EUR"),
+            InvestmentAsset(name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "USD"),
+            InvestmentAsset(name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "EUR"),
 
-            InvestmentAsset(name = "GOOGL", category = "stocks", marketValue = BigDecimal("771.05"), currency = "USD"),
-            InvestmentAsset(name = "GOOGL", category = "stocks", marketValue = BigDecimal("771.05"), currency = "EUR"),
+            InvestmentAsset(name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "USD"),
+            InvestmentAsset(name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "EUR"),
 
-            InvestmentAsset(name = "SNP 500", category = "etfs", marketValue = BigDecimal("500"), currency = "USD"),
-            InvestmentAsset(name = "SNP 500", category = "etfs", marketValue = BigDecimal("500"), currency = "EUR"),
+            InvestmentAsset(name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "USD"),
+            InvestmentAsset(name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "EUR"),
         )
 
         assertEquals(1, results.size)

@@ -74,15 +74,15 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentAsset(name="AAPL", category="stocks", marketValue = BigDecimal("1258.882"), currency="USD"),
-            InvestmentAsset(name="BRK.B", category="etf", marketValue = BigDecimal("1681.402"), currency="USD"),
-            InvestmentAsset(name="GOOGL", category="stocks", marketValue = BigDecimal("1290.072"), currency="USD"),
-            InvestmentAsset(name="GOOGL", category="stocks", marketValue = BigDecimal("1101.450"), currency="EUR"),
-            InvestmentAsset(name="Gold", category="gold", marketValue = BigDecimal("8677.10"), currency="USD"),
-            InvestmentAsset(name="Gold", category="gold", marketValue = BigDecimal("7408.50"), currency="EUR"),
-            InvestmentAsset(name="NVDA", category="stocks", marketValue = BigDecimal("904.950"), currency="USD"),
-            InvestmentAsset(name="SNP 500", category="etf", marketValue = BigDecimal("4100.70"), currency="USD"),
-            InvestmentAsset(name="SNP 500", category="etf", marketValue = BigDecimal("3501.18"), currency="EUR"),
+            InvestmentAsset(name="AAPL", category = "stocks", shares = BigDecimal("4.6"), marketValue = BigDecimal("1258.882"), currency="USD"),
+            InvestmentAsset(name="BRK.B", category = "etf", shares = BigDecimal("3.4"), marketValue = BigDecimal("1681.402"), currency="USD"),
+            InvestmentAsset(name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1290.072"), currency="USD"),
+            InvestmentAsset(name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1101.450"), currency="EUR"),
+            InvestmentAsset(name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("8677.10"), currency="USD"),
+            InvestmentAsset(name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("7408.50"), currency="EUR"),
+            InvestmentAsset(name="NVDA", category = "stocks", shares = BigDecimal("5.0"), marketValue = BigDecimal("904.950"), currency="USD"),
+            InvestmentAsset(name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("4100.70"), currency="USD"),
+            InvestmentAsset(name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("3501.18"), currency="EUR"),
         )
 
         val actual = Group.groupInvestmentAssets(investments)
