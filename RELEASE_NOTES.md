@@ -1,3 +1,14 @@
+## Release notes 25.12.11
+
+New:
+- The Investments screen is now organized into tabs for Transactions, Assets, Categories, and Net Worth.
+
+Improved:
+- Updated Investments terminology: “Amount” is now labeled as “Shares.”
+- Search for investments and expenses is now more powerful, matching results by category and currency as well.
+- You can now see your investment share amounts directly in the UI.
+- Market price and currency have been merged into one line for a cleaner layout.
+
 ## Release notes 25.12.10
 
 New:
