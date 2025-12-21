@@ -1,19 +1,31 @@
 package com.ivzb.urgat.ui.investments
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
@@ -33,6 +45,7 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
+import kotlinx.coroutines.launch
 
 @Composable
 fun InvestmentsScreen(
@@ -105,12 +118,8 @@ fun InvestmentsScreen(
 
             else -> {
                 InvestmentsContent(
-                    investments = uiState.investments,
-                    netWorth = uiState.netWorth,
-                    categories = uiState.categories,
-                    assets = uiState.assets,
+                    uiState = uiState,
                     onInvestmentClick = onInvestmentClick,
-                    filteringUiInfo = uiState.filteringUiInfo,
                     listState = listState,
                 )
             }
@@ -120,117 +129,162 @@ fun InvestmentsScreen(
 
 @Composable
 private fun InvestmentsContent(
-    investments: List<GroupedItems<String, Investment>>,
-    netWorth: List<InvestmentNetWorth>,
-    categories: List<InvestmentCategory>,
-    assets: List<InvestmentAsset>,
+    uiState: InvestmentsUiState,
     onInvestmentClick: (Investment) -> Unit,
-
-    filteringUiInfo: InvestmentsFilteringUiInfo,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
+    val pages = INVESTMENT_PAGES
+    val pagerState = rememberPagerState { pages.size }
+    val scope = rememberCoroutineScope()
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-            vertical = dimensionResource(R.dimen.content_padding_vertical),
-        ),
-        state = listState
-    ) {
-
-        item {
-            ItemHeaderLarge(text = stringResource(filteringUiInfo.currentFilteringLabel))
-        }
-
-        item {
-            ItemHeaderMedium(
-                text = stringResource(R.string.net_worth),
-                modifier = Modifier
-                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        items(netWorth) { netWorth ->
-            InvestmentsNetWorth(netWorth)
-        }
-
-        item {
-            ItemHeaderMedium(
-                text = stringResource(R.string.categories),
-                modifier = Modifier
-                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        items(categories) { category ->
-            CategoryItem(
-                category = category,
-            )
-        }
-
-        item {
-            ItemHeaderMedium(
-                text = stringResource(R.string.assets),
-                modifier = Modifier
-                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        items(assets) { asset ->
-            AssetItem(
-                asset = asset,
-            )
-        }
-
-        item {
-            ItemHeaderMedium(
-                text = stringResource(R.string.transactions),
-                modifier = Modifier
-                    .padding(top = dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        investments.forEach { (group, investments) ->
-            item {
-                ItemHeaderSmall(
-                    text = group,
-                    modifier = Modifier
-                        .padding(vertical = dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-            items(investments) { investment ->
-                InvestmentItem(
-                    investment = investment,
-                    onInvestmentClick = onInvestmentClick
+    Column {
+        PrimaryScrollableTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            edgePadding = 0.dp
+        ) {
+            pages.forEachIndexed { index, page ->
+                Tab(
+                    text = {
+                        Text(
+                            text  = stringResource(page.titleResId),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
                 )
             }
         }
 
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { pageIndex ->
+
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(
+                    horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                    vertical = dimensionResource(R.dimen.content_padding_vertical),
+                ),
+                state = listState
+            ) {
+
+                when (pages[pageIndex]) {
+                    InvestmentsPage.Transactions -> transactionsPage(
+                        investments = uiState.investments,
+                        onInvestmentClick = onInvestmentClick,
+                    )
+
+                    InvestmentsPage.Assets -> assetsPage(
+                        assets = uiState.assets,
+                    )
+
+                    InvestmentsPage.Categories -> categoriesPage(
+                        categories = uiState.categories,
+                    )
+
+                    InvestmentsPage.NetWorth -> netWorthPage(
+                        netWorth = uiState.netWorth,
+                    )
+                }
+
+                item {
+                    Spacer(
+                        modifier = Modifier
+                            .height(dimensionResource(R.dimen.vertical_margin))
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun LazyListScope.transactionsPage(
+    investments: List<GroupedItems<String, Investment>>,
+    onInvestmentClick: (Investment) -> Unit,
+) {
+    investments.forEach { (group, investments) ->
         item {
-            Spacer(
+            ItemHeaderSmall(
+                text = group,
                 modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
+                    .padding(vertical = dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        items(investments) { investment ->
+            InvestmentItem(
+                investment = investment,
+                onInvestmentClick = onInvestmentClick
             )
         }
     }
 }
 
+private fun LazyListScope.assetsPage(
+    assets: List<InvestmentAsset>,
+) {
+    items(assets) { asset ->
+        AssetItem(
+            asset = asset,
+        )
+    }
+}
+
+private fun LazyListScope.categoriesPage(
+    categories: List<InvestmentCategory>,
+) {
+    items(categories) { category ->
+        CategoryItem(
+            category = category,
+        )
+    }
+}
+
+private fun LazyListScope.netWorthPage(
+    netWorth: List<InvestmentNetWorth>,
+) {
+    items(netWorth) { netWorth ->
+        InvestmentsNetWorth(netWorth)
+    }
+}
+
 @Composable
-private fun InvestmentsNetWorth(
-    netWorth: InvestmentNetWorth,
+fun InvestmentItem(
+    investment: Investment,
+    onInvestmentClick: (Investment) -> Unit
 ) {
     ListItem(
-        textLeft = "",
-        subTextLeft = "",
+        textLeft = investment.name,
+        subTextLeft = investment.category,
 
-        textRight = "${netWorth.marketValue.format()} ${netWorth.currency}",
-        subTextRight = "",
+        textRight = investment.amount.toString(),
+        subTextRight = "${investment.marketValue.format()} ${investment.currency}",
 
-        onClick = { /* NOOP */ },
+        onClick = { onInvestmentClick(investment) }
+    )
+}
+
+@Composable
+private fun AssetItem(
+    asset: InvestmentAsset,
+) {
+    ListItem(
+        textLeft = asset.name,
+        subTextLeft = asset.category,
+
+        textRight = asset.shares.toString(),
+        subTextRight = "${asset.marketValue.format()} ${asset.currency}",
+
+        onClick = { /* NOOP */ }
     )
 }
 
@@ -250,33 +304,17 @@ private fun CategoryItem(
 }
 
 @Composable
-fun AssetItem(
-    asset: InvestmentAsset,
+private fun InvestmentsNetWorth(
+    netWorth: InvestmentNetWorth,
 ) {
     ListItem(
-        textLeft = asset.name,
-        subTextLeft = asset.category,
+        textLeft = "",
+        subTextLeft = "",
 
-        textRight = asset.shares.toString(),
-        subTextRight = "${asset.marketValue.format()} ${asset.currency}",
+        textRight = "${netWorth.marketValue.format()} ${netWorth.currency}",
+        subTextRight = "",
 
-        onClick = { /* NOOP */ }
-    )
-}
-
-@Composable
-fun InvestmentItem(
-    investment: Investment,
-    onInvestmentClick: (Investment) -> Unit
-) {
-    ListItem(
-        textLeft = investment.name,
-        subTextLeft = investment.category,
-
-        textRight = investment.amount.toString(),
-        subTextRight = "${investment.marketValue.format()} ${investment.currency}",
-
-        onClick = { onInvestmentClick(investment) }
+        onClick = { /* NOOP */ },
     )
 }
 
