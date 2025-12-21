@@ -24,7 +24,7 @@ class DefaultSampleUseCase @Inject constructor(
 ): SampleUseCase {
 
     override suspend operator fun invoke() {
-        if (!BuildConfig.DEBUG || !BuildConfig.WITH_SAMPLE_DATA) {
+        if (!BuildConfig.DEBUG) {
             return
         }
 

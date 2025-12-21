@@ -17,6 +17,9 @@
 - select today's weight from DB if exists
 - make splash screen dark mode
 - add paste from clipboard button for todos and notes
+- show user message when clear todos button is clicked - and tell how many todos were cleared
+- combine investment category items with the same name into single item with multiple rows
+- change add note icon
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -56,6 +59,9 @@
 - make net worth pie chart showing color for each category (list with colors and numbers below) and total net worth in the middler of the chart - https://play.google.com/store/apps/details?id=com.gianmarcodavid.networth&hl=en_AU
 - investments screen: on asset click
 - calculate current price of assets based on latest transaction market price
+- handle share link to Urgat and save it
 - add system unlock with biometric/pin when opening the app
+- show weight transactions below the chart like expenses and investments
+- show expenses grouped by categories
 - add import from csv
 - add export to csv

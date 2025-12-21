@@ -53,7 +53,7 @@ fun topBarInsets() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_IC
 fun TopAppBarContent(
     selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
-    onBack: (() -> Unit)? = null,
+    navigationIcon: (@Composable () -> Unit)? = null,
     withActions: Boolean = true,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
@@ -69,7 +69,7 @@ fun TopAppBarContent(
             onSearchQueryChanged(it)
         },
         titleResId = selectedRoute.titleResId,
-        onBack = onBack,
+        navigationIcon = navigationIcon,
         withActions = withActions,
         actionsContent = actionsContent
     )
@@ -203,7 +203,6 @@ fun TopAppBarContentLibraryRoutePreview() {
         TopAppBarContent(
             selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
-            onBack = {},
             withActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
@@ -247,7 +246,6 @@ fun TopAppBarContentLibraryRouteWithoutActionsPreview() {
             selectedRoute = LibraryRoute,
             onSearchQueryChanged = {},
             withActions = false,
-            onBack = {},
         )
     }
 }

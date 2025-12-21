@@ -113,4 +113,12 @@
     <string name="assets">Assets</string>
     <string name="transactions">Transactions</string>
     <string name="shares_hint">Shares</string>
+    <string name="menu">Menu</string>
+    <string name="debug">Debug</string>
+    <string name="sample_data">Sample data</string>
+    <string name="sample_data_added">Sample data was added.</string>
+    <string name="add_sample_data">Add sample data</string>
+    <string name="data">Data</string>
+    <string name="export_data">Export</string>
+    <string name="import_data">Import</string>
 </resources>

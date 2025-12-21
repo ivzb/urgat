@@ -60,7 +60,6 @@ android {
             isShrinkResources = true
             isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("Boolean", "WITH_SAMPLE_DATA", "false")
 
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -70,7 +69,6 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             isMinifyEnabled = false
-            buildConfigField("Boolean", "WITH_SAMPLE_DATA", "false")
         }
     }
 

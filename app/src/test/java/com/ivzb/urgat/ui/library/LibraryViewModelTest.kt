@@ -5,7 +5,6 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
-import com.ivzb.urgat.domain.sample.FakeSampleUseCase
 import com.ivzb.urgat.domain.todo.FakeActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase
@@ -40,7 +39,6 @@ class LibraryViewModelTest {
     private lateinit var fakeCompleteTodoUseCase: FakeCompleteTodoUseCase
     private lateinit var fakeActivateTodoUseCase: FakeActivateTodoUseCase
     private lateinit var fakeClearCompletedTodosUseCase: FakeClearCompletedTodosUseCase
-    private lateinit var fakeSampleUseCase: FakeSampleUseCase
 
     private lateinit var viewModel: LibraryViewModel
 
@@ -56,7 +54,6 @@ class LibraryViewModelTest {
         fakeCompleteTodoUseCase = FakeCompleteTodoUseCase()
         fakeActivateTodoUseCase = FakeActivateTodoUseCase()
         fakeClearCompletedTodosUseCase = FakeClearCompletedTodosUseCase()
-        fakeSampleUseCase = FakeSampleUseCase()
 
         every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
     }
@@ -218,6 +215,5 @@ class LibraryViewModelTest {
         fakeCompleteTodoUseCase,
         fakeActivateTodoUseCase,
         fakeClearCompletedTodosUseCase,
-        fakeSampleUseCase,
     )
 }

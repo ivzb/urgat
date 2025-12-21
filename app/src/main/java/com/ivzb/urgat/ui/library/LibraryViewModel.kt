@@ -32,16 +32,7 @@ class LibraryViewModel @Inject constructor(
     private val completeTodoUseCase: CompleteTodoUseCase,
     private val activateTodoUseCase: ActivateTodoUseCase,
     private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
-    private val sampleUseCase: SampleUseCase,
 ) : ViewModel() {
-
-    init {
-        if (BuildConfig.WITH_SAMPLE_DATA) {
-            viewModelScope.launch {
-                sampleUseCase()
-            }
-        }
-    }
 
     private val uiEventHolder = UiEventHolder<LibraryUiEvent>()
 

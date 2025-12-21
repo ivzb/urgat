@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +49,7 @@ fun SearchableTopBar(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     titleResId: Int,
-    onBack: (() -> Unit)? = null,
+    navigationIcon: (@Composable () -> Unit)? = null,
     withActions: Boolean = true,
     actionsContent: @Composable (() -> Unit)? = null
 ) {
@@ -64,16 +66,7 @@ fun SearchableTopBar(
                     Text(stringResource(titleResId))
                 },
                 navigationIcon = {
-                    val withBackButton = onBack != null
-
-                    if (withBackButton) {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                stringResource(id = R.string.menu_back)
-                            )
-                        }
-                    }
+                    navigationIcon?.invoke()
                 },
                 actions = {
                     if (withActions || searchQuery.isNotEmpty()) {
@@ -204,7 +197,40 @@ fun SearchableTopBarPreviewWithBackButton() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            onBack = {},
+            navigationIcon = {
+                IconButton(onClick = {}) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
+                }
+            },
+            withActions = true,
+            actionsContent = {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_filter_list),
+                        stringResource(id = R.string.menu_filter)
+                    )
+                }
+            },
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+fun SearchableTopBarPreviewWithMenuButton() {
+    UrgatTheme {
+        SearchableTopBar(
+            isSearching = false,
+            onIsSearchingChanged = {},
+            searchQuery = "",
+            onSearchQueryChanged = {},
+            titleResId = R.string.search,
+            navigationIcon = {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.Menu, contentDescription = "Menu")
+                }
+            },
             withActions = true,
             actionsContent = {
                 IconButton(onClick = {}) {
@@ -246,7 +272,11 @@ fun SearchableTopBarWithoutActionsPreviewWithBackButton() {
             onSearchQueryChanged = {},
             titleResId = R.string.search,
             withActions = false,
-            onBack = {}
+            navigationIcon = {
+                IconButton(onClick = {}) {
+                    Icon(Icons.Default.Menu, contentDescription = "Menu")
+                }
+            },
         )
     }
 }

@@ -2,15 +2,29 @@ package com.ivzb.urgat.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -18,27 +32,33 @@ import androidx.compose.material3.adaptive.currentWindowSize
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.BOTTOM_NAVIGATION_SCREENS
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
-import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.navigation.UrgatRootRoute
+import com.ivzb.urgat.navigation.UrgatRoute
+import com.ivzb.urgat.navigation.drawer.URGAT_NAVIGATION_DRAWER
 import com.ivzb.urgat.ui.library.LibraryFabActionId
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun <T> NavigationScaffold(
@@ -55,52 +75,125 @@ fun <T> NavigationScaffold(
     modifier: Modifier = Modifier,
     content: @Composable (LazyListState) -> Unit
 ) {
-    val navigationLayoutType = calculateNavigationSuiteType()
 
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            BOTTOM_NAVIGATION_SCREENS.forEach {
-                item(
-                    selected = it.route == selectedRoute,
-                    onClick = {
-                        navigator.navigate(it.route)
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = it.icon,
-                            contentDescription = stringResource(it.label)
-                        )
-                    },
-                    label = {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Column(
+                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal))
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        text = stringResource(R.string.menu),
+                        modifier = Modifier.padding(dimensionResource(R.dimen.drawer_section_title_padding)),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(vertical = dimensionResource(R.dimen.drawer_divider_padding)),
+                    )
+
+                    URGAT_NAVIGATION_DRAWER.forEach { section ->
                         Text(
-                            text = stringResource(it.label)
+                            text = stringResource(section.titleResId),
+                            modifier = Modifier.padding(dimensionResource(R.dimen.drawer_section_title_padding)),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
                         )
-                    },
-                )
+
+                        section.items.forEach { item ->
+                            NavigationDrawerItem(
+                                label = { Text(text = stringResource(item.labelResId)) },
+                                selected = false,
+                                icon = { Icon(item.iconVector, contentDescription = null) },
+                                onClick = {
+                                    scope.launch {
+                                        drawerState.close()
+                                        navigator.navigate(item.route)
+                                    }
+                                }
+                            )
+                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(vertical = dimensionResource(R.dimen.drawer_divider_padding)),
+                        )
+                    }
+
+                    Spacer(Modifier.height(dimensionResource(R.dimen.vertical_margin)))
+                }
             }
         },
-        layoutType = navigationLayoutType,
-        modifier = modifier
-            .fillMaxSize()
     ) {
+        val navigationLayoutType = calculateNavigationSuiteType()
 
-        UrgatScaffold(
-            selectedRoute = selectedRoute,
-            onSearchQueryChanged = onSearchQueryChanged,
-            withTopAppBarActions = withTopAppBarActions,
-            topAppBarActionsContent = topAppBarActionsContent,
-            floatingActionButtonContent = {
-                fabActions?.let {
-                    ExpandableFab(
-                        fabActions = it,
-                        onFabActionClick = { fabActionId ->
-                            onFabActionClick?.invoke(fabActionId)
-                        }
+        NavigationSuiteScaffold(
+            navigationSuiteItems = {
+                BOTTOM_NAVIGATION_SCREENS.forEach {
+                    item(
+                        selected = it.route == selectedRoute,
+                        onClick = {
+                            navigator.navigate(it.route)
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = it.icon,
+                                contentDescription = stringResource(it.label)
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = stringResource(it.label)
+                            )
+                        },
                     )
                 }
             },
-            content = content
-        )
+            layoutType = navigationLayoutType,
+            modifier = modifier
+                .fillMaxSize()
+        ) {
+
+            UrgatScaffold(
+                selectedRoute = selectedRoute,
+                onSearchQueryChanged = onSearchQueryChanged,
+                withTopAppBarActions = withTopAppBarActions,
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            if (drawerState.isClosed) {
+                                drawerState.open()
+                            } else {
+                                drawerState.close()
+                            }
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = stringResource(R.string.menu),
+                        )
+                    }
+                },
+                topAppBarActionsContent = topAppBarActionsContent,
+                floatingActionButtonContent = {
+                    fabActions?.let {
+                        ExpandableFab(
+                            fabActions = it,
+                            onFabActionClick = { fabActionId ->
+                                onFabActionClick?.invoke(fabActionId)
+                            }
+                        )
+                    }
+                },
+                content = content
+            )
+        }
     }
 }
 
@@ -122,7 +215,14 @@ fun ListDetailsScaffold(
     UrgatScaffold(
         selectedRoute = selectedRoute,
         onSearchQueryChanged = onSearchQueryChanged,
-        onBack = onBack,
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    stringResource(id = R.string.menu_back)
+                )
+            }
+        },
         withTopAppBarActions = withTopAppBarActions,
         topAppBarActionsContent = topAppBarActionsContent,
         floatingActionButtonContent = {
@@ -143,8 +243,8 @@ fun ListDetailsScaffold(
 private fun UrgatScaffold(
     selectedRoute: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
-    onBack: (() -> Unit)? = null,
 
+    navigationIcon: (@Composable () -> Unit)? = null,
     withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     floatingActionButtonContent: (@Composable () -> Unit)? = null,
@@ -158,7 +258,7 @@ private fun UrgatScaffold(
             TopAppBarContent(
                 selectedRoute = selectedRoute,
                 onSearchQueryChanged = onSearchQueryChanged,
-                onBack = onBack,
+                navigationIcon = navigationIcon,
                 withActions = withTopAppBarActions,
                 actionsContent = topAppBarActionsContent,
             )
