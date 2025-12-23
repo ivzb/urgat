@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.weight
 
+import android.database.Cursor
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,7 +18,7 @@ class DefaultWeightsRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : WeightsRepository {
 
-    override fun getStream(limit: Int): Flow<List<Weight>> {
+    override fun observe(limit: Int): Flow<List<Weight>> {
         return localDataSource.observeAll(limit).map { weights ->
             withContext(dispatcher) {
                 weights.toExternal()
@@ -25,9 +26,13 @@ class DefaultWeightsRepository @Inject constructor(
         }
     }
 
-    override fun getStream(limit: Int, searchQuery: String): Flow<List<Weight>> {
-        // todo: use searchQuery
-        return getStream(limit)
+    override fun observe(limit: Int, searchQuery: String): Flow<List<Weight>> {
+        // searchQuery is not used at the moment
+        return observe(limit)
+    }
+
+    override fun stream(): Cursor {
+        return localDataSource.streamAll()
     }
 
     override suspend fun create(value: BigDecimal, date: Long): String {

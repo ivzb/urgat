@@ -88,23 +88,23 @@ class DefaultNotesRepositoryTest {
     }
 
     @Test
-    fun `getStream emits mapped notes`() = runTest {
+    fun `observe emits mapped notes`() = runTest {
         repository.create("A")
         repository.create("B")
 
-        val result = repository.getStream(limit = 10).first()
+        val result = repository.observe(limit = 10).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.content })
     }
 
     @Test
-    fun `getStream with searchQuery filters correctly`() = runTest {
+    fun `observe with searchQuery filters correctly`() = runTest {
         repository.create("Taxi")
         repository.create("Lunch")
         repository.create("Bus")
 
-        val result = repository.getStream(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
 
         assertEquals(1, result.size)
         assertEquals("Lunch", result.first().content)

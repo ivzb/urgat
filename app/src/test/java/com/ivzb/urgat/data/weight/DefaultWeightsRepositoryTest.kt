@@ -73,11 +73,11 @@ class DefaultWeightsRepositoryTest {
     }
 
     @Test
-    fun `getStream emits mapped weights`() = runTest {
+    fun `observe emits mapped weights`() = runTest {
         repository.create(75.toBigDecimal(), 1764523811)
         repository.create(77.toBigDecimal(), 1764523812)
 
-        val result = repository.getStream(limit = 10).first()
+        val result = repository.observe(limit = 10).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf(75.toBigDecimal(), 77.toBigDecimal()), result.map { it.value })
@@ -85,12 +85,12 @@ class DefaultWeightsRepositoryTest {
     }
 
     @Test
-    fun `getStream with searchQuery filters correctly`() = runTest {
+    fun `observe with searchQuery filters correctly`() = runTest {
         repository.create(75.toBigDecimal(), 1764523811)
         repository.create(77.toBigDecimal(), 1764523812)
         repository.create(79.toBigDecimal(), 1764523813)
 
-        val result = repository.getStream(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(3, result.size)

@@ -11,9 +11,9 @@ import javax.inject.Inject
 interface ObserveExpensesUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<ExpensesFilterType>?,
-        limitFlow: Flow<Int>?
+        searchQueryFlow: Flow<String>? = null,
+        filterTypeFlow: Flow<ExpensesFilterType>? = null,
+        limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<Expense>>>
 
 }
@@ -28,7 +28,7 @@ class DefaultObserveExpensesUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Expense>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)

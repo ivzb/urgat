@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.weight
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -18,6 +19,9 @@ interface WeightDao {
             "ORDER BY date DESC " +
             "LIMIT :limit")
     fun observeAll(limit: Int, from: Long, to: Long): Flow<List<WeightEntity>>
+
+    @Query("SELECT * FROM weights WHERE isDeleted = 0 ORDER BY date DESC")
+    fun streamAll(): Cursor
 
     @Upsert
     suspend fun upsert(entity: WeightEntity)

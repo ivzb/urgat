@@ -1,8 +1,11 @@
 package com.ivzb.urgat.data.todo
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Upsert
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,6 +21,9 @@ interface TodoDao {
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, searchQuery: String): Flow<List<TodoEntity>>
+
+    @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
+    fun streamAll(): Cursor
 
     @Query("SELECT * FROM todo WHERE id = :id")
     suspend fun getById(id: String): TodoEntity?

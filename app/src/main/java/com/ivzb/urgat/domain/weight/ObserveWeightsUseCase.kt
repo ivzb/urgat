@@ -10,9 +10,9 @@ import javax.inject.Inject
 interface ObserveWeightsUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>?
+        searchQueryFlow: Flow<String>? = null,
+        filterTypeFlow: Flow<Unit>? = null,
+        limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<Weight>>>
 
 }
@@ -27,9 +27,9 @@ class DefaultObserveWeightsUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>?
+        limitFlow: Flow<Int>?,
     ): Flow<Async<List<Weight>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
     companion object {

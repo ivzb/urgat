@@ -23,7 +23,7 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
 ) : ObserveInvestmentsFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
-        return repository.getStream(NO_ITEMS_LIMIT)
+        return repository.observe(NO_ITEMS_LIMIT)
             .map {
                 if (it.isEmpty()) {
                     return@map listOf()

@@ -17,9 +17,9 @@ class ObserveUseCase<T, FilterType>(
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>? = null,
         filterTypeFlow: Flow<FilterType>? = null,
-        limitFlow: Flow<Int>?
+        limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<T>>> =
         invokeFlow(searchQueryFlow, filterTypeFlow, limitFlow)
             .map<List<T>, Async<List<T>>> { Async.Success(it) }

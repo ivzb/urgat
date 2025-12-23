@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.todo
 
+import android.database.Cursor
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
@@ -18,6 +19,26 @@ class DefaultTodoRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope,
 ) : TodoRepository {
+
+    override fun observe(limit: Int): Flow<List<Todo>> {
+        return localDataSource.observeAll(limit).map { todos ->
+            withContext(dispatcher) {
+                todos.toExternal()
+            }
+        }
+    }
+
+    override fun observe(limit: Int, searchQuery: String): Flow<List<Todo>> {
+        return localDataSource.observeAll(limit, searchQuery).map { todos ->
+            withContext(dispatcher) {
+                todos.toExternal()
+            }
+        }
+    }
+
+    override fun stream(): Cursor {
+        return localDataSource.streamAll()
+    }
 
     override suspend fun create(title: String, description: String): String {
         // ID creation might be a complex operation so it's executed using the supplied
@@ -49,22 +70,6 @@ class DefaultTodoRepository @Inject constructor(
         }
 
         localDataSource.upsert(todo.toEntity())
-    }
-
-    override fun getStream(limit: Int): Flow<List<Todo>> {
-        return localDataSource.observeAll(limit).map { todos ->
-            withContext(dispatcher) {
-                todos.toExternal()
-            }
-        }
-    }
-
-    override fun getStream(limit: Int, searchQuery: String): Flow<List<Todo>> {
-        return localDataSource.observeAll(limit, searchQuery).map { todos ->
-            withContext(dispatcher) {
-                todos.toExternal()
-            }
-        }
     }
 
     override suspend fun get(id: String): Todo? {

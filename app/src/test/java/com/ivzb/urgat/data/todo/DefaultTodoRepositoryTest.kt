@@ -93,23 +93,23 @@ class DefaultTodoRepositoryTest {
     }
 
     @Test
-    fun `getStream emits mapped todo`() = runTest {
+    fun `observe emits mapped todo`() = runTest {
         repository.create("A", "Desc")
         repository.create("B", "Desc")
 
-        val result = repository.getStream(limit = 10).first()
+        val result = repository.observe(limit = 10).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.title })
     }
 
     @Test
-    fun `getStream with searchQuery filters correctly`() = runTest {
+    fun `observe with searchQuery filters correctly`() = runTest {
         repository.create("Taxi", "Desc")
         repository.create("Lunch", "Tamagochi")
         repository.create("Bus", "Desc")
 
-        val result = repository.getStream(limit = 10, searchQuery = "Ta").first()
+        val result = repository.observe(limit = 10, searchQuery = "Ta").first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(2, result.size)
@@ -174,7 +174,7 @@ class DefaultTodoRepositoryTest {
 
         repository.clearCompleted()
 
-        val result = repository.getStream(limit = 10).first()
+        val result = repository.observe(limit = 10).first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(1, result.size)

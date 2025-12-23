@@ -51,7 +51,7 @@ class ObserveTodosFilteringUseCaseTest {
             )
         )
 
-        every { repository.getStream(NO_ITEMS_LIMIT) } returns repositoryStream
+        every { repository.observe(NO_ITEMS_LIMIT) } returns repositoryStream
 
         val results = observeUseCase().toList()
 
@@ -66,7 +66,7 @@ class ObserveTodosFilteringUseCaseTest {
 
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
-        every { repository.getStream(NO_ITEMS_LIMIT) } returns flow {
+        every { repository.observe(NO_ITEMS_LIMIT) } returns flow {
             throw RuntimeException("Test error")
         }
 

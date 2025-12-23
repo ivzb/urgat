@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.common
 
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_SEARCH_QUERY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -17,16 +18,17 @@ abstract class DefaultObserveUseCase<T, FilterType>(
     private val transform: ((List<T>) -> List<T>)? = null,
 ) {
 
+    private val noSearchFlow = MutableStateFlow(NO_SEARCH_QUERY)
     private val noLimitFlow = MutableStateFlow(NO_ITEMS_LIMIT)
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     protected fun invokeFlow(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<FilterType>? = null,
         limitFlow: Flow<Int>?
     ): Flow<List<T>> =
         combine(
-            searchQueryFlow,
+            searchQueryFlow ?: noSearchFlow,
             limitFlow ?: noLimitFlow
         ) { searchQuery, limit ->
             Pair(searchQuery, limit)
@@ -34,9 +36,9 @@ abstract class DefaultObserveUseCase<T, FilterType>(
         .debounce(DEBOUNCE_TIME_MILLIS)
         .flatMapLatest { (searchQuery, limit) ->
             val stream = if (searchQuery.isBlank()) {
-                repository.getStream(limit)
+                repository.observe(limit)
             } else {
-                repository.getStream(limit, searchQuery)
+                repository.observe(limit, searchQuery)
             }
 
             if (filterTypeFlow == null) {

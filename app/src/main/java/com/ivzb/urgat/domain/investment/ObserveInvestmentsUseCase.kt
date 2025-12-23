@@ -10,9 +10,9 @@ import javax.inject.Inject
 interface ObserveInvestmentsUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<String>?,
-        limitFlow: Flow<Int>?
+        searchQueryFlow: Flow<String>? = null,
+        filterTypeFlow: Flow<String>? = null,
+        limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<Investment>>>
 
 }
@@ -27,9 +27,9 @@ class DefaultObserveInvestmentsUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<String>?,
-        limitFlow: Flow<Int>?
+        limitFlow: Flow<Int>?,
     ): Flow<Async<List<Investment>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
 }

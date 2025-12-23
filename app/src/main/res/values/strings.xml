@@ -120,5 +120,7 @@
     <string name="add_sample_data">Add sample data</string>
     <string name="data">Data</string>
     <string name="export_data">Export</string>
+    <string name="export_data_done">Data was exported.</string>
+    <string name="export_data_failed">Export data failed. Try again?</string>
     <string name="import_data">Import</string>
 </resources>

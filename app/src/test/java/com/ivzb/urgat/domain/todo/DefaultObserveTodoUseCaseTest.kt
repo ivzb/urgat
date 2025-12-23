@@ -40,7 +40,7 @@ class ObserveTodosUseCaseTest {
             )
         )
 
-        every { repository.getStream(limit, "todo") } returns repositoryStream
+        every { repository.observe(limit, "todo") } returns repositoryStream
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
@@ -61,7 +61,7 @@ class ObserveTodosUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { repository.getStream(limit) } throws RuntimeException("Test error")
+        every { repository.observe(limit) } throws RuntimeException("Test error")
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 

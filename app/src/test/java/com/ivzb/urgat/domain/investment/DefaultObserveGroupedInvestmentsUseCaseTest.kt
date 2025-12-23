@@ -16,7 +16,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
-import java.time.LocalDate
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,7 +45,7 @@ class ObserveGroupedInvestmentsUseCaseTest {
             ),
         )
 
-        every { repository.getStream(limit, "coffee") } returns repositoryStream
+        every { repository.observe(limit, "coffee") } returns repositoryStream
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
@@ -82,7 +81,7 @@ class ObserveGroupedInvestmentsUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { repository.getStream(limit) } throws RuntimeException("Test error")
+        every { repository.observe(limit) } throws RuntimeException("Test error")
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 

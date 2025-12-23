@@ -101,23 +101,23 @@ class DefaultExpensesRepositoryTest {
     }
 
     @Test
-    fun `getStream emits mapped expenses`() = runTest {
+    fun `observe emits mapped expenses`() = runTest {
         repository.create("A", BigDecimal("1.0"), "Cat", 0L)
         repository.create("B", BigDecimal("2.0"), "Cat", 0L)
 
-        val result = repository.getStream(limit = 10).first()
+        val result = repository.observe(limit = 10).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.name })
     }
 
     @Test
-    fun `getStream with searchQuery filters correctly`() = runTest {
+    fun `observe with searchQuery filters correctly`() = runTest {
         repository.create("Taxi", BigDecimal("10.0"), "Transport", 0L)
         repository.create("Lunch", BigDecimal("8.0"), "Food", 0L)
         repository.create("Bus", BigDecimal("3.0"), "Transport", 0L)
 
-        val result = repository.getStream(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(1, result.size)

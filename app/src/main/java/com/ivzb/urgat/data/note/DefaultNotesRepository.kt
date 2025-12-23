@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.note
 
+import android.database.Cursor
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
@@ -17,7 +18,7 @@ class DefaultNotesRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : NotesRepository {
 
-    override fun getStream(limit: Int): Flow<List<Note>> {
+    override fun observe(limit: Int): Flow<List<Note>> {
         return localDataSource.observeAll(limit).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
@@ -25,12 +26,16 @@ class DefaultNotesRepository @Inject constructor(
         }
     }
 
-    override fun getStream(limit: Int, searchQuery: String): Flow<List<Note>> {
+    override fun observe(limit: Int, searchQuery: String): Flow<List<Note>> {
         return localDataSource.observeAll(limit, searchQuery).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
             }
         }
+    }
+
+    override fun stream(): Cursor {
+        return localDataSource.streamAll()
     }
 
     override suspend fun create(content: String): String {

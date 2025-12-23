@@ -1,4 +1,6 @@
 package com.ivzb.urgat.ui.export
 
-class ExportUiState {
-}
+data class ExportUiState(
+    val isLoading: Boolean = false,
+    val userMessage: Int? = null,
+)

@@ -11,9 +11,9 @@ import javax.inject.Inject
 interface ObserveTodosUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<TodosFilterType>?,
-        limitFlow: Flow<Int>?
+        searchQueryFlow: Flow<String>? = null,
+        filterTypeFlow: Flow<TodosFilterType>? = null,
+        limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<Todo>>>
 
 }
@@ -28,9 +28,9 @@ class DefaultObserveTodosUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<TodosFilterType>?,
-        limitFlow: Flow<Int>?
+        limitFlow: Flow<Int>?,
     ): Flow<Async<List<Todo>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
     companion object {

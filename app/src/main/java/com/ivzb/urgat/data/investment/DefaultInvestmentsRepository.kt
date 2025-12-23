@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.investment
 
+import android.database.Cursor
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
@@ -18,7 +19,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : InvestmentsRepository {
 
-    override fun getStream(limit: Int): Flow<List<Investment>> {
+    override fun observe(limit: Int): Flow<List<Investment>> {
         return localDataSource.observeAll(limit).map { investments ->
             withContext(dispatcher) {
                 investments.toExternal()
@@ -26,12 +27,16 @@ class DefaultInvestmentsRepository @Inject constructor(
         }
     }
 
-    override fun getStream(limit: Int, searchQuery: String): Flow<List<Investment>> {
+    override fun observe(limit: Int, searchQuery: String): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, searchQuery).map { investments ->
             withContext(dispatcher) {
                 investments.toExternal()
             }
         }
+    }
+
+    override fun stream(): Cursor {
+        return localDataSource.streamAll()
     }
 
     override suspend fun create(

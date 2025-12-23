@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.expense
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -22,6 +23,9 @@ interface ExpenseDao {
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, searchQuery: String): Flow<List<ExpenseEntity>>
+
+    @Query("SELECT * FROM expenses WHERE isDeleted = 0 ORDER BY date DESC")
+    fun streamAll(): Cursor
 
     @Upsert
     suspend fun upsert(entity: ExpenseEntity)

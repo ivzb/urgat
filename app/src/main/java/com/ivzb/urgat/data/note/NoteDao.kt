@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.note
 
+import android.database.Cursor
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
@@ -18,6 +19,9 @@ interface NoteDao {
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, searchQuery: String): Flow<List<NoteEntity>>
+
+    @Query("SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC")
+    fun streamAll(): Cursor
 
     @Upsert
     suspend fun upsert(entity: NoteEntity)

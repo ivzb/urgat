@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.expense
 
+import android.database.Cursor
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
@@ -18,7 +19,7 @@ class DefaultExpensesRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : ExpensesRepository {
 
-    override fun getStream(limit: Int): Flow<List<Expense>> {
+    override fun observe(limit: Int): Flow<List<Expense>> {
         return localDataSource.observeAll(limit).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
@@ -26,12 +27,16 @@ class DefaultExpensesRepository @Inject constructor(
         }
     }
 
-    override fun getStream(limit: Int, searchQuery: String): Flow<List<Expense>> {
+    override fun observe(limit: Int, searchQuery: String): Flow<List<Expense>> {
         return localDataSource.observeAll(limit, searchQuery).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
             }
         }
+    }
+
+    override fun stream(): Cursor {
+        return localDataSource.streamAll()
     }
 
     override suspend fun create(name: String, amount: BigDecimal, category: String, date: Long): String {

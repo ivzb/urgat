@@ -24,7 +24,7 @@ class DefaultObserveTodosFilteringUseCase @Inject constructor(
 ) : ObserveTodosFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<TodosFilterMenuItem>>> {
-        return repository.getStream(NO_ITEMS_LIMIT)
+        return repository.observe(NO_ITEMS_LIMIT)
             .map {
                 listOf(
                     FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = it.size),

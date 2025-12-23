@@ -1,4 +1,6 @@
 package com.ivzb.urgat.ui.export
 
-class ExportIntent {
+sealed class ExportIntent {
+    data object ExportData: ExportIntent()
+    data object UserMessageShown: ExportIntent()
 }

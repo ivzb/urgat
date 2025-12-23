@@ -23,7 +23,7 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
 ) : ObserveExpensesFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<ExpensesFilterMenuItem>>> {
-        return repository.getStream(NO_ITEMS_LIMIT)
+        return repository.observe(NO_ITEMS_LIMIT)
             .map {
                 listOf(
                     FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = it.size),
