@@ -1,5 +1,8 @@
 package com.ivzb.urgat.ui.export
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +65,20 @@ fun ExportScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val folderPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        uri?.let {
+            context.contentResolver.takePersistableUriPermission(
+                it,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+
+            onIntent(ExportIntent.ExportData(it))
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -100,10 +118,12 @@ fun ExportScreen(
 
                 else -> {
                     Button(
-                        onClick = { onIntent(ExportIntent.ExportData) },
+                        onClick = {
+                            folderPicker.launch(null)
+                        },
                     ) {
 
-                        Text(stringResource(R.string.export_data))
+                        Text(stringResource(R.string.export_button_text))
                     }
                 }
             }

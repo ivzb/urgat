@@ -1,5 +1,7 @@
 package com.ivzb.urgat.ui.export
 
+import android.content.ContentResolver
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExportViewModel @Inject constructor(
     private val exportUseCase: ExportUseCase,
+    private val contentResolver: ContentResolver
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExportUiState())
@@ -22,12 +25,12 @@ class ExportViewModel @Inject constructor(
 
     fun onIntent(intent: ExportIntent) {
         when (intent) {
-            is ExportIntent.ExportData -> exportData()
+            is ExportIntent.ExportData -> exportData(intent.uri)
             is ExportIntent.UserMessageShown -> userMessageShown()
         }
     }
 
-    private fun exportData() {
+    private fun exportData(uri: Uri) {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
@@ -35,7 +38,7 @@ class ExportViewModel @Inject constructor(
                 )
             }
 
-            exportUseCase()
+            exportUseCase(uri, contentResolver)
 
             _uiState.update {
                 it.copy(

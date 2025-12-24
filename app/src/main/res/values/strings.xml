@@ -122,5 +122,6 @@
     <string name="export_data">Export</string>
     <string name="export_data_done">Data was exported.</string>
     <string name="export_data_failed">Export data failed. Try again?</string>
+    <string name="export_button_text">Choose folder to export</string>
     <string name="import_data">Import</string>
 </resources>
