@@ -1,3 +1,9 @@
+## Release notes 25.12.12
+
+New:
+- Export to CSV is now available. Download your data and open it in Excel, Google Sheets, or other tools.
+- Added a navigation menu with options to export and import your data.
+
 ## Release notes 25.12.11
 
 New:
