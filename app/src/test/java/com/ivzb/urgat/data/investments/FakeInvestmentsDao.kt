@@ -1,5 +1,7 @@
 package com.ivzb.urgat.data.investments
 
+import android.database.Cursor
+import android.database.MatrixCursor
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import kotlinx.coroutines.flow.Flow
@@ -10,6 +12,7 @@ class FakeInvestmentDao : InvestmentDao {
 
     private val items = mutableListOf<InvestmentEntity>()
     private val _flow = MutableStateFlow<List<InvestmentEntity>>(emptyList())
+    private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int): Flow<List<InvestmentEntity>> =
         _flow.map { it.take(limit) }
@@ -18,6 +21,8 @@ class FakeInvestmentDao : InvestmentDao {
         _flow.map { list ->
             list.filter { it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
+
+    override fun streamAll(): Cursor = _cursor
 
     override suspend fun getById(id: String): InvestmentEntity? =
         items.find { it.id == id }

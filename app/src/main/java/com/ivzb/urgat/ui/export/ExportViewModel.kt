@@ -17,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ExportViewModel @Inject constructor(
     private val exportUseCase: ExportUseCase,
-    private val contentResolver: ContentResolver
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExportUiState())
@@ -38,7 +37,7 @@ class ExportViewModel @Inject constructor(
                 )
             }
 
-            exportUseCase(uri, contentResolver)
+            exportUseCase(uri)
 
             _uiState.update {
                 it.copy(

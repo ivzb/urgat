@@ -1,5 +1,7 @@
 package com.ivzb.urgat.data.expenses
 
+import android.database.Cursor
+import android.database.MatrixCursor
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
@@ -10,6 +12,7 @@ class FakeExpenseDao : ExpenseDao {
 
     private val items = mutableListOf<ExpenseEntity>()
     private val _flow = MutableStateFlow<List<ExpenseEntity>>(emptyList())
+    private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int): Flow<List<ExpenseEntity>> =
         _flow.map { it.take(limit) }
@@ -18,6 +21,8 @@ class FakeExpenseDao : ExpenseDao {
         _flow.map { list ->
             list.filter { it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
+
+    override fun streamAll(): Cursor = _cursor
 
     override suspend fun getById(id: String): ExpenseEntity? =
         items.find { it.id == id }

@@ -17,7 +17,6 @@ class DefaultNotesRepositoryTest {
     private val dispatcher = StandardTestDispatcher()
     private lateinit var dao: FakeNoteDao
     private lateinit var repository: DefaultNotesRepository
-    private val scope = CoroutineScope(dispatcher + SupervisorJob())
 
     @Before
     fun setup() {
@@ -26,7 +25,6 @@ class DefaultNotesRepositoryTest {
         repository = DefaultNotesRepository(
             localDataSource = dao,
             dispatcher = dispatcher,
-            scope = scope
         )
     }
 

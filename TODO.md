@@ -64,4 +64,3 @@
 - show weight transactions below the chart like expenses and investments
 - show expenses grouped by categories
 - add import from csv
-- add export to csv

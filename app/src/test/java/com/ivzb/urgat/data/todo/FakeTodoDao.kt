@@ -1,5 +1,7 @@
 package com.ivzb.urgat.data.todo
 
+import android.database.Cursor
+import android.database.MatrixCursor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -8,6 +10,7 @@ class FakeTodoDao : TodoDao {
 
     private val items = mutableListOf<TodoEntity>()
     private val _flow = MutableStateFlow<List<TodoEntity>>(emptyList())
+    private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int): Flow<List<TodoEntity>> =
         _flow.map { it.take(limit) }
@@ -16,6 +19,8 @@ class FakeTodoDao : TodoDao {
         _flow.map { list ->
             list.filter { it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true) }
         }
+
+    override fun streamAll(): Cursor = _cursor
 
     override suspend fun getById(id: String): TodoEntity? =
         items.find { it.id == id }

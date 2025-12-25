@@ -15,7 +15,6 @@ class DefaultWeightsRepositoryTest {
     private val dispatcher = StandardTestDispatcher()
     private lateinit var dao: FakeWeightDao
     private lateinit var repository: DefaultWeightsRepository
-    private val scope = CoroutineScope(dispatcher + SupervisorJob())
 
     @Before
     fun setup() {
@@ -24,7 +23,6 @@ class DefaultWeightsRepositoryTest {
         repository = DefaultWeightsRepository(
             localDataSource = dao,
             dispatcher = dispatcher,
-            scope = scope
         )
     }
 

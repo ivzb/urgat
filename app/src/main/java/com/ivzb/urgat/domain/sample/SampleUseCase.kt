@@ -17,8 +17,8 @@ interface SampleUseCase {
 
 class DefaultSampleUseCase @Inject constructor(
     private val createTodoUseCase: CreateTodoUseCase,
-    private val createExpenseUseCase: CreateExpenseUseCase,
     private val createNoteUseCase: CreateNoteUseCase,
+    private val createExpenseUseCase: CreateExpenseUseCase,
     private val createInvestmentUseCase: CreateInvestmentUseCase,
     private val createWeightUseCase: CreateWeightUseCase,
 ): SampleUseCase {

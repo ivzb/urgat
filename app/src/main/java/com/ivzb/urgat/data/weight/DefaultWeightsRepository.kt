@@ -1,10 +1,8 @@
 package com.ivzb.urgat.data.weight
 
 import android.database.Cursor
-import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -15,7 +13,6 @@ import javax.inject.Inject
 class DefaultWeightsRepository @Inject constructor(
     private val localDataSource: WeightDao,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope,
 ) : WeightsRepository {
 
     override fun observe(limit: Int): Flow<List<Weight>> {

@@ -23,13 +23,13 @@ class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
     }
 
     override operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Expense>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow.collect { lastQuery = it }
+            searchQueryFlow?.collect { lastQuery = it }
         }
         return flow
     }

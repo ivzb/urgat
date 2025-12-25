@@ -1,162 +1,98 @@
 package com.ivzb.urgat.domain.export
 
-import android.content.ContentResolver
 import android.net.Uri
-import android.provider.DocumentsContract
+import androidx.annotation.VisibleForTesting
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.export.ExportMapping
+import com.ivzb.urgat.data.export.ExportRepository
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.data.weight.WeightsRepository
-import kotlinx.coroutines.Dispatchers
+import com.ivzb.urgat.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.io.OutputStream
 import javax.inject.Inject
 
 interface ExportUseCase {
 
-    suspend operator fun invoke(uri: Uri, resolver: ContentResolver)
+    suspend operator fun invoke(uri: Uri)
 
 }
 
 class DefaultExportUseCase @Inject constructor(
+    private val exportRepository: ExportRepository,
     private val todoRepository: TodoRepository,
     private val notesRepository: NotesRepository,
     private val expensesRepository: ExpensesRepository,
     private val investmentsRepository: InvestmentsRepository,
     private val weightsRepository: WeightsRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ExportUseCase {
 
-    override suspend operator fun invoke(uri: Uri, resolver: ContentResolver) {
-        exportFile(
-            resolver = resolver,
-            uri = uri,
-            fileName = TODOS_FILE,
-        ) { output ->
-            exportTodos(output)
+    override suspend operator fun invoke(uri: Uri) {
+        return withContext(dispatcher) {
+            exportRepository.exportCsv(uri, todoRepository.stream(), TODOS_FILE_NAME, TODOS_COLUMNS_MAPPING)
+            exportRepository.exportCsv(uri, notesRepository.stream(), NOTES_FILE_NAME, NOTES_COLUMNS_MAPPING)
+            exportRepository.exportCsv(uri, expensesRepository.stream(), EXPENSES_FILE_NAME, EXPENSES_COLUMNS_MAPPING)
+            exportRepository.exportCsv(uri, investmentsRepository.stream(), INVESTMENTS_FILE_NAME, INVESTMENTS_COLUMNS_MAPPING)
+            exportRepository.exportCsv(uri, weightsRepository.stream(), WEIGHTS_FILE_NAME, WEIGHTS_COLUMNS_MAPPING)
         }
-
-        // todo: export to csv
-    }
-
-    suspend fun exportTodos(outputStream: OutputStream) {
-        return withContext(Dispatchers.IO) {
-            outputStream.bufferedWriter().use { writer ->
-                writer.appendLine("id,title,description,isCompleted,createdAt")
-
-                todoRepository.stream().use { cursor ->
-                    val idIndex = cursor.getColumnIndexOrThrow("id")
-                    val titleIndex = cursor.getColumnIndexOrThrow("title")
-                    val descriptionIndex = cursor.getColumnIndexOrThrow("description")
-                    val isCompletedIndex = cursor.getColumnIndexOrThrow("isCompleted")
-                    val createdAtIndex = cursor.getColumnIndexOrThrow("createdAt")
-
-                    while (cursor.moveToNext()) {
-                        writer.appendLine(
-                            "\"${cursor.getString(idIndex)}\"," +
-                                    "\"${cursor.getString(titleIndex)}\"," +
-                                    "\"${cursor.getString(descriptionIndex)}\"," +
-                                    "\"${cursor.getString(descriptionIndex)}\"," +
-                                    "${cursor.getInt(isCompletedIndex)}," +
-                                    "${cursor.getLong(createdAtIndex)}"
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    private inline fun exportFile(
-        resolver: ContentResolver,
-        uri: Uri,
-        fileName: String,
-        write: (OutputStream) -> Unit
-    ) {
-        val fileUri = createOrReplaceFile(
-            resolver = resolver,
-            uri = uri,
-            fileName = fileName,
-            mimeType = CSV_MIME
-        )
-
-        resolver.openOutputStream(fileUri, "w")?.use { output ->
-            write(output)
-        } ?: error("Unable to open output stream for $fileName")
-    }
-
-    /**
-     * SAF-safe file creation that replaces existing files.
-     */
-    private fun createOrReplaceFile(
-        resolver: ContentResolver,
-        uri: Uri,
-        fileName: String,
-        mimeType: String
-    ): Uri {
-        // Delete existing file if present
-        findExistingFile(resolver, uri, fileName)?.let {
-            DocumentsContract.deleteDocument(resolver, it)
-        }
-
-        val parentDocumentUri = DocumentsContract.buildDocumentUriUsingTree(
-            uri,
-            DocumentsContract.getTreeDocumentId(uri)
-        )
-
-        return DocumentsContract.createDocument(
-            resolver,
-            parentDocumentUri,
-            mimeType,
-            fileName
-        ) ?: error("Failed to create document: $fileName")
-    }
-
-    private fun findExistingFile(
-        resolver: ContentResolver,
-        uri: Uri,
-        fileName: String
-    ): Uri? {
-        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
-            uri,
-            DocumentsContract.getTreeDocumentId(uri)
-        )
-
-        resolver.query(
-            childrenUri,
-            arrayOf(
-                DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                DocumentsContract.Document.COLUMN_DISPLAY_NAME
-            ),
-            null,
-            null,
-            null
-        )?.use { cursor ->
-            val idCol = cursor.getColumnIndexOrThrow(
-                DocumentsContract.Document.COLUMN_DOCUMENT_ID
-            )
-            val nameCol = cursor.getColumnIndexOrThrow(
-                DocumentsContract.Document.COLUMN_DISPLAY_NAME
-            )
-
-            while (cursor.moveToNext()) {
-                if (cursor.getString(nameCol) == fileName) {
-                    val docId = cursor.getString(idCol)
-                    return DocumentsContract.buildDocumentUriUsingTree(
-                        uri,
-                        docId
-                    )
-                }
-            }
-        }
-
-        return null
     }
 
     companion object {
 
-        private const val CSV_MIME = "text/csv"
+        private const val TODOS_FILE_NAME = "todos.csv"
+        private const val NOTES_FILE_NAME = "notes.csv"
+        private const val EXPENSES_FILE_NAME = "expenses.csv"
+        private const val INVESTMENTS_FILE_NAME = "investments.csv"
+        private const val WEIGHTS_FILE_NAME = "weights.csv"
 
-        private const val TODOS_FILE = "todos.csv"
+        @VisibleForTesting
+        val TODOS_COLUMNS_MAPPING = listOf(
+            ExportMapping("id", "string"),
+            ExportMapping("title", "string"),
+            ExportMapping("description", "string"),
+            ExportMapping("isCompleted", "boolean"),
+            ExportMapping("createdAt", "long"),
+        )
+
+        @VisibleForTesting
+        val NOTES_COLUMNS_MAPPING = listOf(
+            ExportMapping("id", "string"),
+            ExportMapping("content", "string"),
+            ExportMapping("createdAt", "long"),
+        )
+
+        @VisibleForTesting
+        val EXPENSES_COLUMNS_MAPPING = listOf(
+            ExportMapping("id", "string"),
+            ExportMapping("name", "string"),
+            ExportMapping("amount", "big_decimal"),
+            ExportMapping("category", "string"),
+            ExportMapping("date", "long"),
+            ExportMapping("createdAt", "long"),
+        )
+
+        @VisibleForTesting
+        val INVESTMENTS_COLUMNS_MAPPING = listOf(
+            ExportMapping("id", "string"),
+            ExportMapping("name", "string"),
+            ExportMapping("shares", "big_decimal"),
+            ExportMapping("cost", "big_decimal"),
+            ExportMapping("category", "string"),
+            ExportMapping("currency", "string"),
+            ExportMapping("date", "long"),
+            ExportMapping("createdAt", "long"),
+        )
+
+        @VisibleForTesting
+        val WEIGHTS_COLUMNS_MAPPING = listOf(
+            ExportMapping("id", "string"),
+            ExportMapping("value", "big_decimal"),
+            ExportMapping("date", "long"),
+            ExportMapping("createdAt", "long"),
+        )
 
     }
 }

@@ -1,5 +1,7 @@
 package com.ivzb.urgat.data.notes
 
+import android.database.Cursor
+import android.database.MatrixCursor
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.note.NoteEntity
 import kotlinx.coroutines.flow.Flow
@@ -10,6 +12,7 @@ class FakeNoteDao : NoteDao {
 
     private val items = mutableListOf<NoteEntity>()
     private val _flow = MutableStateFlow<List<NoteEntity>>(emptyList())
+    private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int): Flow<List<NoteEntity>> =
         _flow.map { it.take(limit) }
@@ -18,6 +21,8 @@ class FakeNoteDao : NoteDao {
         _flow.map { list ->
             list.filter { it.content.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
+
+    override fun streamAll(): Cursor = _cursor
 
     override suspend fun getById(id: String): NoteEntity? =
         items.find { it.id == id }

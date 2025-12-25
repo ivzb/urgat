@@ -2,6 +2,8 @@ package com.ivzb.urgat.di
 
 import com.ivzb.urgat.data.expense.DefaultExpensesRepository
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.export.DefaultExportRepository
+import com.ivzb.urgat.data.export.ExportRepository
 import com.ivzb.urgat.data.investment.DefaultInvestmentsRepository
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.data.note.DefaultNotesRepository
@@ -38,6 +40,10 @@ interface RepositoryModule {
 
     @Singleton
     @Binds
-    fun bindsInvestmentsRepository(invsetmentsRepository: DefaultInvestmentsRepository): InvestmentsRepository
+    fun bindsInvestmentsRepository(investmentsRepository: DefaultInvestmentsRepository): InvestmentsRepository
+
+    @Singleton
+    @Binds
+    fun bindsExportRepository(exportRepository: DefaultExportRepository): ExportRepository
 
 }

@@ -18,7 +18,6 @@ class DefaultInvestmentsRepositoryTest {
     private val dispatcher = StandardTestDispatcher()
     private lateinit var dao: FakeInvestmentDao
     private lateinit var repository: DefaultInvestmentsRepository
-    private val scope = CoroutineScope(dispatcher + SupervisorJob())
 
     @Before
     fun setup() {
@@ -27,7 +26,6 @@ class DefaultInvestmentsRepositoryTest {
         repository = DefaultInvestmentsRepository(
             localDataSource = dao,
             dispatcher = dispatcher,
-            scope = scope
         )
     }
 

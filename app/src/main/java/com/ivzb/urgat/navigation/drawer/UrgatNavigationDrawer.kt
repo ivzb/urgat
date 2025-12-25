@@ -28,12 +28,12 @@ val URGAT_NAVIGATION_DRAWER = listOfNotNull(
                 iconVector = Icons.Outlined.ImportExport,
                 route = ExportRoute,
             ),
-            UrgatNavigationDrawerItem(
-                labelResId = R.string.import_data,
-                iconVector = Icons.Outlined.ImportExport,
-                // todo: ImportDataRoute
-                route = SampleRoute,
-            ),
+//            UrgatNavigationDrawerItem(
+//                labelResId = R.string.import_data,
+//                iconVector = Icons.Outlined.ImportExport,
+//                // todo: ImportDataRoute
+//                route = SampleRoute,
+//            ),
         )
     ),
 )
