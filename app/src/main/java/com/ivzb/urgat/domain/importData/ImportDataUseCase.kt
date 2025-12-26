@@ -1,0 +1,51 @@
+package com.ivzb.urgat.domain.importData
+
+import android.net.Uri
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseExpenseCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseInvestmentCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseNoteCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseTodoCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseWeightCsv
+import com.ivzb.urgat.data.expense.ExpenseDao
+import com.ivzb.urgat.data.importData.ImportDataRepository
+import com.ivzb.urgat.data.investment.InvestmentDao
+import com.ivzb.urgat.data.note.NoteDao
+import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.weight.WeightDao
+import com.ivzb.urgat.di.IoDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+interface ImportDataUseCase {
+
+    suspend operator fun invoke(uri: Uri)
+
+}
+
+class DefaultImportDataUseCase @Inject constructor(
+    private val importDataRepository: ImportDataRepository,
+    private val todoDao: TodoDao,
+    private val noteDao: NoteDao,
+    private val expenseDao: ExpenseDao,
+    private val investmentDao: InvestmentDao,
+    private val weightDao: WeightDao,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+): ImportDataUseCase {
+
+    override suspend operator fun invoke(uri: Uri) {
+        return withContext(dispatcher) {
+            importDataRepository.importCsv(uri, TODOS_CSV_FILE_NAME, ::parseTodoCsv, todoDao::insertAll)
+            importDataRepository.importCsv(uri, NOTES_CSV_FILE_NAME, ::parseNoteCsv, noteDao::insertAll)
+            importDataRepository.importCsv(uri, EXPENSES_CSV_FILE_NAME, ::parseExpenseCsv, expenseDao::insertAll)
+            importDataRepository.importCsv(uri, INVESTMENTS_CSV_FILE_NAME, ::parseInvestmentCsv, investmentDao::insertAll)
+            importDataRepository.importCsv(uri, WEIGHTS_CSV_FILE_NAME, ::parseWeightCsv, weightDao::insertAll)
+        }
+    }
+
+}

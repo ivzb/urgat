@@ -22,7 +22,12 @@ class FakeExpenseDao : ExpenseDao {
             list.filter { it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
-    override fun streamAll(): Cursor = _cursor
+    override fun stream(): Cursor = _cursor
+
+    override suspend fun insertAll(items: List<ExpenseEntity>) {
+        this.items.addAll(items)
+        _flow.value = items.toList()
+    }
 
     override suspend fun getById(id: String): ExpenseEntity? =
         items.find { it.id == id }

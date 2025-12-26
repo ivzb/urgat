@@ -8,8 +8,9 @@ import com.ivzb.urgat.ui.addEditInvestment.addEditInvestmentEntry
 import com.ivzb.urgat.ui.addEditNote.addEditNoteEntry
 import com.ivzb.urgat.ui.addEditTodo.addEditTodoEntry
 import com.ivzb.urgat.ui.expenses.expensesEntry
-import com.ivzb.urgat.ui.export.exportEntry
+import com.ivzb.urgat.ui.exportData.exportDataEntry
 import com.ivzb.urgat.ui.finance.financeEntry
+import com.ivzb.urgat.ui.importData.importDataEntry
 import com.ivzb.urgat.ui.investments.investmentsEntry
 import com.ivzb.urgat.ui.library.libraryEntry
 import com.ivzb.urgat.ui.notes.notesEntry
@@ -40,6 +41,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
 
         sampleEntry(navigator)
 
-        exportEntry(navigator)
+        exportDataEntry(navigator)
+        importDataEntry(navigator)
     }
 }

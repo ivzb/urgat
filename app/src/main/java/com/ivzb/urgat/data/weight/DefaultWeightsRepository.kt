@@ -1,6 +1,5 @@
 package com.ivzb.urgat.data.weight
 
-import android.database.Cursor
 import com.ivzb.urgat.di.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -26,10 +25,6 @@ class DefaultWeightsRepository @Inject constructor(
     override fun observe(limit: Int, searchQuery: String): Flow<List<Weight>> {
         // searchQuery is not used at the moment
         return observe(limit)
-    }
-
-    override fun stream(): Cursor {
-        return localDataSource.streamAll()
     }
 
     override suspend fun create(value: BigDecimal, date: Long): String {

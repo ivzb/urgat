@@ -22,7 +22,12 @@ class FakeNoteDao : NoteDao {
             list.filter { it.content.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
-    override fun streamAll(): Cursor = _cursor
+    override fun stream(): Cursor = _cursor
+
+    override suspend fun insertAll(items: List<NoteEntity>) {
+        this.items.addAll(items)
+        _flow.value = items.toList()
+    }
 
     override suspend fun getById(id: String): NoteEntity? =
         items.find { it.id == id }

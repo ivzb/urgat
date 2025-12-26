@@ -1,6 +1,5 @@
 package com.ivzb.urgat.data.base
 
-import android.database.Cursor
 import kotlinx.coroutines.flow.Flow
 
 interface BaseRepository<T> {
@@ -8,8 +7,6 @@ interface BaseRepository<T> {
     fun observe(limit: Int): Flow<List<T>>
 
     fun observe(limit: Int, searchQuery: String): Flow<List<T>>
-
-    fun stream(): Cursor
 
     suspend fun get(id: String): T?
 

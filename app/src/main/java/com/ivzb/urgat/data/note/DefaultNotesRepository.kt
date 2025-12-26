@@ -1,6 +1,5 @@
 package com.ivzb.urgat.data.note
 
-import android.database.Cursor
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,10 +28,6 @@ class DefaultNotesRepository @Inject constructor(
                 expenses.toExternal()
             }
         }
-    }
-
-    override fun stream(): Cursor {
-        return localDataSource.streamAll()
     }
 
     override suspend fun create(content: String): String {

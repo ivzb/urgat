@@ -20,7 +20,12 @@ class FakeWeightDao: WeightDao {
         _flow.map { it.take(limit) }
             .filter { it.all { it.createdAt in from..to } }
 
-    override fun streamAll(): Cursor = _cursor
+    override fun stream(): Cursor = _cursor
+
+    override suspend fun insertAll(items: List<WeightEntity>) {
+        this.items.addAll(items)
+        _flow.value = items.toList()
+    }
 
     override suspend fun getById(id: String): WeightEntity? =
         items.find { it.id == id }

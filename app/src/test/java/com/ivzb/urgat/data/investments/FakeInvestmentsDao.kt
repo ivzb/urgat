@@ -22,7 +22,12 @@ class FakeInvestmentDao : InvestmentDao {
             list.filter { it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
-    override fun streamAll(): Cursor = _cursor
+    override fun stream(): Cursor = _cursor
+
+    override suspend fun insertAll(items: List<InvestmentEntity>) {
+        this.items.addAll(items)
+        _flow.value = items.toList()
+    }
 
     override suspend fun getById(id: String): InvestmentEntity? =
         items.find { it.id == id }

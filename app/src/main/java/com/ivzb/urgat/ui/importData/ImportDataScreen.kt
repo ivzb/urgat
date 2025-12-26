@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.export
+package com.ivzb.urgat.ui.importData
 
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,8 +36,8 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun ExportScreen(
-    viewModel: ExportViewModel,
+fun ImportDataScreen(
+    viewModel: ImportDataViewModel,
 
     onBack: () -> Unit,
 
@@ -46,20 +46,25 @@ fun ExportScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    ExportScreen(
+    ImportDataScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onBack = onBack,
         modifier = modifier
     )
-}
 
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
+            onBack()
+        }
+    }
+}
 
 @VisibleForTesting
 @Composable
-fun ExportScreen(
-    uiState: ExportUiState,
-    onIntent: (ExportIntent) -> Unit,
+fun ImportDataScreen(
+    uiState: ImportDataUiState,
+    onIntent: (ImportDataIntent) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -76,14 +81,14 @@ fun ExportScreen(
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             )
 
-            onIntent(ExportIntent.ExportData(it))
+            onIntent(ImportDataIntent.ImportData(it))
         }
     }
 
     Scaffold(
         topBar = {
             TextTopAppBar(
-                title = R.string.export_data,
+                title = R.string.import_data,
                 onBack = onBack,
                 withDelete = false,
                 onDelete = {},
@@ -123,7 +128,7 @@ fun ExportScreen(
                         },
                     ) {
 
-                        Text(stringResource(R.string.export_button_text))
+                        Text(stringResource(R.string.import_button_text))
                     }
                 }
             }
@@ -136,7 +141,7 @@ fun ExportScreen(
         LaunchedEffect(userMessage) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(snackbarText)
-                onIntent(ExportIntent.UserMessageShown)
+                onIntent(ImportDataIntent.UserMessageShown)
             }
         }
     }
@@ -145,10 +150,10 @@ fun ExportScreen(
 @Preview
 @DarkModePreview
 @Composable
-private fun ExportScreenPreview() {
+private fun ImportScreenPreview() {
     UrgatTheme {
-        ExportScreen(
-            uiState = ExportUiState(
+        ImportDataScreen(
+            uiState = ImportDataUiState(
                 isLoading = false,
             ),
             onIntent = {},
@@ -161,10 +166,10 @@ private fun ExportScreenPreview() {
 @Preview
 @DarkModePreview
 @Composable
-private fun ExportScreenLoadingPreview() {
+private fun ImportScreenLoadingPreview() {
     UrgatTheme {
-        ExportScreen(
-            uiState = ExportUiState(
+        ImportDataScreen(
+            uiState = ImportDataUiState(
                 isLoading = true,
             ),
             onIntent = {},

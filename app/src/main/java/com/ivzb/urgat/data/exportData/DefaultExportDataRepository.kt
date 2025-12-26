@@ -1,63 +1,69 @@
-package com.ivzb.urgat.data.export
+package com.ivzb.urgat.data.exportData
 
 import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
+import com.ivzb.urgat.data.csv.CsvMapping
 import com.ivzb.urgat.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.OutputStream
 import javax.inject.Inject
 
-class DefaultExportRepository @Inject constructor(
+class DefaultExportDataRepository @Inject constructor(
     private val contentResolver: ContentResolver,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-): ExportRepository {
+): ExportDataRepository {
 
     override suspend fun exportCsv(
         uri: Uri,
         cursor: Cursor,
         fileName: String,
-        mappings: List<ExportMapping>,
+        mappings: List<CsvMapping>,
     ) {
         return withContext(dispatcher) {
-            exportFile(
+            writeFile(
                 resolver = contentResolver,
                 uri = uri,
                 fileName = fileName,
                 mimeType = CSV_MIME,
             ) { outputStream ->
-                outputStream.bufferedWriter().use { writer ->
-                    val columns = mappings.map { it.column }
-                    val types = mappings.map { it.type }
 
-                    val headers = columns.joinToString(",")
-                    writer.appendLine(headers)
+                export(outputStream, cursor, mappings)
+            }
+        }
+    }
 
-                    cursor.use { cursor ->
-                        val indexes = columns.map { column -> cursor.getColumnIndexOrThrow(column) }
+    private fun export(outputStream: OutputStream, cursor: Cursor, mappings: List<CsvMapping>) {
+        outputStream.bufferedWriter().use { writer ->
+            val columns = mappings.map { it.column }
+            val types = mappings.map { it.type }
 
-                        while (cursor.moveToNext()) {
-                            val data = indexes.mapIndexed { index, columnIndex ->
-                                when (types[index]) {
-                                    "string" -> "\"${cursor.getString(columnIndex)}\""
-                                    "big_decimal" -> "\"${cursor.getString(columnIndex)}\""
-                                    "boolean" -> "${cursor.getInt(columnIndex)}"
-                                    "long" -> "${cursor.getLong(columnIndex)}"
-                                    else -> throw Exception("unsupported type ${types[index]}")
-                                }
-                            }
+            val headers = columns.joinToString(",")
+            writer.appendLine(headers)
 
-                            writer.appendLine(data.joinToString(","))
+            cursor.use { cursor ->
+                val indexes = columns.map { column -> cursor.getColumnIndexOrThrow(column) }
+
+                while (cursor.moveToNext()) {
+                    val data = indexes.mapIndexed { index, columnIndex ->
+                        when (types[index]) {
+                            "string" -> "\"${cursor.getString(columnIndex)}\""
+                            "big_decimal" -> "\"${cursor.getString(columnIndex)}\""
+                            "boolean" -> "${cursor.getInt(columnIndex)}"
+                            "long" -> "${cursor.getLong(columnIndex)}"
+                            else -> throw Exception("unsupported type ${types[index]}")
                         }
                     }
+
+                    writer.appendLine(data.joinToString(","))
                 }
             }
         }
     }
 
-    private inline fun exportFile(
+    private inline fun writeFile(
         resolver: ContentResolver,
         uri: Uri,
         fileName: String,

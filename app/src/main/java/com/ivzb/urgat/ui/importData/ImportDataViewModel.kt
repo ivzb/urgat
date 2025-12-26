@@ -1,11 +1,10 @@
-package com.ivzb.urgat.ui.export
+package com.ivzb.urgat.ui.importData
 
-import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
-import com.ivzb.urgat.domain.export.ExportUseCase
+import com.ivzb.urgat.domain.importData.ImportDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,21 +14,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ExportViewModel @Inject constructor(
-    private val exportUseCase: ExportUseCase,
+class ImportDataViewModel @Inject constructor(
+    private val importDataUseCase: ImportDataUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ExportUiState())
-    val uiState: StateFlow<ExportUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ImportDataUiState())
+    val uiState: StateFlow<ImportDataUiState> = _uiState.asStateFlow()
 
-    fun onIntent(intent: ExportIntent) {
+    fun onIntent(intent: ImportDataIntent) {
         when (intent) {
-            is ExportIntent.ExportData -> exportData(intent.uri)
-            is ExportIntent.UserMessageShown -> userMessageShown()
+            is ImportDataIntent.ImportData -> importData(intent.uri)
+            is ImportDataIntent.UserMessageShown -> userMessageShown()
         }
     }
 
-    private fun exportData(uri: Uri) {
+    private fun importData(uri: Uri) {
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
@@ -37,11 +36,11 @@ class ExportViewModel @Inject constructor(
                 )
             }
 
-            exportUseCase(uri)
+            importDataUseCase(uri)
 
             _uiState.update {
                 it.copy(
-                    userMessage = R.string.export_data_done,
+                    userMessage = R.string.import_data_done,
                 )
             }
         }
@@ -50,8 +49,8 @@ class ExportViewModel @Inject constructor(
     private fun userMessageShown() {
         _uiState.update {
             it.copy(
-                isLoading = false,
                 userMessage = null,
+                shouldNavigateBack = true,
             )
         }
     }

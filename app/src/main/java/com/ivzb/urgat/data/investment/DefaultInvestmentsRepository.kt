@@ -1,6 +1,5 @@
 package com.ivzb.urgat.data.investment
 
-import android.database.Cursor
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,10 +29,6 @@ class DefaultInvestmentsRepository @Inject constructor(
                 investments.toExternal()
             }
         }
-    }
-
-    override fun stream(): Cursor {
-        return localDataSource.streamAll()
     }
 
     override suspend fun create(

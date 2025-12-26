@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.export
+package com.ivzb.urgat.ui.exportData
 
 import androidx.compose.runtime.Immutable
 import com.ivzb.urgat.R
@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Immutable
 @Serializable
-data object ExportRoute: UrgatRoute() {
+data object ExportDataRoute: UrgatRoute() {
 
     override val titleResId: Int
         get() = R.string.export_data

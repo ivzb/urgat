@@ -2,6 +2,8 @@ package com.ivzb.urgat.data.expense
 
 import android.database.Cursor
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +27,10 @@ interface ExpenseDao {
     fun observeAll(limit: Int, searchQuery: String): Flow<List<ExpenseEntity>>
 
     @Query("SELECT * FROM expenses WHERE isDeleted = 0 ORDER BY date DESC")
-    fun streamAll(): Cursor
+    fun stream(): Cursor
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(items: List<ExpenseEntity>)
 
     @Upsert
     suspend fun upsert(entity: ExpenseEntity)

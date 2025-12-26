@@ -1,8 +1,8 @@
-package com.ivzb.urgat.domain.export
+package com.ivzb.urgat.domain.importData
 
 import android.net.Uri
 
-class FakeExportUseCase : ExportUseCase {
+class FakeImportUseCase : ImportDataUseCase {
 
     var invoked: Boolean = false
 

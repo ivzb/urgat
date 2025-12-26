@@ -2,6 +2,8 @@ package com.ivzb.urgat.data.note
 
 import android.database.Cursor
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +23,10 @@ interface NoteDao {
     fun observeAll(limit: Int, searchQuery: String): Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC")
-    fun streamAll(): Cursor
+    fun stream(): Cursor
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(items: List<NoteEntity>)
 
     @Upsert
     suspend fun upsert(entity: NoteEntity)

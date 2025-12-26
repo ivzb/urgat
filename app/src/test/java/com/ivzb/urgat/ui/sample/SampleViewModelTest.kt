@@ -68,6 +68,7 @@ class SampleViewModelTest {
 
         val uiState = viewModel.uiState.value
         assertNull(uiState.userMessage)
+        assertFalse(uiState.isLoading)
         assertTrue(uiState.shouldNavigateBack)
     }
 

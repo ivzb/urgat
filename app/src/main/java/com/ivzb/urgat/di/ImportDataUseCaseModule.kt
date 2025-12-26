@@ -1,7 +1,7 @@
 package com.ivzb.urgat.di
 
-import com.ivzb.urgat.domain.export.DefaultExportUseCase
-import com.ivzb.urgat.domain.export.ExportUseCase
+import com.ivzb.urgat.domain.importData.DefaultImportDataUseCase
+import com.ivzb.urgat.domain.importData.ImportDataUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -10,10 +10,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface ExportUseCaseModule {
+interface ImportDataUseCaseModule {
 
     @Singleton
     @Binds
-    fun bindsExportUseCase(useCase: DefaultExportUseCase): ExportUseCase
+    fun bindsImportDataUseCase(useCase: DefaultImportDataUseCase): ImportDataUseCase
 
 }

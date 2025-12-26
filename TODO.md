@@ -9,6 +9,7 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
+- add import and export to screenshot tests
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
@@ -63,4 +64,3 @@
 - add system unlock with biometric/pin when opening the app
 - show weight transactions below the chart like expenses and investments
 - show expenses grouped by categories
-- add import from csv

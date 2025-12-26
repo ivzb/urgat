@@ -20,7 +20,12 @@ class FakeTodoDao : TodoDao {
             list.filter { it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true) }
         }
 
-    override fun streamAll(): Cursor = _cursor
+    override fun stream(): Cursor = _cursor
+
+    override suspend fun insertAll(items: List<TodoEntity>) {
+        this.items.addAll(items)
+        _flow.value = items.toList()
+    }
 
     override suspend fun getById(id: String): TodoEntity? =
         items.find { it.id == id }

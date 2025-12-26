@@ -1,6 +1,5 @@
 package com.ivzb.urgat.data.expense
 
-import android.database.Cursor
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,10 +29,6 @@ class DefaultExpensesRepository @Inject constructor(
                 expenses.toExternal()
             }
         }
-    }
-
-    override fun stream(): Cursor {
-        return localDataSource.streamAll()
     }
 
     override suspend fun create(name: String, amount: BigDecimal, category: String, date: Long): String {
