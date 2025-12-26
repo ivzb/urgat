@@ -143,7 +143,7 @@ private fun InvestmentsContent(
                 Tab(
                     text = {
                         Text(
-                            text  = stringResource(page.titleResId),
+                            text = stringResource(page.titleResId),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )

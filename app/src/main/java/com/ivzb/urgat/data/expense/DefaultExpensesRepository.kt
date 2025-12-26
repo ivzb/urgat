@@ -43,7 +43,7 @@ class DefaultExpensesRepository @Inject constructor(
             amount = amount,
             category = category,
             date = date,
-            isDeleted =  false,
+            isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
         localDataSource.upsert(expense.toEntity())

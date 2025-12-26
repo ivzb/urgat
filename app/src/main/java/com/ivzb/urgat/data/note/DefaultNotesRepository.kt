@@ -39,7 +39,7 @@ class DefaultNotesRepository @Inject constructor(
         val note = Note(
             id = id,
             content = content,
-            isDeleted =  false,
+            isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
         localDataSource.upsert(note.toEntity())

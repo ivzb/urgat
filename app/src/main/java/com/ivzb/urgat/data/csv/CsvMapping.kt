@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.weight.WeightEntity
+import java.util.UUID
 
 data class CsvMapping(
     val column: String,
@@ -64,7 +65,7 @@ data class CsvMapping(
             val split = splitCsvLine(line)
 
             return TodoEntity(
-                id = split[0],
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 title = split[1],
                 description = split[2],
                 isCompleted = split[3].toBoolean(),
@@ -77,7 +78,7 @@ data class CsvMapping(
             val split = splitCsvLine(line)
 
             return NoteEntity(
-                id = split[0],
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 content = split[1],
                 isDeleted = false,
                 createdAt = split[2].toLong(),
@@ -88,7 +89,7 @@ data class CsvMapping(
             val split = splitCsvLine(line)
 
             return ExpenseEntity(
-                id = split[0],
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 name = split[1],
                 amount = split[2].toBigDecimal(),
                 category = split[3],
@@ -102,7 +103,7 @@ data class CsvMapping(
             val split = splitCsvLine(line)
 
             return InvestmentEntity(
-                id = split[0],
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 name = split[1],
                 shares = split[2].toBigDecimal(),
                 cost = split[3].toBigDecimal(),
@@ -118,7 +119,7 @@ data class CsvMapping(
             val split = splitCsvLine(line)
 
             return WeightEntity(
-                id = split[0],
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 value = split[1].toBigDecimal(),
                 date = split[2].toLong(),
                 isDeleted = false,
