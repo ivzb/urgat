@@ -1,3 +1,8 @@
+## Release notes 25.12.13
+
+New:
+- Import from CSV is now available. Easily restore your backup into the application.
+
 ## Release notes 25.12.12
 
 New:
