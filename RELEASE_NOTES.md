@@ -1,3 +1,9 @@
+## Release notes 25.12.14
+
+Improved:
+- Net worth and assets are now shown as combined currencies for a clearer overview.
+- You can now see total monthly for expenses and investments.
+
 ## Release notes 25.12.13
 
 New:
