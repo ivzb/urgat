@@ -248,10 +248,12 @@ private fun LazyListScope.categoriesPage(
 }
 
 private fun LazyListScope.netWorthPage(
-    netWorth: List<InvestmentNetWorth>,
+    netWorth: InvestmentNetWorth?,
 ) {
-    items(netWorth) { netWorth ->
-        InvestmentsNetWorth(netWorth)
+    if (netWorth != null) {
+        item {
+            InvestmentsNetWorth(netWorth)
+        }
     }
 }
 
@@ -294,7 +296,7 @@ private fun CategoryItem(
         textLeft = category.name,
         subTextLeft = "",
 
-        textRight = "${category.marketValue.format()} ${category.currency}",
+        textRight = category.values.joinToString(" | "),
         subTextRight = "",
 
         onClick = { /* NOOP */ },
@@ -309,7 +311,7 @@ private fun InvestmentsNetWorth(
         textLeft = stringResource(R.string.total),
         subTextLeft = "",
 
-        textRight = "${netWorth.marketValue.format()} ${netWorth.currency}",
+        textRight = netWorth.values.joinToString(" | "),
         subTextRight = "",
 
         onClick = { /* NOOP */ },
@@ -346,7 +348,7 @@ private fun InvestmentsScreenEmptyPreview() {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
                 investments = listOf(),
-                netWorth = listOf(),
+                netWorth = InvestmentNetWorth(values = listOf()),
                 categories = listOf(),
                 assets = listOf(),
                 filteringUiInfo = InvestmentsFilteringUiInfo(),

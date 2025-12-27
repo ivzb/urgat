@@ -54,6 +54,7 @@ class ObserveGroupedExpensesUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
+                total = "105.5".toBigDecimal(),
                 items = listOf(
                     Expense("4", "Pet food", BigDecimal("25.5"), "Pets", 1765922400000, false, 1765922400000),
                     Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", 1765231200000, false, 1765231200000)
@@ -61,6 +62,7 @@ class ObserveGroupedExpensesUseCaseTest {
             ),
             GroupedItems(
                 group = "November 2025",
+                total = "195.50".toBigDecimal(),
                 items = listOf(
                     Expense("2", "Groceries", BigDecimal("75.50"), "Food", 1764194400000, false, 1764194400000),
                     Expense("1", "Clothing", BigDecimal("120"), "Shopping", 1764021600000, false, 1764021600000),

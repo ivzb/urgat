@@ -61,7 +61,12 @@ class ExpensesViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeExpenses = listOf(GroupedItems("2025/12", listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L))))
+        val fakeExpenses = listOf(
+            GroupedItems(
+                group = "2025/12",
+                total = "10".toBigDecimal(),
+                items = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L)))
+        )
         val fakeExpensesFiltering = listOf(
             FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
@@ -108,7 +113,11 @@ class ExpensesViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeExpenses = listOf(GroupedItems("2025/12", listOf(Expense("2", "Coffee", BigDecimal.TEN, "food", 1L, false, 1L))))
+        val fakeExpenses = listOf(GroupedItems(
+            group = "2025/12",
+            total = "10".toBigDecimal(),
+            items = listOf(Expense("2", "Coffee", BigDecimal.TEN, "food", 1L, false, 1L)))
+        )
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()

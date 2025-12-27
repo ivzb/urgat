@@ -27,8 +27,8 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -79,7 +79,7 @@ class InvestmentsViewModelTest {
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
         assertTrue(initial.investments.isEmpty())
-        assertTrue(initial.netWorth.isEmpty())
+        assertNull(initial.netWorth)
         assertTrue(initial.categories.isEmpty())
         assertTrue(initial.assets.isEmpty())
 
@@ -91,6 +91,7 @@ class InvestmentsViewModelTest {
         val fakeInvestments = listOf(
             GroupedItems(
                 "2025/12",
+                listOf("1500 USD"),
                 listOf(
                     Investment(
                         "1",
@@ -106,17 +107,13 @@ class InvestmentsViewModelTest {
                 )
             )
         )
-        val fakeNetWorth = listOf(
-            InvestmentNetWorth(
-                marketValue = 500.toBigDecimal(),
-                currency = "USD",
-            )
+        val fakeNetWorth = InvestmentNetWorth(
+            listOf("500 USD"),
         )
         val fakeCategories = listOf(
             InvestmentCategory(
                 name = "etfs",
-                marketValue = 500.toBigDecimal(),
-                currency = "USD",
+                values = listOf("500 USD"),
             )
         )
         val fakeAssets = listOf(
@@ -183,6 +180,7 @@ class InvestmentsViewModelTest {
         val fakeInvestments = listOf(
             GroupedItems(
                 "2025/12",
+                listOf("1500 USD"),
                 listOf(
                     Investment(
                         "1",
@@ -198,17 +196,13 @@ class InvestmentsViewModelTest {
                 )
             )
         )
-        val fakeNetWorth = listOf(
-            InvestmentNetWorth(
-                marketValue = 500.toBigDecimal(),
-                currency = "USD",
-            )
+        val fakeNetWorth = InvestmentNetWorth(
+            values = listOf("500 USD"),
         )
         val fakeCategories = listOf(
             InvestmentCategory(
                 name = "etfs",
-                marketValue = 500.toBigDecimal(),
-                currency = "USD",
+                values = listOf("500 USD"),
             )
         )
         val fakeAssets = listOf(
@@ -240,7 +234,7 @@ class InvestmentsViewModelTest {
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(listOf()))
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(InvestmentNetWorth(listOf())))
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))

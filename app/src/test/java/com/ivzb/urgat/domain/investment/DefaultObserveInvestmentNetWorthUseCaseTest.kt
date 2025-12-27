@@ -54,10 +54,7 @@ class ObserveInvestmentNetWorthUseCaseTest {
 
         advanceUntilIdle()
 
-        val expected = listOf(
-            InvestmentNetWorth(marketValue = BigDecimal("1931.05"), currency = "EUR"),
-            InvestmentNetWorth(marketValue = BigDecimal("1931.05"), currency = "USD"),
-        )
+        val expected = InvestmentNetWorth(values = listOf("1,931.05 USD", "1,931.05 EUR"))
 
         assertEquals(1, results.size)
         val first = results.first()

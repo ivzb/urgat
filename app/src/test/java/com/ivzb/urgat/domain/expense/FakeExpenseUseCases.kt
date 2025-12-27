@@ -1,7 +1,6 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
@@ -38,11 +37,11 @@ class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
 
 class FakeObserveGroupedExpensesUseCase : ObserveGroupedExpensesUseCase {
 
-    private val flow = MutableStateFlow<Async<List<GroupedItems<String, Expense>>>>(Async.Loading)
+    private val flow = MutableStateFlow<Async<List<GroupedExpenses>>>(Async.Loading)
 
     var lastQuery: String = ""
 
-    fun emit(value: Async<List<GroupedItems<String, Expense>>>) {
+    fun emit(value: Async<List<GroupedExpenses>>) {
         flow.value = value
     }
 
@@ -50,7 +49,7 @@ class FakeObserveGroupedExpensesUseCase : ObserveGroupedExpensesUseCase {
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<GroupedItems<String, Expense>>>> {
+    ): Flow<Async<List<GroupedExpenses>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

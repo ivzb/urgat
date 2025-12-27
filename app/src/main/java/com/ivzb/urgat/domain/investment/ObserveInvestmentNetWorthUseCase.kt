@@ -14,7 +14,7 @@ interface ObserveInvestmentNetWorthUseCase {
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<InvestmentNetWorth>>>
+    ): Flow<Async<InvestmentNetWorth>>
 
 }
 
@@ -32,6 +32,6 @@ class DefaultObserveInvestmentNetWorthUseCase @Inject constructor(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<InvestmentNetWorth>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<InvestmentNetWorth>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
 }

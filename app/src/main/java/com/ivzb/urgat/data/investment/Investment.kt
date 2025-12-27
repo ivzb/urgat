@@ -20,8 +20,10 @@ data class Investment(
 
     companion object {
 
-        fun total(investments: List<Investment>): List<String> =
-            investments
+        fun total(investments: List<Investment>): List<String> = investments.format()
+
+        fun List<Investment>.format(): List<String> =
+            this
                 .groupBy { it.currency }
                 .map { (currency, investments) ->
                     val marketValue = investments.sumOf { it.marketValue }.format()

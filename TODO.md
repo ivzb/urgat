@@ -24,7 +24,6 @@
 - change investment cost to market price
 - add optional fee to investment
 - add checkbox which file to be imported/exported
-- instead of showing separate lines show combined currencies like investment::total in networth and assets
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31

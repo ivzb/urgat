@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.common
 
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.Investment.Companion.format
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
@@ -15,8 +16,8 @@ object Group {
 
     private val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 
-    fun <Item, Total> byDate(items: List<Item>, date: (Item) -> Long, total: (List<Item>) -> Total): List<GroupedItems<String, Total, Item>> {
-        return items
+    fun <Item, Total> byDate(items: List<Item>, date: (Item) -> Long, total: (List<Item>) -> Total): List<GroupedItems<String, Total, Item>> =
+        items
             .groupBy {
                 val date = date(it).toLocalDate()
                 YearMonth.from(date)
@@ -36,10 +37,9 @@ object Group {
                     items = it.items
                 )
             }
-    }
 
-    fun groupInvestmentAssets(investments: List<Investment>): List<InvestmentAsset> {
-        return investments
+    fun groupInvestmentAssets(investments: List<Investment>): List<InvestmentAsset> =
+        investments
             .groupBy { Triple(it.name, it.category, it.currency) }
             .map { (key, investments) ->
                 val (name, category, currency) = key
@@ -53,32 +53,21 @@ object Group {
                 )
             }
             .sortedBy { it.name }
-    }
 
-    fun groupInvestmentCategories(investments: List<Investment>): List<InvestmentCategory> {
-        return investments
-            .groupBy { Pair(it.currency, it.category) }
-            .map { (key, investments) ->
-                val (currency, category) = key
-
+    fun groupInvestmentCategories(investments: List<Investment>): List<InvestmentCategory> =
+        investments
+            .groupBy { it.category }
+            .map { (category, investments) ->
                 InvestmentCategory(
                     name = category,
-                    marketValue = investments.sumOf { it.marketValue },
-                    currency = currency,
+                    values = investments.format(),
                 )
             }
             .sortedBy { it.name }
-    }
 
-    fun groupInvestmentNetWorth(investments: List<Investment>): List<InvestmentNetWorth> =
-        investments
-            .groupBy { it.currency }
-            .map { (currency, investments) ->
-                InvestmentNetWorth(
-                    marketValue = investments.sumOf { it.marketValue },
-                    currency = currency,
-                )
-            }
-            .sortedBy { it.currency }
+    fun groupInvestmentNetWorth(investments: List<Investment>): InvestmentNetWorth =
+        InvestmentNetWorth(
+            values = investments.format(),
+        )
 
 }

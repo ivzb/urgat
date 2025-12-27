@@ -4,7 +4,6 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
-import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
@@ -40,11 +39,11 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
 
 class FakeObserveGroupedInvestmentsUseCase : ObserveGroupedInvestmentsUseCase {
 
-    private val flow = MutableStateFlow<Async<List<GroupedItems<String, Investment>>>>(Async.Loading)
+    private val flow = MutableStateFlow<Async<List<GroupedInvestments>>>(Async.Loading)
 
     var lastQuery: String = ""
 
-    fun emit(value: Async<List<GroupedItems<String, Investment>>>) {
+    fun emit(value: Async<List<GroupedInvestments>>) {
         flow.value = value
     }
 
@@ -52,7 +51,7 @@ class FakeObserveGroupedInvestmentsUseCase : ObserveGroupedInvestmentsUseCase {
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<GroupedItems<String, Investment>>>> {
+    ): Flow<Async<List<GroupedInvestments>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }
@@ -64,11 +63,11 @@ class FakeObserveGroupedInvestmentsUseCase : ObserveGroupedInvestmentsUseCase {
 
 class FakeObserveInvestmentNetWorthUseCase : ObserveInvestmentNetWorthUseCase {
 
-    private val flow = MutableStateFlow<Async<List<InvestmentNetWorth>>>(Async.Loading)
+    private val flow = MutableStateFlow<Async<InvestmentNetWorth>>(Async.Loading)
 
     var lastQuery: String = ""
 
-    fun emit(value: Async<List<InvestmentNetWorth>>) {
+    fun emit(value: Async<InvestmentNetWorth>) {
         flow.value = value
     }
 
@@ -76,7 +75,7 @@ class FakeObserveInvestmentNetWorthUseCase : ObserveInvestmentNetWorthUseCase {
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<InvestmentNetWorth>>> {
+    ): Flow<Async<InvestmentNetWorth>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

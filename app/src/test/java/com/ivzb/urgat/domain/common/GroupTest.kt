@@ -15,37 +15,40 @@ class GroupTest {
     @Test
     fun byDate() {
         val items = listOf(
-            GroupItemTest("item1", timestamp(2025, 12, 20)),
-            GroupItemTest("item2", timestamp(2025, 12, 20)),
-            GroupItemTest("item3", timestamp(2025, 11, 20)),
-            GroupItemTest("item4", timestamp(2025, 12, 5)),
-            GroupItemTest("item5", timestamp(2025, 10, 9)),
+            GroupItemTest("item1", "EUR", timestamp(2025, 12, 20)),
+            GroupItemTest("item2", "USD", timestamp(2025, 12, 20)),
+            GroupItemTest("item3", "EUR", timestamp(2025, 11, 20)),
+            GroupItemTest("item4", "USD", timestamp(2025, 12, 5)),
+            GroupItemTest("item5", "USD", timestamp(2025, 10, 9)),
         )
 
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
+                total = "EUR | USD",
                 items = listOf(
-                    GroupItemTest(name = "item1", date = 1766181600000),
-                    GroupItemTest(name = "item2", date = 1766181600000),
-                    GroupItemTest(name = "item4", date = 1764885600000),
+                    GroupItemTest(name = "item1", currency = "EUR", date = 1766181600000),
+                    GroupItemTest(name = "item2", currency = "USD", date = 1766181600000),
+                    GroupItemTest(name = "item4", currency = "USD", date = 1764885600000),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
+                total = "EUR",
                 items = listOf(
-                    GroupItemTest(name = "item3", date = 1763589600000)
+                    GroupItemTest(name = "item3", currency = "EUR", date = 1763589600000)
                 )
             ),
             GroupedItems(
                 group = "October 2025",
+                total = "USD",
                 items = listOf(
-                    GroupItemTest(name = "item5", date = 1759957200000)
+                    GroupItemTest(name = "item5", currency = "USD", date = 1759957200000)
                 )
             )
         )
 
-        val actual = Group.byDate(items, GroupItemTest::date)
+        val actual = Group.byDate(items, GroupItemTest::date, GroupItemTest::total)
 
         assertEquals(expected, actual)
     }
@@ -105,12 +108,9 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentCategory(name = "etf", marketValue = BigDecimal("2891.051"), currency = "USD"),
-            InvestmentCategory(name = "etf", marketValue = BigDecimal("1750.59"), currency = "EUR"),
-            InvestmentCategory(name = "gold", marketValue = BigDecimal("4338.55"), currency = "USD"),
-            InvestmentCategory(name = "gold", marketValue = BigDecimal("3704.25"), currency = "EUR"),
-            InvestmentCategory(name = "stocks", marketValue = BigDecimal("1726.952"), currency = "USD"),
-            InvestmentCategory(name = "stocks", marketValue = BigDecimal("550.725"), currency = "EUR"),
+            InvestmentCategory(name = "etf", values = listOf("2,891.05 USD", "1,750.59 EUR")),
+            InvestmentCategory(name = "gold", values = listOf("4,338.55 USD", "3,704.25 EUR")),
+            InvestmentCategory(name = "stocks", values = listOf("1,726.95 USD", "550.72 EUR")),
         )
 
         val actual = Group.groupInvestmentCategories(investments)
@@ -132,11 +132,7 @@ class GroupTest {
             Investment("9", "Gold", BigDecimal("1"), BigDecimal("3704.25"), "gold", "EUR", timestamp(2025, 12, 18), false, timestamp(2025, 12, 18)),
         )
 
-        val expected = listOf(
-            InvestmentNetWorth(marketValue = BigDecimal("6005.565"), currency = "EUR"),
-            InvestmentNetWorth(marketValue = BigDecimal("8956.553"), currency="USD"),
-        )
-
+        val expected = InvestmentNetWorth(values = listOf("8,956.55 USD", "6,005.56 EUR"))
         val actual = Group.groupInvestmentNetWorth(investments)
 
         assertEquals(expected, actual)
@@ -146,8 +142,21 @@ class GroupTest {
 
         private data class GroupItemTest(
             val name: String,
+            val currency: String,
             val date: Long,
-        )
+        ) {
+
+            companion object {
+
+                fun total(items: List<GroupItemTest>) = items
+                    .map { it.currency }
+                    .sorted()
+                    .distinct()
+                    .joinToString(" | ")
+
+            }
+
+        }
 
     }
 

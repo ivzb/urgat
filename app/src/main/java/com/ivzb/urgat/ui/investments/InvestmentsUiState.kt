@@ -7,7 +7,7 @@ import com.ivzb.urgat.domain.investment.GroupedInvestments
 
 data class InvestmentsUiState(
     val investments: List<GroupedInvestments> = emptyList(),
-    val netWorth: List<InvestmentNetWorth> = emptyList(),
+    val netWorth: InvestmentNetWorth? = null,
     val categories: List<InvestmentCategory> = emptyList(),
     val assets: List<InvestmentAsset> = emptyList(),
 
