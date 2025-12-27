@@ -16,4 +16,10 @@ data class Expense(
 
     val isDebit by lazy { amount < BigDecimal.ZERO }
 
+    companion object {
+
+        fun total(expenses: List<Expense>): BigDecimal = expenses.sumOf { it.amount }
+
+    }
+
 }

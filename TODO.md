@@ -21,6 +21,10 @@
 - show user message when clear todos button is clicked - and tell how many todos were cleared
 - combine investment category items with the same name into single item with multiple rows
 - change add note icon
+- change investment cost to market price
+- add optional fee to investment
+- add checkbox which file to be imported/exported
+- instead of showing separate lines show combined currencies like investment::total in networth and assets
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -36,6 +40,7 @@
 - review @Previews and documents obvious issues
 - review screenshots and documents obvious UI issues
 - inspect all classes using inheritance and change them to composition
+- consider: read current prices on app start for all owned assets and caluclate current market price?
 
 ## Features
 - add drawer with app version, settings, sample data button, etc

@@ -10,13 +10,19 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.format
+import java.math.BigDecimal
 
 @Composable
 fun ItemHeaderLarge(
@@ -47,14 +53,45 @@ fun ItemHeaderMedium(
 @Composable
 fun ItemHeaderSmall(
     text: String,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
     modifier: Modifier = Modifier
 ) {
     Text(
         text = text,
         modifier = modifier
             .semantics { heading() },
-        style = MaterialTheme.typography.titleSmall
+        style = MaterialTheme.typography.titleSmall,
+        color = color,
+        fontWeight = fontWeight,
     )
+}
+
+@Composable
+fun ItemHeaderSmall(
+    text: String,
+    total: String,
+    totalColor: Color = Color.Unspecified,
+    totalFontWeight: FontWeight? = null,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        ItemHeaderSmall(
+            text = text,
+        )
+
+        ItemHeaderSmall(
+            text = total,
+            color = totalColor,
+            fontWeight = totalFontWeight,
+        )
+    }
 }
 
 @Composable

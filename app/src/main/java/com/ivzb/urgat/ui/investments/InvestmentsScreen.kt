@@ -30,7 +30,7 @@ import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -204,13 +204,14 @@ private fun InvestmentsContent(
 }
 
 private fun LazyListScope.transactionsPage(
-    investments: List<GroupedItems<String, Investment>>,
+    investments: List<GroupedInvestments>,
     onInvestmentClick: (Investment) -> Unit,
 ) {
-    investments.forEachIndexed { index, (group, investments) ->
+    investments.forEachIndexed { index, (group, totals, investments) ->
         item {
             ItemHeaderSmall(
                 text = group,
+                total = totals.joinToString(" | "),
                 modifier = Modifier
                     .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                     .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -305,7 +306,7 @@ private fun InvestmentsNetWorth(
     netWorth: InvestmentNetWorth,
 ) {
     ListItem(
-        textLeft = "",
+        textLeft = stringResource(R.string.total),
         subTextLeft = "",
 
         textRight = "${netWorth.marketValue.format()} ${netWorth.currency}",

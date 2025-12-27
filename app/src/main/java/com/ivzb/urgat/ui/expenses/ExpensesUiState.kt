@@ -1,10 +1,9 @@
 package com.ivzb.urgat.ui.expenses
 
-import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.domain.expense.GroupedExpenses
 
 data class ExpensesUiState(
-    val items: List<GroupedItems<String, Expense>> = emptyList(),
+    val items: List<GroupedExpenses> = emptyList(),
 
     val isLoading: Boolean = false,
     val hasError: Boolean = false,

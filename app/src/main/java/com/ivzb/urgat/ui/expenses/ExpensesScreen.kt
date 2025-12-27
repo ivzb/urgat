@@ -21,7 +21,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -118,7 +118,7 @@ fun ExpensesScreen(
 
 @Composable
 internal fun ExpensesContent(
-    groupedExpenses: List<GroupedItems<String, Expense>>,
+    groupedExpenses: List<GroupedExpenses>,
     onExpenseClick: (Expense) -> Unit,
 
     filteringUiInfo: ExpensesFilteringUiInfo,
@@ -140,10 +140,17 @@ internal fun ExpensesContent(
             ItemHeaderLarge(text = stringResource(filteringUiInfo.currentFilteringLabel))
         }
 
-        groupedExpenses.forEach { (group, expenses) ->
+        groupedExpenses.forEach { (group, total, expenses) ->
             item {
                 ItemHeaderSmall(
                     text = group,
+                    total = total.format(),
+                    totalFontWeight = FontWeight.Bold,
+                    totalColor = Color(if (total < BigDecimal.ZERO) {
+                        0xFFF44336
+                    } else {
+                        0xFF4CAF50
+                    }),
                     modifier = Modifier
                         .padding(vertical = dimensionResource(R.dimen.vertical_margin))
                 )

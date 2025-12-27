@@ -127,4 +127,5 @@
     <string name="import_data_done">Data was imported.</string>
     <string name="import_data_failed">Import data failed. Try again?</string>
     <string name="import_button_text">Choose folder to import</string>
+    <string name="total">Total</string>
 </resources>

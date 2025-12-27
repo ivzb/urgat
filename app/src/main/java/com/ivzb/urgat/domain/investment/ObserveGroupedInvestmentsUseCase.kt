@@ -9,13 +9,15 @@ import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+typealias GroupedInvestments = GroupedItems<String, List<String>, Investment>
+
 interface ObserveGroupedInvestmentsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<GroupedItems<String, Investment>>>>
+    ): Flow<Async<List<GroupedInvestments>>>
 
 }
 
@@ -26,13 +28,13 @@ class DefaultObserveGroupedInvestmentsUseCase @Inject constructor(
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
         filter = ::filterInvestments,
-        group = { items -> Group.byDate(items, Investment::date) },
+        group = { items -> Group.byDate(items, Investment::date, Investment::total) },
     )
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<GroupedItems<String, Investment>>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<GroupedInvestments>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
 
 }

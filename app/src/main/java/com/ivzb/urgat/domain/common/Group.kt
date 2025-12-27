@@ -15,22 +15,24 @@ object Group {
 
     private val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 
-    fun <T> byDate(items: List<T>, date: (T) -> Long): List<GroupedItems<String, T>> {
+    fun <Item, Total> byDate(items: List<Item>, date: (Item) -> Long, total: (List<Item>) -> Total): List<GroupedItems<String, Total, Item>> {
         return items
             .groupBy {
                 val date = date(it).toLocalDate()
                 YearMonth.from(date)
             }
-            .map { (yearMonth, investments) ->
+            .map { (yearMonth, items) ->
                 GroupedItems(
                     group = yearMonth,
-                    items = investments.sortedByDescending { date(it) }
+                    total = total(items),
+                    items = items.sortedByDescending { date(it) }
                 )
             }
             .sortedByDescending { it.group }
             .map {
                 GroupedItems(
                     group = it.group.format(formatter),
+                    total = it.total,
                     items = it.items
                 )
             }

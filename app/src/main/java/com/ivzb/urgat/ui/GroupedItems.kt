@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui
 
-data class GroupedItems<T, K>(
-    val group: T,
-    val items: List<K>
+data class GroupedItems<Group, Total, Item>(
+    val group: Group,
+    val total: Total,
+    val items: List<Item>
 )
