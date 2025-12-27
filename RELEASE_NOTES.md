@@ -1,3 +1,8 @@
+## Release notes 25.12.15
+
+New:
+- Expenses are now grouped by category.
+
 ## Release notes 25.12.14
 
 Improved:

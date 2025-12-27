@@ -27,8 +27,8 @@ android {
         applicationId = "com.ivzb.urgat"
         minSdk = 26
         targetSdk = 36
-        versionCode = 25_12_14
-        versionName = "25.12.14"
+        versionCode = 25_12_15
+        versionName = "25.12.15"
 
         testInstrumentationRunner = "com.ivzb.urgat.HiltTestRunner"
         vectorDrawables {
