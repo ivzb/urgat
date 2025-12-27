@@ -59,6 +59,30 @@ class FakeObserveGroupedExpensesUseCase : ObserveGroupedExpensesUseCase {
 
 }
 
+class FakeObserveGroupedExpenseCategoriesUseCase: ObserveGroupedExpenseCategoriesUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedExpenseCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedExpenseCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<ExpensesFilterType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedExpenseCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
 class FakeGetExpenseUseCase : GetExpenseUseCase {
 
     var toReturn: Expense? = null

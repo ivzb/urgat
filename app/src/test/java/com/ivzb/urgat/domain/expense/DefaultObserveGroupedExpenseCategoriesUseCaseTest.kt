@@ -1,0 +1,97 @@
+package com.ivzb.urgat.domain.expense
+
+import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.util.timestamp
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
+import java.math.BigDecimal
+import kotlin.test.assertEquals
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class ObserveGroupedExpenseCategoriesUseCaseTest {
+
+    private lateinit var repository: ExpensesRepository
+    private lateinit var observeUseCase: ObserveGroupedExpenseCategoriesUseCase
+    private val testDispatcher = UnconfinedTestDispatcher()
+
+    @Before
+    fun setUp() {
+        repository = mockk()
+        observeUseCase = DefaultObserveGroupedExpenseCategoriesUseCase(repository)
+    }
+
+    @Test
+    fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
+        val searchQueryFlow = flowOf("coffee")
+        val limit = 10
+        val limitFlow = flowOf(limit)
+        val repositoryStream = flowOf(
+        listOf(
+                Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+                Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+                Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+                Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            ),
+        )
+
+        every { repository.observe(limit, "coffee") } returns repositoryStream
+
+        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        val expected = listOf(
+            GroupedItems(
+                group = "December 2025",
+                total = "105.5".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Gifts", BigDecimal("80")),
+                    ExpenseCategory("Pets", BigDecimal("25.5")),
+                ),
+            ),
+            GroupedItems(
+                group = "November 2025",
+                total = "195.50".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Shopping", BigDecimal("120")),
+                    ExpenseCategory("Food", BigDecimal("75.50")),
+                ),
+            ),
+        )
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        val actual = (first as Async.Success).data
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
+        val searchQueryFlow = flowOf("")
+        val limit = 10
+        val limitFlow = flowOf(limit)
+
+        every { repository.observe(limit) } throws RuntimeException("Test error")
+
+        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Error)
+    }
+}

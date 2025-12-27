@@ -16,7 +16,8 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_ExpensesScreen_sampleData() = screenshotTest(
         uiState = ExpensesUiState(
-            items = SampleData.SAMPLE_EXPENSES_GROUPED,
+            expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
+            categories = SampleData.SAMPLE_EXPENSES_CATEGORIES,
             isLoading = false,
             hasError = false,
         ),
@@ -25,7 +26,8 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_ExpensesScreen_emptyState() = screenshotTest(
         uiState = ExpensesUiState(
-            items = listOf(),
+            expenses = listOf(),
+            categories = listOf(),
             isLoading = false,
             hasError = false,
         ),
@@ -34,7 +36,8 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_ExpensesScreen_loadingState() = screenshotTest(
         uiState = ExpensesUiState(
-            items = listOf(),
+            expenses = listOf(),
+            categories = listOf(),
             isLoading = true,
             hasError = false,
         ),
@@ -43,7 +46,8 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_ExpensesScreen_errorState() = screenshotTest(
         uiState = ExpensesUiState(
-            items = listOf(),
+            expenses = listOf(),
+            categories = listOf(),
             isLoading = false,
             hasError = true,
         ),

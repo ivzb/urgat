@@ -1,10 +1,14 @@
 package com.ivzb.urgat.domain.common
 
+import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.Expense.Companion.format
+import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.Investment.Companion.format
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
 import java.time.YearMonth
@@ -69,5 +73,25 @@ object Group {
         InvestmentNetWorth(
             values = investments.format(),
         )
+
+    fun groupExpenseCategories(expenses: List<Expense>): List<GroupedExpenseCategories> =
+        byDate(expenses, Expense::date, Expense::total)
+            .map { (group, _, items) ->
+                val categories = items
+                    .groupBy { it.category }
+                    .map { (category, expenses) ->
+                        ExpenseCategory(
+                            name = category,
+                            value = expenses.format(),
+                        )
+                    }
+                    .sortedByDescending { it.value }
+
+                GroupedItems(
+                    group = group,
+                    total = items.sumOf { it.amount },
+                    items = categories,
+                )
+            }
 
 }

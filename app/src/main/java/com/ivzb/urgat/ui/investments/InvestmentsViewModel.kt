@@ -3,7 +3,6 @@ package com.ivzb.urgat.ui.investments
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentCategoriesUseCase
@@ -31,13 +30,11 @@ class InvestmentsViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
-    private val _itemsLimit = MutableStateFlow(NO_ITEMS_LIMIT)
-
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
-        observeGroupedInvestmentsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
-        observeInvestmentNetWorthUseCase(_searchQuery, _savedFilterType, _itemsLimit),
-        observeInvestmentCategoriesUseCase(_searchQuery, _savedFilterType, _itemsLimit),
-        observeInvestmentAssetsUseCase(_searchQuery, _savedFilterType, _itemsLimit),
+        observeGroupedInvestmentsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeInvestmentNetWorthUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeInvestmentAssetsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeInvestmentsFilteringUseCase(),
 
         onLoading = {

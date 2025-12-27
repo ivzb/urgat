@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -215,6 +216,7 @@ private fun LazyListScope.transactionsPage(
                 modifier = Modifier
                     .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                     .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
+                    .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
             )
         }
 

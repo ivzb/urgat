@@ -18,7 +18,10 @@ data class Expense(
 
     companion object {
 
-        fun total(expenses: List<Expense>): BigDecimal = expenses.sumOf { it.amount }
+        fun total(expenses: List<Expense>): BigDecimal = expenses.format()
+
+        fun List<Expense>.format(): BigDecimal =
+            this.sumOf { it.amount }
 
     }
 

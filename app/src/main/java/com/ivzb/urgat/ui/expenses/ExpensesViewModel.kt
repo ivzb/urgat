@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
     observeGroupedExpensesUseCase: ObserveGroupedExpensesUseCase,
+    observeGroupedExpenseCategoriesUseCase: ObserveGroupedExpenseCategoriesUseCase,
     observeExpensesFilteringUseCase: ObserveExpensesFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -31,6 +33,7 @@ class ExpensesViewModel @Inject constructor(
 
     val uiState: StateFlow<ExpensesUiState> = combineUiState(
         observeGroupedExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeGroupedExpenseCategoriesUseCase(_searchQuery, _savedFilterType, limitFlow = null),
         observeExpensesFilteringUseCase(),
 
         onLoading = {
@@ -39,9 +42,10 @@ class ExpensesViewModel @Inject constructor(
         onError = {
             ExpensesUiState(hasError = true)
         },
-        onSuccess = { expenses, expensesFiltering ->
+        onSuccess = { expenses, categories, expensesFiltering ->
             ExpensesUiState(
-                items = expenses,
+                expenses = expenses,
+                categories = categories,
                 isLoading = false,
                 filteringUiInfo = getFilterUiInfo(
                     filterMenuItems = expensesFiltering,

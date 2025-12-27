@@ -73,6 +73,8 @@ object SampleData {
 
     val SAMPLE_EXPENSES_GROUPED = Group.byDate(SAMPLE_EXPENSES, Expense::date, Expense::total)
 
+    val SAMPLE_EXPENSES_CATEGORIES = Group.groupExpenseCategories(SAMPLE_EXPENSES)
+
     val SAMPLE_NOTES = debugOnly {
         listOf(
             listOf(

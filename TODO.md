@@ -67,4 +67,3 @@
 - handle share link to Urgat and save it
 - add system unlock with biometric/pin when opening the app
 - show weight transactions below the chart like expenses and investments
-- show expenses grouped by categories
