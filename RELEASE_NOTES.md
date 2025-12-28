@@ -1,3 +1,8 @@
+## Release notes 25.12.16
+
+New:
+- Introduced expense tabs for Monthly, Yearly, and All-Time views.
+
 ## Release notes 25.12.15
 
 New:
