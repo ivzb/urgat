@@ -2,7 +2,7 @@ package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpensesRepository
-import com.ivzb.urgat.domain.common.Group.groupExpenseCategories
+import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
@@ -11,9 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
 
-typealias GroupedExpenseCategories = GroupedItems<String, BigDecimal, ExpenseCategory>
-
-interface ObserveGroupedExpenseCategoriesUseCase {
+interface ObserveGroupedExpenseCategoriesYearlyUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
@@ -23,14 +21,14 @@ interface ObserveGroupedExpenseCategoriesUseCase {
 
 }
 
-class DefaultObserveGroupedExpenseCategoriesUseCase @Inject constructor(
+class DefaultObserveGroupedExpenseCategoriesYearlyUseCase @Inject constructor(
     repository: ExpensesRepository
-): ObserveGroupedExpenseCategoriesUseCase {
+): ObserveGroupedExpenseCategoriesYearlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
         filter = ::filterExpenses,
-        group = ::groupExpenseCategories,
+        group = ::groupExpenseCategoriesYearly,
     )
 
     override fun invoke(

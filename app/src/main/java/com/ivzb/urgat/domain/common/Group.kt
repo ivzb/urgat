@@ -11,6 +11,7 @@ import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
+import java.time.Year
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import kotlin.collections.component1
@@ -18,9 +19,14 @@ import kotlin.collections.component2
 
 object Group {
 
-    private val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+    private val YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("MMMM yyyy")
+    private val YEAR_FORMATTER = DateTimeFormatter.ofPattern("yyyy")
 
-    fun <Item, Total> byDate(items: List<Item>, date: (Item) -> Long, total: (List<Item>) -> Total): List<GroupedItems<String, Total, Item>> =
+    fun <Item, Total> byDateMonthly(
+        items: List<Item>,
+        date: (Item) -> Long,
+        total: (List<Item>) -> Total,
+    ): List<GroupedItems<String, Total, Item>> =
         items
             .groupBy {
                 val date = date(it).toLocalDate()
@@ -36,7 +42,33 @@ object Group {
             .sortedByDescending { it.group }
             .map {
                 GroupedItems(
-                    group = it.group.format(formatter),
+                    group = it.group.format(YEAR_MONTH_FORMATTER),
+                    total = it.total,
+                    items = it.items
+                )
+            }
+
+    fun <Item, Total> byDateYearly(
+        items: List<Item>,
+        date: (Item) -> Long,
+        total: (List<Item>) -> Total
+    ): List<GroupedItems<String, Total, Item>> =
+        items
+            .groupBy {
+                val date = date(it).toLocalDate()
+                Year.from(date)
+            }
+            .map { (year, items) ->
+                GroupedItems(
+                    group = year,
+                    total = total(items),
+                    items = items.sortedByDescending { date(it) }
+                )
+            }
+            .sortedByDescending { it.group }
+            .map {
+                GroupedItems(
+                    group = it.group.format(YEAR_FORMATTER),
                     total = it.total,
                     items = it.items
                 )
@@ -74,24 +106,37 @@ object Group {
             values = investments.format(),
         )
 
-    fun groupExpenseCategories(expenses: List<Expense>): List<GroupedExpenseCategories> =
-        byDate(expenses, Expense::date, Expense::total)
+    fun groupExpenseCategoriesMonthly(expenses: List<Expense>): List<GroupedExpenseCategories> =
+        byDateMonthly(expenses, Expense::date, Expense::total)
             .map { (group, _, items) ->
-                val categories = items
-                    .groupBy { it.category }
-                    .map { (category, expenses) ->
-                        ExpenseCategory(
-                            name = category,
-                            value = expenses.format(),
-                        )
-                    }
-                    .sortedByDescending { it.value }
-
                 GroupedItems(
                     group = group,
                     total = items.sumOf { it.amount },
-                    items = categories,
+                    items = items.group(),
                 )
             }
 
+    fun groupExpenseCategoriesYearly(expenses: List<Expense>): List<GroupedExpenseCategories> =
+        byDateYearly(expenses, Expense::date, Expense::total)
+            .map { (group, _, items) ->
+                GroupedItems(
+                    group = group,
+                    total = items.sumOf { it.amount },
+                    items = items.group(),
+                )
+            }
+
+    fun groupExpenseCategoriesAllTime(expenses: List<Expense>): List<ExpenseCategory> =
+        expenses.group()
+
+    private fun List<Expense>.group(): List<ExpenseCategory> =
+        this
+            .groupBy { it.category }
+            .map { (category, expenses) ->
+                ExpenseCategory(
+                    name = category,
+                    value = expenses.format(),
+                )
+            }
+            .sortedByDescending { it.value }
 }

@@ -185,8 +185,16 @@ internal fun ExpensesContent(
                         onExpenseClick = onExpenseClick,
                     )
 
-                    ExpensesPage.Categories -> categoriesPage(
-                        categories = uiState.categories,
+                    ExpensesPage.Monthly -> groupedCategoriesPage(
+                        categories = uiState.categoriesMonthly,
+                    )
+
+                    ExpensesPage.Yearly -> groupedCategoriesPage(
+                        categories = uiState.categoriesYearly,
+                    )
+
+                    ExpensesPage.AllTime -> categoriesPage(
+                        categories = uiState.categoriesAllTime,
                     )
                 }
 
@@ -232,7 +240,7 @@ private fun LazyListScope.transactionsPage(
     }
 }
 
-private fun LazyListScope.categoriesPage(
+private fun LazyListScope.groupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
 ) {
 
@@ -254,11 +262,18 @@ private fun LazyListScope.categoriesPage(
             )
         }
 
-        items(categories) { category ->
-             CategoryItem(
-                category = category,
-            )
-        }
+        categoriesPage(categories = categories)
+    }
+}
+
+private fun LazyListScope.categoriesPage(
+    categories: List<ExpenseCategory>,
+) {
+
+    items(categories) { category ->
+        CategoryItem(
+            category = category,
+        )
     }
 }
 
@@ -315,7 +330,9 @@ private fun ExpensesScreenPreview() {
         ExpensesScreen(
             uiState = ExpensesUiState(
                 expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
-                categories = SampleData.SAMPLE_EXPENSES_CATEGORIES,
+                categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
+                categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
+                categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -336,7 +353,7 @@ private fun ExpensesScreenEmptyPreview() {
         ExpensesScreen(
             uiState = ExpensesUiState(
                 expenses = listOf(),
-                categories = listOf(),
+                categoriesMonthly = listOf(),
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -357,7 +374,7 @@ private fun ExpensesScreenLoadingPreview() {
         ExpensesScreen(
             uiState = ExpensesUiState(
                 expenses = listOf(),
-                categories = listOf(),
+                categoriesMonthly = listOf(),
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = true,
                 hasError = false
@@ -378,7 +395,7 @@ private fun ExpensesScreenErrorPreview() {
         ExpensesScreen(
             uiState = ExpensesUiState(
                 expenses = listOf(),
-                categories = listOf(),
+                categoriesMonthly = listOf(),
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
                 hasError = true

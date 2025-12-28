@@ -30,7 +30,7 @@ class DefaultObserveGroupedExpensesUseCase @Inject constructor(
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
         filter = ::filterExpenses,
-        group = { items -> Group.byDate(items, Expense::date, Expense::total) },
+        group = { items -> Group.byDateMonthly(items, Expense::date, Expense::total) },
     )
 
     override fun invoke(

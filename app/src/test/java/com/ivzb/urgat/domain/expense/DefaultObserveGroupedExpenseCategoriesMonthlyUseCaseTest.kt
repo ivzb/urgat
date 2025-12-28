@@ -20,16 +20,16 @@ import java.math.BigDecimal
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ObserveGroupedExpenseCategoriesUseCaseTest {
+class ObserveGroupedExpenseCategoriesMonthlyUseCaseTest {
 
     private lateinit var repository: ExpensesRepository
-    private lateinit var observeUseCase: ObserveGroupedExpenseCategoriesUseCase
+    private lateinit var observeUseCase: ObserveGroupedExpenseCategoriesMonthlyUseCase
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveGroupedExpenseCategoriesUseCase(repository)
+        observeUseCase = DefaultObserveGroupedExpenseCategoriesMonthlyUseCase(repository)
     }
 
     @Test

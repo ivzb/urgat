@@ -8,7 +8,9 @@ import kotlinx.coroutines.test.*
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.GroupedItems
@@ -24,7 +26,9 @@ class ExpensesViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveExpensesUseCase: FakeObserveGroupedExpensesUseCase
-    private lateinit var fakeObserveGroupedExpenseCategoriesUseCase: FakeObserveGroupedExpenseCategoriesUseCase
+    private lateinit var fakeObserveGroupedExpenseCategoriesMonthlyUseCase: FakeObserveGroupedExpenseCategoriesMonthlyUseCase
+    private lateinit var fakeObserveGroupedExpenseCategoriesYearlyUseCase: FakeObserveGroupedExpenseCategoriesYearlyUseCase
+    private lateinit var fakeObserveGroupedExpenseCategoriesAllTimeUseCase: FakeObserveGroupedExpenseCategoriesAllTimeUseCase
     private lateinit var fakeObserveExpensesFilteringUseCase: FakeObserveExpensesFilteringUseCase
 
     private lateinit var viewModel: ExpensesViewModel
@@ -36,7 +40,9 @@ class ExpensesViewModelTest {
         Dispatchers.setMain(testDispatcher)
         savedStateHandle = SavedStateHandle(mapOf(EXPENSES_FILTER_SAVED_STATE_KEY to null))
         fakeObserveExpensesUseCase = FakeObserveGroupedExpensesUseCase()
-        fakeObserveGroupedExpenseCategoriesUseCase = FakeObserveGroupedExpenseCategoriesUseCase()
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase = FakeObserveGroupedExpenseCategoriesMonthlyUseCase()
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase = FakeObserveGroupedExpenseCategoriesYearlyUseCase()
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase = FakeObserveGroupedExpenseCategoriesAllTimeUseCase()
         fakeObserveExpensesFilteringUseCase = FakeObserveExpensesFilteringUseCase()
     }
 
@@ -48,7 +54,9 @@ class ExpensesViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Loading)
-        fakeObserveGroupedExpenseCategoriesUseCase.emit(Async.Loading)
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Loading)
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Loading)
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Loading)
         fakeObserveExpensesFilteringUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
@@ -60,7 +68,9 @@ class ExpensesViewModelTest {
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
         assertTrue(initial.expenses.isEmpty())
-        assertTrue(initial.categories.isEmpty())
+        assertTrue(initial.categoriesMonthly.isEmpty())
+        assertTrue(initial.categoriesYearly.isEmpty())
+        assertTrue(initial.categoriesAllTime.isEmpty())
 
         job.cancel()
     }
@@ -73,7 +83,7 @@ class ExpensesViewModelTest {
                 total = "10".toBigDecimal(),
                 items = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, 1L)))
         )
-        val fakeCategories = listOf(
+        val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",
                 total = "10".toBigDecimal(),
@@ -85,6 +95,24 @@ class ExpensesViewModelTest {
                 )
             )
         )
+        val fakeCategoriesYearly = listOf(
+            GroupedItems(
+                group = "2025",
+                total = "10".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory(
+                        name = "food",
+                        value = "10".toBigDecimal(),
+                    )
+                )
+            )
+        )
+        val fakeCategoriesAllTime = listOf(
+            ExpenseCategory(
+                name = "food",
+                value = "10".toBigDecimal(),
+            )
+        )
         val fakeExpensesFiltering = listOf(
             FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
@@ -92,7 +120,9 @@ class ExpensesViewModelTest {
         )
 
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveGroupedExpenseCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(fakeExpensesFiltering))
         viewModel = createViewModel()
 
@@ -104,7 +134,9 @@ class ExpensesViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals(fakeExpenses, state.expenses)
-        assertEquals(fakeCategories, state.categories)
+        assertEquals(fakeCategoriesMonthly, state.categoriesMonthly)
+        assertEquals(fakeCategoriesYearly, state.categoriesYearly)
+        assertEquals(fakeCategoriesAllTime, state.categoriesAllTime)
         assertEquals(fakeExpensesFiltering, state.filteringUiInfo.filterMenuItems)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
@@ -115,7 +147,9 @@ class ExpensesViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesUseCase.emit(Async.Error)
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Error)
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Error)
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Error)
         fakeObserveExpensesFilteringUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
@@ -139,7 +173,7 @@ class ExpensesViewModelTest {
             total = "10".toBigDecimal(),
             items = listOf(Expense("2", "Coffee", BigDecimal.TEN, "food", 1L, false, 1L)))
         )
-        val fakeCategories = listOf(
+        val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",
                 total = "10".toBigDecimal(),
@@ -151,9 +185,29 @@ class ExpensesViewModelTest {
                 )
             )
         )
+        val fakeCategoriesYearly = listOf(
+            GroupedItems(
+                group = "2025",
+                total = "10".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory(
+                        name = "food",
+                        value = "10".toBigDecimal(),
+                    )
+                )
+            )
+        )
+        val fakeCategoriesAllTime = listOf(
+            ExpenseCategory(
+                name = "food",
+                value = "10".toBigDecimal(),
+            )
+        )
 
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveGroupedExpenseCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -167,7 +221,9 @@ class ExpensesViewModelTest {
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesUseCase.emit(Async.Success(emptyList()))
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(emptyList()))
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(emptyList()))
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(emptyList()))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -181,7 +237,9 @@ class ExpensesViewModelTest {
 
     private fun createViewModel() = ExpensesViewModel(
         fakeObserveExpensesUseCase,
-        fakeObserveGroupedExpenseCategoriesUseCase,
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase,
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase,
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase,
         fakeObserveExpensesFilteringUseCase,
         savedStateHandle
     )

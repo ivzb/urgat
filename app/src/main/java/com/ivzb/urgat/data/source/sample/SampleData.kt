@@ -71,9 +71,13 @@ object SampleData {
         )
     }
 
-    val SAMPLE_EXPENSES_GROUPED = Group.byDate(SAMPLE_EXPENSES, Expense::date, Expense::total)
+    val SAMPLE_EXPENSES_GROUPED = Group.byDateMonthly(SAMPLE_EXPENSES, Expense::date, Expense::total)
 
-    val SAMPLE_EXPENSES_CATEGORIES = Group.groupExpenseCategories(SAMPLE_EXPENSES)
+    val SAMPLE_EXPENSES_CATEGORIES_MONTHLY = Group.groupExpenseCategoriesMonthly(SAMPLE_EXPENSES)
+
+    val SAMPLE_EXPENSES_CATEGORIES_YEARLY = Group.groupExpenseCategoriesYearly(SAMPLE_EXPENSES)
+
+    val SAMPLE_EXPENSES_CATEGORIES_ALL_TIME = Group.groupExpenseCategoriesAllTime(SAMPLE_EXPENSES)
 
     val SAMPLE_NOTES = debugOnly {
         listOf(
@@ -159,7 +163,7 @@ object SampleData {
         )
     }
 
-    val SAMPLE_INVESTMENTS_GROUPED = Group.byDate(SAMPLE_INVESTMENTS, Investment::date, Investment::total)
+    val SAMPLE_INVESTMENTS_GROUPED = Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::total)
 
     val SAMPLE_INVESTMENTS_NET_WORTH = Group.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
 

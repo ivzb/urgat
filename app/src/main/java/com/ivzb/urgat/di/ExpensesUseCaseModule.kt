@@ -7,13 +7,17 @@ import com.ivzb.urgat.domain.expense.DefaultGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesUseCase
-import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesUseCase
+import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultUpdateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
-import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import dagger.Binds
@@ -39,7 +43,15 @@ interface ExpensesUseCaseModule {
 
     @Singleton
     @Binds
-    fun bindsObserveGroupedExpenseCategoriesUseCase(useCase: DefaultObserveGroupedExpenseCategoriesUseCase): ObserveGroupedExpenseCategoriesUseCase
+    fun bindsObserveGroupedExpenseCategoriesMonthlyUseCase(useCase: DefaultObserveGroupedExpenseCategoriesMonthlyUseCase): ObserveGroupedExpenseCategoriesMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedExpenseCategoriesYearlyUseCase(useCase: DefaultObserveGroupedExpenseCategoriesYearlyUseCase): ObserveGroupedExpenseCategoriesYearlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedExpenseCategoriesAllTimeUseCase(useCase: DefaultObserveGroupedExpenseCategoriesAllTimeUseCase): ObserveGroupedExpenseCategoriesAllTimeUseCase
 
     @Singleton
     @Binds

@@ -17,7 +17,9 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     fun screenshotTest_ExpensesScreen_sampleData() = screenshotTest(
         uiState = ExpensesUiState(
             expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
-            categories = SampleData.SAMPLE_EXPENSES_CATEGORIES,
+            categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
+            categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
+            categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
             isLoading = false,
             hasError = false,
         ),
@@ -27,7 +29,9 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     fun screenshotTest_ExpensesScreen_emptyState() = screenshotTest(
         uiState = ExpensesUiState(
             expenses = listOf(),
-            categories = listOf(),
+            categoriesMonthly = listOf(),
+            categoriesYearly = listOf(),
+            categoriesAllTime = listOf(),
             isLoading = false,
             hasError = false,
         ),
@@ -37,7 +41,9 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     fun screenshotTest_ExpensesScreen_loadingState() = screenshotTest(
         uiState = ExpensesUiState(
             expenses = listOf(),
-            categories = listOf(),
+            categoriesMonthly = listOf(),
+            categoriesYearly = listOf(),
+            categoriesAllTime = listOf(),
             isLoading = true,
             hasError = false,
         ),
@@ -47,7 +53,9 @@ class ExpensesScreenshotTest: ScreenshotTest() {
     fun screenshotTest_ExpensesScreen_errorState() = screenshotTest(
         uiState = ExpensesUiState(
             expenses = listOf(),
-            categories = listOf(),
+            categoriesMonthly = listOf(),
+            categoriesYearly = listOf(),
+            categoriesAllTime = listOf(),
             isLoading = false,
             hasError = true,
         ),

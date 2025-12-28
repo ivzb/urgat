@@ -1,5 +1,7 @@
 package com.ivzb.urgat.domain.common
 
+import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
@@ -13,7 +15,7 @@ import kotlin.test.assertEquals
 class GroupTest {
 
     @Test
-    fun byDate() {
+    fun byDateMonthly() {
         val items = listOf(
             GroupItemTest("item1", "EUR", timestamp(2025, 12, 20)),
             GroupItemTest("item2", "USD", timestamp(2025, 12, 20)),
@@ -48,7 +50,46 @@ class GroupTest {
             )
         )
 
-        val actual = Group.byDate(items, GroupItemTest::date, GroupItemTest::total)
+        val actual = Group.byDateMonthly(items, GroupItemTest::date, GroupItemTest::total)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun byDateYearly() {
+        val items = listOf(
+            GroupItemTest("item1", "EUR", timestamp(2025, 12, 20)),
+            GroupItemTest("item2", "USD", timestamp(2025, 12, 20)),
+            GroupItemTest("item3", "EUR", timestamp(2025, 11, 20)),
+            GroupItemTest("item4", "USD", timestamp(2025, 12, 5)),
+            GroupItemTest("item5", "USD", timestamp(2025, 10, 9)),
+            GroupItemTest("item6", "EUR", timestamp(2024, 12, 20)),
+            GroupItemTest("item7", "USD", timestamp(2024, 12, 20)),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "2025",
+                total = "EUR | USD",
+                items = listOf(
+                    GroupItemTest(name = "item1", currency = "EUR", date = 1766181600000),
+                    GroupItemTest(name = "item2", currency = "USD", date = 1766181600000),
+                    GroupItemTest(name = "item4", currency = "USD", date = 1764885600000),
+                    GroupItemTest(name = "item3", currency = "EUR", date = 1763589600000),
+                    GroupItemTest(name = "item5", currency = "USD", date = 1759957200000),
+                ),
+            ),
+            GroupedItems(
+                group = "2024",
+                total = "EUR | USD",
+                items = listOf(
+                    GroupItemTest(name = "item6", currency = "EUR", date = 1734645600000),
+                    GroupItemTest(name = "item7", currency = "USD", date = 1734645600000),
+                )
+            ),
+        )
+
+        val actual = Group.byDateYearly(items, GroupItemTest::date, GroupItemTest::total)
 
         assertEquals(expected, actual)
     }
@@ -134,6 +175,131 @@ class GroupTest {
 
         val expected = InvestmentNetWorth(values = listOf("8,956.55 USD", "6,005.56 EUR"))
         val actual = Group.groupInvestmentNetWorth(investments)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupExpenseCategoriesMonthly() {
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+
+            Expense("7", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("8", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("9", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("10", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("11", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("12", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "December 2025",
+                total = "211.0".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Gifts", BigDecimal("160")),
+                    ExpenseCategory("Pets", BigDecimal("51.0")),
+                ),
+            ),
+            GroupedItems(
+                group = "November 2025",
+                total = "391.00".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Shopping", BigDecimal("240")),
+                    ExpenseCategory("Food", BigDecimal("151.00")),
+                ),
+            ),
+            GroupedItems(
+                group = "December 2024",
+                total = "908.54".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Fuel", BigDecimal("608.54")),
+                    ExpenseCategory("Food", BigDecimal("300")),
+                ),
+            ),
+        )
+
+        val actual = Group.groupExpenseCategoriesMonthly(expenses)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupExpenseCategoriesYearly() {
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+
+            Expense("7", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("8", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("9", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("10", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("11", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("12", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "2025",
+                total = "602.00".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Shopping", BigDecimal("240")),
+                    ExpenseCategory("Gifts", BigDecimal("160")),
+                    ExpenseCategory("Food", BigDecimal("151.00")),
+                    ExpenseCategory("Pets", BigDecimal("51.0")),
+                ),
+            ),
+            GroupedItems(
+                group = "2024",
+                total = "908.54".toBigDecimal(),
+                items = listOf(
+                    ExpenseCategory("Fuel", BigDecimal("608.54")),
+                    ExpenseCategory("Food", BigDecimal("300")),
+                ),
+            ),
+        )
+
+        val actual = Group.groupExpenseCategoriesYearly(expenses)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupExpenseCategoriesAllTime() {
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+
+            Expense("7", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("8", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("9", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("10", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("11", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("12", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+        )
+
+        val expected = listOf(
+            ExpenseCategory("Fuel", BigDecimal("608.54")),
+            ExpenseCategory("Food", BigDecimal("451.00")),
+            ExpenseCategory("Shopping", BigDecimal("240")),
+            ExpenseCategory("Gifts", BigDecimal("160")),
+            ExpenseCategory("Pets", BigDecimal("51.0")),
+        )
+
+        val actual = Group.groupExpenseCategoriesAllTime(expenses)
 
         assertEquals(expected, actual)
     }

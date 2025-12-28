@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
@@ -59,7 +60,7 @@ class FakeObserveGroupedExpensesUseCase : ObserveGroupedExpensesUseCase {
 
 }
 
-class FakeObserveGroupedExpenseCategoriesUseCase: ObserveGroupedExpenseCategoriesUseCase {
+class FakeObserveGroupedExpenseCategoriesMonthlyUseCase: ObserveGroupedExpenseCategoriesMonthlyUseCase {
 
     private val flow = MutableStateFlow<Async<List<GroupedExpenseCategories>>>(Async.Loading)
 
@@ -74,6 +75,54 @@ class FakeObserveGroupedExpenseCategoriesUseCase: ObserveGroupedExpenseCategorie
         filterTypeFlow: Flow<ExpensesFilterType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedExpenseCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedExpenseCategoriesYearlyUseCase: ObserveGroupedExpenseCategoriesYearlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedExpenseCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedExpenseCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<ExpensesFilterType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedExpenseCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedExpenseCategoriesAllTimeUseCase: ObserveGroupedExpenseCategoriesAllTimeUseCase {
+
+    private val flow = MutableStateFlow<Async<List<ExpenseCategory>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<ExpenseCategory>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<ExpensesFilterType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<ExpenseCategory>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }
