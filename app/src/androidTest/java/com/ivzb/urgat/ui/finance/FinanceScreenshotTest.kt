@@ -1,11 +1,14 @@
 package com.ivzb.urgat.ui.finance
 
 import androidx.compose.ui.Modifier
+import com.ivzb.urgat.R
 import com.ivzb.urgat.annotations.Screenshot
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
+import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
+import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
 import org.junit.experimental.categories.Category
@@ -18,7 +21,13 @@ class FinanceScreenshotTest: ScreenshotTest() {
     fun screenshotTest_FinanceScreen_sampleData() = screenshotTest(
         uiState = FinanceUiState(
             expenses = SampleData.SAMPLE_EXPENSES.take(itemsLimit),
+            expensesFilteringUiInfo = ExpensesFilteringUiInfo(
+                currentFilteringLabel = R.string.recent_expenses,
+            ),
             investments = SampleData.SAMPLE_INVESTMENTS.take(itemsLimit),
+            investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
+                currentFilteringLabel = R.string.recent_investments,
+            ),
             isLoading = false,
             hasError = false,
         ),

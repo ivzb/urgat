@@ -1,12 +1,15 @@
 package com.ivzb.urgat.ui.library
 
 import androidx.compose.ui.Modifier
+import com.ivzb.urgat.R
 import com.ivzb.urgat.annotations.Screenshot
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
+import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 import org.junit.Test
 import org.junit.experimental.categories.Category
 
@@ -18,7 +21,13 @@ class LibraryScreenshotTest: ScreenshotTest() {
     fun screenshotTest_LibraryScreen_sampleData() = screenshotTest(
         uiState = LibraryUiState(
             todos = SampleData.SAMPLE_TODOS.take(itemsLimit),
+            todosFilteringUiInfo = TodosFilteringUiInfo(
+                currentFilteringLabel = R.string.recent_todos,
+            ),
             notes = SampleData.SAMPLE_NOTES.take(itemsLimit),
+            notesFilteringUiInfo = NotesFilteringUiInfo(
+                currentFilteringLabel = R.string.recent_notes,
+            ),
             isLoading = false,
             hasError = false,
         ),

@@ -7,7 +7,6 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
-import com.ivzb.urgat.domain.sample.SampleUseCase
 import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase

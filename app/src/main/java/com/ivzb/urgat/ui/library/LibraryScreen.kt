@@ -459,10 +459,13 @@ fun LibraryScreenPreview() {
         LibraryScreen(
             uiState = LibraryUiState(
                 todos = SampleData.SAMPLE_TODOS.take(3),
-                todosFilteringUiInfo = TodosFilteringUiInfo(),
+                todosFilteringUiInfo = TodosFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_todos,
+                ),
                 notes = SampleData.SAMPLE_NOTES.take(3),
-                notesFilteringUiInfo = NotesFilteringUiInfo(),
-                isLoading = false,
+                notesFilteringUiInfo = NotesFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_notes,
+                ),                isLoading = false,
                 hasError = false,
                 filteringUiInfo = LibraryFilteringUiInfo()
             ),

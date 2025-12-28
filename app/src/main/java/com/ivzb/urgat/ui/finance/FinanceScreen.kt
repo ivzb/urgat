@@ -442,9 +442,13 @@ fun FinanceScreenPreview() {
         FinanceScreen(
             uiState = FinanceUiState(
                 expenses = SampleData.SAMPLE_EXPENSES.take(3),
-                expensesFilteringUiInfo = ExpensesFilteringUiInfo(),
+                expensesFilteringUiInfo = ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_expenses,
+                ),
                 investments = SampleData.SAMPLE_INVESTMENTS.take(3),
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
+                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_investments,
+                ),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = FinanceFilteringUiInfo()
