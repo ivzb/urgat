@@ -12,12 +12,15 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -77,6 +80,10 @@ fun InvestmentsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val pages = INVESTMENT_PAGES
+    val pagerState = rememberPagerState { pages.size }
+    val listStates = remember { List(pages.size) { LazyListState() } }
+    val currentListState = remember { derivedStateOf { listStates[pagerState.currentPage] } }
 
     ListDetailsScaffold(
         selectedRoute = InvestmentsRoute,
@@ -89,8 +96,9 @@ fun InvestmentsScreen(
                 onFilter = { onIntent(InvestmentsIntent.SetFiltering(it)) },
             )
         },
+        listState = currentListState.value,
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -117,7 +125,9 @@ fun InvestmentsScreen(
                 InvestmentsContent(
                     uiState = uiState,
                     onInvestmentClick = onInvestmentClick,
-                    listState = listState,
+                    pages = pages,
+                    pagerState = pagerState,
+                    listStates = listStates,
                 )
             }
         }
@@ -128,11 +138,11 @@ fun InvestmentsScreen(
 private fun InvestmentsContent(
     uiState: InvestmentsUiState,
     onInvestmentClick: (Investment) -> Unit,
-    listState: LazyListState,
-    modifier: Modifier = Modifier
+    pages: List<InvestmentsPage>,
+    pagerState: PagerState,
+    listStates: List<LazyListState>,
+    modifier: Modifier = Modifier,
 ) {
-    val pages = INVESTMENT_PAGES
-    val pagerState = rememberPagerState { pages.size }
     val scope = rememberCoroutineScope()
 
     Column {
@@ -171,7 +181,7 @@ private fun InvestmentsContent(
                     horizontal = dimensionResource(R.dimen.horizontal_margin),
                     vertical = dimensionResource(R.dimen.vertical_margin),
                 ),
-                state = listState
+                state = listStates[pageIndex]
             ) {
 
                 when (pages[pageIndex]) {
@@ -220,7 +230,10 @@ private fun LazyListScope.transactionsPage(
             )
         }
 
-        items(investments) { investment ->
+        items(
+            items = investments,
+            key = { investment -> investment.id },
+        ) { investment ->
             InvestmentItem(
                 investment = investment,
                 onInvestmentClick = onInvestmentClick
@@ -232,7 +245,10 @@ private fun LazyListScope.transactionsPage(
 private fun LazyListScope.assetsPage(
     assets: List<InvestmentAsset>,
 ) {
-    items(assets) { asset ->
+    items(
+        items = assets,
+        key = { asset -> asset.id }
+    ) { asset ->
         AssetItem(
             asset = asset,
         )
@@ -242,7 +258,10 @@ private fun LazyListScope.assetsPage(
 private fun LazyListScope.categoriesPage(
     categories: List<InvestmentCategory>,
 ) {
-    items(categories) { category ->
+    items(
+        items = categories,
+        key = { category -> category.id }
+    ) { category ->
         CategoryItem(
             category = category,
         )

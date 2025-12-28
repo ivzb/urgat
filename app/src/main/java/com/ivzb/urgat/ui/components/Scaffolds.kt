@@ -73,7 +73,7 @@ fun <T> NavigationScaffold(
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
-    content: @Composable (LazyListState) -> Unit
+    content: @Composable () -> Unit
 ) {
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -207,9 +207,10 @@ fun ListDetailsScaffold(
     withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
+    listState: LazyListState,
+
     modifier: Modifier = Modifier,
-    lazyListState: LazyListState = rememberLazyListState(),
-    content: @Composable (LazyListState) -> Unit
+    content: @Composable () -> Unit
 ) {
 
     UrgatScaffold(
@@ -227,14 +228,13 @@ fun ListDetailsScaffold(
         topAppBarActionsContent = topAppBarActionsContent,
         floatingActionButtonContent = {
             FloatingActionButtonContent(
-                extended = lazyListState.isScrollingUp(),
+                extended = listState.isScrollingUp(),
                 icon = Icons.Default.Add,
                 labelResId = R.string.add,
                 onClick = onAddItem
             )
         },
         modifier = modifier,
-        lazyListState = lazyListState,
         content = content
     )
 }
@@ -250,8 +250,7 @@ private fun UrgatScaffold(
     floatingActionButtonContent: (@Composable () -> Unit)? = null,
 
     modifier: Modifier = Modifier,
-    lazyListState: LazyListState = rememberLazyListState(),
-    content: @Composable (LazyListState) -> Unit
+    content: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -275,7 +274,7 @@ private fun UrgatScaffold(
                 .padding(innerPadding)
         ) {
 
-            content(lazyListState)
+            content()
         }
     }
 }
@@ -357,6 +356,7 @@ fun ListDetailsScaffoldPreview() {
             onAddItem = {},
             withTopAppBarActions = false,
             topAppBarActionsContent = {},
+            listState = rememberLazyListState(),
             modifier = Modifier
         ) { }
     }

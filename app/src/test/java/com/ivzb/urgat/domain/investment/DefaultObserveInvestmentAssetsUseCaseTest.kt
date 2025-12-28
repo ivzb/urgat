@@ -3,6 +3,8 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentsRepository
+import com.ivzb.urgat.data.random.RandomRepository
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesAllTimeUseCaseTest
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -20,14 +22,18 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveInvestmentAssetsUseCaseTest {
 
-    private lateinit var repository: InvestmentsRepository
+    private lateinit var investmentsRepository: InvestmentsRepository
+    private lateinit var randomRepository: RandomRepository
     private lateinit var observeUseCase: ObserveInvestmentAssetsUseCase
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
-        repository = mockk()
-        observeUseCase = DefaultObserveInvestmentAssetsUseCase(repository)
+        investmentsRepository = mockk()
+        randomRepository = mockk()
+        observeUseCase = DefaultObserveInvestmentAssetsUseCase(investmentsRepository, randomRepository)
+
+        every { randomRepository.uuid() } returns TEST_UUID
     }
 
     @Test
@@ -48,21 +54,21 @@ class ObserveInvestmentAssetsUseCaseTest {
             )
         )
 
-        every { repository.observe(limit, "snp") } returns repositoryStream
+        every { investmentsRepository.observe(limit, "snp") } returns repositoryStream
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
         advanceUntilIdle()
 
         val expected = listOf(
-            InvestmentAsset(name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "USD"),
-            InvestmentAsset(name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "EUR"),
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "USD"),
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "EUR"),
 
-            InvestmentAsset(name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "USD"),
-            InvestmentAsset(name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "EUR"),
+            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "USD"),
+            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "EUR"),
 
-            InvestmentAsset(name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "USD"),
-            InvestmentAsset(name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "EUR"),
+            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "USD"),
+            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "EUR"),
         )
 
         assertEquals(1, results.size)
@@ -78,7 +84,7 @@ class ObserveInvestmentAssetsUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { repository.observe(limit) } throws RuntimeException("Test error")
+        every { investmentsRepository.observe(limit) } throws RuntimeException("Test error")
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
@@ -88,4 +94,11 @@ class ObserveInvestmentAssetsUseCaseTest {
         val first = results.first()
         assert(first is Async.Error)
     }
+
+    companion object {
+
+        private const val TEST_UUID = "mock_id"
+
+    }
+
 }

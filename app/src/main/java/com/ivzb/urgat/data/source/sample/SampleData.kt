@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
+import com.ivzb.urgat.util.randomUUID
 import kotlin.collections.component1
 import kotlin.collections.component4
 
@@ -32,7 +33,7 @@ object SampleData {
         )
     }.mapIndexed { index, (title, description, isCompleted) ->
         Todo(
-            id = index.toString(),
+            id = "todo_$index",
             title = title,
             description = description,
             isCompleted = isCompleted.toBoolean(),
@@ -61,7 +62,7 @@ object SampleData {
         )
     }.mapIndexed { index, (name, amount, category, dateOffset) ->
         Expense(
-            id = index.toString(),
+            id = "expense_$index",
             name = name,
             amount = amount.toBigDecimal(),
             category = category,
@@ -73,11 +74,11 @@ object SampleData {
 
     val SAMPLE_EXPENSES_GROUPED = Group.byDateMonthly(SAMPLE_EXPENSES, Expense::date, Expense::total)
 
-    val SAMPLE_EXPENSES_CATEGORIES_MONTHLY = Group.groupExpenseCategoriesMonthly(SAMPLE_EXPENSES)
+    val SAMPLE_EXPENSES_CATEGORIES_MONTHLY = Group.groupExpenseCategoriesMonthly(SAMPLE_EXPENSES, ::randomUUID)
 
-    val SAMPLE_EXPENSES_CATEGORIES_YEARLY = Group.groupExpenseCategoriesYearly(SAMPLE_EXPENSES)
+    val SAMPLE_EXPENSES_CATEGORIES_YEARLY = Group.groupExpenseCategoriesYearly(SAMPLE_EXPENSES, ::randomUUID)
 
-    val SAMPLE_EXPENSES_CATEGORIES_ALL_TIME = Group.groupExpenseCategoriesAllTime(SAMPLE_EXPENSES)
+    val SAMPLE_EXPENSES_CATEGORIES_ALL_TIME = Group.groupExpenseCategoriesAllTime(SAMPLE_EXPENSES, ::randomUUID)
 
     val SAMPLE_NOTES = debugOnly {
         listOf(
@@ -124,7 +125,7 @@ object SampleData {
         )
     }.mapIndexed { index, (content) ->
         Note(
-            id = index.toString(),
+            id = "note_$index",
             content = content,
             isDeleted = false,
             createdAt = System.currentTimeMillis(),
@@ -151,7 +152,7 @@ object SampleData {
         )
     }.mapIndexed { index, (name, shares, cost, category, currency, dateOffset) ->
         Investment(
-            id = index.toString(),
+            id = "investment_$index",
             name = name,
             shares = shares.toBigDecimal(),
             cost = cost.toBigDecimal(),
@@ -167,9 +168,9 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS_NET_WORTH = Group.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
 
-    val SAMPLE_INVESTMENTS_CATEGORIES = Group.groupInvestmentCategories(SAMPLE_INVESTMENTS)
+    val SAMPLE_INVESTMENTS_CATEGORIES = Group.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
 
-    val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS)
+    val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
 
     val SAMPLE_WEIGHTS = debugOnly {
         listOf(
@@ -186,7 +187,7 @@ object SampleData {
         )
     }.mapIndexed { index, (weight, timestamp) ->
         Weight(
-            id = index.toString(),
+            id = "weight_$index",
             value = weight.toBigDecimal(),
             date = timestamp.toLong() * 1000,
             isDeleted = false,

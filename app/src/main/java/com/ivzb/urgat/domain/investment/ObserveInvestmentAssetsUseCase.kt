@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentsRepository
+import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.domain.common.Group.groupInvestmentAssets
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.util.Async
@@ -19,13 +20,14 @@ interface ObserveInvestmentAssetsUseCase {
 }
 
 class DefaultObserveInvestmentAssetsUseCase @Inject constructor(
-    repository: InvestmentsRepository
+    investmentsRepository: InvestmentsRepository,
+    private val randomRepository: RandomRepository,
 ): ObserveInvestmentAssetsUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
-        repository = repository,
+        repository = investmentsRepository,
         filter = ::filterInvestments,
-        group = ::groupInvestmentAssets,
+        group = { investments -> groupInvestmentAssets(investments, randomRepository::uuid) },
     )
 
     override fun invoke(

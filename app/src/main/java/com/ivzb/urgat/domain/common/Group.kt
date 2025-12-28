@@ -74,13 +74,14 @@ object Group {
                 )
             }
 
-    fun groupInvestmentAssets(investments: List<Investment>): List<InvestmentAsset> =
+    fun groupInvestmentAssets(investments: List<Investment>, random: () -> String): List<InvestmentAsset> =
         investments
             .groupBy { Triple(it.name, it.category, it.currency) }
             .map { (key, investments) ->
                 val (name, category, currency) = key
 
                 InvestmentAsset(
+                    id = random(),
                     name = name,
                     category = category,
                     shares = investments.sumOf { it.shares },
@@ -90,11 +91,12 @@ object Group {
             }
             .sortedBy { it.name }
 
-    fun groupInvestmentCategories(investments: List<Investment>): List<InvestmentCategory> =
+    fun groupInvestmentCategories(investments: List<Investment>, random: () -> String): List<InvestmentCategory> =
         investments
             .groupBy { it.category }
             .map { (category, investments) ->
                 InvestmentCategory(
+                    id = random(),
                     name = category,
                     values = investments.format(),
                 )
@@ -106,34 +108,35 @@ object Group {
             values = investments.format(),
         )
 
-    fun groupExpenseCategoriesMonthly(expenses: List<Expense>): List<GroupedExpenseCategories> =
+    fun groupExpenseCategoriesMonthly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
         byDateMonthly(expenses, Expense::date, Expense::total)
             .map { (group, _, items) ->
                 GroupedItems(
                     group = group,
                     total = items.sumOf { it.amount },
-                    items = items.group(),
+                    items = items.group(random),
                 )
             }
 
-    fun groupExpenseCategoriesYearly(expenses: List<Expense>): List<GroupedExpenseCategories> =
+    fun groupExpenseCategoriesYearly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
         byDateYearly(expenses, Expense::date, Expense::total)
             .map { (group, _, items) ->
                 GroupedItems(
                     group = group,
                     total = items.sumOf { it.amount },
-                    items = items.group(),
+                    items = items.group(random),
                 )
             }
 
-    fun groupExpenseCategoriesAllTime(expenses: List<Expense>): List<ExpenseCategory> =
-        expenses.group()
+    fun groupExpenseCategoriesAllTime(expenses: List<Expense>, random: () -> String): List<ExpenseCategory> =
+        expenses.group(random)
 
-    private fun List<Expense>.group(): List<ExpenseCategory> =
+    private fun List<Expense>.group(random: () -> String): List<ExpenseCategory> =
         this
             .groupBy { it.category }
             .map { (category, expenses) ->
                 ExpenseCategory(
+                    id = random(),
                     name = category,
                     value = expenses.format(),
                 )

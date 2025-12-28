@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -72,6 +73,7 @@ fun TodosScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val listState = remember { LazyListState() }
 
     ListDetailsScaffold(
         selectedRoute = TodosRoute,
@@ -88,8 +90,9 @@ fun TodosScreen(
                 onClearCompletedTodos = { onIntent(TodosIntent.ClearCompletedTodos) }
             )
         },
+        listState = listState,
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -155,7 +158,10 @@ fun TodosContent(
             )
         }
 
-        items(todos) { todo ->
+        items(
+            items = todos,
+            key = { todo -> todo.id },
+        ) { todo ->
             TodoItem(
                 todo = todo,
                 onTodoClick = onTodoClick,

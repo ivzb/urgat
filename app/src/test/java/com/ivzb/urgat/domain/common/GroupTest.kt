@@ -118,18 +118,18 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentAsset(name="AAPL", category = "stocks", shares = BigDecimal("4.6"), marketValue = BigDecimal("1258.882"), currency="USD"),
-            InvestmentAsset(name="BRK.B", category = "etf", shares = BigDecimal("3.4"), marketValue = BigDecimal("1681.402"), currency="USD"),
-            InvestmentAsset(name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1290.072"), currency="USD"),
-            InvestmentAsset(name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1101.450"), currency="EUR"),
-            InvestmentAsset(name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("8677.10"), currency="USD"),
-            InvestmentAsset(name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("7408.50"), currency="EUR"),
-            InvestmentAsset(name="NVDA", category = "stocks", shares = BigDecimal("5.0"), marketValue = BigDecimal("904.950"), currency="USD"),
-            InvestmentAsset(name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("4100.70"), currency="USD"),
-            InvestmentAsset(name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("3501.18"), currency="EUR"),
+            InvestmentAsset(id = TEST_UUID, name="AAPL", category = "stocks", shares = BigDecimal("4.6"), marketValue = BigDecimal("1258.882"), currency="USD"),
+            InvestmentAsset(id = TEST_UUID, name="BRK.B", category = "etf", shares = BigDecimal("3.4"), marketValue = BigDecimal("1681.402"), currency="USD"),
+            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1290.072"), currency="USD"),
+            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1101.450"), currency="EUR"),
+            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("8677.10"), currency="USD"),
+            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("7408.50"), currency="EUR"),
+            InvestmentAsset(id = TEST_UUID, name="NVDA", category = "stocks", shares = BigDecimal("5.0"), marketValue = BigDecimal("904.950"), currency="USD"),
+            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("4100.70"), currency="USD"),
+            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("3501.18"), currency="EUR"),
         )
 
-        val actual = Group.groupInvestmentAssets(investments)
+        val actual = Group.groupInvestmentAssets(investments, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -149,12 +149,12 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentCategory(name = "etf", values = listOf("2,891.05 USD", "1,750.59 EUR")),
-            InvestmentCategory(name = "gold", values = listOf("4,338.55 USD", "3,704.25 EUR")),
-            InvestmentCategory(name = "stocks", values = listOf("1,726.95 USD", "550.72 EUR")),
+            InvestmentCategory(id = TEST_UUID, name = "etf", values = listOf("2,891.05 USD", "1,750.59 EUR")),
+            InvestmentCategory(id = TEST_UUID, name = "gold", values = listOf("4,338.55 USD", "3,704.25 EUR")),
+            InvestmentCategory(id = TEST_UUID, name = "stocks", values = listOf("1,726.95 USD", "550.72 EUR")),
         )
 
-        val actual = Group.groupInvestmentCategories(investments)
+        val actual = Group.groupInvestmentCategories(investments, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -202,29 +202,29 @@ class GroupTest {
                 group = "December 2025",
                 total = "211.0".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Gifts", BigDecimal("160")),
-                    ExpenseCategory("Pets", BigDecimal("51.0")),
+                    ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("160")),
+                    ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("51.0")),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
                 total = "391.00".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Shopping", BigDecimal("240")),
-                    ExpenseCategory("Food", BigDecimal("151.00")),
+                    ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("240")),
+                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("151.00")),
                 ),
             ),
             GroupedItems(
                 group = "December 2024",
                 total = "908.54".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Fuel", BigDecimal("608.54")),
-                    ExpenseCategory("Food", BigDecimal("300")),
+                    ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("608.54")),
+                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("300")),
                 ),
             ),
         )
 
-        val actual = Group.groupExpenseCategoriesMonthly(expenses)
+        val actual = Group.groupExpenseCategoriesMonthly(expenses, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -252,23 +252,23 @@ class GroupTest {
                 group = "2025",
                 total = "602.00".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Shopping", BigDecimal("240")),
-                    ExpenseCategory("Gifts", BigDecimal("160")),
-                    ExpenseCategory("Food", BigDecimal("151.00")),
-                    ExpenseCategory("Pets", BigDecimal("51.0")),
+                    ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("240")),
+                    ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("160")),
+                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("151.00")),
+                    ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("51.0")),
                 ),
             ),
             GroupedItems(
                 group = "2024",
                 total = "908.54".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Fuel", BigDecimal("608.54")),
-                    ExpenseCategory("Food", BigDecimal("300")),
+                    ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("608.54")),
+                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("300")),
                 ),
             ),
         )
 
-        val actual = Group.groupExpenseCategoriesYearly(expenses)
+        val actual = Group.groupExpenseCategoriesYearly(expenses, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -292,14 +292,14 @@ class GroupTest {
         )
 
         val expected = listOf(
-            ExpenseCategory("Fuel", BigDecimal("608.54")),
-            ExpenseCategory("Food", BigDecimal("451.00")),
-            ExpenseCategory("Shopping", BigDecimal("240")),
-            ExpenseCategory("Gifts", BigDecimal("160")),
-            ExpenseCategory("Pets", BigDecimal("51.0")),
+            ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("608.54")),
+            ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("451.00")),
+            ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("240")),
+            ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("160")),
+            ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("51.0")),
         )
 
-        val actual = Group.groupExpenseCategoriesAllTime(expenses)
+        val actual = Group.groupExpenseCategoriesAllTime(expenses, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -323,6 +323,10 @@ class GroupTest {
             }
 
         }
+
+        private const val TEST_UUID = "1"
+
+        private val randomTestUUID = { TEST_UUID }
 
     }
 

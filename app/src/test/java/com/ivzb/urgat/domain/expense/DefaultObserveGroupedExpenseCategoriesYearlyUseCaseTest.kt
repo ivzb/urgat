@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.expense
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.timestamp
@@ -22,14 +23,18 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
 
-    private lateinit var repository: ExpensesRepository
+    private lateinit var expensesRepository: ExpensesRepository
+    private lateinit var randomRepository: RandomRepository
     private lateinit var observeUseCase: ObserveGroupedExpenseCategoriesYearlyUseCase
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
-        repository = mockk()
-        observeUseCase = DefaultObserveGroupedExpenseCategoriesYearlyUseCase(repository)
+        expensesRepository = mockk()
+        randomRepository = mockk()
+        observeUseCase = DefaultObserveGroupedExpenseCategoriesYearlyUseCase(expensesRepository, randomRepository)
+
+        every { randomRepository.uuid() } returns TEST_UUID
     }
 
     @Test
@@ -48,7 +53,7 @@ class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
             ),
         )
 
-        every { repository.observe(limit, "coffee") } returns repositoryStream
+        every { expensesRepository.observe(limit, "coffee") } returns repositoryStream
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
@@ -59,18 +64,18 @@ class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
                 group = "2025",
                 total = "301.00".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Shopping", BigDecimal("120")),
-                    ExpenseCategory("Gifts", BigDecimal("80")),
-                    ExpenseCategory("Food", BigDecimal("75.50")),
-                    ExpenseCategory("Pets", BigDecimal("25.5")),
+                    ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("120")),
+                    ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("80")),
+                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("75.50")),
+                    ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("25.5")),
                 ),
             ),
             GroupedItems(
                 group = "2024",
                 total = "454.27".toBigDecimal(),
                 items = listOf(
-                    ExpenseCategory("Fuel", BigDecimal("304.27")),
-                    ExpenseCategory("Food", BigDecimal("150")),
+                    ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("304.27")),
+                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("150")),
                 ),
             ),
         )
@@ -88,7 +93,7 @@ class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { repository.observe(limit) } throws RuntimeException("Test error")
+        every { expensesRepository.observe(limit) } throws RuntimeException("Test error")
 
         val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
 
@@ -98,4 +103,11 @@ class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
         val first = results.first()
         assert(first is Async.Error)
     }
+
+    companion object {
+
+        private const val TEST_UUID = "mock_id"
+
+    }
+
 }

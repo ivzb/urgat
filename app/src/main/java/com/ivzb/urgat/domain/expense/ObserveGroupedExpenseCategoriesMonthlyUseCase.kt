@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesMonthly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.GroupedItems
@@ -24,13 +25,14 @@ interface ObserveGroupedExpenseCategoriesMonthlyUseCase {
 }
 
 class DefaultObserveGroupedExpenseCategoriesMonthlyUseCase @Inject constructor(
-    repository: ExpensesRepository
+    expensesRepository: ExpensesRepository,
+    private val randomRepository: RandomRepository,
 ): ObserveGroupedExpenseCategoriesMonthlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
-        repository = repository,
+        repository = expensesRepository,
         filter = ::filterExpenses,
-        group = ::groupExpenseCategoriesMonthly,
+        group = { expenses -> groupExpenseCategoriesMonthly(expenses, randomRepository::uuid) },
     )
 
     override fun invoke(

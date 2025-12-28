@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -87,7 +86,7 @@ fun WellbeingScreen(
         navigator = navigator,
         withTopAppBarActions = false,
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -108,7 +107,6 @@ fun WellbeingScreen(
                     weights = uiState.weights,
                     weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
                     onTrackWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
-                    listState = listState,
                 )
             }
         }
@@ -120,7 +118,6 @@ private fun WellbeingContent(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
     onTrackWeight: () -> Unit,
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
 
@@ -131,7 +128,6 @@ private fun WellbeingContent(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onTrackWeight = onTrackWeight,
-            listState = listState,
             modifier = modifier,
         )
     } else {
@@ -139,7 +135,6 @@ private fun WellbeingContent(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onTrackWeight = onTrackWeight,
-            listState = listState,
             modifier = modifier,
         )
     }
@@ -150,7 +145,6 @@ private fun WellbeingContentPortrait(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
     onTrackWeight: () -> Unit,
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
@@ -163,7 +157,6 @@ private fun WellbeingContentPortrait(
             horizontal = dimensionResource(R.dimen.content_padding_horizontal),
             vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
-        state = listState
     ) {
 
         itemWeights(
@@ -186,7 +179,6 @@ private fun WellbeingContentLandscape(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
     onTrackWeight: () -> Unit,
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
@@ -207,7 +199,6 @@ private fun WellbeingContentLandscape(
                 horizontal = dimensionResource(R.dimen.content_padding_horizontal),
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             ),
-            state = listState
         ) {
 
             itemWeights(
@@ -232,7 +223,6 @@ private fun WellbeingContentLandscape(
                 horizontal = dimensionResource(R.dimen.content_padding_horizontal),
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             ),
-            state = listState
         ) {
 
             // nothing here yet

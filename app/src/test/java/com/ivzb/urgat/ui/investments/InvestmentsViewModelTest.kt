@@ -112,12 +112,14 @@ class InvestmentsViewModelTest {
         )
         val fakeCategories = listOf(
             InvestmentCategory(
+                id = "1",
                 name = "etfs",
                 values = listOf("500 USD"),
             )
         )
         val fakeAssets = listOf(
             InvestmentAsset(
+                id = "1",
                 name = "SNP 500",
                 category = "etfs",
                 shares = 500.toBigDecimal(),
@@ -201,12 +203,14 @@ class InvestmentsViewModelTest {
         )
         val fakeCategories = listOf(
             InvestmentCategory(
+                id = "1",
                 name = "etfs",
                 values = listOf("500 USD"),
             )
         )
         val fakeAssets = listOf(
             InvestmentAsset(
+                id = "1",
                 name = "SNP 500",
                 category = "etfs",
                 shares = 500.toBigDecimal(),

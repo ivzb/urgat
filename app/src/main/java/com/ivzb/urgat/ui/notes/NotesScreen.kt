@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -65,14 +66,17 @@ fun NotesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pagesSize = 2
+    val listStates = remember { List(pagesSize) { LazyListState() } }
 
     ListDetailsScaffold(
         selectedRoute = NotesRoute,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         onBack = onBack,
+        listState = listStates[1],
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -99,7 +103,7 @@ fun NotesScreen(
                 NotesContent(
                     notes = uiState.items,
                     onNoteClick = onNoteClick,
-                    listState = listState
+                    listStates = listStates,
                 )
             }
         }
@@ -110,7 +114,7 @@ fun NotesScreen(
 internal fun NotesContent(
     notes: List<Note>,
     onNoteClick: (Note) -> Unit,
-    listState: LazyListState,
+    listStates: List<LazyListState>,
     modifier: Modifier = Modifier
 ) {
 
@@ -127,14 +131,14 @@ internal fun NotesContent(
         NotesColumn(
             leftNotes,
             onNoteClick,
-            listState,
+            listStates[0],
             modifier = Modifier.weight(1f)
         )
 
         NotesColumn(
             rightNotes,
             onNoteClick,
-            listState,
+            listStates[1],
             modifier = Modifier.weight(1f)
         )
     }
@@ -160,7 +164,10 @@ private fun NotesColumn(
         ),
         modifier = modifier
     ) {
-        items(notes) { note ->
+        items(
+            items = notes,
+            key = { note -> note.id },
+        ) { note ->
             NoteItem(
                 note = note,
                 onNoteClick = onNoteClick

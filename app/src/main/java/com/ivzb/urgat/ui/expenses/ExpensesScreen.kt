@@ -12,11 +12,13 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -81,6 +83,10 @@ fun ExpensesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val pages = EXPENSE_PAGES
+    val pagerState = rememberPagerState { pages.size }
+    val listStates = remember { List(pages.size) { LazyListState() } }
+    val currentListState = remember { derivedStateOf { listStates[pagerState.currentPage] } }
 
     ListDetailsScaffold(
         selectedRoute = ExpensesRoute,
@@ -93,8 +99,9 @@ fun ExpensesScreen(
                 onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
             )
         },
+        listState = currentListState.value,
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -121,7 +128,9 @@ fun ExpensesScreen(
                 ExpensesContent(
                     uiState = uiState,
                     onExpenseClick = onExpenseClick,
-                    listState = listState
+                    pages = pages,
+                    pagerState = pagerState,
+                    listStates = listStates,
                 )
             }
         }
@@ -132,12 +141,11 @@ fun ExpensesScreen(
 internal fun ExpensesContent(
     uiState: ExpensesUiState,
     onExpenseClick: (Expense) -> Unit,
-    listState: LazyListState,
-    modifier: Modifier = Modifier
+    pages: List<ExpensesPage>,
+    pagerState: PagerState,
+    listStates: List<LazyListState>,
+    modifier: Modifier = Modifier,
 ) {
-
-    val pages = EXPENSE_PAGES
-    val pagerState = rememberPagerState { pages.size }
     val scope = rememberCoroutineScope()
 
     Column {
@@ -166,7 +174,7 @@ internal fun ExpensesContent(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) { pageIndex ->
 
             LazyColumn(
@@ -176,7 +184,7 @@ internal fun ExpensesContent(
                     horizontal = dimensionResource(R.dimen.horizontal_margin),
                     vertical = dimensionResource(R.dimen.vertical_margin),
                 ),
-                state = listState
+                state = listStates[pageIndex],
             ) {
 
                 when (pages[pageIndex]) {
@@ -231,7 +239,10 @@ private fun LazyListScope.transactionsPage(
             )
         }
 
-        items(expenses) { expense ->
+        items(
+            items = expenses,
+            key = { expense -> expense.id },
+        ) { expense ->
             ExpenseItem(
                 expense = expense,
                 onExpenseClick = onExpenseClick
@@ -270,7 +281,10 @@ private fun LazyListScope.categoriesPage(
     categories: List<ExpenseCategory>,
 ) {
 
-    items(categories) { category ->
+    items(
+        items = categories,
+        key = { category -> category.id },
+    ) { category ->
         CategoryItem(
             category = category,
         )

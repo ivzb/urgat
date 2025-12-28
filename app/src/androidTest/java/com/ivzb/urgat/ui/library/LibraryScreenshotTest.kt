@@ -83,6 +83,8 @@ class LibraryScreenshotTest: ScreenshotTest() {
             }
         }
 
+        composeTestRule.waitForIdle()
+
         screenshot()
     }
 

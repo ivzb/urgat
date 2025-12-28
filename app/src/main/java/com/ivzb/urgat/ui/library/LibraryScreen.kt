@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -126,7 +125,7 @@ fun LibraryScreen(
             )
         },
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -156,8 +155,6 @@ fun LibraryScreen(
                     onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
                     onSeeAllNotes = onSeeAllNotes,
                     onNoteClick = onNoteClick,
-
-                    listState = listState,
                 )
             }
         }
@@ -180,7 +177,6 @@ private fun LibraryContent(
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
 
@@ -201,7 +197,6 @@ private fun LibraryContent(
             onSeeAllNotes = onSeeAllNotes,
             onNoteClick = onNoteClick,
 
-            listState = listState,
             modifier = modifier,
         )
     } else {
@@ -219,7 +214,6 @@ private fun LibraryContent(
             onSeeAllNotes = onSeeAllNotes,
             onNoteClick = onNoteClick,
 
-            listState = listState,
             modifier = modifier,
         )
     }
@@ -240,7 +234,6 @@ private fun LibraryContentPortrait(
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.library)
@@ -253,7 +246,6 @@ private fun LibraryContentPortrait(
             horizontal = dimensionResource(R.dimen.content_padding_horizontal),
             vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
-        state = listState
     ) {
 
         itemTodo(
@@ -304,7 +296,6 @@ private fun LibraryContentLandscape(
     onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.library)
@@ -325,7 +316,6 @@ private fun LibraryContentLandscape(
                 horizontal = dimensionResource(R.dimen.content_padding_horizontal),
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             ),
-            state = listState
         ) {
 
             itemTodo(
@@ -353,7 +343,6 @@ private fun LibraryContentLandscape(
                 horizontal = dimensionResource(R.dimen.content_padding_horizontal),
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             ),
-            state = listState
         ) {
 
             itemNotes(
@@ -403,7 +392,10 @@ private fun LazyListScope.itemTodo(
                 )
             }
 
-            items(todos) { todo ->
+            items(
+                items = todos,
+                key = { todo -> todo.id },
+            ) { todo ->
                 TodoItem(
                     todo = todo,
                     onTodoClick = onTodoClick,
@@ -442,7 +434,10 @@ private fun LazyListScope.itemNotes(
                 )
             }
 
-            items(notes) { note ->
+            items(
+                items = notes,
+                key = { note -> note.id },
+            ) { note ->
                 NoteItem(
                     note = note,
                     onNoteClick = onNoteClick

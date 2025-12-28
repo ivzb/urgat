@@ -1,14 +1,12 @@
 package com.ivzb.urgat.domain.expense
 
-import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
-import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
-import java.math.BigDecimal
 import javax.inject.Inject
 
 interface ObserveGroupedExpenseCategoriesYearlyUseCase {
@@ -22,13 +20,14 @@ interface ObserveGroupedExpenseCategoriesYearlyUseCase {
 }
 
 class DefaultObserveGroupedExpenseCategoriesYearlyUseCase @Inject constructor(
-    repository: ExpensesRepository
+    expensesRepository: ExpensesRepository,
+    private val randomRepository: RandomRepository,
 ): ObserveGroupedExpenseCategoriesYearlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
-        repository = repository,
+        repository = expensesRepository,
         filter = ::filterExpenses,
-        group = ::groupExpenseCategoriesYearly,
+        group = { expenses -> groupExpenseCategoriesYearly(expenses, randomRepository::uuid) },
     )
 
     override fun invoke(

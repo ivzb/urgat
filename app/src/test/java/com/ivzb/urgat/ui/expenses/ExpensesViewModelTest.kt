@@ -89,6 +89,7 @@ class ExpensesViewModelTest {
                 total = "10".toBigDecimal(),
                 items = listOf(
                     ExpenseCategory(
+                        id = "1",
                         name = "food",
                         value = "10".toBigDecimal(),
                     )
@@ -101,6 +102,7 @@ class ExpensesViewModelTest {
                 total = "10".toBigDecimal(),
                 items = listOf(
                     ExpenseCategory(
+                        id = "1",
                         name = "food",
                         value = "10".toBigDecimal(),
                     )
@@ -109,6 +111,7 @@ class ExpensesViewModelTest {
         )
         val fakeCategoriesAllTime = listOf(
             ExpenseCategory(
+                id = "1",
                 name = "food",
                 value = "10".toBigDecimal(),
             )
@@ -179,6 +182,7 @@ class ExpensesViewModelTest {
                 total = "10".toBigDecimal(),
                 items = listOf(
                     ExpenseCategory(
+                        id = "1",
                         name = "food",
                         value = "10".toBigDecimal(),
                     )
@@ -191,6 +195,7 @@ class ExpensesViewModelTest {
                 total = "10".toBigDecimal(),
                 items = listOf(
                     ExpenseCategory(
+                        id = "1",
                         name = "food",
                         value = "10".toBigDecimal(),
                     )
@@ -199,6 +204,7 @@ class ExpensesViewModelTest {
         )
         val fakeCategoriesAllTime = listOf(
             ExpenseCategory(
+                id = "1",
                 name = "food",
                 value = "10".toBigDecimal(),
             )

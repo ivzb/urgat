@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -119,7 +118,7 @@ fun FinanceScreen(
         navigator = navigator,
         withTopAppBarActions = uiState.expenses.isNotEmpty() || uiState.investments.isNotEmpty(),
         modifier = modifier
-    ) { listState ->
+    ) {
 
         when {
             uiState.isLoading -> {
@@ -148,8 +147,6 @@ fun FinanceScreen(
                     onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
                     onSeeAllInvestments = onSeeAllInvestments,
                     onInvestmentClick = onInvestmentClick,
-
-                    listState = listState,
                 )
             }
         }
@@ -171,7 +168,6 @@ private fun FinanceContent(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
 
@@ -191,7 +187,6 @@ private fun FinanceContent(
             onSeeAllInvestments = onSeeAllInvestments,
             onInvestmentClick = onInvestmentClick,
 
-            listState = listState,
             modifier = modifier,
         )
     } else {
@@ -208,7 +203,6 @@ private fun FinanceContent(
             onSeeAllInvestments = onSeeAllInvestments,
             onInvestmentClick = onInvestmentClick,
 
-            listState = listState,
             modifier = modifier,
         )
     }
@@ -228,7 +222,6 @@ private fun FinanceContentPortrait(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.finance)
@@ -241,7 +234,6 @@ private fun FinanceContentPortrait(
             horizontal = dimensionResource(R.dimen.content_padding_horizontal),
             vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
-        state = listState
     ) {
 
         itemExpenses(
@@ -290,7 +282,6 @@ private fun FinanceContentLandscape(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
-    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.finance)
@@ -311,7 +302,6 @@ private fun FinanceContentLandscape(
                 horizontal = dimensionResource(R.dimen.content_padding_horizontal),
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             ),
-            state = listState
         ) {
 
             itemExpenses(
@@ -338,7 +328,6 @@ private fun FinanceContentLandscape(
                 horizontal = dimensionResource(R.dimen.content_padding_horizontal),
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             ),
-            state = listState
         ) {
 
             itemInvestments(
@@ -387,7 +376,10 @@ private fun LazyListScope.itemExpenses(
                 )
             }
 
-            items(expenses) { expense ->
+            items(
+                items = expenses,
+                key = { expense -> expense.id },
+            ) { expense ->
                 ExpenseItem(
                     expense = expense,
                     onExpenseClick = onExpenseClick
@@ -425,7 +417,10 @@ private fun LazyListScope.itemInvestments(
                 )
             }
 
-            items(investments) { investment ->
+            items(
+                items = investments,
+                key = { investment -> investment.id },
+            ) { investment ->
                 InvestmentItem(
                     investment = investment,
                     onInvestmentClick = onInvestmentClick

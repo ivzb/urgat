@@ -29,7 +29,6 @@
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
 - check how to show text field labels because editing investment is unclear
 - there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
-- left column scroll doesn't work when there are a lot of notes
 - fix edge to edge recommendation from play store
 
 ## Spikes
@@ -40,6 +39,7 @@
 - review screenshots and documents obvious UI issues
 - inspect all classes using inheritance and change them to composition
 - consider: read current prices on app start for all owned assets and caluclate current market price?
+- check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 
 ## Features
 - add drawer with app version, settings, sample data button, etc
