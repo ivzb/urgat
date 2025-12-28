@@ -1,3 +1,8 @@
+## Release notes 25.12.17
+
+Fixed:
+- Optimized scrolling responsiveness
+
 ## Release notes 25.12.16
 
 New:
