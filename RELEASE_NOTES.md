@@ -1,3 +1,11 @@
+## Release notes 25.12.19
+
+New:
+- Yearly Categories tab has been added to Investments.
+
+Improved:
+- Investment Assets and Categories are now combined in the Net Worth tab.
+
 ## Release notes 25.12.18
 
 New:
