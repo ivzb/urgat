@@ -54,7 +54,7 @@ class ObserveGroupedInvestmentsUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
-                total = listOf("1,186,432 USD"),
+                total = "1,186,432 USD",
                 items = listOf(
                     Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
                     Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), "Stocks", "USD", 1765231200000, false, 1765231200000),
@@ -62,7 +62,7 @@ class ObserveGroupedInvestmentsUseCaseTest {
             ),
             GroupedItems(
                 group = "November 2025",
-                total = listOf("1,585,468 USD"),
+                total = "1,585,468 USD",
                 items = listOf(
                     Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
                     Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), "Stocks", "USD",  1764021600000, false, 1764021600000),

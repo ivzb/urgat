@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentCategoriesUseCase
@@ -36,9 +37,10 @@ class InvestmentsViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveGroupedInvestmentsUseCase: FakeObserveGroupedInvestmentsUseCase
-    private lateinit var fakeObserveInvestmentNetWorthUseCase: FakeObserveInvestmentNetWorthUseCase
-    private lateinit var fakeObserveInvestmentCategoriesUseCase: FakeObserveInvestmentCategoriesUseCase
     private lateinit var fakeObserveInvestmentAssetsUseCase: FakeObserveInvestmentAssetsUseCase
+    private lateinit var fakeObserveGroupedInvestmentCategoriesYearlyUseCase: FakeObserveGroupedInvestmentCategoriesYearlyUseCase
+    private lateinit var fakeObserveInvestmentCategoriesUseCase: FakeObserveInvestmentCategoriesUseCase
+    private lateinit var fakeObserveInvestmentNetWorthUseCase: FakeObserveInvestmentNetWorthUseCase
     private lateinit var fakeObserveInvestmentsFilteringUseCase: FakeObserveInvestmentsFilteringUseCase
 
     private lateinit var viewModel: InvestmentsViewModel
@@ -51,9 +53,10 @@ class InvestmentsViewModelTest {
 
         savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to null))
         fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsUseCase()
-        fakeObserveInvestmentNetWorthUseCase = FakeObserveInvestmentNetWorthUseCase()
-        fakeObserveInvestmentCategoriesUseCase = FakeObserveInvestmentCategoriesUseCase()
         fakeObserveInvestmentAssetsUseCase = FakeObserveInvestmentAssetsUseCase()
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase = FakeObserveGroupedInvestmentCategoriesYearlyUseCase()
+        fakeObserveInvestmentCategoriesUseCase = FakeObserveInvestmentCategoriesUseCase()
+        fakeObserveInvestmentNetWorthUseCase = FakeObserveInvestmentNetWorthUseCase()
         fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()
     }
 
@@ -65,9 +68,10 @@ class InvestmentsViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Loading)
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Loading)
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Loading)
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Loading)
         fakeObserveInvestmentAssetsUseCase.emit(Async.Loading)
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Loading)
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Loading)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
@@ -104,18 +108,32 @@ class InvestmentsViewModelTest {
         val fakeInvestments = listOf(
             GroupedItems(
                 "2025/12",
-                listOf("1500 USD"),
+                "1500 USD",
                 investments,
             )
         )
+        val fakeCategoriesMonthly = listOf(
+            GroupedItems(
+                group = "2025/12",
+                total = "1500 USD",
+                items = listOf(
+                    InvestmentCategory(
+                        id = "1",
+                        name = "etfs",
+                        total = "500 USD",
+                        investments = investments,
+                    )
+                )
+            )
+        )
         val fakeNetWorth = InvestmentNetWorth(
-            listOf("500 USD"),
+            total = "500 USD",
         )
         val fakeCategories = listOf(
             InvestmentCategory(
                 id = "1",
                 name = "etfs",
-                values = listOf("500 USD"),
+                total = "500 USD",
                 investments = investments,
             )
         )
@@ -135,9 +153,10 @@ class InvestmentsViewModelTest {
         )
 
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
         viewModel = createViewModel()
 
@@ -161,9 +180,10 @@ class InvestmentsViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Error)
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Error)
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Error)
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Error)
         fakeObserveInvestmentAssetsUseCase.emit(Async.Error)
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Error)
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Error)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -198,18 +218,32 @@ class InvestmentsViewModelTest {
         val fakeInvestments = listOf(
             GroupedItems(
                 "2025/12",
-                listOf("1500 USD"),
+                "1500 USD",
                 investments,
             )
         )
+        val fakeCategoriesMonthly = listOf(
+            GroupedItems(
+                group = "2025/12",
+                total = "1500 USD",
+                items = listOf(
+                    InvestmentCategory(
+                        id = "1",
+                        name = "etfs",
+                        total = "500 USD",
+                        investments = investments,
+                    )
+                )
+            )
+        )
         val fakeNetWorth = InvestmentNetWorth(
-            values = listOf("500 USD"),
+            total = "500 USD",
         )
         val fakeCategories = listOf(
             InvestmentCategory(
                 id = "1",
                 name = "etfs",
-                values = listOf("500 USD"),
+                total = "500 USD",
                 investments = investments,
             )
         )
@@ -225,9 +259,10 @@ class InvestmentsViewModelTest {
             )
         )
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -236,17 +271,19 @@ class InvestmentsViewModelTest {
         advanceUntilIdle()
 
         assertEquals("snp", fakeObserveGroupedInvestmentsUseCase.lastQuery)
-        assertEquals("snp", fakeObserveInvestmentNetWorthUseCase.lastQuery)
-        assertEquals("snp", fakeObserveInvestmentCategoriesUseCase.lastQuery)
+        assertEquals("snp", fakeObserveGroupedInvestmentCategoriesYearlyUseCase.lastQuery)
         assertEquals("snp", fakeObserveInvestmentAssetsUseCase.lastQuery)
+        assertEquals("snp", fakeObserveInvestmentCategoriesUseCase.lastQuery)
+        assertEquals("snp", fakeObserveInvestmentNetWorthUseCase.lastQuery)
     }
 
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(listOf()))
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(InvestmentNetWorth(listOf())))
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(InvestmentNetWorth(total = "")))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -263,9 +300,10 @@ class InvestmentsViewModelTest {
 
     private fun createViewModel() = InvestmentsViewModel(
         fakeObserveGroupedInvestmentsUseCase,
-        fakeObserveInvestmentNetWorthUseCase,
-        fakeObserveInvestmentCategoriesUseCase,
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase,
         fakeObserveInvestmentAssetsUseCase,
+        fakeObserveInvestmentCategoriesUseCase,
+        fakeObserveInvestmentNetWorthUseCase,
         fakeObserveInvestmentsFilteringUseCase,
         savedStateHandle
     )

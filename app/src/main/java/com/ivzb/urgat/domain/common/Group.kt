@@ -4,11 +4,11 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.Expense.Companion.format
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.investment.Investment.Companion.format
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
+import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
 import java.time.Year
@@ -74,6 +74,16 @@ object Group {
                 )
             }
 
+    fun groupInvestmentCategoriesYearly(investments: List<Investment>, random: () -> String): List<GroupedInvestmentCategories> =
+        byDateYearly(investments, Investment::date, Investment::total)
+            .map { (group, total, items) ->
+                GroupedItems(
+                    group = group,
+                    total = total,
+                    items = groupInvestments(items, random),
+                )
+            }
+
     fun groupInvestmentAssets(investments: List<Investment>, random: () -> String): List<InvestmentAsset> =
         investments
             .groupBy { Triple(it.name, it.category, it.currency) }
@@ -94,49 +104,38 @@ object Group {
             .sortedBy { it.name }
 
     fun groupInvestmentCategories(investments: List<Investment>, random: () -> String): List<InvestmentCategory> =
-        investments
-            .groupBy { it.category }
-            .map { (category, investments) ->
-                InvestmentCategory(
-                    id = random(),
-                    name = category,
-                    values = investments.format(),
-
-                    investments = investments,
-                )
-            }
-            .sortedBy { it.name }
+        groupInvestments(investments, random)
 
     fun groupInvestmentNetWorth(investments: List<Investment>): InvestmentNetWorth =
         InvestmentNetWorth(
-            values = investments.format(),
+            total = Investment.total(investments),
         )
 
     fun groupExpenseCategoriesMonthly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
         byDateMonthly(expenses, Expense::date, Expense::total)
-            .map { (group, _, items) ->
+            .map { (group, total, items) ->
                 GroupedItems(
                     group = group,
-                    total = items.sumOf { it.amount },
-                    items = items.group(random),
+                    total = total,
+                    items = groupExpenses(items, random),
                 )
             }
 
     fun groupExpenseCategoriesYearly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
         byDateYearly(expenses, Expense::date, Expense::total)
-            .map { (group, _, items) ->
+            .map { (group, total, items) ->
                 GroupedItems(
                     group = group,
-                    total = items.sumOf { it.amount },
-                    items = items.group(random),
+                    total = total,
+                    items = groupExpenses(items, random),
                 )
             }
 
     fun groupExpenseCategoriesAllTime(expenses: List<Expense>, random: () -> String): List<ExpenseCategory> =
-        expenses.group(random)
+        groupExpenses(expenses, random)
 
-    private fun List<Expense>.group(random: () -> String): List<ExpenseCategory> =
-        this
+    private fun groupExpenses(expenses: List<Expense>, random: () -> String): List<ExpenseCategory> =
+        expenses
             .groupBy { it.category }
             .map { (category, expenses) ->
                 ExpenseCategory(
@@ -148,4 +147,18 @@ object Group {
                 )
             }
             .sortedByDescending { it.value }
+
+    private fun groupInvestments(investments: List<Investment>, random: () -> String): List<InvestmentCategory> =
+        investments
+            .groupBy { it.category }
+            .map { (category, investments) ->
+                InvestmentCategory(
+                    id = random(),
+                    name = category,
+                    total = Investment.total(investments),
+
+                    investments = investments,
+                )
+            }
+            .sortedBy { it.name }
 }

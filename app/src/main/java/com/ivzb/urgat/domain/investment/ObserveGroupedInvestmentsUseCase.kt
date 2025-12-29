@@ -9,7 +9,7 @@ import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-typealias GroupedInvestments = GroupedItems<String, List<String>, Investment>
+typealias GroupedInvestments = GroupedItems<String, String, Investment>
 
 interface ObserveGroupedInvestmentsUseCase {
 

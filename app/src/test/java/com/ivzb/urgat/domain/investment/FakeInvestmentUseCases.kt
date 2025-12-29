@@ -133,6 +133,30 @@ class FakeObserveInvestmentAssetsUseCase : ObserveInvestmentAssetsUseCase {
 
 }
 
+class FakeObserveGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestmentCategoriesYearlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedInvestmentCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedInvestmentCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<String>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedInvestmentCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
 class FakeGetInvestmentUseCase : GetInvestmentUseCase {
 
     var toReturn: Investment? = null

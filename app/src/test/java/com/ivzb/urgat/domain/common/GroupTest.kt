@@ -9,7 +9,6 @@ import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.GroupedItems
 import com.ivzb.urgat.util.timestamp
 import java.math.BigDecimal
-import kotlin.math.exp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -150,9 +149,9 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentCategory(id = TEST_UUID, name = "etf", values = listOf("2,891.05 USD", "1,750.59 EUR"), investments = listOf(investments[3], investments[4], investments[7])),
-            InvestmentCategory(id = TEST_UUID, name = "gold", values = listOf("4,338.55 USD", "3,704.25 EUR"), investments = listOf(investments[5], investments[8])),
-            InvestmentCategory(id = TEST_UUID, name = "stocks", values = listOf("1,726.95 USD", "550.72 EUR"), investments = listOf(investments[0], investments[1], investments[2], investments[6])),
+            InvestmentCategory(id = TEST_UUID, name = "etf", total = "2,891.05 USD | 1,750.59 EUR", investments = listOf(investments[3], investments[4], investments[7])),
+            InvestmentCategory(id = TEST_UUID, name = "gold", total = "4,338.55 USD | 3,704.25 EUR", investments = listOf(investments[5], investments[8])),
+            InvestmentCategory(id = TEST_UUID, name = "stocks", total = "1,726.95 USD | 550.72 EUR", investments = listOf(investments[0], investments[1], investments[2], investments[6])),
         )
 
         val actual = Group.groupInvestmentCategories(investments, randomTestUUID)
@@ -174,7 +173,7 @@ class GroupTest {
             Investment("9", "Gold", BigDecimal("1"), BigDecimal("3704.25"), "gold", "EUR", timestamp(2025, 12, 18), false, timestamp(2025, 12, 18)),
         )
 
-        val expected = InvestmentNetWorth(values = listOf("8,956.55 USD", "6,005.56 EUR"))
+        val expected = InvestmentNetWorth(total = "8,956.55 USD | 6,005.56 EUR")
         val actual = Group.groupInvestmentNetWorth(investments)
 
         assertEquals(expected, actual)

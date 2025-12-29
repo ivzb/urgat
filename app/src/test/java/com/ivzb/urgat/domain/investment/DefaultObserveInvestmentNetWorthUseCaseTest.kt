@@ -54,7 +54,7 @@ class ObserveInvestmentNetWorthUseCaseTest {
 
         advanceUntilIdle()
 
-        val expected = InvestmentNetWorth(values = listOf("1,931.05 USD", "1,931.05 EUR"))
+        val expected = InvestmentNetWorth(total = "1,931.05 USD | 1,931.05 EUR")
 
         assertEquals(1, results.size)
         val first = results.first()

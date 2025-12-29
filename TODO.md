@@ -68,5 +68,3 @@
 - add system unlock with biometric/pin when opening the app
 - show weight transactions below the chart like expenses and investments
 - show expense categories as chips at the bottom of add expense
-- move current assets and categories to net worth
-- make categories tag grouped by month

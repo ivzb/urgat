@@ -39,6 +39,7 @@ import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateScreen
@@ -54,7 +55,6 @@ import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
-import kotlin.collections.forEach
 
 @Composable
 fun InvestmentsScreen(
@@ -153,6 +153,7 @@ private fun InvestmentsContent(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
     val expandedAssetIds = rememberSaveable { mutableStateSetOf<String>() }
     val expandedCategoryIds = rememberSaveable { mutableStateSetOf<String>() }
 
@@ -201,22 +202,25 @@ private fun InvestmentsContent(
                         onInvestmentClick = onInvestmentClick,
                     )
 
-                    InvestmentsPage.Assets -> assetsPage(
-                        assets = uiState.assets,
-                        expandedAssetIds = expandedAssetIds,
-                        onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
+                    InvestmentsPage.Yearly -> groupedCategoriesPage(
+                        categories = uiState.categoriesYearly,
+                        expandedCategoryIds = expandedYearlyIds,
+                        onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
                         onInvestmentClick = onInvestmentClick,
-                    )
-
-                    InvestmentsPage.Categories -> categoriesPage(
-                        categories = uiState.categories,
-                        expandedCategoryIds = expandedCategoryIds,
-                        onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
-                        onInvestmentClick = onInvestmentClick
                     )
 
                     InvestmentsPage.NetWorth -> netWorthPage(
                         netWorth = uiState.netWorth,
+
+                        categories = uiState.categories,
+                        expandedCategoryIds = expandedCategoryIds,
+                        onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
+
+                        assets = uiState.assets,
+                        expandedAssetIds = expandedAssetIds,
+                        onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
+
+                        onInvestmentClick = onInvestmentClick,
                     )
                 }
 
@@ -235,11 +239,11 @@ private fun LazyListScope.transactionsPage(
     investments: List<GroupedInvestments>,
     onInvestmentClick: (Investment) -> Unit,
 ) {
-    investments.forEachIndexed { index, (group, totals, investments) ->
+    investments.forEachIndexed { index, (group, total, investments) ->
         item {
             ItemHeaderSmall(
                 text = group,
-                total = totals.joinToString(" | "),
+                total = total,
                 modifier = Modifier
                     .paddingIf(index.isFirst(), bottom = dimensionResource(R.dimen.vertical_margin))
                     .paddingIf(!index.isFirst(), vertical = dimensionResource(R.dimen.vertical_margin))
@@ -259,34 +263,77 @@ private fun LazyListScope.transactionsPage(
     }
 }
 
-private fun LazyListScope.assetsPage(
-    assets: List<InvestmentAsset>,
-    expandedAssetIds: Set<String>,
-    onAssetClick: (String) -> Unit,
-    onInvestmentClick: (Investment) -> Unit,
-) {
-    assets.forEach { asset ->
-        item(key = asset.id) {
-            AssetItem(
-                asset = asset,
-                onClick = { onAssetClick(asset.id) },
-            )
-        }
-
-        val isExpanded = expandedAssetIds.contains(asset.id)
-
-        if (isExpanded) {
-            subInvestments(asset.investments, onInvestmentClick)
-        }
-    }
-}
-
-private fun LazyListScope.categoriesPage(
-    categories: List<InvestmentCategory>,
+private fun LazyListScope.groupedCategoriesPage(
+    categories: List<GroupedInvestmentCategories>,
     expandedCategoryIds: Set<String>,
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 ) {
+    categories.forEachIndexed { index, (group, total, categories) ->
+        item {
+            ItemHeaderSmall(
+                text = group,
+                total = total,
+                modifier = Modifier
+                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
+                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
+                    .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
+            )
+        }
+
+        categories.forEach { category ->
+            item(key = category.id) {
+                CategoryItem(
+                    category = category,
+                    onClick = { onCategoryClick(category.id) },
+                )
+            }
+
+            val isExpanded = expandedCategoryIds.contains(category.id)
+
+            if (isExpanded) {
+                subInvestments(category.investments, onInvestmentClick)
+            }
+        }
+    }
+}
+
+private fun LazyListScope.netWorthPage(
+    netWorth: InvestmentNetWorth?,
+
+    categories: List<InvestmentCategory>,
+    expandedCategoryIds: Set<String>,
+    onCategoryClick: (String) -> Unit,
+
+    assets: List<InvestmentAsset>,
+    expandedAssetIds: Set<String>,
+    onAssetClick: (String) -> Unit,
+
+    onInvestmentClick: (Investment) -> Unit,
+) {
+
+    item {
+        ItemHeaderSmall(
+            text = stringResource(R.string.net_worth),
+            modifier = Modifier
+                .padding(bottom = dimensionResource(R.dimen.list_item_padding))
+        )
+    }
+
+    if (netWorth != null) {
+        item {
+            InvestmentsNetWorth(netWorth)
+        }
+    }
+
+    item {
+        ItemHeaderSmall(
+            text = stringResource(R.string.categories),
+            modifier = Modifier
+                .padding(vertical = dimensionResource(R.dimen.list_item_padding))
+        )
+    }
+
     categories.forEach { category ->
         item(key = category.id) {
             CategoryItem(
@@ -301,14 +348,27 @@ private fun LazyListScope.categoriesPage(
             subInvestments(category.investments, onInvestmentClick)
         }
     }
-}
 
-private fun LazyListScope.netWorthPage(
-    netWorth: InvestmentNetWorth?,
-) {
-    if (netWorth != null) {
-        item {
-            InvestmentsNetWorth(netWorth)
+    item {
+        ItemHeaderSmall(
+            text = stringResource(R.string.assets),
+            modifier = Modifier
+                .padding(vertical = dimensionResource(R.dimen.list_item_padding))
+        )
+    }
+
+    assets.forEach { asset ->
+        item(key = asset.id) {
+            AssetItem(
+                asset = asset,
+                onClick = { onAssetClick(asset.id) },
+            )
+        }
+
+        val isExpanded = expandedAssetIds.contains(asset.id)
+
+        if (isExpanded) {
+            subInvestments(asset.investments, onInvestmentClick)
         }
     }
 }
@@ -386,7 +446,7 @@ private fun CategoryItem(
         textLeft = category.name,
         subTextLeft = "",
 
-        textRight = category.values.joinToString(" | "),
+        textRight = category.total,
         subTextRight = "",
 
         onClick = onClick,
@@ -401,7 +461,7 @@ private fun InvestmentsNetWorth(
         textLeft = stringResource(R.string.total),
         subTextLeft = "",
 
-        textRight = netWorth.values.joinToString(" | "),
+        textRight = netWorth.total,
         subTextRight = "",
 
         onClick = { /* NOOP */ },
@@ -438,7 +498,7 @@ private fun InvestmentsScreenEmptyPreview() {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
                 investments = listOf(),
-                netWorth = InvestmentNetWorth(values = listOf()),
+                netWorth = InvestmentNetWorth(total = ""),
                 categories = listOf(),
                 assets = listOf(),
                 filteringUiInfo = InvestmentsFilteringUiInfo(),

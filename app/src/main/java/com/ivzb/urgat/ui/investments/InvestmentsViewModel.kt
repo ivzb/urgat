@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.investments
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentCategoriesUseCase
@@ -19,9 +20,10 @@ import javax.inject.Inject
 @HiltViewModel
 class InvestmentsViewModel @Inject constructor(
     observeGroupedInvestmentsUseCase: ObserveGroupedInvestmentsUseCase,
-    observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
-    observeInvestmentCategoriesUseCase: ObserveInvestmentCategoriesUseCase,
+    observeGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestmentCategoriesYearlyUseCase,
     observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
+    observeInvestmentCategoriesUseCase: ObserveInvestmentCategoriesUseCase,
+    observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
     observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -32,9 +34,10 @@ class InvestmentsViewModel @Inject constructor(
 
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
         observeGroupedInvestmentsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
-        observeInvestmentNetWorthUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
-        observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeGroupedInvestmentCategoriesYearlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeInvestmentAssetsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeInvestmentNetWorthUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeInvestmentsFilteringUseCase(),
 
         onLoading = {
@@ -43,12 +46,13 @@ class InvestmentsViewModel @Inject constructor(
         onError = {
             InvestmentsUiState(hasError = true)
         },
-        onSuccess = { investments, netWorth, categories, assets, filtering ->
+        onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering ->
             InvestmentsUiState(
                 investments = investments,
-                netWorth = netWorth,
-                categories = categories,
+                categoriesYearly = categoriesYearly,
                 assets = assets,
+                categories = categories,
+                netWorth = netWorth,
                 filteringUiInfo = InvestmentsFilteringUiInfo(
                     filterMenuItems = filtering,
                 ),
