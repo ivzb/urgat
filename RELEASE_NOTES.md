@@ -1,3 +1,8 @@
+## Release notes 25.12.18
+
+New:
+- Easily expand to see grouped investments and expenses.
+
 ## Release notes 25.12.17
 
 Fixed:
