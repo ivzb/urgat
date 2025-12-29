@@ -87,6 +87,8 @@ object Group {
                     shares = investments.sumOf { it.shares },
                     marketValue = investments.sumOf { it.marketValue },
                     currency = currency,
+
+                    investments = investments,
                 )
             }
             .sortedBy { it.name }
@@ -99,6 +101,8 @@ object Group {
                     id = random(),
                     name = category,
                     values = investments.format(),
+
+                    investments = investments,
                 )
             }
             .sortedBy { it.name }
@@ -139,6 +143,8 @@ object Group {
                     id = random(),
                     name = category,
                     value = expenses.format(),
+
+                    expenses = expenses,
                 )
             }
             .sortedByDescending { it.value }

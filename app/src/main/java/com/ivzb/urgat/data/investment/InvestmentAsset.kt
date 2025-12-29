@@ -9,4 +9,6 @@ data class InvestmentAsset(
     val shares: BigDecimal,
     val marketValue: BigDecimal,
     val currency: String,
+
+    val investments: List<Investment>,
 )

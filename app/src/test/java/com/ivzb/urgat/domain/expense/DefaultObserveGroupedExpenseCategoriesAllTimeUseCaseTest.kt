@@ -41,16 +41,15 @@ class ObserveGroupedExpenseCategoriesAllTimeUseCaseTest {
         val searchQueryFlow = flowOf("coffee")
         val limit = 10
         val limitFlow = flowOf(limit)
-        val repositoryStream = flowOf(
-        listOf(
-                Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
-                Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
-                Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
-                Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
-                Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
-                Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
-            ),
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
         )
+        val repositoryStream = flowOf(expenses)
 
         every { expensesRepository.observe(limit, "coffee") } returns repositoryStream
 
@@ -59,11 +58,11 @@ class ObserveGroupedExpenseCategoriesAllTimeUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("304.27")),
-            ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("225.50")),
-            ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("120")),
-            ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("80")),
-            ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("25.5")),
+            ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("304.27"), expenses = listOf(expenses[4])),
+            ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("225.50"), expenses = listOf(expenses[1], expenses[5])),
+            ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("120"), expenses = listOf(expenses[0])),
+            ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("80"), expenses = listOf(expenses[2])),
+            ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("25.5"), expenses = listOf(expenses[3])),
         )
 
         assertEquals(1, results.size)

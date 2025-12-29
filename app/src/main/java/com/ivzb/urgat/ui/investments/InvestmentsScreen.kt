@@ -5,23 +5,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -44,8 +49,12 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.isFirst
+import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
+import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
+import kotlin.collections.forEach
 
 @Composable
 fun InvestmentsScreen(
@@ -144,6 +153,8 @@ private fun InvestmentsContent(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val expandedAssetIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedCategoryIds = rememberSaveable { mutableStateSetOf<String>() }
 
     Column {
         PrimaryScrollableTabRow(
@@ -192,10 +203,16 @@ private fun InvestmentsContent(
 
                     InvestmentsPage.Assets -> assetsPage(
                         assets = uiState.assets,
+                        expandedAssetIds = expandedAssetIds,
+                        onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
+                        onInvestmentClick = onInvestmentClick,
                     )
 
                     InvestmentsPage.Categories -> categoriesPage(
                         categories = uiState.categories,
+                        expandedCategoryIds = expandedCategoryIds,
+                        onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
+                        onInvestmentClick = onInvestmentClick
                     )
 
                     InvestmentsPage.NetWorth -> netWorthPage(
@@ -224,8 +241,8 @@ private fun LazyListScope.transactionsPage(
                 text = group,
                 total = totals.joinToString(" | "),
                 modifier = Modifier
-                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
-                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
+                    .paddingIf(index.isFirst(), bottom = dimensionResource(R.dimen.vertical_margin))
+                    .paddingIf(!index.isFirst(), vertical = dimensionResource(R.dimen.vertical_margin))
                     .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
             )
         }
@@ -244,27 +261,45 @@ private fun LazyListScope.transactionsPage(
 
 private fun LazyListScope.assetsPage(
     assets: List<InvestmentAsset>,
+    expandedAssetIds: Set<String>,
+    onAssetClick: (String) -> Unit,
+    onInvestmentClick: (Investment) -> Unit,
 ) {
-    items(
-        items = assets,
-        key = { asset -> asset.id }
-    ) { asset ->
-        AssetItem(
-            asset = asset,
-        )
+    assets.forEach { asset ->
+        item(key = asset.id) {
+            AssetItem(
+                asset = asset,
+                onClick = { onAssetClick(asset.id) },
+            )
+        }
+
+        val isExpanded = expandedAssetIds.contains(asset.id)
+
+        if (isExpanded) {
+            subInvestments(asset.investments, onInvestmentClick)
+        }
     }
 }
 
 private fun LazyListScope.categoriesPage(
     categories: List<InvestmentCategory>,
+    expandedCategoryIds: Set<String>,
+    onCategoryClick: (String) -> Unit,
+    onInvestmentClick: (Investment) -> Unit,
 ) {
-    items(
-        items = categories,
-        key = { category -> category.id }
-    ) { category ->
-        CategoryItem(
-            category = category,
-        )
+    categories.forEach { category ->
+        item(key = category.id) {
+            CategoryItem(
+                category = category,
+                onClick = { onCategoryClick(category.id) },
+            )
+        }
+
+        val isExpanded = expandedCategoryIds.contains(category.id)
+
+        if (isExpanded) {
+            subInvestments(category.investments, onInvestmentClick)
+        }
     }
 }
 
@@ -274,6 +309,38 @@ private fun LazyListScope.netWorthPage(
     if (netWorth != null) {
         item {
             InvestmentsNetWorth(netWorth)
+        }
+    }
+}
+
+private fun LazyListScope.subInvestments(
+    investments: List<Investment>,
+    onInvestmentClick: (Investment) -> Unit,
+) {
+    itemsIndexed(
+        investments,
+        key = { _, investment -> investment.id },
+    ) { index, investment ->
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen.horizontal_margin))
+                .paddingIf(
+                    condition = index.isFirst(),
+                    top = dimensionResource(R.dimen.expanded_group_vertical_margin)
+                )
+                .paddingIf(
+                    condition = index.isLast(investments.size),
+                    bottom = dimensionResource(R.dimen.expanded_group_vertical_margin)
+                ),
+            shadowElevation = 2.dp,
+        ) {
+
+            InvestmentItem(
+                investment = investment,
+                onInvestmentClick = onInvestmentClick,
+            )
         }
     }
 }
@@ -297,6 +364,7 @@ fun InvestmentItem(
 @Composable
 private fun AssetItem(
     asset: InvestmentAsset,
+    onClick: () -> Unit,
 ) {
     ListItem(
         textLeft = asset.name,
@@ -305,13 +373,14 @@ private fun AssetItem(
         textRight = asset.shares.toString(),
         subTextRight = "${asset.marketValue.format()} ${asset.currency}",
 
-        onClick = { /* NOOP */ }
+        onClick = onClick,
     )
 }
 
 @Composable
 private fun CategoryItem(
     category: InvestmentCategory,
+    onClick: () -> Unit,
 ) {
     ListItem(
         textLeft = category.name,
@@ -320,7 +389,7 @@ private fun CategoryItem(
         textRight = category.values.joinToString(" | "),
         subTextRight = "",
 
-        onClick = { /* NOOP */ },
+        onClick = onClick,
     )
 }
 

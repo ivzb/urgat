@@ -5,23 +5,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -45,8 +50,11 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.isFirst
+import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toLocalDate
+import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -147,6 +155,9 @@ internal fun ExpensesContent(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
+    val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedAllTimeIds = rememberSaveable { mutableStateSetOf<String>() }
 
     Column {
         PrimaryScrollableTabRow(
@@ -195,14 +206,23 @@ internal fun ExpensesContent(
 
                     ExpensesPage.Monthly -> groupedCategoriesPage(
                         categories = uiState.categoriesMonthly,
+                        expandedCategoryIds = expandedMonthlyIds,
+                        onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
+                        onExpenseClick = onExpenseClick,
                     )
 
                     ExpensesPage.Yearly -> groupedCategoriesPage(
                         categories = uiState.categoriesYearly,
+                        expandedCategoryIds = expandedYearlyIds,
+                        onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
+                        onExpenseClick = onExpenseClick,
                     )
 
                     ExpensesPage.AllTime -> categoriesPage(
                         categories = uiState.categoriesAllTime,
+                        expandedCategoryIds = expandedAllTimeIds,
+                        onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
+                        onExpenseClick = onExpenseClick,
                     )
                 }
 
@@ -253,6 +273,9 @@ private fun LazyListScope.transactionsPage(
 
 private fun LazyListScope.groupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
+    expandedCategoryIds: Set<String>,
+    onCategoryClick: (String) -> Unit,
+    onExpenseClick: (Expense) -> Unit,
 ) {
 
     categories.forEachIndexed { index, (group, total, categories) ->
@@ -273,21 +296,67 @@ private fun LazyListScope.groupedCategoriesPage(
             )
         }
 
-        categoriesPage(categories = categories)
+        categoriesPage(
+            categories = categories,
+            expandedCategoryIds = expandedCategoryIds,
+            onCategoryClick = onCategoryClick,
+            onExpenseClick = onExpenseClick,
+        )
     }
 }
 
 private fun LazyListScope.categoriesPage(
     categories: List<ExpenseCategory>,
+    expandedCategoryIds: Set<String>,
+    onCategoryClick: (String) -> Unit,
+    onExpenseClick: (Expense) -> Unit,
 ) {
 
-    items(
-        items = categories,
-        key = { category -> category.id },
-    ) { category ->
-        CategoryItem(
-            category = category,
-        )
+    categories.forEach { category ->
+        item(key = category.id) {
+            CategoryItem(
+                category = category,
+                onClick = { onCategoryClick(category.id) },
+            )
+        }
+
+        val isExpanded = expandedCategoryIds.contains(category.id)
+
+        if (isExpanded) {
+            subExpenses(category.expenses, onExpenseClick)
+        }
+    }
+}
+
+private fun LazyListScope.subExpenses(
+    expenses: List<Expense>,
+    onExpenseClick: (Expense) -> Unit,
+) {
+    itemsIndexed(
+        expenses,
+        key = { _, expense -> expense.id },
+    ) { index, expense ->
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(R.dimen.horizontal_margin))
+                .paddingIf(
+                    condition = index.isFirst(),
+                    top = dimensionResource(R.dimen.expanded_group_vertical_margin)
+                )
+                .paddingIf(
+                    condition = index.isLast(expenses.size),
+                    bottom = dimensionResource(R.dimen.expanded_group_vertical_margin)
+                ),
+            shadowElevation = 2.dp,
+        ) {
+
+            ExpenseItem(
+                expense = expense,
+                onExpenseClick = onExpenseClick,
+            )
+        }
     }
 }
 
@@ -319,6 +388,7 @@ fun ExpenseItem(
 @Composable
 private fun CategoryItem(
     category: ExpenseCategory,
+    onClick: () -> Unit,
 ) {
     ListItem(
         textLeft = category.name,
@@ -333,7 +403,7 @@ private fun CategoryItem(
             0xFF4CAF50
         }),
 
-        onClick = { /* NOOP */ },
+        onClick = onClick,
     )
 }
 

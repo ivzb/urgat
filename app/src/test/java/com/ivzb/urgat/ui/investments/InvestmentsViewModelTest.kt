@@ -88,23 +88,24 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
+        val investments = listOf(
+            Investment(
+                "1",
+                "SNP 500",
+                500.toBigDecimal(),
+                300.toBigDecimal(),
+                "etfs",
+                "USD",
+                1L,
+                false,
+                1L
+            )
+        )
         val fakeInvestments = listOf(
             GroupedItems(
                 "2025/12",
                 listOf("1500 USD"),
-                listOf(
-                    Investment(
-                        "1",
-                        "SNP 500",
-                        500.toBigDecimal(),
-                        300.toBigDecimal(),
-                        "etfs",
-                        "USD",
-                        1L,
-                        false,
-                        1L
-                    )
-                )
+                investments,
             )
         )
         val fakeNetWorth = InvestmentNetWorth(
@@ -115,6 +116,7 @@ class InvestmentsViewModelTest {
                 id = "1",
                 name = "etfs",
                 values = listOf("500 USD"),
+                investments = investments,
             )
         )
         val fakeAssets = listOf(
@@ -125,6 +127,7 @@ class InvestmentsViewModelTest {
                 shares = 500.toBigDecimal(),
                 marketValue = 500.toBigDecimal(),
                 currency = "USD",
+                investments = investments,
             )
         )
         val fakeInvestmentsFiltering = listOf(
@@ -179,23 +182,24 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
+        val investments = listOf(
+            Investment(
+                "1",
+                "SNP 500",
+                500.toBigDecimal(),
+                300.toBigDecimal(),
+                "etfs",
+                "USD",
+                1L,
+                false,
+                1L
+            )
+        )
         val fakeInvestments = listOf(
             GroupedItems(
                 "2025/12",
                 listOf("1500 USD"),
-                listOf(
-                    Investment(
-                        "1",
-                        "SNP 500",
-                        500.toBigDecimal(),
-                        300.toBigDecimal(),
-                        "etfs",
-                        "USD",
-                        1L,
-                        false,
-                        1L
-                    )
-                )
+                investments,
             )
         )
         val fakeNetWorth = InvestmentNetWorth(
@@ -206,6 +210,7 @@ class InvestmentsViewModelTest {
                 id = "1",
                 name = "etfs",
                 values = listOf("500 USD"),
+                investments = investments,
             )
         )
         val fakeAssets = listOf(
@@ -216,6 +221,7 @@ class InvestmentsViewModelTest {
                 shares = 500.toBigDecimal(),
                 marketValue = 500.toBigDecimal(),
                 currency = "USD",
+                investments = investments,
             )
         )
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))

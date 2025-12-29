@@ -6,4 +6,6 @@ data class ExpenseCategory(
     val id: String,
     val name: String,
     val value: BigDecimal,
+
+    val expenses: List<Expense>,
 )
