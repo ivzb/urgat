@@ -1,3 +1,8 @@
+## Release notes 25.12.20
+
+New:
+- Animated Splash Screen
+
 ## Release notes 25.12.19
 
 New:
