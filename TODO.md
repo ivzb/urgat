@@ -10,6 +10,7 @@
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - add import and export to screenshot tests
+- add splash screen to screenshots tests
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
@@ -68,3 +69,6 @@
 - add system unlock with biometric/pin when opening the app
 - show weight transactions below the chart like expenses and investments
 - show expense categories as chips at the bottom of add expense
+- write URGAT in the splash screen 3d animation
+- change current loading indicator with the splash 3d animation
+- check if it's possible to lazy load Library and Finance tabs while Splash is showing

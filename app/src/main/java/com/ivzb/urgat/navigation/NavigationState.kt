@@ -73,6 +73,7 @@ class NavigationState(
             val currentStack = backStacks[topLevelRoute]
             return currentStack?.size == 1
         }
+
 }
 
 /**

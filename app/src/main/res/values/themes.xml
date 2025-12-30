@@ -3,4 +3,11 @@
 <resources>
 
     <style name="Theme.Urgat" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.Urgat.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="windowSplashScreenBackground">@color/background</item>
+        <item name="postSplashScreenTheme">@style/Theme.Urgat</item>
+    </style>
+
 </resources>
