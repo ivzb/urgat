@@ -1,3 +1,8 @@
+## Release notes 25.12.21
+
+Improved:
+- Solid 3d animation
+
 ## Release notes 25.12.20
 
 New:
