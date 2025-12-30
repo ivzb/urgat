@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.splash
 
+import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,10 +16,15 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 @Composable
 fun SplashScreen(
@@ -28,7 +34,11 @@ fun SplashScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    SplashScreenContent(modifier)
+    val context = LocalContext.current
+    val model = read3dModel(context, "penger.obj")
+
+    SplashScreenContent(CUBE_MODEL, modifier)
+//    SplashScreenContent(model, modifier)
 
     viewModel.onIntent(SplashIntent.Initialize)
 
@@ -39,8 +49,46 @@ fun SplashScreen(
     }
 }
 
+fun read3dModel(context: Context, fileName: String): Model3d {
+    val modelContent = readObjFromAssets(context, "models_3d/$fileName")
+        .split("\n")
+        .filter { it.isNotBlank() }
+        .map { it.split(" ") }
+
+    val vertices = modelContent
+        .filter {
+            it[0] == "v"
+        }
+        .map {
+            val (x, y, z) = it.drop(1).map { it.toFloat() }
+            Point3d(x, y, z)
+        }
+
+    val faces = modelContent
+        .filter {
+            it[0] == "f"
+        }
+        .map {
+            it.drop(1).map { it.split('/')[0].toInt() - 1 }.take(3)
+        }
+
+    return Model3d(
+        vertices = vertices,
+        faces = faces,
+    )
+}
+
+fun readObjFromAssets(context: Context, fileName: String): String {
+    return context.assets.open(fileName).use { inputStream ->
+        BufferedReader(InputStreamReader(inputStream)).use { reader ->
+            reader.readText()
+        }
+    }
+}
+
 @Composable
 private fun SplashScreenContent(
+    model: Model3d,
     modifier: Modifier = Modifier,
 ) {
     var dz by remember { mutableFloatStateOf(1f) }
@@ -49,6 +97,7 @@ private fun SplashScreenContent(
 
     val backgroundColor = MaterialTheme.colorScheme.background
     val foregroundColor = MaterialTheme.colorScheme.onBackground
+    val primaryColor = MaterialTheme.colorScheme.primary
 
     LaunchedEffect(Unit) {
         val dt = 1f / fps
@@ -69,15 +118,15 @@ private fun SplashScreenContent(
     }
 
     fun DrawScope.point(point: Point2d) {
-        val SIZE = 20f
+        val size = 20f
 
         drawRect(
             color = foregroundColor,
             topLeft = Offset(
-                x = point.x - SIZE / 2,
-                y = point.y - SIZE / 2,
+                x = point.x - size / 2,
+                y = point.y - size / 2,
             ),
-            size = Size(SIZE, SIZE),
+            size = Size(size, size),
         )
     }
 
@@ -89,11 +138,34 @@ private fun SplashScreenContent(
             strokeWidth = 3f
         )
     }
+    
+    fun DrawScope.fillFace(face: List<Int>, model: Model3d, dz: Float, angle: Float, color: Color) {
+        val path = Path().apply {
+            val p1 = model.vertices[face[0]].transform(angle, dz, size)
+            moveTo(p1.x, p1.y)
+
+            for (i in 0 until face.size) {
+                val p2 = model.vertices[face[(i + 1) % face.size]].transform(angle, dz, size)
+                lineTo(p2.x, p2.y)
+            }
+
+            close()
+        }
+
+        drawPath(
+            path = path,
+            color = color.copy(alpha = 0.5f)
+        )
+    }
 
     fun DrawScope.frame(dz: Float, angle: Float) {
         clear()
 
-        vertices.forEach { p ->
+        model.faces.forEach { face ->
+            fillFace(face, model, dz, angle, primaryColor)
+        }
+
+        model.vertices.forEach { p ->
 //            point(p
 //                .rotate_xz(angle)
 //                .translate_z(dz)
@@ -102,19 +174,10 @@ private fun SplashScreenContent(
 //            )
         }
 
-        faces.forEach { face ->
+        model.faces.forEach { face ->
             for (i in 0 until face.size) {
-                val p1 = vertices[face[i]]
-                    .rotateXZ(angle)
-                    .translateZ(dz)
-                    .project()
-                    .screen(size)
-
-                val p2 = vertices[face[(i + 1) % face.size]]
-                    .rotateXZ(angle)
-                    .translateZ(dz)
-                    .project()
-                    .screen(size)
+                val p1 = model.vertices[face[i]].transform(angle, dz, size)
+                val p2 = model.vertices[face[(i + 1) % face.size]].transform(angle, dz, size)
 
                 line(
                     p1 = p1,
@@ -135,6 +198,7 @@ private fun SplashScreenContent(
 
 }
 
+data class Model3d(val vertices: List<Point3d>, val faces: List<List<Int>>)
 
 data class Point2d(val x: Float, val y: Float) {
 
@@ -149,6 +213,15 @@ data class Point2d(val x: Float, val y: Float) {
 }
 
 data class Point3d(val x: Float, val y: Float, val z: Float) {
+
+    fun transform(angle: Float, dz: Float, size: Size): Point2d {
+        return rotateXZ(angle)
+//            .rotateXY(angle)
+            .rotateYZ(-angle)
+            .translateZ(dz)
+            .project()
+            .screen(size)
+    }
 
     fun project(): Point2d {
         return Point2d(
@@ -173,33 +246,62 @@ data class Point3d(val x: Float, val y: Float, val z: Float) {
             z = x * sin + z * cos,
         )
     }
+
+    fun rotateXY(angle: Float): Point3d {
+        val cos = kotlin.math.cos(angle)
+        val sin = kotlin.math.sin(angle)
+
+        return Point3d(
+            x = x * cos - y * sin,
+            y = x * sin + y * cos,
+            z = z,
+        )
+    }
+
+    fun rotateYZ(angle: Float): Point3d {
+        val cos = kotlin.math.cos(angle)
+        val sin = kotlin.math.sin(angle)
+
+        return Point3d(
+            x = x,
+            y = y * cos - z * sin,
+            z = y * sin + z * cos,
+        )
+    }
 }
 
-val vertices = listOf(
-    Point3d(0.25f, 0.25f, 0.25f),
-    Point3d(-0.25f, 0.25f, 0.25f),
-    Point3d(-0.25f, -0.25f, 0.25f),
-    Point3d(0.25f, -0.25f, 0.25f),
+val CUBE_MODEL = Model3d(
+    vertices = listOf(
+        Point3d(0.25f, 0.25f, 0.25f),
+        Point3d(-0.25f, 0.25f, 0.25f),
+        Point3d(-0.25f, -0.25f, 0.25f),
+        Point3d(0.25f, -0.25f, 0.25f),
 
-    Point3d(0.25f, 0.25f, -0.25f),
-    Point3d(-0.25f, 0.25f, -0.25f),
-    Point3d(-0.25f, -0.25f, -0.25f),
-    Point3d(0.25f, -0.25f, -0.25f),
-)
+        Point3d(0.25f, 0.25f, -0.25f),
+        Point3d(-0.25f, 0.25f, -0.25f),
+        Point3d(-0.25f, -0.25f, -0.25f),
+        Point3d(0.25f, -0.25f, -0.25f),
+    ),
 
-val faces = listOf(
-    listOf(0, 1, 2, 3),
-    listOf(4, 5, 6, 7),
-    listOf(0, 4),
-    listOf(1, 5),
-    listOf(2, 6),
-    listOf(3, 7),
+    faces = listOf(
+        listOf(0, 1, 2, 3),
+        listOf(4, 5, 6, 7),
+        listOf(0, 1, 5, 4),
+        listOf(0, 3, 7, 4),
+        listOf(2, 3, 7, 6),
+        listOf(2, 6, 5, 1),
+
+//        listOf(0, 4),
+//        listOf(1, 5),
+//        listOf(2, 6),
+//        listOf(3, 7),
+    ),
 )
 
 @Preview
 @Composable
 fun CanvasScreenPreview() {
     UrgatTheme {
-        SplashScreenContent()
+        SplashScreenContent(CUBE_MODEL)
     }
 }
