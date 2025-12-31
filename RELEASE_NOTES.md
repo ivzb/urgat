@@ -1,3 +1,8 @@
+## Release notes 25.12.22
+
+New:
+- Loading indicator is now 3d animation
+
 ## Release notes 25.12.21
 
 Improved:
