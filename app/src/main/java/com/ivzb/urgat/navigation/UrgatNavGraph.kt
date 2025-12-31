@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.navigation3.ui.NavDisplay
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.splash.SplashRoute
+import com.ivzb.urgat.ui.library.LibraryRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -28,10 +28,9 @@ import kotlinx.coroutines.launch
 fun UrgatNavGraph(
     modifier: Modifier = Modifier,
 ) {
-    val topLevelRoutes = BOTTOM_NAVIGATION_SCREENS.map { it.route } + SplashRoute
     val navigationState = rememberNavigationState(
-        startRoute = SplashRoute,
-        topLevelRoutes = topLevelRoutes.toSet()
+        startRoute = LibraryRoute,
+        topLevelRoutes = BOTTOM_NAVIGATION_SCREENS.map { it.route }.toSet()
     )
     val navigator = remember { UrgatNavigator(navigationState) }
     val navActions = remember(navigator) { UrgatNavActions(navigator) }

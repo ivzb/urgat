@@ -26,4 +26,5 @@
     <dimen name="drawer_section_title_padding">16dp</dimen>
     <dimen name="drawer_divider_padding">8dp</dimen>
     <dimen name="expanded_group_vertical_margin">8dp</dimen>
+    <dimen name="loading_canvas_3d_padding">64dp</dimen>
 </resources>

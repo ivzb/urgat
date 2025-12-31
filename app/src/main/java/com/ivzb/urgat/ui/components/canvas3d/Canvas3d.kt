@@ -1,10 +1,10 @@
-package com.ivzb.urgat.ui.splash
+package com.ivzb.urgat.ui.components.canvas3d
 
 import android.content.Context
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,34 +19,34 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.unit.sp
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
-fun SplashScreen(
-    viewModel: SplashViewModel,
-    onComplete: () -> Unit,
+fun Canvas3d(
+    text: String,
+    textStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     val context = LocalContext.current
     val model = read3dModel(context, "penger.obj")
 
-    SplashScreenContent(CUBE_MODEL, modifier)
-//    SplashScreenContent(model, modifier)
-
-    viewModel.onIntent(SplashIntent.Initialize)
-
-    LaunchedEffect(uiState.isComplete) {
-        if (uiState.isComplete) {
-            onComplete()
-        }
-    }
+    Canvas3dContent(
+        model = CUBE_MODEL,
+        text = text,
+        textStyle = textStyle,
+        modifier = modifier
+    )
 }
 
 fun read3dModel(context: Context, fileName: String): Model3d {
@@ -87,8 +87,10 @@ fun readObjFromAssets(context: Context, fileName: String): String {
 }
 
 @Composable
-private fun SplashScreenContent(
+private fun Canvas3dContent(
     model: Model3d,
+    text: String,
+    textStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
     var dz by remember { mutableFloatStateOf(1f) }
@@ -98,6 +100,8 @@ private fun SplashScreenContent(
     val backgroundColor = MaterialTheme.colorScheme.background
     val foregroundColor = MaterialTheme.colorScheme.onBackground
     val primaryColor = MaterialTheme.colorScheme.primary
+
+    val textMeasurer = rememberTextMeasurer()
 
     LaunchedEffect(Unit) {
         val dt = 1f / fps
@@ -166,12 +170,7 @@ private fun SplashScreenContent(
         }
 
         model.vertices.forEach { p ->
-//            point(p
-//                .rotate_xz(angle)
-//                .translate_z(dz)
-//                .project()
-//                .screen(size)
-//            )
+//            point(p.transform(angle, dz, size))
         }
 
         model.faces.forEach { face ->
@@ -185,11 +184,24 @@ private fun SplashScreenContent(
                 )
             }
         }
+
+        val textLayoutResult = textMeasurer.measure(
+            text = text,
+            style = textStyle,
+        )
+
+        drawText(
+            textLayoutResult = textLayoutResult,
+            topLeft = Offset(
+                x = (size.width / 2) - (textLayoutResult.size.width / 2),
+                y = (size.height * 0.8f),
+            )
+        )
     }
 
     Canvas(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(backgroundColor)
             .aspectRatio(1f)
     ) {
@@ -237,8 +249,8 @@ data class Point3d(val x: Float, val y: Float, val z: Float) {
     }
 
     fun rotateXZ(angle: Float): Point3d {
-        val cos = kotlin.math.cos(angle)
-        val sin = kotlin.math.sin(angle)
+        val cos = cos(angle)
+        val sin = sin(angle)
 
         return Point3d(
             x = x * cos - z * sin,
@@ -248,8 +260,8 @@ data class Point3d(val x: Float, val y: Float, val z: Float) {
     }
 
     fun rotateXY(angle: Float): Point3d {
-        val cos = kotlin.math.cos(angle)
-        val sin = kotlin.math.sin(angle)
+        val cos = cos(angle)
+        val sin = sin(angle)
 
         return Point3d(
             x = x * cos - y * sin,
@@ -259,8 +271,8 @@ data class Point3d(val x: Float, val y: Float, val z: Float) {
     }
 
     fun rotateYZ(angle: Float): Point3d {
-        val cos = kotlin.math.cos(angle)
-        val sin = kotlin.math.sin(angle)
+        val cos = cos(angle)
+        val sin = sin(angle)
 
         return Point3d(
             x = x,
@@ -272,6 +284,7 @@ data class Point3d(val x: Float, val y: Float, val z: Float) {
 
 val CUBE_MODEL = Model3d(
     vertices = listOf(
+        // cube
         Point3d(0.25f, 0.25f, 0.25f),
         Point3d(-0.25f, 0.25f, 0.25f),
         Point3d(-0.25f, -0.25f, 0.25f),
@@ -281,15 +294,52 @@ val CUBE_MODEL = Model3d(
         Point3d(-0.25f, 0.25f, -0.25f),
         Point3d(-0.25f, -0.25f, -0.25f),
         Point3d(0.25f, -0.25f, -0.25f),
+
+        // U letter
+//        Point3d(-0.15f, 0.15f, 0.05f),
+//        Point3d(-0.05f, 0.15f, 0.05f),
+//        Point3d(-0.15f, -0.15f, 0.05f),
+//        Point3d(-0.05f, -0.05f, 0.05f),
+//
+//        Point3d(0.15f, 0.15f, 0.05f),
+//        Point3d(0.05f, 0.15f, 0.05f),
+//        Point3d(0.15f, -0.15f, 0.05f),
+//        Point3d(0.05f, -0.05f, 0.05f),
+//
+//        Point3d(-0.15f, 0.15f, -0.05f),
+//        Point3d(-0.05f, 0.15f, -0.05f),
+//        Point3d(-0.15f, -0.15f, -0.05f),
+//        Point3d(-0.05f, -0.05f, -0.05f),
+//
+//        Point3d(0.15f, 0.15f, -0.05f),
+//        Point3d(0.05f, 0.15f, -0.05f),
+//        Point3d(0.15f, -0.15f, -0.05f),
+//        Point3d(0.05f, -0.05f, -0.05f),
+
     ),
 
     faces = listOf(
+        // cube
         listOf(0, 1, 2, 3),
         listOf(4, 5, 6, 7),
+
         listOf(0, 1, 5, 4),
         listOf(0, 3, 7, 4),
         listOf(2, 3, 7, 6),
         listOf(2, 6, 5, 1),
+
+        // U letter
+//        listOf(8, 9, 11, 15, 13, 12, 14, 10),
+//        listOf(16, 17, 19, 23, 21, 20, 22, 18),
+//
+//        listOf(8, 9, 17, 16),
+//        listOf(8, 10, 18, 16),
+//        listOf(14, 10, 18, 22),
+//        listOf(14, 22, 20, 12),
+//        listOf(12, 20, 21, 13),
+//        listOf(13, 21, 23, 15),
+//        listOf(15, 23, 19, 11),
+//        listOf(11, 19, 17, 9),
 
 //        listOf(0, 4),
 //        listOf(1, 5),
@@ -300,8 +350,13 @@ val CUBE_MODEL = Model3d(
 
 @Preview
 @Composable
-fun CanvasScreenPreview() {
+fun Canvas3dContentPreview() {
     UrgatTheme {
-        SplashScreenContent(CUBE_MODEL)
+        Canvas3dContent(
+            model = CUBE_MODEL,
+            text = "Loading",
+            textStyle = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+        )
     }
 }
