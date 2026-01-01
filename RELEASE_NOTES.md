@@ -1,3 +1,13 @@
+## Release notes 26.01.00
+
+New:
+- You can now see weight transactions listed below the chart, just like expenses and investments.
+
+## Release notes 26.1.0
+
+New:
+- You can now see weight transactions listed below the chart, just like expenses and investments.
+
 ## Release notes 25.12.22
 
 New:
