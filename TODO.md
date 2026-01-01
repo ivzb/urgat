@@ -10,6 +10,7 @@
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - add import and export to screenshot tests
+- rename track weight to add weight
 
 ## Improvements
 - allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
@@ -66,5 +67,5 @@
 - calculate current price of assets based on latest transaction market price
 - handle share link to Urgat and save it
 - add system unlock with biometric/pin when opening the app
-- show weight transactions below the chart like expenses and investments
 - show expense categories as chips at the bottom of add expense
+- make expenses chart like github contributions

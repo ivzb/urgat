@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,7 +23,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -32,18 +32,22 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.ItemHeaderLarge
+import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.NavigationScaffold
-import com.ivzb.urgat.ui.components.charts.LineChart
-import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.weights.WeightItem
+import com.ivzb.urgat.ui.weights.WeightsChart
 import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 
 @Composable
 fun WellbeingScreen(
     viewModel: WellbeingViewModel,
+
     onTrackWeight: () -> Unit,
+    onSeeAllWeights: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
+
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
@@ -53,6 +57,10 @@ fun WellbeingScreen(
     WellbeingScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
+
+        onSeeAllWeights = onSeeAllWeights,
+        onWeightClick = onWeightClick,
+
         navigator = navigator,
         modifier = modifier
     )
@@ -74,17 +82,20 @@ fun WellbeingScreen(
     uiState: WellbeingUiState,
     onIntent: (WellbeingIntent) -> Unit,
 
+    onSeeAllWeights: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
+
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
 
     NavigationScaffold(
         selectedRoute = WellbeingRoute,
-        onSearchQueryChanged = { onIntent(WellbeingIntent.SearchQueryChanged(it)) },
+        onSearchQueryChanged = { /* NOOP */ },
         fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
-        navigator = navigator,
         withTopAppBarActions = false,
+        navigator = navigator,
         modifier = modifier
     ) {
 
@@ -107,6 +118,8 @@ fun WellbeingScreen(
                     weights = uiState.weights,
                     weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
                     onTrackWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
+                    onSeeAllWeights = onSeeAllWeights,
+                    onWeightClick = onWeightClick,
                 )
             }
         }
@@ -117,7 +130,11 @@ fun WellbeingScreen(
 private fun WellbeingContent(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
+
     onTrackWeight: () -> Unit,
+    onSeeAllWeights: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
 
@@ -128,6 +145,8 @@ private fun WellbeingContent(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onTrackWeight = onTrackWeight,
+            onSeeAllWeights = onSeeAllWeights,
+            onWeightClick = onWeightClick,
             modifier = modifier,
         )
     } else {
@@ -135,6 +154,8 @@ private fun WellbeingContent(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onTrackWeight = onTrackWeight,
+            onSeeAllWeights = onSeeAllWeights,
+            onWeightClick = onWeightClick,
             modifier = modifier,
         )
     }
@@ -144,7 +165,11 @@ private fun WellbeingContent(
 private fun WellbeingContentPortrait(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
+
     onTrackWeight: () -> Unit,
+    onSeeAllWeights: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
@@ -163,6 +188,8 @@ private fun WellbeingContentPortrait(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onTrackWeight = onTrackWeight,
+            onSeeAllWeights = onSeeAllWeights,
+            onWeightClick = onWeightClick,
         )
 
         item {
@@ -178,7 +205,11 @@ private fun WellbeingContentPortrait(
 private fun WellbeingContentLandscape(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
+
     onTrackWeight: () -> Unit,
+    onSeeAllWeights: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
@@ -205,6 +236,8 @@ private fun WellbeingContentLandscape(
                 weights = weights,
                 weightsFilteringUiInfo = weightsFilteringUiInfo,
                 onTrackWeight = onTrackWeight,
+                onSeeAllWeights = onSeeAllWeights,
+                onWeightClick = onWeightClick,
             )
 
             item {
@@ -234,6 +267,8 @@ private fun LazyListScope.itemWeights(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
     onTrackWeight: () -> Unit,
+    onSeeAllWeights: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
 ) {
     when {
         weights.isEmpty() -> {
@@ -249,38 +284,33 @@ private fun LazyListScope.itemWeights(
         }
 
         else -> {
-            itemWeightsChart(
+            item {
+                ItemHeaderWithSeeAll(
+                    title = stringResource(weightsFilteringUiInfo.currentFilteringLabel),
+                    onSeeAllClick = onSeeAllWeights,
+                )
+            }
+
+            item {
+                WeightsChart(
+                    items = weights,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(dimensionResource(R.dimen.weights_chart_height))
+                )
+            }
+
+            items(
                 items = weights,
-                weightsFilteringUiInfo = weightsFilteringUiInfo,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-            )
+                key = { weight -> weight.id },
+            ) { weight ->
+
+                WeightItem(
+                    weight = weight,
+                    onWeightClick = onWeightClick,
+                )
+            }
         }
-    }
-}
-
-private fun LazyListScope.itemWeightsChart(
-    items: List<Weight>,
-    weightsFilteringUiInfo: WeightsFilteringUiInfo,
-    modifier: Modifier = Modifier
-) {
-
-    item {
-        ItemHeaderLarge(text = stringResource(weightsFilteringUiInfo.currentFilteringLabel))
-    }
-
-    item {
-        Spacer(modifier = Modifier
-            .height(dimensionResource(R.dimen.vertical_margin))
-        )
-    }
-
-    item {
-        LineChart(
-            items = items.map { LineChartItem(it.value.toFloat(), it.date) },
-            modifier = modifier
-        )
     }
 }
 
@@ -297,6 +327,8 @@ private fun WellbeingScreenPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
+            onSeeAllWeights = {},
+            onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -316,6 +348,8 @@ private fun WellbeingScreenEmptyPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
+            onSeeAllWeights = {},
+            onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -335,6 +369,8 @@ private fun WellbeingScreenLoadingPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
+            onSeeAllWeights = {},
+            onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -354,6 +390,8 @@ private fun WellbeingScreenErrorPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
+            onSeeAllWeights = {},
+            onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )

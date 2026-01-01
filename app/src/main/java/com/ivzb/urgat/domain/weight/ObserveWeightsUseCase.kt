@@ -23,7 +23,6 @@ class DefaultObserveWeightsUseCase @Inject constructor(
 
     private val observeUseCase = ObserveUseCase<Weight, Unit>(
         repository = repository,
-        transform = ::transform,
     )
 
     override fun invoke(
@@ -31,17 +30,5 @@ class DefaultObserveWeightsUseCase @Inject constructor(
         filterTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<Weight>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
-
-    companion object {
-
-        private fun transform(items: List<Weight>): List<Weight> =
-            items
-                .groupBy { it.date / MILLISECONDS_PER_DAY }
-                .map { (_, items) -> items.first() }
-                .sortedBy { it.date }
-
-
-        private const val MILLISECONDS_PER_DAY = 86_400_000L
-    }
 
 }

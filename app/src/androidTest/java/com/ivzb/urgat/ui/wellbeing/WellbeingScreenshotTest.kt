@@ -57,8 +57,10 @@ class WellbeingScreenshotTest: ScreenshotTest() {
                     uiState = uiState,
                     onIntent = {},
 
-                    navigator = FakeNavigator(),
+                    onSeeAllWeights = {},
+                    onWeightClick = {},
 
+                    navigator = FakeNavigator(),
                     modifier = Modifier,
                 )
             }

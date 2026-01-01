@@ -27,4 +27,5 @@
     <dimen name="drawer_divider_padding">8dp</dimen>
     <dimen name="expanded_group_vertical_margin">8dp</dimen>
     <dimen name="loading_canvas_3d_padding">64dp</dimen>
+    <dimen name="weights_chart_height">300dp</dimen>
 </resources>

@@ -12,6 +12,8 @@ fun EntryProviderScope<NavKey>.wellbeingEntry(navigator: Navigator, navActions: 
             viewModel = hiltViewModel(),
 
             onTrackWeight = { navActions.navigateToTrackWeight() },
+            onSeeAllWeights = { navActions.navigateToWeights() },
+            onWeightClick = { navActions.navigateToEditWeight(it.id) },
 
             navigator = navigator,
         )

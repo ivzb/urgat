@@ -2,6 +2,8 @@ package com.ivzb.urgat.ui.wellbeing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.R
+import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.ui.common.UiEventHolder
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -16,15 +18,15 @@ import javax.inject.Inject
 @HiltViewModel
 class WellbeingViewModel @Inject constructor(
     observeWeightsUseCase: ObserveWeightsUseCase,
+    resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
     private val uiEventHolder = UiEventHolder<WellbeingUiEvent>()
 
-    private val _searchQuery = MutableStateFlow("")
-
+    private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
     val uiState: StateFlow<WellbeingUiState> = combineUiState(
-        observeWeightsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null),
+        observeWeightsUseCase(searchQueryFlow = null, filterTypeFlow = null, limitFlow = _itemsLimit),
         uiEventHolder(),
 
         onLoading = {
@@ -49,14 +51,9 @@ class WellbeingViewModel @Inject constructor(
 
     fun onIntent(intent: WellbeingIntent) {
         when (intent) {
-            is WellbeingIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is WellbeingIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is WellbeingIntent.EventConsumed -> onEventConsumed()
         }
-    }
-
-    private fun onSearchQueryChanged(newQuery: String) {
-        _searchQuery.value = newQuery
     }
 
     private fun onFabActionClick(id: WellbeingFabActionId) {

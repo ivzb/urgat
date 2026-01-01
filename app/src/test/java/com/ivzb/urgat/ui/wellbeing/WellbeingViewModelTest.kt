@@ -1,8 +1,12 @@
 package com.ivzb.urgat.ui.wellbeing
 
+import com.ivzb.urgat.R
+import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.weight.FakeObserveWeightsUseCase
 import com.ivzb.urgat.util.Async
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -25,6 +29,7 @@ import kotlin.test.assertNull
 class WellbeingViewModelTest {
 
     private lateinit var fakeObserveWeightsUseCase: FakeObserveWeightsUseCase
+    private lateinit var mockResourcesProvider: ResourcesProvider
 
     private lateinit var viewModel: WellbeingViewModel
 
@@ -34,6 +39,9 @@ class WellbeingViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         fakeObserveWeightsUseCase = FakeObserveWeightsUseCase()
+        mockResourcesProvider = mockk()
+
+        every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
     }
 
     @After
@@ -117,19 +125,6 @@ class WellbeingViewModelTest {
     }
 
     @Test
-    fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeWeights = listOf(Weight("2", 80.toBigDecimal(), 1764523811, false, 1L))
-        fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
-        viewModel = createViewModel()
-
-        viewModel.onIntent(WellbeingIntent.SearchQueryChanged("80"))
-
-        advanceUntilIdle()
-
-        assertEquals("80", fakeObserveWeightsUseCase.lastQuery)
-    }
-
-    @Test
     fun `fab action click emits TrackWeight event`() = runTest {
         fakeObserveWeightsUseCase.emit(Async.Success(emptyList()))
         viewModel = createViewModel()
@@ -171,6 +166,7 @@ class WellbeingViewModelTest {
     }
 
     private fun createViewModel() = WellbeingViewModel(
-        fakeObserveWeightsUseCase
+        fakeObserveWeightsUseCase,
+        mockResourcesProvider,
     )
 }

@@ -19,13 +19,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -38,8 +35,8 @@ fun Canvas3d(
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    val model = read3dModel(context, "penger.obj")
+//    val context = LocalContext.current
+//    val model = read3dModel(context, "penger.obj")
 
     Canvas3dContent(
         model = CUBE_MODEL,
