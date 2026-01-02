@@ -1,3 +1,8 @@
+## Release notes 26.01.01
+
+New:
+- You can now edit and delete weights.
+
 ## Release notes 26.01.00
 
 New:
