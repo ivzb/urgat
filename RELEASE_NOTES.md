@@ -1,3 +1,9 @@
+## Release notes 26.01.02
+
+New:
+- Added an expenses pie chart displaying each category in its corresponding color, with a detailed list of colors and amounts below.
+- You can now view the app version on the new About page in the drawer’s Help section.
+
 ## Release notes 26.01.01
 
 New:
