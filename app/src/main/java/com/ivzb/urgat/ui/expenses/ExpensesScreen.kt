@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -28,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +48,9 @@ import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -188,6 +190,8 @@ internal fun ExpensesContent(
             modifier = Modifier.fillMaxSize(),
         ) { pageIndex ->
 
+            val allTimeGroup = stringResource(R.string.all_time)
+
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize(),
@@ -219,6 +223,7 @@ internal fun ExpensesContent(
                     )
 
                     ExpensesPage.AllTime -> categoriesPage(
+                        group = allTimeGroup,
                         categories = uiState.categoriesAllTime,
                         expandedCategoryIds = expandedAllTimeIds,
                         onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
@@ -247,11 +252,7 @@ private fun LazyListScope.transactionsPage(
                 text = group,
                 total = (total * -1.toBigDecimal()).format(),
                 totalFontWeight = FontWeight.Bold,
-                totalColor = Color(if (total > BigDecimal.ZERO) {
-                    0xFFF44336
-                } else {
-                    0xFF4CAF50
-                }),
+                totalColor = expenseColor(total),
                 modifier = Modifier
                     .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                     .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -279,16 +280,13 @@ private fun LazyListScope.groupedCategoriesPage(
 ) {
 
     categories.forEachIndexed { index, (group, total, categories) ->
+
         item {
             ItemHeaderSmall(
                 text = group,
                 total = (total * -1.toBigDecimal()).format(),
                 totalFontWeight = FontWeight.Bold,
-                totalColor = Color(if (total > BigDecimal.ZERO) {
-                    0xFFF44336
-                } else {
-                    0xFF4CAF50
-                }),
+                totalColor = expenseColor(total),
                 modifier = Modifier
                     .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                     .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -297,6 +295,7 @@ private fun LazyListScope.groupedCategoriesPage(
         }
 
         categoriesPage(
+            group = group,
             categories = categories,
             expandedCategoryIds = expandedCategoryIds,
             onCategoryClick = onCategoryClick,
@@ -306,16 +305,30 @@ private fun LazyListScope.groupedCategoriesPage(
 }
 
 private fun LazyListScope.categoriesPage(
+    group: String,
     categories: List<ExpenseCategory>,
     expandedCategoryIds: Set<String>,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
 ) {
 
-    categories.forEach { category ->
+    val total = (categories.sumOf { it.value } * -1.toBigDecimal()).format()
+
+    item {
+        PieChart(
+            data = categories
+                .filter { it.value > BigDecimal.ZERO }
+                .map { it.value.toFloat() },
+            text = stringResource(R.string.expense_chart_text_format, group, total),
+            textStyle = MaterialTheme.typography.titleLarge,
+        )
+    }
+
+    categories.forEachIndexed { index, category ->
         item(key = category.id) {
             CategoryItem(
                 category = category,
+                colorIndex = index,
                 onClick = { onCategoryClick(category.id) },
             )
         }
@@ -375,11 +388,7 @@ fun ExpenseItem(
         subTextRight = (expense.amount * -1.toBigDecimal()).format(),
 
         subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = Color(if (expense.amount > BigDecimal.ZERO) {
-            0xFFF44336
-        } else {
-            0xFF4CAF50
-        }),
+        subTextRightColor = expenseColor(expense.amount),
 
         onClick = { onExpenseClick(expense) }
     )
@@ -388,8 +397,10 @@ fun ExpenseItem(
 @Composable
 private fun CategoryItem(
     category: ExpenseCategory,
+    colorIndex: Int,
     onClick: () -> Unit,
 ) {
+
     ListItem(
         textLeft = category.name,
         subTextLeft = "",
@@ -397,11 +408,9 @@ private fun CategoryItem(
         textRight = "",
         subTextRight = (category.value * -1.toBigDecimal()).format(),
         subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = Color(if (category.value > BigDecimal.ZERO) {
-            0xFFF44336
-        } else {
-            0xFF4CAF50
-        }),
+        subTextRightColor = expenseColor(category.value),
+
+        colorIndex = colorIndex,
 
         onClick = onClick,
     )

@@ -58,10 +58,9 @@
 - make remaining budget which is calculated by salary - investments - expenses
 - make investments net worth calculate current price and show profit/loss in investments screen for each asset
 - make the investments tab show net worth. then show each investment combined, then show transactions
-- make net worth pie chart showing color for each category (list with colors and numbers below) and total net worth in the middler of the chart - https://play.google.com/store/apps/details?id=com.gianmarcodavid.networth&hl=en_AU
-- investments screen: on asset click
 - calculate current price of assets based on latest transaction market price
 - handle share link to Urgat and save it
 - add system unlock with biometric/pin when opening the app
 - show expense categories as chips at the bottom of add expense
 - make expenses chart like github contributions
+- add chart and list colors to investments as done for expenses

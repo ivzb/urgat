@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import java.math.BigDecimal
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -93,6 +94,35 @@ private val darkScheme = darkColorScheme(
     surfaceContainer = surfaceContainerDark,
     surfaceContainerHigh = surfaceContainerHighDark,
     surfaceContainerHighest = surfaceContainerHighestDark,
+)
+
+fun expenseColor(amount: BigDecimal) = Color(
+    if (amount > BigDecimal.ZERO) {
+        0xFFF44336
+    } else {
+        0xFF4CAF50
+    }
+)
+
+fun dataColor(index: Int) = dataColors[index % dataColors.size]
+
+private val dataColors: List<Color> = listOf(
+    Color(0xFFEF5350), Color(0xFF42A5F5), Color(0xFF66BB6A),
+    Color(0xFFFFCA28), Color(0xFFAB47BC), Color(0xFFFF7043),
+    Color(0xFF26A69A), Color(0xFF5C6BC0), Color(0xFFEC407A),
+    Color(0xFF8D6E63), Color(0xFFFFA726), Color(0xFF9CCC65),
+    Color(0xFF29B6F6), Color(0xFF7E57C2), Color(0xFFFFEE58),
+    Color(0xFF26C6DA), Color(0xFFD4E157), Color(0xFF5E35B1),
+    Color(0xFFFFB300), Color(0xFF43A047), Color(0xFF1E88E5),
+    Color(0xFFF06292), Color(0xFF6D4C41), Color(0xFFFF8A65),
+    Color(0xFF8E24AA), Color(0xFF7CB342), Color(0xFF039BE5),
+    Color(0xFFE53935), Color(0xFFFFC107), Color(0xFF26A69A),
+    Color(0xFF5C6BC0), Color(0xFFEC407A), Color(0xFF66BB6A),
+    Color(0xFFFFA726), Color(0xFFAB47BC), Color(0xFF42A5F5),
+    Color(0xFF29B6F6), Color(0xFF7E57C2), Color(0xFFFFEE58),
+    Color(0xFF26C6DA), Color(0xFFD4E157), Color(0xFF5E35B1),
+    Color(0xFFFFB300), Color(0xFF43A047), Color(0xFF1E88E5),
+    Color(0xFFF06292), Color(0xFF6D4C41), Color(0xFFFF8A65)
 )
 
 private val mediumContrastLightColorScheme = lightColorScheme(
@@ -271,6 +301,7 @@ fun UrgatTheme(
             val context = LocalContext.current
             if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         isDarkTheme -> darkScheme
         else -> lightScheme
     }

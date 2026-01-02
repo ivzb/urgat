@@ -28,4 +28,6 @@
     <dimen name="expanded_group_vertical_margin">8dp</dimen>
     <dimen name="loading_canvas_3d_padding">64dp</dimen>
     <dimen name="weights_chart_height">300dp</dimen>
+    <dimen name="pie_chart_stroke_width">50dp</dimen>
+    <dimen name="expense_category_color_width">15dp</dimen>
 </resources>

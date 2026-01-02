@@ -80,7 +80,7 @@ fun AboutScreen(
         ) {
 
             LoadingState(
-                label = R.string.version,
+                label = R.string.version_format,
                 formatArgs = arrayOf(BuildConfig.VERSION_NAME),
                 modifier = Modifier.weight(1f)
             )

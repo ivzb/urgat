@@ -136,5 +136,6 @@
     <string name="weights">Weights</string>
     <string name="help">Help</string>
     <string name="about">About</string>
-    <string name="version">Version: %1$s</string>
+    <string name="version_format">Version: %1$s</string>
+    <string name="expense_chart_text_format">%1$s\nTotal: %2$s</string>
 </resources>
