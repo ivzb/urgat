@@ -40,10 +40,9 @@
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 
 ## Features
-- add drawer with app version, settings, sample data button, etc
 - encrypt the db and announce that the info in the app is encrypted in play store app description
 - make tablet support list/detail
-- longpress on a note should copy it
+- long-press on a note should copy it
 - add multiselect delete
 - add onboarding screen
 - name and category should be auto-suggested in a dropdown while typing name

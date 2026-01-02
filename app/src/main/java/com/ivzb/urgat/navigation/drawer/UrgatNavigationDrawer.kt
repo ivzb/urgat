@@ -2,9 +2,11 @@ package com.ivzb.urgat.navigation.drawer
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ImportExport
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.about.AboutRoute
 import com.ivzb.urgat.ui.exportData.ExportDataRoute
 import com.ivzb.urgat.ui.importData.ImportDataRoute
 import com.ivzb.urgat.ui.sample.SampleRoute
@@ -33,6 +35,17 @@ val URGAT_NAVIGATION_DRAWER = listOfNotNull(
                 labelResId = R.string.import_data,
                 iconVector = Icons.Outlined.ImportExport,
                 route = ImportDataRoute,
+            ),
+        )
+    ),
+
+    UrgatNavigationDrawerSection(
+        titleResId = R.string.help,
+        items = listOf(
+            UrgatNavigationDrawerItem(
+                labelResId = R.string.about,
+                iconVector = Icons.Outlined.Info,
+                route = AboutRoute,
             ),
         )
     ),

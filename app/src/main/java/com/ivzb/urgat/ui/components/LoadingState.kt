@@ -19,6 +19,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 @Composable
 fun LoadingState(
     @StringRes label: Int,
+    vararg formatArgs: Any,
     modifier: Modifier = Modifier
 ) {
     Column (modifier = modifier
@@ -28,7 +29,7 @@ fun LoadingState(
     ) {
 
         Canvas3d(
-            text = stringResource(label),
+            text = stringResource(label, formatArgs = formatArgs),
             textStyle = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .padding(dimensionResource(R.dimen.loading_canvas_3d_padding))
