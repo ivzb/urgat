@@ -1,8 +1,8 @@
-package com.ivzb.urgat.ui.trackWeight
+package com.ivzb.urgat.ui.addEditWeight
 
 import androidx.annotation.StringRes
 
-data class TrackWeightUiState(
+data class AddEditWeightUiState(
     @StringRes
     val screenTitleResId: Int? = null,
     val value: String = "",
@@ -10,5 +10,6 @@ data class TrackWeightUiState(
     val focusIndex: Int = 0,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
-    val isWeightSaved: Boolean = false
+    val withDelete: Boolean = false,
+    val shouldNavigateBack: Boolean = false
 )

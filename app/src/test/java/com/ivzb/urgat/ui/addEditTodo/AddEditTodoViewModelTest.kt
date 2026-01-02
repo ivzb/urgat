@@ -52,7 +52,13 @@ class AddEditTodoViewModelTest {
     @Test
     fun `init without id does not load todo`() = runTest {
         assertNull(getUseCase.calledWithId)
-        assertFalse(viewModel.uiState.value.isLoading)
+
+        val uiState = viewModel.uiState.value
+        assertEquals("", uiState.title)
+        assertEquals("", uiState.description)
+        assertFalse(uiState.isLoading)
+        assertNull(uiState.userMessage)
+        assertFalse(uiState.shouldNavigateBack)
     }
 
     @Test

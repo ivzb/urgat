@@ -125,7 +125,7 @@ class WellbeingViewModelTest {
     }
 
     @Test
-    fun `fab action click emits TrackWeight event`() = runTest {
+    fun `fab action click emits AddWeight event`() = runTest {
         fakeObserveWeightsUseCase.emit(Async.Success(emptyList()))
         viewModel = createViewModel()
 
@@ -138,7 +138,7 @@ class WellbeingViewModelTest {
         advanceUntilIdle()
 
         val event = viewModel.uiState.value.uiEvent
-        assertEquals(WellbeingUiEvent.TrackWeight, event)
+        assertEquals(WellbeingUiEvent.AddWeight, event)
 
         job.cancel()
     }
@@ -155,7 +155,7 @@ class WellbeingViewModelTest {
         }
 
         advanceUntilIdle()
-        assertEquals(WellbeingUiEvent.TrackWeight, viewModel.uiState.value.uiEvent)
+        assertEquals(WellbeingUiEvent.AddWeight, viewModel.uiState.value.uiEvent)
 
         viewModel.onIntent(WellbeingIntent.EventConsumed)
         advanceUntilIdle()

@@ -9,7 +9,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesRoute
 import com.ivzb.urgat.ui.investments.InvestmentsRoute
 import com.ivzb.urgat.ui.notes.NotesRoute
 import com.ivzb.urgat.ui.todos.TodosRoute
-import com.ivzb.urgat.ui.trackWeight.TrackWeightRoute
+import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
 import com.ivzb.urgat.ui.weights.WeightsRoute
 
 class UrgatNavActions(private val navigator: Navigator) {
@@ -90,16 +90,18 @@ class UrgatNavActions(private val navigator: Navigator) {
         navigator.navigate(WeightsRoute)
     }
 
-    fun navigateToTrackWeight() {
-        navigator.navigate(TrackWeightRoute)
+    fun navigateToAddWeight() {
+        navigator.navigate(AddEditWeightRoute(
+            id = null,
+            titleResId = R.string.add_weight,
+        ))
     }
 
     fun navigateToEditWeight(weightId: String) {
-        // todo:
-//        navigator.navigate(AddEditWeightRoute(
-//            id = todoId,
-//            titleResId = R.string.edit_todo
-//        ))
+        navigator.navigate(AddEditWeightRoute(
+            id = weightId,
+            titleResId = R.string.edit_weight,
+        ))
     }
 
 

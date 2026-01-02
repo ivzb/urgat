@@ -60,7 +60,7 @@ class WellbeingViewModel @Inject constructor(
         viewModelScope.launch {
             uiEventHolder.emit(
                 when (id) {
-                    WellbeingFabActionId.Weight -> WellbeingUiEvent.TrackWeight
+                    WellbeingFabActionId.Weight -> WellbeingUiEvent.AddWeight
                 }
             )
         }

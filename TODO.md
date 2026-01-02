@@ -10,13 +10,10 @@
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - add import and export to screenshot tests
-- rename track weight to add weight
 
 ## Improvements
-- allow only one weight per day and update current one if added - also remove ObserveWeightsUseCase.kt transformation
 - add localizations
 - deal with too many items - pagination?
-- select today's weight from DB if exists
 - make splash screen dark mode
 - add paste from clipboard button for todos and notes
 - show user message when clear todos button is clicked - and tell how many todos were cleared

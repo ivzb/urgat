@@ -44,7 +44,7 @@ import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 fun WellbeingScreen(
     viewModel: WellbeingViewModel,
 
-    onTrackWeight: () -> Unit,
+    onAddWeight: () -> Unit,
     onSeeAllWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
@@ -68,7 +68,7 @@ fun WellbeingScreen(
     LaunchedEffect(uiState.uiEvent) {
         uiState.uiEvent?.let { event ->
             when (event) {
-                is WellbeingUiEvent.TrackWeight -> onTrackWeight()
+                is WellbeingUiEvent.AddWeight -> onAddWeight()
             }
 
             viewModel.onIntent(WellbeingIntent.EventConsumed)
@@ -117,7 +117,7 @@ fun WellbeingScreen(
                 WellbeingContent(
                     weights = uiState.weights,
                     weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
-                    onTrackWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
+                    onAddWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
                     onSeeAllWeights = onSeeAllWeights,
                     onWeightClick = onWeightClick,
                 )
@@ -131,7 +131,7 @@ private fun WellbeingContent(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
 
-    onTrackWeight: () -> Unit,
+    onAddWeight: () -> Unit,
     onSeeAllWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
@@ -144,7 +144,7 @@ private fun WellbeingContent(
         WellbeingContentLandscape(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
-            onTrackWeight = onTrackWeight,
+            onAddWeight = onAddWeight,
             onSeeAllWeights = onSeeAllWeights,
             onWeightClick = onWeightClick,
             modifier = modifier,
@@ -153,7 +153,7 @@ private fun WellbeingContent(
         WellbeingContentPortrait(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
-            onTrackWeight = onTrackWeight,
+            onAddWeight = onAddWeight,
             onSeeAllWeights = onSeeAllWeights,
             onWeightClick = onWeightClick,
             modifier = modifier,
@@ -166,7 +166,7 @@ private fun WellbeingContentPortrait(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
 
-    onTrackWeight: () -> Unit,
+    onAddWeight: () -> Unit,
     onSeeAllWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
@@ -187,7 +187,7 @@ private fun WellbeingContentPortrait(
         itemWeights(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
-            onTrackWeight = onTrackWeight,
+            onAddWeight = onAddWeight,
             onSeeAllWeights = onSeeAllWeights,
             onWeightClick = onWeightClick,
         )
@@ -206,7 +206,7 @@ private fun WellbeingContentLandscape(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
 
-    onTrackWeight: () -> Unit,
+    onAddWeight: () -> Unit,
     onSeeAllWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
@@ -235,7 +235,7 @@ private fun WellbeingContentLandscape(
             itemWeights(
                 weights = weights,
                 weightsFilteringUiInfo = weightsFilteringUiInfo,
-                onTrackWeight = onTrackWeight,
+                onAddWeight = onAddWeight,
                 onSeeAllWeights = onSeeAllWeights,
                 onWeightClick = onWeightClick,
             )
@@ -266,7 +266,7 @@ private fun WellbeingContentLandscape(
 private fun LazyListScope.itemWeights(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
-    onTrackWeight: () -> Unit,
+    onAddWeight: () -> Unit,
     onSeeAllWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 ) {
@@ -278,7 +278,7 @@ private fun LazyListScope.itemWeights(
                     label = weightsFilteringUiInfo.emptyLabel,
                     message = weightsFilteringUiInfo.emptyMessage,
                     buttonLabel = weightsFilteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onTrackWeight,
+                    onButtonClick = onAddWeight,
                 )
             }
         }

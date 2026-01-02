@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.trackWeight
+package com.ivzb.urgat.ui.addEditWeight
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
@@ -57,8 +57,8 @@ enum class FieldId {
 }
 
 @Composable
-fun TrackWeightScreen(
-    viewModel: TrackWeightViewModel,
+fun AddEditWeightScreen(
+    viewModel: AddEditWeightViewModel,
 
     onBack: () -> Unit,
 
@@ -67,15 +67,15 @@ fun TrackWeightScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    TrackWeightScreen(
+    AddEditWeightScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onBack = onBack,
         modifier = modifier
     )
 
-    LaunchedEffect(uiState.isWeightSaved) {
-        if (uiState.isWeightSaved) {
+    LaunchedEffect(uiState.shouldNavigateBack) {
+        if (uiState.shouldNavigateBack) {
             onBack()
         }
     }
@@ -83,9 +83,9 @@ fun TrackWeightScreen(
 
 @VisibleForTesting
 @Composable
-fun TrackWeightScreen(
-    uiState: TrackWeightUiState,
-    onIntent: (TrackWeightIntent) -> Unit,
+fun AddEditWeightScreen(
+    uiState: AddEditWeightUiState,
+    onIntent: (AddEditWeightIntent) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -102,10 +102,8 @@ fun TrackWeightScreen(
             TextTopAppBar(
                 title = uiState.screenTitleResId,
                 onBack = onBack,
-                withDelete = false,
-                onDelete = {
-                    // NOOP
-                }
+                withDelete = uiState.withDelete,
+                onDelete = { onIntent(AddEditWeightIntent.DeleteWeight) },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -147,7 +145,7 @@ fun TrackWeightScreen(
                             selection = TextRange(it.text.length)
                         )
 
-                        onIntent(TrackWeightIntent.UpdateValue(it.text))
+                        onIntent(AddEditWeightIntent.UpdateValue(it.text))
                     },
                     placeholder = { Text(text = stringResource(id = R.string.weight_hint)) },
                     maxLines = 1,
@@ -168,7 +166,7 @@ fun TrackWeightScreen(
                 DatePicker(
                     timestamp = uiState.date,
                     onTimestampSelected = {
-                        onIntent(TrackWeightIntent.UpdateDate(it))
+                        onIntent(AddEditWeightIntent.UpdateDate(it))
                     }
                 ) { selectedDate, dialog ->
 
@@ -204,7 +202,7 @@ fun TrackWeightScreen(
 
                 Button(
                     onClick = rememberDebouncedClick {
-                        onIntent(TrackWeightIntent.SaveWeight)
+                        onIntent(AddEditWeightIntent.SaveWeight)
                     },
                     modifier = Modifier
                         .responsiveButtonWidth()
@@ -225,7 +223,7 @@ fun TrackWeightScreen(
         LaunchedEffect(userMessage) {
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(snackbarText)
-                onIntent(TrackWeightIntent.UserMessageShown)
+                onIntent(AddEditWeightIntent.UserMessageShown)
             }
         }
     }
@@ -233,12 +231,30 @@ fun TrackWeightScreen(
 
 @AllDevicesPreview
 @Composable
-private fun TrackWeightScreenPreview() {
+private fun AddWeightScreenPreview() {
     UrgatTheme {
         Surface {
-            TrackWeightScreen(
-                uiState = TrackWeightUiState(
-                    screenTitleResId = R.string.track_weight,
+            AddEditWeightScreen(
+                uiState = AddEditWeightUiState(
+                    screenTitleResId = R.string.add_weight,
+                ),
+                onIntent = {},
+                onBack = {},
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@AllDevicesPreview
+@Composable
+private fun EditWeightScreenPreview() {
+    UrgatTheme {
+        Surface {
+            AddEditWeightScreen(
+                uiState = AddEditWeightUiState(
+                    screenTitleResId = R.string.edit_weight,
+                    value = "80.5",
                 ),
                 onIntent = {},
                 onBack = {},
@@ -253,9 +269,9 @@ private fun TrackWeightScreenPreview() {
 private fun LoadingWeightScreenPreview() {
     UrgatTheme {
         Surface {
-            TrackWeightScreen(
-                uiState = TrackWeightUiState(
-                    screenTitleResId = R.string.track_weight,
+            AddEditWeightScreen(
+                uiState = AddEditWeightUiState(
+                    screenTitleResId = R.string.edit_weight,
                     isLoading = true,
                 ),
                 onIntent = {},

@@ -11,6 +11,6 @@ val WELLBEING_FAB_ACTIONS = listOf(
     FabAction(
         id = WellbeingFabActionId.Weight,
         icon = Icons.Filled.FitnessCenter,
-        labelResId = R.string.track_weight
+        labelResId = R.string.add_weight
     ),
 )

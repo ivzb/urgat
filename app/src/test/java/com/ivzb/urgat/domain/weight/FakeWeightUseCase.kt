@@ -33,6 +33,17 @@ class FakeObserveWeightsUseCase : ObserveWeightsUseCase {
 
 }
 
+class FakeGetWeightUseCase : GetWeightUseCase {
+
+    var toReturn: Weight? = null
+    var calledWithId: String? = null
+
+    override suspend fun invoke(id: String): Weight? {
+        calledWithId = id
+        return toReturn
+    }
+}
+
 class FakeCreateWeightUseCase : CreateWeightUseCase {
 
     var created: List<Any> = listOf()
@@ -42,5 +53,29 @@ class FakeCreateWeightUseCase : CreateWeightUseCase {
         date: Long,
     ) {
         created = listOf(value, date)
+    }
+}
+
+class FakeUpdateWeightUseCase : UpdateWeightUseCase {
+
+    var updated: List<Any> = listOf()
+
+    override suspend fun invoke(
+        id: String,
+        value: BigDecimal,
+        date: Long,
+    ) {
+        updated = listOf(id, value, date)
+    }
+}
+
+class FakeDeleteWeightUseCase : DeleteWeightUseCase {
+
+    var deleted: List<Any> = listOf()
+
+    override suspend fun invoke(
+        id: String,
+    ) {
+        deleted = listOf(id)
     }
 }

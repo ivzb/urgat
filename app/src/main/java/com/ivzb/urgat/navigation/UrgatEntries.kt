@@ -16,7 +16,7 @@ import com.ivzb.urgat.ui.library.libraryEntry
 import com.ivzb.urgat.ui.notes.notesEntry
 import com.ivzb.urgat.ui.sample.sampleEntry
 import com.ivzb.urgat.ui.todos.todosEntry
-import com.ivzb.urgat.ui.trackWeight.trackWeightEntry
+import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
 import com.ivzb.urgat.ui.weights.weightsEntry
 import com.ivzb.urgat.ui.wellbeing.wellbeingEntry
 
@@ -39,7 +39,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
         addEditInvestmentEntry(navigator)
 
         weightsEntry(navigator, navActions)
-        trackWeightEntry(navigator)
+        addEditWeightEntry(navigator)
 
         sampleEntry(navigator)
 

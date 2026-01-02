@@ -7,7 +7,13 @@ interface WeightsRepository: BaseRepository<Weight> {
 
     suspend fun create(
         value: BigDecimal,
-        date: Long
+        date: Long,
     ): String
+
+    suspend fun update(
+        id: String,
+        value: BigDecimal,
+        date: Long,
+    )
 
 }

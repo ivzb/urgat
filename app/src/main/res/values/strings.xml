@@ -84,7 +84,8 @@
     <string name="error_notes">Error while loading notes</string>
     <string name="recent_notes">Recent notes</string>
     <string name="no_notes_search">You have no notes with this search criteria!</string>
-    <string name="track_weight">Track weight</string>
+    <string name="add_weight">Add weight</string>
+    <string name="edit_weight">Edit weight</string>
     <string name="weight_hint">Weight</string>
     <string name="error_weights">Error while loading weights</string>
     <string name="loading_wellbeing">Loading wellbeing</string>

@@ -1,6 +1,8 @@
 package com.ivzb.urgat.data.weight
 
+import com.ivzb.urgat.data.investment.toEntity
 import com.ivzb.urgat.di.DefaultDispatcher
+import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -33,15 +35,33 @@ class DefaultWeightsRepository @Inject constructor(
         val id = withContext(dispatcher) {
             UUID.randomUUID().toString()
         }
-        val note = Weight(
+        val weight = Weight(
             id = id,
             value = value,
             date = date,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
-        localDataSource.upsert(note.toEntity())
+        localDataSource.upsert(weight.toEntity())
         return id
+    }
+
+    override suspend fun update(
+        id: String,
+        value: BigDecimal,
+        date: Long,
+    ) {
+        val weight = get(id)?.copy(
+            value = value,
+            date = date,
+        )
+
+        if (weight == null) {
+            Assert.fail("Investment (id $id) not found while update")
+            return
+        }
+
+        localDataSource.upsert(weight.toEntity())
     }
 
     override suspend fun get(id: String): Weight? {
