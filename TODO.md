@@ -65,4 +65,3 @@
 - make expenses chart like github contributions
 - try adding secondary menu to expenses and investments to avoid big lists
 - show category text in the middle of the chart on tap
-- add chart and list colors to investments as done for expenses

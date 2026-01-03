@@ -319,7 +319,7 @@ private fun LazyListScope.categoriesPage(
     val totalFormatted = (total * -1.toBigDecimal()).format()
 
     item {
-        val text = stringResource(R.string.expense_chart_text_format, group, totalFormatted)
+        val text = stringResource(R.string.chart_text_format, group, totalFormatted).trim()
         val annotatedString = annotateFormattedString(
             formattedString = text,
             part = totalFormatted,

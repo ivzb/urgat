@@ -20,7 +20,7 @@ data class Investment(
 
     companion object {
 
-        private const val SEPARATOR = " | "
+        const val SEPARATOR = " | "
 
         fun total(investments: List<Investment>): String =
             investments

@@ -28,6 +28,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.DarkModePreview
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.dataColor
+import kotlin.math.absoluteValue
 
 @Composable
 fun PieChart(
@@ -37,7 +38,7 @@ fun PieChart(
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
-    val total = data.sum()
+    val total = data.map { it.absoluteValue }.sum()
     val strokeWidthDp = dimensionResource(R.dimen.pie_chart_stroke_width)
     val strokeWidth = with(LocalDensity.current) { strokeWidthDp.toPx() }
 
@@ -55,7 +56,7 @@ fun PieChart(
             var startAngle = -90f
 
             data.forEachIndexed { index, value ->
-                val sweepAngle = (value / total) * 360f
+                val sweepAngle = (value.absoluteValue / total) * 360f
 
                 drawArc(
                     color = dataColor(index),

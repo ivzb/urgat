@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -30,6 +31,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,7 +51,9 @@ import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.annotateFormattedString
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -281,19 +286,64 @@ private fun LazyListScope.groupedCategoriesPage(
             )
         }
 
-        categories.forEach { category ->
-            item(key = category.id) {
-                CategoryItem(
-                    category = category,
-                    onClick = { onCategoryClick(category.id) },
-                )
-            }
+        categoriesPage(
+            group = group,
+            total = total,
+            categories = categories,
+            expandedCategoryIds = expandedCategoryIds,
+            onCategoryClick = onCategoryClick,
+            onInvestmentClick = onInvestmentClick,
+        )
+    }
+}
 
-            val isExpanded = expandedCategoryIds.contains(category.id)
+private fun LazyListScope.categoriesPage(
+    group: String,
+    total: String,
+    categories: List<InvestmentCategory>,
+    expandedCategoryIds: Set<String>,
+    onCategoryClick: (String) -> Unit,
+    onInvestmentClick: (Investment) -> Unit,
+) {
 
-            if (isExpanded) {
-                subInvestments(category.investments, onInvestmentClick)
-            }
+    item {
+        val data = categories.map { it.investments.sumOf { it.marketValue }.toFloat() }
+        val formattedTotal = total.split(Investment.SEPARATOR).joinToString("\n")
+        val text = stringResource(R.string.chart_text_format, group, formattedTotal).trim()
+        val annotatedString = annotateFormattedString(
+            formattedString = text,
+            part = formattedTotal,
+            spanStyle = SpanStyle(
+                fontWeight = FontWeight.Bold
+            ),
+        )
+
+        PieChart(
+            data = data,
+            text = annotatedString,
+            textStyle = MaterialTheme.typography.titleLarge,
+        )
+    }
+
+    item {
+        Spacer(modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+        )
+    }
+
+    categories.forEachIndexed { index, category ->
+        item(key = category.id) {
+            CategoryItem(
+                category = category,
+                colorIndex = index,
+                onClick = { onCategoryClick(category.id) },
+            )
+        }
+
+        val isExpanded = expandedCategoryIds.contains(category.id)
+
+        if (isExpanded) {
+            subInvestments(category.investments, onInvestmentClick)
         }
     }
 }
@@ -334,20 +384,14 @@ private fun LazyListScope.netWorthPage(
         )
     }
 
-    categories.forEach { category ->
-        item(key = category.id) {
-            CategoryItem(
-                category = category,
-                onClick = { onCategoryClick(category.id) },
-            )
-        }
-
-        val isExpanded = expandedCategoryIds.contains(category.id)
-
-        if (isExpanded) {
-            subInvestments(category.investments, onInvestmentClick)
-        }
-    }
+    categoriesPage(
+        group = "",
+        total = netWorth?.total.orEmpty(),
+        categories = categories,
+        expandedCategoryIds = expandedCategoryIds,
+        onCategoryClick = onCategoryClick,
+        onInvestmentClick = onInvestmentClick,
+    )
 
     item {
         ItemHeaderSmall(
@@ -440,6 +484,7 @@ private fun AssetItem(
 @Composable
 private fun CategoryItem(
     category: InvestmentCategory,
+    colorIndex: Int,
     onClick: () -> Unit,
 ) {
     ListItem(
@@ -448,6 +493,8 @@ private fun CategoryItem(
 
         textRight = category.total,
         subTextRight = "",
+
+        colorIndex = colorIndex,
 
         onClick = onClick,
     )
