@@ -64,4 +64,3 @@
 - show expense categories as chips at the bottom of add expense
 - make expenses chart like github contributions
 - try adding secondary menu to expenses and investments to avoid big lists
-- show category text in the middle of the chart on tap

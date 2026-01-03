@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +52,7 @@ import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.charts.PieChart
+import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.annotateFormattedString
@@ -315,23 +317,34 @@ private fun LazyListScope.categoriesPage(
     onExpenseClick: (Expense) -> Unit,
 ) {
 
-    val total = categories.sumOf { it.value }
-    val totalFormatted = (total * -1.toBigDecimal()).format()
-
     item {
-        val text = stringResource(R.string.chart_text_format, group, totalFormatted).trim()
-        val annotatedString = annotateFormattedString(
-            formattedString = text,
-            part = totalFormatted,
-            spanStyle = SpanStyle(
-                color = expenseColor(total),
-                fontWeight = FontWeight.Bold
-            ),
-        )
+        @Composable
+        fun formattedText(name: String, value: BigDecimal): AnnotatedString {
+            val valueFormatted = (value * -1.toBigDecimal()).format()
+            val textFormatted = stringResource(R.string.chart_text_format, name, valueFormatted).trim()
+
+            return annotateFormattedString(
+                formattedString = textFormatted,
+                part = valueFormatted,
+                spanStyle = SpanStyle(
+                    color = expenseColor(value),
+                    fontWeight = FontWeight.Bold
+                ),
+            )
+        }
+
+        val data = categories.map {
+            PieChartItem(
+                value = it.value.toFloat(),
+                selectedText = formattedText(it.name, it.value)
+            )
+        }
+        val total = categories.sumOf { it.value }
+        val defaultText = formattedText(group, total)
 
         PieChart(
-            data = categories.map { it.value.toFloat() },
-            text = annotatedString,
+            data = data,
+            defaultText = defaultText,
             textStyle = MaterialTheme.typography.titleLarge,
         )
     }

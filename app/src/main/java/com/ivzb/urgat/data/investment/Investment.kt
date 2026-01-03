@@ -27,9 +27,11 @@ data class Investment(
                 .groupBy { it.currency }
                 .map { (currency, investments) ->
                     val marketValue = investments.sumOf { it.marketValue }.format()
-                    "$marketValue $currency"
+                    val total = "$marketValue $currency"
+                    currency to total
                 }
-                .joinToString(SEPARATOR)
+                .sortedBy { (currency, _) -> currency }
+                .joinToString(SEPARATOR) { (_, total) -> total }
 
     }
 
