@@ -1,3 +1,8 @@
+## Release notes 26.01.04
+
+New:
+- Investments now display colors in charts and lists.
+
 ## Release notes 26.01.03
 
 Improved:
