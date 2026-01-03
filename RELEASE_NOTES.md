@@ -1,3 +1,8 @@
+## Release notes 26.01.03
+
+Improved:
+- Visual enhancements to charts.
+
 ## Release notes 26.01.02
 
 New:
