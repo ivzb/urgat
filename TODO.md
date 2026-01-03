@@ -9,7 +9,7 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
-- add import and export to screenshot tests
+- add import, export and about screens to screenshot tests
 
 ## Improvements
 - add localizations
@@ -63,4 +63,6 @@
 - add system unlock with biometric/pin when opening the app
 - show expense categories as chips at the bottom of add expense
 - make expenses chart like github contributions
+- try adding secondary menu to expenses and investments to avoid big lists
+- show category text in the middle of the chart on tap
 - add chart and list colors to investments as done for expenses

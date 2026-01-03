@@ -31,6 +31,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,6 +53,7 @@ import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
+import com.ivzb.urgat.util.annotateFormattedString
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -312,15 +315,30 @@ private fun LazyListScope.categoriesPage(
     onExpenseClick: (Expense) -> Unit,
 ) {
 
-    val total = (categories.sumOf { it.value } * -1.toBigDecimal()).format()
+    val total = categories.sumOf { it.value }
+    val totalFormatted = (total * -1.toBigDecimal()).format()
 
     item {
+        val text = stringResource(R.string.expense_chart_text_format, group, totalFormatted)
+        val annotatedString = annotateFormattedString(
+            formattedString = text,
+            part = totalFormatted,
+            spanStyle = SpanStyle(
+                color = expenseColor(total),
+                fontWeight = FontWeight.Bold
+            ),
+        )
+
         PieChart(
-            data = categories
-                .filter { it.value > BigDecimal.ZERO }
-                .map { it.value.toFloat() },
-            text = stringResource(R.string.expense_chart_text_format, group, total),
+            data = categories.map { it.value.toFloat() },
+            text = annotatedString,
             textStyle = MaterialTheme.typography.titleLarge,
+        )
+    }
+
+    item {
+        Spacer(modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
         )
     }
 
