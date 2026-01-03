@@ -71,7 +71,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2025",
-                total = "1,931.05 USD | 1,931.05 EUR",
+                total = "1,931.05 EUR | 1,931.05 USD",
                 items = listOf(
                     InvestmentCategory(id = TEST_UUID, "etfs", "1,160 EUR | 1,160 USD", investments = listOf(investments[4], investments[3], investments[1], investments[0])),
                     InvestmentCategory(id = TEST_UUID, "stocks", "771.05 EUR | 771.05 USD", investments = listOf(investments[5], investments[2])),
@@ -79,7 +79,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2024",
-                total = "1,931.05 USD | 1,931.05 EUR",
+                total = "1,931.05 EUR | 1,931.05 USD",
                 items = listOf(
                     InvestmentCategory(id = TEST_UUID, "etfs", "1,160 EUR | 1,160 USD", investments = listOf(investments[10], investments[9], investments[7], investments[6])),
                     InvestmentCategory(id = TEST_UUID, "stocks", "771.05 EUR | 771.05 USD", investments = listOf(investments[11], investments[8])),

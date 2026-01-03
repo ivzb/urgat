@@ -67,8 +67,8 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            InvestmentCategory(id = TEST_UUID, "etfs", "2,320 USD | 2,320 EUR", investments = listOf(investments[0], investments[1], investments[3], investments[4], investments[6], investments[7], investments[9], investments[10])),
-            InvestmentCategory(id = TEST_UUID, "stocks", "1,542.1 USD | 1,542.1 EUR", investments = listOf(investments[2], investments[5], investments[8], investments[11])),
+            InvestmentCategory(id = TEST_UUID, "etfs", "2,320 EUR | 2,320 USD", investments = listOf(investments[0], investments[1], investments[3], investments[4], investments[6], investments[7], investments[9], investments[10])),
+            InvestmentCategory(id = TEST_UUID, "stocks", "1,542.1 EUR | 1,542.1 USD", investments = listOf(investments[2], investments[5], investments[8], investments[11])),
         )
 
         assertEquals(1, results.size)

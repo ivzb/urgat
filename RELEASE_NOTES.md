@@ -1,3 +1,8 @@
+## Release notes 26.01.05
+
+New:
+- Highlight the selected category when tapping on the canvas pie chart
+
 ## Release notes 26.01.04
 
 New:
