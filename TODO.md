@@ -63,4 +63,3 @@
 - add system unlock with biometric/pin when opening the app
 - show expense categories as chips at the bottom of add expense
 - make expenses chart like github contributions
-- add secondary menu to investments to avoid big lists

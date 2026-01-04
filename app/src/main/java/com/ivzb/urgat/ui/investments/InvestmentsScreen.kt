@@ -22,8 +22,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -99,7 +101,7 @@ fun InvestmentsScreen(
     val pages = INVESTMENT_PAGES
     val pagerState = rememberPagerState { pages.size }
     val listStates = remember { List(pages.size) { LazyListState() } }
-    val currentListState = remember { derivedStateOf { listStates[pagerState.currentPage] } }
+    val currentListState = remember { mutableStateOf(listStates[0]) }
 
     ListDetailsScaffold(
         selectedRoute = InvestmentsRoute,
@@ -144,6 +146,7 @@ fun InvestmentsScreen(
                     pages = pages,
                     pagerState = pagerState,
                     listStates = listStates,
+                    onListStateChanged = { currentListState.value = it },
                 )
             }
         }
@@ -157,12 +160,18 @@ private fun InvestmentsContent(
     pages: List<InvestmentsPage>,
     pagerState: PagerState,
     listStates: List<LazyListState>,
-    modifier: Modifier = Modifier,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
     val expandedAssetIds = rememberSaveable { mutableStateSetOf<String>() }
     val expandedCategoryIds = rememberSaveable { mutableStateSetOf<String>() }
+    val isHorizontalScrollEnabled by remember {
+        derivedStateOf {
+            val currentPage = pages[pagerState.currentPage]
+            currentPage != InvestmentsPage.Yearly
+        }
+    }
 
     Column {
         PrimaryScrollableTabRow(
@@ -190,245 +199,394 @@ private fun InvestmentsContent(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            userScrollEnabled = isHorizontalScrollEnabled,
+            modifier = Modifier
+                .fillMaxSize(),
         ) { pageIndex ->
 
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = dimensionResource(R.dimen.horizontal_margin),
-                    vertical = dimensionResource(R.dimen.vertical_margin),
-                ),
-                state = listStates[pageIndex]
-            ) {
+            when (pages[pageIndex]) {
+                InvestmentsPage.Transactions -> TransactionsPage(
+                    investments = uiState.investments,
+                    onInvestmentClick = onInvestmentClick,
 
-                when (pages[pageIndex]) {
-                    InvestmentsPage.Transactions -> transactionsPage(
-                        investments = uiState.investments,
-                        onInvestmentClick = onInvestmentClick,
-                    )
+                    listState = listStates[pageIndex],
+                    onListStateChanged = onListStateChanged,
+                )
 
-                    InvestmentsPage.Yearly -> groupedCategoriesPage(
-                        categories = uiState.categoriesYearly,
-                        expandedCategoryIds = expandedYearlyIds,
-                        onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
-                        onInvestmentClick = onInvestmentClick,
-                    )
+                InvestmentsPage.Yearly -> GroupedCategoriesPage(
+                    categories = uiState.categoriesYearly,
+                    expandedCategoryIds = expandedYearlyIds,
+                    onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
+                    onInvestmentClick = onInvestmentClick,
 
-                    InvestmentsPage.NetWorth -> netWorthPage(
-                        netWorth = uiState.netWorth,
+                    onListStateChanged = onListStateChanged,
+                )
 
-                        categories = uiState.categories,
-                        expandedCategoryIds = expandedCategoryIds,
-                        onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
+                InvestmentsPage.Categories -> CategoriesPage(
+                    group = stringResource(R.string.categories),
+                    total = uiState.netWorth?.total.orEmpty(),
+                    categories = uiState.categories,
+                    expandedCategoryIds = expandedCategoryIds,
 
-                        assets = uiState.assets,
-                        expandedAssetIds = expandedAssetIds,
-                        onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
+                    onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
+                    onInvestmentClick = onInvestmentClick,
 
-                        onInvestmentClick = onInvestmentClick,
-                    )
-                }
+                    listState = listStates[pageIndex],
+                    onListStateChanged = onListStateChanged,
+                )
 
-                item {
-                    Spacer(
-                        modifier = Modifier
-                            .height(dimensionResource(R.dimen.vertical_margin))
-                    )
-                }
+                InvestmentsPage.Assets -> AssetsPage(
+                    group = stringResource(R.string.assets),
+                    total = uiState.netWorth?.total.orEmpty(),
+
+                    assets = uiState.assets,
+                    expandedAssetIds = expandedAssetIds,
+                    onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
+
+                    onInvestmentClick = onInvestmentClick,
+
+                    listState = listStates[pageIndex],
+                    onListStateChanged = onListStateChanged,
+                )
+
+                InvestmentsPage.NetWorth -> NetWorthPage(
+                    netWorth = uiState.netWorth,
+
+                    listState = listStates[pageIndex],
+                    onListStateChanged = onListStateChanged,
+                )
             }
         }
     }
 }
 
-private fun LazyListScope.transactionsPage(
+@Composable
+private fun TransactionsPage(
     investments: List<GroupedInvestments>,
     onInvestmentClick: (Investment) -> Unit,
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
-    investments.forEachIndexed { index, (group, total, investments) ->
-        item {
-            ItemHeaderSmall(
-                text = group,
-                total = total,
-                modifier = Modifier
-                    .paddingIf(index.isFirst(), bottom = dimensionResource(R.dimen.vertical_margin))
-                    .paddingIf(!index.isFirst(), vertical = dimensionResource(R.dimen.vertical_margin))
-                    .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
-            )
-        }
 
-        items(
-            items = investments,
-            key = { investment -> investment.id },
-        ) { investment ->
-            InvestmentItem(
-                investment = investment,
-                onInvestmentClick = onInvestmentClick
-            )
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.horizontal_margin),
+            vertical = dimensionResource(R.dimen.vertical_margin),
+        ),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+
+        investments.forEachIndexed { index, (group, total, investments) ->
+            item {
+                ItemHeaderSmall(
+                    text = group,
+                    total = total,
+                    modifier = Modifier
+                        .paddingIf(
+                            index.isFirst(),
+                            bottom = dimensionResource(R.dimen.vertical_margin)
+                        )
+                        .paddingIf(
+                            !index.isFirst(),
+                            vertical = dimensionResource(R.dimen.vertical_margin)
+                        )
+                        .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
+                )
+            }
+
+            items(
+                items = investments,
+                key = { investment -> investment.id },
+            ) { investment ->
+                InvestmentItem(
+                    investment = investment,
+                    onInvestmentClick = onInvestmentClick
+                )
+            }
         }
     }
 }
 
-private fun LazyListScope.groupedCategoriesPage(
+@Composable
+private fun GroupedCategoriesPage(
     categories: List<GroupedInvestmentCategories>,
     expandedCategoryIds: Set<String>,
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
-    categories.forEachIndexed { index, (group, total, categories) ->
-        item {
-            ItemHeaderSmall(
-                text = group,
-                total = total,
-                modifier = Modifier
-                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
-                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
-                    .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
-            )
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState { categories.size }
+    val nestedListStates = remember(categories.size) {
+        List(categories.size) { LazyListState() }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        PrimaryScrollableTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            edgePadding = 0.dp,
+        ) {
+            categories.forEachIndexed { index, category ->
+                Tab(
+                    text = {
+                        Text(
+                            text = category.group,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                )
+            }
         }
 
-        categoriesPage(
-            group = group,
-            total = total,
-            categories = categories,
-            expandedCategoryIds = expandedCategoryIds,
-            onCategoryClick = onCategoryClick,
-            onInvestmentClick = onInvestmentClick,
-        )
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = true,
+            modifier = Modifier
+                .fillMaxSize(),
+        ) { pageIndex ->
+
+            val category = categories[pageIndex]
+
+            CategoriesPage(
+                group = category.group,
+                total = category.total,
+                categories = category.items,
+                expandedCategoryIds = expandedCategoryIds,
+
+                onCategoryClick = onCategoryClick,
+                onInvestmentClick = onInvestmentClick,
+
+                listState = nestedListStates[pageIndex],
+                onListStateChanged = onListStateChanged,
+            )
+        }
     }
 }
 
-private fun LazyListScope.categoriesPage(
+@Composable
+private fun CategoriesPage(
     group: String,
     total: String,
+
     categories: List<InvestmentCategory>,
     expandedCategoryIds: Set<String>,
+
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    item {
-        @Composable
-        fun formattedText(name: String, total: String): AnnotatedString {
-            val totalFormatted = total.split(Investment.SEPARATOR).joinToString("\n")
-            val textFormatted = stringResource(R.string.chart_text_format, name, totalFormatted).trim()
-
-            return annotateFormattedString(
-                formattedString = textFormatted,
-                part = totalFormatted,
-                spanStyle = SpanStyle(
-                    fontWeight = FontWeight.Bold
-                ),
-            )
-        }
-
-        val data = categories.map {
-            PieChartItem(
-                value = it.investments.sumOf { it.marketValue }.toFloat(),
-                selectedText = formattedText(it.name, it.total)
-            )
-        }
-        val defaultText = formattedText(group, total)
-
-        PieChart(
-            data = data,
-            defaultText = defaultText,
-            textStyle = MaterialTheme.typography.titleLarge,
-        )
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
     }
 
-    item {
-        Spacer(modifier = Modifier
-            .height(dimensionResource(R.dimen.vertical_margin))
-        )
-    }
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.horizontal_margin),
+            vertical = dimensionResource(R.dimen.vertical_margin),
+        ),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
 
-    categories.forEachIndexed { index, category ->
-        item(key = category.id) {
-            CategoryItem(
-                category = category,
-                colorIndex = index,
-                onClick = { onCategoryClick(category.id) },
+        item {
+            @Composable
+            fun formattedText(name: String, total: String): AnnotatedString {
+                val totalFormatted = total.split(Investment.SEPARATOR).joinToString("\n")
+                val textFormatted = stringResource(R.string.chart_text_format, name, totalFormatted).trim()
+
+                return annotateFormattedString(
+                    formattedString = textFormatted,
+                    part = totalFormatted,
+                    spanStyle = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
+
+            val data = categories.map {
+                PieChartItem(
+                    value = it.investments.sumOf { it.marketValue }.toFloat(),
+                    selectedText = formattedText(it.name, it.total)
+                )
+            }
+
+            val defaultText = formattedText(group, total)
+
+            PieChart(
+                data = data,
+                defaultText = defaultText,
+                textStyle = MaterialTheme.typography.titleLarge,
             )
         }
 
-        val isExpanded = expandedCategoryIds.contains(category.id)
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+            )
+        }
 
-        if (isExpanded) {
-            subInvestments(category.investments, onInvestmentClick)
+        categories.forEachIndexed { index, category ->
+            item(key = category.id) {
+                CategoryItem(
+                    category = category,
+                    colorIndex = index,
+                    onClick = { onCategoryClick(category.id) },
+                )
+            }
+
+            val isExpanded = expandedCategoryIds.contains(category.id)
+
+            if (isExpanded) {
+                subInvestments(category.investments, onInvestmentClick)
+            }
         }
     }
 }
 
-private fun LazyListScope.netWorthPage(
-    netWorth: InvestmentNetWorth?,
-
-    categories: List<InvestmentCategory>,
-    expandedCategoryIds: Set<String>,
-    onCategoryClick: (String) -> Unit,
+@Composable
+private fun AssetsPage(
+    group: String,
+    total: String,
 
     assets: List<InvestmentAsset>,
     expandedAssetIds: Set<String>,
     onAssetClick: (String) -> Unit,
 
     onInvestmentClick: (Investment) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    item {
-        ItemHeaderSmall(
-            text = stringResource(R.string.net_worth),
-            modifier = Modifier
-                .padding(bottom = dimensionResource(R.dimen.list_item_padding))
-        )
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
     }
 
-    if (netWorth != null) {
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.horizontal_margin),
+            vertical = dimensionResource(R.dimen.vertical_margin),
+        ),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+
         item {
-            InvestmentsNetWorth(netWorth)
-        }
-    }
+            @Composable
+            fun formattedText(name: String, total: String): AnnotatedString {
+                val totalFormatted = total.split(Investment.SEPARATOR).joinToString("\n")
+                val textFormatted = stringResource(R.string.chart_text_format, name, totalFormatted).trim()
 
-    item {
-        ItemHeaderSmall(
-            text = stringResource(R.string.categories),
-            modifier = Modifier
-                .padding(vertical = dimensionResource(R.dimen.list_item_padding))
-        )
-    }
+                return annotateFormattedString(
+                    formattedString = textFormatted,
+                    part = totalFormatted,
+                    spanStyle = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
 
-    categoriesPage(
-        group = "",
-        total = netWorth?.total.orEmpty(),
-        categories = categories,
-        expandedCategoryIds = expandedCategoryIds,
-        onCategoryClick = onCategoryClick,
-        onInvestmentClick = onInvestmentClick,
-    )
+            val data = assets.map {
+                PieChartItem(
+                    value = it.marketValue.toFloat(),
+                    selectedText = formattedText(it.name, it.total)
+                )
+            }
 
-    item {
-        ItemHeaderSmall(
-            text = stringResource(R.string.assets),
-            modifier = Modifier
-                .padding(vertical = dimensionResource(R.dimen.list_item_padding))
-        )
-    }
+            val defaultText = formattedText(group, total)
 
-    assets.forEach { asset ->
-        item(key = asset.id) {
-            AssetItem(
-                asset = asset,
-                onClick = { onAssetClick(asset.id) },
+            PieChart(
+                data = data,
+                defaultText = defaultText,
+                textStyle = MaterialTheme.typography.titleLarge,
             )
         }
 
-        val isExpanded = expandedAssetIds.contains(asset.id)
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+            )
+        }
 
-        if (isExpanded) {
-            subInvestments(asset.investments, onInvestmentClick)
+        assets.forEachIndexed { index, asset ->
+            item(key = asset.id) {
+                AssetItem(
+                    asset = asset,
+                    colorIndex = index,
+                    onClick = { onAssetClick(asset.id) },
+                )
+            }
+
+            val isExpanded = expandedAssetIds.contains(asset.id)
+
+            if (isExpanded) {
+                subInvestments(asset.investments, onInvestmentClick)
+            }
         }
     }
 }
+
+@Composable
+private fun NetWorthPage(
+    netWorth: InvestmentNetWorth?,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.horizontal_margin),
+            vertical = dimensionResource(R.dimen.vertical_margin),
+        ),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+
+        item {
+            ItemHeaderSmall(
+                text = stringResource(R.string.net_worth),
+                modifier = Modifier
+                    .padding(bottom = dimensionResource(R.dimen.list_item_padding))
+            )
+        }
+
+        if (netWorth != null) {
+            item {
+                InvestmentsNetWorth(netWorth)
+            }
+        }
+    }
+}
+
 
 private fun LazyListScope.subInvestments(
     investments: List<Investment>,
@@ -481,6 +639,7 @@ fun InvestmentItem(
 @Composable
 private fun AssetItem(
     asset: InvestmentAsset,
+    colorIndex: Int,
     onClick: () -> Unit,
 ) {
     ListItem(
@@ -489,6 +648,8 @@ private fun AssetItem(
 
         textRight = asset.shares.toString(),
         subTextRight = "${asset.marketValue.format()} ${asset.currency}",
+
+        colorIndex = colorIndex,
 
         onClick = onClick,
     )

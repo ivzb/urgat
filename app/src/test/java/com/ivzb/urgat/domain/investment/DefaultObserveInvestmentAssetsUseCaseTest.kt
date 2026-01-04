@@ -60,14 +60,14 @@ class ObserveInvestmentAssetsUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "USD", investments = listOf(investments[1])),
-            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "EUR", investments = listOf(investments[4])),
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "USD", investments = listOf(investments[1]), total = "660 USD",),
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "EUR", investments = listOf(investments[4]), total = "660 EUR",),
 
-            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "USD", investments = listOf(investments[2])),
-            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "EUR", investments = listOf(investments[5])),
+            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "USD", investments = listOf(investments[2]), total = "771.05 USD",),
+            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "EUR", investments = listOf(investments[5]), total = "771.05 EUR",),
 
-            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "USD", investments = listOf(investments[0])),
-            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "EUR", investments = listOf(investments[3])),
+            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "USD", investments = listOf(investments[0]), total = "500 USD",),
+            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "EUR", investments = listOf(investments[3]), total = "500 EUR",),
         )
 
         assertEquals(1, results.size)

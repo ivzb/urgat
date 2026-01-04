@@ -97,6 +97,7 @@ object Group {
                     shares = investments.sumOf { it.shares },
                     marketValue = investments.sumOf { it.marketValue },
                     currency = currency,
+                    total = Investment.total(investments),
 
                     investments = investments,
                 )

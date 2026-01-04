@@ -146,6 +146,7 @@ class InvestmentsViewModelTest {
                 marketValue = 500.toBigDecimal(),
                 currency = "USD",
                 investments = investments,
+                total = "1,750.59 EUR | 2,891.05 USD",
             )
         )
         val fakeInvestmentsFiltering = listOf(
@@ -256,6 +257,7 @@ class InvestmentsViewModelTest {
                 marketValue = 500.toBigDecimal(),
                 currency = "USD",
                 investments = investments,
+                total = "1,750.59 EUR | 2,891.05 USD",
             )
         )
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))

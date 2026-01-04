@@ -23,6 +23,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
@@ -53,6 +54,7 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
+import com.ivzb.urgat.ui.investments.InvestmentsPage
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.annotateFormattedString
@@ -166,6 +168,12 @@ internal fun ExpensesContent(
     val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
     val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
     val expandedAllTimeIds = rememberSaveable { mutableStateSetOf<String>() }
+    val isHorizontalScrollEnabled by remember {
+        derivedStateOf {
+            val currentPage = pages[pagerState.currentPage]
+            currentPage != ExpensesPage.Monthly && currentPage != ExpensesPage.Yearly
+        }
+    }
 
     Column {
         PrimaryScrollableTabRow(
@@ -193,7 +201,7 @@ internal fun ExpensesContent(
 
         HorizontalPager(
             state = pagerState,
-            userScrollEnabled = false,
+            userScrollEnabled = isHorizontalScrollEnabled,
             modifier = Modifier
                 .fillMaxSize(),
         ) { pageIndex ->
@@ -201,8 +209,9 @@ internal fun ExpensesContent(
             when (pages[pageIndex]) {
                 ExpensesPage.Transactions -> TransactionsPage(
                     expenses = uiState.expenses,
-                    listState = listStates[pageIndex],
                     onExpenseClick = onExpenseClick,
+
+                    listState = listStates[pageIndex],
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -239,8 +248,8 @@ internal fun ExpensesContent(
 @Composable
 private fun TransactionsPage(
     expenses: List<GroupedExpenses>,
-    listState: LazyListState,
     onExpenseClick: (Expense) -> Unit,
+    listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
@@ -339,9 +348,11 @@ private fun GroupedCategoriesPage(
                 group = category.group,
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
-                listState = nestedListStates[pageIndex],
+
                 onCategoryClick = onCategoryClick,
                 onExpenseClick = onExpenseClick,
+
+                listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
             )
         }
@@ -353,9 +364,11 @@ private fun CategoriesPage(
     group: String,
     categories: List<ExpenseCategory>,
     expandedCategoryIds: Set<String>,
-    listState: LazyListState,
+
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
+
+    listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 

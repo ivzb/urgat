@@ -118,15 +118,15 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentAsset(id = TEST_UUID, name="AAPL", category = "stocks", shares = BigDecimal("4.6"), marketValue = BigDecimal("1258.882"), currency="USD", investments = listOf(investments[2], investments[3])),
-            InvestmentAsset(id = TEST_UUID, name="BRK.B", category = "etf", shares = BigDecimal("3.4"), marketValue = BigDecimal("1681.402"), currency="USD", investments = listOf(investments[8], investments[9])),
-            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1290.072"), currency="USD", investments = listOf(investments[0], investments[1])),
-            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1101.450"), currency="EUR", investments = listOf(investments[12], investments[13])),
-            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("8677.10"), currency="USD", investments = listOf(investments[10], investments[11])),
-            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("7408.50"), currency="EUR", investments = listOf(investments[16], investments[17])),
-            InvestmentAsset(id = TEST_UUID, name="NVDA", category = "stocks", shares = BigDecimal("5.0"), marketValue = BigDecimal("904.950"), currency="USD", investments = listOf(investments[4], investments[5])),
-            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("4100.70"), currency="USD", investments = listOf(investments[6], investments[7])),
-            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("3501.18"), currency="EUR", investments = listOf(investments[14], investments[15])),
+            InvestmentAsset(id = TEST_UUID, name="AAPL", category = "stocks", shares = BigDecimal("4.6"), marketValue = BigDecimal("1258.882"), currency="USD", investments = listOf(investments[2], investments[3]), total = "1,258.88 USD",),
+            InvestmentAsset(id = TEST_UUID, name="BRK.B", category = "etf", shares = BigDecimal("3.4"), marketValue = BigDecimal("1681.402"), currency="USD", investments = listOf(investments[8], investments[9]), total = "1,681.4 USD",),
+            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1290.072"), currency="USD", investments = listOf(investments[0], investments[1]), total = "1,290.07 USD",),
+            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), marketValue = BigDecimal("1101.450"), currency="EUR", investments = listOf(investments[12], investments[13]), total = "1,101.45 EUR",),
+            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("8677.10"), currency="USD", investments = listOf(investments[10], investments[11]), total = "8,677.1 USD",),
+            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), marketValue = BigDecimal("7408.50"), currency="EUR", investments = listOf(investments[16], investments[17]), total = "7,408.5 EUR",),
+            InvestmentAsset(id = TEST_UUID, name="NVDA", category = "stocks", shares = BigDecimal("5.0"), marketValue = BigDecimal("904.950"), currency="USD", investments = listOf(investments[4], investments[5]), total = "904.95 USD",),
+            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("4100.70"), currency="USD", investments = listOf(investments[6], investments[7]), total = "4,100.7 USD",),
+            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), marketValue = BigDecimal("3501.18"), currency="EUR", investments = listOf(investments[14], investments[15]), total = "3,501.18 EUR",),
         )
 
         val actual = Group.groupInvestmentAssets(investments, randomTestUUID)
