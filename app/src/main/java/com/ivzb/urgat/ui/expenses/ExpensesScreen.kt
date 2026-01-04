@@ -33,7 +33,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -159,7 +158,6 @@ internal fun ExpensesContent(
     pages: List<ExpensesPage>,
     pagerState: PagerState,
     listStates: List<LazyListState>,
-    modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
@@ -192,182 +190,224 @@ internal fun ExpensesContent(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = false,
+            modifier = Modifier
+                .fillMaxSize(),
         ) { pageIndex ->
 
-            val allTimeGroup = stringResource(R.string.all_time)
+            when (pages[pageIndex]) {
+                ExpensesPage.Transactions -> TransactionsPage(
+                    expenses = uiState.expenses,
+                    listState = listStates[pageIndex],
+                    onExpenseClick = onExpenseClick,
+                )
 
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxSize(),
-                contentPadding = PaddingValues(
-                    horizontal = dimensionResource(R.dimen.horizontal_margin),
-                    vertical = dimensionResource(R.dimen.vertical_margin),
-                ),
-                state = listStates[pageIndex],
-            ) {
+                ExpensesPage.Monthly -> GroupedCategoriesPage(
+                    categories = uiState.categoriesMonthly,
+                    expandedCategoryIds = expandedMonthlyIds,
+                    listState = listStates[pageIndex],
+                    onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
+                    onExpenseClick = onExpenseClick,
+                )
 
-                when (pages[pageIndex]) {
-                    ExpensesPage.Transactions -> transactionsPage(
-                        expenses = uiState.expenses,
-                        onExpenseClick = onExpenseClick,
-                    )
+                ExpensesPage.Yearly -> GroupedCategoriesPage(
+                    categories = uiState.categoriesYearly,
+                    expandedCategoryIds = expandedYearlyIds,
+                    listState = listStates[pageIndex],
+                    onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
+                    onExpenseClick = onExpenseClick,
+                )
 
-                    ExpensesPage.Monthly -> groupedCategoriesPage(
-                        categories = uiState.categoriesMonthly,
-                        expandedCategoryIds = expandedMonthlyIds,
-                        onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
-                        onExpenseClick = onExpenseClick,
-                    )
-
-                    ExpensesPage.Yearly -> groupedCategoriesPage(
-                        categories = uiState.categoriesYearly,
-                        expandedCategoryIds = expandedYearlyIds,
-                        onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
-                        onExpenseClick = onExpenseClick,
-                    )
-
-                    ExpensesPage.AllTime -> categoriesPage(
-                        group = allTimeGroup,
-                        categories = uiState.categoriesAllTime,
-                        expandedCategoryIds = expandedAllTimeIds,
-                        onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
-                        onExpenseClick = onExpenseClick,
-                    )
-                }
-
-                item {
-                    Spacer(
-                        modifier = Modifier
-                            .height(dimensionResource(R.dimen.vertical_margin))
-                    )
-                }
+                ExpensesPage.AllTime -> CategoriesPage(
+                    group = stringResource(R.string.all_time),
+                    categories = uiState.categoriesAllTime,
+                    expandedCategoryIds = expandedAllTimeIds,
+                    listState = listStates[pageIndex],
+                    onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
+                    onExpenseClick = onExpenseClick,
+                )
             }
         }
     }
 }
 
-private fun LazyListScope.transactionsPage(
+@Composable
+private fun TransactionsPage(
     expenses: List<GroupedExpenses>,
+    listState: LazyListState,
     onExpenseClick: (Expense) -> Unit,
 ) {
-    expenses.forEachIndexed { index, (group, total, expenses) ->
-        item {
-            ItemHeaderSmall(
-                text = group,
-                total = (total * -1.toBigDecimal()).format(),
-                totalFontWeight = FontWeight.Bold,
-                totalColor = expenseColor(total),
-                modifier = Modifier
-                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
-                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
-                    .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
-            )
-        }
 
-        items(
-            items = expenses,
-            key = { expense -> expense.id },
-        ) { expense ->
-            ExpenseItem(
-                expense = expense,
-                onExpenseClick = onExpenseClick
-            )
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.horizontal_margin),
+            vertical = dimensionResource(R.dimen.vertical_margin),
+        ),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+
+        expenses.forEachIndexed { index, (group, total, expenses) ->
+            item {
+                ItemHeaderSmall(
+                    text = group,
+                    total = (total * -1.toBigDecimal()).format(),
+                    totalFontWeight = FontWeight.Bold,
+                    totalColor = expenseColor(total),
+                    modifier = Modifier
+                        .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
+                        .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
+                        .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
+                )
+            }
+
+            items(
+                items = expenses,
+                key = { expense -> expense.id },
+            ) { expense ->
+                ExpenseItem(
+                    expense = expense,
+                    onExpenseClick = onExpenseClick
+                )
+            }
         }
     }
 }
 
-private fun LazyListScope.groupedCategoriesPage(
+@Composable
+private fun GroupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
     expandedCategoryIds: Set<String>,
+    listState: LazyListState,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState { categories.size }
 
-    categories.forEachIndexed { index, (group, total, categories) ->
-
-        item {
-            ItemHeaderSmall(
-                text = group,
-                total = (total * -1.toBigDecimal()).format(),
-                totalFontWeight = FontWeight.Bold,
-                totalColor = expenseColor(total),
-                modifier = Modifier
-                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
-                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
-                    .padding(horizontal = dimensionResource(R.dimen.list_item_padding))
-            )
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        PrimaryScrollableTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            edgePadding = 0.dp,
+        ) {
+            categories.forEachIndexed { index, category ->
+                Tab(
+                    text = {
+                        Text(
+                            text = category.group,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                )
+            }
         }
 
-        categoriesPage(
-            group = group,
-            categories = categories,
-            expandedCategoryIds = expandedCategoryIds,
-            onCategoryClick = onCategoryClick,
-            onExpenseClick = onExpenseClick,
-        )
+        HorizontalPager(
+            state = pagerState,
+            userScrollEnabled = true,
+            modifier = Modifier
+                .fillMaxSize(),
+        ) { pageIndex ->
+
+            val category = categories[pageIndex]
+
+            CategoriesPage(
+                group = category.group,
+                categories = category.items,
+                expandedCategoryIds = expandedCategoryIds,
+                listState = listState,
+                onCategoryClick = onCategoryClick,
+                onExpenseClick = onExpenseClick,
+            )
+        }
     }
 }
 
-private fun LazyListScope.categoriesPage(
+@Composable
+private fun CategoriesPage(
     group: String,
     categories: List<ExpenseCategory>,
     expandedCategoryIds: Set<String>,
+    listState: LazyListState,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
 ) {
 
-    item {
-        @Composable
-        fun formattedText(name: String, value: BigDecimal): AnnotatedString {
-            val valueFormatted = (value * -1.toBigDecimal()).format()
-            val textFormatted = stringResource(R.string.chart_text_format, name, valueFormatted).trim()
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.horizontal_margin),
+            vertical = dimensionResource(R.dimen.vertical_margin),
+        ),
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
 
-            return annotateFormattedString(
-                formattedString = textFormatted,
-                part = valueFormatted,
-                spanStyle = SpanStyle(
-                    color = expenseColor(value),
-                    fontWeight = FontWeight.Bold
-                ),
+        item {
+            @Composable
+            fun formattedText(name: String, value: BigDecimal): AnnotatedString {
+                val valueFormatted = (value * -1.toBigDecimal()).format()
+                val textFormatted =
+                    stringResource(R.string.chart_text_format, name, valueFormatted).trim()
+
+                return annotateFormattedString(
+                    formattedString = textFormatted,
+                    part = valueFormatted,
+                    spanStyle = SpanStyle(
+                        color = expenseColor(value),
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
+
+            val data = categories.map {
+                PieChartItem(
+                    value = it.value.toFloat(),
+                    selectedText = formattedText(it.name, it.value)
+                )
+            }
+            val total = categories.sumOf { it.value }
+            val defaultText = formattedText(group, total)
+
+            PieChart(
+                data = data,
+                defaultText = defaultText,
+                textStyle = MaterialTheme.typography.titleLarge,
             )
         }
 
-        val data = categories.map {
-            PieChartItem(
-                value = it.value.toFloat(),
-                selectedText = formattedText(it.name, it.value)
-            )
-        }
-        val total = categories.sumOf { it.value }
-        val defaultText = formattedText(group, total)
-
-        PieChart(
-            data = data,
-            defaultText = defaultText,
-            textStyle = MaterialTheme.typography.titleLarge,
-        )
-    }
-
-    item {
-        Spacer(modifier = Modifier
-            .height(dimensionResource(R.dimen.vertical_margin))
-        )
-    }
-
-    categories.forEachIndexed { index, category ->
-        item(key = category.id) {
-            CategoryItem(
-                category = category,
-                colorIndex = index,
-                onClick = { onCategoryClick(category.id) },
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
         }
 
-        val isExpanded = expandedCategoryIds.contains(category.id)
+        categories.forEachIndexed { index, category ->
+            item(key = category.id) {
+                CategoryItem(
+                    category = category,
+                    colorIndex = index,
+                    onClick = { onCategoryClick(category.id) },
+                )
+            }
 
-        if (isExpanded) {
-            subExpenses(category.expenses, onExpenseClick)
+            val isExpanded = expandedCategoryIds.contains(category.id)
+
+            if (isExpanded) {
+                subExpenses(category.expenses, onExpenseClick)
+            }
         }
     }
 }
