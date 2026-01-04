@@ -1,3 +1,8 @@
+## Release notes 26.01.07
+
+Fixed:
+- Resolved scrolling problems in expense views.
+
 ## Release notes 26.01.06
 
 New:
