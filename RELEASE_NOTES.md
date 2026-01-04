@@ -1,3 +1,8 @@
+## Release notes 26.01.08
+
+New:
+- Introduced a sub-menu in Investments to make long lists easier to navigate.
+
 ## Release notes 26.01.07
 
 Fixed:
