@@ -1,3 +1,8 @@
+## Release notes 26.01.06
+
+New:
+- Introduced a sub-menu in Expenses to make long lists easier to navigate.
+
 ## Release notes 26.01.05
 
 New:
