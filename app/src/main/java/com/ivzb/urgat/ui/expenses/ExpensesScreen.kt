@@ -22,8 +22,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -100,7 +101,7 @@ fun ExpensesScreen(
     val pages = EXPENSE_PAGES
     val pagerState = rememberPagerState { pages.size }
     val listStates = remember { List(pages.size) { LazyListState() } }
-    val currentListState = remember { derivedStateOf { listStates[pagerState.currentPage] } }
+    val currentListState = remember { mutableStateOf(listStates[0]) }
 
     ListDetailsScaffold(
         selectedRoute = ExpensesRoute,
@@ -145,6 +146,7 @@ fun ExpensesScreen(
                     pages = pages,
                     pagerState = pagerState,
                     listStates = listStates,
+                    onListStateChanged = { currentListState.value = it },
                 )
             }
         }
@@ -158,6 +160,7 @@ internal fun ExpensesContent(
     pages: List<ExpensesPage>,
     pagerState: PagerState,
     listStates: List<LazyListState>,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
@@ -200,22 +203,23 @@ internal fun ExpensesContent(
                     expenses = uiState.expenses,
                     listState = listStates[pageIndex],
                     onExpenseClick = onExpenseClick,
+                    onListStateChanged = onListStateChanged,
                 )
 
                 ExpensesPage.Monthly -> GroupedCategoriesPage(
                     categories = uiState.categoriesMonthly,
                     expandedCategoryIds = expandedMonthlyIds,
-                    listState = listStates[pageIndex],
                     onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
+                    onListStateChanged = onListStateChanged,
                 )
 
                 ExpensesPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
                     expandedCategoryIds = expandedYearlyIds,
-                    listState = listStates[pageIndex],
                     onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
+                    onListStateChanged = onListStateChanged,
                 )
 
                 ExpensesPage.AllTime -> CategoriesPage(
@@ -225,6 +229,7 @@ internal fun ExpensesContent(
                     listState = listStates[pageIndex],
                     onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
+                    onListStateChanged = onListStateChanged,
                 )
             }
         }
@@ -236,7 +241,12 @@ private fun TransactionsPage(
     expenses: List<GroupedExpenses>,
     listState: LazyListState,
     onExpenseClick: (Expense) -> Unit,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
 
     LazyColumn(
         contentPadding = PaddingValues(
@@ -279,12 +289,15 @@ private fun TransactionsPage(
 private fun GroupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
     expandedCategoryIds: Set<String>,
-    listState: LazyListState,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { categories.size }
+    val nestedListStates = remember(categories.size) {
+        List(categories.size) { LazyListState() }
+    }
 
     Column(
         modifier = Modifier
@@ -326,9 +339,10 @@ private fun GroupedCategoriesPage(
                 group = category.group,
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
-                listState = listState,
+                listState = nestedListStates[pageIndex],
                 onCategoryClick = onCategoryClick,
                 onExpenseClick = onExpenseClick,
+                onListStateChanged = onListStateChanged,
             )
         }
     }
@@ -342,7 +356,12 @@ private fun CategoriesPage(
     listState: LazyListState,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
 
     LazyColumn(
         contentPadding = PaddingValues(
