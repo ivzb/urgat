@@ -9,7 +9,6 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
-- add import, export and about screens to screenshot tests
 
 ## Improvements
 - add localizations
