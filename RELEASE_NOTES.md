@@ -1,3 +1,8 @@
+## Release notes 26.01.09
+
+Improved:
+- Investment tabs are now synced with expenses.
+
 ## Release notes 26.01.08
 
 New:
