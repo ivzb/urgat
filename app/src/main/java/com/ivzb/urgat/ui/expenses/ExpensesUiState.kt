@@ -13,6 +13,8 @@ data class ExpensesUiState(
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
 
+    val initialPage: Int = 0,
+
     val filteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo()
 )
 

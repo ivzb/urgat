@@ -13,15 +13,34 @@ import org.junit.experimental.categories.Category
 class InvestmentsScreenshotTest: ScreenshotTest() {
 
     @Test
+    fun screenshotTest_InvestmentsScreen_sampleData_transactions() =
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 0)
+
+    @Test
+    fun screenshotTest_InvestmentsScreen_sampleData_yearly() =
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 1)
+
+    @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_InvestmentsScreen_sampleData() = screenshotTest(
+    fun screenshotTest_InvestmentsScreen_sampleData_allTime() =
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 2)
+
+    @Test
+    fun screenshotTest_InvestmentsScreen_sampleData_assets() =
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 3)
+
+    private fun screenshotTest_InvestmentsScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = InvestmentsUiState(
             investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
-            netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
-            categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+            categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
             assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
+            categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+            netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+
             isLoading = false,
             hasError = false,
+
+            initialPage = initialPage,
         ),
     )
 

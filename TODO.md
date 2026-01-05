@@ -21,13 +21,13 @@
 - change investment cost to market price
 - add optional fee to investment
 - add checkbox which file to be imported/exported
-- use yearly expenses/investments as screenshots to play store
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
 - check how to show text field labels because editing investment is unclear
 - there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 - fix edge to edge recommendation from play store
+- fix pie chart in landscape and tablet (put them in 2 columns side by side)
 
 ## Spikes
 - check if app db is accessible in release and encrypt it

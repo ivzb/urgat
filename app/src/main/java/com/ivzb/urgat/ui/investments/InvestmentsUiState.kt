@@ -16,5 +16,7 @@ data class InvestmentsUiState(
     val isLoading: Boolean = false,
     val hasError: Boolean = false,
 
+    val initialPage: Int = 0,
+
     val filteringUiInfo: InvestmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
 )

@@ -93,13 +93,15 @@ fun InvestmentsScreen(
 fun InvestmentsScreen(
     uiState: InvestmentsUiState,
     onIntent: (InvestmentsIntent) -> Unit,
+
     onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onBack: () -> Unit,
+
     modifier: Modifier = Modifier,
 ) {
     val pages = INVESTMENT_PAGES
-    val pagerState = rememberPagerState { pages.size }
+    val pagerState = rememberPagerState(initialPage = uiState.initialPage) { pages.size }
     val listStates = remember { List(pages.size) { LazyListState() } }
     val currentListState = remember { mutableStateOf(listStates[0]) }
 
@@ -631,17 +633,19 @@ private fun CategoryItem(
 
 @AllDevicesPreview
 @Composable
-private fun InvestmentsScreenPreview() {
+private fun InvestmentsScreenPreview(initialPage: Int = 0) {
     UrgatTheme {
         InvestmentsScreen(
             uiState = InvestmentsUiState(
                 investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
-                netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
-                categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+                categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
                 assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
+                categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+                netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
-                hasError = false
+                hasError = false,
+                initialPage = initialPage,
             ),
             onIntent = {},
             onAddInvestment = {},
@@ -650,6 +654,24 @@ private fun InvestmentsScreenPreview() {
             modifier = Modifier
         )
     }
+}
+
+@AllDevicesPreview
+@Composable
+private fun InvestmentsScreenYearlyPreview() {
+    InvestmentsScreenPreview(initialPage = 1)
+}
+
+@AllDevicesPreview
+@Composable
+private fun InvestmentsScreenAllTimePreview() {
+    InvestmentsScreenPreview(initialPage = 2)
+}
+
+@AllDevicesPreview
+@Composable
+private fun InvestmentsScreeAssetsPreview() {
+    InvestmentsScreenPreview(initialPage = 3)
 }
 
 @AllDevicesPreview

@@ -95,13 +95,15 @@ fun ExpensesScreen(
 fun ExpensesScreen(
     uiState: ExpensesUiState,
     onIntent: (ExpensesIntent) -> Unit,
+
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
+
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pages = EXPENSE_PAGES
-    val pagerState = rememberPagerState { pages.size }
+    val pagerState = rememberPagerState(initialPage = uiState.initialPage) { pages.size }
     val listStates = remember { List(pages.size) { LazyListState() } }
     val currentListState = remember { mutableStateOf(listStates[0]) }
 
@@ -521,7 +523,7 @@ private fun CategoryItem(
 
 @AllDevicesPreview
 @Composable
-private fun ExpensesScreenPreview() {
+private fun ExpensesScreenPreview(initialPage: Int = 0) {
     UrgatTheme {
         ExpensesScreen(
             uiState = ExpensesUiState(
@@ -531,7 +533,8 @@ private fun ExpensesScreenPreview() {
                 categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
-                hasError = false
+                hasError = false,
+                initialPage = initialPage,
             ),
             onIntent = {},
             onAddExpense = {},
@@ -540,6 +543,24 @@ private fun ExpensesScreenPreview() {
             modifier = Modifier
         )
     }
+}
+
+@AllDevicesPreview
+@Composable
+private fun ExpensesScreenMonthlyPreview() {
+    ExpensesScreenPreview(initialPage = 1)
+}
+
+@AllDevicesPreview
+@Composable
+private fun ExpensesScreenYearlyPreview() {
+    ExpensesScreenPreview(initialPage = 2)
+}
+
+@AllDevicesPreview
+@Composable
+private fun ExpensesScreenAllTimePreview() {
+    ExpensesScreenPreview(initialPage = 3)
 }
 
 @AllDevicesPreview

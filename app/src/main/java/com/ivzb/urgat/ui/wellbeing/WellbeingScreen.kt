@@ -320,7 +320,7 @@ private fun WellbeingScreenPreview() {
     UrgatTheme {
         WellbeingScreen(
             uiState = WellbeingUiState(
-                weights = SampleData.SAMPLE_WEIGHTS,
+                weights = SampleData.SAMPLE_WEIGHTS.take(5),
                 weightsFilteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,

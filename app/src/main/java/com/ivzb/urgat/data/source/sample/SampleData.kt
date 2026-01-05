@@ -56,11 +56,12 @@ object SampleData {
             listOf("Movie tickets", "25", "Entertainment", "864000"),
             listOf("Phone bill", "35", "Utilities", "864000"),
             listOf("Bus pass", "40", "Transport", "432000"),
-            listOf("Salary", "-1500", "Job", "432000"),
+            listOf("Salary", "-100", "Job", "432000"),
             listOf("Pet food", "25.50", "Pets", "0"),
             listOf("Birthday gift", "80", "Gifts", "0"),
+            listOf("Credit card", "50", "Debt", "0"),
         )
-    }.mapIndexed { index, (name, amount, category, dateOffset) ->
+    }.reversed().mapIndexed { index, (name, amount, category, dateOffset) ->
         Expense(
             id = "expense_$index",
             name = name,
@@ -144,13 +145,13 @@ object SampleData {
             listOf("Vanguard S&P 500 ETF", "32", "621.88", "ETF", "USD", "1296000"),
             listOf("Bitcoin", "0.025", "90966", "Cryptocurrency", "USD", "1296000"),
             listOf("Ethereum", "0.08", "3021", "Cryptocurrency", "USD", "864000"),
-            listOf("US Government Bonds", "2", "2000.00", "Bonds", "USD", "864000"),
+            listOf("US Government Bonds", "2", "2000.00", "US Bonds", "USD", "864000"),
             listOf("Rental Property Deposit", "1", "17000.00", "Real Estate", "USD", "432000"),
             listOf("Alibaba Group", "30", "133", "Stocks", "EUR", "432000"),
             listOf("Samsung Electronics", "2.4", "1128", "Stocks", "EUR", "0"),
             listOf("Toyota Motor Corp.", "15", "210", "Stocks", "EUR", "0"),
         )
-    }.mapIndexed { index, (name, shares, cost, category, currency, dateOffset) ->
+    }.reversed().mapIndexed { index, (name, shares, cost, category, currency, dateOffset) ->
         Investment(
             id = "investment_$index",
             name = name,
@@ -166,6 +167,8 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS_GROUPED = Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::total)
 
+    val SAMPLE_INVESTMENTS_CATEGORIES_YEARLY = Group.groupInvestmentCategoriesYearly(SAMPLE_INVESTMENTS, ::randomUUID)
+
     val SAMPLE_INVESTMENTS_NET_WORTH = Group.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
 
     val SAMPLE_INVESTMENTS_CATEGORIES = Group.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
@@ -174,24 +177,24 @@ object SampleData {
 
     val SAMPLE_WEIGHTS = debugOnly {
         listOf(
-            listOf("70.5", "1700000000"),
-            listOf("70.7", "1700086400"),
-            listOf("70.6", "1700172800"),
-            listOf("70.8", "1700259200"),
-            listOf("70.9", "1700345600"),
-            listOf("71.0", "1700432000"),
-            listOf("70.8", "1700518400"),
-            listOf("70.7", "1700604800"),
-            listOf("70.6", "1700691200"),
-            listOf("70.5", "1700777600"),
+            listOf("70.5"),
+            listOf("70.7"),
+            listOf("70.6"),
+            listOf("70.8"),
+            listOf("70.9"),
+            listOf("71.0"),
+            listOf("70.8"),
+            listOf("70.7"),
+            listOf("70.6"),
+            listOf("70.5"),
         )
-    }.mapIndexed { index, (weight, timestamp) ->
+    }.mapIndexed { index, (weight) ->
         Weight(
             id = "weight_$index",
             value = weight.toBigDecimal(),
-            date = timestamp.toLong() * 1000,
+            date = System.currentTimeMillis() - (index * 86_400 * 1_000),
             isDeleted = false,
-            createdAt = timestamp.toLong() * 1000,
+            createdAt = System.currentTimeMillis() - (index * 86_400 * 1_000),
         )
     }
 

@@ -17,7 +17,7 @@ class WellbeingScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_WellbeingScreen_sampleData() = screenshotTest(
         uiState = WellbeingUiState(
-            weights = SampleData.SAMPLE_WEIGHTS,
+            weights = SampleData.SAMPLE_WEIGHTS.take(itemsLimit),
             isLoading = false,
             hasError = false,
         ),

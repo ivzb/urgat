@@ -453,11 +453,11 @@ fun LibraryScreenPreview() {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
-                todos = SampleData.SAMPLE_TODOS.take(3),
+                todos = SampleData.SAMPLE_TODOS.take(5),
                 todosFilteringUiInfo = TodosFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_todos,
                 ),
-                notes = SampleData.SAMPLE_NOTES.take(3),
+                notes = SampleData.SAMPLE_NOTES.take(5),
                 notesFilteringUiInfo = NotesFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_notes,
                 ),                isLoading = false,

@@ -436,11 +436,11 @@ fun FinanceScreenPreview() {
     UrgatTheme {
         FinanceScreen(
             uiState = FinanceUiState(
-                expenses = SampleData.SAMPLE_EXPENSES.take(3),
+                expenses = SampleData.SAMPLE_EXPENSES.take(5),
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_expenses,
                 ),
-                investments = SampleData.SAMPLE_INVESTMENTS.take(3),
+                investments = SampleData.SAMPLE_INVESTMENTS.take(5),
                 investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_investments,
                 ),
