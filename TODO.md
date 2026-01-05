@@ -21,6 +21,7 @@
 - change investment cost to market price
 - add optional fee to investment
 - add checkbox which file to be imported/exported
+- use yearly expenses/investments as screenshots to play store
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -39,6 +40,7 @@
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 
 ## Features
+- consider adding version control (git) support in the app - maybe something like export -> push to git repo
 - encrypt the db and announce that the info in the app is encrypted in play store app description
 - make tablet support list/detail
 - long-press on a note should copy it
@@ -53,12 +55,13 @@
 - add category to notes
 - add tags to expenses
 - add links feature to library
-- calculate total net worth, calculate 25 x yearly costs, calculate % to FI
 - make remaining budget which is calculated by salary - investments - expenses
-- make investments net worth calculate current price and show profit/loss in investments screen for each asset
-- make the investments tab show net worth. then show each investment combined, then show transactions
+- calculate current price and show profit/loss in investments screen for each asset
 - calculate current price of assets based on latest transaction market price
 - handle share link to Urgat and save it
 - add system unlock with biometric/pin when opening the app
 - show expense categories as chips at the bottom of add expense
 - make expenses chart like github contributions
+- make third entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
+- make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
+- make the app hledger compatible - https://hledger.org/

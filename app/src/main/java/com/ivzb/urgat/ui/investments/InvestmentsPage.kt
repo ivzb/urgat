@@ -9,15 +9,13 @@ sealed class InvestmentsPage(
 ) {
     data object Transactions: InvestmentsPage(R.string.transactions)
     data object Yearly: InvestmentsPage(R.string.yearly)
-    data object Categories: InvestmentsPage(R.string.categories)
+    data object AllTime: InvestmentsPage(R.string.all_time)
     data object Assets: InvestmentsPage(R.string.assets)
-    data object NetWorth: InvestmentsPage(R.string.net_worth)
 }
 
 val INVESTMENT_PAGES = listOf(
     InvestmentsPage.Transactions,
     InvestmentsPage.Yearly,
-    InvestmentsPage.Categories,
+    InvestmentsPage.AllTime,
     InvestmentsPage.Assets,
-    InvestmentsPage.NetWorth,
 )

@@ -222,8 +222,8 @@ private fun InvestmentsContent(
                     onListStateChanged = onListStateChanged,
                 )
 
-                InvestmentsPage.Categories -> CategoriesPage(
-                    group = stringResource(R.string.categories),
+                InvestmentsPage.AllTime -> CategoriesPage(
+                    group = stringResource(R.string.all_time),
                     total = uiState.netWorth?.total.orEmpty(),
                     categories = uiState.categories,
                     expandedCategoryIds = expandedCategoryIds,
@@ -244,13 +244,6 @@ private fun InvestmentsContent(
                     onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
 
                     onInvestmentClick = onInvestmentClick,
-
-                    listState = listStates[pageIndex],
-                    onListStateChanged = onListStateChanged,
-                )
-
-                InvestmentsPage.NetWorth -> NetWorthPage(
-                    netWorth = uiState.netWorth,
 
                     listState = listStates[pageIndex],
                     onListStateChanged = onListStateChanged,
@@ -549,44 +542,6 @@ private fun AssetsPage(
     }
 }
 
-@Composable
-private fun NetWorthPage(
-    netWorth: InvestmentNetWorth?,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
-
-    LazyColumn(
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
-        ),
-        state = listState,
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-
-        item {
-            ItemHeaderSmall(
-                text = stringResource(R.string.net_worth),
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(R.dimen.list_item_padding))
-            )
-        }
-
-        if (netWorth != null) {
-            item {
-                InvestmentsNetWorth(netWorth)
-            }
-        }
-    }
-}
-
 
 private fun LazyListScope.subInvestments(
     investments: List<Investment>,
@@ -671,21 +626,6 @@ private fun CategoryItem(
         colorIndex = colorIndex,
 
         onClick = onClick,
-    )
-}
-
-@Composable
-private fun InvestmentsNetWorth(
-    netWorth: InvestmentNetWorth,
-) {
-    ListItem(
-        textLeft = stringResource(R.string.total),
-        subTextLeft = "",
-
-        textRight = netWorth.total,
-        subTextRight = "",
-
-        onClick = { /* NOOP */ },
     )
 }
 

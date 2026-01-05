@@ -65,7 +65,7 @@ fun PieChart(
     ) {
 
         val offsets = data.mapIndexed { index, _ ->
-            val isSelected = selectedIndex.value == index
+            val isSelected = selectedIndex.value == index && data.size > 1
             animateFloatAsState(targetValue = if (isSelected) 50f else 0f).value
         }
 
