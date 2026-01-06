@@ -1,3 +1,8 @@
+## Release notes 26.01.10
+
+Fixed:
+- Resolve top search bar issue.
+
 ## Release notes 26.01.09
 
 Improved:
