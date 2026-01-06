@@ -1,9 +1,14 @@
 package com.ivzb.urgat.ui.components
 
+import android.os.Build
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -39,7 +44,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,108 +59,121 @@ fun SearchableTopBar(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    Crossfade(
-        modifier = Modifier.animateContentSize(),
-        targetState = isSearching,
-        label = stringResource(R.string.search)
-    ) { target ->
-        if (!target) {
-            TopAppBar(
-                title = {
-                    Text(stringResource(titleResId))
-                },
-                navigationIcon = {
-                    navigationIcon?.invoke()
-                },
-                actions = {
-                    if (withActions || searchQuery.isNotEmpty()) {
+    // test lower versions
+    val topPaddingModifier = if (Build.VERSION.SDK_INT <= 34) {
+        Modifier.windowInsetsPadding(WindowInsets.statusBars)
+    } else {
+        Modifier
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(topPaddingModifier)
+    ) {
+        Crossfade(
+            modifier = Modifier.animateContentSize(),
+            targetState = isSearching,
+            label = stringResource(R.string.search)
+        ) { target ->
+            if (!target) {
+                TopAppBar(
+                    title = {
+                        Text(stringResource(titleResId))
+                    },
+                    navigationIcon = {
+                        navigationIcon?.invoke()
+                    },
+                    actions = {
+                        if (withActions || searchQuery.isNotEmpty()) {
+                            IconButton(onClick = {
+                                onIsSearchingChanged(!isSearching)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = stringResource(R.string.search)
+                                )
+                            }
+                        }
+
+                        if (withActions) {
+                            actionsContent?.invoke()
+                        }
+                    },
+                    windowInsets = WindowInsets(0)
+                )
+            } else {
+                var searchQueryTextFieldValue by remember {
+                    mutableStateOf(
+                        TextFieldValue(
+                            text = searchQuery,
+                            selection = TextRange(searchQuery.length)
+                        )
+                    )
+                }
+
+                val keyboardController = LocalSoftwareKeyboardController.current
+
+                TextField(
+                    value = searchQueryTextFieldValue,
+                    onValueChange = {
+                        searchQueryTextFieldValue = it.copy(
+                            selection = TextRange(it.text.length)
+                        )
+
+                        onSearchQueryChanged(it.text)
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            keyboardController?.hide()
+                        }
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.background,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.background
+                    ),
+                    placeholder = {
+                        Text(stringResource(R.string.search))
+                    },
+                    leadingIcon = {
                         IconButton(onClick = {
                             onIsSearchingChanged(!isSearching)
                         }) {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.search)
                             )
                         }
-                    }
-
-                    if (withActions) {
-                        actionsContent?.invoke()
-                    }
-                },
-                windowInsets = topBarInsets()
-            )
-        } else {
-            var searchQueryTextFieldValue by remember {
-                mutableStateOf(
-                    TextFieldValue(
-                        text = searchQuery,
-                        selection = TextRange(searchQuery.length)
-                    )
-                )
-            }
-
-            val keyboardController = LocalSoftwareKeyboardController.current
-
-            TextField(
-                value = searchQueryTextFieldValue,
-                onValueChange = {
-                    searchQueryTextFieldValue = it.copy(
-                        selection = TextRange(it.text.length)
-                    )
-
-                    onSearchQueryChanged(it.text)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        keyboardController?.hide()
-                    }
-                ),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background
-                ),
-                placeholder = {
-                    Text(stringResource(R.string.search))
-                },
-                leadingIcon = {
-                    IconButton(onClick = {
-                        onIsSearchingChanged(!isSearching)
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.search)
-                        )
-                    }
-                },
-                trailingIcon = {
-                    if (searchQuery.isNotBlank()) {
-                        IconButton(onClick = {
-                            searchQueryTextFieldValue = searchQueryTextFieldValue.copy(
-                                text = "",
-                                selection = TextRange(0)
-                            )
-                            onSearchQueryChanged("")
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = stringResource(R.string.close)
-                            )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotBlank()) {
+                            IconButton(onClick = {
+                                searchQueryTextFieldValue = searchQueryTextFieldValue.copy(
+                                    text = "",
+                                    selection = TextRange(0)
+                                )
+                                onSearchQueryChanged("")
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    contentDescription = stringResource(R.string.close)
+                                )
+                            }
                         }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
-                    .focusRequester(focusRequester)
-            )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
+                        .focusRequester(focusRequester)
+                )
 
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
+                }
             }
         }
     }
