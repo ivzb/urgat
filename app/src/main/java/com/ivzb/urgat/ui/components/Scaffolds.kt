@@ -227,8 +227,8 @@ fun ListDetailsScaffold(
         withTopAppBarActions = withTopAppBarActions,
         topAppBarActionsContent = topAppBarActionsContent,
         floatingActionButtonContent = {
-            FloatingActionButtonContent(
-                extended = listState.isScrollingUp(),
+            ScrollAwareFAB(
+                visible = listState.isScrollingUp(),
                 icon = Icons.Default.Add,
                 labelResId = R.string.add,
                 onClick = onAddItem

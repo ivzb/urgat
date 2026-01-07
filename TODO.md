@@ -28,6 +28,7 @@
 - there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 - fix edge to edge recommendation from play store
 - fix pie chart in landscape and tablet (put them in 2 columns side by side)
+- sometimes when lists are not long enough the FAB stays on top of last item 
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
