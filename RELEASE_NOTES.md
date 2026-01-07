@@ -1,3 +1,8 @@
+## Release notes 26.01.11
+
+Improved:
+- A floating button that smartly hides when you scroll down and reappears when you scroll up.
+
 ## Release notes 26.01.10
 
 Fixed:
