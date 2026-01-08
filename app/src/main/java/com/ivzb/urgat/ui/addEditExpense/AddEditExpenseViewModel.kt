@@ -48,6 +48,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             is AddEditExpenseIntent.UpdateAmount -> updateAmount(intent.value)
             is AddEditExpenseIntent.UpdateCategory -> updateCategory(intent.value)
             is AddEditExpenseIntent.UpdateDate -> updateDate(intent.value)
+            is AddEditExpenseIntent.UpdateExcludeFromAnalytics -> updateExcludeFromAnalytics(intent.value)
             AddEditExpenseIntent.SaveExpense -> saveExpense()
             AddEditExpenseIntent.DeleteExpense -> deleteExpense()
             AddEditExpenseIntent.UserMessageShown -> userMessageShown()
@@ -75,6 +76,12 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     private fun updateDate(date: Long) {
         _uiState.update {
             it.copy(date = date)
+        }
+    }
+
+    private fun updateExcludeFromAnalytics(excludeFromAnalytics: Boolean) {
+        _uiState.update {
+            it.copy(excludeFromAnalytics = excludeFromAnalytics)
         }
     }
 
@@ -110,7 +117,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             name = uiState.value.name.sanitize(),
             amount = uiState.value.amount.sanitize().toBigDecimal(),
             category = uiState.value.category.sanitize(),
-            date = uiState.value.date
+            date = uiState.value.date,
+            excludeFromAnalytics = uiState.value.excludeFromAnalytics,
         )
 
         _uiState.update {
@@ -155,7 +163,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
                 name = uiState.value.name.sanitize(),
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
                 category = uiState.value.category.sanitize(),
-                date = uiState.value.date
+                date = uiState.value.date,
+                excludeFromAnalytics = uiState.value.excludeFromAnalytics,
             )
 
             _uiState.update {
@@ -184,6 +193,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
                             amount = expense.amount.toString(),
                             category = expense.category,
                             date = expense.date,
+                            excludeFromAnalytics = expense.excludeFromAnalytics,
                             isLoading = false,
                             withDelete = true,
                         )

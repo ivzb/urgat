@@ -6,7 +6,14 @@ import javax.inject.Inject
 
 interface UpdateExpenseUseCase {
 
-    suspend operator fun invoke(id: String, name: String, amount: BigDecimal, category: String, date: Long)
+    suspend operator fun invoke(
+        id: String,
+        name: String,
+        amount: BigDecimal,
+        category: String,
+        date: Long,
+        excludeFromAnalytics: Boolean,
+    )
 
 }
 
@@ -14,8 +21,16 @@ class DefaultUpdateExpenseUseCase @Inject constructor(
     private val repository: ExpensesRepository
 ): UpdateExpenseUseCase {
 
-    override suspend operator fun invoke(id: String, name: String, amount: BigDecimal, category: String, date: Long) {
-        repository.update(id, name, amount, category, date)
+    override suspend operator fun invoke(
+        id: String,
+        name: String,
+        amount: BigDecimal,
+        category: String,
+        date: Long,
+        excludeFromAnalytics: Boolean
+    ) {
+
+        repository.update(id, name, amount, category, date, excludeFromAnalytics)
     }
 
 }

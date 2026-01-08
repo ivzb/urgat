@@ -31,7 +31,13 @@ class DefaultExpensesRepository @Inject constructor(
         }
     }
 
-    override suspend fun create(name: String, amount: BigDecimal, category: String, date: Long): String {
+    override suspend fun create(
+        name: String,
+        amount: BigDecimal,
+        category: String,
+        date: Long,
+        excludeFromAnalytics: Boolean,
+    ): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
         val id = withContext(dispatcher) {
@@ -43,6 +49,7 @@ class DefaultExpensesRepository @Inject constructor(
             amount = amount,
             category = category,
             date = date,
+            excludeFromAnalytics = excludeFromAnalytics,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
@@ -50,12 +57,20 @@ class DefaultExpensesRepository @Inject constructor(
         return id
     }
 
-    override suspend fun update(id: String, name: String, amount: BigDecimal, category: String, date: Long) {
+    override suspend fun update(
+        id: String,
+        name: String,
+        amount: BigDecimal,
+        category: String,
+        date: Long,
+        excludeFromAnalytics: Boolean,
+    ) {
         val expense = get(id)?.copy(
             name = name,
             amount = amount,
             category = category,
-            date = date
+            date = date,
+            excludeFromAnalytics = excludeFromAnalytics,
         )
 
         if (expense == null) {

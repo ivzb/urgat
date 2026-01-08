@@ -137,6 +137,7 @@ object Group {
 
     private fun groupExpenses(expenses: List<Expense>, random: () -> String): List<ExpenseCategory> =
         expenses
+            .filterNot { it.excludeFromAnalytics }
             .groupBy { it.category }
             .map { (category, expenses) ->
                 ExpenseCategory(

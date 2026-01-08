@@ -30,4 +30,5 @@
     <dimen name="weights_chart_height">300dp</dimen>
     <dimen name="pie_chart_stroke_width">50dp</dimen>
     <dimen name="expense_category_color_width">15dp</dimen>
+    <dimen name="checkbox_padding">8dp</dimen>
 </resources>

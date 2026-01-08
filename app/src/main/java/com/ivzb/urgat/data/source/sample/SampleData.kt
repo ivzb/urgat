@@ -68,6 +68,7 @@ object SampleData {
             amount = amount.toBigDecimal(),
             category = category,
             date = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
+            excludeFromAnalytics = false,
             isDeleted = false,
             createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
         )

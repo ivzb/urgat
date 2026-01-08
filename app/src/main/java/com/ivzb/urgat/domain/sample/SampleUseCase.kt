@@ -41,6 +41,7 @@ class DefaultSampleUseCase @Inject constructor(
                 it.amount,
                 it.category,
                 it.date,
+                it.excludeFromAnalytics,
             )
         }
 

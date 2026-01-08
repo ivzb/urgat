@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.CheckboxWithLabel
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
@@ -229,6 +230,19 @@ fun AddEditExpenseScreen(
                         )
                     }
                 }
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                CheckboxWithLabel(
+                    value = uiState.excludeFromAnalytics,
+                    onValueChange = {
+                        onIntent(AddEditExpenseIntent.UpdateExcludeFromAnalytics(it))
+                    },
+                    label = stringResource(R.string.exclude_from_analytics),
+                )
 
                 Spacer(
                     modifier = Modifier

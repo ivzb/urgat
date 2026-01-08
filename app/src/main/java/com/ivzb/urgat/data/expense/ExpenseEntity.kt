@@ -11,6 +11,7 @@ data class ExpenseEntity(
     val amount: BigDecimal,
     val category: String,
     val date: Long,
+    val excludeFromAnalytics: Boolean,
     val isDeleted: Boolean,
     val createdAt: Long
 )

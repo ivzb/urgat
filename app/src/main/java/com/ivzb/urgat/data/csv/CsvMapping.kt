@@ -40,6 +40,7 @@ data class CsvMapping(
             CsvMapping("amount", "big_decimal"),
             CsvMapping("category", "string"),
             CsvMapping("date", "long"),
+            CsvMapping("excludeFromAnalytics", "boolean"),
             CsvMapping("createdAt", "long"),
         )
 
@@ -94,6 +95,7 @@ data class CsvMapping(
                 amount = split[2].toBigDecimal(),
                 category = split[3],
                 date = split[4].toLong(),
+                excludeFromAnalytics = split[5].toBoolean(),
                 isDeleted = false,
                 createdAt = split[5].toLong(),
             )

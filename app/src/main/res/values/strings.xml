@@ -137,4 +137,5 @@
     <string name="about">About</string>
     <string name="version_format">Version: %1$s</string>
     <string name="chart_text_format">%1$s\n%2$s</string>
+    <string name="exclude_from_analytics">Exclude from analytics</string>
 </resources>

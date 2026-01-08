@@ -9,6 +9,7 @@ data class AddEditExpenseUiState(
     val amount: String = "",
     val category: String = "",
     val date: Long = System.currentTimeMillis(),
+    val excludeFromAnalytics: Boolean = false,
     val focusIndex: Int = 0,
     val isLoading: Boolean = false,
     val userMessage: Int? = null,

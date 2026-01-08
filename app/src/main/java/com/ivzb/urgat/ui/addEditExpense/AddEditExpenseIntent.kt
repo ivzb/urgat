@@ -5,6 +5,7 @@ sealed class AddEditExpenseIntent {
     data class UpdateAmount(val value: String): AddEditExpenseIntent()
     data class UpdateCategory(val value: String): AddEditExpenseIntent()
     data class UpdateDate(val value: Long): AddEditExpenseIntent()
+    data class UpdateExcludeFromAnalytics(val value: Boolean): AddEditExpenseIntent()
     object SaveExpense: AddEditExpenseIntent()
     object DeleteExpense: AddEditExpenseIntent()
     object UserMessageShown: AddEditExpenseIntent()

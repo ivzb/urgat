@@ -6,6 +6,7 @@ fun Expense.toEntity() = ExpenseEntity(
     amount = amount,
     category = category,
     date = date,
+    excludeFromAnalytics = excludeFromAnalytics,
     isDeleted = isDeleted,
     createdAt = createdAt
 )
@@ -18,6 +19,7 @@ fun ExpenseEntity.toExternal() = Expense(
     amount = amount,
     category = category,
     date = date,
+    excludeFromAnalytics = excludeFromAnalytics,
     isDeleted = isDeleted,
     createdAt = createdAt
 )

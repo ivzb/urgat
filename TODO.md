@@ -21,6 +21,7 @@
 - change investment cost to market price
 - add optional fee to investment
 - add checkbox which file to be imported/exported
+- move the exclude from analytics checkbox to preview screen
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -66,4 +67,7 @@
 - make third entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
 - make the app hledger compatible - https://hledger.org/
-- add checkbox to expenses to exlude from analytics - for example buying property
+- add checkbox to expenses to exclude  from analytics - for example buying property
+- add migration tests
+- improve grouping tests with excludeFromAnalytics
+- fix unit tests
