@@ -66,3 +66,4 @@
 - make third entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
 - make the app hledger compatible - https://hledger.org/
+- add checkbox to expenses to exlude from analytics - for example buying property
