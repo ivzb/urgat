@@ -19,7 +19,7 @@ data class Expense(
 
     companion object {
 
-        fun total(expenses: List<Expense>): BigDecimal = expenses.format()
+        fun total(expenses: List<Expense>): BigDecimal = expenses.filterNot { it.excludeFromAnalytics }.format()
 
         fun List<Expense>.format(): BigDecimal =
             this.sumOf { it.amount }

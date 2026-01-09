@@ -40,6 +40,7 @@ class DefaultExpensesRepositoryTest {
             name = "Coffee",
             amount = BigDecimal("3.50"),
             category = "Food",
+            excludeFromAnalytics = false,
             date = 1000L
         )
 
@@ -48,6 +49,7 @@ class DefaultExpensesRepositoryTest {
         assertEquals("Coffee", stored?.name)
         assertEquals(BigDecimal("3.50"), stored?.amount)
         assertEquals(1000L, stored?.date)
+        assertEquals(false, stored?.excludeFromAnalytics)
         assertTrue(stored?.isDeleted == false)
     }
 
@@ -57,6 +59,7 @@ class DefaultExpensesRepositoryTest {
             name = "Lunch",
             amount = BigDecimal("10.0"),
             category = "Food",
+            excludeFromAnalytics = false,
             date = 2000L
         )
 
@@ -65,25 +68,27 @@ class DefaultExpensesRepositoryTest {
         assertEquals("Lunch", expense?.name)
         assertEquals(BigDecimal("10.0"), expense?.amount)
         assertEquals(2000L, expense?.date)
+        assertEquals(false, expense?.excludeFromAnalytics)
     }
 
     @Test
     fun `update modifies existing expense`() = runTest {
-        val id = repository.create("Old", BigDecimal.ONE, "Misc", 3000L)
+        val id = repository.create("Old", BigDecimal.ONE, "Misc", 3000L, false)
 
-        repository.update(id, "Updated", BigDecimal.TEN, "Travel", 4000L)
+        repository.update(id, "Updated", BigDecimal.TEN, "Travel", 4000L, true)
 
         val updated = repository.get(id)
         assertNotNull(updated)
         assertEquals("Updated", updated?.name)
         assertEquals(BigDecimal.TEN, updated?.amount)
         assertEquals("Travel", updated?.category)
+        assertEquals(true, updated?.excludeFromAnalytics)
     }
 
     @Test
     fun `update throws when expense does not exist`() = runTest {
         val exception = assertFailsWith<Exception> {
-            repository.update("missing", "A", BigDecimal.ONE, "Cat", 0L)
+            repository.update("missing", "A", BigDecimal.ONE, "Cat", 0L, false)
         }
 
         assertTrue(exception.message?.contains("not found") == true)
@@ -91,7 +96,7 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `delete removes expense`() = runTest {
-        val id = repository.create("Temp", BigDecimal.ONE, "Misc", 0L)
+        val id = repository.create("Temp", BigDecimal.ONE, "Misc", 0L, false)
         assertNotNull(dao.getById(id))
 
         repository.delete(id)
@@ -100,8 +105,8 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `observe emits mapped expenses`() = runTest {
-        repository.create("A", BigDecimal("1.0"), "Cat", 0L)
-        repository.create("B", BigDecimal("2.0"), "Cat", 0L)
+        repository.create("A", BigDecimal("1.0"), "Cat", 0L, false)
+        repository.create("B", BigDecimal("2.0"), "Cat", 0L, false)
 
         val result = repository.observe(limit = 10).first()
 
@@ -111,9 +116,9 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `observe with searchQuery filters correctly`() = runTest {
-        repository.create("Taxi", BigDecimal("10.0"), "Transport", 0L)
-        repository.create("Lunch", BigDecimal("8.0"), "Food", 0L)
-        repository.create("Bus", BigDecimal("3.0"), "Transport", 0L)
+        repository.create("Taxi", BigDecimal("10.0"), "Transport", 0L, false)
+        repository.create("Lunch", BigDecimal("8.0"), "Food", 0L, false)
+        repository.create("Bus", BigDecimal("3.0"), "Transport", 0L, false)
 
         val result = repository.observe(limit = 10, searchQuery = "Lu").first()
 

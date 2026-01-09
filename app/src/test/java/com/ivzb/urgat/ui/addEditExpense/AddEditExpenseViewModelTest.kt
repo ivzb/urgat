@@ -71,6 +71,7 @@ class AddEditExpenseViewModelTest {
             amount = BigDecimal("15"),
             category = "Transport",
             date = 123L,
+            excludeFromAnalytics = false,
             isDeleted = false,
             createdAt = 1L,
         )
@@ -86,6 +87,7 @@ class AddEditExpenseViewModelTest {
         assertEquals("15", state.amount)
         assertEquals("Transport", state.category)
         assertEquals(123L, state.date)
+        assertEquals(false, state.excludeFromAnalytics)
         assertEquals(false, state.isLoading)
         assertEquals(true, state.withDelete)
         assertEquals(false, state.shouldNavigateBack)
@@ -159,6 +161,7 @@ class AddEditExpenseViewModelTest {
             amount = BigDecimal("15"),
             category = "Transport",
             date = 123L,
+            excludeFromAnalytics = false,
             isDeleted = false,
             createdAt = 1L,
         )
@@ -173,6 +176,7 @@ class AddEditExpenseViewModelTest {
         assertEquals(expense.amount.toString(), uiState.amount)
         assertEquals(expense.category, uiState.category)
         assertEquals(expense.date, uiState.date)
+        assertEquals(expense.excludeFromAnalytics, uiState.excludeFromAnalytics)
         assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditExpenseIntent.UpdateName("Edit"))
@@ -199,6 +203,7 @@ class AddEditExpenseViewModelTest {
             amount = BigDecimal("15"),
             category = "Transport",
             date = 123L,
+            excludeFromAnalytics = false,
             isDeleted = false,
             createdAt = 1L,
         )
@@ -213,6 +218,7 @@ class AddEditExpenseViewModelTest {
         assertEquals(expense.amount.toString(), uiState.amount)
         assertEquals(expense.category, uiState.category)
         assertEquals(expense.date, uiState.date)
+        assertEquals(expense.excludeFromAnalytics, uiState.excludeFromAnalytics)
         assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditExpenseIntent.UpdateName(" Edit "))

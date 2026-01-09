@@ -37,8 +37,8 @@ class ObserveExpensesUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Expense("1", "Coffee", BigDecimal("3.5"), "Food", 123, false, 1L),
-                Expense("2", "Tea", BigDecimal("2.0"), "Food", 124, false, 1L)
+                Expense("1", "Coffee", BigDecimal("3.5"), "Food", 123, false, false, 1L),
+                Expense("2", "Tea", BigDecimal("2.0"), "Food", 124, false, false, 1L)
             )
         )
 

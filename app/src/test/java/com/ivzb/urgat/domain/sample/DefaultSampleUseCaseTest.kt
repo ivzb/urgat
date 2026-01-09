@@ -2,18 +2,12 @@ package com.ivzb.urgat.domain.sample
 
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
-import com.ivzb.urgat.domain.expense.FakeCreateExpenseUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
-import com.ivzb.urgat.domain.investment.FakeCreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
-import com.ivzb.urgat.domain.note.FakeCreateNoteUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
-import com.ivzb.urgat.domain.todo.FakeCreateTodoUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
-import com.ivzb.urgat.domain.weight.FakeCreateWeightUseCase
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -63,6 +57,7 @@ class DefaultSampleUseCaseTest {
                     it.amount,
                     it.category,
                     it.date,
+                    it.excludeFromAnalytics,
                 )
             }
 

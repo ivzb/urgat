@@ -45,7 +45,7 @@ class MigrationTest {
                 AppDatabase::class.java,
                 TEST_DB
             )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .build()
             .apply {
                 openHelper.writableDatabase.close()
@@ -76,7 +76,7 @@ class MigrationTest {
                 AppDatabase::class.java,
                 TEST_DB
             )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .build()
             .let { db ->
                 // verify data integrity after migration
@@ -100,6 +100,7 @@ class MigrationTest {
                         amount = 75.5.toBigDecimal(),
                         category = "Food",
                         date = 1764362076,
+                        excludeFromAnalytics = false,
                         isDeleted = false,
                         createdAt = 1764362076,
                     )
@@ -154,6 +155,7 @@ class MigrationTest {
             .let { db ->
                 // Database has schema version 1. Insert some data using SQL queries.
                 // DAO classes can't be used here because they expect the latest schema.
+                db.execSQL("INSERT INTO `expenses` (`id`, `name`, `amount`, `category`, `date`, `isDeleted`, `createdAt`) VALUES ('1', 'Groceries', '75.5', 'Food', 1764362076, 0, 1764362076)")
                 db.execSQL("INSERT INTO `investments` (`id`, `name`, `currency`, `amount`, `category`, `isDeleted`, `createdAt`) VALUES ('1', 'SNP 500', 'USD', 500, 'ETF', 0, 1764362076)")
                 db.execSQL("INSERT INTO `weights` (`id`, `value`, `isDeleted`, `createdAt`) VALUES ('1', '80.5', 0, 1764362076)")
                 db.close()
@@ -163,9 +165,9 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 4,
+            version = 5,
             validateDroppedTables = true,
-            migrations = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            migrations = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
         ).close()
 
         // verifications
@@ -175,6 +177,20 @@ class MigrationTest {
             .let { db ->
                 // verify default values after migration
                 runBlocking {
+                    val actualExpense = db.expenseDao().getById("1")
+                    val expectedExpense = ExpenseEntity(
+                        id = "1",
+                        name = "Groceries",
+                        amount = 75.5.toBigDecimal(),
+                        category = "Food",
+                        date = 1764362076,
+                        excludeFromAnalytics = false,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedExpense, actualExpense)
+
                     val actualInvestment = db.investmentDao().getById("1")
                     val expectedInvestment = InvestmentEntity(
                         id = "1",
@@ -204,6 +220,19 @@ class MigrationTest {
 
                 // update the new fields
                 runBlocking {
+                    val expense = ExpenseEntity(
+                        id = "1",
+                        name = "Groceries",
+                        amount = 75.5.toBigDecimal(),
+                        category = "Food",
+                        date = 1764362076,
+                        excludeFromAnalytics = true,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.expenseDao().upsert(expense)
+
                     val investment = InvestmentEntity(
                         id = "1",
                         name = "SNP 500",
@@ -231,6 +260,20 @@ class MigrationTest {
 
                 // verify new fields are updated
                 runBlocking {
+                    val actualExpense = db.expenseDao().getById("1")
+                    val expectedExpense = ExpenseEntity(
+                        id = "1",
+                        name = "Groceries",
+                        amount = 75.5.toBigDecimal(),
+                        category = "Food",
+                        date = 1764362076,
+                        excludeFromAnalytics = true,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedExpense, actualExpense)
+
                     val actualInvestment = db.investmentDao().getById("1")
                     val expectedInvestment = InvestmentEntity(
                         id = "1",

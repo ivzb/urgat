@@ -151,9 +151,10 @@ class FakeCreateExpenseUseCase : CreateExpenseUseCase {
         name: String,
         amount: BigDecimal,
         category: String,
-        date: Long
+        date: Long,
+        excludeFromAnalytics: Boolean,
     ) {
-        created = listOf(name, amount, category)
+        created = listOf(name, amount, category, date, excludeFromAnalytics)
     }
 }
 
@@ -166,9 +167,10 @@ class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
         name: String,
         amount: BigDecimal,
         category: String,
-        date: Long
+        date: Long,
+        excludeFromAnalytics: Boolean,
     ) {
-        updated = listOf(id, name, amount, category)
+        updated = listOf(id, name, amount, category, date, excludeFromAnalytics)
     }
 }
 

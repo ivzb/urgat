@@ -25,11 +25,12 @@ class DefaultCreateExpenseUseCaseTest {
         val amount = BigDecimal("45.90")
         val category = "Food"
         val date = 1731268800000L
+        val excludeFromAnalytics = false
 
-        createUseCase(name, amount, category, date)
+        createUseCase(name, amount, category, date, excludeFromAnalytics)
 
         coVerify(exactly = 1) {
-            repository.create(name, amount, category, date)
+            repository.create(name, amount, category, date, excludeFromAnalytics)
         }
     }
 }

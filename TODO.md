@@ -30,6 +30,7 @@
 - fix edge to edge recommendation from play store
 - fix pie chart in landscape and tablet (put them in 2 columns side by side)
 - sometimes when lists are not long enough the FAB stays on top of last item 
+- close keyboard when going back from add/edit investment to analytics screen / transactions
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
@@ -67,7 +68,4 @@
 - make third entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
 - make the app hledger compatible - https://hledger.org/
-- add checkbox to expenses to exclude  from analytics - for example buying property
-- add migration tests
-- improve grouping tests with excludeFromAnalytics
-- fix unit tests
+- allow order expenses and investments by largest and lowest amount
