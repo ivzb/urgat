@@ -1,3 +1,8 @@
+## Release notes 26.01.12
+
+New:
+- You can now choose whether an expense is included in analytics using a new checkbox.
+
 ## Release notes 26.01.11
 
 Improved:
