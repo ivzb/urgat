@@ -20,13 +20,11 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeaderLarge
-import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
-import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
+import com.ivzb.urgat.ui.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
@@ -66,47 +64,28 @@ fun WeightsScreen(
 ) {
     val listState = remember { LazyListState() }
 
-    ListDetailsScaffold(
-        selectedRoute = WeightsRoute,
+    ListDetailScreen(
+        uiState = uiState,
+
+        route = WeightsRoute,
         onSearchQueryChanged = { /* NOOP */ },
         onAddItem = onAddWeight,
         onBack = onBack,
+
         withTopAppBarActions = false,
         listState = listState,
-        modifier = modifier
-    ) {
 
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    label = uiState.filteringUiInfo.loadingLabel,
-                )
-            }
+        content = {
+            WeightsContent(
+                weights = uiState.items,
+                onWeightClick = onWeightClick,
+                filteringUiInfo = uiState.filteringUiInfo,
+                listState = listState
+            )
+        },
 
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes
-                )
-            }
-
-            uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
-            else -> {
-                WeightsContent(
-                    weights = uiState.items,
-                    onWeightClick = onWeightClick,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    listState = listState
-                )
-            }
-        }
-    }
+        modifier = modifier,
+    )
 }
 
 @Composable

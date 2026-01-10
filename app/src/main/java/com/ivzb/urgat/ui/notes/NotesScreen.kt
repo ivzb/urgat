@@ -28,9 +28,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyStateScreen
-import com.ivzb.urgat.ui.components.ListDetailsScaffold
-import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -69,45 +67,26 @@ fun NotesScreen(
     val pagesSize = 2
     val listStates = remember { List(pagesSize) { LazyListState() } }
 
-    ListDetailsScaffold(
-        selectedRoute = NotesRoute,
+    ListDetailScreen(
+        uiState = uiState,
+
+        route = NotesRoute,
         onSearchQueryChanged = { query -> onIntent(NotesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddNote,
         onBack = onBack,
+
         listState = listStates[1],
-        modifier = modifier
-    ) {
 
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    label = uiState.filteringUiInfo.loadingLabel,
-                )
-            }
+        content = {
+            NotesContent(
+                notes = uiState.items,
+                onNoteClick = onNoteClick,
+                listStates = listStates,
+            )
+        },
 
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes
-                )
-            }
-
-            uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
-            else -> {
-                NotesContent(
-                    notes = uiState.items,
-                    onNoteClick = onNoteClick,
-                    listStates = listStates,
-                )
-            }
-        }
-    }
+        modifier = modifier,
+    )
 }
 
 @Composable

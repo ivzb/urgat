@@ -9,6 +9,8 @@
 - add unit tests for LibraryViewModel sample data use case
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
+- reusable pages/chart screen
+- reusable list/detail screen
 
 ## Improvements
 - add localizations

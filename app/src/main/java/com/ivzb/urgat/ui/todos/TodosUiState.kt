@@ -1,10 +1,14 @@
 package com.ivzb.urgat.ui.todos
 
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.ui.listDetail.ListDetailUiState
 
 data class TodosUiState(
     val items: List<Todo> = emptyList(),
-    val isLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val filteringUiInfo: TodosFilteringUiInfo = TodosFilteringUiInfo()
-)
+
+    override val isLoading: Boolean = false,
+    override val hasError: Boolean = false,
+    override val isEmpty: Boolean = items.isEmpty(),
+
+    override val filteringUiInfo: TodosFilteringUiInfo = TodosFilteringUiInfo()
+): ListDetailUiState

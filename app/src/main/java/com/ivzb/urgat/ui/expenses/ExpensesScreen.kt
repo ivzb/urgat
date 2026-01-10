@@ -46,15 +46,12 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
-import com.ivzb.urgat.ui.components.ListDetailsScaffold
 import com.ivzb.urgat.ui.components.ListItem
-import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.investments.InvestmentsPage
+import com.ivzb.urgat.ui.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.annotateFormattedString
@@ -107,11 +104,14 @@ fun ExpensesScreen(
     val listStates = remember { List(pages.size) { LazyListState() } }
     val currentListState = remember { mutableStateOf(listStates[0]) }
 
-    ListDetailsScaffold(
-        selectedRoute = ExpensesRoute,
+    ListDetailScreen(
+        uiState = uiState,
+
+        route = ExpensesRoute,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
         onBack = onBack,
+
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
@@ -119,42 +119,20 @@ fun ExpensesScreen(
             )
         },
         listState = currentListState.value,
-        modifier = modifier
-    ) {
 
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    label = uiState.filteringUiInfo.loadingLabel,
-                )
-            }
+        content = {
+            ExpensesContent(
+                uiState = uiState,
+                onExpenseClick = onExpenseClick,
+                pages = pages,
+                pagerState = pagerState,
+                listStates = listStates,
+                onListStateChanged = { currentListState.value = it },
+            )
+        },
 
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes
-                )
-            }
-
-            uiState.expenses.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
-            else -> {
-                ExpensesContent(
-                    uiState = uiState,
-                    onExpenseClick = onExpenseClick,
-                    pages = pages,
-                    pagerState = pagerState,
-                    listStates = listStates,
-                    onListStateChanged = { currentListState.value = it },
-                )
-            }
-        }
-    }
+        modifier = modifier,
+    )
 }
 
 @Composable

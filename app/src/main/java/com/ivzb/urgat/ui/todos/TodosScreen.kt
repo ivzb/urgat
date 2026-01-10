@@ -32,12 +32,10 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderLarge
-import com.ivzb.urgat.ui.components.ListDetailsScaffold
-import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
@@ -75,11 +73,14 @@ fun TodosScreen(
 ) {
     val listState = remember { LazyListState() }
 
-    ListDetailsScaffold(
-        selectedRoute = TodosRoute,
+    ListDetailScreen(
+        uiState = uiState,
+
+        route = TodosRoute,
         onSearchQueryChanged = { query -> onIntent(TodosIntent.SearchQueryChanged(query)) },
         onAddItem = onAddTodo,
         onBack = onBack,
+
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
@@ -91,41 +92,19 @@ fun TodosScreen(
             )
         },
         listState = listState,
-        modifier = modifier
-    ) {
 
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    label = uiState.filteringUiInfo.loadingLabel,
-                )
-            }
+        content = {
+            TodosContent(
+                todos = uiState.items,
+                onTodoClick = onTodoClick,
+                onTodoCheckedChange = { todo, completed -> onIntent(TodosIntent.CompleteTodos(todo, completed)) },
+                filteringUiInfo = uiState.filteringUiInfo,
+                listState = listState
+            )
+        },
 
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes
-                )
-            }
-
-            uiState.items.isEmpty() -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
-            else -> {
-                TodosContent(
-                    todos = uiState.items,
-                    onTodoClick = onTodoClick,
-                    onTodoCheckedChange = { todo, completed -> onIntent(TodosIntent.CompleteTodos(todo, completed)) },
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    listState = listState
-                )
-            }
-        }
-    }
+        modifier = modifier,
+    )
 }
 
 @Composable
