@@ -26,6 +26,16 @@ interface ImportDataUseCase {
 
     suspend operator fun invoke(uri: Uri)
 
+    suspend fun importExpenses(content: String)
+
+    suspend fun importInvestments(content: String)
+
+    suspend fun importTodos(content: String)
+
+    suspend fun importNotes(content: String)
+
+    suspend fun importWeights(content: String)
+
 }
 
 class DefaultImportDataUseCase @Inject constructor(
@@ -46,6 +56,26 @@ class DefaultImportDataUseCase @Inject constructor(
             importDataRepository.importCsv(uri, INVESTMENTS_CSV_FILE_NAME, ::parseInvestmentCsv, investmentDao::insertAll)
             importDataRepository.importCsv(uri, WEIGHTS_CSV_FILE_NAME, ::parseWeightCsv, weightDao::insertAll)
         }
+    }
+
+    override suspend fun importExpenses(content: String) {
+        importDataRepository.importString(content, ::parseExpenseCsv, expenseDao::insertAll)
+    }
+
+    override suspend fun importInvestments(content: String) {
+        importDataRepository.importString(content, ::parseInvestmentCsv, investmentDao::insertAll)
+    }
+
+    override suspend fun importTodos(content: String) {
+        importDataRepository.importString(content, ::parseTodoCsv, todoDao::insertAll)
+    }
+
+    override suspend fun importNotes(content: String) {
+        importDataRepository.importString(content, ::parseNoteCsv, noteDao::insertAll)
+    }
+
+    override suspend fun importWeights(content: String) {
+        importDataRepository.importString(content, ::parseWeightCsv, weightDao::insertAll)
     }
 
 }

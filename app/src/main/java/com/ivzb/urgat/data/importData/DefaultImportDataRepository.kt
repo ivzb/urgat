@@ -35,6 +35,18 @@ class DefaultImportDataRepository @Inject constructor(
         }
     }
 
+    override suspend fun <T> importString(
+        content: String,
+        parseEntity: (String) -> T,
+        insertEntities: suspend (List<T>) -> Unit
+    ) {
+
+        return withContext(dispatcher) {
+            // prefix new line because import csv trims first line which is csv header
+            import(("\n" + content).byteInputStream(), parseEntity, insertEntities)
+        }
+    }
+
     private suspend fun <T> import(
         input: InputStream,
         parseEntity: (String) -> T,

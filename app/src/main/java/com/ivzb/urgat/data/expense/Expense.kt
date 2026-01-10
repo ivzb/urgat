@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.expense
 
+import com.ivzb.urgat.util.toInt
 import java.math.BigDecimal
 
 data class Expense(
@@ -16,6 +17,9 @@ data class Expense(
     val isCost by lazy { amount > BigDecimal.ZERO }
 
     val isDebit by lazy { amount < BigDecimal.ZERO }
+
+    fun formatCsv(): String =
+        "\"$id\", \"$name\", \"$amount\", \"$category\", $date, ${excludeFromAnalytics.toInt()}, $createdAt"
 
     companion object {
 

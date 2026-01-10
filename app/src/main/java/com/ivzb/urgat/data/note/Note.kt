@@ -5,4 +5,9 @@ data class Note(
     val content: String,
     val isDeleted: Boolean,
     val createdAt: Long,
-)
+) {
+
+    fun formatCsv(): String =
+        "\"$id\", \"$content\", $createdAt"
+
+}

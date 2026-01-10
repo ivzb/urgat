@@ -1,6 +1,8 @@
 package com.ivzb.urgat.data.investment
 
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.toInt
 import java.math.BigDecimal
 
 data class Investment(
@@ -17,6 +19,9 @@ data class Investment(
 
     val marketValue: BigDecimal
         get() = cost * shares
+
+    fun formatCsv(): String =
+        "\"$id\", \"$name\", \"$shares\", \"$cost\", \"$category\", \"$currency\", $date, $createdAt"
 
     companion object {
 

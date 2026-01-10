@@ -8,4 +8,9 @@ data class Weight(
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long,
-)
+) {
+
+    fun formatCsv(): String =
+        "\"$id\", \"$value\", $date, $createdAt"
+
+}

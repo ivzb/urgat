@@ -12,4 +12,7 @@ data class Todo(
     val isActive
         get() = !isCompleted && !isDeleted
 
+    fun formatCsv(): String =
+        "\"$id\", \"$title\", \"$description\", $isCompleted, $createdAt"
+
 }

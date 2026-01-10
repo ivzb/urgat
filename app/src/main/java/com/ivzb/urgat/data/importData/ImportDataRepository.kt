@@ -11,4 +11,10 @@ interface ImportDataRepository {
         insertEntities: suspend (List<T>) -> Unit,
     )
 
+    suspend fun <T> importString(
+        content: String,
+        parseEntity: (String) -> T,
+        insertEntities: suspend (List<T>) -> Unit,
+    )
+
 }

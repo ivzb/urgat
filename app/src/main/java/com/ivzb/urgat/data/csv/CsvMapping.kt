@@ -97,7 +97,7 @@ data class CsvMapping(
                 date = split[4].toLong(),
                 excludeFromAnalytics = split[5].toBoolean(),
                 isDeleted = false,
-                createdAt = split[5].toLong(),
+                createdAt = split[6].toLong(),
             )
         }
 
@@ -127,6 +127,12 @@ data class CsvMapping(
                 isDeleted = false,
                 createdAt = split[3].toLong(),
             )
+        }
+
+        private const val SEPARATOR = ", "
+
+        fun List<CsvMapping>.format(): String {
+            return this.joinToString(SEPARATOR) { it.column }
         }
 
         // handles commas inside quotes
