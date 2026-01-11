@@ -1,7 +1,7 @@
 package com.ivzb.urgat.ui.todos
 
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.ui.components.screens.UiState
+import com.ivzb.urgat.ui.components.uiState.UiState
 
 data class TodosUiState(
     val items: List<Todo> = emptyList(),

@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui
+package com.ivzb.urgat.ui.components
 
 data class GroupedItems<Group, Total, Item>(
     val group: Group,

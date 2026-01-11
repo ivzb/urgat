@@ -1,7 +1,6 @@
-package com.ivzb.urgat.ui.components.screens.navigation
+package com.ivzb.urgat.ui.components.uiState
 
 import com.ivzb.urgat.ui.components.FabAction
-import com.ivzb.urgat.ui.components.screens.UiState
 
 interface NavigationUiState<T>: UiState {
 

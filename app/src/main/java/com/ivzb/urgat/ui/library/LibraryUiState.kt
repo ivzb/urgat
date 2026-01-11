@@ -3,7 +3,7 @@ package com.ivzb.urgat.ui.library
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.ui.components.FilteringUiInfo
-import com.ivzb.urgat.ui.components.screens.navigation.NavigationUiState
+import com.ivzb.urgat.ui.components.uiState.NavigationUiState
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 

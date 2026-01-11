@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.common
+package com.ivzb.urgat.ui.components
 
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -13,7 +13,7 @@ import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesMonthlyU
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.components.GroupedItems
 import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals

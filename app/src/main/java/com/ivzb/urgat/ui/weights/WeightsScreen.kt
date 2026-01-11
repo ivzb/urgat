@@ -24,7 +24,7 @@ import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
-import com.ivzb.urgat.ui.components.screens.listDetail.ListDetailScreen
+import com.ivzb.urgat.ui.components.screens.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate

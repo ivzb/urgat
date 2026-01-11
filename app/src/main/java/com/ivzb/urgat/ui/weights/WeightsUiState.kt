@@ -1,7 +1,7 @@
 package com.ivzb.urgat.ui.weights
 
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.ui.components.screens.UiState
+import com.ivzb.urgat.ui.components.uiState.UiState
 
 data class WeightsUiState(
     val items: List<Weight> = emptyList(),

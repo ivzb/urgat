@@ -10,8 +10,6 @@
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - reusable pages/chart screen
-- reusable list/detail screen
-- also consider moving the scaffold code directly into these screens
 
 ## Improvements
 - add localizations

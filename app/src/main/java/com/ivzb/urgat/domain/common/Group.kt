@@ -9,7 +9,7 @@ import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
 import java.time.Year
 import java.time.YearMonth

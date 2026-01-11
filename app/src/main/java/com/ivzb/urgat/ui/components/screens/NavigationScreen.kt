@@ -1,21 +1,15 @@
-package com.ivzb.urgat.ui.components
+package com.ivzb.urgat.ui.components.screens
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Box
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -25,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowSize
@@ -34,12 +27,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -53,27 +41,31 @@ import com.ivzb.urgat.navigation.BOTTOM_NAVIGATION_SCREENS
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.navigation.UrgatRootRoute
-import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.navigation.drawer.URGAT_NAVIGATION_DRAWER
-import com.ivzb.urgat.ui.library.LibraryFabActionId
+import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.ExpandableFab
+import com.ivzb.urgat.ui.components.scaffolds.UrgatScaffold
+import com.ivzb.urgat.ui.components.uiState.NavigationUiState
 import com.ivzb.urgat.ui.library.LibraryRoute
+import com.ivzb.urgat.ui.library.LibraryUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
+@VisibleForTesting
 @Composable
-fun <T> NavigationScaffold(
-    selectedRoute: UrgatRootRoute,
+fun <T> NavigationScreen(
+    uiState: NavigationUiState<T>,
+
+    route: UrgatRootRoute,
     onSearchQueryChanged: (String) -> Unit,
-
-    fabActions: List<FabAction<T>>? = null,
     onFabActionClick: ((T) -> Unit)? = null,
-
     navigator: Navigator,
-    withTopAppBarActions: Boolean,
+    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+
+    modifier: Modifier = Modifier
 ) {
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -137,7 +129,7 @@ fun <T> NavigationScaffold(
             navigationSuiteItems = {
                 BOTTOM_NAVIGATION_SCREENS.forEach {
                     item(
-                        selected = it.route == selectedRoute,
+                        selected = it.route == route,
                         onClick = {
                             navigator.navigate(it.route)
                         },
@@ -161,7 +153,7 @@ fun <T> NavigationScaffold(
         ) {
 
             UrgatScaffold(
-                selectedRoute = selectedRoute,
+                selectedRoute = route,
                 onSearchQueryChanged = onSearchQueryChanged,
                 withTopAppBarActions = withTopAppBarActions,
                 navigationIcon = {
@@ -182,123 +174,22 @@ fun <T> NavigationScaffold(
                 },
                 topAppBarActionsContent = topAppBarActionsContent,
                 floatingActionButtonContent = {
-                    fabActions?.let {
-                        ExpandableFab(
-                            fabActions = it,
-                            onFabActionClick = { fabActionId ->
-                                onFabActionClick?.invoke(fabActionId)
-                            }
-                        )
-                    }
+                    ExpandableFab(
+                        fabActions = uiState.fabActions,
+                        onFabActionClick = { fabActionId ->
+                            onFabActionClick?.invoke(fabActionId)
+                        }
+                    )
                 },
-                content = content
+                content = {
+                    UrgatScreen(
+                        uiState = uiState,
+                        content = content,
+                    )
+                }
             )
         }
     }
-}
-
-@Composable
-fun ListDetailsScaffold(
-    selectedRoute: UrgatRoute,
-    onSearchQueryChanged: (String) -> Unit,
-    onBack: () -> Unit,
-    onAddItem: () -> Unit,
-
-    withTopAppBarActions: Boolean = true,
-    topAppBarActionsContent: (@Composable () -> Unit)? = null,
-
-    listState: LazyListState,
-
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-
-    UrgatScaffold(
-        selectedRoute = selectedRoute,
-        onSearchQueryChanged = onSearchQueryChanged,
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    stringResource(id = R.string.menu_back)
-                )
-            }
-        },
-        withTopAppBarActions = withTopAppBarActions,
-        topAppBarActionsContent = topAppBarActionsContent,
-        floatingActionButtonContent = {
-            ScrollAwareFAB(
-                visible = listState.isScrollingUp(),
-                icon = Icons.Default.Add,
-                labelResId = R.string.add,
-                onClick = onAddItem
-            )
-        },
-        modifier = modifier,
-        content = content
-    )
-}
-
-@Composable
-private fun UrgatScaffold(
-    selectedRoute: UrgatRoute,
-    onSearchQueryChanged: (String) -> Unit,
-
-    navigationIcon: (@Composable () -> Unit)? = null,
-    withTopAppBarActions: Boolean = true,
-    topAppBarActionsContent: (@Composable () -> Unit)? = null,
-    floatingActionButtonContent: (@Composable () -> Unit)? = null,
-
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBarContent(
-                selectedRoute = selectedRoute,
-                onSearchQueryChanged = onSearchQueryChanged,
-                navigationIcon = navigationIcon,
-                withActions = withTopAppBarActions,
-                actionsContent = topAppBarActionsContent,
-            )
-        },
-        floatingActionButton = {
-            floatingActionButtonContent?.invoke()
-        },
-        contentWindowInsets = WindowInsets.safeDrawing,
-        modifier = modifier
-    ) { innerPadding ->
-
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-        ) {
-
-            content()
-        }
-    }
-}
-
-/**
- * Returns whether the lazy list is currently scrolling up.
- */
-@Composable
-private fun LazyListState.isScrollingUp(): Boolean {
-    var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
-
-    return remember(this) {
-        derivedStateOf {
-            if (previousIndex != firstVisibleItemIndex) {
-                previousIndex > firstVisibleItemIndex
-            } else {
-                previousScrollOffset >= firstVisibleItemScrollOffset
-            }.also {
-                previousIndex = firstVisibleItemIndex
-                previousScrollOffset = firstVisibleItemScrollOffset
-            }
-        }
-    }.value
 }
 
 @Composable
@@ -332,32 +223,18 @@ private fun calculateNavigationSuiteType(): NavigationSuiteType {
 
 @AllDevicesPreview
 @Composable
-fun NavigationScaffoldPreview() {
+fun NavigationScreenPreview() {
     UrgatTheme {
-        NavigationScaffold<LibraryFabActionId>(
-            selectedRoute = LibraryRoute,
+        NavigationScreen(
+            uiState = LibraryUiState(),
+            route = LibraryRoute,
             onSearchQueryChanged = {},
             navigator = FakeNavigator(),
             withTopAppBarActions = false,
             topAppBarActionsContent = {},
-            modifier = Modifier
-        ) { }
-    }
-}
-
-@AllDevicesPreview
-@Composable
-fun ListDetailsScaffoldPreview() {
-    UrgatTheme {
-        ListDetailsScaffold(
-            selectedRoute = LibraryRoute,
-            onSearchQueryChanged = {},
-            onBack = {},
-            onAddItem = {},
-            withTopAppBarActions = false,
-            topAppBarActionsContent = {},
-            listState = rememberLazyListState(),
-            modifier = Modifier
-        ) { }
+            modifier = Modifier,
+            onFabActionClick = {},
+            content = {},
+        )
     }
 }

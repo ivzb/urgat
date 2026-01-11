@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.components.screens
+package com.ivzb.urgat.ui.components.uiState
 
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 

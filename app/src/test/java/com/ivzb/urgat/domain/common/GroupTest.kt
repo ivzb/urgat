@@ -6,7 +6,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.timestamp
 import java.math.BigDecimal
 import kotlin.test.Test

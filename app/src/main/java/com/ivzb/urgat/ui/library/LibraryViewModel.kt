@@ -11,7 +11,7 @@ import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
-import com.ivzb.urgat.ui.common.UiEventHolder
+import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 import com.ivzb.urgat.util.WhileUiSubscribed

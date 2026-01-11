@@ -32,7 +32,7 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
-import com.ivzb.urgat.ui.components.screens.navigation.NavigationScreen
+import com.ivzb.urgat.ui.components.screens.NavigationScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightItem
 import com.ivzb.urgat.ui.weights.WeightsChart

@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow

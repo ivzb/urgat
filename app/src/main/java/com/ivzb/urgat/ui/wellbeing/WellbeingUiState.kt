@@ -1,7 +1,7 @@
 package com.ivzb.urgat.ui.wellbeing
 
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.ui.components.screens.navigation.NavigationUiState
+import com.ivzb.urgat.ui.components.uiState.NavigationUiState
 import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 
 data class WellbeingUiState(

@@ -3,7 +3,7 @@ package com.ivzb.urgat.ui.expenses
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
-import com.ivzb.urgat.ui.components.screens.UiState
+import com.ivzb.urgat.ui.components.uiState.UiState
 
 data class ExpensesUiState(
     val expenses: List<GroupedExpenses> = emptyList(),

@@ -1,9 +1,8 @@
-package com.ivzb.urgat.ui.components.screens.urgat
+package com.ivzb.urgat.ui.components.screens
 
 import androidx.compose.runtime.Composable
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.screens.UiState
+import com.ivzb.urgat.ui.components.uiState.UiState
 
 @Composable
 fun UrgatScreen(

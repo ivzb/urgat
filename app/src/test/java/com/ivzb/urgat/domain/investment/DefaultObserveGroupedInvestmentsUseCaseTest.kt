@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk

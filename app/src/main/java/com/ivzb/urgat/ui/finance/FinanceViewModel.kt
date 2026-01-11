@@ -6,7 +6,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
-import com.ivzb.urgat.ui.common.UiEventHolder
+import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.util.WhileUiSubscribed

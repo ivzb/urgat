@@ -3,7 +3,7 @@ package com.ivzb.urgat.ui.finance
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.ui.components.FilteringUiInfo
-import com.ivzb.urgat.ui.components.screens.navigation.NavigationUiState
+import com.ivzb.urgat.ui.components.uiState.NavigationUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 

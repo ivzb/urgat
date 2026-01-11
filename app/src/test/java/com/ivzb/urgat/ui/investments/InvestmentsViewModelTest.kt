@@ -11,7 +11,7 @@ import com.ivzb.urgat.domain.investment.FakeObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentCategoriesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
-import com.ivzb.urgat.ui.GroupedItems
+import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers

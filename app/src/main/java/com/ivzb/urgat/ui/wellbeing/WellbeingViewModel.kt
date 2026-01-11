@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.resources.ResourcesProvider
-import com.ivzb.urgat.ui.common.UiEventHolder
+import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState

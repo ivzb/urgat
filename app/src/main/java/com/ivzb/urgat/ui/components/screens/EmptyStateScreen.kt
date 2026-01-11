@@ -1,4 +1,4 @@
-package com.ivzb.urgat.ui.components
+package com.ivzb.urgat.ui.components.screens
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable
