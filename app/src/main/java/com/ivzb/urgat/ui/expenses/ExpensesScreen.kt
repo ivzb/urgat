@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
@@ -23,9 +22,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,7 +48,7 @@ import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.components.screens.ListDetailScreen
+import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.annotateFormattedString
@@ -99,12 +96,12 @@ fun ExpensesScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pages = EXPENSE_PAGES
-    val pagerState = rememberPagerState(initialPage = uiState.initialPage) { pages.size }
-    val listStates = remember { List(pages.size) { LazyListState() } }
-    val currentListState = remember { mutableStateOf(listStates[0]) }
 
-    ListDetailScreen(
+    val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedAllTimeIds = rememberSaveable { mutableStateSetOf<String>() }
+
+    PagerScreen(
         uiState = uiState,
 
         route = ExpensesRoute,
@@ -118,80 +115,14 @@ fun ExpensesScreen(
                 onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
             )
         },
-        listState = currentListState.value,
 
-        content = {
-            ExpensesContent(
-                uiState = uiState,
-                onExpenseClick = onExpenseClick,
-                pages = pages,
-                pagerState = pagerState,
-                listStates = listStates,
-                onListStateChanged = { currentListState.value = it },
-            )
-        },
-
-        modifier = modifier,
-    )
-}
-
-@Composable
-internal fun ExpensesContent(
-    uiState: ExpensesUiState,
-    onExpenseClick: (Expense) -> Unit,
-    pages: List<ExpensesPage>,
-    pagerState: PagerState,
-    listStates: List<LazyListState>,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-    val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
-    val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
-    val expandedAllTimeIds = rememberSaveable { mutableStateSetOf<String>() }
-    val isHorizontalScrollEnabled by remember {
-        derivedStateOf {
-            val currentPage = pages[pagerState.currentPage]
-            currentPage != ExpensesPage.Monthly && currentPage != ExpensesPage.Yearly
-        }
-    }
-
-    Column {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            edgePadding = 0.dp
-        ) {
-            pages.forEachIndexed { index, page ->
-                Tab(
-                    text = {
-                        Text(
-                            text = stringResource(page.titleResId),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                )
-            }
-        }
-
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = isHorizontalScrollEnabled,
-            modifier = Modifier
-                .fillMaxSize(),
-        ) { pageIndex ->
-
-            when (pages[pageIndex]) {
+        content = { page, listState, onListStateChanged ->
+            when (page) {
                 ExpensesPage.Transactions -> TransactionsPage(
                     expenses = uiState.expenses,
                     onExpenseClick = onExpenseClick,
 
-                    listState = listStates[pageIndex],
+                    listState = listState,
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -215,14 +146,16 @@ internal fun ExpensesContent(
                     group = stringResource(R.string.all_time),
                     categories = uiState.categoriesAllTime,
                     expandedCategoryIds = expandedAllTimeIds,
-                    listState = listStates[pageIndex],
+                    listState = listState,
                     onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
                     onListStateChanged = onListStateChanged,
                 )
             }
-        }
-    }
+        },
+
+        modifier = modifier,
+    )
 }
 
 @Composable
