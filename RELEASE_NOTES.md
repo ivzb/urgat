@@ -1,3 +1,8 @@
+## Release notes 26.01.13
+
+New:
+- Added support for manual data import.
+
 ## Release notes 26.01.12
 
 New:
