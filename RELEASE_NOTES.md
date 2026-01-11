@@ -1,3 +1,8 @@
+## Release notes 26.01.14
+
+New:
+- Expenses and investments can now be sorted by date or amount.
+
 ## Release notes 26.01.13
 
 New:
