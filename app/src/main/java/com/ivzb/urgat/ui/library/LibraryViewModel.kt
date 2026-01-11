@@ -40,8 +40,8 @@ class LibraryViewModel @Inject constructor(
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
     val uiState: StateFlow<LibraryUiState> = combineUiState(
-        observeTodosUseCase(_searchQuery, null, _itemsLimit),
-        observeNotesUseCase(_searchQuery, null, _itemsLimit),
+        observeTodosUseCase(_searchQuery, null, null, _itemsLimit),
+        observeNotesUseCase(_searchQuery, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {

@@ -32,8 +32,8 @@ class FinanceViewModel @Inject constructor(
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
     val uiState: StateFlow<FinanceUiState> = combineUiState(
-        observeExpensesUseCase(_searchQuery, null, _itemsLimit),
-        observeInvestmentsUseCase(_searchQuery, null, _itemsLimit),
+        observeExpensesUseCase(_searchQuery, null, null, _itemsLimit),
+        observeInvestmentsUseCase(_searchQuery, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {

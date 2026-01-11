@@ -55,7 +55,7 @@ class ObserveInvestmentAssetsUseCaseTest {
 
         every { investmentsRepository.observe(limit, "snp") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -85,7 +85,7 @@ class ObserveInvestmentAssetsUseCaseTest {
 
         every { investmentsRepository.observe(limit) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

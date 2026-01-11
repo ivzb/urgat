@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.investments
 
 import androidx.lifecycle.SavedStateHandle
+import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
@@ -11,8 +12,10 @@ import com.ivzb.urgat.domain.investment.FakeObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentCategoriesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
+import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsSortingUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +45,7 @@ class InvestmentsViewModelTest {
     private lateinit var fakeObserveInvestmentCategoriesUseCase: FakeObserveInvestmentCategoriesUseCase
     private lateinit var fakeObserveInvestmentNetWorthUseCase: FakeObserveInvestmentNetWorthUseCase
     private lateinit var fakeObserveInvestmentsFilteringUseCase: FakeObserveInvestmentsFilteringUseCase
+    private lateinit var fakeObserveInvestmentsSortingUseCase: FakeObserveInvestmentsSortingUseCase
 
     private lateinit var viewModel: InvestmentsViewModel
 
@@ -58,6 +62,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase = FakeObserveInvestmentCategoriesUseCase()
         fakeObserveInvestmentNetWorthUseCase = FakeObserveInvestmentNetWorthUseCase()
         fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()
+        fakeObserveInvestmentsSortingUseCase = FakeObserveInvestmentsSortingUseCase()
     }
 
     @After
@@ -73,6 +78,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Loading)
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Loading)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Loading)
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -152,6 +158,10 @@ class InvestmentsViewModelTest {
         val fakeInvestmentsFiltering = listOf(
             FilterMenuItem(type = "stocks", label = "stocks", size = 1),
         )
+        val fakeInvestmentsSorting = listOf(
+            SortMenuItem(type = InvestmentsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = InvestmentsSortType.BY_MARKET_VALUE, labelResId = R.string.sort_by_market_value),
+        )
 
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
         fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
@@ -159,6 +169,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -173,6 +184,7 @@ class InvestmentsViewModelTest {
         assertEquals(fakeCategories, state.categories)
         assertEquals(fakeAssets, state.assets)
         assertEquals(fakeInvestmentsFiltering, state.filteringUiInfo.filterMenuItems)
+        assertEquals(fakeInvestmentsSorting, state.filteringUiInfo.sortMenuItems)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
         job.cancel()
@@ -186,6 +198,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Error)
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Error)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -266,6 +279,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(InvestmentsIntent.SearchQueryChanged("snp"))
@@ -287,6 +301,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(InvestmentNetWorth(total = "")))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val expected = "etfs"
@@ -307,6 +322,7 @@ class InvestmentsViewModelTest {
         fakeObserveInvestmentCategoriesUseCase,
         fakeObserveInvestmentNetWorthUseCase,
         fakeObserveInvestmentsFilteringUseCase,
+        fakeObserveInvestmentsSortingUseCase,
         savedStateHandle
     )
 }

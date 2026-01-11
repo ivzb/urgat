@@ -88,6 +88,22 @@ fun <T1, T2, T3, T4, T5, T6, R> combineUiState(
     onError
 ) { data -> onSuccess(data[0] as T1, data[1] as T2, data[2] as T3, data[3] as T4, data[4] as T5, data[5] as T6) }
 
+fun <T1, T2, T3, T4, T5, T6, T7, R> combineUiState(
+    flow1: Flow<Async<T1>>,
+    flow2: Flow<Async<T2>>,
+    flow3: Flow<Async<T3>>,
+    flow4: Flow<Async<T4>>,
+    flow5: Flow<Async<T5>>,
+    flow6: Flow<Async<T6>>,
+    flow7: Flow<Async<T7>>,
+    onLoading: () -> R,
+    onError: () -> R,
+    onSuccess: (T1, T2, T3, T4, T5, T6, T7) -> R,
+): Flow<R> = combineUiState(
+    arrayOf(flow1, flow2, flow3, flow4, flow5, flow6, flow7),
+    onLoading,
+    onError
+) { data -> onSuccess(data[0] as T1, data[1] as T2, data[2] as T3, data[3] as T4, data[4] as T5, data[5] as T6, data[6] as T7) }
 
 @Suppress("UNCHECKED_CAST")
 private fun <R> combineUiState(

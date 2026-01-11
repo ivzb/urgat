@@ -9,19 +9,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
-class ObserveUseCase<T, FilterType>(
+class ObserveUseCase<T, FilterType, SortType>(
     repository: BaseRepository<T>,
     filter: ((List<T>, FilterType) -> List<T>)? = null,
+    sort: ((List<T>, SortType) -> List<T>)? = null,
     transform: ((List<T>) -> List<T>)? = null,
-): DefaultObserveUseCase<T, FilterType>(repository, filter, transform) {
+): DefaultObserveUseCase<T, FilterType, SortType>(repository, filter, sort, transform) {
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
         filterTypeFlow: Flow<FilterType>? = null,
+        sortTypeFlow: Flow<SortType>? = null,
         limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<T>>> =
-        invokeFlow(searchQueryFlow, filterTypeFlow, limitFlow)
+        invokeFlow(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
             .map<List<T>, Async<List<T>>> { Async.Success(it) }
             .catch { e ->
                 // todo: use error tracker instead

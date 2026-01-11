@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.components
 
 import android.os.Build
 import android.os.Parcelable
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
@@ -135,29 +136,82 @@ fun TextTopAppBar(
 
 @Parcelize
 data class FilterMenuItem<T>(
-    val type: @RawValue T,
-    val labelResId: Int? = null,
-    val label: String = "",
+    override val type: @RawValue T,
+    override val labelResId: Int? = null,
+    override val label: String = "",
     val size: Int,
-): Parcelable {
+): MenuItem<T>, Parcelable {
 
     @Composable
-    fun text(): String {
+    override fun text(): String {
         val text = labelResId?.let { stringResource(it) } ?: label
         return "$text ($size)"
     }
 }
 
+@Parcelize
+data class SortMenuItem<T>(
+    override val type: @RawValue T,
+    override val labelResId: Int? = null,
+    override val label: String = "",
+): MenuItem<T>, Parcelable {
+
+    @Composable
+    override fun text(): String {
+        return labelResId?.let { stringResource(it) } ?: label
+    }
+}
+
+interface MenuItem<T> {
+    val type: @RawValue T
+    val labelResId: Int?
+    val label: String
+
+    @Composable
+    fun text(): String
+
+}
+
 @Composable
 fun <T> FilterMenu(
-    items: List<FilterMenuItem<T>>,
+    items: List<MenuItem<T>>,
+    onFilter: (T) -> Unit,
+) {
+    Menu(
+        iconResId = R.drawable.ic_filter_list,
+        contentDescriptionResId = R.string.menu_filter,
+        items = items,
+        onFilter = onFilter,
+    )
+}
+
+@Composable
+fun <T> SortMenu(
+    items: List<MenuItem<T>>,
+    onFilter: (T) -> Unit,
+) {
+    Menu(
+        iconResId = R.drawable.ic_sort_list,
+        contentDescriptionResId = R.string.menu_sort,
+        items = items,
+        onFilter = onFilter,
+    )
+}
+
+@Composable
+private fun <T> Menu(
+    @DrawableRes
+    iconResId: Int,
+    @StringRes
+    contentDescriptionResId: Int,
+    items: List<MenuItem<T>>,
     onFilter: (T) -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(
-                painterResource(id = R.drawable.ic_filter_list),
-                stringResource(id = R.string.menu_filter)
+                painterResource(id = iconResId),
+                stringResource(id = contentDescriptionResId)
             )
         }
     ) { closeMenu ->
@@ -323,13 +377,13 @@ private fun MoreTodosMenuPreview() {
 @Preview
 @DarkModePreview
 @Composable
-private fun FilterMenuPreviewExpenses() {
+private fun FilterMenuPreview() {
     UrgatTheme {
         FilterMenu(
             items = listOf(
-                FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 10),
-                FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 2),
-                FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 8),
+                FilterMenuItem(type = "All", labelResId = R.string.filter_all, size = 10),
+                FilterMenuItem(type = "Debit", labelResId = R.string.filter_debit, size = 2),
+                FilterMenuItem(type = "Cost", labelResId = R.string.filter_cost, size = 8),
             ),
             onFilter = {}
         )
@@ -339,13 +393,12 @@ private fun FilterMenuPreviewExpenses() {
 @Preview
 @DarkModePreview
 @Composable
-private fun FilterMenuPreviewStrings() {
+private fun SortMenuPreview() {
     UrgatTheme {
-        FilterMenu(
+        SortMenu(
             items = listOf(
-                FilterMenuItem(type = "All", labelResId = R.string.filter_all, size = 10),
-                FilterMenuItem(type = "Debit", labelResId = R.string.filter_debit, size = 2),
-                FilterMenuItem(type = "Cost", labelResId = R.string.filter_cost, size = 8),
+                SortMenuItem(type = "By date", labelResId = R.string.filter_all),
+                SortMenuItem(type = "By cost", labelResId = R.string.filter_cost),
             ),
             onFilter = {}
         )

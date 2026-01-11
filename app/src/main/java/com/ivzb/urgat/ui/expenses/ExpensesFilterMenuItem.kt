@@ -1,5 +1,5 @@
 package com.ivzb.urgat.ui.expenses
 
-import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.components.MenuItem
 
-typealias ExpensesFilterMenuItem = FilterMenuItem<ExpensesFilterType>
+typealias ExpensesFilterMenuItem = MenuItem<ExpensesFilterType>

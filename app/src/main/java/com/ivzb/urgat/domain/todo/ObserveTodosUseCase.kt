@@ -13,6 +13,7 @@ interface ObserveTodosUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
         filterTypeFlow: Flow<TodosFilterType>? = null,
+        sortTypeFlow: Flow<Unit>? = null,
         limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<Todo>>>
 
@@ -22,7 +23,7 @@ class DefaultObserveTodosUseCase @Inject constructor(
     repository: TodoRepository
 ): ObserveTodosUseCase {
 
-    private val observeUseCase = ObserveUseCase(
+    private val observeUseCase = ObserveUseCase<Todo, TodosFilterType, Unit>(
         repository = repository,
         filter = ::filter,
     )
@@ -30,8 +31,9 @@ class DefaultObserveTodosUseCase @Inject constructor(
     override fun invoke(
         searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<TodosFilterType>?,
+        sortTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<Todo>>> = observeUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<Todo>>> = observeUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
     companion object {
 

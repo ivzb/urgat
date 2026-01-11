@@ -54,7 +54,7 @@ class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
 
         every { expensesRepository.observe(limit, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -94,7 +94,7 @@ class ObserveGroupedExpenseCategoriesYearlyUseCaseTest {
 
         every { expensesRepository.observe(limit) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

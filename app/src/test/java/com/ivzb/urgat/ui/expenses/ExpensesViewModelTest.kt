@@ -8,12 +8,14 @@ import kotlinx.coroutines.test.*
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
+import com.ivzb.urgat.ui.components.SortMenuItem
 import kotlinx.coroutines.flow.collect
 import org.junit.*
 import org.junit.Assert.assertEquals
@@ -30,6 +32,7 @@ class ExpensesViewModelTest {
     private lateinit var fakeObserveGroupedExpenseCategoriesYearlyUseCase: FakeObserveGroupedExpenseCategoriesYearlyUseCase
     private lateinit var fakeObserveGroupedExpenseCategoriesAllTimeUseCase: FakeObserveGroupedExpenseCategoriesAllTimeUseCase
     private lateinit var fakeObserveExpensesFilteringUseCase: FakeObserveExpensesFilteringUseCase
+    private lateinit var fakeObserveExpensesSortingUseCase: FakeObserveExpensesSortingUseCase
 
     private lateinit var viewModel: ExpensesViewModel
 
@@ -44,6 +47,7 @@ class ExpensesViewModelTest {
         fakeObserveGroupedExpenseCategoriesYearlyUseCase = FakeObserveGroupedExpenseCategoriesYearlyUseCase()
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase = FakeObserveGroupedExpenseCategoriesAllTimeUseCase()
         fakeObserveExpensesFilteringUseCase = FakeObserveExpensesFilteringUseCase()
+        fakeObserveExpensesSortingUseCase = FakeObserveExpensesSortingUseCase()
     }
 
     @After
@@ -58,6 +62,7 @@ class ExpensesViewModelTest {
         fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Loading)
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Loading)
         fakeObserveExpensesFilteringUseCase.emit(Async.Loading)
+        fakeObserveExpensesSortingUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -126,12 +131,17 @@ class ExpensesViewModelTest {
             FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
             FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
         )
+        val fakeExpensesSorting = listOf(
+            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = ExpensesSortType.BY_COST, labelResId = R.string.sort_by_cost),
+        )
 
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
         fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(fakeExpensesFiltering))
+        fakeObserveExpensesSortingUseCase.emit(Async.Success(fakeExpensesSorting))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -146,6 +156,7 @@ class ExpensesViewModelTest {
         assertEquals(fakeCategoriesYearly, state.categoriesYearly)
         assertEquals(fakeCategoriesAllTime, state.categoriesAllTime)
         assertEquals(fakeExpensesFiltering, state.filteringUiInfo.filterMenuItems)
+        assertEquals(fakeExpensesSorting, state.filteringUiInfo.sortMenuItems)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -159,6 +170,7 @@ class ExpensesViewModelTest {
         fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Error)
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Error)
         fakeObserveExpensesFilteringUseCase.emit(Async.Error)
+        fakeObserveExpensesSortingUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -224,6 +236,7 @@ class ExpensesViewModelTest {
         fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveExpensesSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(ExpensesIntent.SearchQueryChanged("coffee"))
@@ -240,6 +253,7 @@ class ExpensesViewModelTest {
         fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(emptyList()))
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(emptyList()))
         fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveExpensesSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val expected = ExpensesFilterType.DEBIT_EXPENSES
@@ -256,6 +270,7 @@ class ExpensesViewModelTest {
         fakeObserveGroupedExpenseCategoriesYearlyUseCase,
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase,
         fakeObserveExpensesFilteringUseCase,
+        fakeObserveExpensesSortingUseCase,
         savedStateHandle
     )
 }

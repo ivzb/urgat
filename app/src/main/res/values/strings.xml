@@ -56,11 +56,15 @@
     <string name="more">More</string>
     <string name="close">Close</string>
     <string name="menu_filter">Filter</string>
+    <string name="menu_sort">Sort</string>
     <string name="filter_all">All</string>
     <string name="filter_active">Active</string>
     <string name="filter_completed">Completed</string>
     <string name="filter_debit">Debit</string>
     <string name="filter_cost">Cost</string>
+    <string name="sort_by_date">Sort by date</string>
+    <string name="sort_by_cost">Sort by cost</string>
+    <string name="sort_by_market_value">Sort by market value</string>
     <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>
     <string name="no_expenses_label">See where your money goes.</string>

@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -16,6 +17,7 @@ interface ObserveGroupedInvestmentsUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedInvestments>>>
 
@@ -28,13 +30,15 @@ class DefaultObserveGroupedInvestmentsUseCase @Inject constructor(
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
         filter = ::filterInvestments,
+        sort = ::sortInvestments,
         group = { items -> Group.byDateMonthly(items, Investment::date, Investment::total) },
     )
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<GroupedInvestments>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<GroupedInvestments>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

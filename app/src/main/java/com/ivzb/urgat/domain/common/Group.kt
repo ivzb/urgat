@@ -36,7 +36,7 @@ object Group {
                 GroupedItems(
                     group = yearMonth,
                     total = total(items),
-                    items = items.sortedByDescending { date(it) }
+                    items = items,
                 )
             }
             .sortedByDescending { it.group }
@@ -44,7 +44,7 @@ object Group {
                 GroupedItems(
                     group = it.group.format(YEAR_MONTH_FORMATTER),
                     total = it.total,
-                    items = it.items
+                    items = it.items,
                 )
             }
 
@@ -62,7 +62,7 @@ object Group {
                 GroupedItems(
                     group = year,
                     total = total(items),
-                    items = items.sortedByDescending { date(it) }
+                    items = items,
                 )
             }
             .sortedByDescending { it.group }

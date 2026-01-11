@@ -42,7 +42,7 @@ class ObserveWeightsUseCaseTest {
 
         every { repository.observe(limit, "weight") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -67,7 +67,7 @@ class ObserveWeightsUseCaseTest {
 
         every { repository.observe(limit) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
+import com.ivzb.urgat.domain.expense.ObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesYearlyUseCase
@@ -28,19 +29,22 @@ class ExpensesViewModel @Inject constructor(
     observeGroupedExpenseCategoriesYearlyUseCase: ObserveGroupedExpenseCategoriesYearlyUseCase,
     observeGroupedExpenseCategoriesAllTimeUseCase: ObserveGroupedExpenseCategoriesAllTimeUseCase,
     observeExpensesFilteringUseCase: ObserveExpensesFilteringUseCase,
+    observeExpensesSortingUseCase: ObserveExpensesSortingUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _savedFilterType: Flow<ExpensesFilterType> = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, ALL_EXPENSES)
+    private val _savedFilterType: Flow<ExpensesFilterType> = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, ExpensesFilterType.ALL_EXPENSES)
+    private val _savedSortType: Flow<ExpensesSortType> = savedStateHandle.getStateFlow(EXPENSES_SORT_SAVED_STATE_KEY, ExpensesSortType.BY_DATE)
 
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<ExpensesUiState> = combineUiState(
-        observeGroupedExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
-        observeGroupedExpenseCategoriesMonthlyUseCase(_searchQuery, _savedFilterType, limitFlow = null),
-        observeGroupedExpenseCategoriesYearlyUseCase(_searchQuery, _savedFilterType, limitFlow = null),
-        observeGroupedExpenseCategoriesAllTimeUseCase(_searchQuery, _savedFilterType, limitFlow = null),
+        observeGroupedExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesMonthlyUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesYearlyUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesAllTimeUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeExpensesFilteringUseCase(),
+        observeExpensesSortingUseCase(),
 
         onLoading = {
             ExpensesUiState(isLoading = true)
@@ -48,7 +52,7 @@ class ExpensesViewModel @Inject constructor(
         onError = {
             ExpensesUiState(hasError = true)
         },
-        onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, expensesFiltering ->
+        onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, sorting ->
             ExpensesUiState(
                 expenses = expenses,
                 categoriesMonthly = categoriesMonthly,
@@ -56,7 +60,8 @@ class ExpensesViewModel @Inject constructor(
                 categoriesAllTime = categoriesAllTime,
                 isLoading = false,
                 filteringUiInfo = getFilterUiInfo(
-                    filterMenuItems = expensesFiltering,
+                    filterMenuItems = filtering,
+                    sortMenuItems = sorting,
                 ),
             )
         }
@@ -71,6 +76,7 @@ class ExpensesViewModel @Inject constructor(
         when (intent) {
             is ExpensesIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is ExpensesIntent.SetFiltering -> setFiltering(intent.filterType)
+            is ExpensesIntent.SetSorting -> setSorting(intent.sortType)
         }
     }
 
@@ -82,7 +88,14 @@ class ExpensesViewModel @Inject constructor(
         savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] = filterType
     }
 
-    private fun getFilterUiInfo(filterMenuItems: List<ExpensesFilterMenuItem>): ExpensesFilteringUiInfo {
+    private fun setSorting(sortType: ExpensesSortType) {
+        savedStateHandle[EXPENSES_SORT_SAVED_STATE_KEY] = sortType
+    }
+
+    private fun getFilterUiInfo(
+        filterMenuItems: List<ExpensesFilterMenuItem>,
+        sortMenuItems: List<ExpensesSortMenuItem>,
+    ): ExpensesFilteringUiInfo {
         val filterType: ExpensesFilterType = savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] ?: ALL_EXPENSES
 
         return when (filterType) {
@@ -91,6 +104,7 @@ class ExpensesViewModel @Inject constructor(
                     currentFilteringLabel = R.string.all_expenses,
                     emptyLabel = R.string.no_expenses,
                     filterMenuItems = filterMenuItems,
+                    sortMenuItems = sortMenuItems,
                 )
             }
 
@@ -99,6 +113,7 @@ class ExpensesViewModel @Inject constructor(
                     currentFilteringLabel = R.string.debit_expenses,
                     emptyLabel = R.string.no_debit_expenses,
                     filterMenuItems = filterMenuItems,
+                    sortMenuItems = sortMenuItems,
                 )
             }
 
@@ -107,6 +122,7 @@ class ExpensesViewModel @Inject constructor(
                     currentFilteringLabel = R.string.cost_expenses,
                     emptyLabel = R.string.no_cost_expenses,
                     filterMenuItems = filterMenuItems,
+                    sortMenuItems = sortMenuItems,
                 )
             }
         }
@@ -114,3 +130,4 @@ class ExpensesViewModel @Inject constructor(
 }
 
 const val EXPENSES_FILTER_SAVED_STATE_KEY = "EXPENSES_FILTER_SAVED_STATE_KEY"
+const val EXPENSES_SORT_SAVED_STATE_KEY = "EXPENSES_SORT_SAVED_STATE_KEY"

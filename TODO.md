@@ -64,4 +64,5 @@
 - make remaining budget which is calculated by salary - investments - expenses
 - add budgeting (split into income and expenses)
 - add budgeting pie charts (for income and expenses)
-- allow order expenses and investments by largest and lowest amount
+- add weight sort by date, highest, lowest
+- add tests for sorting expenses by cost and investments by market value - search for `val sortTypeFlow = flowOf` in unit tests

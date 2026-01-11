@@ -1,5 +1,5 @@
 package com.ivzb.urgat.ui.investments
 
-import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.components.MenuItem
 
-typealias InvestmentsFilterMenuItem = FilterMenuItem<String>
+typealias InvestmentsFilterMenuItem = MenuItem<String>

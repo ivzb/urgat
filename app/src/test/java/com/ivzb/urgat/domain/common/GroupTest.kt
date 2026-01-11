@@ -74,8 +74,8 @@ class GroupTest {
                 items = listOf(
                     GroupItemTest(name = "item1", currency = "EUR", date = 1766181600000),
                     GroupItemTest(name = "item2", currency = "USD", date = 1766181600000),
-                    GroupItemTest(name = "item4", currency = "USD", date = 1764885600000),
                     GroupItemTest(name = "item3", currency = "EUR", date = 1763589600000),
+                    GroupItemTest(name = "item4", currency = "USD", date = 1764885600000),
                     GroupItemTest(name = "item5", currency = "USD", date = 1759957200000),
                 ),
             ),

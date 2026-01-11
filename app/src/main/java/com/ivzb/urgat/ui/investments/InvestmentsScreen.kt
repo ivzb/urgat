@@ -48,6 +48,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
+import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
@@ -111,6 +112,11 @@ fun InvestmentsScreen(
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
                 onFilter = { onIntent(InvestmentsIntent.SetFiltering(it)) },
+            )
+
+            SortMenu(
+                items = uiState.filteringUiInfo.sortMenuItems,
+                onFilter = { onIntent(InvestmentsIntent.SetSorting(it)) },
             )
         },
 

@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
@@ -42,6 +43,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
     fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
         val limit = 10
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
         val limitFlow = flowOf(limit)
         val investments = listOf(
             Investment("1", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
@@ -64,7 +66,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
 
         every { investmentsRepository.observe(limit, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -102,7 +104,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
 
         every { investmentsRepository.observe(limit) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

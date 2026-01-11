@@ -5,6 +5,8 @@ import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
+import com.ivzb.urgat.ui.investments.InvestmentsSortMenuItem
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +28,7 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Investment>>> {
         // Record query changes for assertions
@@ -50,6 +53,7 @@ class FakeObserveGroupedInvestmentsUseCase : ObserveGroupedInvestmentsUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedInvestments>>> {
         // Record query changes for assertions
@@ -74,6 +78,7 @@ class FakeObserveInvestmentNetWorthUseCase : ObserveInvestmentNetWorthUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<InvestmentNetWorth>> {
         // Record query changes for assertions
@@ -98,6 +103,7 @@ class FakeObserveInvestmentCategoriesUseCase : ObserveInvestmentCategoriesUseCas
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<InvestmentCategory>>> {
         // Record query changes for assertions
@@ -122,6 +128,7 @@ class FakeObserveInvestmentAssetsUseCase : ObserveInvestmentAssetsUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<InvestmentAsset>>> {
         // Record query changes for assertions
@@ -146,6 +153,7 @@ class FakeObserveGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestm
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedInvestmentCategories>>> {
         // Record query changes for assertions
@@ -210,6 +218,20 @@ class FakeObserveInvestmentsFilteringUseCase : ObserveInvestmentsFilteringUseCas
     }
 
     override operator fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
+        return flow
+    }
+
+}
+
+class FakeObserveInvestmentsSortingUseCase : ObserveInvestmentsSortingUseCase {
+
+    private val flow = MutableStateFlow<Async<List<InvestmentsSortMenuItem>>>(Async.Loading)
+
+    fun emit(value: Async<List<InvestmentsSortMenuItem>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(): Flow<Async<List<InvestmentsSortMenuItem>>> {
         return flow
     }
 

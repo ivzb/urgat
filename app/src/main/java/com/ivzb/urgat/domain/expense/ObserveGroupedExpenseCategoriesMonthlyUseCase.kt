@@ -7,6 +7,7 @@ import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesMonthly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
@@ -19,6 +20,7 @@ interface ObserveGroupedExpenseCategoriesMonthlyUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedExpenseCategories>>>
 
@@ -32,13 +34,15 @@ class DefaultObserveGroupedExpenseCategoriesMonthlyUseCase @Inject constructor(
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = expensesRepository,
         filter = ::filterExpenses,
+        sort = ::sortExpenses,
         group = { expenses -> groupExpenseCategoriesMonthly(expenses, randomRepository::uuid) },
     )
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<GroupedExpenseCategories>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, limitFlow)
+    ): Flow<Async<List<GroupedExpenseCategories>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 
-abstract class DefaultObserveUseCase<T, FilterType>(
+abstract class DefaultObserveUseCase<T, FilterType, SortType>(
     private val repository: BaseRepository<T>,
     private val filter: ((List<T>, FilterType) -> List<T>)? = null,
+    private val sort: ((List<T>, SortType) -> List<T>)? = null,
     private val transform: ((List<T>) -> List<T>)? = null,
 ) {
 
@@ -25,6 +26,7 @@ abstract class DefaultObserveUseCase<T, FilterType>(
     protected fun invokeFlow(
         searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<FilterType>? = null,
+        sortTypeFlow: Flow<SortType>? = null,
         limitFlow: Flow<Int>?
     ): Flow<List<T>> =
         combine(
@@ -41,23 +43,26 @@ abstract class DefaultObserveUseCase<T, FilterType>(
                 repository.observe(limit, searchQuery)
             }
 
-            if (filterTypeFlow == null) {
-                stream
-            } else {
-                combine(stream, filterTypeFlow) { items, filterType ->
-                    if (filter == null) {
-                        items
-                    } else {
-                        filter(items, filterType)
-                    }
+            combine(
+                stream,
+                filterTypeFlow ?: flowOf(null),
+                sortTypeFlow ?: flowOf(null)
+            ) { items, filterType, sortType ->
+                var result = items
+
+                if (filter != null && filterType != null) {
+                    result = filter(result, filterType)
                 }
-            }
-            .map { items ->
-                if (transform == null) {
-                    items
-                } else {
-                    transform(items)
+
+                if (sort != null && sortType != null) {
+                    result = sort(result, sortType)
                 }
+
+                if (transform != null) {
+                    result = transform(result)
+                }
+
+                result
             }
         }
 

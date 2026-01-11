@@ -1,5 +1,5 @@
 package com.ivzb.urgat.ui.todos
 
-import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.components.MenuItem
 
-typealias TodosFilterMenuItem = FilterMenuItem<TodosFilterType>
+typealias TodosFilterMenuItem = MenuItem<TodosFilterType>

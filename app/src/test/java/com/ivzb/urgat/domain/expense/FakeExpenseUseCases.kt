@@ -4,6 +4,8 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.expenses.ExpensesSortMenuItem
+import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,7 @@ class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Expense>>> {
         // Record query changes for assertions
@@ -49,6 +52,7 @@ class FakeObserveGroupedExpensesUseCase : ObserveGroupedExpensesUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedExpenses>>> {
         // Record query changes for assertions
@@ -73,6 +77,7 @@ class FakeObserveGroupedExpenseCategoriesMonthlyUseCase: ObserveGroupedExpenseCa
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedExpenseCategories>>> {
         // Record query changes for assertions
@@ -97,6 +102,7 @@ class FakeObserveGroupedExpenseCategoriesYearlyUseCase: ObserveGroupedExpenseCat
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedExpenseCategories>>> {
         // Record query changes for assertions
@@ -121,6 +127,7 @@ class FakeObserveGroupedExpenseCategoriesAllTimeUseCase: ObserveGroupedExpenseCa
     override fun invoke(
         searchQueryFlow: Flow<String>,
         filterTypeFlow: Flow<ExpensesFilterType>?,
+        sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<ExpenseCategory>>> {
         // Record query changes for assertions
@@ -183,6 +190,20 @@ class FakeObserveExpensesFilteringUseCase : ObserveExpensesFilteringUseCase {
     }
 
     override operator fun invoke(): Flow<Async<List<ExpensesFilterMenuItem>>> {
+        return flow
+    }
+
+}
+
+class FakeObserveExpensesSortingUseCase : ObserveExpensesSortingUseCase {
+
+    private val flow = MutableStateFlow<Async<List<ExpensesSortMenuItem>>>(Async.Loading)
+
+    fun emit(value: Async<List<ExpensesSortMenuItem>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(): Flow<Async<List<ExpensesSortMenuItem>>> {
         return flow
     }
 

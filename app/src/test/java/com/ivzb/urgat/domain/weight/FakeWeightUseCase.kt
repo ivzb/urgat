@@ -22,6 +22,7 @@ class FakeObserveWeightsUseCase : ObserveWeightsUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<Unit>?,
+        sortTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Weight>>> {
         // Record query changes for assertions
