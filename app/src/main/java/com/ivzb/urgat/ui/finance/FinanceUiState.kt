@@ -3,11 +3,12 @@ package com.ivzb.urgat.ui.finance
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.ui.components.FilteringUiInfo
+import com.ivzb.urgat.ui.components.screens.navigation.NavigationUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 
 data class FinanceUiState(
-    val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
+    override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
 
     val expenses: List<Expense> = emptyList(),
     val expensesFilteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo(),
@@ -15,9 +16,11 @@ data class FinanceUiState(
     val investments: List<Investment> = emptyList(),
     val investmentsFilteringUiInfo: InvestmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
 
-    val isLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val filteringUiInfo: FilteringUiInfo = FinanceFilteringUiInfo(),
+    override val isLoading: Boolean = false,
+    override val hasError: Boolean = false,
+    override val isEmpty: Boolean = false,
+
+    override val filteringUiInfo: FilteringUiInfo = FinanceFilteringUiInfo(),
 
     val uiEvent: FinanceUiEvent? = null,
-)
+): NavigationUiState<FinanceFabActionId>

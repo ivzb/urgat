@@ -3,7 +3,7 @@ package com.ivzb.urgat.ui.expenses
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
-import com.ivzb.urgat.ui.listDetail.ListDetailUiState
+import com.ivzb.urgat.ui.components.screens.UiState
 
 data class ExpensesUiState(
     val expenses: List<GroupedExpenses> = emptyList(),
@@ -18,4 +18,4 @@ data class ExpensesUiState(
     val initialPage: Int = 0,
 
     override val filteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo()
-): ListDetailUiState
+): UiState

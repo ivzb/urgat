@@ -1,16 +1,16 @@
-package com.ivzb.urgat.ui.listDetail
+package com.ivzb.urgat.ui.components.screens.listDetail
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ivzb.urgat.navigation.UrgatRoute
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ListDetailsScaffold
-import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.screens.UiState
+import com.ivzb.urgat.ui.components.screens.urgat.UrgatScreen
 
 @Composable
 fun ListDetailScreen(
-    uiState: ListDetailUiState,
+    uiState: UiState,
 
     route: UrgatRoute,
     onSearchQueryChanged: (String) -> Unit,
@@ -31,35 +31,16 @@ fun ListDetailScreen(
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddItem,
         onBack = onBack,
+        withTopAppBarActions = withTopAppBarActions,
         topAppBarActionsContent = topAppBarActionsContent,
         listState = listState,
         modifier = modifier
     ) {
 
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    label = uiState.filteringUiInfo.loadingLabel,
-                )
-            }
 
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes
-                )
-            }
-
-            uiState.isEmpty -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    iconRes = uiState.filteringUiInfo.emptyIconRes
-                )
-            }
-
-            else -> {
-                content()
-            }
-        }
+        UrgatScreen(
+            uiState = uiState,
+            content = content,
+        )
     }
 }

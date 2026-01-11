@@ -38,6 +38,7 @@ import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.components.NavigationScaffold
+import com.ivzb.urgat.ui.components.screens.navigation.NavigationScreen
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -57,7 +58,6 @@ fun LibraryScreen(
     onNoteClick: (Note) -> Unit,
 
     navigator: Navigator,
-
     modifier: Modifier = Modifier,
 ) {
 
@@ -112,10 +112,11 @@ fun LibraryScreen(
     modifier: Modifier = Modifier
 ) {
 
-    NavigationScaffold(
-        selectedRoute = LibraryRoute,
+    NavigationScreen(
+        uiState = uiState,
+
+        route = LibraryRoute,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
-        fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(LibraryIntent.FabActionClick(id)) },
         navigator = navigator,
         withTopAppBarActions = uiState.todos.isNotEmpty() || uiState.notes.isNotEmpty(),
@@ -124,42 +125,26 @@ fun LibraryScreen(
                 onClearCompletedTodos = { onIntent(LibraryIntent.ClearCompletedTodos) }
             )
         },
+
+        content = {
+            LibraryContent(
+                todos = uiState.todos,
+                todosFilteringUiInfo = uiState.todosFilteringUiInfo,
+                onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
+                onSeeAllTodos = onSeeAllTodos,
+                onTodoClick = onTodoClick,
+                onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
+
+                notes = uiState.notes,
+                notesFilteringUiInfo = uiState.notesFilteringUiInfo,
+                onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
+                onSeeAllNotes = onSeeAllNotes,
+                onNoteClick = onNoteClick,
+            )
+        },
+
         modifier = modifier
-    ) {
-
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    uiState.filteringUiInfo.loadingLabel
-                )
-            }
-
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes,
-                )
-            }
-
-            else -> {
-                LibraryContent(
-                    todos = uiState.todos,
-                    todosFilteringUiInfo = uiState.todosFilteringUiInfo,
-                    onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
-                    onSeeAllTodos = onSeeAllTodos,
-                    onTodoClick = onTodoClick,
-                    onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
-
-                    notes = uiState.notes,
-                    notesFilteringUiInfo = uiState.notesFilteringUiInfo,
-                    onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
-                    onSeeAllNotes = onSeeAllNotes,
-                    onNoteClick = onNoteClick,
-                )
-            }
-        }
-
-    }
+    )
 }
 
 @Composable

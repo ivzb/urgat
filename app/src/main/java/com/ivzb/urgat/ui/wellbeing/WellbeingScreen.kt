@@ -31,10 +31,8 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
-import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.NavigationScaffold
+import com.ivzb.urgat.ui.components.screens.navigation.NavigationScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightItem
 import com.ivzb.urgat.ui.weights.WeightsChart
@@ -89,41 +87,27 @@ fun WellbeingScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    NavigationScaffold(
-        selectedRoute = WellbeingRoute,
+    NavigationScreen(
+        uiState = uiState,
+
+        route = WellbeingRoute,
         onSearchQueryChanged = { /* NOOP */ },
-        fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
-        withTopAppBarActions = false,
         navigator = navigator,
+        withTopAppBarActions = false,
+
+        content = {
+            WellbeingContent(
+                weights = uiState.weights,
+                weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
+                onAddWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
+                onSeeAllWeights = onSeeAllWeights,
+                onWeightClick = onWeightClick,
+            )
+        },
+
         modifier = modifier
-    ) {
-
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    uiState.filteringUiInfo.loadingLabel
-                )
-            }
-
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes,
-                )
-            }
-
-            else -> {
-                WellbeingContent(
-                    weights = uiState.weights,
-                    weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
-                    onAddWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
-                    onSeeAllWeights = onSeeAllWeights,
-                    onWeightClick = onWeightClick,
-                )
-            }
-        }
-    }
+    )
 }
 
 @Composable

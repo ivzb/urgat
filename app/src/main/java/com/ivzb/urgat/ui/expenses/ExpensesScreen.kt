@@ -51,7 +51,7 @@ import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.listDetail.ListDetailScreen
+import com.ivzb.urgat.ui.components.screens.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.annotateFormattedString

@@ -33,10 +33,8 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
-import com.ivzb.urgat.ui.components.EmptyStateScreen
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
-import com.ivzb.urgat.ui.components.LoadingState
-import com.ivzb.urgat.ui.components.NavigationScaffold
+import com.ivzb.urgat.ui.components.screens.navigation.NavigationScreen
 import com.ivzb.urgat.ui.expenses.ExpenseItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentItem
@@ -110,48 +108,33 @@ fun FinanceScreen(
     modifier: Modifier = Modifier
 ) {
 
-    NavigationScaffold(
-        selectedRoute = FinanceRoute,
+    NavigationScreen(
+        uiState = uiState,
+
+        route = FinanceRoute,
         onSearchQueryChanged = { query -> onIntent(FinanceIntent.SearchQueryChanged(query)) },
-        fabActions = uiState.fabActions,
         onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
         navigator = navigator,
         withTopAppBarActions = uiState.expenses.isNotEmpty() || uiState.investments.isNotEmpty(),
+
+        content = {
+            FinanceContent(
+                expenses = uiState.expenses,
+                expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
+                onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
+                onSeeAllExpenses = onSeeAllExpenses,
+                onExpenseClick = onExpenseClick,
+
+                investments = uiState.investments,
+                investmentsFilteringUiInfo = uiState.investmentsFilteringUiInfo,
+                onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
+                onSeeAllInvestments = onSeeAllInvestments,
+                onInvestmentClick = onInvestmentClick,
+            )
+        },
+
         modifier = modifier
-    ) {
-
-        when {
-            uiState.isLoading -> {
-                LoadingState(
-                    uiState.filteringUiInfo.loadingLabel
-                )
-            }
-
-            uiState.hasError -> {
-                EmptyStateScreen(
-                    label = uiState.filteringUiInfo.errorLabel,
-                    iconRes = uiState.filteringUiInfo.errorIconRes,
-                )
-            }
-
-            else -> {
-                FinanceContent(
-                    expenses = uiState.expenses,
-                    expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
-                    onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
-                    onSeeAllExpenses = onSeeAllExpenses,
-                    onExpenseClick = onExpenseClick,
-
-                    investments = uiState.investments,
-                    investmentsFilteringUiInfo = uiState.investmentsFilteringUiInfo,
-                    onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
-                    onSeeAllInvestments = onSeeAllInvestments,
-                    onInvestmentClick = onInvestmentClick,
-                )
-            }
-        }
-
-    }
+    )
 }
 
 @Composable

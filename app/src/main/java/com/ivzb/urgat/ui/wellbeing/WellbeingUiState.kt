@@ -1,17 +1,20 @@
 package com.ivzb.urgat.ui.wellbeing
 
 import com.ivzb.urgat.data.weight.Weight
+import com.ivzb.urgat.ui.components.screens.navigation.NavigationUiState
 import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 
 data class WellbeingUiState(
-    val fabActions: List<WellbeingFabAction> = WELLBEING_FAB_ACTIONS,
+    override val fabActions: List<WellbeingFabAction> = WELLBEING_FAB_ACTIONS,
 
     val weights: List<Weight> = listOf(),
     val weightsFilteringUiInfo: WeightsFilteringUiInfo = WeightsFilteringUiInfo(),
 
-    val isLoading: Boolean = false,
-    val hasError: Boolean = false,
-    val filteringUiInfo: WellbeingFilteringUiInfo = WellbeingFilteringUiInfo(),
+    override val isLoading: Boolean = false,
+    override val hasError: Boolean = false,
+    override val isEmpty: Boolean = false,
+
+    override val filteringUiInfo: WellbeingFilteringUiInfo = WellbeingFilteringUiInfo(),
 
     val uiEvent: WellbeingUiEvent? = null,
-)
+): NavigationUiState<WellbeingFabActionId>

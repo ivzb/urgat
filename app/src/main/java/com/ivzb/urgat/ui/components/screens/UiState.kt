@@ -1,8 +1,8 @@
-package com.ivzb.urgat.ui.listDetail
+package com.ivzb.urgat.ui.components.screens
 
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
-interface ListDetailUiState {
+interface UiState {
     val isLoading: Boolean
     val hasError: Boolean
     val isEmpty: Boolean

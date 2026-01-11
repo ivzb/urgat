@@ -11,8 +11,6 @@
 - write UI tests
 - reusable pages/chart screen
 - reusable list/detail screen
-- check how to fit the main/navigation/library screen scaffold into list/detail screen structure
-- ^ possibly create new NavigationScreen and then reuse inner code
 - also consider moving the scaffold code directly into these screens
 
 ## Improvements

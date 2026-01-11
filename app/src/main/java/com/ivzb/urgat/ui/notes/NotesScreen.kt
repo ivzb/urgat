@@ -28,7 +28,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.listDetail.ListDetailScreen
+import com.ivzb.urgat.ui.components.screens.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable

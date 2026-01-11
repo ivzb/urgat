@@ -35,7 +35,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.listDetail.ListDetailScreen
+import com.ivzb.urgat.ui.components.screens.listDetail.ListDetailScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 
 @Composable

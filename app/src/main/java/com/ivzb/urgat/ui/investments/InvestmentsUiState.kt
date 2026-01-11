@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestments
-import com.ivzb.urgat.ui.listDetail.ListDetailUiState
+import com.ivzb.urgat.ui.components.screens.UiState
 
 data class InvestmentsUiState(
     val investments: List<GroupedInvestments> = emptyList(),
@@ -21,4 +21,4 @@ data class InvestmentsUiState(
     val initialPage: Int = 0,
 
     override val filteringUiInfo: InvestmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
-): ListDetailUiState
+): UiState
