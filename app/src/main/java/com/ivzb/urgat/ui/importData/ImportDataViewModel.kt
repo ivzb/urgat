@@ -33,6 +33,25 @@ class ImportDataViewModel @Inject constructor(
         }
     }
 
+    private fun importDataFolder(uri: Uri) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                )
+            }
+
+            importDataUseCase(uri)
+
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    userMessage = R.string.import_data_done,
+                )
+            }
+        }
+    }
+
     private fun switchToManualMode() {
         _uiState.update {
             it.copy(
@@ -99,25 +118,6 @@ class ImportDataViewModel @Inject constructor(
             }
         }
    }
-
-    private fun importDataFolder(uri: Uri) {
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                )
-            }
-
-            importDataUseCase(uri)
-
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    userMessage = R.string.import_data_done,
-                )
-            }
-        }
-    }
 
     private fun userMessageShown() {
         _uiState.update {

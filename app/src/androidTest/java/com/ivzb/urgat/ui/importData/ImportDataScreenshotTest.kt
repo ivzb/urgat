@@ -3,22 +3,45 @@ package com.ivzb.urgat.ui.importData
 import androidx.compose.ui.Modifier
 import com.ivzb.urgat.R
 import com.ivzb.urgat.annotations.Screenshot
-import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
-import org.junit.experimental.categories.Category
 
 @Screenshot
 class ImportDataScreenshotTest: ScreenshotTest() {
 
     @Test
-    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_ImportDataScreen_initialState() = screenshotTest(
         uiState = ImportDataUiState(
             isLoading = false,
             userMessage = null,
-            shouldNavigateBack = false,
+        ),
+    )
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_expenses() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 0)
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_investments() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 1)
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_todos() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 2)
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_notes() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 3)
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_weights() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 4)
+
+    private fun screenshotTest_ImportDataScreen_manualMode(initialPage: Int) = screenshotTest(
+        uiState = ImportDataUiState(
+            isManualMode = true,
+            initialPage = initialPage,
         ),
     )
 
@@ -27,7 +50,6 @@ class ImportDataScreenshotTest: ScreenshotTest() {
         uiState = ImportDataUiState(
             isLoading = true,
             userMessage = R.string.import_data_done,
-            shouldNavigateBack = false,
         ),
     )
 

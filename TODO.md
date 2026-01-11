@@ -74,4 +74,3 @@
 - make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
 - make the app hledger compatible - https://hledger.org/
 - allow order expenses and investments by largest and lowest amount
-- fix tests and add import manual data tests
