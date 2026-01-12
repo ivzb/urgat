@@ -64,6 +64,8 @@
     <string name="filter_cost">Cost</string>
     <string name="sort_by_date">Sort by date</string>
     <string name="sort_by_cost">Sort by cost</string>
+    <string name="sort_by_min">Sort by min</string>
+    <string name="sort_by_max">Sort by max</string>
     <string name="sort_by_market_value">Sort by market value</string>
     <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>

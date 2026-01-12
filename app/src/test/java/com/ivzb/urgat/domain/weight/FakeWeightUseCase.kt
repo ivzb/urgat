@@ -1,6 +1,8 @@
 package com.ivzb.urgat.domain.weight
 
 import com.ivzb.urgat.data.weight.Weight
+import com.ivzb.urgat.ui.weights.WeightsSortMenuItem
+import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,13 +24,27 @@ class FakeObserveWeightsUseCase : ObserveWeightsUseCase {
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
         filterTypeFlow: Flow<Unit>?,
-        sortTypeFlow: Flow<Unit>?,
+        sortTypeFlow: Flow<WeightsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<Weight>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow?.collect { lastQuery = it }
         }
+        return flow
+    }
+
+}
+
+class FakeObserveWeightsSortingUseCase : ObserveWeightsSortingUseCase {
+
+    private val flow = MutableStateFlow<Async<List<WeightsSortMenuItem>>>(Async.Loading)
+
+    fun emit(value: Async<List<WeightsSortMenuItem>>) {
+        flow.value = value
+    }
+
+    override operator fun invoke(): Flow<Async<List<WeightsSortMenuItem>>> {
         return flow
     }
 

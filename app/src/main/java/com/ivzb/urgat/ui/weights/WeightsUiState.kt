@@ -10,5 +10,5 @@ data class WeightsUiState(
     override val hasError: Boolean = false,
     override val isEmpty: Boolean = items.isEmpty(),
 
-    override val filteringUiInfo: WeightsFilteringUiInfo = WeightsFilteringUiInfo()
+    override val filteringUiInfo: WeightsFilteringUiInfo = WeightsFilteringUiInfo(),
 ): UiState

@@ -4,10 +4,12 @@ import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import com.ivzb.urgat.domain.weight.DefaultCreateWeightUseCase
 import com.ivzb.urgat.domain.weight.DefaultDeleteWeightUseCase
 import com.ivzb.urgat.domain.weight.DefaultGetWeightUseCase
+import com.ivzb.urgat.domain.weight.DefaultObserveWeightsSortingUseCase
 import com.ivzb.urgat.domain.weight.DefaultObserveWeightsUseCase
 import com.ivzb.urgat.domain.weight.DefaultUpdateWeightUseCase
 import com.ivzb.urgat.domain.weight.DeleteWeightUseCase
 import com.ivzb.urgat.domain.weight.GetWeightUseCase
+import com.ivzb.urgat.domain.weight.ObserveWeightsSortingUseCase
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
 import com.ivzb.urgat.domain.weight.UpdateWeightUseCase
 import dagger.Binds
@@ -39,5 +41,9 @@ interface WeightUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteWeightUseCase(useCase: DefaultDeleteWeightUseCase): DeleteWeightUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveWeightsSortingUseCase(useCase: DefaultObserveWeightsSortingUseCase): ObserveWeightsSortingUseCase
 
 }

@@ -22,9 +22,11 @@ import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ListItem
+import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.components.screens.ListDetailScreen
+import com.ivzb.urgat.ui.investments.InvestmentsIntent
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
@@ -72,7 +74,12 @@ fun WeightsScreen(
         onAddItem = onAddWeight,
         onBack = onBack,
 
-        withTopAppBarActions = false,
+        topAppBarActionsContent = {
+            SortMenu(
+                items = uiState.filteringUiInfo.sortMenuItems,
+                onFilter = { onIntent(WeightsIntent.SetSorting(it)) },
+            )
+        },
         listState = listState,
 
         content = {
