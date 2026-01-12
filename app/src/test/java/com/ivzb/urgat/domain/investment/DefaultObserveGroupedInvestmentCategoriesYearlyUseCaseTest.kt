@@ -40,7 +40,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
+    fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
         val limit = 10
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
@@ -85,6 +85,63 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
                 items = listOf(
                     InvestmentCategory(id = TEST_UUID, "etfs", "1,160 EUR | 1,160 USD", investments = listOf(investments[10], investments[9], investments[7], investments[6])),
                     InvestmentCategory(id = TEST_UUID, "stocks", "771.05 EUR | 771.05 USD", investments = listOf(investments[11], investments[8])),
+                ),
+            ),
+        )
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        val actual = (first as Async.Success).data
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `invoke should return Success with filtered items sorted by market value`() = runTest(testDispatcher) {
+        val searchQueryFlow = flowOf("coffee")
+        val limit = 10
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
+        val limitFlow = flowOf(limit)
+        val investments = listOf(
+            Investment("1", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Investment("2", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Investment("3", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+
+            Investment("4", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "EUR", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Investment("5", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "EUR", timestamp(2025, 12, 29), false, timestamp(2025, 12, 29)),
+            Investment("6", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "EUR", timestamp(2025, 12, 29), false, timestamp(2025, 12, 29)),
+
+            Investment("7", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "USD", timestamp(2024, 11, 25), false, timestamp(2024, 11, 25)),
+            Investment("8", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "USD", timestamp(2024, 11, 27), false, timestamp(2024, 11, 27)),
+            Investment("9", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "USD", timestamp(2024, 12, 9), false, timestamp(2024, 12, 9)),
+
+            Investment("10", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "EUR", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Investment("11", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "EUR", timestamp(2024, 12, 29), false, timestamp(2024, 12, 29)),
+            Investment("12", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "EUR", timestamp(2024, 12, 29), false, timestamp(2024, 12, 29)),
+        )
+        val repositoryStream = flowOf(investments)
+
+        every { investmentsRepository.observe(limit, "coffee") } returns repositoryStream
+
+        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        val expected = listOf(
+            GroupedItems(
+                group = "2025",
+                total = "1,931.05 EUR | 1,931.05 USD",
+                items = listOf(
+                    InvestmentCategory(id = TEST_UUID, "etfs", "1,160 EUR | 1,160 USD", investments = listOf(investments[1], investments[4], investments[0], investments[3])),
+                    InvestmentCategory(id = TEST_UUID, "stocks", "771.05 EUR | 771.05 USD", investments = listOf(investments[2], investments[5])),
+                ),
+            ),
+            GroupedItems(
+                group = "2024",
+                total = "1,931.05 EUR | 1,931.05 USD",
+                items = listOf(
+                    InvestmentCategory(id = TEST_UUID, "etfs", "1,160 EUR | 1,160 USD", investments = listOf(investments[7], investments[10], investments[6], investments[9])),
+                    InvestmentCategory(id = TEST_UUID, "stocks", "771.05 EUR | 771.05 USD", investments = listOf(investments[8], investments[11])),
                 ),
             ),
         )

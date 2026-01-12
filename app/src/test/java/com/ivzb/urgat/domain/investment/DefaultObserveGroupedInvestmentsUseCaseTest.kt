@@ -33,13 +33,60 @@ class ObserveGroupedInvestmentsUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
+    fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
         val limit = 10
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
         listOf(
+                Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), "Stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+                Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), "Stocks", "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+                Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), "Stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+                Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), "Stocks", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            ),
+        )
+
+        every { repository.observe(limit, "coffee") } returns repositoryStream
+
+        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        val expected = listOf(
+            GroupedItems(
+                group = "December 2025",
+                total = "1,186,432 USD",
+                items = listOf(
+                    Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
+                    Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), "Stocks", "USD", 1765231200000, false, 1765231200000),
+                ),
+            ),
+            GroupedItems(
+                group = "November 2025",
+                total = "1,585,468 USD",
+                items = listOf(
+                    Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
+                    Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), "Stocks", "USD",  1764021600000, false, 1764021600000),
+                ),
+            ),
+        )
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        val actual = (first as Async.Success).data
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `invoke should return Success with filtered items sorted by market value`() = runTest(testDispatcher) {
+        val searchQueryFlow = flowOf("coffee")
+        val limit = 10
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
+        val limitFlow = flowOf(limit)
+        val repositoryStream = flowOf(
+            listOf(
                 Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), "Stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
                 Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), "Stocks", "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
                 Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), "Stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),

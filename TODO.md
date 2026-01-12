@@ -65,4 +65,3 @@
 - add budgeting (split into income and expenses)
 - add budgeting pie charts (for income and expenses)
 - add weight sort by date, highest, lowest
-- add tests for sorting expenses by cost and investments by market value - search for `val sortTypeFlow = flowOf` in unit tests
