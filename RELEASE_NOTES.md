@@ -1,3 +1,8 @@
+## Release notes 26.01.15
+
+New:
+- Weights can now be sorted by date, min and max.
+
 ## Release notes 26.01.14
 
 New:
