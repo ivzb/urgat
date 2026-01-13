@@ -107,9 +107,9 @@ class AddEditBudgetViewModel @AssistedInject constructor(
 
     private fun createNewBudget() = viewModelScope.launch {
         createBudgetUseCase(
-            income = uiState.value.income.sanitize(),
+            income = uiState.value.income.sanitize().toBigDecimal(),
             bankStart = uiState.value.bankStart.sanitize().toBigDecimal(),
-            bankEnd = uiState.value.bankEnd.sanitize(),
+            bankEnd = uiState.value.bankEnd.sanitize().toBigDecimalOrNull(),
             date = uiState.value.date,
         )
 
@@ -152,9 +152,9 @@ class AddEditBudgetViewModel @AssistedInject constructor(
         viewModelScope.launch {
             updateBudgetUseCase(
                 budgetId,
-                income = uiState.value.income.sanitize(),
+                income = uiState.value.income.sanitize().toBigDecimal(),
                 bankStart = uiState.value.bankStart.sanitize().toBigDecimal(),
-                bankEnd = uiState.value.bankEnd.sanitize(),
+                bankEnd = uiState.value.bankEnd.sanitize().toBigDecimalOrNull(),
                 date = uiState.value.date,
             )
 
@@ -182,7 +182,7 @@ class AddEditBudgetViewModel @AssistedInject constructor(
                         it.copy(
                             income = budget.income.toString(),
                             bankStart = budget.bankStart.toString(),
-                            bankEnd = budget.bankEnd.toString(),
+                            bankEnd = budget.bankEnd?.toString(),
                             date = uiState.value.date,
                             isLoading = false,
                             withDelete = true,
