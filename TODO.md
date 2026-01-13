@@ -7,6 +7,7 @@
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - consider making generic add/edit screen with forms abstraction
+- make add/edit screens generic
 
 ## Improvements
 - add localizations

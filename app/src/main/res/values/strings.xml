@@ -30,6 +30,7 @@
     <string name="empty_note_message">Please enter a note.</string>
     <string name="empty_weight_message">Please fill in weight.</string>
     <string name="empty_investment_message">Please enter a investment.</string>
+    <string name="empty_budget_message">Please fill in all budget fields.</string>
     <string name="title_hint">Title</string>
     <string name="description_hint">Enter your todo here.</string>
     <string name="expense_hint">Expense</string>
@@ -147,4 +148,9 @@
     <string name="version_format">Version: %1$s</string>
     <string name="chart_text_format">%1$s\n%2$s</string>
     <string name="exclude_from_analytics">Exclude from analytics</string>
+    <string name="add_budget">Add Budget</string>
+    <string name="edit_budget">Edit Budget</string>
+    <string name="income_hint">Income</string>
+    <string name="bank_start_hint">Bank start</string>
+    <string name="bank_end_hint">Bank end</string>
 </resources>

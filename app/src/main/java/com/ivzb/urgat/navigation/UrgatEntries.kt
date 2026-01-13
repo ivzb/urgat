@@ -4,6 +4,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.ivzb.urgat.ui.about.aboutEntry
+import com.ivzb.urgat.ui.addEditBudget.addEditBudgetEntry
 import com.ivzb.urgat.ui.addEditExpense.addEditExpenseEntry
 import com.ivzb.urgat.ui.addEditInvestment.addEditInvestmentEntry
 import com.ivzb.urgat.ui.addEditNote.addEditNoteEntry
@@ -48,5 +49,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
         importDataEntry(navigator)
 
         aboutEntry(navigator)
+
+        addEditBudgetEntry(navigator)
     }
 }
