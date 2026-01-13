@@ -65,3 +65,5 @@
 - make remaining budget which is calculated by salary - investments - expenses
 - add budgeting (split into income and expenses)
 - add budgeting pie charts (for income and expenses)
+- add budget tests
+- add budget to export/import

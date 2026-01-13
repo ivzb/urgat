@@ -1,5 +1,7 @@
 package com.ivzb.urgat.di
 
+import com.ivzb.urgat.data.budget.BudgetsRepository
+import com.ivzb.urgat.data.budget.DefaultBudgetsRepository
 import com.ivzb.urgat.data.expense.DefaultExpensesRepository
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.exportData.DefaultExportDataRepository
@@ -57,5 +59,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsRandomRepository(randomRepository: DefaultRandomRepository): RandomRepository
+
+    @Singleton
+    @Binds
+    fun bindsBudgetsRepository(budgetsRepository: DefaultBudgetsRepository): BudgetsRepository
 
 }

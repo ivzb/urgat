@@ -45,7 +45,7 @@ class MigrationTest {
                 AppDatabase::class.java,
                 TEST_DB
             )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
             .build()
             .apply {
                 openHelper.writableDatabase.close()
@@ -76,7 +76,7 @@ class MigrationTest {
                 AppDatabase::class.java,
                 TEST_DB
             )
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
             .build()
             .let { db ->
                 // verify data integrity after migration
@@ -165,9 +165,9 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 5,
+            version = 6,
             validateDroppedTables = true,
-            migrations = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+            migrations = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
         ).close()
 
         // verifications

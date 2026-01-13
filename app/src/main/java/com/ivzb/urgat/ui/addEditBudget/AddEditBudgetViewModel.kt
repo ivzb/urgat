@@ -182,7 +182,7 @@ class AddEditBudgetViewModel @AssistedInject constructor(
                         it.copy(
                             income = budget.income.toString(),
                             bankStart = budget.bankStart.toString(),
-                            bankEnd = budget.bankEnd?.toString(),
+                            bankEnd = budget.bankEnd?.toString().orEmpty(),
                             date = uiState.value.date,
                             isLoading = false,
                             withDelete = true,
