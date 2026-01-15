@@ -211,7 +211,7 @@ fun AddEditBudgetScreen(
                         ),
                         maxLines = 1,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .weight(1f)
                             .focusRequester(focusRequesters[FieldId.BankStart.ordinal]),
                     )
 

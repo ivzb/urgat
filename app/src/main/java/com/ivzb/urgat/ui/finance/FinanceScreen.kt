@@ -53,6 +53,8 @@ fun FinanceScreen(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
+    onAddBudget: () -> Unit,
+
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
@@ -78,6 +80,7 @@ fun FinanceScreen(
             when (event) {
                 is FinanceUiEvent.AddExpense -> onAddExpense()
                 is FinanceUiEvent.AddInvestment -> onAddInvestment()
+                is FinanceUiEvent.AddBudget -> onAddBudget()
             }
 
             viewModel.onIntent(FinanceIntent.EventConsumed)

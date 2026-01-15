@@ -1,6 +1,7 @@
 package com.ivzb.urgat.navigation
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.addEditBudget.AddEditBudgetRoute
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseRoute
 import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
@@ -83,6 +84,13 @@ class UrgatNavActions(private val navigator: Navigator) {
         navigator.navigate(AddEditInvestmentRoute(
             id = expenseId,
             titleResId = R.string.edit_investment
+        ))
+    }
+
+    fun navigateToAddBudget() {
+        navigator.navigate(AddEditBudgetRoute(
+            id = null,
+            titleResId = R.string.add_budget,
         ))
     }
 

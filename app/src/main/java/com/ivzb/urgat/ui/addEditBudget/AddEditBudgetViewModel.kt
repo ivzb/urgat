@@ -82,7 +82,6 @@ class AddEditBudgetViewModel @AssistedInject constructor(
         val fields = listOf(
             uiState.value.income,
             uiState.value.bankStart,
-            uiState.value.bankEnd,
         )
 
         val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }

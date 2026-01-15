@@ -92,6 +92,7 @@ class FinanceViewModel @Inject constructor(
                 when (id) {
                     FinanceFabActionId.Expense -> FinanceUiEvent.AddExpense
                     FinanceFabActionId.Investment -> FinanceUiEvent.AddInvestment
+                    FinanceFabActionId.Budget -> FinanceUiEvent.AddBudget
                 }
             )
         }
