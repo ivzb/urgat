@@ -63,7 +63,7 @@
 - make the app hledger compatible - https://hledger.org/
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - make remaining budget which is calculated by salary - investments - expenses
-- add budgeting (split into income and expenses)
 - add budgeting pie charts (for income and expenses)
 - add budget tests
 - add budget to export/import
+- add budgeting (split into income and expenses)

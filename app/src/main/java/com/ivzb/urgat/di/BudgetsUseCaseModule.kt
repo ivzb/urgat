@@ -4,9 +4,11 @@ import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultCreateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultDeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultGetBudgetUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.DefaultUpdateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.GetBudgetUseCase
+import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.UpdateBudgetUseCase
 import dagger.Binds
 import dagger.Module
@@ -32,5 +34,8 @@ interface BudgetsUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteBudgetUseCase(useCase: DefaultDeleteBudgetUseCase): DeleteBudgetUseCase
+
+    @Binds
+    fun bindsObserveBudgetUseCase(useCase: DefaultObserveBudgetsUseCase): ObserveBudgetsUseCase
 
 }

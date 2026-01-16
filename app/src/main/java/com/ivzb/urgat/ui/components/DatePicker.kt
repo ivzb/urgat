@@ -6,6 +6,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 import java.time.LocalDate
 import java.time.ZoneId
@@ -18,11 +19,10 @@ fun DatePicker(
     content: @Composable (String, DatePickerDialog) -> Unit
 ) {
     val context = LocalContext.current
-    val dateFormat = remember { DateTimeFormatter.ofPattern("dd/MM/yyyy") }
     val selectedDate = remember(timestamp) {
         timestamp.toLocalDate()
     }
-    val formattedDate = selectedDate.format(dateFormat)
+    val formattedDate = selectedDate.format()
     val isDarkTheme = isSystemInDarkTheme()
     val themedContext = remember(context, isDarkTheme) {
         ContextThemeWrapper(context, if (isDarkTheme) {

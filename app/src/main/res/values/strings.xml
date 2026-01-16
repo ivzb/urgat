@@ -148,9 +148,19 @@
     <string name="version_format">Version: %1$s</string>
     <string name="chart_text_format">%1$s\n%2$s</string>
     <string name="exclude_from_analytics">Exclude from analytics</string>
+    <string name="recent_budgets">Recent budgets</string>
     <string name="add_budget">Add Budget</string>
     <string name="edit_budget">Edit Budget</string>
     <string name="income_hint">Income</string>
     <string name="bank_start_hint">Bank start</string>
     <string name="bank_end_hint">Bank end (optional)</string>
+    <string name="all_budgets">All budgets</string>
+    <string name="no_budgets">You have no budgets</string>
+    <string name="no_budgets_label">Your savings journey starts here.</string>
+    <string name="no_budgets_message">Tap "Add Budget" to track your first one.</string>
+    <string name="no_budgets_search">You have no budgets with this search criteria!</string>
+    <string name="loading_budgets">Loading budgets</string>
+    <string name="error_budgets">Error while loading budgets</string>
+    <string name="bank_start_format">Bank start: %1$s</string>
+    <string name="bank_end_format">Bank end: %1$s</string>
 </resources>

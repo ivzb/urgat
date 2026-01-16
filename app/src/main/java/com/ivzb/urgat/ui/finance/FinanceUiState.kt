@@ -1,7 +1,9 @@
 package com.ivzb.urgat.ui.finance
 
+import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.uiState.NavigationUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
@@ -15,6 +17,9 @@ data class FinanceUiState(
 
     val investments: List<Investment> = emptyList(),
     val investmentsFilteringUiInfo: InvestmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
+
+    val budgets: List<Budget> = emptyList(),
+    val budgetsFilteringUiInfo: BudgetsFilteringUiInfo = BudgetsFilteringUiInfo(),
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,

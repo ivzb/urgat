@@ -26,11 +26,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
+import com.ivzb.urgat.ui.budgets.BudgetItem
+import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
@@ -54,6 +57,8 @@ fun FinanceScreen(
     onInvestmentClick: (Investment) -> Unit,
 
     onAddBudget: () -> Unit,
+    onSeeAllBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
 
     navigator: Navigator,
     modifier: Modifier = Modifier,
@@ -70,6 +75,9 @@ fun FinanceScreen(
 
         onSeeAllInvestments = onSeeAllInvestments,
         onInvestmentClick = onInvestmentClick,
+
+        onSeeAllBudgets = onSeeAllBudgets,
+        onBudgetClick = onBudgetClick,
 
         navigator = navigator,
         modifier = modifier
@@ -107,6 +115,9 @@ fun FinanceScreen(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
+    onSeeAllBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
+
     navigator: Navigator,
     modifier: Modifier = Modifier
 ) {
@@ -133,6 +144,12 @@ fun FinanceScreen(
                 onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
                 onSeeAllInvestments = onSeeAllInvestments,
                 onInvestmentClick = onInvestmentClick,
+
+                budgets = uiState.budgets,
+                budgetsFilteringUiInfo = uiState.budgetsFilteringUiInfo,
+                onAddBudget = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget)) },
+                onSeeAllBudgets = onSeeAllBudgets,
+                onBudgetClick = onBudgetClick,
             )
         },
 
@@ -154,6 +171,12 @@ private fun FinanceContent(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
+    budgets: List<Budget>,
+    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
+    onAddBudget: () -> Unit,
+    onSeeAllBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
 
@@ -173,6 +196,12 @@ private fun FinanceContent(
             onSeeAllInvestments = onSeeAllInvestments,
             onInvestmentClick = onInvestmentClick,
 
+            budgets = budgets,
+            budgetsFilteringUiInfo = budgetsFilteringUiInfo,
+            onAddBudget = onAddBudget,
+            onSeeAllBudgets = onSeeAllBudgets,
+            onBudgetClick = onBudgetClick,
+
             modifier = modifier,
         )
     } else {
@@ -188,6 +217,12 @@ private fun FinanceContent(
             onAddInvestment = onAddInvestment,
             onSeeAllInvestments = onSeeAllInvestments,
             onInvestmentClick = onInvestmentClick,
+
+            budgets = budgets,
+            budgetsFilteringUiInfo = budgetsFilteringUiInfo,
+            onAddBudget = onAddBudget,
+            onSeeAllBudgets = onSeeAllBudgets,
+            onBudgetClick = onBudgetClick,
 
             modifier = modifier,
         )
@@ -208,6 +243,12 @@ private fun FinanceContentPortrait(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
+    budgets: List<Budget>,
+    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
+    onAddBudget: () -> Unit,
+    onSeeAllBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
+
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.finance)
@@ -227,7 +268,7 @@ private fun FinanceContentPortrait(
             expensesFilteringUiInfo = expensesFilteringUiInfo,
             onAddExpense = onAddExpense,
             onSeeAllExpenses = onSeeAllExpenses,
-            onExpenseClick = onExpenseClick
+            onExpenseClick = onExpenseClick,
         )
 
         item {
@@ -242,7 +283,22 @@ private fun FinanceContentPortrait(
             investmentsFilteringUiInfo = investmentsFilteringUiInfo,
             onAddInvestment = onAddInvestment,
             onSeeAllInvestments = onSeeAllInvestments,
-            onInvestmentClick = onInvestmentClick
+            onInvestmentClick = onInvestmentClick,
+        )
+
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        itemBudgets(
+            budgets = budgets,
+            budgetsFilteringUiInfo = budgetsFilteringUiInfo,
+            onAddBudget = onAddBudget,
+            onSeeAllBudgets = onSeeAllBudgets,
+            onBudgetClick = onBudgetClick,
         )
 
         item {
@@ -267,6 +323,12 @@ private fun FinanceContentLandscape(
     onAddInvestment: () -> Unit,
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    budgets: List<Budget>,
+    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
+    onAddBudget: () -> Unit,
+    onSeeAllBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
 
     modifier: Modifier = Modifier
 ) {
@@ -322,6 +384,32 @@ private fun FinanceContentLandscape(
                 onAddInvestment = onAddInvestment,
                 onSeeAllInvestments = onSeeAllInvestments,
                 onInvestmentClick = onInvestmentClick
+            )
+
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+            }
+        }
+
+        LazyColumn(
+            modifier = modifier
+                .weight(1f)
+                .semantics { contentDescription = screenName },
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            ),
+        ) {
+
+            itemBudgets(
+                budgets = budgets,
+                budgetsFilteringUiInfo = budgetsFilteringUiInfo,
+                onAddBudget = onAddBudget,
+                onSeeAllBudgets = onSeeAllBudgets,
+                onBudgetClick = onBudgetClick,
             )
 
             item {
@@ -416,6 +504,47 @@ private fun LazyListScope.itemInvestments(
     }
 }
 
+private fun LazyListScope.itemBudgets(
+    budgets: List<Budget>,
+    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
+    onAddBudget: () -> Unit,
+    onSeeAllBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
+) {
+    when {
+        budgets.isEmpty() -> {
+            item {
+                EmptyStateCard(
+                    iconRes = budgetsFilteringUiInfo.emptyIconRes,
+                    label = budgetsFilteringUiInfo.emptyLabel,
+                    message = budgetsFilteringUiInfo.emptyMessage,
+                    buttonLabel = budgetsFilteringUiInfo.emptyButtonLabel,
+                    onButtonClick = onAddBudget,
+                )
+            }
+        }
+
+        else -> {
+            item {
+                ItemHeaderWithSeeAll(
+                    title = stringResource(budgetsFilteringUiInfo.currentFilteringLabel),
+                    onSeeAllClick = onSeeAllBudgets,
+                )
+            }
+
+            items(
+                items = budgets,
+                key = { budget -> budget.id },
+            ) { budget ->
+                BudgetItem(
+                    budget = budget,
+                    onBudgetClick = onBudgetClick
+                )
+            }
+        }
+    }
+}
+
 @AllDevicesPreview
 @Composable
 fun FinanceScreenPreview() {
@@ -439,6 +568,8 @@ fun FinanceScreenPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
+            onSeeAllBudgets = {},
+            onBudgetClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -464,6 +595,8 @@ fun FinanceScreenEmptyPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
+            onSeeAllBudgets = {},
+            onBudgetClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -489,6 +622,8 @@ fun FinanceScreenLoadingPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
+            onSeeAllBudgets = {},
+            onBudgetClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -514,6 +649,8 @@ fun FinanceScreenErrorPreview() {
             onExpenseClick = {},
             onSeeAllInvestments = {},
             onInvestmentClick = {},
+            onSeeAllBudgets = {},
+            onBudgetClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )

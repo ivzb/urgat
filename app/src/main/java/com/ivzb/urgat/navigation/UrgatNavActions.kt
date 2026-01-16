@@ -87,10 +87,22 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
+    fun navigateToBudgets() {
+        // todo:
+//        navigator.navigate(BudgetsRoute)
+    }
+
     fun navigateToAddBudget() {
         navigator.navigate(AddEditBudgetRoute(
             id = null,
             titleResId = R.string.add_budget,
+        ))
+    }
+
+    fun navigateToEditBudget(budgetId: String) {
+        navigator.navigate(AddEditBudgetRoute(
+            id = budgetId,
+            titleResId = R.string.edit_budget,
         ))
     }
 

@@ -10,4 +10,14 @@ data class Budget(
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long,
-)
+) {
+
+    fun total(): BigDecimal? {
+        if (bankEnd == null) {
+            return null
+        }
+
+        return bankEnd - bankStart
+    }
+
+}

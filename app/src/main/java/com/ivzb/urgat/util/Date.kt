@@ -3,6 +3,7 @@ package com.ivzb.urgat.util
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 fun Long.toLocalDate(): LocalDate {
     return Instant.ofEpochMilli(this)
@@ -16,3 +17,9 @@ fun LocalDate.toTimestamp(): Long {
         .toInstant()
         .toEpochMilli()
 }
+
+fun LocalDate.format(): String {
+    return this.format(DATE_FORMATTER)
+}
+
+private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")

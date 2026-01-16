@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.resources.ResourcesProvider
+import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
+import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
@@ -22,6 +24,7 @@ import javax.inject.Inject
 class FinanceViewModel @Inject constructor(
     observeExpensesUseCase: ObserveExpensesUseCase,
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
+    observeBudgetsUseCase: ObserveBudgetsUseCase,
     resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
@@ -34,6 +37,7 @@ class FinanceViewModel @Inject constructor(
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeExpensesUseCase(_searchQuery, null, null, _itemsLimit),
         observeInvestmentsUseCase(_searchQuery, null, null, _itemsLimit),
+        observeBudgetsUseCase(_searchQuery, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {
@@ -42,7 +46,7 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { expenses, investments, uiEvent ->
+        onSuccess = { expenses, investments, budgets, uiEvent ->
             FinanceUiState(
                 expenses = expenses,
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(
@@ -57,6 +61,13 @@ class FinanceViewModel @Inject constructor(
                     emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
                     emptyMessage = R.string.no_investments_message,
                     emptyButtonLabel = R.string.add_investment,
+                ),
+                budgets = budgets,
+                budgetsFilteringUiInfo = BudgetsFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_budgets,
+                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_budgets_label else R.string.no_budgets_search,
+                    emptyMessage = R.string.no_budgets_message,
+                    emptyButtonLabel = R.string.add_budget,
                 ),
                 isLoading = false,
                 uiEvent = uiEvent,
