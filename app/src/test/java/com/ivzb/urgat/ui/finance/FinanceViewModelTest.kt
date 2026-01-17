@@ -1,9 +1,11 @@
 package com.ivzb.urgat.ui.finance
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.resources.ResourcesProvider
+import com.ivzb.urgat.domain.budgets.FakeObserveBudgetsUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
 import com.ivzb.urgat.util.Async
@@ -33,6 +35,7 @@ class FinanceViewModelTest {
 
     private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
     private lateinit var fakeObserveInvestmentsUseCase: FakeObserveInvestmentsUseCase
+    private lateinit var fakeObserveBudgetUseCase: FakeObserveBudgetsUseCase
     private lateinit var mockResourcesProvider: ResourcesProvider
 
     private lateinit var viewModel: FinanceViewModel
@@ -45,6 +48,7 @@ class FinanceViewModelTest {
 
         fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
+        fakeObserveBudgetUseCase = FakeObserveBudgetsUseCase()
         mockResourcesProvider = mockk()
 
         every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
@@ -82,6 +86,9 @@ class FinanceViewModelTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
 
+        val fakeBudgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
+        fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
+
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -106,6 +113,9 @@ class FinanceViewModelTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
 
+        val fakeBudgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
+        fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
+
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -126,6 +136,7 @@ class FinanceViewModelTest {
         val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveBudgetUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(FinanceIntent.SearchQueryChanged("coffee"))
@@ -149,6 +160,7 @@ class FinanceViewModelTest {
     private fun `fab action click emits event`(fabActionId: FinanceFabActionId, expectedEvent: FinanceUiEvent) = runTest {
         fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveBudgetUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(FinanceIntent.FabActionClick(fabActionId))
@@ -169,6 +181,7 @@ class FinanceViewModelTest {
     private fun createViewModel() = FinanceViewModel(
         fakeObserveExpensesUseCase,
         fakeObserveInvestmentsUseCase,
+        fakeObserveBudgetUseCase,
         mockResourcesProvider,
     )
 }

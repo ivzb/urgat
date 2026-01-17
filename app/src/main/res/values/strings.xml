@@ -63,6 +63,8 @@
     <string name="filter_completed">Completed</string>
     <string name="filter_debit">Debit</string>
     <string name="filter_cost">Cost</string>
+    <string name="filter_positive">Positive</string>
+    <string name="filter_negative">Negative</string>
     <string name="sort_by_date">Sort by date</string>
     <string name="sort_by_cost">Sort by cost</string>
     <string name="sort_by_min">Sort by min</string>
@@ -163,4 +165,5 @@
     <string name="error_budgets">Error while loading budgets</string>
     <string name="bank_start_format">Bank start: %1$s</string>
     <string name="bank_end_format">Bank end: %1$s</string>
+    <string name="budgets">Budgets</string>
 </resources>

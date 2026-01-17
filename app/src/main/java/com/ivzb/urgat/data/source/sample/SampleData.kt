@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.source.sample
 
+import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
@@ -199,6 +200,31 @@ object SampleData {
                 date = System.currentTimeMillis() - (index * 86_400 * 1_000),
                 isDeleted = false,
                 createdAt = System.currentTimeMillis() - (index * 86_400 * 1_000),
+            )
+        }
+
+    val SAMPLE_BUDGETS = listOf(
+        listOf("3000", "5000", "6200",),
+        listOf("3200", "6200", "7000",),
+        listOf("3100", "7000", "7600",),
+        listOf("3300", "7600", "8400",),
+        listOf("3400", "8400", "9100",),
+        listOf("3500", "9100", "9800",),
+        listOf("3600", "9800", "10500",),
+        listOf("3700", "10500", "11300",),
+        listOf("3800", "11300", "12000",),
+        listOf("3900", "12000", "12300",),
+    )
+        .reversed()
+        .mapIndexed { index, (income, bankStart, bankEnd) ->
+            Budget(
+                id = "budget_$index",
+                income = income.toBigDecimal(),
+                bankStart = bankStart.toBigDecimal(),
+                bankEnd = bankEnd.toBigDecimal(),
+                date = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000),
+                isDeleted = false,
+                createdAt = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000),
             )
         }
 

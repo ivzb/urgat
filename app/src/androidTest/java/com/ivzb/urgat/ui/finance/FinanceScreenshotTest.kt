@@ -76,6 +76,9 @@ class FinanceScreenshotTest: ScreenshotTest() {
                     onSeeAllInvestments = {},
                     onInvestmentClick = {},
 
+                    onSeeAllBudgets = {},
+                    onBudgetClick = {},
+
                     navigator = FakeNavigator(),
 
                     modifier = Modifier,
