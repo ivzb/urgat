@@ -1,3 +1,8 @@
+## Release notes 26.01.16
+
+New:
+- Introduced budgeting feature in the Finance tab to help you track income and bank balance.
+
 ## Release notes 26.01.15
 
 New:
