@@ -9,9 +9,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
@@ -22,6 +24,8 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.theme.budgetColor
+import com.ivzb.urgat.ui.theme.expenseColor
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 
@@ -137,12 +141,18 @@ fun BudgetItem(
     budget: Budget,
     onBudgetClick: (Budget) -> Unit
 ) {
-    ListItem(
-        textLeft = budget.income.format(),
-        subTextLeft = budget.date.toLocalDate().format(),
 
-        textRight = stringResource(R.string.bank_start_format, budget.bankStart.format()),
-        subTextRight = budget.bankEnd?.let { stringResource(R.string.bank_end_format, it.format()) }.orEmpty(),
+    val date = remember { budget.date.toLocalDate() }
+
+    ListItem(
+        textLeft = "${date.dayOfMonth} ${date.month.name.take(3)}",
+        subTextLeft = date.year.toString(),
+
+        textRight = budget.income.format(),
+        subTextRight = budget.total?.format() ?: "",
+
+        subTextRightFontWeight = FontWeight.Bold,
+        subTextRightColor = budgetColor(budget.total),
 
         onClick = { onBudgetClick(budget) }
     )

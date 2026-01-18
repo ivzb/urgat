@@ -163,7 +163,7 @@
     <string name="no_budgets_search">You have no budgets with this search criteria!</string>
     <string name="loading_budgets">Loading budgets</string>
     <string name="error_budgets">Error while loading budgets</string>
+    <string name="bank_start_end_format">Bank start: %1$s, end: %2$s</string>
     <string name="bank_start_format">Bank start: %1$s</string>
-    <string name="bank_end_format">Bank end: %1$s</string>
     <string name="budgets">Budgets</string>
 </resources>

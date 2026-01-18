@@ -96,13 +96,23 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-fun expenseColor(amount: BigDecimal) = Color(
+private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
+private val NEGATIVE_AMOUNT_COLOR = Color(0xFFF44336)
+
+fun expenseColor(amount: BigDecimal) =
     if (amount > BigDecimal.ZERO) {
-        0xFFF44336
+        NEGATIVE_AMOUNT_COLOR
     } else {
-        0xFF4CAF50
+        POSITIVE_AMOUNT_COLOR
     }
-)
+
+fun budgetColor(amount: BigDecimal?) =
+    when {
+        amount == null -> Color.Unspecified
+        amount >= BigDecimal.ZERO -> POSITIVE_AMOUNT_COLOR
+        amount < BigDecimal.ZERO -> NEGATIVE_AMOUNT_COLOR
+        else -> Color.Unspecified
+    }
 
 fun dataColor(index: Int) = dataColors[index % dataColors.size]
 

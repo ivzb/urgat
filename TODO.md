@@ -28,7 +28,9 @@
 - fix pie chart in landscape and tablet (put them in 2 columns side by side)
 - when lists are not long enough the FAB stays on top of last item 
 - close keyboard when going back from add/edit investment to analytics screen / transactions
-- expenses chart doesn't update when searching
+- expenses chart doesn't update when searching - probably investments too
+- expenses/investments crashes when there are no items and click group/chart page
+- budgets/investments/expenses/notes/todos/weights screens should have empty state when you delete all items and you're still there
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
@@ -64,8 +66,6 @@
 - make the app hledger compatible - https://hledger.org/
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - make remaining budget which is calculated by salary - investments - expenses
-- check if budgets screen should have empty state - comapre to investments or expenses
 - add budgets tabs to BudgetsScreenshotTest when added
 - add budgeting pie charts (yearly - for income maybe normal line chart?, for income and expenses - pie chartrs or line chart, then all time)
 - add budgeting (split into income and expenses)
-- show total like expense total with red and green in budget item
