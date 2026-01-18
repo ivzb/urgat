@@ -12,12 +12,28 @@ data class Budget(
     val createdAt: Long,
 ) {
 
-    fun total(): BigDecimal? {
-        if (bankEnd == null) {
-            return null
+    val total: BigDecimal?
+        get () {
+            if (bankEnd == null) {
+                return null
+            }
+
+            return bankEnd - bankStart + income
         }
 
-        return bankEnd - bankStart
-    }
+    val isNegative: Boolean
+        get() {
+            val total = total
+            return total != null && total < BigDecimal.ZERO
+        }
+
+    val isPositive: Boolean
+        get() {
+            val total = total
+            return total != null && total >= BigDecimal.ZERO
+        }
+
+    fun formatCsv(): String =
+        "\"$id\", \"$income\", \"$bankStart\", \"$bankEnd\", $date, $createdAt"
 
 }

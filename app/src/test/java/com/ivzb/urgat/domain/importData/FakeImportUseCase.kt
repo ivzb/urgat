@@ -7,6 +7,7 @@ class FakeImportUseCase : ImportDataUseCase {
     var invoked: Boolean = false
     var invokedExpenses: Boolean = false
     var invokedInvestments: Boolean = false
+    var invokedBudgets: Boolean = false
     var invokedTodos: Boolean = false
     var invokedNotes: Boolean = false
     var invokedWeights: Boolean = false
@@ -21,6 +22,10 @@ class FakeImportUseCase : ImportDataUseCase {
 
     override suspend fun importInvestments(content: String) {
         invokedInvestments = true
+    }
+
+    override suspend fun importBudgets(content: String) {
+        invokedBudgets = true
     }
 
     override suspend fun importTodos(content: String) {

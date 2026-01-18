@@ -1,6 +1,9 @@
 package com.ivzb.urgat.domain.exportData
 
 import android.net.Uri
+import com.ivzb.urgat.data.budget.BudgetDao
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
@@ -39,6 +42,7 @@ class DefaultExportDataUseCase @Inject constructor(
     private val noteDao: NoteDao,
     private val expenseDao: ExpenseDao,
     private val investmentDao: InvestmentDao,
+    private val budgetDao: BudgetDao,
     private val weightDao: WeightDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ExportDataUseCase {
@@ -49,6 +53,7 @@ class DefaultExportDataUseCase @Inject constructor(
             exportDataRepository.exportCsv(uri, noteDao.stream(), NOTES_CSV_FILE_NAME, NOTES_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, expenseDao.stream(), EXPENSES_CSV_FILE_NAME, EXPENSES_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, investmentDao.stream(), INVESTMENTS_CSV_FILE_NAME, INVESTMENTS_CSV_MAPPING)
+            exportDataRepository.exportCsv(uri, budgetDao.stream(), BUDGETS_CSV_FILE_NAME, BUDGETS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, weightDao.stream(), WEIGHTS_CSV_FILE_NAME, WEIGHTS_CSV_MAPPING)
         }
     }

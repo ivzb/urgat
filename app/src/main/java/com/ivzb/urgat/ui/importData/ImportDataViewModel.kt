@@ -96,6 +96,7 @@ class ImportDataViewModel @Inject constructor(
                 when (page) {
                     ImportDataPage.Expenses -> importDataUseCase.importExpenses(content)
                     ImportDataPage.Investments -> importDataUseCase.importInvestments(content)
+                    ImportDataPage.Budgets -> importDataUseCase.importBudgets(content)
                     ImportDataPage.Notes -> importDataUseCase.importNotes(content)
                     ImportDataPage.Todos -> importDataUseCase.importTodos(content)
                     ImportDataPage.Weights -> importDataUseCase.importWeights(content)

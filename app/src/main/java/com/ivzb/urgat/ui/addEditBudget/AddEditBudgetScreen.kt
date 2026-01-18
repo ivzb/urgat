@@ -222,7 +222,7 @@ fun AddEditBudgetScreen(
                         },
                         placeholder = { Text(stringResource(id = R.string.bank_end_hint)) },
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
+                            keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
                         ),
                         maxLines = 1,

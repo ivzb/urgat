@@ -12,16 +12,8 @@ fun filterBudgets(items: List<Budget>, filterType: BudgetsFilterType): List<Budg
     return items.filter {
         when (filterType) {
             BudgetsFilterType.ALL_BUDGETS -> true
-
-            BudgetsFilterType.NEGATIVE_BUDGETS -> {
-                val total = it.total()
-                total != null && total < BigDecimal.ZERO
-            }
-
-            BudgetsFilterType.POSITIVE_BUDGETS -> {
-                val total = it.total()
-                total != null && total >= BigDecimal.ZERO
-            }
+            BudgetsFilterType.NEGATIVE_BUDGETS -> it.isNegative
+            BudgetsFilterType.POSITIVE_BUDGETS -> it.isPositive
         }
     }
 }

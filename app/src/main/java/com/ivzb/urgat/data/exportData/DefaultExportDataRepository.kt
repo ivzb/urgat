@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.DocumentsContract
+import androidx.core.database.getStringOrNull
 import com.ivzb.urgat.data.csv.CsvMapping
 import com.ivzb.urgat.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -51,6 +52,15 @@ class DefaultExportDataRepository @Inject constructor(
                         when (types[index]) {
                             "string" -> "\"${cursor.getString(columnIndex)}\""
                             "big_decimal" -> "\"${cursor.getString(columnIndex)}\""
+                            "big_decimal?" -> {
+                                val column = cursor.getStringOrNull(columnIndex)
+
+                                if (column != null) {
+                                    "\"$column\""
+                                } else {
+                                    ""
+                                }
+                            }
                             "boolean" -> "${cursor.getInt(columnIndex)}"
                             "long" -> "${cursor.getLong(columnIndex)}"
                             else -> throw Exception("unsupported type ${types[index]}")

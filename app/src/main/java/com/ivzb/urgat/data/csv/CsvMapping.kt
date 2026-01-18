@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.csv
 
+import com.ivzb.urgat.data.budget.BudgetEntity
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
@@ -18,6 +19,7 @@ data class CsvMapping(
         const val NOTES_CSV_FILE_NAME = "notes.csv"
         const val EXPENSES_CSV_FILE_NAME = "expenses.csv"
         const val INVESTMENTS_CSV_FILE_NAME = "investments.csv"
+        const val BUDGETS_CSV_FILE_NAME = "budgets.csv"
         const val WEIGHTS_CSV_FILE_NAME = "weights.csv"
 
         val TODOS_CSV_MAPPING = listOf(
@@ -51,6 +53,15 @@ data class CsvMapping(
             CsvMapping("cost", "big_decimal"),
             CsvMapping("category", "string"),
             CsvMapping("currency", "string"),
+            CsvMapping("date", "long"),
+            CsvMapping("createdAt", "long"),
+        )
+
+        val BUDGETS_CSV_MAPPING = listOf(
+            CsvMapping("id", "string"),
+            CsvMapping("income", "big_decimal"),
+            CsvMapping("bankStart", "big_decimal"),
+            CsvMapping("bankEnd", "big_decimal?"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -114,6 +125,20 @@ data class CsvMapping(
                 date = split[6].toLong(),
                 isDeleted = false,
                 createdAt = split[7].toLong(),
+            )
+        }
+
+        fun parseBudgetCsv(line: String): BudgetEntity {
+            val split = splitCsvLine(line)
+
+            return BudgetEntity(
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
+                income = split[1].toBigDecimal(),
+                bankStart = split[2].toBigDecimal(),
+                bankEnd = split[3].toBigDecimalOrNull(),
+                date = split[4].toLong(),
+                isDeleted = false,
+                createdAt = split[5].toLong(),
             )
         }
 

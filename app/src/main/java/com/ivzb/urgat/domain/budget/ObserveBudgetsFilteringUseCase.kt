@@ -28,16 +28,8 @@ class DefaultObserveBudgetsFilteringUseCase @Inject constructor(
             .map {
                 listOf(
                     FilterMenuItem(type = BudgetsFilterType.ALL_BUDGETS, labelResId = R.string.filter_all, size = it.size),
-
-                    FilterMenuItem(type = BudgetsFilterType.POSITIVE_BUDGETS, labelResId = R.string.filter_positive, size = it.count {
-                        val total = it.total()
-                        total != null && total >= BigDecimal.ZERO
-                    }),
-
-                    FilterMenuItem(type = BudgetsFilterType.NEGATIVE_BUDGETS, labelResId = R.string.filter_negative, size = it.count {
-                        val total = it.total()
-                        total != null && total < BigDecimal.ZERO
-                    }),
+                    FilterMenuItem(type = BudgetsFilterType.POSITIVE_BUDGETS, labelResId = R.string.filter_positive, size = it.count { it.isPositive }),
+                    FilterMenuItem(type = BudgetsFilterType.NEGATIVE_BUDGETS, labelResId = R.string.filter_negative, size = it.count { it.isNegative }),
                 )
             }
             .map<List<BudgetsFilterMenuItem>, Async<List<BudgetsFilterMenuItem>>> { Async.Success(it) }

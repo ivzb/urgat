@@ -2,6 +2,8 @@ package com.ivzb.urgat.domain.exportData
 
 import android.database.Cursor
 import android.net.Uri
+import com.ivzb.urgat.data.budget.BudgetDao
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_MAPPING
@@ -30,6 +32,7 @@ class DefaultExportDataUseCaseTest {
     private lateinit var noteDao: NoteDao
     private lateinit var expenseDao: ExpenseDao
     private lateinit var investmentDao: InvestmentDao
+    private lateinit var budgetDao: BudgetDao
     private lateinit var weightDao: WeightDao
     private val dispatcher = StandardTestDispatcher()
 
@@ -44,6 +47,7 @@ class DefaultExportDataUseCaseTest {
         noteDao = mockk(relaxed = true)
         expenseDao = mockk(relaxed = true)
         investmentDao = mockk(relaxed = true)
+        budgetDao = mockk(relaxed = true)
         weightDao = mockk(relaxed = true)
 
         exportDataUseCase = DefaultExportDataUseCase(
@@ -52,6 +56,7 @@ class DefaultExportDataUseCaseTest {
             noteDao,
             expenseDao,
             investmentDao,
+            budgetDao,
             weightDao,
             dispatcher,
         )
@@ -73,6 +78,9 @@ class DefaultExportDataUseCaseTest {
         val investmentsCursor = mockk<Cursor>()
         every { investmentDao.stream() } returns investmentsCursor
 
+        val budgetsCursor = mockk<Cursor>()
+        every { budgetDao.stream() } returns budgetsCursor
+
         val weightsCursor = mockk<Cursor>()
         every { weightDao.stream() } returns weightsCursor
 
@@ -83,6 +91,7 @@ class DefaultExportDataUseCaseTest {
             exportDataRepository.exportCsv(eq(uri), eq(notesCursor), eq("notes.csv"), eq(NOTES_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(expensesCursor), eq("expenses.csv"), eq(EXPENSES_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(investmentsCursor), eq("investments.csv"), eq(INVESTMENTS_CSV_MAPPING))
+            exportDataRepository.exportCsv(eq(uri), eq(budgetsCursor), eq("budgets.csv"), eq(BUDGETS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(weightsCursor), eq("weights.csv"), eq(WEIGHTS_CSV_MAPPING))
         }
     }

@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.resources.ResourcesProvider
-import com.ivzb.urgat.domain.budgets.FakeObserveBudgetsUseCase
+import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
 import com.ivzb.urgat.util.Async

@@ -1,6 +1,8 @@
 package com.ivzb.urgat.domain.importData
 
 import android.net.Uri
+import com.ivzb.urgat.data.budget.BudgetDao
+import com.ivzb.urgat.data.budget.BudgetEntity
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.importData.ImportDataRepository
@@ -28,6 +30,7 @@ class DefaultImportDataUseCaseTest {
     private lateinit var noteDao: NoteDao
     private lateinit var expenseDao: ExpenseDao
     private lateinit var investmentDao: InvestmentDao
+    private lateinit var budgetDao: BudgetDao
     private lateinit var weightDao: WeightDao
     private val dispatcher = StandardTestDispatcher()
 
@@ -42,6 +45,7 @@ class DefaultImportDataUseCaseTest {
         noteDao = mockk(relaxed = true)
         expenseDao = mockk(relaxed = true)
         investmentDao = mockk(relaxed = true)
+        budgetDao = mockk(relaxed = true)
         weightDao = mockk(relaxed = true)
 
         importDataUseCase = DefaultImportDataUseCase(
@@ -50,6 +54,7 @@ class DefaultImportDataUseCaseTest {
             noteDao,
             expenseDao,
             investmentDao,
+            budgetDao,
             weightDao,
             dispatcher,
         )
@@ -66,6 +71,7 @@ class DefaultImportDataUseCaseTest {
             importDataRepository.importCsv<NoteEntity>(eq(uri), eq("notes.csv"), any(), any())
             importDataRepository.importCsv<ExpenseEntity>(eq(uri), eq("expenses.csv"), any(), any())
             importDataRepository.importCsv<InvestmentEntity>(eq(uri), eq("investments.csv"), any(), any())
+            importDataRepository.importCsv<BudgetEntity>(eq(uri), eq("budgets.csv"), any(), any())
             importDataRepository.importCsv<WeightEntity>(eq(uri), eq("weights.csv"), any(), any())
         }
     }
