@@ -1,3 +1,8 @@
+## Release notes 26.01.18
+
+New:
+- The budget total now visually indicates its status, showing green for positive amounts and red for negative amounts.
+
 ## Release notes 26.01.17
 
 New:
