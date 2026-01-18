@@ -1,3 +1,8 @@
+## Release notes 26.01.17
+
+New:
+- Budgets can now be exported and imported
+
 ## Release notes 26.01.16
 
 New:
