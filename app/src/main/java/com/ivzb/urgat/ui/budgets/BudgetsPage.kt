@@ -10,8 +10,10 @@ sealed class BudgetsPage(
     override val isHorizontalScrollEnabled: Boolean,
 ): Page {
     data object Transactions: BudgetsPage(R.string.transactions, true)
+    data object Monthly: BudgetsPage(R.string.monthly, false)
 }
 
 val BUDGET_PAGES = listOf(
     BudgetsPage.Transactions,
+    BudgetsPage.Monthly,
 )

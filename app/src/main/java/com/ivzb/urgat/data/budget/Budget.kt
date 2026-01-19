@@ -1,5 +1,7 @@
 package com.ivzb.urgat.data.budget
 
+import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.Expense.Companion.format
 import java.math.BigDecimal
 
 data class Budget(
@@ -35,5 +37,15 @@ data class Budget(
 
     fun formatCsv(): String =
         "\"$id\", \"$income\", \"$bankStart\", \"$bankEnd\", $date, $createdAt"
+
+    companion object {
+
+        fun total(budgets: List<Budget>): BigDecimal =
+            budgets.format()
+
+        fun List<Budget>.format(): BigDecimal =
+            this.sumOf { it.income }
+
+    }
 
 }

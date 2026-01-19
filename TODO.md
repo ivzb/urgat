@@ -66,6 +66,9 @@
 - make the app hledger compatible - https://hledger.org/
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - make remaining budget which is calculated by salary - investments - expenses
+- show total text value in add/edit budget screen
 - add budgets tabs to BudgetsScreenshotTest when added
 - add budgeting pie charts (yearly - for income maybe normal line chart?, for income and expenses - pie chartrs or line chart, then all time)
 - add budgeting (split into income and expenses)
+- add monthly page showing pie chart - spent, invested, left (income - spent + invested)
+- don't use GroupedBudgetCategories for monthly budget data - instead create new one to have single budget object which would only hold income, expenses, investments and remaining

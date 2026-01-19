@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentCategoriesMonthlyUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class BudgetsViewModel @Inject constructor(
     observeBudgetsUseCase: ObserveBudgetsUseCase,
+    observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase,
+    observeGroupedExpenseCategoriesMonthlyUseCase: ObserveGroupedExpenseCategoriesMonthlyUseCase,
+    observeGroupedInvestmentCategoriesMonthlyUseCase: ObserveGroupedInvestmentCategoriesMonthlyUseCase,
     observeBudgetsFilteringUseCase: ObserveBudgetsFilteringUseCase,
     observeBudgetsSortingUseCase: ObserveBudgetsSortingUseCase,
     val savedStateHandle: SavedStateHandle
@@ -30,6 +36,9 @@ class BudgetsViewModel @Inject constructor(
 
     val uiState: StateFlow<BudgetsUiState> = combineUiState(
         observeBudgetsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+        observeGroupedInvestmentCategoriesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeBudgetsFilteringUseCase(),
         observeBudgetsSortingUseCase(),
 
@@ -39,9 +48,12 @@ class BudgetsViewModel @Inject constructor(
         onError = {
             BudgetsUiState(hasError = true)
         },
-        onSuccess = { budgets, filtering, sorting ->
+        onSuccess = { budgets, budgetCategoriesMonthly, expenseCategoriesMonthly, investmentCategoriesMonthly, filtering, sorting ->
             BudgetsUiState(
                 budgets = budgets,
+                budgetCategoriesMonthly = budgetCategoriesMonthly,
+                expenseCategoriesMonthly = expenseCategoriesMonthly,
+                investmentCategoriesMonthly = investmentCategoriesMonthly,
                 filteringUiInfo = BudgetsFilteringUiInfo(
                     filterMenuItems = filtering,
                     sortMenuItems = sorting,

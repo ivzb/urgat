@@ -1,5 +1,7 @@
 package com.ivzb.urgat.domain.common
 
+import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.Expense.Companion.format
 import com.ivzb.urgat.data.expense.ExpenseCategory
@@ -7,6 +9,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -71,6 +74,16 @@ object Group {
                     group = it.group.format(YEAR_FORMATTER),
                     total = it.total,
                     items = it.items
+                )
+            }
+
+    fun groupInvestmentCategoriesMonthly(investments: List<Investment>, random: () -> String): List<GroupedInvestmentCategories> =
+        byDateMonthly(investments, Investment::date, Investment::total)
+            .map { (group, total, items) ->
+                GroupedItems(
+                    group = group,
+                    total = total,
+                    items = groupInvestments(items, random),
                 )
             }
 
@@ -163,4 +176,27 @@ object Group {
                 )
             }
             .sortedBy { it.name }
+
+    fun groupBudgetCategoriesMonthly(budgets: List<Budget>, random: () -> String): List<GroupedBudgetCategories> =
+        byDateMonthly(budgets, Budget::date, Budget::total)
+            .map { (group, total, items) ->
+                GroupedItems(
+                    group = group,
+                    total = total,
+                    items = groupBudgets(items, random),
+                )
+            }
+
+    private fun groupBudgets(budgets: List<Budget>, random: () -> String): List<BudgetCategory> =
+        budgets
+            .groupBy { it.id }
+            .map { (id, budgets) ->
+                BudgetCategory(
+                    id = random(),
+                    name = id,
+                    value = budgets.sumOf { it.income },
+                )
+            }
+            .sortedByDescending { it.value }
+
 }

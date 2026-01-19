@@ -7,12 +7,14 @@ import com.ivzb.urgat.domain.budget.DefaultGetBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.budget.DefaultUpdateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.GetBudgetUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.budget.UpdateBudgetUseCase
 import dagger.Binds
 import dagger.Module
@@ -49,5 +51,9 @@ interface BudgetsUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveBudgetsSortingUseCase(useCase: DefaultObserveBudgetsSortingUseCase): ObserveBudgetsSortingUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedBudgetCategoriesMonthlyUseCase(useCase: DefaultObserveGroupedBudgetCategoriesMonthlyUseCase): ObserveGroupedBudgetCategoriesMonthlyUseCase
 
 }
