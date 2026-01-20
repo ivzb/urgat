@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,11 +50,22 @@ class BudgetsViewModel @Inject constructor(
             BudgetsUiState(hasError = true)
         },
         onSuccess = { budgets, budgetCategoriesMonthly, expensesMonthly, investmentsMonthly, filtering, sorting ->
+            val monthlyBudgets = budgetCategoriesMonthly.mapIndexed { index, category ->
+                val expenses = expensesMonthly.getOrNull(index)
+                val investments = investmentsMonthly.getOrNull(index)
+
+                MonthlyBudgetUiState(
+                    category = category,
+                    totalIncome = category.total,
+                    totalExpenses = expenses?.total ?: BigDecimal.ZERO,
+                    totalInvestments = investments?.items?.sumOf { it.marketValue } ?: BigDecimal.ZERO,
+                    totalInvestmentsFormatted = investments?.total ?: "",
+                )
+            }
+
             BudgetsUiState(
                 budgets = budgets,
-                budgetCategoriesMonthly = budgetCategoriesMonthly,
-                expensesMonthly = expensesMonthly,
-                investmentsMonthly = investmentsMonthly,
+                monthlyBudgets = monthlyBudgets,
                 filteringUiInfo = BudgetsFilteringUiInfo(
                     filterMenuItems = filtering,
                     sortMenuItems = sorting,

@@ -29,11 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
-import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import com.ivzb.urgat.domain.expense.GroupedExpenses
-import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ListItem
@@ -118,9 +114,7 @@ fun BudgetsScreen(
                 )
 
                 BudgetsPage.Monthly -> GroupedCategoriesPage(
-                    budgetCategories = uiState.budgetCategoriesMonthly,
-                    expenses = uiState.expensesMonthly,
-                    investments = uiState.investmentsMonthly,
+                    monthlyBudgets = uiState.monthlyBudgets,
                     onListStateChanged = onListStateChanged,
                 )
             }
@@ -168,15 +162,13 @@ private fun TransactionsPage(
 
 @Composable
 private fun GroupedCategoriesPage(
-    budgetCategories: List<GroupedBudgetCategories>,
-    expenses: List<GroupedExpenses>,
-    investments: List<GroupedInvestments>,
+    monthlyBudgets: List<MonthlyBudgetUiState>,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState { budgetCategories.size }
-    val nestedListStates = remember(budgetCategories.size) {
-        List(budgetCategories.size) { LazyListState() }
+    val pagerState = rememberPagerState { monthlyBudgets.size }
+    val nestedListStates = remember(monthlyBudgets.size) {
+        List(monthlyBudgets.size) { LazyListState() }
     }
 
     Column(
@@ -187,11 +179,11 @@ private fun GroupedCategoriesPage(
             selectedTabIndex = pagerState.currentPage,
             edgePadding = 0.dp,
         ) {
-            budgetCategories.forEachIndexed { index, category ->
+            monthlyBudgets.forEachIndexed { index, budget ->
                 Tab(
                     text = {
                         Text(
-                            text = category.group,
+                            text = budget.category.group,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -213,16 +205,16 @@ private fun GroupedCategoriesPage(
                 .fillMaxSize(),
         ) { pageIndex ->
 
-            val budgetCategory = budgetCategories[pageIndex]
-            val expenses = expenses.getOrNull(pageIndex)
-            val investments = investments.getOrNull(pageIndex)
+            val budget = monthlyBudgets[pageIndex]
 
             CategoriesPage(
-                group = budgetCategory.group,
+                group = budget.category.group,
 
-                budgetCategories = budgetCategory.items,
-                expenses = expenses,
-                investments = investments,
+                totalExpenses = budget.totalExpenses,
+                totalInvestments = budget.totalInvestments,
+                totalInvestmentsFormatted = budget.totalInvestmentsFormatted,
+                remaining = budget.remaining,
+                total = budget.total,
 
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
@@ -235,9 +227,11 @@ private fun GroupedCategoriesPage(
 private fun CategoriesPage(
     group: String,
 
-    budgetCategories: List<BudgetCategory>,
-    expenses: GroupedExpenses?,
-    investments: GroupedInvestments?,
+    totalExpenses: BigDecimal,
+    totalInvestments: BigDecimal,
+    totalInvestmentsFormatted: String,
+    remaining: BigDecimal,
+    total: BigDecimal,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -257,23 +251,16 @@ private fun CategoriesPage(
             .fillMaxSize(),
     ) {
 
-        // todo: move this calculations to view model
-
-        val incomeTotal = budgetCategories.sumOf { it.value }
-        val expensesTotal = expenses?.total ?: BigDecimal.ZERO
-        val investmentsTotal = investments?.items?.sumOf { it.marketValue } ?: BigDecimal.ZERO
-        val remaining = incomeTotal - expensesTotal - investmentsTotal
-
         item {
             val data = buildList {
                 add(PieChartItem(
-                    value = expensesTotal.toFloat(),
-                    selectedText = formatExpensesChart(stringResource(R.string.expenses), expenses?.total ?: BigDecimal.ZERO)
+                    value = totalExpenses.toFloat(),
+                    selectedText = formatExpensesChart(stringResource(R.string.expenses), totalExpenses)
                 ))
 
                 add(PieChartItem(
-                    value = investmentsTotal.toFloat(),
-                    selectedText = formatInvestmentsChart(stringResource(R.string.investments), investments?.total ?: "0")
+                    value = totalInvestments.toFloat(),
+                    selectedText = formatInvestmentsChart(stringResource(R.string.investments), totalInvestmentsFormatted)
                 ))
 
                 if (remaining > BigDecimal.ZERO) {
@@ -284,7 +271,6 @@ private fun CategoriesPage(
                 }
             }
 
-            val total = incomeTotal.coerceAtLeast(expensesTotal + investmentsTotal)
             val defaultText = formatBudgetsChart(group, total)
 
             PieChart(
@@ -304,7 +290,7 @@ private fun CategoriesPage(
         item {
             CategoryItem(
                 name = stringResource(R.string.expenses),
-                value = expensesTotal.format(),
+                value = totalExpenses.format(),
                 colorIndex = 0,
             )
         }
@@ -312,7 +298,7 @@ private fun CategoriesPage(
         item {
             CategoryItem(
                 name = stringResource(R.string.investments),
-                value = investmentsTotal.format(),
+                value = totalInvestments.format(),
                 colorIndex = 1,
             )
         }

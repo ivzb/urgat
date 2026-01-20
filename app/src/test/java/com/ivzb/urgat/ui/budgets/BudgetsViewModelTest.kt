@@ -12,6 +12,7 @@ import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -114,7 +115,7 @@ class BudgetsViewModelTest {
                 "1",
                 "SNP 500",
                 500.toBigDecimal(),
-                300.toBigDecimal(),
+                30.toBigDecimal(),
                 "etfs",
                 "USD",
                 1L,
@@ -162,10 +163,27 @@ class BudgetsViewModelTest {
             viewModel.uiState.collect()
         }
 
+        val expectedMonthlyBudgets = listOf(
+            MonthlyBudgetUiState(
+                category = GroupedBudgetCategories(
+                    group = "2025/12",
+                    total = 6500.toBigDecimal(),
+                    items = listOf(
+                        BudgetCategory(id="1", name="1", value=6500.toBigDecimal())
+                    ),
+                ),
+                totalIncome = 6500.toBigDecimal(),
+                totalExpenses = 10.toBigDecimal(),
+                totalInvestments = 15000.toBigDecimal(),
+                totalInvestmentsFormatted = "1500 USD",
+            ),
+        )
+
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertEquals(fakeBudgets, state.budgets)
+        assertEquals(expectedMonthlyBudgets, state.monthlyBudgets)
         assertEquals(fakeBudgetsFiltering, state.filteringUiInfo.filterMenuItems)
         assertEquals(fakeBudgetsSorting, state.filteringUiInfo.sortMenuItems)
         assertFalse(state.isLoading)
