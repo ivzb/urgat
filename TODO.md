@@ -41,6 +41,7 @@
 - inspect all classes using inheritance and change them to composition
 - consider: read current prices on app start for all owned assets and calculate current market price?
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
+- budget remaining calculation is inaccurate because it sums different investment currencies
 
 ## Features
 - consider adding version control (git) support in the app - maybe something like export -> push to git repo
@@ -71,4 +72,8 @@
 - add budgeting pie charts (yearly - for income maybe normal line chart?, for income and expenses - pie chartrs or line chart, then all time)
 - add budgeting (split into income and expenses)
 - add monthly page showing pie chart - spent, invested, left (income - spent + invested)
-- don't use GroupedBudgetCategories for monthly budget data - instead create new one to have single budget object which would only hold income, expenses, investments and remaining
+- add monthly budget unit tests
+- rename ObserveGroupedExpensesUseCase to ObserveGroupedMonthlyExpensesUseCase
+- add empty state for every inner screen
+- add empty state to expenses/investments/budgets screen - currently they crash when fitler is applied and there is no data - because PrimaryScrollableTabRow is empty
+- unit tests for ObserveGroupedBudgetCategoriesMonthlyUseCase.kt

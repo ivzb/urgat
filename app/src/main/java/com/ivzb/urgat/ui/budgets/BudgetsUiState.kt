@@ -2,16 +2,16 @@ package com.ivzb.urgat.ui.budgets
 
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
-import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
+import com.ivzb.urgat.domain.expense.GroupedExpenses
+import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 
 data class BudgetsUiState(
     val budgets: List<Budget> = emptyList(),
     val budgetCategoriesMonthly: List<GroupedBudgetCategories> = emptyList(),
-    val expenseCategoriesMonthly: List<GroupedExpenseCategories> = emptyList(),
-    val investmentCategoriesMonthly: List<GroupedInvestmentCategories> = emptyList(),
+    val expensesMonthly: List<GroupedExpenses> = emptyList(),
+    val investmentsMonthly: List<GroupedInvestments> = emptyList(),
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,

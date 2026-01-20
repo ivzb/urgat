@@ -116,3 +116,28 @@ class FakeObserveBudgetsSortingUseCase : ObserveBudgetsSortingUseCase {
     }
 
 }
+
+class FakeObserveGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedBudgetCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedBudgetCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<BudgetsFilterType>?,
+        sortTypeFlow: Flow<BudgetsSortType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedBudgetCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}

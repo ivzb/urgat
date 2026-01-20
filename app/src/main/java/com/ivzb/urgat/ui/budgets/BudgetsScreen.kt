@@ -18,15 +18,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,26 +30,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
-import com.ivzb.urgat.data.expense.ExpenseCategory
-import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
-import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
+import com.ivzb.urgat.domain.expense.GroupedExpenses
+import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
+import com.ivzb.urgat.ui.components.format.formatBudgetsChart
+import com.ivzb.urgat.ui.components.format.formatExpensesChart
+import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.budgetColor
-import com.ivzb.urgat.ui.theme.expenseColor
-import com.ivzb.urgat.util.annotateFormattedString
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
-import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -93,8 +87,6 @@ fun BudgetsScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
-
     PagerScreen(
         uiState = uiState,
 
@@ -127,11 +119,8 @@ fun BudgetsScreen(
 
                 BudgetsPage.Monthly -> GroupedCategoriesPage(
                     budgetCategories = uiState.budgetCategoriesMonthly,
-                    expenseCategories = uiState.expenseCategoriesMonthly,
-                    investmentCategories = uiState.investmentCategoriesMonthly,
-                    expandedCategoryIds = expandedMonthlyIds,
-                    onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
-                    onBudgetClick = onBudgetClick,
+                    expenses = uiState.expensesMonthly,
+                    investments = uiState.investmentsMonthly,
                     onListStateChanged = onListStateChanged,
                 )
             }
@@ -180,11 +169,8 @@ private fun TransactionsPage(
 @Composable
 private fun GroupedCategoriesPage(
     budgetCategories: List<GroupedBudgetCategories>,
-    expenseCategories: List<GroupedExpenseCategories>,
-    investmentCategories: List<GroupedInvestmentCategories>,
-    expandedCategoryIds: Set<String>,
-    onCategoryClick: (String) -> Unit,
-    onBudgetClick: (Budget) -> Unit,
+    expenses: List<GroupedExpenses>,
+    investments: List<GroupedInvestments>,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -228,20 +214,15 @@ private fun GroupedCategoriesPage(
         ) { pageIndex ->
 
             val budgetCategory = budgetCategories[pageIndex]
-            val expenseCategory = expenseCategories.getOrNull(pageIndex)
-            val investmentCategory = investmentCategories.getOrNull(pageIndex)
+            val expenses = expenses.getOrNull(pageIndex)
+            val investments = investments.getOrNull(pageIndex)
 
             CategoriesPage(
                 group = budgetCategory.group,
 
                 budgetCategories = budgetCategory.items,
-                expenseCategories = expenseCategory?.items ?: listOf(),
-                investmentCategories = investmentCategory?.items ?: listOf(),
-
-                expandedCategoryIds = expandedCategoryIds,
-
-                onCategoryClick = onCategoryClick,
-                onBudgetClick = onBudgetClick,
+                expenses = expenses,
+                investments = investments,
 
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
@@ -255,13 +236,8 @@ private fun CategoriesPage(
     group: String,
 
     budgetCategories: List<BudgetCategory>,
-    expenseCategories: List<ExpenseCategory>,
-    investmentCategories: List<InvestmentCategory>,
-
-    expandedCategoryIds: Set<String>,
-
-    onCategoryClick: (String) -> Unit,
-    onBudgetClick: (Budget) -> Unit,
+    expenses: GroupedExpenses?,
+    investments: GroupedInvestments?,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -281,35 +257,35 @@ private fun CategoriesPage(
             .fillMaxSize(),
     ) {
 
+        // todo: move this calculations to view model
+
+        val incomeTotal = budgetCategories.sumOf { it.value }
+        val expensesTotal = expenses?.total ?: BigDecimal.ZERO
+        val investmentsTotal = investments?.items?.sumOf { it.marketValue } ?: BigDecimal.ZERO
+        val remaining = incomeTotal - expensesTotal - investmentsTotal
+
         item {
-            @Composable
-            fun formattedText(name: String, value: BigDecimal): AnnotatedString {
-                val valueFormatted = value.format()
-                val textFormatted = stringResource(R.string.chart_text_format, name, valueFormatted).trim()
+            val data = buildList {
+                add(PieChartItem(
+                    value = expensesTotal.toFloat(),
+                    selectedText = formatExpensesChart(stringResource(R.string.expenses), expenses?.total ?: BigDecimal.ZERO)
+                ))
 
-                return annotateFormattedString(
-                    formattedString = textFormatted,
-                    part = valueFormatted,
-                    spanStyle = SpanStyle(
-                        color = expenseColor(value),
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
+                add(PieChartItem(
+                    value = investmentsTotal.toFloat(),
+                    selectedText = formatInvestmentsChart(stringResource(R.string.investments), investments?.total ?: "0")
+                ))
+
+                if (remaining > BigDecimal.ZERO) {
+                    add(PieChartItem(
+                        value = remaining.toFloat(),
+                        selectedText = formatBudgetsChart(stringResource(R.string.remaining), remaining)
+                    ))
+                }
             }
 
-            println(budgetCategories)
-            println(expenseCategories)
-            println(investmentCategories)
-            println()
-
-            val data = budgetCategories.map {
-                PieChartItem(
-                    value = it.value.toFloat(),
-                    selectedText = formattedText(it.name, it.value)
-                )
-            }
-            val total = budgetCategories.sumOf { it.value }
-            val defaultText = formattedText(group, total)
+            val total = incomeTotal.coerceAtLeast(expensesTotal + investmentsTotal)
+            val defaultText = formatBudgetsChart(group, total)
 
             PieChart(
                 data = data,
@@ -325,21 +301,28 @@ private fun CategoriesPage(
             )
         }
 
-        budgetCategories.forEachIndexed { index, category ->
-            item(key = category.id) {
-                CategoryItem(
-                    category = category,
-                    colorIndex = index,
-                    onClick = { onCategoryClick(category.id) },
-                )
-            }
+        item {
+            CategoryItem(
+                name = stringResource(R.string.expenses),
+                value = expensesTotal.format(),
+                colorIndex = 0,
+            )
+        }
 
-            val isExpanded = expandedCategoryIds.contains(category.id)
+        item {
+            CategoryItem(
+                name = stringResource(R.string.investments),
+                value = investmentsTotal.format(),
+                colorIndex = 1,
+            )
+        }
 
-            if (isExpanded) {
-                // todo:
-//                subBudgets(category.expenses, onBudgetClick)
-            }
+        item {
+            CategoryItem(
+                name = stringResource(R.string.remaining),
+                value = remaining.format(),
+                colorIndex = 2,
+            )
         }
     }
 }
@@ -368,20 +351,20 @@ fun BudgetItem(
 
 @Composable
 private fun CategoryItem(
-    category: BudgetCategory,
+    name: String,
+    value: String,
     colorIndex: Int,
-    onClick: () -> Unit,
 ) {
     ListItem(
-        textLeft = category.name,
+        textLeft = name,
         subTextLeft = "",
 
-        textRight = category.value.format(),
+        textRight = value,
         subTextRight = "",
 
         colorIndex = colorIndex,
 
-        onClick = onClick,
+        onClick = { /* NOOP */ },
     )
 }
 

@@ -51,6 +51,7 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
+import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.annotateFormattedString
@@ -321,28 +322,14 @@ private fun CategoriesPage(
     ) {
 
         item {
-            @Composable
-            fun formattedText(name: String, total: String): AnnotatedString {
-                val totalFormatted = total.split(Investment.SEPARATOR).joinToString("\n")
-                val textFormatted = stringResource(R.string.chart_text_format, name, totalFormatted).trim()
-
-                return annotateFormattedString(
-                    formattedString = textFormatted,
-                    part = totalFormatted,
-                    spanStyle = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
-            }
-
             val data = categories.map {
                 PieChartItem(
                     value = it.investments.sumOf { it.marketValue }.toFloat(),
-                    selectedText = formattedText(it.name, it.total)
+                    selectedText = formatInvestmentsChart(it.name, it.total)
                 )
             }
 
-            val defaultText = formattedText(group, total)
+            val defaultText = formatInvestmentsChart(group, total)
 
             PieChart(
                 data = data,

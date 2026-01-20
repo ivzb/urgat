@@ -30,8 +30,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -49,10 +47,10 @@ import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
+import com.ivzb.urgat.ui.components.format.formatExpensesChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.expenseColor
-import com.ivzb.urgat.util.annotateFormattedString
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -60,7 +58,6 @@ import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toLocalDate
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 @Composable
 fun ExpensesScreen(
@@ -306,30 +303,14 @@ private fun CategoriesPage(
     ) {
 
         item {
-            @Composable
-            fun formattedText(name: String, value: BigDecimal): AnnotatedString {
-                val valueFormatted = (value * -1.toBigDecimal()).format()
-                val textFormatted =
-                    stringResource(R.string.chart_text_format, name, valueFormatted).trim()
-
-                return annotateFormattedString(
-                    formattedString = textFormatted,
-                    part = valueFormatted,
-                    spanStyle = SpanStyle(
-                        color = expenseColor(value),
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
-            }
-
             val data = categories.map {
                 PieChartItem(
                     value = it.value.toFloat(),
-                    selectedText = formattedText(it.name, it.value)
+                    selectedText = formatExpensesChart(it.name, it.value)
                 )
             }
             val total = categories.sumOf { it.value }
-            val defaultText = formattedText(group, total)
+            val defaultText = formatExpensesChart(group, total)
 
             PieChart(
                 data = data,
