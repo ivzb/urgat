@@ -1,3 +1,13 @@
+## Release notes 26.01.19
+
+New:
+- Added a Monthly tab to the Budgets screen with a pie chart showing expenses, investments and remaining balance by month.
+
+## Release notes 26.01.18
+
+New:
+- Added a Monthly tab to the Budgets screen with a pie chart showing expenses, investments and remaining balance by month.
+
 ## Release notes 26.01.18
 
 New:
