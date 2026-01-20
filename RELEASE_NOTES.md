@@ -1,3 +1,7 @@
+## Release notes 26.01.20
+
+No release notes.
+
 ## Release notes 26.01.19
 
 New:
