@@ -12,7 +12,7 @@ import com.ivzb.urgat.domain.expense.FakeObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
@@ -27,7 +27,7 @@ import kotlin.test.*
 class ExpensesViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var fakeObserveExpensesUseCase: FakeObserveGroupedExpensesUseCase
+    private lateinit var fakeObserveExpensesUseCase: FakeObserveGroupedExpensesMonthlyUseCase
     private lateinit var fakeObserveGroupedExpenseCategoriesMonthlyUseCase: FakeObserveGroupedExpenseCategoriesMonthlyUseCase
     private lateinit var fakeObserveGroupedExpenseCategoriesYearlyUseCase: FakeObserveGroupedExpenseCategoriesYearlyUseCase
     private lateinit var fakeObserveGroupedExpenseCategoriesAllTimeUseCase: FakeObserveGroupedExpenseCategoriesAllTimeUseCase
@@ -42,7 +42,7 @@ class ExpensesViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         savedStateHandle = SavedStateHandle(mapOf(EXPENSES_FILTER_SAVED_STATE_KEY to null))
-        fakeObserveExpensesUseCase = FakeObserveGroupedExpensesUseCase()
+        fakeObserveExpensesUseCase = FakeObserveGroupedExpensesMonthlyUseCase()
         fakeObserveGroupedExpenseCategoriesMonthlyUseCase = FakeObserveGroupedExpenseCategoriesMonthlyUseCase()
         fakeObserveGroupedExpenseCategoriesYearlyUseCase = FakeObserveGroupedExpenseCategoriesYearlyUseCase()
         fakeObserveGroupedExpenseCategoriesAllTimeUseCase = FakeObserveGroupedExpenseCategoriesAllTimeUseCase()

@@ -6,15 +6,14 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesUseCase
-import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesMonthlyUseCase
+import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
@@ -43,8 +42,8 @@ class BudgetsViewModelTest {
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveBudgetsUseCase: FakeObserveBudgetsUseCase
     private lateinit var fakeObserveGroupedBudgetCategoriesMonthlyUseCase: FakeObserveGroupedBudgetCategoriesMonthlyUseCase
-    private lateinit var fakeObserveGroupedExpensesUseCase: FakeObserveGroupedExpensesUseCase
-    private lateinit var fakeObserveGroupedInvestmentsUseCase: FakeObserveGroupedInvestmentsUseCase
+    private lateinit var fakeObserveGroupedExpensesUseCase: FakeObserveGroupedExpensesMonthlyUseCase
+    private lateinit var fakeObserveGroupedInvestmentsUseCase: FakeObserveGroupedInvestmentsMonthlyUseCase
     private lateinit var fakeObserveBudgetsFilteringUseCase: FakeObserveBudgetsFilteringUseCase
     private lateinit var fakeObserveBudgetsSortingUseCase: FakeObserveBudgetsSortingUseCase
 
@@ -59,8 +58,8 @@ class BudgetsViewModelTest {
         savedStateHandle = SavedStateHandle(mapOf(BUDGETS_FILTER_SAVED_STATE_KEY to null))
         fakeObserveBudgetsUseCase = FakeObserveBudgetsUseCase()
         fakeObserveGroupedBudgetCategoriesMonthlyUseCase = FakeObserveGroupedBudgetCategoriesMonthlyUseCase()
-        fakeObserveGroupedExpensesUseCase = FakeObserveGroupedExpensesUseCase()
-        fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsUseCase()
+        fakeObserveGroupedExpensesUseCase = FakeObserveGroupedExpensesMonthlyUseCase()
+        fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsMonthlyUseCase()
         fakeObserveBudgetsFilteringUseCase = FakeObserveBudgetsFilteringUseCase()
         fakeObserveBudgetsSortingUseCase = FakeObserveBudgetsSortingUseCase()
     }

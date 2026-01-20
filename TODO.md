@@ -21,6 +21,7 @@
 - move the exclude from analytics checkbox to preview screen
 - add empty state for every inner screen
 - add empty state to expenses/investments/budgets screen - currently they crash when fitler is applied and there is no data - because PrimaryScrollableTabRow is empty
+- when sorting weight sort secondary by date
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -67,8 +68,13 @@
 - make expenses chart like github contributions
 - make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
 - make the app hledger compatible - https://hledger.org/
+- add support for currency conversion because there is a difference in actual calculations vs URGAT when currencies are mixed (calculate to main currency which should be configurable in settings)
+- show how many months can one survive without income based on currency savings/emergency fund
+- make another entity in finance tab (savings) - where emergency fund will be tracked (and possibly kids fund?)
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - show total text value in add/edit budget screen
+- consider expenses and investments line chart
+- add income tab with line chart to show each month (yearly)
 - add budgets tabs to BudgetsScreenshotTest when added
-- add budgeting pie charts (yearly - for income maybe normal line chart?, for income and expenses - pie chartrs or line chart, then all time)
-- rename ObserveGroupedExpensesUseCase to ObserveGroupedMonthlyExpensesUseCase
+- add all time budgets tab
+- add yearly budgets tab

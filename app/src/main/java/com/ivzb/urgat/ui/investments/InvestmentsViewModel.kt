@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsSortingUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsUseCase
+import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentCategoriesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentNetWorthUseCase
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InvestmentsViewModel @Inject constructor(
-    observeGroupedInvestmentsUseCase: ObserveGroupedInvestmentsUseCase,
+    observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase,
     observeGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestmentCategoriesYearlyUseCase,
     observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
     observeInvestmentCategoriesUseCase: ObserveInvestmentCategoriesUseCase,
@@ -37,7 +37,7 @@ class InvestmentsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
-        observeGroupedInvestmentsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeGroupedInvestmentCategoriesYearlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeInvestmentAssetsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),

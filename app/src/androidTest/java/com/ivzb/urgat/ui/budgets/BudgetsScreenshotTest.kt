@@ -14,6 +14,10 @@ class BudgetsScreenshotTest: ScreenshotTest() {
     fun screenshotTest_BudgetsScreen_sampleData_transactions() =
         screenshotTest_BudgetsScreen_sampleData(initialPage = 0)
 
+    @Test
+    fun screenshotTest_BudgetsScreen_sampleData_monthly() =
+        screenshotTest_BudgetsScreen_sampleData(initialPage = 1)
+
     private fun screenshotTest_BudgetsScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = BudgetsUiState(
             budgets = SampleData.SAMPLE_BUDGETS,

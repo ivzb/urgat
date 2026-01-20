@@ -23,13 +23,13 @@ import kotlin.test.assertEquals
 class ObserveGroupedExpensesUseCaseTest {
 
     private lateinit var repository: ExpensesRepository
-    private lateinit var observeUseCase: ObserveGroupedExpensesUseCase
+    private lateinit var observeUseCase: ObserveGroupedExpensesMonthlyUseCase
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveGroupedExpensesUseCase(repository)
+        observeUseCase = DefaultObserveGroupedExpensesMonthlyUseCase(repository)
     }
 
     @Test

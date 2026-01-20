@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 typealias GroupedInvestments = GroupedItems<String, String, Investment>
 
-interface ObserveGroupedInvestmentsUseCase {
+interface ObserveGroupedInvestmentsMonthlyUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
@@ -23,9 +23,9 @@ interface ObserveGroupedInvestmentsUseCase {
 
 }
 
-class DefaultObserveGroupedInvestmentsUseCase @Inject constructor(
+class DefaultObserveGroupedInvestmentsMonthlyUseCase @Inject constructor(
     repository: InvestmentsRepository
-): ObserveGroupedInvestmentsUseCase {
+): ObserveGroupedInvestmentsMonthlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,

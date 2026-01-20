@@ -40,7 +40,7 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
 
 }
 
-class FakeObserveGroupedInvestmentsUseCase : ObserveGroupedInvestmentsUseCase {
+class FakeObserveGroupedInvestmentsMonthlyUseCase : ObserveGroupedInvestmentsMonthlyUseCase {
 
     private val flow = MutableStateFlow<Async<List<GroupedInvestments>>>(Async.Loading)
 

@@ -9,7 +9,7 @@ import com.ivzb.urgat.domain.expense.ObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
-    observeGroupedExpensesUseCase: ObserveGroupedExpensesUseCase,
+    observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase,
     observeGroupedExpenseCategoriesMonthlyUseCase: ObserveGroupedExpenseCategoriesMonthlyUseCase,
     observeGroupedExpenseCategoriesYearlyUseCase: ObserveGroupedExpenseCategoriesYearlyUseCase,
     observeGroupedExpenseCategoriesAllTimeUseCase: ObserveGroupedExpenseCategoriesAllTimeUseCase,
@@ -39,7 +39,7 @@ class ExpensesViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<ExpensesUiState> = combineUiState(
-        observeGroupedExpensesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpensesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeGroupedExpenseCategoriesMonthlyUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeGroupedExpenseCategoriesYearlyUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeGroupedExpenseCategoriesAllTimeUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),

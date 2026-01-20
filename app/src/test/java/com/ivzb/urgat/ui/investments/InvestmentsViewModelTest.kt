@@ -7,7 +7,7 @@ import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsUseCase
+import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentAssetsUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentCategoriesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentNetWorthUseCase
@@ -39,7 +39,7 @@ import kotlin.test.assertTrue
 class InvestmentsViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var fakeObserveGroupedInvestmentsUseCase: FakeObserveGroupedInvestmentsUseCase
+    private lateinit var fakeObserveGroupedInvestmentsUseCase: FakeObserveGroupedInvestmentsMonthlyUseCase
     private lateinit var fakeObserveInvestmentAssetsUseCase: FakeObserveInvestmentAssetsUseCase
     private lateinit var fakeObserveGroupedInvestmentCategoriesYearlyUseCase: FakeObserveGroupedInvestmentCategoriesYearlyUseCase
     private lateinit var fakeObserveInvestmentCategoriesUseCase: FakeObserveInvestmentCategoriesUseCase
@@ -56,7 +56,7 @@ class InvestmentsViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to null))
-        fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsUseCase()
+        fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsMonthlyUseCase()
         fakeObserveInvestmentAssetsUseCase = FakeObserveInvestmentAssetsUseCase()
         fakeObserveGroupedInvestmentCategoriesYearlyUseCase = FakeObserveGroupedInvestmentCategoriesYearlyUseCase()
         fakeObserveInvestmentCategoriesUseCase = FakeObserveInvestmentCategoriesUseCase()
