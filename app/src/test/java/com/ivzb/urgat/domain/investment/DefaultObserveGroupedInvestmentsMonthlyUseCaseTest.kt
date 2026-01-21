@@ -20,7 +20,7 @@ import java.math.BigDecimal
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ObserveGroupedInvestmentsMonthlyUseCaseTest {
+class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
 
     private lateinit var repository: InvestmentsRepository
     private lateinit var observeUseCase: ObserveGroupedInvestmentsMonthlyUseCase

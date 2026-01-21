@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -113,8 +114,13 @@ fun BudgetsScreen(
                     onListStateChanged = onListStateChanged,
                 )
 
-                BudgetsPage.Monthly -> GroupedCategoriesPage(
+                BudgetsPage.Monthly -> GroupedBudgetsPage(
                     monthlyBudgets = uiState.monthlyBudgets,
+                    onListStateChanged = onListStateChanged,
+                )
+
+                BudgetsPage.Yearly -> GroupedBudgetsPage(
+                    monthlyBudgets = uiState.yearlyBudgets,
                     onListStateChanged = onListStateChanged,
                 )
             }
@@ -161,8 +167,8 @@ private fun TransactionsPage(
 
 
 @Composable
-private fun GroupedCategoriesPage(
-    monthlyBudgets: List<MonthlyBudgetUiState>,
+private fun GroupedBudgetsPage(
+    monthlyBudgets: List<GroupedBudget>,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -379,6 +385,12 @@ private fun BudgetsScreenPreview(initialPage: Int = 0) {
 @Composable
 private fun BudgetsScreenMonthlyPreview() {
     BudgetsScreenPreview(initialPage = 1)
+}
+
+@AllDevicesPreview
+@Composable
+private fun BudgetsScreenYearlyPreview() {
+    BudgetsScreenPreview(initialPage = 2)
 }
 
 @AllDevicesPreview

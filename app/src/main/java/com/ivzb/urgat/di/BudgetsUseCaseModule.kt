@@ -8,6 +8,9 @@ import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetsMonthlyUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetsYearlyUseCase
 import com.ivzb.urgat.domain.budget.DefaultUpdateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.GetBudgetUseCase
@@ -15,6 +18,9 @@ import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsMonthlyUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsYearlyUseCase
 import com.ivzb.urgat.domain.budget.UpdateBudgetUseCase
 import dagger.Binds
 import dagger.Module
@@ -55,5 +61,17 @@ interface BudgetsUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveGroupedBudgetCategoriesMonthlyUseCase(useCase: DefaultObserveGroupedBudgetCategoriesMonthlyUseCase): ObserveGroupedBudgetCategoriesMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedBudgetCategoriesYearlyUseCase(useCase: DefaultObserveGroupedBudgetCategoriesYearlyUseCase): ObserveGroupedBudgetCategoriesYearlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedBudgetsMonthlyUseCase(useCase: DefaultObserveGroupedBudgetsMonthlyUseCase): ObserveGroupedBudgetsMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedBudgetsYearlyUseCase(useCase: DefaultObserveGroupedBudgetsYearlyUseCase): ObserveGroupedBudgetsYearlyUseCase
 
 }

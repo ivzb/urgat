@@ -187,6 +187,16 @@ object Group {
                 )
             }
 
+    fun groupBudgetCategoriesYearly(budgets: List<Budget>, random: () -> String): List<GroupedBudgetCategories> =
+        byDateYearly(budgets, Budget::date, Budget::total)
+            .map { (group, total, items) ->
+                GroupedItems(
+                    group = group,
+                    total = total,
+                    items = groupBudgets(items, random),
+                )
+            }
+
     private fun groupBudgets(budgets: List<Budget>, random: () -> String): List<BudgetCategory> =
         budgets
             .groupBy { it.id }

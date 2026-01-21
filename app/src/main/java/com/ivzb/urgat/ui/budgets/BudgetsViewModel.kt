@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
-import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsMonthlyUseCase
+import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsYearlyUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,15 +15,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
 class BudgetsViewModel @Inject constructor(
     observeBudgetsUseCase: ObserveBudgetsUseCase,
-    observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase,
-    observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase,
-    observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase,
+    observeGroupedBudgetsMonthlyUseCase: ObserveGroupedBudgetsMonthlyUseCase,
+    observeGroupedBudgetsYearlyUseCase: ObserveGroupedBudgetsYearlyUseCase,
     observeBudgetsFilteringUseCase: ObserveBudgetsFilteringUseCase,
     observeBudgetsSortingUseCase: ObserveBudgetsSortingUseCase,
     val savedStateHandle: SavedStateHandle
@@ -37,9 +34,8 @@ class BudgetsViewModel @Inject constructor(
 
     val uiState: StateFlow<BudgetsUiState> = combineUiState(
         observeBudgetsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedExpensesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+        observeGroupedBudgetsMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedBudgetsYearlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeBudgetsFilteringUseCase(),
         observeBudgetsSortingUseCase(),
 
@@ -49,23 +45,12 @@ class BudgetsViewModel @Inject constructor(
         onError = {
             BudgetsUiState(hasError = true)
         },
-        onSuccess = { budgets, budgetCategoriesMonthly, expensesMonthly, investmentsMonthly, filtering, sorting ->
-            val monthlyBudgets = budgetCategoriesMonthly.mapIndexed { index, category ->
-                val expenses = expensesMonthly.getOrNull(index)
-                val investments = investmentsMonthly.getOrNull(index)
-
-                MonthlyBudgetUiState(
-                    category = category,
-                    totalIncome = category.total,
-                    totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                    totalInvestments = investments?.items?.sumOf { it.marketValue } ?: BigDecimal.ZERO,
-                    totalInvestmentsFormatted = investments?.total ?: "",
-                )
-            }
+        onSuccess = { budgets, monthlyBudgets, yearlyBudgets, filtering, sorting ->
 
             BudgetsUiState(
                 budgets = budgets,
                 monthlyBudgets = monthlyBudgets,
+                yearlyBudgets = yearlyBudgets,
                 filteringUiInfo = BudgetsFilteringUiInfo(
                     filterMenuItems = filtering,
                     sortMenuItems = sorting,

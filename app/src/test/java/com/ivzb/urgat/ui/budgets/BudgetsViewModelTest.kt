@@ -4,18 +4,15 @@ import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
-import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsMonthlyUseCase
+import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsYearlyUseCase
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesMonthlyUseCase
-import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +29,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -41,9 +37,8 @@ class BudgetsViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveBudgetsUseCase: FakeObserveBudgetsUseCase
-    private lateinit var fakeObserveGroupedBudgetCategoriesMonthlyUseCase: FakeObserveGroupedBudgetCategoriesMonthlyUseCase
-    private lateinit var fakeObserveGroupedExpensesUseCase: FakeObserveGroupedExpensesMonthlyUseCase
-    private lateinit var fakeObserveGroupedInvestmentsUseCase: FakeObserveGroupedInvestmentsMonthlyUseCase
+    private lateinit var fakeObserveGroupedBudgetsMonthlyUseCase: FakeObserveGroupedBudgetsMonthlyUseCase
+    private lateinit var fakeObserveGroupedBudgetsYearlyUseCase: FakeObserveGroupedBudgetsYearlyUseCase
     private lateinit var fakeObserveBudgetsFilteringUseCase: FakeObserveBudgetsFilteringUseCase
     private lateinit var fakeObserveBudgetsSortingUseCase: FakeObserveBudgetsSortingUseCase
 
@@ -57,9 +52,8 @@ class BudgetsViewModelTest {
 
         savedStateHandle = SavedStateHandle(mapOf(BUDGETS_FILTER_SAVED_STATE_KEY to null))
         fakeObserveBudgetsUseCase = FakeObserveBudgetsUseCase()
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase = FakeObserveGroupedBudgetCategoriesMonthlyUseCase()
-        fakeObserveGroupedExpensesUseCase = FakeObserveGroupedExpensesMonthlyUseCase()
-        fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsMonthlyUseCase()
+        fakeObserveGroupedBudgetsMonthlyUseCase = FakeObserveGroupedBudgetsMonthlyUseCase()
+        fakeObserveGroupedBudgetsYearlyUseCase = FakeObserveGroupedBudgetsYearlyUseCase()
         fakeObserveBudgetsFilteringUseCase = FakeObserveBudgetsFilteringUseCase()
         fakeObserveBudgetsSortingUseCase = FakeObserveBudgetsSortingUseCase()
     }
@@ -72,9 +66,8 @@ class BudgetsViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveBudgetsUseCase.emit(Async.Loading)
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase.emit(Async.Loading)
-        fakeObserveGroupedExpensesUseCase.emit(Async.Loading)
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Loading)
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Loading)
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Loading)
         fakeObserveBudgetsFilteringUseCase.emit(Async.Loading)
         fakeObserveBudgetsSortingUseCase.emit(Async.Loading)
         viewModel = createViewModel()
@@ -93,52 +86,54 @@ class BudgetsViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val budgets = listOf(Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), 1L, false, 1L))
+        val budgets = listOf(
+            Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), 1L, false, 1L),
+            Budget("2", 5500.toBigDecimal(), 7800.toBigDecimal(), 6200.toBigDecimal(), 1L, false, 1L),
+        )
         val fakeBudgets = budgets
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = 6500.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory(
-                        id = "1",
-                        name = "1",
-                        value = 6500.toBigDecimal()
-                    )
-                )
-            )
+        val fakeMonthlyBudgets = listOf(
+            GroupedBudget(
+                category = GroupedBudgetCategories(
+                    group = "2025/12",
+                    total = 6_500.toBigDecimal(),
+                    items = listOf(
+                        BudgetCategory(id = "1", name = "1", value = 6_500.toBigDecimal())
+                    ),
+                ),
+                totalIncome = 6_500.toBigDecimal(),
+                totalExpenses = 2_000.toBigDecimal(),
+                totalInvestments = 3_000.toBigDecimal(),
+                totalInvestmentsFormatted = "3000 USD",
+            ),
+            GroupedBudget(
+                category = GroupedBudgetCategories(
+                    group = "2025/11",
+                    total = 5_500.toBigDecimal(),
+                    items = listOf(
+                        BudgetCategory(id = "1", name = "1", value = 5_500.toBigDecimal())
+                    ),
+                ),
+                totalIncome = 5_500.toBigDecimal(),
+                totalExpenses = 1_800.toBigDecimal(),
+                totalInvestments = 2_600.toBigDecimal(),
+                totalInvestmentsFormatted = "2600 USD",
+            ),
         )
-
-        val investments = listOf(
-            Investment(
-                "1",
-                "SNP 500",
-                500.toBigDecimal(),
-                30.toBigDecimal(),
-                "etfs",
-                "USD",
-                1L,
-                false,
-                1L
-            )
+        val fakeYearlyBudgets = listOf(
+            GroupedBudget(
+                category = GroupedBudgetCategories(
+                    group = "2025",
+                    total = 12_000.toBigDecimal(),
+                    items = listOf(
+                        BudgetCategory(id = "1", name = "1", value = 12_000.toBigDecimal())
+                    ),
+                ),
+                totalIncome = 12_000.toBigDecimal(),
+                totalExpenses = 3_800.toBigDecimal(),
+                totalInvestments = 5_600.toBigDecimal(),
+                totalInvestmentsFormatted = "5600 USD",
+            ),
         )
-        val fakeInvestments = listOf(
-            GroupedItems(
-                "2025/12",
-                "1500 USD",
-                investments,
-            )
-        )
-
-        val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
-        val fakeExpenses = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = "10".toBigDecimal(),
-                items = expenses,
-            )
-        )
-
         val fakeBudgetsFiltering = listOf(
             FilterMenuItem(type = BudgetsFilterType.ALL_BUDGETS, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = BudgetsFilterType.POSITIVE_BUDGETS, labelResId = R.string.filter_positive, size = 1),
@@ -151,9 +146,8 @@ class BudgetsViewModelTest {
         )
 
         fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(fakeMonthlyBudgets))
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(fakeYearlyBudgets))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(fakeBudgetsFiltering))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(fakeBudgetsSorting))
         viewModel = createViewModel()
@@ -162,27 +156,12 @@ class BudgetsViewModelTest {
             viewModel.uiState.collect()
         }
 
-        val expectedMonthlyBudgets = listOf(
-            MonthlyBudgetUiState(
-                category = GroupedBudgetCategories(
-                    group = "2025/12",
-                    total = 6500.toBigDecimal(),
-                    items = listOf(
-                        BudgetCategory(id="1", name="1", value=6500.toBigDecimal())
-                    ),
-                ),
-                totalIncome = 6500.toBigDecimal(),
-                totalExpenses = 10.toBigDecimal(),
-                totalInvestments = 15000.toBigDecimal(),
-                totalInvestmentsFormatted = "1500 USD",
-            ),
-        )
-
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertEquals(fakeBudgets, state.budgets)
-        assertEquals(expectedMonthlyBudgets, state.monthlyBudgets)
+        assertEquals(fakeMonthlyBudgets, state.monthlyBudgets)
+        assertEquals(fakeYearlyBudgets, state.yearlyBudgets)
         assertEquals(fakeBudgetsFiltering, state.filteringUiInfo.filterMenuItems)
         assertEquals(fakeBudgetsSorting, state.filteringUiInfo.sortMenuItems)
         assertFalse(state.isLoading)
@@ -193,9 +172,8 @@ class BudgetsViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveBudgetsUseCase.emit(Async.Error)
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedExpensesUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -218,9 +196,8 @@ class BudgetsViewModelTest {
         val fakeBudgets = SampleData.SAMPLE_BUDGETS
 
         fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedExpensesUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -235,9 +212,8 @@ class BudgetsViewModelTest {
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
         fakeObserveBudgetsUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedExpensesUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -255,9 +231,8 @@ class BudgetsViewModelTest {
 
     private fun createViewModel() = BudgetsViewModel(
         fakeObserveBudgetsUseCase,
-        fakeObserveGroupedBudgetCategoriesMonthlyUseCase,
-        fakeObserveGroupedExpensesUseCase,
-        fakeObserveGroupedInvestmentsUseCase,
+        fakeObserveGroupedBudgetsMonthlyUseCase,
+        fakeObserveGroupedBudgetsYearlyUseCase,
         fakeObserveBudgetsFilteringUseCase,
         fakeObserveBudgetsSortingUseCase,
         savedStateHandle

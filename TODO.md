@@ -77,4 +77,3 @@
 - add income tab with line chart to show each month (yearly)
 - add budgets tabs to BudgetsScreenshotTest when added
 - add all time budgets tab
-- add yearly budgets tab
