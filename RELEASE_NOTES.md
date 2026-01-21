@@ -1,3 +1,8 @@
+## Release notes 26.01.21
+
+New:
+- Added a Yearly tab to the Budgets screen with a pie chart showing expenses, investments and remaining balance by year.
+
 ## Release notes 26.01.20
 
 No release notes.
