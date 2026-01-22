@@ -1,3 +1,8 @@
+## Release notes 26.01.22
+
+New:
+- Added a All time tab to the Budgets screen with a pie chart showing expenses, investments and remaining balance.
+
 ## Release notes 26.01.21
 
 New:
