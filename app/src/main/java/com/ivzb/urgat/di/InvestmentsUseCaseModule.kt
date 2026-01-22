@@ -5,6 +5,7 @@ import com.ivzb.urgat.domain.investment.DefaultCreateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DefaultDeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DefaultGetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveGroupedInvestmentCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.investment.DefaultObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveGroupedInvestmentsYearlyUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentAssetsUseCase
@@ -17,6 +18,7 @@ import com.ivzb.urgat.domain.investment.DefaultUpdateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.GetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
@@ -50,6 +52,10 @@ interface InvestmentsUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveGroupedInvestmentsYearlyUseCase(useCase: DefaultObserveGroupedInvestmentsYearlyUseCase): ObserveGroupedInvestmentsYearlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedInvestmentsAllTimeUseCase(useCase: DefaultObserveGroupedInvestmentsAllTimeUseCase): ObserveGroupedInvestmentsAllTimeUseCase
 
     @Singleton
     @Binds

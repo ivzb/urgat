@@ -123,6 +123,21 @@ fun BudgetsScreen(
                     monthlyBudgets = uiState.yearlyBudgets,
                     onListStateChanged = onListStateChanged,
                 )
+
+                BudgetsPage.AllTime -> uiState.allTimeBudget?.let { budget ->
+                    CategoriesPage(
+                        group = stringResource(R.string.all_time),
+
+                        totalExpenses = budget.totalExpenses,
+                        totalInvestments = budget.totalInvestments,
+                        totalInvestmentsFormatted = budget.totalInvestmentsFormatted,
+                        remaining = budget.remaining,
+                        total = budget.total,
+
+                        listState = listState,
+                        onListStateChanged = onListStateChanged,
+                    )
+                }
             }
         },
 
@@ -391,6 +406,12 @@ private fun BudgetsScreenMonthlyPreview() {
 @Composable
 private fun BudgetsScreenYearlyPreview() {
     BudgetsScreenPreview(initialPage = 2)
+}
+
+@AllDevicesPreview
+@Composable
+private fun BudgetsScreenAllTimePreview() {
+    BudgetsScreenPreview(initialPage = 3)
 }
 
 @AllDevicesPreview

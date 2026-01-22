@@ -9,6 +9,7 @@ data class BudgetsUiState(
     val budgets: List<Budget> = emptyList(),
     val monthlyBudgets: List<GroupedBudget> = listOf(),
     val yearlyBudgets: List<GroupedBudget> = listOf(),
+    val allTimeBudget: GroupedBudget? = null,
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,

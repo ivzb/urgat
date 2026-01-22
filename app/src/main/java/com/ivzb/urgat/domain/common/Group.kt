@@ -77,13 +77,16 @@ object Group {
                 )
             }
 
-    fun groupInvestmentCategoriesMonthly(investments: List<Investment>, random: () -> String): List<GroupedInvestmentCategories> =
-        byDateMonthly(investments, Investment::date, Investment::total)
-            .map { (group, total, items) ->
+    fun <Item, Total> byDateAllTime(
+        items: List<Item>,
+        total: (List<Item>) -> Total
+    ): GroupedItems<String, Total, Item> =
+        items
+            .let {
                 GroupedItems(
-                    group = group,
-                    total = total,
-                    items = groupInvestments(items, random),
+                    group = "",
+                    total = total(it),
+                    items = it,
                 )
             }
 
@@ -196,6 +199,13 @@ object Group {
                     items = groupBudgets(items, random),
                 )
             }
+
+    fun groupBudgetCategoriesAllTime(budgets: List<Budget>, random: () -> String): BudgetCategory =
+        BudgetCategory(
+            id = random(),
+            name = random(),
+            value = budgets.sumOf { it.income },
+        )
 
     private fun groupBudgets(budgets: List<Budget>, random: () -> String): List<BudgetCategory> =
         budgets

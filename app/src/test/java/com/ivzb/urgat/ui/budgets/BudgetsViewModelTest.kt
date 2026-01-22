@@ -9,6 +9,7 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
+import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsAllTimeUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsMonthlyUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsYearlyUseCase
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
@@ -39,6 +40,7 @@ class BudgetsViewModelTest {
     private lateinit var fakeObserveBudgetsUseCase: FakeObserveBudgetsUseCase
     private lateinit var fakeObserveGroupedBudgetsMonthlyUseCase: FakeObserveGroupedBudgetsMonthlyUseCase
     private lateinit var fakeObserveGroupedBudgetsYearlyUseCase: FakeObserveGroupedBudgetsYearlyUseCase
+    private lateinit var fakeObserveGroupedBudgetsAllTimeUseCase: FakeObserveGroupedBudgetsAllTimeUseCase
     private lateinit var fakeObserveBudgetsFilteringUseCase: FakeObserveBudgetsFilteringUseCase
     private lateinit var fakeObserveBudgetsSortingUseCase: FakeObserveBudgetsSortingUseCase
 
@@ -54,6 +56,7 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase = FakeObserveBudgetsUseCase()
         fakeObserveGroupedBudgetsMonthlyUseCase = FakeObserveGroupedBudgetsMonthlyUseCase()
         fakeObserveGroupedBudgetsYearlyUseCase = FakeObserveGroupedBudgetsYearlyUseCase()
+        fakeObserveGroupedBudgetsAllTimeUseCase = FakeObserveGroupedBudgetsAllTimeUseCase()
         fakeObserveBudgetsFilteringUseCase = FakeObserveBudgetsFilteringUseCase()
         fakeObserveBudgetsSortingUseCase = FakeObserveBudgetsSortingUseCase()
     }
@@ -68,6 +71,7 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase.emit(Async.Loading)
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Loading)
         fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Loading)
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Loading)
         fakeObserveBudgetsFilteringUseCase.emit(Async.Loading)
         fakeObserveBudgetsSortingUseCase.emit(Async.Loading)
         viewModel = createViewModel()
@@ -134,6 +138,19 @@ class BudgetsViewModelTest {
                 totalInvestmentsFormatted = "5600 USD",
             ),
         )
+        val fakeAllTimeBudgets = GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "All time",
+                total = 24_000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
+                ),
+            ),
+            totalIncome = 24_000.toBigDecimal(),
+            totalExpenses = 7_600.toBigDecimal(),
+            totalInvestments = 11_200.toBigDecimal(),
+            totalInvestmentsFormatted = "11200 USD",
+        )
         val fakeBudgetsFiltering = listOf(
             FilterMenuItem(type = BudgetsFilterType.ALL_BUDGETS, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = BudgetsFilterType.POSITIVE_BUDGETS, labelResId = R.string.filter_positive, size = 1),
@@ -148,6 +165,7 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(fakeMonthlyBudgets))
         fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(fakeYearlyBudgets))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(fakeAllTimeBudgets))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(fakeBudgetsFiltering))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(fakeBudgetsSorting))
         viewModel = createViewModel()
@@ -162,6 +180,7 @@ class BudgetsViewModelTest {
         assertEquals(fakeBudgets, state.budgets)
         assertEquals(fakeMonthlyBudgets, state.monthlyBudgets)
         assertEquals(fakeYearlyBudgets, state.yearlyBudgets)
+        assertEquals(fakeAllTimeBudgets, state.allTimeBudget)
         assertEquals(fakeBudgetsFiltering, state.filteringUiInfo.filterMenuItems)
         assertEquals(fakeBudgetsSorting, state.filteringUiInfo.sortMenuItems)
         assertFalse(state.isLoading)
@@ -174,6 +193,19 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase.emit(Async.Error)
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
         fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "All time",
+                total = 24_000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
+                ),
+            ),
+            totalIncome = 24_000.toBigDecimal(),
+            totalExpenses = 7_600.toBigDecimal(),
+            totalInvestments = 11_200.toBigDecimal(),
+            totalInvestmentsFormatted = "11200 USD",
+        )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -198,6 +230,19 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
         fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "All time",
+                total = 24_000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
+                ),
+            ),
+            totalIncome = 24_000.toBigDecimal(),
+            totalExpenses = 7_600.toBigDecimal(),
+            totalInvestments = 11_200.toBigDecimal(),
+            totalInvestmentsFormatted = "11200 USD",
+        )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -214,6 +259,19 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase.emit(Async.Success(listOf()))
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
         fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "All time",
+                total = 24_000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
+                ),
+            ),
+            totalIncome = 24_000.toBigDecimal(),
+            totalExpenses = 7_600.toBigDecimal(),
+            totalInvestments = 11_200.toBigDecimal(),
+            totalInvestmentsFormatted = "11200 USD",
+        )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -233,6 +291,7 @@ class BudgetsViewModelTest {
         fakeObserveBudgetsUseCase,
         fakeObserveGroupedBudgetsMonthlyUseCase,
         fakeObserveGroupedBudgetsYearlyUseCase,
+        fakeObserveGroupedBudgetsAllTimeUseCase,
         fakeObserveBudgetsFilteringUseCase,
         fakeObserveBudgetsSortingUseCase,
         savedStateHandle
