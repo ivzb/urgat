@@ -56,6 +56,8 @@ fun FinanceScreen(
     onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
+    onAddSaving: () -> Unit,
+
     onAddBudget: () -> Unit,
     onSeeAllBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
@@ -88,6 +90,7 @@ fun FinanceScreen(
             when (event) {
                 is FinanceUiEvent.AddExpense -> onAddExpense()
                 is FinanceUiEvent.AddInvestment -> onAddInvestment()
+                is FinanceUiEvent.AddSaving -> onAddSaving()
                 is FinanceUiEvent.AddBudget -> onAddBudget()
             }
 

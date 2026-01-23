@@ -167,4 +167,6 @@
     <string name="bank_start_format">Bank start: %1$s</string>
     <string name="budgets">Budgets</string>
     <string name="remaining">Remaining</string>
+    <string name="add_saving">Add Saving</string>
+    <string name="edit_saving">Edit Saving</string>
 </resources>

@@ -88,6 +88,14 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
+    fun navigateToAddSaving() {
+        // TODO
+//        navigator.navigate(AddEditSavingRoute(
+//            id = null,
+//            titleResId = R.string.add_saving
+//        ))
+    }
+
     fun navigateToBudgets() {
         navigator.navigate(BudgetsRoute)
     }

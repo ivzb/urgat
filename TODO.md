@@ -75,4 +75,3 @@
 - consider expenses and investments line chart
 - add income tab with line chart to show each month (yearly)
 - make another entity in finance tab (savings) - where emergency fund will be tracked (and possibly kids fund?)
-- show total text value in add/edit budget screen
