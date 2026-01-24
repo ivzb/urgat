@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.BudgetEntity
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
+import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.weight.WeightEntity
 import java.util.UUID
@@ -19,6 +20,7 @@ data class CsvMapping(
         const val NOTES_CSV_FILE_NAME = "notes.csv"
         const val EXPENSES_CSV_FILE_NAME = "expenses.csv"
         const val INVESTMENTS_CSV_FILE_NAME = "investments.csv"
+        const val SAVINGS_CSV_FILE_NAME = "savings.csv"
         const val BUDGETS_CSV_FILE_NAME = "budgets.csv"
         const val WEIGHTS_CSV_FILE_NAME = "weights.csv"
 
@@ -53,6 +55,14 @@ data class CsvMapping(
             CsvMapping("cost", "big_decimal"),
             CsvMapping("category", "string"),
             CsvMapping("currency", "string"),
+            CsvMapping("date", "long"),
+            CsvMapping("createdAt", "long"),
+        )
+
+        val SAVINGS_CSV_MAPPING = listOf(
+            CsvMapping("id", "string"),
+            CsvMapping("name", "string"),
+            CsvMapping("amount", "big_decimal"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -125,6 +135,19 @@ data class CsvMapping(
                 date = split[6].toLong(),
                 isDeleted = false,
                 createdAt = split[7].toLong(),
+            )
+        }
+
+        fun parseSavingCsv(line: String): SavingEntity {
+            val split = splitCsvLine(line)
+
+            return SavingEntity(
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
+                name = split[1],
+                amount = split[2].toBigDecimal(),
+                date = split[3].toLong(),
+                isDeleted = false,
+                createdAt = split[4].toLong(),
             )
         }
 

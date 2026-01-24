@@ -14,6 +14,8 @@ import com.ivzb.urgat.data.note.DefaultNotesRepository
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.data.random.DefaultRandomRepository
 import com.ivzb.urgat.data.random.RandomRepository
+import com.ivzb.urgat.data.saving.DefaultSavingsRepository
+import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.data.todo.DefaultTodoRepository
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.data.weight.DefaultWeightsRepository
@@ -59,6 +61,10 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsRandomRepository(randomRepository: DefaultRandomRepository): RandomRepository
+
+    @Singleton
+    @Binds
+    fun bindsSavingsRepository(savingsRepository: DefaultSavingsRepository): SavingsRepository
 
     @Singleton
     @Binds

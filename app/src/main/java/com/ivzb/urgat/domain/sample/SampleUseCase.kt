@@ -2,9 +2,11 @@ package com.ivzb.urgat.domain.sample
 
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
+import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import javax.inject.Inject
@@ -20,6 +22,8 @@ class DefaultSampleUseCase @Inject constructor(
     private val createNoteUseCase: CreateNoteUseCase,
     private val createExpenseUseCase: CreateExpenseUseCase,
     private val createInvestmentUseCase: CreateInvestmentUseCase,
+    private val createSavingUseCase: CreateSavingUseCase,
+    private val createBudgetUseCase: CreateBudgetUseCase,
     private val createWeightUseCase: CreateWeightUseCase,
 ): SampleUseCase {
 
@@ -35,6 +39,12 @@ class DefaultSampleUseCase @Inject constructor(
             )
         }
 
+        SampleData.SAMPLE_NOTES.forEach {
+            createNoteUseCase(
+                it.content,
+            )
+        }
+
         SampleData.SAMPLE_EXPENSES.forEach {
             createExpenseUseCase(
                 it.name,
@@ -45,12 +55,6 @@ class DefaultSampleUseCase @Inject constructor(
             )
         }
 
-        SampleData.SAMPLE_NOTES.forEach {
-            createNoteUseCase(
-                it.content,
-            )
-        }
-
         SampleData.SAMPLE_INVESTMENTS.forEach {
             createInvestmentUseCase(
                 it.name,
@@ -58,6 +62,23 @@ class DefaultSampleUseCase @Inject constructor(
                 it.cost,
                 it.category,
                 it.currency,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_SAVINGS.forEach {
+            createSavingUseCase(
+                it.name,
+                it.amount,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_BUDGETS.forEach {
+            createBudgetUseCase(
+                it.income,
+                it.bankStart,
+                it.bankEnd,
                 it.date,
             )
         }

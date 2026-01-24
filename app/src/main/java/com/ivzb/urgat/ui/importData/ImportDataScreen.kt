@@ -353,25 +353,7 @@ private fun ImportScreenManualModeInvestmentsPreview() {
 @Preview
 @DarkModePreview
 @Composable
-private fun ImportScreenManualModeTodosPreview() {
-    UrgatTheme {
-        ImportDataScreen(
-            uiState = ImportDataUiState(
-                isLoading = false,
-                isManualMode = true,
-                initialPage = 2,
-            ),
-            onIntent = {},
-            onBack = {},
-            modifier = Modifier,
-        )
-    }
-}
-
-@Preview
-@DarkModePreview
-@Composable
-private fun ImportScreenManualModeNotesPreview() {
+private fun ImportScreenManualModeSavingsPreview() {
     UrgatTheme {
         ImportDataScreen(
             uiState = ImportDataUiState(
@@ -389,13 +371,67 @@ private fun ImportScreenManualModeNotesPreview() {
 @Preview
 @DarkModePreview
 @Composable
-private fun ImportScreenManualModeWeightsPreview() {
+private fun ImportScreenManualModeBudgetsPreview() {
     UrgatTheme {
         ImportDataScreen(
             uiState = ImportDataUiState(
                 isLoading = false,
                 isManualMode = true,
                 initialPage = 4,
+            ),
+            onIntent = {},
+            onBack = {},
+            modifier = Modifier,
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+private fun ImportScreenManualModeTodosPreview() {
+    UrgatTheme {
+        ImportDataScreen(
+            uiState = ImportDataUiState(
+                isLoading = false,
+                isManualMode = true,
+                initialPage = 5,
+            ),
+            onIntent = {},
+            onBack = {},
+            modifier = Modifier,
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+private fun ImportScreenManualModeNotesPreview() {
+    UrgatTheme {
+        ImportDataScreen(
+            uiState = ImportDataUiState(
+                isLoading = false,
+                isManualMode = true,
+                initialPage = 6,
+            ),
+            onIntent = {},
+            onBack = {},
+            modifier = Modifier,
+        )
+    }
+}
+
+@Preview
+@DarkModePreview
+@Composable
+private fun ImportScreenManualModeWeightsPreview() {
+    UrgatTheme {
+        ImportDataScreen(
+            uiState = ImportDataUiState(
+                isLoading = false,
+                isManualMode = true,
+                initialPage = 7,
             ),
             onIntent = {},
             onBack = {},

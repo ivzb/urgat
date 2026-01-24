@@ -10,6 +10,8 @@ import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.note.NoteEntity
+import com.ivzb.urgat.data.saving.SavingDao
+import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.weight.WeightDao
@@ -30,6 +32,7 @@ class DefaultImportDataUseCaseTest {
     private lateinit var noteDao: NoteDao
     private lateinit var expenseDao: ExpenseDao
     private lateinit var investmentDao: InvestmentDao
+    private lateinit var savingDao: SavingDao
     private lateinit var budgetDao: BudgetDao
     private lateinit var weightDao: WeightDao
     private val dispatcher = StandardTestDispatcher()
@@ -45,6 +48,7 @@ class DefaultImportDataUseCaseTest {
         noteDao = mockk(relaxed = true)
         expenseDao = mockk(relaxed = true)
         investmentDao = mockk(relaxed = true)
+        savingDao = mockk(relaxed = true)
         budgetDao = mockk(relaxed = true)
         weightDao = mockk(relaxed = true)
 
@@ -54,6 +58,7 @@ class DefaultImportDataUseCaseTest {
             noteDao,
             expenseDao,
             investmentDao,
+            savingDao,
             budgetDao,
             weightDao,
             dispatcher,
@@ -71,6 +76,7 @@ class DefaultImportDataUseCaseTest {
             importDataRepository.importCsv<NoteEntity>(eq(uri), eq("notes.csv"), any(), any())
             importDataRepository.importCsv<ExpenseEntity>(eq(uri), eq("expenses.csv"), any(), any())
             importDataRepository.importCsv<InvestmentEntity>(eq(uri), eq("investments.csv"), any(), any())
+            importDataRepository.importCsv<SavingEntity>(eq(uri), eq("savings.csv"), any(), any())
             importDataRepository.importCsv<BudgetEntity>(eq(uri), eq("budgets.csv"), any(), any())
             importDataRepository.importCsv<WeightEntity>(eq(uri), eq("weights.csv"), any(), any())
         }

@@ -1,9 +1,11 @@
 package com.ivzb.urgat.domain.sample
 
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
+import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import io.mockk.coVerify
@@ -18,6 +20,8 @@ class DefaultSampleUseCaseTest {
     private lateinit var createNoteUseCase: CreateNoteUseCase
     private lateinit var createExpenseUseCase: CreateExpenseUseCase
     private lateinit var createInvestmentUseCase: CreateInvestmentUseCase
+    private lateinit var createSavingUseCase: CreateSavingUseCase
+    private lateinit var createBudgetUseCase: CreateBudgetUseCase
     private lateinit var createWeightUseCase: CreateWeightUseCase
 
     private lateinit var sampleUseCase: SampleUseCase
@@ -28,6 +32,8 @@ class DefaultSampleUseCaseTest {
         createNoteUseCase = mockk(relaxed = true)
         createExpenseUseCase = mockk(relaxed = true)
         createInvestmentUseCase = mockk(relaxed = true)
+        createSavingUseCase = mockk(relaxed = true)
+        createBudgetUseCase = mockk(relaxed = true)
         createWeightUseCase = mockk(relaxed = true)
 
         sampleUseCase = DefaultSampleUseCase(
@@ -35,6 +41,8 @@ class DefaultSampleUseCaseTest {
             createNoteUseCase,
             createExpenseUseCase,
             createInvestmentUseCase,
+            createSavingUseCase,
+            createBudgetUseCase,
             createWeightUseCase,
         )
     }
@@ -74,6 +82,23 @@ class DefaultSampleUseCaseTest {
                     it.cost,
                     it.category,
                     it.currency,
+                    it.date,
+                )
+            }
+
+            SampleData.SAMPLE_SAVINGS.forEach {
+                createSavingUseCase(
+                    it.name,
+                    it.amount,
+                    it.date,
+                )
+            }
+
+            SampleData.SAMPLE_BUDGETS.forEach {
+                createBudgetUseCase(
+                    it.income,
+                    it.bankStart,
+                    it.bankEnd,
                     it.date,
                 )
             }

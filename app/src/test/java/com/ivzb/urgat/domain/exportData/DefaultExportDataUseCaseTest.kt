@@ -7,12 +7,14 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_MAPPING
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.exportData.ExportDataRepository
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
+import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.weight.WeightDao
 import io.mockk.coVerify
@@ -32,6 +34,7 @@ class DefaultExportDataUseCaseTest {
     private lateinit var noteDao: NoteDao
     private lateinit var expenseDao: ExpenseDao
     private lateinit var investmentDao: InvestmentDao
+    private lateinit var savingDao: SavingDao
     private lateinit var budgetDao: BudgetDao
     private lateinit var weightDao: WeightDao
     private val dispatcher = StandardTestDispatcher()
@@ -47,6 +50,7 @@ class DefaultExportDataUseCaseTest {
         noteDao = mockk(relaxed = true)
         expenseDao = mockk(relaxed = true)
         investmentDao = mockk(relaxed = true)
+        savingDao = mockk(relaxed = true)
         budgetDao = mockk(relaxed = true)
         weightDao = mockk(relaxed = true)
 
@@ -56,6 +60,7 @@ class DefaultExportDataUseCaseTest {
             noteDao,
             expenseDao,
             investmentDao,
+            savingDao,
             budgetDao,
             weightDao,
             dispatcher,
@@ -78,6 +83,9 @@ class DefaultExportDataUseCaseTest {
         val investmentsCursor = mockk<Cursor>()
         every { investmentDao.stream() } returns investmentsCursor
 
+        val savingsCursor = mockk<Cursor>()
+        every { savingDao.stream() } returns savingsCursor
+
         val budgetsCursor = mockk<Cursor>()
         every { budgetDao.stream() } returns budgetsCursor
 
@@ -91,6 +99,7 @@ class DefaultExportDataUseCaseTest {
             exportDataRepository.exportCsv(eq(uri), eq(notesCursor), eq("notes.csv"), eq(NOTES_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(expensesCursor), eq("expenses.csv"), eq(EXPENSES_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(investmentsCursor), eq("investments.csv"), eq(INVESTMENTS_CSV_MAPPING))
+            exportDataRepository.exportCsv(eq(uri), eq(savingsCursor), eq("savings.csv"), eq(SAVINGS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(budgetsCursor), eq("budgets.csv"), eq(BUDGETS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(weightsCursor), eq("weights.csv"), eq(WEIGHTS_CSV_MAPPING))
         }

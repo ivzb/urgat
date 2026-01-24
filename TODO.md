@@ -23,6 +23,7 @@
 - add empty state to expenses/investments/budgets screen - currently they crash when fitler is applied and there is no data - because PrimaryScrollableTabRow is empty
 - when sorting weight sort secondary by date
 - consider replacing some of the complex use cases with SQL queries into DAOs to avoid filtering/search/group with huge data sets
+- adjust SAMPLE_DATA budgets, expenses, investments and savings data to make sense
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -74,4 +75,5 @@
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - consider expenses and investments line chart
 - add income tab with line chart to show each month (yearly)
-- make another entity in finance tab (savings) - where emergency fund will be tracked (and possibly kids fund?)
+- import real savings data into the app
+- add savings screen and also add it to finance tab

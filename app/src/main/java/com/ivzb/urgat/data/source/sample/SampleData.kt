@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
@@ -181,6 +182,39 @@ object SampleData {
 
     val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
 
+    val SAMPLE_SAVINGS =
+        listOf(
+            listOf("Emergency fund", "500"),
+            listOf("Kids fund", "200"),
+            listOf("Cash", "250"),
+
+            listOf("Emergency fund", "500"),
+            listOf("Kids fund", "200"),
+            listOf("Cash", "250"),
+
+            listOf("Emergency fund", "500"),
+            listOf("Kids fund", "200"),
+            listOf("Cash", "250"),
+
+            listOf("Emergency fund", "500"),
+            listOf("Kids fund", "200"),
+            listOf("Cash", "250"),
+
+            listOf("Emergency fund", "500"),
+            listOf("Kids fund", "200"),
+            listOf("Cash", "250"),
+        )
+            .mapIndexed { index, (name, amount) ->
+                Saving(
+                    id = "saving_$index",
+                    name = name,
+                    amount = amount.toBigDecimal(),
+                    date = System.currentTimeMillis() - ((index / 3) * 86_400 * 31 * 1_000L),
+                    isDeleted = false,
+                    createdAt = System.currentTimeMillis() - ((index / 3) * 86_400 * 31 * 1_000L),
+                )
+            }
+
     val SAMPLE_WEIGHTS = listOf(
         listOf("70.5"),
         listOf("70.7"),
@@ -222,9 +256,9 @@ object SampleData {
                 income = income.toBigDecimal(),
                 bankStart = bankStart.toBigDecimal(),
                 bankEnd = bankEnd.toBigDecimal(),
-                date = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000),
+                date = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000L),
                 isDeleted = false,
-                createdAt = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000),
+                createdAt = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000L),
             )
         }
 

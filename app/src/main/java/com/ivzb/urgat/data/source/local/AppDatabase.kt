@@ -11,6 +11,8 @@ import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.note.NoteEntity
+import com.ivzb.urgat.data.saving.SavingDao
+import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.weight.WeightDao
@@ -22,8 +24,9 @@ import com.ivzb.urgat.data.weight.WeightEntity
     NoteEntity::class,
     WeightEntity::class,
     InvestmentEntity::class,
+    SavingEntity::class,
     BudgetEntity::class,
- ], version = 6)
+ ], version = 7)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -36,6 +39,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun weightDao(): WeightDao
 
     abstract fun investmentDao(): InvestmentDao
+
+    abstract fun savingDao(): SavingDao
 
     abstract fun budgetDao(): BudgetDao
 

@@ -6,18 +6,21 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseBudgetCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseExpenseCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseInvestmentCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseNoteCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseSavingCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseTodoCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseWeightCsv
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.importData.ImportDataRepository
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
+import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.di.IoDispatcher
@@ -32,6 +35,8 @@ interface ImportDataUseCase {
     suspend fun importExpenses(content: String)
 
     suspend fun importInvestments(content: String)
+
+    suspend fun importSavings(content: String)
 
     suspend fun importBudgets(content: String)
 
@@ -49,6 +54,7 @@ class DefaultImportDataUseCase @Inject constructor(
     private val noteDao: NoteDao,
     private val expenseDao: ExpenseDao,
     private val investmentDao: InvestmentDao,
+    private val savingDao: SavingDao,
     private val budgetDao: BudgetDao,
     private val weightDao: WeightDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
@@ -60,6 +66,7 @@ class DefaultImportDataUseCase @Inject constructor(
             importDataRepository.importCsv(uri, NOTES_CSV_FILE_NAME, ::parseNoteCsv, noteDao::insertAll)
             importDataRepository.importCsv(uri, EXPENSES_CSV_FILE_NAME, ::parseExpenseCsv, expenseDao::insertAll)
             importDataRepository.importCsv(uri, INVESTMENTS_CSV_FILE_NAME, ::parseInvestmentCsv, investmentDao::insertAll)
+            importDataRepository.importCsv(uri, SAVINGS_CSV_FILE_NAME, ::parseSavingCsv, savingDao::insertAll)
             importDataRepository.importCsv(uri, BUDGETS_CSV_FILE_NAME, ::parseBudgetCsv, budgetDao::insertAll)
             importDataRepository.importCsv(uri, WEIGHTS_CSV_FILE_NAME, ::parseWeightCsv, weightDao::insertAll)
         }
@@ -71,6 +78,10 @@ class DefaultImportDataUseCase @Inject constructor(
 
     override suspend fun importInvestments(content: String) {
         importDataRepository.importString(content, ::parseInvestmentCsv, investmentDao::insertAll)
+    }
+
+    override suspend fun importSavings(content: String) {
+        importDataRepository.importString(content, ::parseSavingCsv, savingDao::insertAll)
     }
 
     override suspend fun importBudgets(content: String) {

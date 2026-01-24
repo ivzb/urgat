@@ -69,4 +69,27 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     }
 }
 
-val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE `savings` (
+                `id` TEXT NOT NULL, 
+                `name` TEXT NOT NULL, 
+                `amount` TEXT NOT NULL, 
+                `date` INTEGER NOT NULL, 
+                `isDeleted` INTEGER NOT NULL, 
+                `createdAt` INTEGER NOT NULL, 
+                PRIMARY KEY(`id`)
+            )
+        """)
+    }
+}
+
+val ALL_MIGRATIONS = arrayOf(
+    MIGRATION_1_2,
+    MIGRATION_2_3,
+    MIGRATION_3_4,
+    MIGRATION_4_5,
+    MIGRATION_5_6,
+    MIGRATION_6_7,
+)

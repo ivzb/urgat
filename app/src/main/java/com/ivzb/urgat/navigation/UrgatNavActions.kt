@@ -5,6 +5,7 @@ import com.ivzb.urgat.ui.addEditBudget.AddEditBudgetRoute
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseRoute
 import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
+import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
 import com.ivzb.urgat.ui.expenses.ExpensesRoute
 import com.ivzb.urgat.ui.investments.InvestmentsRoute
@@ -89,11 +90,10 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddSaving() {
-        // TODO
-//        navigator.navigate(AddEditSavingRoute(
-//            id = null,
-//            titleResId = R.string.add_saving
-//        ))
+        navigator.navigate(AddEditSavingRoute(
+            id = null,
+            titleResId = R.string.add_saving
+        ))
     }
 
     fun navigateToBudgets() {
