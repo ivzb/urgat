@@ -106,6 +106,13 @@ fun expenseColor(amount: BigDecimal) =
         POSITIVE_AMOUNT_COLOR
     }
 
+fun savingColor(amount: BigDecimal) =
+    if (amount > BigDecimal.ZERO) {
+        POSITIVE_AMOUNT_COLOR
+    } else {
+        NEGATIVE_AMOUNT_COLOR
+    }
+
 fun budgetColor(amount: BigDecimal?) =
     when {
         amount == null -> Color.Unspecified

@@ -7,10 +7,12 @@ import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
+import com.ivzb.urgat.domain.saving.ObserveSavingsUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class FinanceViewModel @Inject constructor(
     observeExpensesUseCase: ObserveExpensesUseCase,
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
+    observeSavingsUseCase: ObserveSavingsUseCase,
     observeBudgetsUseCase: ObserveBudgetsUseCase,
     resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
@@ -37,6 +40,7 @@ class FinanceViewModel @Inject constructor(
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeExpensesUseCase(_searchQuery, null, null, _itemsLimit),
         observeInvestmentsUseCase(_searchQuery, null, null, _itemsLimit),
+        observeSavingsUseCase(_searchQuery, null, null, _itemsLimit),
         observeBudgetsUseCase(_searchQuery, null, null, _itemsLimit),
         uiEventHolder(),
 
@@ -46,7 +50,7 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { expenses, investments, budgets, uiEvent ->
+        onSuccess = { expenses, investments, savings, budgets, uiEvent ->
             FinanceUiState(
                 expenses = expenses,
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(
@@ -61,6 +65,13 @@ class FinanceViewModel @Inject constructor(
                     emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
                     emptyMessage = R.string.no_investments_message,
                     emptyButtonLabel = R.string.add_investment,
+                ),
+                savings = savings,
+                savingsFilteringUiInfo = SavingsFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_savings,
+                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_savings_label else R.string.no_savings_search,
+                    emptyMessage = R.string.no_savings_message,
+                    emptyButtonLabel = R.string.add_saving,
                 ),
                 budgets = budgets,
                 budgetsFilteringUiInfo = BudgetsFilteringUiInfo(

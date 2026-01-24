@@ -197,6 +197,7 @@ private fun WellbeingContentLandscape(
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
+    val configuration = LocalConfiguration.current
 
     Row(
         modifier = modifier
@@ -242,7 +243,18 @@ private fun WellbeingContentLandscape(
             ),
         ) {
 
-            // nothing here yet
+            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                items(
+                    items = weights,
+                    key = { weight -> weight.id },
+                ) { weight ->
+
+                    WeightItem(
+                        weight = weight,
+                        onWeightClick = onWeightClick,
+                    )
+                }
+            }
         }
     }
 }
@@ -254,6 +266,7 @@ private fun LazyListScope.itemWeights(
     onSeeAllWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 ) {
+
     when {
         weights.isEmpty() -> {
             item {
@@ -289,10 +302,14 @@ private fun LazyListScope.itemWeights(
                 key = { weight -> weight.id },
             ) { weight ->
 
-                WeightItem(
-                    weight = weight,
-                    onWeightClick = onWeightClick,
-                )
+                val configuration = LocalConfiguration.current
+
+                if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    WeightItem(
+                        weight = weight,
+                        onWeightClick = onWeightClick,
+                    )
+                }
             }
         }
     }

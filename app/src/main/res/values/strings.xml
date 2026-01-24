@@ -172,4 +172,12 @@
     <string name="edit_saving">Edit Saving</string>
     <string name="saving_hint">Enter your saving here.</string>
     <string name="savings">Savings</string>
+    <string name="recent_savings">Recent savings</string>
+    <string name="all_savings">All savings</string>
+    <string name="no_savings">You have no savings</string>
+    <string name="no_savings_label">Your savings journey starts here.</string>
+    <string name="no_savings_message">Tap "Add Saving" to track your first one.</string>
+    <string name="no_savings_search">You have no savings with this search criteria!</string>
+    <string name="loading_savings">Loading savings</string>
+    <string name="error_savings">Error while loading savings</string>
 </resources>

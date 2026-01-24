@@ -47,6 +47,7 @@
 - consider: read current prices on app start for all owned assets and calculate current market price?
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 - budget remaining calculation is inaccurate because it sums different investment currencies
+- consider redesign of the Finance tab (maybe a pager?) - also in landscape since it has 4 columns now
 
 ## Features
 - consider adding version control (git) support in the app - maybe something like export -> push to git repo

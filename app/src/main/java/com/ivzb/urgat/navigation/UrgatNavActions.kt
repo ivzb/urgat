@@ -89,10 +89,21 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
+    fun navigateToSavings() {
+//        navigator.navigate(SavingsRoute)
+    }
+
     fun navigateToAddSaving() {
         navigator.navigate(AddEditSavingRoute(
             id = null,
             titleResId = R.string.add_saving
+        ))
+    }
+
+    fun navigateToEditSaving(savingId: String) {
+        navigator.navigate(AddEditSavingRoute(
+            id = savingId,
+            titleResId = R.string.edit_saving
         ))
     }
 
