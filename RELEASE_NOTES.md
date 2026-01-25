@@ -1,3 +1,8 @@
+## Release notes 26.01.23
+
+New:
+- Introduced savings feature in the Finance tab.
+
 ## Release notes 26.01.22
 
 New:
