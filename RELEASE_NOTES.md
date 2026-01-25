@@ -1,3 +1,8 @@
+## Release notes 26.01.24
+
+New:
+- The budget chart now includes savings for better visibility.
+
 ## Release notes 26.01.23
 
 New:
