@@ -9,12 +9,13 @@ data class GroupedBudget(
     val totalExpenses: BigDecimal,
     val totalInvestments: BigDecimal,
     val totalInvestmentsFormatted: String,
+    val totalSavings: BigDecimal,
 ) {
 
     val remaining: BigDecimal
-        get() = totalIncome - totalExpenses - totalInvestments
+        get() = totalIncome - totalExpenses - totalInvestments - totalSavings
 
     val total: BigDecimal
-        get() = totalIncome.coerceAtLeast(totalExpenses + totalInvestments)
+        get() = totalIncome.coerceAtLeast(totalExpenses + totalInvestments + totalSavings)
 
 }

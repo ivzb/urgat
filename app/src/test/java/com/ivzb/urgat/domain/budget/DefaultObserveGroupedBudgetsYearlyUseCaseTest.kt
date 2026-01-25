@@ -4,10 +4,13 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
+import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
@@ -28,6 +31,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
     private lateinit var observeGroupedBudgetCategoriesYearlyUseCase: ObserveGroupedBudgetCategoriesYearlyUseCase
     private lateinit var observeGroupedExpensesYearlyUseCase: ObserveGroupedExpensesYearlyUseCase
     private lateinit var observeGroupedInvestmentsYearlyUseCase: ObserveGroupedInvestmentsYearlyUseCase
+    private lateinit var observeGroupedSavingsYearlyUseCase: ObserveGroupedSavingsYearlyUseCase
 
     private lateinit var observeUseCase: ObserveGroupedBudgetsYearlyUseCase
 
@@ -38,11 +42,13 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
         observeGroupedBudgetCategoriesYearlyUseCase = mockk()
         observeGroupedExpensesYearlyUseCase = mockk()
         observeGroupedInvestmentsYearlyUseCase = mockk()
+        observeGroupedSavingsYearlyUseCase = mockk()
 
         observeUseCase = DefaultObserveGroupedBudgetsYearlyUseCase(
             observeGroupedBudgetCategoriesYearlyUseCase,
             observeGroupedExpensesYearlyUseCase,
             observeGroupedInvestmentsYearlyUseCase,
+            observeGroupedSavingsYearlyUseCase,
         )
     }
 
@@ -103,6 +109,14 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
             )),
         )
 
+        val savings = listOf(
+            GroupedSavings("2025", 1800.toBigDecimal(), listOf(
+                Saving("1", "Emergency fund", 500.toBigDecimal(), 1, false, 1),
+                Saving("2", "Emergency fund", 600.toBigDecimal(), 2, false, 2),
+                Saving("3", "Emergency fund", 700.toBigDecimal(), 3, false, 3),
+            )),
+        )
+
         every { observeGroupedBudgetCategoriesYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
             filterTypeFlow = null,
@@ -124,6 +138,13 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(investments))
 
+        every { observeGroupedSavingsYearlyUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(savings))
+
         val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
@@ -144,6 +165,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                 totalExpenses = 2600.toBigDecimal(),
                 totalInvestments = 3800.toBigDecimal(),
                 totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+                totalSavings = 1800.toBigDecimal(),
             ),
             GroupedBudget(
                 category = GroupedBudgetCategories(
@@ -157,6 +179,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                 totalExpenses = 0.toBigDecimal(),
                 totalInvestments = 0.toBigDecimal(),
                 totalInvestmentsFormatted = "",
+                totalSavings = 0.toBigDecimal(),
             ),
         )
 
@@ -189,6 +212,13 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
         ) } returns flowOf(Async.Success(listOf()))
 
         every { observeGroupedInvestmentsYearlyUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(listOf()))
+
+        every { observeGroupedSavingsYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,

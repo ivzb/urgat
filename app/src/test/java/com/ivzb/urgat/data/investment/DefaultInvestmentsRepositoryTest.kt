@@ -1,6 +1,5 @@
-package com.ivzb.urgat.data.investments
+package com.ivzb.urgat.data.investment
 
-import com.ivzb.urgat.data.investment.DefaultInvestmentsRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*

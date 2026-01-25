@@ -1,6 +1,5 @@
-package com.ivzb.urgat.data.budgets
+package com.ivzb.urgat.data.budget
 
-import com.ivzb.urgat.data.budget.DefaultBudgetsRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*

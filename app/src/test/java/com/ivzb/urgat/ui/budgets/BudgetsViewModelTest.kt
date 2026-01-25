@@ -108,6 +108,7 @@ class BudgetsViewModelTest {
                 totalExpenses = 2_000.toBigDecimal(),
                 totalInvestments = 3_000.toBigDecimal(),
                 totalInvestmentsFormatted = "3000 USD",
+                totalSavings = 500.toBigDecimal(),
             ),
             GroupedBudget(
                 category = GroupedBudgetCategories(
@@ -121,6 +122,7 @@ class BudgetsViewModelTest {
                 totalExpenses = 1_800.toBigDecimal(),
                 totalInvestments = 2_600.toBigDecimal(),
                 totalInvestmentsFormatted = "2600 USD",
+                totalSavings = 500.toBigDecimal(),
             ),
         )
         val fakeYearlyBudgets = listOf(
@@ -136,6 +138,7 @@ class BudgetsViewModelTest {
                 totalExpenses = 3_800.toBigDecimal(),
                 totalInvestments = 5_600.toBigDecimal(),
                 totalInvestmentsFormatted = "5600 USD",
+                totalSavings = 500.toBigDecimal(),
             ),
         )
         val fakeAllTimeBudgets = GroupedBudget(
@@ -150,6 +153,7 @@ class BudgetsViewModelTest {
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
             totalInvestmentsFormatted = "11200 USD",
+            totalSavings = 500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(
             FilterMenuItem(type = BudgetsFilterType.ALL_BUDGETS, labelResId = R.string.filter_all, size = 1),
@@ -205,6 +209,7 @@ class BudgetsViewModelTest {
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
             totalInvestmentsFormatted = "11200 USD",
+            totalSavings = 500.toBigDecimal(),
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
@@ -242,6 +247,7 @@ class BudgetsViewModelTest {
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
             totalInvestmentsFormatted = "11200 USD",
+            totalSavings = 500.toBigDecimal(),
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
@@ -271,6 +277,7 @@ class BudgetsViewModelTest {
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
             totalInvestmentsFormatted = "11200 USD",
+            totalSavings = 500.toBigDecimal(),
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
@@ -304,6 +311,7 @@ class BudgetsViewModelTest {
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
             totalInvestmentsFormatted = "11200 USD",
+            totalSavings = 500.toBigDecimal(),
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))

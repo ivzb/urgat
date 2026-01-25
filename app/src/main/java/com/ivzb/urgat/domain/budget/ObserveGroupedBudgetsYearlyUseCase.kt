@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
@@ -28,6 +29,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
     private val observeGroupedBudgetCategoriesYearlyUseCase: ObserveGroupedBudgetCategoriesYearlyUseCase,
     private val observeGroupedExpensesYearlyUseCase: ObserveGroupedExpensesYearlyUseCase,
     private val observeGroupedInvestmentsYearlyUseCase: ObserveGroupedInvestmentsYearlyUseCase,
+    private val observeGroupedSavingsYearlyUseCase: ObserveGroupedSavingsYearlyUseCase,
 ): ObserveGroupedBudgetsYearlyUseCase {
 
     override fun invoke(
@@ -41,12 +43,18 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
             observeGroupedBudgetCategoriesYearlyUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
             observeGroupedExpensesYearlyUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedInvestmentsYearlyUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        ) { budgetCategoriesYearlyAsync, expensesYearlyAsync, investmentsYearlyAsync ->
+            observeGroupedSavingsYearlyUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+        ) { budgetCategoriesYearlyAsync, expensesYearlyAsync, investmentsYearlyAsync, savingsYearlyAsync ->
 
-            if (budgetCategoriesYearlyAsync is Async.Success && expensesYearlyAsync is Async.Success && investmentsYearlyAsync is Async.Success) {
+            if (budgetCategoriesYearlyAsync is Async.Success &&
+                expensesYearlyAsync is Async.Success &&
+                investmentsYearlyAsync is Async.Success &&
+                savingsYearlyAsync is Async.Success) {
+
                 val yearlyBudgets = budgetCategoriesYearlyAsync.data.mapIndexed { index, category ->
                     val expenses = expensesYearlyAsync.data.getOrNull(index)
                     val investments = investmentsYearlyAsync.data.getOrNull(index)
+                    val savings = savingsYearlyAsync.data.getOrNull(index)
 
                     GroupedBudget(
                         category = category,
@@ -54,6 +62,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
                         totalInvestments = investments?.items?.sumOf { it.marketValue } ?: BigDecimal.ZERO,
                         totalInvestmentsFormatted = investments?.total ?: "",
+                        totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )
                 }
 

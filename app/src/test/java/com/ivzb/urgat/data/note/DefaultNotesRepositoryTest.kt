@@ -1,6 +1,5 @@
-package com.ivzb.urgat.data.notes
+package com.ivzb.urgat.data.note
 
-import com.ivzb.urgat.data.note.DefaultNotesRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*

@@ -1,6 +1,5 @@
-package com.ivzb.urgat.data.savings
+package com.ivzb.urgat.data.saving
 
-import com.ivzb.urgat.data.saving.DefaultSavingsRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*

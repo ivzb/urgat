@@ -4,10 +4,13 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesAllTimeUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
+import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
@@ -28,6 +31,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
     private lateinit var observeGroupedBudgetCategoriesAllTimeUseCase: ObserveGroupedBudgetCategoriesAllTimeUseCase
     private lateinit var observeGroupedExpensesAllTimeUseCase: ObserveGroupedExpensesAllTimeUseCase
     private lateinit var observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase
+    private lateinit var observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase
 
     private lateinit var observeUseCase: ObserveGroupedBudgetsAllTimeUseCase
 
@@ -38,11 +42,13 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         observeGroupedBudgetCategoriesAllTimeUseCase = mockk()
         observeGroupedExpensesAllTimeUseCase = mockk()
         observeGroupedInvestmentsAllTimeUseCase = mockk()
+        observeGroupedSavingsAllTimeUseCase = mockk()
 
         observeUseCase = DefaultObserveGroupedBudgetsAllTimeUseCase(
             observeGroupedBudgetCategoriesAllTimeUseCase,
             observeGroupedExpensesAllTimeUseCase,
             observeGroupedInvestmentsAllTimeUseCase,
+            observeGroupedSavingsAllTimeUseCase,
         )
     }
 
@@ -85,6 +91,12 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             Investment("3", "3", 1.toBigDecimal(), 2000.toBigDecimal(), "3", "USD", 3, false, 3),
         ))
 
+        val savings = GroupedSavings("2025", 1500.toBigDecimal(), listOf(
+            Saving("1", "Emergency fund", 500.toBigDecimal(), 1, false, 1),
+            Saving("2", "Emergency fund", 600.toBigDecimal(), 2, false, 2),
+            Saving("3", "Emergency fund", 700.toBigDecimal(), 3, false, 3),
+        ))
+
         every { observeGroupedBudgetCategoriesAllTimeUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
             filterTypeFlow = null,
@@ -106,6 +118,13 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(investments))
 
+        every { observeGroupedSavingsAllTimeUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(savings))
+
         val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
@@ -122,6 +141,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3800.toBigDecimal(),
             totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+            totalSavings = 1500.toBigDecimal(),
         )
 
         assertEquals(1, results.size)
@@ -164,6 +184,17 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         ) } returns flowOf(Async.Success(GroupedInvestments(
             group = "",
             total = "",
+            items = listOf(),
+        )))
+
+        every { observeGroupedSavingsAllTimeUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(GroupedSavings(
+            group = "",
+            total = 0.toBigDecimal(),
             items = listOf(),
         )))
 

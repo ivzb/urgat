@@ -40,6 +40,7 @@ import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.format.formatBudgetsChart
 import com.ivzb.urgat.ui.components.format.formatExpensesChart
 import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
+import com.ivzb.urgat.ui.components.format.formatSavingsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.theme.budgetColor
@@ -131,6 +132,8 @@ fun BudgetsScreen(
                         totalExpenses = budget.totalExpenses,
                         totalInvestments = budget.totalInvestments,
                         totalInvestmentsFormatted = budget.totalInvestmentsFormatted,
+                        totalSavings = budget.totalSavings,
+
                         remaining = budget.remaining,
                         total = budget.total,
 
@@ -234,6 +237,7 @@ private fun GroupedBudgetsPage(
                 totalExpenses = budget.totalExpenses,
                 totalInvestments = budget.totalInvestments,
                 totalInvestmentsFormatted = budget.totalInvestmentsFormatted,
+                totalSavings = budget.totalSavings,
                 remaining = budget.remaining,
                 total = budget.total,
 
@@ -251,6 +255,8 @@ private fun CategoriesPage(
     totalExpenses: BigDecimal,
     totalInvestments: BigDecimal,
     totalInvestmentsFormatted: String,
+    totalSavings: BigDecimal,
+
     remaining: BigDecimal,
     total: BigDecimal,
 
@@ -282,6 +288,11 @@ private fun CategoriesPage(
                 add(PieChartItem(
                     value = totalInvestments.toFloat(),
                     selectedText = formatInvestmentsChart(stringResource(R.string.investments), totalInvestmentsFormatted)
+                ))
+
+                add(PieChartItem(
+                    value = totalSavings.toFloat(),
+                    selectedText = formatSavingsChart(stringResource(R.string.savings), totalSavings)
                 ))
 
                 if (remaining > BigDecimal.ZERO) {
@@ -326,9 +337,17 @@ private fun CategoriesPage(
 
         item {
             CategoryItem(
+                name = stringResource(R.string.savings),
+                value = totalSavings.format(),
+                colorIndex = 2,
+            )
+        }
+
+        item {
+            CategoryItem(
                 name = stringResource(R.string.remaining),
                 value = remaining.format(),
-                colorIndex = 2,
+                colorIndex = 3,
             )
         }
     }

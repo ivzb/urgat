@@ -24,6 +24,7 @@
 - when sorting weight sort secondary by date
 - consider replacing some of the complex use cases with SQL queries into DAOs to avoid filtering/search/group with huge data sets
 - adjust SAMPLE_DATA budgets, expenses, investments and savings data to make sense
+- rethink which screens to be published to playstore screenshots - maybe focus more on finance tab
 - refactor duplicated tests and extract shared common tests into each Test class (see DefaultObserveBudgetUseCaseTest.kt)
 
 ## Bugs
@@ -48,7 +49,7 @@
 - consider: read current prices on app start for all owned assets and calculate current market price?
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 - budget remaining calculation is inaccurate because it sums different investment currencies
-- consider redesign of the Finance tab (maybe a pager?) - also in landscape since it has 4 columns now
+- consider redesign of the Finance tab (maybe a pager?)
 
 ## Features
 - consider adding version control (git) support in the app - maybe something like export -> push to git repo
@@ -77,5 +78,3 @@
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - consider expenses and investments line chart
 - add income tab with line chart to show each month (yearly)
-- import real savings data into the app
-- add savings to budget
