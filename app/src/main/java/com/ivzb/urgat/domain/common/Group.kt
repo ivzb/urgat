@@ -9,9 +9,13 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.Saving.Companion.format
+import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
+import com.ivzb.urgat.domain.saving.GroupedSavingCategories
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
 import java.time.Year
@@ -179,6 +183,44 @@ object Group {
                 )
             }
             .sortedBy { it.name }
+
+
+    fun groupSavingCategoriesMonthly(savings: List<Saving>, random: () -> String): List<GroupedSavingCategories> =
+        byDateMonthly(savings, Saving::date, Saving::total)
+            .map { (group, total, items) ->
+                GroupedItems(
+                    group = group,
+                    total = total,
+                    items = groupSavings(items, random),
+                )
+            }
+
+    fun groupSavingCategoriesYearly(savings: List<Saving>, random: () -> String): List<GroupedSavingCategories> =
+        byDateYearly(savings, Saving::date, Saving::total)
+            .map { (group, total, items) ->
+                GroupedItems(
+                    group = group,
+                    total = total,
+                    items = groupSavings(items, random),
+                )
+            }
+
+    fun groupSavingCategoriesAllTime(savings: List<Saving>, random: () -> String): List<SavingCategory> =
+        groupSavings(savings, random)
+
+    private fun groupSavings(savings: List<Saving>, random: () -> String): List<SavingCategory> =
+        savings
+            .groupBy { it.name }
+            .map { (category, savings) ->
+                SavingCategory(
+                    id = random(),
+                    name = category,
+                    value = savings.format(),
+
+                    savings = savings,
+                )
+            }
+            .sortedByDescending { it.value }
 
     fun groupBudgetCategoriesMonthly(budgets: List<Budget>, random: () -> String): List<GroupedBudgetCategories> =
         byDateMonthly(budgets, Budget::date, Budget::total)

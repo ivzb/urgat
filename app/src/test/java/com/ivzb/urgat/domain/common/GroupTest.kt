@@ -1,11 +1,15 @@
 package com.ivzb.urgat.domain.common
 
+import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.timestamp
 import java.math.BigDecimal
@@ -322,6 +326,236 @@ class GroupTest {
         )
 
         val actual = Group.groupExpenseCategoriesAllTime(expenses, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupSavingCategoriesMonthly() {
+        val savings = listOf(
+            Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+            Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+            Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+
+            Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+            Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+            Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+
+            Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+
+            Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "January 2026",
+                total = "3300".toBigDecimal(),
+                items = listOf(
+                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("1500"), savings = listOf(savings[6], savings[9])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("900"), savings = listOf(savings[7], savings[10])),
+                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("900"), savings = listOf(savings[8], savings[11])),
+                ),
+            ),
+            GroupedItems(
+                group = "December 2025",
+                total = "1250".toBigDecimal(),
+                items = listOf(
+                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("600"), savings = listOf(savings[3])),
+                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("350"), savings = listOf(savings[5])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("300"), savings = listOf(savings[4])),
+                ),
+            ),
+            GroupedItems(
+                group = "November 2025",
+                total = "950".toBigDecimal(),
+                items = listOf(
+                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("500"), savings = listOf(savings[0])),
+                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("250"), savings = listOf(savings[2])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("200"), savings = listOf(savings[1])),
+                ),
+            ),
+        )
+
+        val actual = Group.groupSavingCategoriesMonthly(savings, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupSavingCategoriesYearly() {
+        val savings = listOf(
+            Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+            Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+            Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+
+            Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+            Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+            Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+
+            Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+
+            Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "2026",
+                total = "3300".toBigDecimal(),
+                items = listOf(
+                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("1500"), savings = listOf(savings[6], savings[9])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("900"), savings = listOf(savings[7], savings[10])),
+                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("900"), savings = listOf(savings[8], savings[11])),
+                ),
+            ),
+            GroupedItems(
+                group = "2025",
+                total = "2200".toBigDecimal(),
+                items = listOf(
+                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("1100"), savings = listOf(savings[0], savings[3])),
+                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("600"), savings = listOf(savings[2], savings[5])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("500"), savings = listOf(savings[1], savings[4])),
+                ),
+            ),
+        )
+
+        val actual = Group.groupSavingCategoriesYearly(savings, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupSavingCategoriesAllTime() {
+        val savings = listOf(
+            Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+            Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+            Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+
+            Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+            Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+            Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+
+            Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+
+            Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+            Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+        )
+
+        val expected = listOf(
+            SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("2600"), savings = listOf(savings[0], savings[3], savings[6], savings[9])),
+            SavingCategory(id = TEST_UUID, "Cash", BigDecimal("1500"), savings = listOf(savings[2], savings[5], savings[8], savings[11])),
+            SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("1400"), savings = listOf(savings[1], savings[4], savings[7], savings[10])),
+        )
+
+        val actual = Group.groupSavingCategoriesAllTime(savings, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupBudgetCategoriesMonthly() {
+        val budgets = listOf(
+            Budget("1", 3000.toBigDecimal(), 5000.toBigDecimal(), 6200.toBigDecimal(), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Budget("2", 3200.toBigDecimal(), 5200.toBigDecimal(), 6400.toBigDecimal(), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25)),
+            Budget("3", 3400.toBigDecimal(), 5400.toBigDecimal(), 6600.toBigDecimal(), timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
+            Budget("4", 3800.toBigDecimal(), 5600.toBigDecimal(), 6800.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 25)),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "January 2026",
+                total = "7200".toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = TEST_UUID, "4", BigDecimal("3800")),
+                    BudgetCategory(id = TEST_UUID, "3", BigDecimal("3400")),
+                ),
+            ),
+            GroupedItems(
+                group = "December 2025",
+                total = "3200".toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = TEST_UUID, "2", BigDecimal("3200")),
+                ),
+            ),
+            GroupedItems(
+                group = "November 2025",
+                total = "3000".toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = TEST_UUID, "1", BigDecimal("3000")),
+                ),
+            ),
+        )
+
+        val actual = Group.groupBudgetCategoriesMonthly(budgets, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupBudgetCategoriesYearly() {
+        val budgets = listOf(
+            Budget("1", 3800.toBigDecimal(), 5600.toBigDecimal(), 6800.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 25)),
+            Budget("2", 3400.toBigDecimal(), 5400.toBigDecimal(), 6600.toBigDecimal(), timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
+            Budget("3", 3200.toBigDecimal(), 5200.toBigDecimal(), 6400.toBigDecimal(), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25)),
+            Budget("4", 3000.toBigDecimal(), 5000.toBigDecimal(), 6200.toBigDecimal(), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Budget("5", 2800.toBigDecimal(), 4800.toBigDecimal(), 6000.toBigDecimal(), timestamp(2025, 10, 25), false, timestamp(2025, 10, 25)),
+            Budget("6", 2600.toBigDecimal(), 4600.toBigDecimal(), 5800.toBigDecimal(), timestamp(2025, 9, 25), false, timestamp(2025, 9, 25)),
+        )
+
+        val expected = listOf(
+            GroupedItems(
+                group = "2026",
+                total = "7200".toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = TEST_UUID, "1", BigDecimal("3800")),
+                    BudgetCategory(id = TEST_UUID, "2", BigDecimal("3400")),
+                ),
+            ),
+            GroupedItems(
+                group = "2025",
+                total = "11600".toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = TEST_UUID, "3", BigDecimal("3200")),
+                    BudgetCategory(id = TEST_UUID, "4", BigDecimal("3000")),
+                    BudgetCategory(id = TEST_UUID, "5", BigDecimal("2800")),
+                    BudgetCategory(id = TEST_UUID, "6", BigDecimal("2600")),
+                ),
+            ),
+        )
+
+        val actual = Group.groupBudgetCategoriesYearly(budgets, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupBudgetCategoriesAllTime() {
+        val budgets = listOf(
+            Budget("1", 3800.toBigDecimal(), 5600.toBigDecimal(), 6800.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 25)),
+            Budget("2", 3400.toBigDecimal(), 5400.toBigDecimal(), 6600.toBigDecimal(), timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
+            Budget("3", 3200.toBigDecimal(), 5200.toBigDecimal(), 6400.toBigDecimal(), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25)),
+            Budget("4", 3000.toBigDecimal(), 5000.toBigDecimal(), 6200.toBigDecimal(), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Budget("5", 2800.toBigDecimal(), 4800.toBigDecimal(), 6000.toBigDecimal(), timestamp(2025, 10, 25), false, timestamp(2025, 10, 25)),
+            Budget("6", 2600.toBigDecimal(), 4600.toBigDecimal(), 5800.toBigDecimal(), timestamp(2025, 9, 25), false, timestamp(2025, 9, 25)),
+        )
+
+        val expected = BudgetCategory(
+            id = TEST_UUID,
+            name = TEST_UUID,
+            value = "18800".toBigDecimal(),
+        )
+
+        val actual = Group.groupBudgetCategoriesAllTime(budgets, randomTestUUID)
 
         assertEquals(expected, actual)
     }

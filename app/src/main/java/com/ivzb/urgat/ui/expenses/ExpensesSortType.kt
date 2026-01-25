@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 enum class ExpensesSortType: Parcelable {
     BY_DATE,
-    BY_COST,
+    BY_MIN,
+    BY_MAX,
 }

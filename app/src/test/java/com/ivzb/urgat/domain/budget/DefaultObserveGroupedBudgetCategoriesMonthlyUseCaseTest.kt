@@ -41,7 +41,7 @@ class ObserveGroupedBudgetCategoriesMonthlyUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
+    fun `invoke should return Success with filtered items sorted by`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
         val limit = 10
         val limitFlow = flowOf(limit)
@@ -50,6 +50,7 @@ class ObserveGroupedBudgetCategoriesMonthlyUseCaseTest {
             Budget("2", 3200.toBigDecimal(), 5200.toBigDecimal(), 6400.toBigDecimal(), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25)),
             Budget("3", 3400.toBigDecimal(), 5400.toBigDecimal(), 6600.toBigDecimal(), timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
             Budget("4", 3800.toBigDecimal(), 5600.toBigDecimal(), 6800.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 25)),
+            Budget("5", 4000.toBigDecimal(), 5800.toBigDecimal(), 7000.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 27)),
         )
         val repositoryStream = flowOf(budgets)
 
@@ -62,8 +63,9 @@ class ObserveGroupedBudgetCategoriesMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "January 2026",
-                total = "7200".toBigDecimal(),
+                total = "11200".toBigDecimal(),
                 items = listOf(
+                    BudgetCategory(id = TEST_UUID, "5", BigDecimal("4000")),
                     BudgetCategory(id = TEST_UUID, "4", BigDecimal("3800")),
                     BudgetCategory(id = TEST_UUID, "3", BigDecimal("3400")),
                 ),

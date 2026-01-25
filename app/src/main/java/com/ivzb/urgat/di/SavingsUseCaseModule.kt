@@ -1,5 +1,11 @@
 package com.ivzb.urgat.di
 
+import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultCreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultDeleteSavingUseCase
@@ -46,6 +52,18 @@ interface SavingsUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveGroupedSavingsAllTimeUseCase(useCase: DefaultObserveGroupedSavingsAllTimeUseCase): ObserveGroupedSavingsAllTimeUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedSavingCategoriesMonthlyUseCase(useCase: DefaultObserveGroupedSavingCategoriesMonthlyUseCase): ObserveGroupedSavingCategoriesMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedSavingCategoriesYearlyUseCase(useCase: DefaultObserveGroupedSavingCategoriesYearlyUseCase): ObserveGroupedSavingCategoriesYearlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedSavingCategoriesAllTimeUseCase(useCase: DefaultObserveGroupedSavingCategoriesAllTimeUseCase): ObserveGroupedSavingCategoriesAllTimeUseCase
 
     @Singleton
     @Binds

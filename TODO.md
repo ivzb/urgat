@@ -24,6 +24,7 @@
 - when sorting weight sort secondary by date
 - consider replacing some of the complex use cases with SQL queries into DAOs to avoid filtering/search/group with huge data sets
 - adjust SAMPLE_DATA budgets, expenses, investments and savings data to make sense
+- refactor duplicated tests and extract shared common tests into each Test class (see DefaultObserveBudgetUseCaseTest.kt)
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -77,4 +78,4 @@
 - consider expenses and investments line chart
 - add income tab with line chart to show each month (yearly)
 - import real savings data into the app
-- add savings screen and also add it to finance tab
+- add savings to budget

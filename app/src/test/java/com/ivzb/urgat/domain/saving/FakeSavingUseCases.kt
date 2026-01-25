@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.ui.savings.SavingsSortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
@@ -52,6 +53,81 @@ class FakeObserveGroupedSavingsMonthlyUseCase : ObserveGroupedSavingsMonthlyUseC
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<GroupedSavings>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedSavingCategoriesMonthlyUseCase: ObserveGroupedSavingCategoriesMonthlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedSavingCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedSavingCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<Unit>?,
+        sortTypeFlow: Flow<SavingsSortType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedSavingCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedSavingCategoriesYearlyUseCase: ObserveGroupedSavingCategoriesYearlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedSavingCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedSavingCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<Unit>?,
+        sortTypeFlow: Flow<SavingsSortType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<GroupedSavingCategories>>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedSavingCategoriesAllTimeUseCase: ObserveGroupedSavingCategoriesAllTimeUseCase {
+
+    private val flow = MutableStateFlow<Async<List<SavingCategory>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<SavingCategory>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<Unit>?,
+        sortTypeFlow: Flow<SavingsSortType>?,
+        limitFlow: Flow<Int>?
+    ): Flow<Async<List<SavingCategory>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

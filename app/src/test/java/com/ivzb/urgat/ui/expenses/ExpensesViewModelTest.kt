@@ -41,7 +41,7 @@ class ExpensesViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf(EXPENSES_FILTER_SAVED_STATE_KEY to null))
+        savedStateHandle = SavedStateHandle(mapOf())
         fakeObserveExpensesUseCase = FakeObserveGroupedExpensesMonthlyUseCase()
         fakeObserveGroupedExpenseCategoriesMonthlyUseCase = FakeObserveGroupedExpenseCategoriesMonthlyUseCase()
         fakeObserveGroupedExpenseCategoriesYearlyUseCase = FakeObserveGroupedExpenseCategoriesYearlyUseCase()
@@ -133,7 +133,8 @@ class ExpensesViewModelTest {
         )
         val fakeExpensesSorting = listOf(
             SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = ExpensesSortType.BY_COST, labelResId = R.string.sort_by_cost),
+            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
         )
 
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
@@ -262,6 +263,24 @@ class ExpensesViewModelTest {
         advanceUntilIdle()
 
         assertEquals(expected, savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY])
+    }
+
+    @Test
+    fun `setSorting updates saved state handle`() = runTest {
+        fakeObserveExpensesUseCase.emit(Async.Success(emptyList()))
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(emptyList()))
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(emptyList()))
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(emptyList()))
+        fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveExpensesSortingUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        val expected = ExpensesSortType.BY_MIN
+
+        viewModel.onIntent(ExpensesIntent.SetSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, savedStateHandle[EXPENSES_SORT_SAVED_STATE_KEY])
     }
 
     private fun createViewModel() = ExpensesViewModel(

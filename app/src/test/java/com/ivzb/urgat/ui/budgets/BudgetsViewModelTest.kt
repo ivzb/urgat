@@ -287,6 +287,39 @@ class BudgetsViewModelTest {
         )
     }
 
+    @Test
+    fun `setSorting updates saved state handle`() = runTest {
+        fakeObserveBudgetsUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "All time",
+                total = 24_000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
+                ),
+            ),
+            totalIncome = 24_000.toBigDecimal(),
+            totalExpenses = 7_600.toBigDecimal(),
+            totalInvestments = 11_200.toBigDecimal(),
+            totalInvestmentsFormatted = "11200 USD",
+        )))
+        fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        val expected = BudgetsSortType.BY_MIN
+
+        viewModel.onIntent(BudgetsIntent.SetSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[BUDGETS_SORT_SAVED_STATE_KEY]
+        )
+    }
+
     private fun createViewModel() = BudgetsViewModel(
         fakeObserveBudgetsUseCase,
         fakeObserveGroupedBudgetsMonthlyUseCase,

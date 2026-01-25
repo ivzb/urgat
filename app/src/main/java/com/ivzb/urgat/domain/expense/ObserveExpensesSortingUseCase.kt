@@ -20,7 +20,8 @@ class DefaultObserveExpensesSortingUseCase @Inject constructor() : ObserveExpens
     override fun invoke(): Flow<Async<List<ExpensesSortMenuItem>>> {
         return flowOf(Async.Success(listOf(
             SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = ExpensesSortType.BY_COST, labelResId = R.string.sort_by_cost),
+            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
         )))
     }
 

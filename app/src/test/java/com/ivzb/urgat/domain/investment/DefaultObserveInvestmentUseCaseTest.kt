@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -30,30 +31,54 @@ class ObserveInvestmentsUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
+    fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
+        `invoke should return Success with filtered items sorted by`(
+            sortType = InvestmentsSortType.BY_DATE,
+            expected = listOf(
+                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
+            ),
+        )
+    }
+
+    @Test
+    fun `invoke should return Success with filtered items sorted by market value`() = runTest(testDispatcher) {
+        `invoke should return Success with filtered items sorted by`(
+            sortType = InvestmentsSortType.BY_MARKET_VALUE,
+            expected = listOf(
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
+                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
+            ),
+        )
+    }
+
+    private fun `invoke should return Success with filtered items sorted by`(sortType: InvestmentsSortType, expected: List<Investment>) = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("snp")
+        val sortTypeFlow = flowOf(sortType)
         val limit = 10
         val limitFlow = flowOf(limit)
 
         val repositoryStream = flowOf(
             listOf(
                 Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
-                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 1L, false, 1L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
+                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
             )
         )
 
         every { repository.observe(limit, "snp") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Success)
-        val items = (first as Async.Success).data
-        assertEquals(2, items.size)
-        assertEquals("SNP 500", items[0].name)
+        val actual = (first as Async.Success).data
+        assertEquals(expected, actual)
     }
 
     @Test

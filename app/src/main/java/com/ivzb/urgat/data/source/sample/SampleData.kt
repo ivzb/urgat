@@ -215,6 +215,18 @@ object SampleData {
                 )
             }
 
+    val SAMPLE_SAVINGS_GROUPED =
+        Group.byDateMonthly(SAMPLE_SAVINGS, Saving::date, Saving::total)
+
+    val SAMPLE_SAVINGS_CATEGORIES_MONTHLY =
+        Group.groupSavingCategoriesMonthly(SAMPLE_SAVINGS, ::randomUUID)
+
+    val SAMPLE_SAVINGS_CATEGORIES_YEARLY =
+        Group.groupSavingCategoriesYearly(SAMPLE_SAVINGS, ::randomUUID)
+
+    val SAMPLE_SAVINGS_CATEGORIES_ALL_TIME =
+        Group.groupSavingCategoriesAllTime(SAMPLE_SAVINGS, ::randomUUID)
+
     val SAMPLE_WEIGHTS = listOf(
         listOf("70.5"),
         listOf("70.7"),

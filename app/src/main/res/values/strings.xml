@@ -67,7 +67,6 @@
     <string name="filter_positive">Positive</string>
     <string name="filter_negative">Negative</string>
     <string name="sort_by_date">Sort by date</string>
-    <string name="sort_by_cost">Sort by cost</string>
     <string name="sort_by_min">Sort by min</string>
     <string name="sort_by_max">Sort by max</string>
     <string name="sort_by_market_value">Sort by market value</string>

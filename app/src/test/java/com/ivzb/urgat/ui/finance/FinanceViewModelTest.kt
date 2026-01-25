@@ -8,6 +8,8 @@ import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
+import com.ivzb.urgat.domain.saving.FakeObserveSavingsUseCase
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -35,6 +37,7 @@ class FinanceViewModelTest {
 
     private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
     private lateinit var fakeObserveInvestmentsUseCase: FakeObserveInvestmentsUseCase
+    private lateinit var fakeObserveSavingsUseCase: FakeObserveSavingsUseCase
     private lateinit var fakeObserveBudgetUseCase: FakeObserveBudgetsUseCase
     private lateinit var mockResourcesProvider: ResourcesProvider
 
@@ -48,6 +51,7 @@ class FinanceViewModelTest {
 
         fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
+        fakeObserveSavingsUseCase = FakeObserveSavingsUseCase()
         fakeObserveBudgetUseCase = FakeObserveBudgetsUseCase()
         mockResourcesProvider = mockk()
 
@@ -86,6 +90,9 @@ class FinanceViewModelTest {
         val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
 
+        val fakeSavings = listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))
+        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
+
         val fakeBudgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
         fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
 
@@ -100,6 +107,8 @@ class FinanceViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(fakeExpenses, state.expenses)
         assertEquals(fakeInvestments, state.investments)
+        assertEquals(fakeSavings, state.savings)
+        assertEquals(fakeBudgets, state.budgets)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -112,6 +121,9 @@ class FinanceViewModelTest {
 
         val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
         fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+
+        val fakeSavings = listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))
+        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
 
         val fakeBudgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
         fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
@@ -136,6 +148,7 @@ class FinanceViewModelTest {
         val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveSavingsUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -145,6 +158,8 @@ class FinanceViewModelTest {
 
         assertEquals("coffee", fakeObserveExpensesUseCase.lastQuery)
         assertEquals("coffee", fakeObserveInvestmentsUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveSavingsUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveBudgetUseCase.lastQuery)
     }
 
     @Test
@@ -160,6 +175,7 @@ class FinanceViewModelTest {
     private fun `fab action click emits event`(fabActionId: FinanceFabActionId, expectedEvent: FinanceUiEvent) = runTest {
         fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveSavingsUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
@@ -181,6 +197,7 @@ class FinanceViewModelTest {
     private fun createViewModel() = FinanceViewModel(
         fakeObserveExpensesUseCase,
         fakeObserveInvestmentsUseCase,
+        fakeObserveSavingsUseCase,
         fakeObserveBudgetUseCase,
         mockResourcesProvider,
     )

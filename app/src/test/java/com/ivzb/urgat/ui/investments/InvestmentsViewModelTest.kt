@@ -55,7 +55,7 @@ class InvestmentsViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        savedStateHandle = SavedStateHandle(mapOf(INVESTMENTS_FILTER_SAVED_STATE_KEY to null))
+        savedStateHandle = SavedStateHandle(mapOf())
         fakeObserveGroupedInvestmentsUseCase = FakeObserveGroupedInvestmentsMonthlyUseCase()
         fakeObserveInvestmentAssetsUseCase = FakeObserveInvestmentAssetsUseCase()
         fakeObserveGroupedInvestmentCategoriesYearlyUseCase = FakeObserveGroupedInvestmentCategoriesYearlyUseCase()
@@ -312,6 +312,28 @@ class InvestmentsViewModelTest {
         assertEquals(
             expected,
             savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY]
+        )
+    }
+
+    @Test
+    fun `setSorting updates saved state handle`() = runTest {
+        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(listOf()))
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentAssetsUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(InvestmentNetWorth(total = "")))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        val expected = InvestmentsSortType.BY_MARKET_VALUE
+
+        viewModel.onIntent(InvestmentsIntent.SetSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[INVESTMENTS_SORT_SAVED_STATE_KEY]
         )
     }
 

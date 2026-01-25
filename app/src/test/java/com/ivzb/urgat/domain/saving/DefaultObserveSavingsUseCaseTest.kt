@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingsRepository
+import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -30,8 +31,44 @@ class ObserveSavingsUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
+    fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
+        `invoke should return Success with filtered items sorted by`(
+            sortType = SavingsSortType.BY_DATE,
+            expected = listOf(
+                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
+                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
+                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
+            ),
+        )
+    }
+
+    @Test
+    fun `invoke should return Success with filtered items sorted by min`() = runTest(testDispatcher) {
+        `invoke should return Success with filtered items sorted by`(
+            sortType = SavingsSortType.BY_MIN,
+            expected = listOf(
+                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
+                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
+            ),
+        )
+    }
+
+    @Test
+    fun `invoke should return Success with filtered items sorted by max`() = runTest(testDispatcher) {
+        `invoke should return Success with filtered items sorted by`(
+            sortType = SavingsSortType.BY_MAX,
+            expected = listOf(
+                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
+                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
+            ),
+        )
+    }
+
+    private fun `invoke should return Success with filtered items sorted by`(sortType: SavingsSortType, expected: List<Saving>) = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("fund")
+        val sortTypeFlow = flowOf(sortType)
         val limit = 10
         val limitFlow = flowOf(limit)
 
@@ -39,22 +76,21 @@ class ObserveSavingsUseCaseTest {
             listOf(
                 Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
                 Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
-                Saving("3", "Cash", BigDecimal("250"), 124, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
             )
         )
 
         every { repository.observe(limit, "fund") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Success)
-        val items = (first as Async.Success).data
-        assertEquals(3, items.size)
-        assertEquals("Emergency fund", items[0].name)
+        val actual = (first as Async.Success).data
+        assertEquals(expected, actual)
     }
 
     @Test

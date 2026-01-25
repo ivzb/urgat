@@ -105,6 +105,23 @@ class WeightsViewModelTest {
         job.cancel()
     }
 
+    @Test
+    fun `setSorting updates saved state handle`() = runTest {
+        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
+        fakeObserveWeightsSortingUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        val expected = WeightsSortType.BY_MIN
+
+        viewModel.onIntent(WeightsIntent.SetSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[WEIGHTS_SORT_SAVED_STATE_KEY]
+        )
+    }
+
     private fun createViewModel() = WeightsViewModel(
         fakeObserveWeightsUseCase,
         fakeObserveWeightsSortingUseCase,

@@ -13,6 +13,7 @@ import com.ivzb.urgat.ui.notes.NotesRoute
 import com.ivzb.urgat.ui.todos.TodosRoute
 import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
 import com.ivzb.urgat.ui.budgets.BudgetsRoute
+import com.ivzb.urgat.ui.savings.SavingsRoute
 import com.ivzb.urgat.ui.weights.WeightsRoute
 
 class UrgatNavActions(private val navigator: Navigator) {
@@ -90,7 +91,7 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToSavings() {
-//        navigator.navigate(SavingsRoute)
+        navigator.navigate(SavingsRoute)
     }
 
     fun navigateToAddSaving() {
