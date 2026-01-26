@@ -1,3 +1,8 @@
+## Release notes 26.01.25
+
+New:
+- You can now filter expenses excluded from analytics.
+
 ## Release notes 26.01.24
 
 New:
