@@ -13,6 +13,7 @@ fun filterExpenses(items: List<Expense>, filterType: ExpensesFilterType): List<E
             ExpensesFilterType.ALL_EXPENSES -> true
             ExpensesFilterType.COST_EXPENSES -> it.isCost
             ExpensesFilterType.DEBIT_EXPENSES -> it.isDebit
+            ExpensesFilterType.EXCLUDED_FROM_ANALYTICS -> it.excludeFromAnalytics
         }
     }
 }

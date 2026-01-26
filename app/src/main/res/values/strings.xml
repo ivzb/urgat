@@ -64,6 +64,7 @@
     <string name="filter_completed">Completed</string>
     <string name="filter_debit">Debit</string>
     <string name="filter_cost">Cost</string>
+    <string name="filter_excluded_from_analytics">Excluded from analytics</string>
     <string name="filter_positive">Positive</string>
     <string name="filter_negative">Negative</string>
     <string name="sort_by_date">Sort by date</string>
@@ -80,6 +81,8 @@
     <string name="no_debit_expenses">You have no debit expenses!</string>
     <string name="cost_expenses">Cost expenses</string>
     <string name="no_cost_expenses">You have no cost expenses!</string>
+    <string name="excluded_from_analytics">Excluded from analytics</string>
+    <string name="no_excluded_from_analytics_expenses">You have no expenses excluded from analytics!</string>
     <string name="recent_expenses">Recent expenses</string>
     <string name="no_expenses_search">You have no expenses with this search criteria!</string>
     <string name="see_all">See all</string>

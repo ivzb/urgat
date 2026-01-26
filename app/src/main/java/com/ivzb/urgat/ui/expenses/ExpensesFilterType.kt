@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 enum class ExpensesFilterType: Parcelable {
     ALL_EXPENSES,
     DEBIT_EXPENSES,
-    COST_EXPENSES
+    COST_EXPENSES,
+    EXCLUDED_FROM_ANALYTICS,
 }

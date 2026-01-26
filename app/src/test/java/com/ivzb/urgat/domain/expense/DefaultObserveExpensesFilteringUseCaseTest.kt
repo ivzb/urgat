@@ -39,12 +39,13 @@ class ObserveExpensesFilteringUseCaseTest {
             FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 5),
             FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 2),
             FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 3),
+            FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 1),
         )
 
         val repositoryStream = flowOf(
             listOf(
                 Expense("1", "food", 50.toBigDecimal(), "category", 1L, false, false, 1L),
-                Expense("1", "transport", 65.toBigDecimal(), "category", 1L, false, false, 1L),
+                Expense("1", "transport", 65.toBigDecimal(), "category", 1L, true, false, 1L),
                 Expense("1", "housing", 800.toBigDecimal(), "category", 1L, false, false, 1L),
                 Expense("1", "income", -500.toBigDecimal(), "category", 1L, false, false, 1L),
                 Expense("1", "income", -40.toBigDecimal(), "category", 1L, false, false, 1L),

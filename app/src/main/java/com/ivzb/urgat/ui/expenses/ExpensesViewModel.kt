@@ -10,9 +10,7 @@ import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesAllTimeUseCa
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
-import com.ivzb.urgat.ui.expenses.ExpensesFilterType.ALL_EXPENSES
-import com.ivzb.urgat.ui.expenses.ExpensesFilterType.COST_EXPENSES
-import com.ivzb.urgat.ui.expenses.ExpensesFilterType.DEBIT_EXPENSES
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType.*
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -121,6 +119,15 @@ class ExpensesViewModel @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.cost_expenses,
                     emptyLabel = R.string.no_cost_expenses,
+                    filterMenuItems = filterMenuItems,
+                    sortMenuItems = sortMenuItems,
+                )
+            }
+
+            EXCLUDED_FROM_ANALYTICS -> {
+                ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.exclude_from_analytics,
+                    emptyLabel = R.string.no_excluded_from_analytics_expenses,
                     filterMenuItems = filterMenuItems,
                     sortMenuItems = sortMenuItems,
                 )

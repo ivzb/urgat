@@ -29,6 +29,7 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
                     FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = it.size),
                     FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = it.count { it.isDebit}),
                     FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = it.count { it.isCost }),
+                    FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = it.count { it.excludeFromAnalytics }),
                 )
             }
             .map<List<ExpensesFilterMenuItem>, Async<List<ExpensesFilterMenuItem>>> { Async.Success(it) }
