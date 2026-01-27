@@ -1,3 +1,8 @@
+## Release notes 26.01.26
+
+Improved:
+- Redesigned the Library and Finance tabs by introducing a pager for each category, replacing the previous list layout.
+
 ## Release notes 26.01.25
 
 New:
