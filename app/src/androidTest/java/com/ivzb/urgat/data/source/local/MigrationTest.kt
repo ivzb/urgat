@@ -52,6 +52,7 @@ class MigrationTest {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
+                MIGRATION_7_8,
             )
             .build()
             .apply {
@@ -90,6 +91,7 @@ class MigrationTest {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
+                MIGRATION_7_8,
             )
             .build()
             .let { db ->
@@ -98,8 +100,7 @@ class MigrationTest {
                     val actualTodo = db.todoDao().getById("1")
                     val expectedTodo = TodoEntity(
                         id = "1",
-                        title = "Buy groceries",
-                        description = "Milk, eggs, bread, and fruits",
+                        content = "Buy groceries\nMilk, eggs, bread, and fruits",
                         isCompleted = false,
                         isDeleted = false,
                         createdAt = 1764362076,
@@ -169,6 +170,7 @@ class MigrationTest {
             .let { db ->
                 // Database has schema version 1. Insert some data using SQL queries.
                 // DAO classes can't be used here because they expect the latest schema.
+                db.execSQL("INSERT INTO `todo` (`id`, `title`, `description`, `isCompleted`, `isDeleted`, `createdAt`) VALUES ('1', 'Buy groceries', 'Milk, eggs, bread, and fruits', 0, 0, 1764362076)")
                 db.execSQL("INSERT INTO `expenses` (`id`, `name`, `amount`, `category`, `date`, `isDeleted`, `createdAt`) VALUES ('1', 'Groceries', '75.5', 'Food', 1764362076, 0, 1764362076)")
                 db.execSQL("INSERT INTO `investments` (`id`, `name`, `currency`, `amount`, `category`, `isDeleted`, `createdAt`) VALUES ('1', 'SNP 500', 'USD', 500, 'ETF', 0, 1764362076)")
                 db.execSQL("INSERT INTO `weights` (`id`, `value`, `isDeleted`, `createdAt`) VALUES ('1', '80.5', 0, 1764362076)")
@@ -179,7 +181,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 7,
+            version = 8,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -188,6 +190,7 @@ class MigrationTest {
                 MIGRATION_4_5,
                 MIGRATION_5_6,
                 MIGRATION_6_7,
+                MIGRATION_7_8,
             ),
         ).close()
 
@@ -198,6 +201,17 @@ class MigrationTest {
             .let { db ->
                 // verify default values after migration
                 runBlocking {
+                    val actualTodo = db.todoDao().getById("1")
+                    val expectedTodo = TodoEntity(
+                        id = "1",
+                        content = "Buy groceries\nMilk, eggs, bread, and fruits",
+                        isCompleted = false,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedTodo, actualTodo)
+
                     val actualExpense = db.expenseDao().getById("1")
                     val expectedExpense = ExpenseEntity(
                         id = "1",
@@ -241,6 +255,16 @@ class MigrationTest {
 
                 // update the new fields
                 runBlocking {
+                    val todo = TodoEntity(
+                        id = "1",
+                        content = "Buy groceries updated",
+                        isCompleted = false,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.todoDao().upsert(todo)
+
                     val expense = ExpenseEntity(
                         id = "1",
                         name = "Groceries",
@@ -281,6 +305,17 @@ class MigrationTest {
 
                 // verify new fields are updated
                 runBlocking {
+                    val actualTodo = db.todoDao().getById("1")
+                    val expectedTodo = TodoEntity(
+                        id = "1",
+                        content = "Buy groceries updated",
+                        isCompleted = false,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedTodo, actualTodo)
+
                     val actualExpense = db.expenseDao().getById("1")
                     val expectedExpense = ExpenseEntity(
                         id = "1",

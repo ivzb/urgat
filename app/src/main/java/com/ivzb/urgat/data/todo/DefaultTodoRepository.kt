@@ -32,7 +32,7 @@ class DefaultTodoRepository @Inject constructor(
         }
     }
 
-    override suspend fun create(title: String, description: String): String {
+    override suspend fun create(content: String): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
         val id = withContext(dispatcher) {
@@ -40,8 +40,7 @@ class DefaultTodoRepository @Inject constructor(
         }
         val todo = Todo(
             id = id,
-            title = title,
-            description = description,
+            content = content,
             isCompleted = false,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
@@ -50,10 +49,9 @@ class DefaultTodoRepository @Inject constructor(
         return id
     }
 
-    override suspend fun update(id: String, title: String, description: String) {
+    override suspend fun update(id: String, content: String) {
         val todo = get(id)?.copy(
-            title = title,
-            description = description
+            content = content,
         )
 
         if (todo == null) {

@@ -35,8 +35,8 @@ class ObserveTodosUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Todo("1", "Todo 1", "", false, false, 1L),
-                Todo("2", "Todo 2", "", false, false, 1L)
+                Todo("1", "Todo 1", false, false, 1L),
+                Todo("2", "Todo 2", false, false, 1L)
             )
         )
 
@@ -51,8 +51,8 @@ class ObserveTodosUseCaseTest {
         assert(first is Async.Success)
         val items = (first as Async.Success).data
         assertEquals(2, items.size)
-        assertEquals("Todo 1", items[0].title)
-        assertEquals("Todo 2", items[1].title)
+        assertEquals("Todo 1", items[0].content)
+        assertEquals("Todo 2", items[1].content)
     }
 
     @Test

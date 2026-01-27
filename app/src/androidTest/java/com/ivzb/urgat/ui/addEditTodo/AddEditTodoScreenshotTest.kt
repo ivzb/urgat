@@ -27,9 +27,9 @@ class AddEditTodoScreenshotTest: ScreenshotTest() {
         uiState = SampleData.SAMPLE_TODOS.first().let { todo ->
             AddEditTodoUiState(
                 screenTitleResId = R.string.edit_todo,
-                title = todo.title,
-                description = todo.description,
+                content = todo.content,
                 isTodoCompleted = todo.isCompleted,
+                focusIndex = -1,
             )
         },
     )

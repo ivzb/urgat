@@ -21,13 +21,12 @@ class DefaultUpdateTodoUseCaseTest {
     @Test
     fun `invoke should call repository update with correct parameters`() = runTest {
         val id = "123"
-        val title = "Title"
-        val desc = "Desc"
+        val content = "Todo"
 
-        updateUseCase(id, title, desc)
+        updateUseCase(id, content)
 
         coVerify(exactly = 1) {
-            repository.update(id, title, desc)
+            repository.update(id, content)
         }
     }
 }

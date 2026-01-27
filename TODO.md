@@ -1,7 +1,6 @@
 ## Technical debt
 - make proper urgat CLI with multiple commands instead of having multiple scripts
 - consider extracting a framework
-- add focus index to todo view model
 - setup github build pipeline
 - make error tracker
 - consider having sample use case for each entity and use appropriate one in each main view model
@@ -76,7 +75,8 @@
 - make todos a ticketing system following TODOS.md structure - add categories and priorities - then visualise the todos split by categories
 - make the app hledger compatible - https://hledger.org/
 - add support for currency conversion because there is a difference in actual calculations vs URGAT when currencies are mixed (calculate to main currency which should be configurable in settings)
-- show how many months can one survive without income based on currency savings/emergency fund
-- make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - consider expenses and investments line chart
 - add income tab with line chart to show each month (yearly)
+- show how many months can one survive without income based on currency savings/emergency fund
+- make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
+- show remaining budget for the rest of the month inside budgets screen

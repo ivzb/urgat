@@ -12,7 +12,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -33,11 +32,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
@@ -48,6 +45,10 @@ import com.ivzb.urgat.ui.components.responsiveButtonWidth
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.transparentTextFieldColors
 import kotlinx.coroutines.launch
+
+enum class FieldId {
+    Content,
+}
 
 @Composable
 fun AddEditTodoScreen(
@@ -82,7 +83,9 @@ fun AddEditTodoScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val focusRequester = remember { FocusRequester() }
+    val focusRequesters = remember {
+        List(FieldId.entries.size) { FocusRequester() }
+    }
 
     Scaffold(
         topBar = {
@@ -116,50 +119,24 @@ fun AddEditTodoScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var titleTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.title)) }
+                var contentTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.content)) }
 
                 TextField(
-                    value = titleTextFieldValue,
+                    value = contentTextFieldValue,
                     onValueChange = {
-                        titleTextFieldValue = it
-                        onIntent(AddEditTodoIntent.UpdateTitle(it.text))
+                        contentTextFieldValue = it
+                        onIntent(AddEditTodoIntent.UpdateContent(it.text))
                     },
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.title_hint),
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                    },
-                    textStyle = MaterialTheme.typography.headlineSmall
-                        .copy(fontWeight = FontWeight.Bold),
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    colors = transparentTextFieldColors(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                TextField(
-                    value = uiState.description,
-                    onValueChange = { onIntent(AddEditTodoIntent.UpdateDescription(it)) },
-                    placeholder = { Text(stringResource(id = R.string.description_hint)) },
+                    placeholder = { Text(text = stringResource(id = R.string.todo_hint)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Default // allow multiline
                     ),
                     colors = transparentTextFieldColors(),
                     modifier = Modifier
-                        .weight(1f)
                         .fillMaxWidth()
+                        .weight(1f)
+                        .focusRequester(focusRequesters[FieldId.Content.ordinal]),
                 )
 
                 Spacer(
@@ -177,13 +154,17 @@ fun AddEditTodoScreen(
                     Text(stringResource(R.string.save))
                 }
 
+                LaunchedEffect(uiState.focusIndex) {
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+                }
+
                 LaunchedEffect(uiState.isLoading) {
-                    titleTextFieldValue = TextFieldValue(
-                        text = uiState.title,
-                        selection = TextRange(uiState.title.length)
+                    contentTextFieldValue = TextFieldValue(
+                        text = uiState.content,
+                        selection = TextRange(uiState.content.length)
                     )
 
-                    focusRequester.requestFocus()
+                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
                 }
             }
         }
@@ -226,8 +207,7 @@ private fun EditTodoScreen() {
             AddEditTodoScreen(
                 uiState = AddEditTodoUiState(
                     screenTitleResId = R.string.edit_todo,
-                    title = "Title",
-                    description = "Description"
+                    content = "Todo content",
                 ),
                 onIntent = {},
                 onBack = {},

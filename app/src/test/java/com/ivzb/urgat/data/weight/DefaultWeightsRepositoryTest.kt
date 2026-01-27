@@ -90,7 +90,6 @@ class DefaultWeightsRepositoryTest {
 
         val result = repository.observe(limit = 10, searchQuery = "Lu").first()
 
-        // Should match "Lunch" only (case-insensitive substring)
         assertEquals(3, result.size)
         assertEquals(listOf(75.toBigDecimal(), 77.toBigDecimal(), 79.toBigDecimal()), result.map { it.value })
         assertEquals(listOf(1764523811L, 1764523812L, 1764523813L), result.map { it.date })

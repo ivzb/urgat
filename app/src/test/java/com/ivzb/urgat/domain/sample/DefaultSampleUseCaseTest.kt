@@ -54,8 +54,7 @@ class DefaultSampleUseCaseTest {
         coVerify(exactly = 1) {
             SampleData.SAMPLE_TODOS.forEach {
                 createTodoUseCase(
-                    it.title,
-                    it.description,
+                    it.content,
                 )
             }
 

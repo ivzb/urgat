@@ -69,7 +69,7 @@ class TodoViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeTodo = listOf(Todo("1", "Todo", "", false, false, 1L))
+        val fakeTodo = listOf(Todo("1", "Todo", false, false, 1L))
         val fakeTodoFiltering = listOf(
             FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
@@ -116,7 +116,7 @@ class TodoViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeTodo = listOf(Todo("2", "Coffee", "", false, false, 1L))
+        val fakeTodo = listOf(Todo("2", "Coffee", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
         fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -147,7 +147,7 @@ class TodoViewModelTest {
 
     @Test
     fun `completeTodo calls completeUseCase`() = runTest {
-        val todo = Todo("2", "Coffee", "", false, false, 1L)
+        val todo = Todo("2", "Coffee", false, false, 1L)
 
         viewModel = createViewModel()
 
@@ -159,7 +159,7 @@ class TodoViewModelTest {
 
     @Test
     fun `activateTodo calls activateUseCase`() = runTest {
-        val todo = Todo("2", "Coffee", "", false, false, 1L)
+        val todo = Todo("2", "Coffee", false, false, 1L)
 
         viewModel = createViewModel()
 

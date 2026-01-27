@@ -44,30 +44,32 @@ class AddEditTodoViewModel @AssistedInject constructor(
 
     fun onIntent(intent: AddEditTodoIntent) {
         when (intent) {
-            is AddEditTodoIntent.UpdateTitle -> updateTitle(intent.value)
-            is AddEditTodoIntent.UpdateDescription -> updateDescription(intent.value)
+            is AddEditTodoIntent.UpdateContent -> updateContent(intent.value)
             AddEditTodoIntent.SaveTodo -> saveTodo()
             AddEditTodoIntent.DeleteTodo -> deleteTodo()
             AddEditTodoIntent.UserMessageShown -> userMessageShown()
         }
     }
 
-    private fun updateTitle(newTitle: String) {
+    private fun updateContent(newContent: String) {
         _uiState.update {
-            it.copy(title = newTitle)
-        }
-    }
-
-    private fun updateDescription(newDescription: String) {
-        _uiState.update {
-            it.copy(description = newDescription)
+            it.copy(content = newContent)
         }
     }
 
     private fun saveTodo() {
-        if (uiState.value.title.sanitize().isEmpty() && uiState.value.description.sanitize().isEmpty()) {
+        val fields = listOf(
+            uiState.value.content
+        )
+
+        val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }
+
+        if (emptyIndex != -1) {
             _uiState.update {
-                it.copy(userMessage = R.string.empty_todo_message)
+                it.copy(
+                    focusIndex = emptyIndex,
+                    userMessage = R.string.empty_todo_message
+                )
             }
 
             return
@@ -82,8 +84,7 @@ class AddEditTodoViewModel @AssistedInject constructor(
 
     private fun createNewTodo() = viewModelScope.launch {
         createTodoUseCase(
-            name = uiState.value.title.sanitize(),
-            description = uiState.value.description.sanitize()
+            content = uiState.value.content.sanitize(),
         )
 
         _uiState.update {
@@ -105,8 +106,7 @@ class AddEditTodoViewModel @AssistedInject constructor(
         viewModelScope.launch {
             updateTodoUseCase(
                 todoId,
-                title = uiState.value.title.sanitize(),
-                description = uiState.value.description.sanitize(),
+                content = uiState.value.content.sanitize(),
             )
 
             _uiState.update {
@@ -151,8 +151,7 @@ class AddEditTodoViewModel @AssistedInject constructor(
                 if (todo != null) {
                     _uiState.update {
                         it.copy(
-                            title = todo.title,
-                            description = todo.description,
+                            content = todo.content,
                             isTodoCompleted = todo.isCompleted,
                             isLoading = false,
                             withDelete = true,
@@ -169,7 +168,9 @@ class AddEditTodoViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
+
         fun create(route: AddEditTodoRoute): AddEditTodoViewModel
+
     }
 
 }

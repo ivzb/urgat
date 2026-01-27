@@ -34,8 +34,7 @@ class DefaultSampleUseCase @Inject constructor(
 
         SampleData.SAMPLE_TODOS.forEach {
             createTodoUseCase(
-                it.title,
-                it.description,
+                it.content,
             )
         }
 

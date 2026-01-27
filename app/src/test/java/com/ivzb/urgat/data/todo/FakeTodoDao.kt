@@ -17,7 +17,7 @@ class FakeTodoDao : TodoDao {
 
     override fun observeAll(limit: Int, searchQuery: String): Flow<List<TodoEntity>> =
         _flow.map { list ->
-            list.filter { it.title.contains(searchQuery, ignoreCase = true) || it.description.contains(searchQuery, ignoreCase = true) }
+            list.filter { it.content.contains(searchQuery, ignoreCase = true) }
         }
 
     override fun stream(): Cursor = _cursor

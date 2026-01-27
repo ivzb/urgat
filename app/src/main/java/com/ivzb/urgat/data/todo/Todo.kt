@@ -2,8 +2,7 @@ package com.ivzb.urgat.data.todo
 
 data class Todo(
     val id: String,
-    val title: String,
-    val description: String,
+    val content: String,
     val isCompleted: Boolean,
     val isDeleted: Boolean,
     val createdAt: Long,
@@ -13,6 +12,6 @@ data class Todo(
         get() = !isCompleted && !isDeleted
 
     fun formatCsv(): String =
-        "\"$id\", \"$title\", \"$description\", $isCompleted, $createdAt"
+        "\"$id\", \"$content\", $isCompleted, $createdAt"
 
 }

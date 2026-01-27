@@ -50,8 +50,8 @@ class FakeCreateTodoUseCase : CreateTodoUseCase {
 
     var created: List<Any> = listOf()
 
-    override suspend fun invoke(name: String, description: String) {
-        created = listOf(name, description)
+    override suspend fun invoke(content: String) {
+        created = listOf(content)
     }
 }
 
@@ -59,8 +59,8 @@ class FakeUpdateTodoUseCase : UpdateTodoUseCase {
 
     var updated: List<Any> = listOf()
 
-    override suspend fun invoke(id: String, title: String, description: String) {
-        updated = listOf(id, title, description)
+    override suspend fun invoke(id: String, content: String) {
+        updated = listOf(id, content)
     }
 }
 

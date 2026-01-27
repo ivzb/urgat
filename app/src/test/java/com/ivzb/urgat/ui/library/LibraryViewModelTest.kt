@@ -84,7 +84,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeTodo = listOf(Todo("1", "Lunch", "", false, false, 1L))
+        val fakeTodo = listOf(Todo("1", "Lunch", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
 
         val fakeNotes = listOf(Note("1", "Note", false, 1L))
@@ -131,7 +131,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeTodo = listOf(Todo("2", "Coffee", "", false, false, 1L))
+        val fakeTodo = listOf(Todo("2", "Coffee", false, false, 1L))
         fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
         fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
@@ -146,7 +146,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `completeTodo calls completeUseCase`() = runTest {
-        val todo = Todo("2", "Coffee", "", false, false, 1L)
+        val todo = Todo("2", "Coffee", false, false, 1L)
 
         viewModel = createViewModel()
 
@@ -158,7 +158,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `activateTodo calls activateUseCase`() = runTest {
-        val todo = Todo("2", "Coffee", "", false, false, 1L)
+        val todo = Todo("2", "Coffee", false, false, 1L)
 
         viewModel = createViewModel()
 

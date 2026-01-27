@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 interface CreateTodoUseCase {
 
-    suspend operator fun invoke(name: String, description: String)
+    suspend operator fun invoke(content: String)
 
 }
 
@@ -13,8 +13,8 @@ class DefaultCreateTodoUseCase @Inject constructor(
     private val repository: TodoRepository
 ): CreateTodoUseCase {
 
-    override suspend operator fun invoke(name: String, description: String) {
-        repository.create(name, description)
+    override suspend operator fun invoke(content: String) {
+        repository.create(content)
     }
 
 }

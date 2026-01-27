@@ -26,8 +26,7 @@ data class CsvMapping(
 
         val TODOS_CSV_MAPPING = listOf(
             CsvMapping("id", "string"),
-            CsvMapping("title", "string"),
-            CsvMapping("description", "string"),
+            CsvMapping("content", "string"),
             CsvMapping("isCompleted", "boolean"),
             CsvMapping("createdAt", "long"),
         )
@@ -88,11 +87,10 @@ data class CsvMapping(
 
             return TodoEntity(
                 id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                title = split[1],
-                description = split[2],
-                isCompleted = split[3].toBoolean(),
+                content = split[1],
+                isCompleted = split[2].toBoolean(),
                 isDeleted = false,
-                createdAt = split[4].toLong(),
+                createdAt = split[3].toLong(),
             )
         }
 

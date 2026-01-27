@@ -20,13 +20,12 @@ class DefaultCreateTodoUseCaseTest {
 
     @Test
     fun `invoke should call repository create with correct parameters`() = runTest {
-        val title = "Todo"
-        val desc = "Desc"
+        val content = "Todo"
 
-        createUseCase(title, desc)
+        createUseCase(content)
 
         coVerify(exactly = 1) {
-            repository.create(title, desc)
+            repository.create(content)
         }
     }
 }

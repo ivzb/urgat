@@ -176,6 +176,7 @@ fun TodoItem(
                 .clickable { onTodoClick(todo) }
                 .padding(dimensionResource(id = R.dimen.list_item_padding))
         ) {
+
             Checkbox(
                 checked = todo.isCompleted,
                 onCheckedChange = onCheckedChange,
@@ -183,35 +184,17 @@ fun TodoItem(
                     .align(Alignment.Top)
             )
 
-            Column {
-                if (todo.title.isNotEmpty()) {
-                    Text(
-                        text = todo.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textDecoration = if (todo.isCompleted) {
-                            TextDecoration.LineThrough
-                        } else {
-                            null
-                        }
-                    )
+            Text(
+                text = todo.content,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 5,
+                overflow = TextOverflow.Ellipsis,
+                textDecoration = if (todo.isCompleted) {
+                    TextDecoration.LineThrough
+                } else {
+                    null
                 }
-
-                if (todo.description.isNotEmpty()) {
-                    Text(
-                        text = todo.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 5,
-                        overflow = TextOverflow.Ellipsis,
-                        textDecoration = if (todo.isCompleted) {
-                            TextDecoration.LineThrough
-                        } else {
-                            null
-                        }
-                    )
-                }
-            }
+            )
         }
     }
 }

@@ -44,8 +44,7 @@ class TodoDaoTest {
             assertEquals(todo, todoDao.getById(todo.id))
 
             val updated = todo.copy(
-                title = todo.title + " updated",
-                description = todo.description + " updated",
+                content = todo.content + " updated",
                 isCompleted = !todo.isCompleted,
             )
 

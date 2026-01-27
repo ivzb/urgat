@@ -16,27 +16,26 @@ object SampleData {
 
     val SAMPLE_TODOS =
         listOf(
-            listOf("Morning workout", "30 minutes of cardio and stretching", "true"),
-            listOf("Buy groceries", "Milk, eggs, bread, and fruits", "false"),
-            listOf("Read a book", "Finish reading 'Atomic Habits'", "false"),
-            listOf("Call plumber", "Fix leaking sink in the kitchen", "false"),
-            listOf("Plan weekend trip", "Decide on destination and book hotel", "false"),
-            listOf("Send work report", "Monthly sales report to manager", "true"),
-            listOf("Clean kitchen", "Wash dishes, wipe counters, sweep floor", "false"),
-            listOf("Update resume", "Add latest projects and experiences", "false"),
-            listOf("Meditation", "10 minutes of morning meditation", "true"),
-            listOf("Water plants", "Water all indoor and outdoor plants", "false"),
-            listOf("Prepare presentation", "Slides for Monday's team meeting", "false"),
-            listOf("Pay electricity bill", "Due by the end of the month", "true"),
-            listOf("Organize closet", "Sort clothes and donate unused items", "false"),
-            listOf("Write journal", "Reflect on today's achievements and challenges", "false"),
-            listOf("Grocery meal prep", "Cook meals for the next 3 days", "true")
+            listOf("Morning workout\n30 minutes of cardio and stretching", "true"),
+            listOf("Buy groceries\nMilk, eggs, bread, and fruits", "false"),
+            listOf("Read a book\nFinish reading 'Atomic Habits'", "false"),
+            listOf("Call plumber\nFix leaking sink in the kitchen", "false"),
+            listOf("Plan weekend trip\nDecide on destination and book hotel", "false"),
+            listOf("Send work report\nMonthly sales report to manager", "true"),
+            listOf("Clean kitchen\nWash dishes, wipe counters, sweep floor", "false"),
+            listOf("Update resume\nAdd latest projects and experiences", "false"),
+            listOf("Meditation\n10 minutes of morning meditation", "true"),
+            listOf("Water plants\nWater all indoor and outdoor plants", "false"),
+            listOf("Prepare presentation\nSlides for Monday's team meeting", "false"),
+            listOf("Pay electricity bill\nDue by the end of the month", "true"),
+            listOf("Organize closet\nSort clothes and donate unused items", "false"),
+            listOf("Write journal\nReflect on today's achievements and challenges", "false"),
+            listOf("Grocery meal prep\nCook meals for the next 3 days", "true")
         )
-            .mapIndexed { index, (title, description, isCompleted) ->
+            .mapIndexed { index, (content, isCompleted) ->
                 Todo(
                     id = "todo_$index",
-                    title = title,
-                    description = description,
+                    content = content,
                     isCompleted = isCompleted.toBoolean(),
                     isDeleted = false,
                     createdAt = System.currentTimeMillis(),

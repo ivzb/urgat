@@ -44,10 +44,10 @@ class ObserveTodosFilteringUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Todo("1", "title", "desc", isCompleted = false, false, 1L),
-                Todo("2", "title2", "desc2", isCompleted = true, false, 1L),
-                Todo("3", "title3", "desc3", isCompleted = false, false, 1L),
-                Todo("4", "title4", "desc4", isCompleted = true, false, 1L),
+                Todo("1", "title", isCompleted = false, false, 1L),
+                Todo("2", "title2", isCompleted = true, false, 1L),
+                Todo("3", "title3", isCompleted = false, false, 1L),
+                Todo("4", "title4", isCompleted = true, false, 1L),
             )
         )
 

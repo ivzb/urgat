@@ -16,7 +16,7 @@ interface TodoDao {
 
     @Query("" +
             "SELECT * FROM todo " +
-            "WHERE isDeleted = 0 AND title LIKE '%' || :searchQuery || '%' OR description LIKE '%' || :searchQuery || '%'" +
+            "WHERE isDeleted = 0 AND content LIKE '%' || :searchQuery || '%'" +
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
     )

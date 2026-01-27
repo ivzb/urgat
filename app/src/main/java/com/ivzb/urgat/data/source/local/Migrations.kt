@@ -85,6 +85,30 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
     }
 }
 
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE `todo_new` (
+                `id` TEXT NOT NULL, 
+                `content` TEXT NOT NULL, 
+                `isCompleted` INTEGER NOT NULL, 
+                `isDeleted` INTEGER NOT NULL, 
+                `createdAt` INTEGER NOT NULL, 
+                PRIMARY KEY(`id`)
+            )
+        """)
+
+        db.execSQL("""
+            INSERT INTO `todo_new` (`id`, `content`, `isCompleted`, `isDeleted`, `createdAt`)
+            SELECT `id`, `title` || CHAR(10) || `description`, `isCompleted`, `isDeleted`, `createdAt` FROM `todo`
+        """)
+
+        db.execSQL("DROP TABLE `todo`")
+
+        db.execSQL("ALTER TABLE `todo_new` RENAME TO `todo`")
+    }
+}
+
 val ALL_MIGRATIONS = arrayOf(
     MIGRATION_1_2,
     MIGRATION_2_3,
@@ -92,4 +116,5 @@ val ALL_MIGRATIONS = arrayOf(
     MIGRATION_4_5,
     MIGRATION_5_6,
     MIGRATION_6_7,
+    MIGRATION_7_8,
 )

@@ -54,8 +54,7 @@ class AddEditTodoViewModelTest {
         assertNull(getUseCase.calledWithId)
 
         val uiState = viewModel.uiState.value
-        assertEquals("", uiState.title)
-        assertEquals("", uiState.description)
+        assertEquals("", uiState.content)
         assertFalse(uiState.isLoading)
         assertNull(uiState.userMessage)
         assertFalse(uiState.shouldNavigateBack)
@@ -66,8 +65,7 @@ class AddEditTodoViewModelTest {
         val todoId = "123"
         val todo = Todo(
             id = todoId,
-            title = "Hello",
-            description = "World",
+            content = "Hello World",
             isCompleted = false,
             isDeleted = false,
             createdAt = 1L,
@@ -80,8 +78,7 @@ class AddEditTodoViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals("Hello", state.title)
-        assertEquals("World", state.description)
+        assertEquals("Hello World", state.content)
         assertFalse(state.isLoading)
         assertEquals("123", getUseCase.calledWithId)
         assertEquals(true, state.withDelete)
@@ -90,14 +87,8 @@ class AddEditTodoViewModelTest {
 
     @Test
     fun `updateTitle updates ui state`() = runTest {
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle("New Title"))
-        assertEquals("New Title", viewModel.uiState.value.title)
-    }
-
-    @Test
-    fun `updateDescription updates ui state`() = runTest {
-        viewModel.onIntent(AddEditTodoIntent.UpdateDescription("Desc"))
-        assertEquals("Desc", viewModel.uiState.value.description)
+        viewModel.onIntent(AddEditTodoIntent.UpdateContent("New Content"))
+        assertEquals("New Content", viewModel.uiState.value.content)
     }
 
     @Test
@@ -108,37 +99,32 @@ class AddEditTodoViewModelTest {
 
     @Test
     fun `saveTodo with spaces shows message`() = runTest {
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle(" "))
-        viewModel.onIntent(AddEditTodoIntent.UpdateDescription(" "))
+        viewModel.onIntent(AddEditTodoIntent.UpdateContent(" "))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
         assertEquals(R.string.empty_todo_message, viewModel.uiState.value.userMessage)
     }
 
     @Test
     fun `saveTodo creates new todo`() = runTest {
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle("Title"))
-        viewModel.onIntent(AddEditTodoIntent.UpdateDescription("Desc"))
+        viewModel.onIntent(AddEditTodoIntent.UpdateContent("Content"))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
 
         advanceUntilIdle()
 
-        val (title, description) = createUseCase.created
-        assertEquals("Title", title)
-        assertEquals("Desc", description)
+        val (content) = createUseCase.created
+        assertEquals("Content", content)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
     fun `saveTodo creates new todo trimmed`() = runTest {
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle(" Title "))
-        viewModel.onIntent(AddEditTodoIntent.UpdateDescription(" Desc "))
+        viewModel.onIntent(AddEditTodoIntent.UpdateContent(" Content "))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
 
         advanceUntilIdle()
 
-        val (title, description) = createUseCase.created
-        assertEquals("Title", title)
-        assertEquals("Desc", description)
+        val (content) = createUseCase.created
+        assertEquals("Content", content)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -147,8 +133,7 @@ class AddEditTodoViewModelTest {
         val todoId = "abc"
         val todo = Todo(
             id = todoId,
-            title = "Old",
-            description = "Desc",
+            content = "Old",
             isCompleted = false,
             isDeleted = false,
             createdAt = 1L,
@@ -160,22 +145,19 @@ class AddEditTodoViewModelTest {
         advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertEquals(todo.title, uiState.title)
-        assertEquals(todo.description, uiState.description)
+        assertEquals(todo.content, uiState.content)
         assertEquals(todo.isCompleted, uiState.isTodoCompleted)
         assertFalse(uiState.isLoading)
 
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle("Updated Title"))
-        viewModel.onIntent(AddEditTodoIntent.UpdateDescription("Updated Desc"))
+        viewModel.onIntent(AddEditTodoIntent.UpdateContent("Updated Content"))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
 
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
-        val (id, title, description) = updateUseCase.updated
+        val (id, content) = updateUseCase.updated
         assertEquals(todoId, id)
-        assertEquals("Updated Title", title)
-        assertEquals("Updated Desc", description)
+        assertEquals("Updated Content", content)
     }
 
     @Test
@@ -183,8 +165,7 @@ class AddEditTodoViewModelTest {
         val todoId = "abc"
         val todo = Todo(
             id = todoId,
-            title = "Old",
-            description = "Desc",
+            content = "Old",
             isCompleted = false,
             isDeleted = false,
             createdAt = 1L,
@@ -196,22 +177,19 @@ class AddEditTodoViewModelTest {
         advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertEquals(todo.title, uiState.title)
-        assertEquals(todo.description, uiState.description)
+        assertEquals(todo.content, uiState.content)
         assertEquals(todo.isCompleted, uiState.isTodoCompleted)
         assertFalse(uiState.isLoading)
 
-        viewModel.onIntent(AddEditTodoIntent.UpdateTitle(" Updated Title "))
-        viewModel.onIntent(AddEditTodoIntent.UpdateDescription(" Updated Desc "))
+        viewModel.onIntent(AddEditTodoIntent.UpdateContent(" Updated Content "))
         viewModel.onIntent(AddEditTodoIntent.SaveTodo)
 
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
-        val (id, title, description) = updateUseCase.updated
+        val (id, content) = updateUseCase.updated
         assertEquals(todoId, id)
-        assertEquals("Updated Title", title)
-        assertEquals("Updated Desc", description)
+        assertEquals("Updated Content", content)
     }
 
     @Test
