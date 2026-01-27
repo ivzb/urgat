@@ -3,7 +3,9 @@ package com.ivzb.urgat.ui.library
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.ui.components.FilteringUiInfo
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationUiState
+import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 
@@ -20,7 +22,10 @@ data class LibraryUiState(
     override val hasError: Boolean = false,
     override val isEmpty: Boolean = false,
 
+    override val pages: List<Page> = LIBRARY_PAGES,
+    override val initialPage: Int = 0,
+
     override val filteringUiInfo: FilteringUiInfo = LibraryFilteringUiInfo(),
 
     val uiEvent: LibraryUiEvent? = null,
-): NavigationUiState<LibraryFabActionId>
+): NavigationUiState<LibraryFabActionId>, PagerUiState

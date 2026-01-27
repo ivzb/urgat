@@ -20,7 +20,22 @@ class FinanceScreenshotTest: ScreenshotTest() {
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_FinanceScreen_sampleData() = screenshotTest(
+    fun screenshotTest_FinanceScreen_sampleData_expenses() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 0)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_investments() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_savings() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_budgets() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 3)
+
+    private fun screenshotTest_FinanceScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = FinanceUiState(
             expenses = SampleData.SAMPLE_EXPENSES.take(itemsLimit),
             expensesFilteringUiInfo = ExpensesFilteringUiInfo(
@@ -39,6 +54,7 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 currentFilteringLabel = R.string.recent_budgets,
             ),
             isLoading = false,
+            initialPage = initialPage,
             hasError = false,
         ),
     )

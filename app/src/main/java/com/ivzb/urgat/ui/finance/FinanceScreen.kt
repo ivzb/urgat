@@ -1,24 +1,15 @@
 package com.ivzb.urgat.ui.finance
 
-import android.content.res.Configuration
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +30,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.screens.NavigationScreen
+import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.expenses.ExpenseItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentItem
@@ -146,350 +138,91 @@ fun FinanceScreen(
         withTopAppBarActions = uiState.expenses.isNotEmpty() || uiState.investments.isNotEmpty(),
 
         content = {
-            FinanceContent(
-                expenses = uiState.expenses,
-                expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
-                onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
-                onSeeAllExpenses = onSeeAllExpenses,
-                onExpenseClick = onExpenseClick,
+            PagerScreen(
+                uiState = uiState,
+                content = { page, listState, onListStateChanged ->
 
-                investments = uiState.investments,
-                investmentsFilteringUiInfo = uiState.investmentsFilteringUiInfo,
-                onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
-                onSeeAllInvestments = onSeeAllInvestments,
-                onInvestmentClick = onInvestmentClick,
+                    LaunchedEffect(Unit) {
+                        onListStateChanged(listState)
+                    }
 
-                savings = uiState.savings,
-                savingsFilteringUiInfo = uiState.savingsFilteringUiInfo,
-                onAddSaving = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Saving)) },
-                onSeeAllSavings = onSeeAllSavings,
-                onSavingClick = onSavingClick,
+                    val screenName = stringResource(R.string.finance)
 
-                budgets = uiState.budgets,
-                budgetsFilteringUiInfo = uiState.budgetsFilteringUiInfo,
-                onAddBudget = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget)) },
-                onSeeAllBudgets = onSeeAllBudgets,
-                onBudgetClick = onBudgetClick,
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .semantics { contentDescription = screenName },
+                        contentPadding = PaddingValues(
+                            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                            vertical = dimensionResource(R.dimen.content_padding_vertical),
+                        ),
+                        state = listState,
+                    ) {
+
+                        when (page) {
+                            FinancePage.Expenses -> itemExpenses(
+                                expenses = uiState.expenses,
+                                expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
+                                onAddExpense = {
+                                    onIntent(
+                                        FinanceIntent.FabActionClick(
+                                            FinanceFabActionId.Expense
+                                        )
+                                    )
+                                },
+                                onSeeAllExpenses = onSeeAllExpenses,
+                                onExpenseClick = onExpenseClick,
+                            )
+
+                            FinancePage.Investments -> itemInvestments(
+                                investments = uiState.investments,
+                                investmentsFilteringUiInfo = uiState.investmentsFilteringUiInfo,
+                                onAddInvestment = {
+                                    onIntent(
+                                        FinanceIntent.FabActionClick(
+                                            FinanceFabActionId.Investment
+                                        )
+                                    )
+                                },
+                                onSeeAllInvestments = onSeeAllInvestments,
+                                onInvestmentClick = onInvestmentClick,
+                            )
+
+                            FinancePage.Savings -> itemSavings(
+                                savings = uiState.savings,
+                                savingsFilteringUiInfo = uiState.savingsFilteringUiInfo,
+                                onAddSaving = {
+                                    onIntent(
+                                        FinanceIntent.FabActionClick(
+                                            FinanceFabActionId.Saving
+                                        )
+                                    )
+                                },
+                                onSeeAllSavings = onSeeAllSavings,
+                                onSavingClick = onSavingClick,
+                            )
+
+                            FinancePage.Budgets -> itemBudgets(
+                                budgets = uiState.budgets,
+                                budgetsFilteringUiInfo = uiState.budgetsFilteringUiInfo,
+                                onAddBudget = {
+                                    onIntent(
+                                        FinanceIntent.FabActionClick(
+                                            FinanceFabActionId.Budget
+                                        )
+                                    )
+                                },
+                                onSeeAllBudgets = onSeeAllBudgets,
+                                onBudgetClick = onBudgetClick,
+                            )
+                        }
+                    }
+                }
             )
         },
 
         modifier = modifier
     )
-}
-
-@Composable
-private fun FinanceContent(
-    expenses: List<Expense>,
-    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
-    onAddExpense: () -> Unit,
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-
-    investments: List<Investment>,
-    investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
-    onAddInvestment: () -> Unit,
-    onSeeAllInvestments: () -> Unit,
-    onInvestmentClick: (Investment) -> Unit,
-
-    savings: List<Saving>,
-    savingsFilteringUiInfo: SavingsFilteringUiInfo,
-    onAddSaving: () -> Unit,
-    onSeeAllSavings: () -> Unit,
-    onSavingClick: (Saving) -> Unit,
-
-    budgets: List<Budget>,
-    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
-    onAddBudget: () -> Unit,
-    onSeeAllBudgets: () -> Unit,
-    onBudgetClick: (Budget) -> Unit,
-
-    modifier: Modifier = Modifier
-) {
-
-    val configuration = LocalConfiguration.current
-
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        FinanceContentLandscape(
-            expenses = expenses,
-            expensesFilteringUiInfo = expensesFilteringUiInfo,
-            onAddExpense = onAddExpense,
-            onSeeAllExpenses = onSeeAllExpenses,
-            onExpenseClick = onExpenseClick,
-
-            investments = investments,
-            investmentsFilteringUiInfo = investmentsFilteringUiInfo,
-            onAddInvestment = onAddInvestment,
-            onSeeAllInvestments = onSeeAllInvestments,
-            onInvestmentClick = onInvestmentClick,
-
-            savings = savings,
-            savingsFilteringUiInfo = savingsFilteringUiInfo,
-            onAddSaving = onAddSaving,
-            onSeeAllSavings = onSeeAllSavings,
-            onSavingClick = onSavingClick,
-
-            budgets = budgets,
-            budgetsFilteringUiInfo = budgetsFilteringUiInfo,
-            onAddBudget = onAddBudget,
-            onSeeAllBudgets = onSeeAllBudgets,
-            onBudgetClick = onBudgetClick,
-
-            modifier = modifier,
-        )
-    } else {
-        FinanceContentPortrait(
-            expenses = expenses,
-            expensesFilteringUiInfo = expensesFilteringUiInfo,
-            onAddExpense = onAddExpense,
-            onSeeAllExpenses = onSeeAllExpenses,
-            onExpenseClick = onExpenseClick,
-
-            investments = investments,
-            investmentsFilteringUiInfo = investmentsFilteringUiInfo,
-            onAddInvestment = onAddInvestment,
-            onSeeAllInvestments = onSeeAllInvestments,
-            onInvestmentClick = onInvestmentClick,
-
-            savings = savings,
-            savingsFilteringUiInfo = savingsFilteringUiInfo,
-            onAddSaving = onAddSaving,
-            onSeeAllSavings = onSeeAllSavings,
-            onSavingClick = onSavingClick,
-
-            budgets = budgets,
-            budgetsFilteringUiInfo = budgetsFilteringUiInfo,
-            onAddBudget = onAddBudget,
-            onSeeAllBudgets = onSeeAllBudgets,
-            onBudgetClick = onBudgetClick,
-
-            modifier = modifier,
-        )
-    }
-}
-
-@Composable
-private fun FinanceContentPortrait(
-    expenses: List<Expense>,
-    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
-    onAddExpense: () -> Unit,
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-
-    investments: List<Investment>,
-    investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
-    onAddInvestment: () -> Unit,
-    onSeeAllInvestments: () -> Unit,
-    onInvestmentClick: (Investment) -> Unit,
-
-    savings: List<Saving>,
-    savingsFilteringUiInfo: SavingsFilteringUiInfo,
-    onAddSaving: () -> Unit,
-    onSeeAllSavings: () -> Unit,
-    onSavingClick: (Saving) -> Unit,
-
-    budgets: List<Budget>,
-    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
-    onAddBudget: () -> Unit,
-    onSeeAllBudgets: () -> Unit,
-    onBudgetClick: (Budget) -> Unit,
-
-    modifier: Modifier = Modifier
-) {
-    val screenName = stringResource(R.string.finance)
-
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .semantics { contentDescription = screenName },
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-            vertical = dimensionResource(R.dimen.content_padding_vertical),
-        ),
-    ) {
-
-        itemExpenses(
-            expenses = expenses,
-            expensesFilteringUiInfo = expensesFilteringUiInfo,
-            onAddExpense = onAddExpense,
-            onSeeAllExpenses = onSeeAllExpenses,
-            onExpenseClick = onExpenseClick,
-        )
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        itemInvestments(
-            investments = investments,
-            investmentsFilteringUiInfo = investmentsFilteringUiInfo,
-            onAddInvestment = onAddInvestment,
-            onSeeAllInvestments = onSeeAllInvestments,
-            onInvestmentClick = onInvestmentClick,
-        )
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        itemSavings(
-            savings = savings,
-            savingsFilteringUiInfo = savingsFilteringUiInfo,
-            onAddSaving = onAddSaving,
-            onSeeAllSavings = onSeeAllSavings,
-            onSavingClick = onSavingClick,
-        )
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        itemBudgets(
-            budgets = budgets,
-            budgetsFilteringUiInfo = budgetsFilteringUiInfo,
-            onAddBudget = onAddBudget,
-            onSeeAllBudgets = onSeeAllBudgets,
-            onBudgetClick = onBudgetClick,
-        )
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-    }
-}
-
-@Composable
-private fun FinanceContentLandscape(
-    expenses: List<Expense>,
-    expensesFilteringUiInfo: ExpensesFilteringUiInfo,
-    onAddExpense: () -> Unit,
-    onSeeAllExpenses: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-
-    investments: List<Investment>,
-    investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
-    onAddInvestment: () -> Unit,
-    onSeeAllInvestments: () -> Unit,
-    onInvestmentClick: (Investment) -> Unit,
-
-    savings: List<Saving>,
-    savingsFilteringUiInfo: SavingsFilteringUiInfo,
-    onAddSaving: () -> Unit,
-    onSeeAllSavings: () -> Unit,
-    onSavingClick: (Saving) -> Unit,
-
-    budgets: List<Budget>,
-    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
-    onAddBudget: () -> Unit,
-    onSeeAllBudgets: () -> Unit,
-    onBudgetClick: (Budget) -> Unit,
-
-    modifier: Modifier = Modifier
-) {
-    val screenName = stringResource(R.string.finance)
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal)),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
-    ) {
-
-        LazyColumn(
-            modifier = modifier
-                .weight(1f)
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            ),
-        ) {
-
-            itemExpenses(
-                expenses = expenses,
-                expensesFilteringUiInfo = expensesFilteringUiInfo,
-                onAddExpense = onAddExpense,
-                onSeeAllExpenses = onSeeAllExpenses,
-                onExpenseClick = onExpenseClick
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-            itemSavings(
-                savings = savings,
-                savingsFilteringUiInfo = savingsFilteringUiInfo,
-                onAddSaving = onAddSaving,
-                onSeeAllSavings = onSeeAllSavings,
-                onSavingClick = onSavingClick,
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-        }
-
-        LazyColumn(
-            modifier = modifier
-                .weight(1f)
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            ),
-        ) {
-
-            itemInvestments(
-                investments = investments,
-                investmentsFilteringUiInfo = investmentsFilteringUiInfo,
-                onAddInvestment = onAddInvestment,
-                onSeeAllInvestments = onSeeAllInvestments,
-                onInvestmentClick = onInvestmentClick
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-
-            itemBudgets(
-                budgets = budgets,
-                budgetsFilteringUiInfo = budgetsFilteringUiInfo,
-                onAddBudget = onAddBudget,
-                onSeeAllBudgets = onSeeAllBudgets,
-                onBudgetClick = onBudgetClick,
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-        }
-    }
 }
 
 private fun LazyListScope.itemExpenses(
@@ -524,6 +257,7 @@ private fun LazyListScope.itemExpenses(
                 items = expenses,
                 key = { expense -> expense.id },
             ) { expense ->
+
                 ExpenseItem(
                     expense = expense,
                     onExpenseClick = onExpenseClick
@@ -659,7 +393,7 @@ private fun LazyListScope.itemBudgets(
 
 @AllDevicesPreview
 @Composable
-fun FinanceScreenPreview() {
+private fun FinanceScreenPreview(initialPage: Int = 0) {
     UrgatTheme {
         FinanceScreen(
             uiState = FinanceUiState(
@@ -675,8 +409,13 @@ fun FinanceScreenPreview() {
                 savingsFilteringUiInfo = SavingsFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_savings,
                 ),
+                budgets = SampleData.SAMPLE_BUDGETS.take(5),
+                budgetsFilteringUiInfo = BudgetsFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_budgets,
+                ),
                 isLoading = false,
                 hasError = false,
+                initialPage = initialPage,
                 filteringUiInfo = FinanceFilteringUiInfo()
             ),
             onIntent = {},
@@ -692,6 +431,24 @@ fun FinanceScreenPreview() {
             modifier = Modifier
         )
     }
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenInvestmentsPreview() {
+    FinanceScreenPreview(initialPage = 1)
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenSavingsPreview() {
+    FinanceScreenPreview(initialPage = 2)
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenBudgetsPreview() {
+    FinanceScreenPreview(initialPage = 3)
 }
 
 @AllDevicesPreview

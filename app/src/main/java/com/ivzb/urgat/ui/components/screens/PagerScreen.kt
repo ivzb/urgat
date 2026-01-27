@@ -79,19 +79,42 @@ fun PagerScreen(
 }
 
 @Composable
-private fun PagerContent(
+fun PagerScreen(
+    uiState: PagerUiState,
+    content: PagerContent,
+    modifier: Modifier = Modifier,
+) {
+    val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
+    val listStates = remember { List(uiState.pages.size) { LazyListState() } }
+    val currentListState = remember { mutableStateOf(listStates[0]) }
+
+    PagerContent(
+        pages = uiState.pages,
+        pagerState = pagerState,
+        listStates = listStates,
+        onListStateChanged = { currentListState.value = it },
+        content = content,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun PagerContent(
     pages: List<Page>,
     pagerState: PagerState,
     listStates: List<LazyListState>,
     onListStateChanged: (LazyListState) -> Unit,
     content: PagerContent,
+    modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val isHorizontalScrollEnabled by remember {
         derivedStateOf { pages[pagerState.currentPage].isHorizontalScrollEnabled }
     }
 
-    Column {
+    Column (
+        modifier = modifier,
+    ) {
         PrimaryScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
             edgePadding = 0.dp

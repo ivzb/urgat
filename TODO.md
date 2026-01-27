@@ -26,6 +26,7 @@
 - adjust SAMPLE_DATA budgets, expenses, investments and savings data to make sense
 - rethink which screens to be published to playstore screenshots - maybe focus more on finance tab
 - refactor duplicated tests and extract shared common tests into each Test class (see DefaultObserveBudgetUseCaseTest.kt)
+- consider not showing multiple fab add button actions - but directly open the one for currently selected page
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -38,6 +39,7 @@
 - expenses chart doesn't update when searching - probably investments too
 - expenses/investments crashes when there are no items and click group/chart page
 - budgets/investments/expenses/notes/todos/weights screens should have empty state when you delete all items and you're still there
+- fix library/finance screen - there is not enough padding above the empty state card
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
@@ -49,7 +51,7 @@
 - consider: read current prices on app start for all owned assets and calculate current market price?
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 - budget remaining calculation is inaccurate because it sums different investment currencies
-- consider redesign of the Finance tab (maybe a pager?)
+- consider redesign of the Library tab with a page like Finance tab
 
 ## Features
 - consider adding version control (git) support in the app - maybe something like export -> push to git repo

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="items_limit">8</integer>
+    <integer name="items_limit">9</integer>
 </resources>

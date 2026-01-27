@@ -6,7 +6,9 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.FilteringUiInfo
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationUiState
+import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
@@ -30,7 +32,10 @@ data class FinanceUiState(
     override val hasError: Boolean = false,
     override val isEmpty: Boolean = false,
 
+    override val pages: List<Page> = FINANCE_PAGES,
+    override val initialPage: Int = 0,
+
     override val filteringUiInfo: FilteringUiInfo = FinanceFilteringUiInfo(),
 
     val uiEvent: FinanceUiEvent? = null,
-): NavigationUiState<FinanceFabActionId>
+): NavigationUiState<FinanceFabActionId>, PagerUiState

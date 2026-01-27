@@ -18,7 +18,15 @@ class LibraryScreenshotTest: ScreenshotTest() {
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_LibraryScreen_sampleData() = screenshotTest(
+    fun screenshotTest_LibraryScreen_sampleData_todos() =
+        screenshotTest_LibraryScreen_sampleData(initialPage = 0)
+
+    @Test
+    @Category(PlayStoreScreenshotTest::class)
+    fun screenshotTest_LibraryScreen_sampleData_notes() =
+        screenshotTest_LibraryScreen_sampleData(initialPage = 1)
+
+    private fun screenshotTest_LibraryScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = LibraryUiState(
             todos = SampleData.SAMPLE_TODOS.take(itemsLimit),
             todosFilteringUiInfo = TodosFilteringUiInfo(
@@ -28,6 +36,7 @@ class LibraryScreenshotTest: ScreenshotTest() {
             notesFilteringUiInfo = NotesFilteringUiInfo(
                 currentFilteringLabel = R.string.recent_notes,
             ),
+            initialPage = initialPage,
             isLoading = false,
             hasError = false,
         ),

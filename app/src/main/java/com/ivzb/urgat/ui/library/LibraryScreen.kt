@@ -1,24 +1,15 @@
 package com.ivzb.urgat.ui.library
 
-import android.content.res.Configuration
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -36,11 +27,12 @@ import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.components.screens.NavigationScreen
+import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodoItem
+import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 
 @Composable
 fun LibraryScreen(
@@ -124,225 +116,52 @@ fun LibraryScreen(
         },
 
         content = {
-            LibraryContent(
-                todos = uiState.todos,
-                todosFilteringUiInfo = uiState.todosFilteringUiInfo,
-                onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
-                onSeeAllTodos = onSeeAllTodos,
-                onTodoClick = onTodoClick,
-                onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
+            PagerScreen(
+                uiState = uiState,
+                content = { page, listState, onListStateChanged ->
 
-                notes = uiState.notes,
-                notesFilteringUiInfo = uiState.notesFilteringUiInfo,
-                onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
-                onSeeAllNotes = onSeeAllNotes,
-                onNoteClick = onNoteClick,
+                    LaunchedEffect(Unit) {
+                        onListStateChanged(listState)
+                    }
+
+                    val screenName = stringResource(R.string.finance)
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .semantics { contentDescription = screenName },
+                        contentPadding = PaddingValues(
+                            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                            vertical = dimensionResource(R.dimen.content_padding_vertical),
+                        ),
+                        state = listState,
+                    ) {
+
+                        when (page) {
+                            LibraryPage.Todos -> itemTodo(
+                                todos = uiState.todos,
+                                todosFilteringUiInfo = uiState.todosFilteringUiInfo,
+                                onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
+                                onSeeAllTodos = onSeeAllTodos,
+                                onTodoClick = onTodoClick,
+                                onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
+                            )
+
+                            LibraryPage.Notes -> itemNotes(
+                                notes = uiState.notes,
+                                notesFilteringUiInfo = uiState.notesFilteringUiInfo,
+                                onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
+                                onSeeAllNotes = onSeeAllNotes,
+                                onNoteClick = onNoteClick
+                            )
+                        }
+                    }
+                }
             )
         },
 
         modifier = modifier
     )
-}
-
-@Composable
-private fun LibraryContent(
-    todos: List<Todo>,
-    todosFilteringUiInfo: TodosFilteringUiInfo,
-    onAddTodo: () -> Unit,
-    onSeeAllTodos: () -> Unit,
-    onTodoClick: (Todo) -> Unit,
-    onTodoCheckedChange: (Todo, Boolean) -> Unit,
-
-    notes: List<Note>,
-    notesFilteringUiInfo: NotesFilteringUiInfo,
-    onAddNote: () -> Unit,
-    onSeeAllNotes: () -> Unit,
-    onNoteClick: (Note) -> Unit,
-
-    modifier: Modifier = Modifier
-) {
-
-    val configuration = LocalConfiguration.current
-
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        LibraryContentLandscape(
-            todos = todos,
-            todosFilteringUiInfo = todosFilteringUiInfo,
-            onAddTodo = onAddTodo,
-            onSeeAllTodos = onSeeAllTodos,
-            onTodoClick = onTodoClick,
-            onTodoCheckedChange = onTodoCheckedChange,
-
-            notes = notes,
-            notesFilteringUiInfo = notesFilteringUiInfo,
-            onAddNote = onAddNote,
-            onSeeAllNotes = onSeeAllNotes,
-            onNoteClick = onNoteClick,
-
-            modifier = modifier,
-        )
-    } else {
-        LibraryContentPortrait(
-            todos = todos,
-            todosFilteringUiInfo = todosFilteringUiInfo,
-            onAddTodo = onAddTodo,
-            onSeeAllTodos = onSeeAllTodos,
-            onTodoClick = onTodoClick,
-            onTodoCheckedChange = onTodoCheckedChange,
-
-            notes = notes,
-            notesFilteringUiInfo = notesFilteringUiInfo,
-            onAddNote = onAddNote,
-            onSeeAllNotes = onSeeAllNotes,
-            onNoteClick = onNoteClick,
-
-            modifier = modifier,
-        )
-    }
-}
-
-@Composable
-private fun LibraryContentPortrait(
-    todos: List<Todo>,
-    todosFilteringUiInfo: TodosFilteringUiInfo,
-    onAddTodo: () -> Unit,
-    onSeeAllTodos: () -> Unit,
-    onTodoClick: (Todo) -> Unit,
-    onTodoCheckedChange: (Todo, Boolean) -> Unit,
-
-    notes: List<Note>,
-    notesFilteringUiInfo: NotesFilteringUiInfo,
-    onAddNote: () -> Unit,
-    onSeeAllNotes: () -> Unit,
-    onNoteClick: (Note) -> Unit,
-
-    modifier: Modifier = Modifier
-) {
-    val screenName = stringResource(R.string.library)
-
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .semantics { contentDescription = screenName },
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-            vertical = dimensionResource(R.dimen.content_padding_vertical),
-        ),
-    ) {
-
-        itemTodo(
-            todos = todos,
-            todosFilteringUiInfo = todosFilteringUiInfo,
-            onAddTodo = onAddTodo,
-            onSeeAllTodos = onSeeAllTodos,
-            onTodoClick = onTodoClick,
-            onTodoCheckedChange = onTodoCheckedChange,
-        )
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        itemNotes(
-            notes = notes,
-            notesFilteringUiInfo = notesFilteringUiInfo,
-            onAddNote = onAddNote,
-            onSeeAllNotes = onSeeAllNotes,
-            onNoteClick = onNoteClick
-        )
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-    }
-}
-
-@Composable
-private fun LibraryContentLandscape(
-    todos: List<Todo>,
-    todosFilteringUiInfo: TodosFilteringUiInfo,
-    onAddTodo: () -> Unit,
-    onSeeAllTodos: () -> Unit,
-    onTodoClick: (Todo) -> Unit,
-    onTodoCheckedChange: (Todo, Boolean) -> Unit,
-
-    notes: List<Note>,
-    notesFilteringUiInfo: NotesFilteringUiInfo,
-    onAddNote: () -> Unit,
-    onSeeAllNotes: () -> Unit,
-    onNoteClick: (Note) -> Unit,
-
-    modifier: Modifier = Modifier
-) {
-    val screenName = stringResource(R.string.library)
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal)),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
-    ) {
-
-        LazyColumn(
-            modifier = modifier
-                .weight(1f)
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            ),
-        ) {
-
-            itemTodo(
-                todos = todos,
-                todosFilteringUiInfo = todosFilteringUiInfo,
-                onAddTodo = onAddTodo,
-                onSeeAllTodos = onSeeAllTodos,
-                onTodoClick = onTodoClick,
-                onTodoCheckedChange = onTodoCheckedChange,
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-        }
-
-        LazyColumn(
-            modifier = modifier
-                .weight(1f)
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            ),
-        ) {
-
-            itemNotes(
-                notes = notes,
-                notesFilteringUiInfo = notesFilteringUiInfo,
-                onAddNote = onAddNote,
-                onSeeAllNotes = onSeeAllNotes,
-                onNoteClick = onNoteClick
-            )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
-        }
-    }
 }
 
 private fun LazyListScope.itemTodo(
@@ -431,7 +250,7 @@ private fun LazyListScope.itemNotes(
 
 @AllDevicesPreview
 @Composable
-fun LibraryScreenPreview() {
+fun LibraryScreenPreview(initialPage: Int = 0) {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
@@ -444,6 +263,7 @@ fun LibraryScreenPreview() {
                     currentFilteringLabel = R.string.recent_notes,
                 ),                isLoading = false,
                 hasError = false,
+                initialPage = initialPage,
                 filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
@@ -455,6 +275,12 @@ fun LibraryScreenPreview() {
             modifier = Modifier
         )
     }
+}
+
+@AllDevicesPreview
+@Composable
+fun LibraryScreenNotesPreview() {
+    LibraryScreenPreview(initialPage = 0)
 }
 
 @AllDevicesPreview

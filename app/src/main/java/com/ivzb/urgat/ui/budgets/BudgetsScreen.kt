@@ -183,7 +183,6 @@ private fun TransactionsPage(
     }
 }
 
-
 @Composable
 private fun GroupedBudgetsPage(
     monthlyBudgets: List<GroupedBudget>,
