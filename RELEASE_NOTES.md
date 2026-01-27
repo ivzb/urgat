@@ -1,3 +1,8 @@
+## Release notes 26.01.27
+
+Improved:
+- Simplified todos by combining the title and content into a single field.
+
 ## Release notes 26.01.26
 
 Improved:
