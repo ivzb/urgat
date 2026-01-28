@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.saving
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -101,7 +102,7 @@ class DefaultSavingsRepositoryTest {
         repository.create("A", BigDecimal("1.0"), 0L)
         repository.create("B", BigDecimal("2.0"), 0L)
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.name })
@@ -113,7 +114,7 @@ class DefaultSavingsRepositoryTest {
         repository.create("Lunch", BigDecimal("8.0"), 0L)
         repository.create("Bus", BigDecimal("3.0"), 0L)
 
-        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "Lu").first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(1, result.size)

@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.weight
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
 import com.ivzb.urgat.ui.weights.WeightsSortType
@@ -32,6 +33,7 @@ class ObserveWeightsUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("weight")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(WeightsSortType.BY_DATE)
         val limitFlow = flowOf(limit)
@@ -43,9 +45,9 @@ class ObserveWeightsUseCaseTest {
             )
         )
 
-        every { repository.observe(limit, "weight") } returns repositoryStream
+        every { repository.observe(limit, NO_DATE_RANGE, "weight") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -65,6 +67,7 @@ class ObserveWeightsUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by min`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("weight")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(WeightsSortType.BY_MIN)
         val limitFlow = flowOf(limit)
@@ -76,9 +79,9 @@ class ObserveWeightsUseCaseTest {
             )
         )
 
-        every { repository.observe(limit, "weight") } returns repositoryStream
+        every { repository.observe(limit, NO_DATE_RANGE, "weight") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -98,6 +101,7 @@ class ObserveWeightsUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by max`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("weight")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(WeightsSortType.BY_MAX)
         val limitFlow = flowOf(limit)
@@ -109,9 +113,9 @@ class ObserveWeightsUseCaseTest {
             )
         )
 
-        every { repository.observe(limit, "weight") } returns repositoryStream
+        every { repository.observe(limit, NO_DATE_RANGE, "weight") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -131,12 +135,13 @@ class ObserveWeightsUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { repository.observe(limit) } throws RuntimeException("Test error")
+        every { repository.observe(limit, NO_DATE_RANGE) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

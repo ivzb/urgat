@@ -13,11 +13,11 @@ interface BudgetDao {
 
     @Query("" +
             "SELECT * FROM budgets " +
-            "WHERE isDeleted = 0 " +
+            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC " +
             "LIMIT :limit"
     )
-    fun observeAll(limit: Int): Flow<List<BudgetEntity>>
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<BudgetEntity>>
 
     @Query("SELECT * FROM budgets WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor

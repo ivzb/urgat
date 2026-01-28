@@ -27,6 +27,7 @@ class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
@@ -52,6 +53,7 @@ class FakeObserveGroupedInvestmentsMonthlyUseCase : ObserveGroupedInvestmentsMon
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
@@ -77,6 +79,7 @@ class FakeObserveInvestmentNetWorthUseCase : ObserveInvestmentNetWorthUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
@@ -102,6 +105,7 @@ class FakeObserveInvestmentCategoriesUseCase : ObserveInvestmentCategoriesUseCas
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
@@ -127,6 +131,7 @@ class FakeObserveInvestmentAssetsUseCase : ObserveInvestmentAssetsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?
@@ -152,6 +157,7 @@ class FakeObserveGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestm
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?

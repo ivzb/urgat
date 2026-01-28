@@ -24,6 +24,7 @@ class FakeObserveSavingsUseCase : ObserveSavingsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?
@@ -49,6 +50,7 @@ class FakeObserveGroupedSavingsMonthlyUseCase : ObserveGroupedSavingsMonthlyUseC
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?
@@ -74,6 +76,7 @@ class FakeObserveGroupedSavingCategoriesMonthlyUseCase: ObserveGroupedSavingCate
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?
@@ -99,6 +102,7 @@ class FakeObserveGroupedSavingCategoriesYearlyUseCase: ObserveGroupedSavingCateg
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?
@@ -124,6 +128,7 @@ class FakeObserveGroupedSavingCategoriesAllTimeUseCase: ObserveGroupedSavingCate
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?

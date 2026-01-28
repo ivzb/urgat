@@ -12,12 +12,12 @@ class FakeTodoDao : TodoDao {
     private val _flow = MutableStateFlow<List<TodoEntity>>(emptyList())
     private var _cursor = MatrixCursor(arrayOf())
 
-    override fun observeAll(limit: Int): Flow<List<TodoEntity>> =
-        _flow.map { it.take(limit) }
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<TodoEntity>> =
+        _flow.map { it.filter { it.createdAt in dateStart..dateEnd }.take(limit) }
 
-    override fun observeAll(limit: Int, searchQuery: String): Flow<List<TodoEntity>> =
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>> =
         _flow.map { list ->
-            list.filter { it.content.contains(searchQuery, ignoreCase = true) }
+            list.filter { it.createdAt in dateStart..dateEnd && it.content.contains(searchQuery, ignoreCase = true) }
         }
 
     override fun stream(): Cursor = _cursor

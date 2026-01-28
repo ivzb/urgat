@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.budget
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -123,7 +124,7 @@ class DefaultBudgetsRepositoryTest {
         repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), 1L)
         repository.create(6000.toBigDecimal(), 10000.toBigDecimal(), 8000.toBigDecimal(), 2L)
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("6500".toBigDecimal(), "6000".toBigDecimal()), result.map { it.income })
@@ -134,7 +135,7 @@ class DefaultBudgetsRepositoryTest {
         repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), 1L)
         repository.create(6000.toBigDecimal(), 10000.toBigDecimal(), 8000.toBigDecimal(), 2L)
 
-        val result = repository.observe(limit = 10, searchQuery = "search is not supported").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "search is not supported").first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("6500".toBigDecimal(), "6000".toBigDecimal()), result.map { it.income })

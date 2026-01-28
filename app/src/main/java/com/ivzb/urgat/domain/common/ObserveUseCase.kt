@@ -19,11 +19,12 @@ class ObserveUseCase<T, FilterType, SortType>(
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<FilterType>? = null,
         sortTypeFlow: Flow<SortType>? = null,
         limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<T>>> =
-        invokeFlow(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+        invokeFlow(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
             .map<List<T>, Async<List<T>>> { Async.Success(it) }
             .catch { e ->
                 // todo: use error tracker instead

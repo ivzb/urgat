@@ -2,6 +2,8 @@ package com.ivzb.urgat.ui.finance
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.BudgetCategory
+import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.resources.ResourcesProvider
@@ -10,6 +12,9 @@ import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
 import com.ivzb.urgat.domain.saving.FakeObserveSavingsUseCase
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.domain.budget.FakeObserveDashboardBudgetUseCase
+import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
+import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -35,6 +40,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class FinanceViewModelTest {
 
+    private lateinit var fakeObserveDashboardBudgetUseCase: FakeObserveDashboardBudgetUseCase
     private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
     private lateinit var fakeObserveInvestmentsUseCase: FakeObserveInvestmentsUseCase
     private lateinit var fakeObserveSavingsUseCase: FakeObserveSavingsUseCase
@@ -49,6 +55,7 @@ class FinanceViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
+        fakeObserveDashboardBudgetUseCase = FakeObserveDashboardBudgetUseCase()
         fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
         fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
         fakeObserveSavingsUseCase = FakeObserveSavingsUseCase()
@@ -84,6 +91,21 @@ class FinanceViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
+        fakeObserveDashboardBudgetUseCase.emit(Async.Success(GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "",
+                total = 5000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory("", "", 5000.toBigDecimal()),
+                ),
+            ),
+            totalIncome = 5000.toBigDecimal(),
+            totalExpenses = 2600.toBigDecimal(),
+            totalInvestments = 1300.toBigDecimal(),
+            totalInvestmentsFormatted = "1300 EUR",
+            totalSavings = 100.toBigDecimal(),
+        )))
+
         val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
 
@@ -117,6 +139,7 @@ class FinanceViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
+        fakeObserveDashboardBudgetUseCase.emit(Async.Error)
         fakeObserveExpensesUseCase.emit(Async.Error)
 
         val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
@@ -146,6 +169,7 @@ class FinanceViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
+        fakeObserveDashboardBudgetUseCase.emit(Async.Success(null))
         fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
         fakeObserveSavingsUseCase.emit(Async.Success(listOf()))
@@ -173,6 +197,7 @@ class FinanceViewModelTest {
     }
 
     private fun `fab action click emits event`(fabActionId: FinanceFabActionId, expectedEvent: FinanceUiEvent) = runTest {
+        fakeObserveDashboardBudgetUseCase.emit(Async.Success(null))
         fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
         fakeObserveSavingsUseCase.emit(Async.Success(listOf()))
@@ -195,6 +220,7 @@ class FinanceViewModelTest {
 
 
     private fun createViewModel() = FinanceViewModel(
+        fakeObserveDashboardBudgetUseCase,
         fakeObserveExpensesUseCase,
         fakeObserveInvestmentsUseCase,
         fakeObserveSavingsUseCase,

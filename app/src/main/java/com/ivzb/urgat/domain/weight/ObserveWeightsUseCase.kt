@@ -12,6 +12,7 @@ interface ObserveWeightsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>? = null,
         sortTypeFlow: Flow<WeightsSortType>? = null,
         limitFlow: Flow<Int>? = null,
@@ -30,9 +31,10 @@ class DefaultObserveWeightsUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<WeightsSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<Weight>>> = observeUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<List<Weight>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

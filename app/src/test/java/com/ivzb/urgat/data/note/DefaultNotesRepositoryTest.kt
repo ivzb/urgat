@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.note
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -89,7 +90,7 @@ class DefaultNotesRepositoryTest {
         repository.create("A")
         repository.create("B")
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.content })
@@ -101,7 +102,7 @@ class DefaultNotesRepositoryTest {
         repository.create("Lunch")
         repository.create("Bus")
 
-        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "Lu").first()
 
         assertEquals(1, result.size)
         assertEquals("Lunch", result.first().content)

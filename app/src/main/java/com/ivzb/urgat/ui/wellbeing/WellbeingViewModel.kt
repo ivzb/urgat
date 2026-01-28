@@ -26,7 +26,7 @@ class WellbeingViewModel @Inject constructor(
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
     val uiState: StateFlow<WellbeingUiState> = combineUiState(
-        observeWeightsUseCase(searchQueryFlow = null, filterTypeFlow = null, limitFlow = _itemsLimit),
+        observeWeightsUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, limitFlow = _itemsLimit),
         uiEventHolder(),
 
         onLoading = {

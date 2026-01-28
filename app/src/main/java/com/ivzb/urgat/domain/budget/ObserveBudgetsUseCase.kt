@@ -13,6 +13,7 @@ interface ObserveBudgetsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>? = null,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>? = null,
@@ -32,9 +33,10 @@ class DefaultObserveBudgetsUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<Budget>>> = observeUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<List<Budget>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

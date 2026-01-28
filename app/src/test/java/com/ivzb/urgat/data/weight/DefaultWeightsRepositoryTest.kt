@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.weight
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -75,7 +76,7 @@ class DefaultWeightsRepositoryTest {
         repository.create(75.toBigDecimal(), 1764523811)
         repository.create(77.toBigDecimal(), 1764523812)
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf(75.toBigDecimal(), 77.toBigDecimal()), result.map { it.value })
@@ -88,7 +89,7 @@ class DefaultWeightsRepositoryTest {
         repository.create(77.toBigDecimal(), 1764523812)
         repository.create(79.toBigDecimal(), 1764523813)
 
-        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "Lu").first()
 
         assertEquals(3, result.size)
         assertEquals(listOf(75.toBigDecimal(), 77.toBigDecimal(), 79.toBigDecimal()), result.map { it.value })

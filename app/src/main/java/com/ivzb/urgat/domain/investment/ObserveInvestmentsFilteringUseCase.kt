@@ -1,12 +1,14 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -23,7 +25,7 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
 ) : ObserveInvestmentsFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
-        return repository.observe(NO_ITEMS_LIMIT)
+        return repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE)
             .map {
                 if (it.isEmpty()) {
                     return@map listOf()
@@ -36,7 +38,10 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
                         .map { FilterMenuItem(type = it.key, label = it.key, size = it.value.size) }
             }
             .map<List<InvestmentsFilterMenuItem>, Async<List<InvestmentsFilterMenuItem>>> { Async.Success(it) }
-            .catch { emit(Async.Error) }
+            .catch { e ->
+                Tracker.error(e)
+                emit(Async.Error)
+            }
     }
 
 }

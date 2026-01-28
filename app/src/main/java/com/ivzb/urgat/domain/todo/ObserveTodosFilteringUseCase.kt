@@ -1,12 +1,14 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.todos.TodosFilterMenuItem
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -24,7 +26,7 @@ class DefaultObserveTodosFilteringUseCase @Inject constructor(
 ) : ObserveTodosFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<TodosFilterMenuItem>>> {
-        return repository.observe(NO_ITEMS_LIMIT)
+        return repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE)
             .map {
                 listOf(
                     FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = it.size),
@@ -33,7 +35,10 @@ class DefaultObserveTodosFilteringUseCase @Inject constructor(
                 )
             }
             .map<List<TodosFilterMenuItem>, Async<List<TodosFilterMenuItem>>> { Async.Success(it) }
-            .catch { emit(Async.Error) }
+            .catch { e ->
+                Tracker.error(e)
+                emit(Async.Error)
+            }
     }
 
 }

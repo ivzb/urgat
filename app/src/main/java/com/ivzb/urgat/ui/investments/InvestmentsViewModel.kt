@@ -37,11 +37,11 @@ class InvestmentsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
-        observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedInvestmentCategoriesYearlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentAssetsUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentNetWorthUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedInvestmentCategoriesYearlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeInvestmentAssetsUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeInvestmentNetWorthUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeInvestmentsFilteringUseCase(),
         observeInvestmentsSortingUseCase(),
 

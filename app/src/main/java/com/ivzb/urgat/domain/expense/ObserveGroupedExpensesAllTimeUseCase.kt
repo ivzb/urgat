@@ -14,6 +14,7 @@ interface ObserveGroupedExpensesAllTimeUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?,
@@ -34,9 +35,10 @@ class DefaultObserveGroupedExpensesAllTimeUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<GroupedExpenses>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<GroupedExpenses>> = observeGroupedUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

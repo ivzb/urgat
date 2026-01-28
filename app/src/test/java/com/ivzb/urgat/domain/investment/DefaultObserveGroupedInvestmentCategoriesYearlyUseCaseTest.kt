@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.investment
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentCategory
@@ -42,6 +43,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
         val limitFlow = flowOf(limit)
@@ -64,9 +66,9 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
         )
         val repositoryStream = flowOf(investments)
 
-        every { investmentsRepository.observe(limit, "coffee") } returns repositoryStream
+        every { investmentsRepository.observe(limit, NO_DATE_RANGE, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -99,6 +101,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by market value`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
         val limitFlow = flowOf(limit)
@@ -121,9 +124,9 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
         )
         val repositoryStream = flowOf(investments)
 
-        every { investmentsRepository.observe(limit, "coffee") } returns repositoryStream
+        every { investmentsRepository.observe(limit, NO_DATE_RANGE, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -156,12 +159,13 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { investmentsRepository.observe(limit) } throws RuntimeException("Test error")
+        every { investmentsRepository.observe(limit, NO_DATE_RANGE) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

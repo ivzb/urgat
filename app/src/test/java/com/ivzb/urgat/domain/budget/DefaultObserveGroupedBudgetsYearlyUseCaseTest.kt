@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.budget
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
@@ -69,6 +70,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
     private fun `invoke should return Success with filtered items sorted`(sortType: BudgetsSortType) = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(sortType)
         val limitFlow = flowOf(limit)
@@ -119,6 +121,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedBudgetCategoriesYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = eq(sortTypeFlow),
             limitFlow = null,
@@ -126,6 +129,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedExpensesYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
@@ -133,6 +137,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedInvestmentsYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
@@ -140,12 +145,13 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedSavingsYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(savings))
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -193,12 +199,14 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
         val limitFlow = flowOf(limit)
 
         every { observeGroupedBudgetCategoriesYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = eq(sortTypeFlow),
             limitFlow = null,
@@ -206,6 +214,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedExpensesYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
@@ -213,6 +222,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedInvestmentsYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
@@ -220,12 +230,13 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
 
         every { observeGroupedSavingsYearlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(listOf()))
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 

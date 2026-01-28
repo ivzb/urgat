@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.todo
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -90,7 +91,7 @@ class DefaultTodoRepositoryTest {
         repository.create("A")
         repository.create("B")
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.content })
@@ -102,7 +103,7 @@ class DefaultTodoRepositoryTest {
         repository.create("Lunch")
         repository.create("Bus")
 
-        val result = repository.observe(limit = 10, searchQuery = "Ta").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "Ta").first()
 
         assertEquals(1, result.size)
         assertEquals("Taxi", result[0].content)
@@ -165,7 +166,7 @@ class DefaultTodoRepositoryTest {
 
         repository.clearCompleted()
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(1, result.size)

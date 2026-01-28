@@ -12,15 +12,10 @@ import kotlinx.coroutines.flow.Flow
 interface WeightDao {
 
     @Query("SELECT * FROM weights " +
-            "WHERE isDeleted = 0 " +
-            "ORDER BY date DESC LIMIT :limit")
-    fun observeAll(limit: Int): Flow<List<WeightEntity>>
-
-    @Query("SELECT * FROM weights WHERE " +
-            "isDeleted = 0 AND date >= :from AND date <= :to " +
+            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC " +
             "LIMIT :limit")
-    fun observeAll(limit: Int, from: Long, to: Long): Flow<List<WeightEntity>>
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<WeightEntity>>
 
     @Query("SELECT * FROM weights WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor

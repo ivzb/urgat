@@ -12,8 +12,8 @@ class FakeBudgetDao : BudgetDao {
     private val _flow = MutableStateFlow<List<BudgetEntity>>(emptyList())
     private var _cursor = MatrixCursor(arrayOf())
 
-    override fun observeAll(limit: Int): Flow<List<BudgetEntity>> =
-        _flow.map { it.take(limit) }
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<BudgetEntity>> =
+        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
 
     override fun stream(): Cursor = _cursor
 

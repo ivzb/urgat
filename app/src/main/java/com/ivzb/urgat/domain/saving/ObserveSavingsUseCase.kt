@@ -12,6 +12,7 @@ interface ObserveSavingsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>? = null,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>? = null,
@@ -31,9 +32,10 @@ class DefaultObserveSavingsUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<Saving>>> = observeUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<List<Saving>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

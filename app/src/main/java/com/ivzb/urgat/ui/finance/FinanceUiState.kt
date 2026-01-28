@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.finance
 
 import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
@@ -15,6 +16,8 @@ import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
+
+    val dashboardBudget: GroupedBudget? = null,
 
     val expenses: List<Expense> = emptyList(),
     val expensesFilteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo(),

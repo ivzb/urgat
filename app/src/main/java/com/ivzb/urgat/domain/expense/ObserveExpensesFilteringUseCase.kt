@@ -1,12 +1,14 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -23,7 +25,7 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
 ) : ObserveExpensesFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<ExpensesFilterMenuItem>>> {
-        return repository.observe(NO_ITEMS_LIMIT)
+        return repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE)
             .map {
                 listOf(
                     FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = it.size),
@@ -33,7 +35,10 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
                 )
             }
             .map<List<ExpensesFilterMenuItem>, Async<List<ExpensesFilterMenuItem>>> { Async.Success(it) }
-            .catch { emit(Async.Error) }
+            .catch { e ->
+                Tracker.error(e)
+                emit(Async.Error)
+            }
     }
 
 }

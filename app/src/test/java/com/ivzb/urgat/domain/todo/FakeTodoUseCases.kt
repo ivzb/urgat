@@ -22,6 +22,7 @@ class FakeObserveTodosUseCase : ObserveTodosUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<TodosFilterType>?,
         sortTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?

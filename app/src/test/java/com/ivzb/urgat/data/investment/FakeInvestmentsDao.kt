@@ -12,12 +12,12 @@ class FakeInvestmentDao : InvestmentDao {
     private val _flow = MutableStateFlow<List<InvestmentEntity>>(emptyList())
     private var _cursor = MatrixCursor(arrayOf())
 
-    override fun observeAll(limit: Int): Flow<List<InvestmentEntity>> =
-        _flow.map { it.take(limit) }
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<InvestmentEntity>> =
+        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
 
-    override fun observeAll(limit: Int, searchQuery: String): Flow<List<InvestmentEntity>> =
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<InvestmentEntity>> =
         _flow.map { list ->
-            list.filter { it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
+            list.filter { it.date in dateStart..dateEnd && it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
     override fun stream(): Cursor = _cursor

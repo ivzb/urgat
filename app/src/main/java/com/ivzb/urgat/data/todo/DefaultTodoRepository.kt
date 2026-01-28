@@ -16,16 +16,16 @@ class DefaultTodoRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : TodoRepository {
 
-    override fun observe(limit: Int): Flow<List<Todo>> {
-        return localDataSource.observeAll(limit).map { todos ->
+    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Todo>> {
+        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
             }
         }
     }
 
-    override fun observe(limit: Int, searchQuery: String): Flow<List<Todo>> {
-        return localDataSource.observeAll(limit, searchQuery).map { todos ->
+    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Todo>> {
+        return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { todos ->
             withContext(dispatcher) {
                 todos.toExternal()
             }

@@ -1,6 +1,5 @@
 package com.ivzb.urgat.data.weight
 
-import com.ivzb.urgat.data.investment.toEntity
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,17 +15,17 @@ class DefaultWeightsRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : WeightsRepository {
 
-    override fun observe(limit: Int): Flow<List<Weight>> {
-        return localDataSource.observeAll(limit).map { weights ->
+    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Weight>> {
+        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { weights ->
             withContext(dispatcher) {
                 weights.toExternal()
             }
         }
     }
 
-    override fun observe(limit: Int, searchQuery: String): Flow<List<Weight>> {
+    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Weight>> {
         // searchQuery is not used at the moment
-        return observe(limit)
+        return observe(limit, dateRange)
     }
 
     override suspend fun create(value: BigDecimal, date: Long): String {

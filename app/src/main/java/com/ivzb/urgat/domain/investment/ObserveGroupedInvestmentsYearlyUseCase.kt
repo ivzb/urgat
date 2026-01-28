@@ -13,6 +13,7 @@ interface ObserveGroupedInvestmentsYearlyUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?,
@@ -33,9 +34,10 @@ class DefaultObserveGroupedInvestmentsYearlyUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<GroupedInvestments>>> = observeGroupedUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<List<GroupedInvestments>>> = observeGroupedUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

@@ -15,16 +15,16 @@ class DefaultExpensesRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ExpensesRepository {
 
-    override fun observe(limit: Int): Flow<List<Expense>> {
-        return localDataSource.observeAll(limit).map { expenses ->
+    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Expense>> {
+        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
             }
         }
     }
 
-    override fun observe(limit: Int, searchQuery: String): Flow<List<Expense>> {
-        return localDataSource.observeAll(limit, searchQuery).map { expenses ->
+    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Expense>> {
+        return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { expenses ->
             withContext(dispatcher) {
                 expenses.toExternal()
             }

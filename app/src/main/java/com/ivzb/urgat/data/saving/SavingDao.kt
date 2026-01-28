@@ -11,19 +11,24 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SavingDao {
 
-    @Query("SELECT * FROM savings WHERE isDeleted = 0 ORDER BY date DESC LIMIT :limit")
-    fun observeAll(limit: Int): Flow<List<SavingEntity>>
+    @Query("" +
+            "SELECT * FROM savings " +
+            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
+            "ORDER BY date DESC " +
+            "LIMIT :limit"
+    )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<SavingEntity>>
 
     @Query("" +
             "SELECT * FROM savings " +
-            "WHERE isDeleted = 0 AND (" +
+            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd AND (" +
                 "name LIKE '%' || :searchQuery || '%' OR " +
                 "amount LIKE '%' || :searchQuery || '%'" +
             ")" +
             "ORDER BY date DESC " +
             "LIMIT :limit"
     )
-    fun observeAll(limit: Int, searchQuery: String): Flow<List<SavingEntity>>
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<SavingEntity>>
 
     @Query("SELECT * FROM savings WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor

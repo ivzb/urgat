@@ -8,6 +8,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -18,6 +19,7 @@ interface ObserveGroupedBudgetsAllTimeUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?,
@@ -34,16 +36,17 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<GroupedBudget>> {
 
         return combine(
-            observeGroupedBudgetCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
-            observeGroupedExpensesAllTimeUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedSavingsAllTimeUseCase(searchQueryFlow = searchQueryFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedBudgetCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+            observeGroupedExpensesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedSavingsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         ) { budgetCategoriesAllTimeAsync, expensesAllTimeAsync, investmentsAllTimeAsync, savingsAllTimeAsync ->
 
             if (budgetCategoriesAllTimeAsync is Async.Success &&
@@ -74,7 +77,10 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
 
         }
         .map<GroupedBudget, Async<GroupedBudget>> { Async.Success(it) }
-        .catch { emit(Async.Error) }
+        .catch { e ->
+            Tracker.error(e)
+            emit(Async.Error)
+        }
     }
 
 }

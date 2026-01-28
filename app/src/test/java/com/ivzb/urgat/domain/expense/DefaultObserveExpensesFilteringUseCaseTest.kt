@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
@@ -52,7 +53,7 @@ class ObserveExpensesFilteringUseCaseTest {
             )
         )
 
-        every { repository.observe(NO_ITEMS_LIMIT) } returns repositoryStream
+        every { repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns repositoryStream
 
         val results = observeUseCase().toList()
 
@@ -67,7 +68,7 @@ class ObserveExpensesFilteringUseCaseTest {
 
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
-        every { repository.observe(NO_ITEMS_LIMIT) } returns flow {
+        every { repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flow {
             throw RuntimeException("Test error")
         }
 

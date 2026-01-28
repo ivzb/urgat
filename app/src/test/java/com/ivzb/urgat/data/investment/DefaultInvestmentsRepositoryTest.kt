@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.investment
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -115,7 +116,7 @@ class DefaultInvestmentsRepositoryTest {
         repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
         repository.create("BRK.B", 440.toBigDecimal(), 330.toBigDecimal(), "etfs", "USD", 2)
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("SNP 500", "BRK.B"), result.map { it.name })
@@ -126,7 +127,7 @@ class DefaultInvestmentsRepositoryTest {
         repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
         repository.create("BRK.B", 440.toBigDecimal(), 330.toBigDecimal(), "etfs", "USD", 2)
 
-        val result = repository.observe(limit = 10, searchQuery = "SNP").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "SNP").first()
 
         assertEquals(1, result.size)
         assertEquals("SNP 500", result.first().name)

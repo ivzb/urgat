@@ -32,10 +32,10 @@ class SavingsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<SavingsUiState> = combineUiState(
-        observeGroupedSavingsMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedSavingCategoriesMonthlyUseCase(_searchQuery, null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedSavingCategoriesYearlyUseCase(_searchQuery, null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedSavingCategoriesAllTimeUseCase(_searchQuery, null, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedSavingsMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedSavingCategoriesMonthlyUseCase(_searchQuery, dateRangeFlow = null, null, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedSavingCategoriesYearlyUseCase(_searchQuery, dateRangeFlow = null, null, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedSavingCategoriesAllTimeUseCase(_searchQuery, dateRangeFlow = null, null, sortTypeFlow = _savedSortType, limitFlow = null),
         observeSavingsSortingUseCase(),
 
         onLoading = {

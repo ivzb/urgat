@@ -37,10 +37,10 @@ class ExpensesViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<ExpensesUiState> = combineUiState(
-        observeGroupedExpensesMonthlyUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedExpenseCategoriesMonthlyUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedExpenseCategoriesYearlyUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedExpenseCategoriesAllTimeUseCase(_searchQuery, _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpensesMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesYearlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeGroupedExpenseCategoriesAllTimeUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
         observeExpensesFilteringUseCase(),
         observeExpensesSortingUseCase(),
 

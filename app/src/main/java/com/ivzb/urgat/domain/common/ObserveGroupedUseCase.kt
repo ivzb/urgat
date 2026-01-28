@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.common
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -20,20 +21,16 @@ class ObserveGroupedUseCase<T, FilterType, SortType, Group>(
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<FilterType>? = null,
         sortTypeFlow: Flow<SortType>? = null,
         limitFlow: Flow<Int>?
     ): Flow<Async<Group>> =
-        invokeFlow(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+        invokeFlow(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
             .map { items -> group(items) }
             .map<Group, Async<Group>> { Async.Success(it) }
             .catch { e ->
-                // todo: use error tracker instead
-
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace()
-                }
-
+                Tracker.error(e)
                 emit(Async.Error)
             }
 

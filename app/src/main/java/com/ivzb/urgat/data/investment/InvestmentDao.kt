@@ -11,12 +11,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface InvestmentDao {
 
-    @Query("SELECT * FROM investments WHERE isDeleted = 0 ORDER BY date DESC LIMIT :limit")
-    fun observeAll(limit: Int): Flow<List<InvestmentEntity>>
+    @Query("" +
+            "SELECT * FROM investments " +
+            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
+            "ORDER BY date DESC " +
+            "LIMIT :limit"
+    )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<InvestmentEntity>>
 
     @Query("" +
             "SELECT * FROM investments " +
-            "WHERE isDeleted = 0 AND (" +
+            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd AND (" +
                 "name LIKE '%' || :searchQuery || '%' OR " +
                 "shares LIKE '%' || :searchQuery || '%' OR " +
                 "category LIKE '%' || :searchQuery || '%' OR " +
@@ -25,7 +30,7 @@ interface InvestmentDao {
             "ORDER BY date DESC " +
             "LIMIT :limit"
     )
-    fun observeAll(limit: Int, searchQuery: String): Flow<List<InvestmentEntity>>
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<InvestmentEntity>>
 
     @Query("SELECT * FROM investments WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor

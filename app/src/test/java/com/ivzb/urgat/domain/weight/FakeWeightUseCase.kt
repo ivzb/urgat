@@ -23,6 +23,7 @@ class FakeObserveWeightsUseCase : ObserveWeightsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<WeightsSortType>?,
         limitFlow: Flow<Int>?

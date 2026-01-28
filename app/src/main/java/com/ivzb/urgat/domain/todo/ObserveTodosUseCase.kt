@@ -12,6 +12,7 @@ interface ObserveTodosUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<TodosFilterType>? = null,
         sortTypeFlow: Flow<Unit>? = null,
         limitFlow: Flow<Int>? = null,
@@ -30,10 +31,11 @@ class DefaultObserveTodosUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<TodosFilterType>?,
         sortTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<Todo>>> = observeUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<List<Todo>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
     companion object {
 

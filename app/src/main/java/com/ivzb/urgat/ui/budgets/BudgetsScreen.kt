@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -127,16 +128,8 @@ fun BudgetsScreen(
 
                 BudgetsPage.AllTime -> uiState.allTimeBudget?.let { budget ->
                     CategoriesPage(
+                        budget = budget,
                         group = stringResource(R.string.all_time),
-
-                        totalExpenses = budget.totalExpenses,
-                        totalInvestments = budget.totalInvestments,
-                        totalInvestmentsFormatted = budget.totalInvestmentsFormatted,
-                        totalSavings = budget.totalSavings,
-
-                        remaining = budget.remaining,
-                        total = budget.total,
-
                         listState = listState,
                         onListStateChanged = onListStateChanged,
                     )
@@ -231,15 +224,7 @@ private fun GroupedBudgetsPage(
             val budget = monthlyBudgets[pageIndex]
 
             CategoriesPage(
-                group = budget.category.group,
-
-                totalExpenses = budget.totalExpenses,
-                totalInvestments = budget.totalInvestments,
-                totalInvestmentsFormatted = budget.totalInvestmentsFormatted,
-                totalSavings = budget.totalSavings,
-                remaining = budget.remaining,
-                total = budget.total,
-
+                budget = budget,
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
             )
@@ -249,15 +234,8 @@ private fun GroupedBudgetsPage(
 
 @Composable
 private fun CategoriesPage(
-    group: String,
-
-    totalExpenses: BigDecimal,
-    totalInvestments: BigDecimal,
-    totalInvestmentsFormatted: String,
-    totalSavings: BigDecimal,
-
-    remaining: BigDecimal,
-    total: BigDecimal,
+    budget: GroupedBudget,
+    group: String? = null,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -277,78 +255,86 @@ private fun CategoriesPage(
             .fillMaxSize(),
     ) {
 
-        item {
-            val data = buildList {
-                add(PieChartItem(
-                    value = totalExpenses.toFloat(),
-                    selectedText = formatExpensesChart(stringResource(R.string.expenses), totalExpenses)
-                ))
+        budgetCategoryPage(budget, group)
+    }
+}
 
-                add(PieChartItem(
-                    value = totalInvestments.toFloat(),
-                    selectedText = formatInvestmentsChart(stringResource(R.string.investments), totalInvestmentsFormatted)
-                ))
+fun LazyListScope.budgetCategoryPage(
+    budget: GroupedBudget,
+    group: String? = null,
+) {
 
-                add(PieChartItem(
-                    value = totalSavings.toFloat(),
-                    selectedText = formatSavingsChart(stringResource(R.string.savings), totalSavings)
-                ))
+    item {
+        val data = buildList {
+            add(PieChartItem(
+                value = budget.totalExpenses.toFloat(),
+                selectedText = formatExpensesChart(stringResource(R.string.expenses), budget.totalExpenses)
+            ))
 
-                if (remaining > BigDecimal.ZERO) {
-                    add(PieChartItem(
-                        value = remaining.toFloat(),
-                        selectedText = formatBudgetsChart(stringResource(R.string.remaining), remaining)
-                    ))
-                }
+            add(PieChartItem(
+                value = budget.totalInvestments.toFloat(),
+                selectedText = formatInvestmentsChart(stringResource(R.string.investments), budget.totalInvestmentsFormatted)
+            ))
+
+            add(PieChartItem(
+                value = budget.totalSavings.toFloat(),
+                selectedText = formatSavingsChart(stringResource(R.string.savings), budget.totalSavings)
+            ))
+
+            if (budget.remaining > BigDecimal.ZERO) {
+                add(PieChartItem(
+                    value = budget.remaining.toFloat(),
+                    selectedText = formatBudgetsChart(stringResource(R.string.remaining), budget.remaining)
+                ))
             }
-
-            val defaultText = formatBudgetsChart(group, total)
-
-            PieChart(
-                data = data,
-                defaultText = defaultText,
-                textStyle = MaterialTheme.typography.titleLarge,
-            )
         }
 
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
+        val defaultText = formatBudgetsChart(group ?: budget.category.group, budget.total)
 
-        item {
-            CategoryItem(
-                name = stringResource(R.string.expenses),
-                value = totalExpenses.format(),
-                colorIndex = 0,
-            )
-        }
+        PieChart(
+            data = data,
+            defaultText = defaultText,
+            textStyle = MaterialTheme.typography.titleLarge,
+        )
+    }
 
-        item {
-            CategoryItem(
-                name = stringResource(R.string.investments),
-                value = totalInvestments.format(),
-                colorIndex = 1,
-            )
-        }
+    item {
+        Spacer(
+            modifier = Modifier
+                .height(dimensionResource(R.dimen.vertical_margin))
+        )
+    }
 
-        item {
-            CategoryItem(
-                name = stringResource(R.string.savings),
-                value = totalSavings.format(),
-                colorIndex = 2,
-            )
-        }
+    item {
+        CategoryItem(
+            name = stringResource(R.string.expenses),
+            value = budget.totalExpenses.format(),
+            colorIndex = 0,
+        )
+    }
 
-        item {
-            CategoryItem(
-                name = stringResource(R.string.remaining),
-                value = remaining.format(),
-                colorIndex = 3,
-            )
-        }
+    item {
+        CategoryItem(
+            name = stringResource(R.string.investments),
+            value = budget.totalInvestments.format(),
+            colorIndex = 1,
+        )
+    }
+
+    item {
+        CategoryItem(
+            name = stringResource(R.string.savings),
+            value = budget.totalSavings.format(),
+            colorIndex = 2,
+        )
+    }
+
+    item {
+        CategoryItem(
+            name = stringResource(R.string.remaining),
+            value = budget.remaining.format(),
+            colorIndex = 3,
+        )
     }
 }
 

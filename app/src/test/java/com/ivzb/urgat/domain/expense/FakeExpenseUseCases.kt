@@ -26,6 +26,7 @@ class FakeObserveExpensesUseCase : ObserveExpensesUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
@@ -51,6 +52,7 @@ class FakeObserveGroupedExpensesMonthlyUseCase : ObserveGroupedExpensesMonthlyUs
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
@@ -76,6 +78,7 @@ class FakeObserveGroupedExpenseCategoriesMonthlyUseCase: ObserveGroupedExpenseCa
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
@@ -101,6 +104,7 @@ class FakeObserveGroupedExpenseCategoriesYearlyUseCase: ObserveGroupedExpenseCat
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?
@@ -126,6 +130,7 @@ class FakeObserveGroupedExpenseCategoriesAllTimeUseCase: ObserveGroupedExpenseCa
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
         limitFlow: Flow<Int>?

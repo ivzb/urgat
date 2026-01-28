@@ -4,7 +4,6 @@ import android.database.Cursor
 import android.database.MatrixCursor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 
 class FakeWeightDao: WeightDao {
@@ -13,12 +12,8 @@ class FakeWeightDao: WeightDao {
     private val _flow = MutableStateFlow<List<WeightEntity>>(emptyList())
     private var _cursor = MatrixCursor(arrayOf())
 
-    override fun observeAll(limit: Int): Flow<List<WeightEntity>> =
-        _flow.map { it.take(limit) }
-
-    override fun observeAll(limit: Int, from: Long, to: Long): Flow<List<WeightEntity>> =
-        _flow.map { it.take(limit) }
-            .filter { it.all { it.createdAt in from..to } }
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<WeightEntity>> =
+        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
 
     override fun stream(): Cursor = _cursor
 

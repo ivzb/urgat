@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.expenses
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.expense.DefaultExpensesRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -108,7 +109,7 @@ class DefaultExpensesRepositoryTest {
         repository.create("A", BigDecimal("1.0"), "Cat", 0L, false)
         repository.create("B", BigDecimal("2.0"), "Cat", 0L, false)
 
-        val result = repository.observe(limit = 10).first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
         assertEquals(2, result.size)
         assertEquals(listOf("A", "B"), result.map { it.name })
@@ -120,7 +121,7 @@ class DefaultExpensesRepositoryTest {
         repository.create("Lunch", BigDecimal("8.0"), "Food", 0L, false)
         repository.create("Bus", BigDecimal("3.0"), "Transport", 0L, false)
 
-        val result = repository.observe(limit = 10, searchQuery = "Lu").first()
+        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "Lu").first()
 
         // Should match "Lunch" only (case-insensitive substring)
         assertEquals(1, result.size)

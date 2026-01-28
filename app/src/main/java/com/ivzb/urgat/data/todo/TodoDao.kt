@@ -11,16 +11,21 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT :limit")
-    fun observeAll(limit: Int): Flow<List<TodoEntity>>
-
     @Query("" +
             "SELECT * FROM todo " +
-            "WHERE isDeleted = 0 AND content LIKE '%' || :searchQuery || '%'" +
+            "WHERE isDeleted = 0 AND createdAt BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
     )
-    fun observeAll(limit: Int, searchQuery: String): Flow<List<TodoEntity>>
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<TodoEntity>>
+
+    @Query("" +
+            "SELECT * FROM todo " +
+            "WHERE isDeleted = 0 AND createdAt BETWEEN :dateStart AND :dateEnd AND content LIKE '%' || :searchQuery || '%'" +
+            "ORDER BY createdAt DESC " +
+            "LIMIT :limit"
+    )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>>
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun stream(): Cursor

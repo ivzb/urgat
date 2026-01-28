@@ -19,7 +19,7 @@ class NotesViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<NotesUiState> = combineUiState(
-        observeNotesUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = null, limitFlow = null),
+        observeNotesUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = null, limitFlow = null),
 
         onLoading = {
             NotesUiState(isLoading = true)

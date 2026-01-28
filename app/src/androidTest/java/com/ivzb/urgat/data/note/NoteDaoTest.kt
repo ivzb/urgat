@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.source.sample.SampleData
 import kotlinx.coroutines.flow.first
@@ -58,10 +59,10 @@ class NoteDaoTest {
         }
 
         // collect flow
-        val actual = noteDao.observeAll(-1).first()
+        val actual = noteDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
         assertEquals(notes.sortedByDescending { it.createdAt }, actual)
 
-        val actualLimit = noteDao.observeAll(3).first()
+        val actualLimit = noteDao.observeAll(3, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
         assertEquals(notes.sortedByDescending { it.createdAt }.take(3), actualLimit)
     }
 

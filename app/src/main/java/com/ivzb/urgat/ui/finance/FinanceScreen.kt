@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
@@ -26,6 +27,7 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.budgets.BudgetItem
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
+import com.ivzb.urgat.ui.budgets.budgetCategoryPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
@@ -160,6 +162,10 @@ fun FinanceScreen(
                     ) {
 
                         when (page) {
+                            FinancePage.Dashboard -> itemDashboard(
+                                dashboardBudget = uiState.dashboardBudget,
+                            )
+
                             FinancePage.Expenses -> itemExpenses(
                                 expenses = uiState.expenses,
                                 expensesFilteringUiInfo = uiState.expensesFilteringUiInfo,
@@ -222,6 +228,20 @@ fun FinanceScreen(
         },
 
         modifier = modifier
+    )
+}
+
+private fun LazyListScope.itemDashboard(
+    dashboardBudget: GroupedBudget?,
+) {
+
+    if (dashboardBudget == null) {
+        // todo: empty state
+        return
+    }
+
+    budgetCategoryPage(
+        budget = dashboardBudget,
     )
 }
 

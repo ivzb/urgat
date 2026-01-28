@@ -11,6 +11,7 @@ interface ObserveNotesUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>? = null,
         sortTypeFlow: Flow<Unit>? = null,
         limitFlow: Flow<Int>? = null,
@@ -28,9 +29,10 @@ class DefaultObserveNotesUseCase @Inject constructor(
 
     override fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<Note>>> = observeUseCase(searchQueryFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+    ): Flow<Async<List<Note>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }

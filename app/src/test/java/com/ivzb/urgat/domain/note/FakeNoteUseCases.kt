@@ -21,6 +21,7 @@ class FakeObserveNotesUseCase : ObserveNotesUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<Unit>?,
         limitFlow: Flow<Int>?

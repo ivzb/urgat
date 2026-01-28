@@ -34,7 +34,7 @@ class TodosViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<TodosUiState> = combineUiState(
-        observeTodosUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, limitFlow = null),
+        observeTodosUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, limitFlow = null),
         observeTodosFilteringUseCase(),
 
         onLoading = {

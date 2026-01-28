@@ -24,7 +24,7 @@ class WeightsViewModel @Inject constructor(
     private val _savedSortType: Flow<WeightsSortType> = savedStateHandle.getStateFlow(WEIGHTS_SORT_SAVED_STATE_KEY, WeightsSortType.BY_DATE)
 
     val uiState: StateFlow<WeightsUiState> = combineUiState(
-        observeWeightsUseCase(searchQueryFlow = null, filterTypeFlow = null, sortTypeFlow = _savedSortType, limitFlow = null),
+        observeWeightsUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = _savedSortType, limitFlow = null),
         observeWeightsSortingUseCase(),
 
         onLoading = {

@@ -12,12 +12,12 @@ class FakeNoteDao : NoteDao {
     private val _flow = MutableStateFlow<List<NoteEntity>>(emptyList())
     private var _cursor = MatrixCursor(arrayOf())
 
-    override fun observeAll(limit: Int): Flow<List<NoteEntity>> =
-        _flow.map { it.take(limit) }
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<NoteEntity>> =
+        _flow.map { it.filter { it.createdAt in dateStart..dateEnd }.take(limit) }
 
-    override fun observeAll(limit: Int, searchQuery: String): Flow<List<NoteEntity>> =
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<NoteEntity>> =
         _flow.map { list ->
-            list.filter { it.content.contains(searchQuery, ignoreCase = true) }.take(limit)
+            list.filter { it.createdAt in dateStart..dateEnd && it.content.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
     override fun stream(): Cursor = _cursor

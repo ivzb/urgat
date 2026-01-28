@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.todo
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.data.todo.TodoRepository
@@ -31,6 +32,7 @@ class ObserveTodosUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("todo")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
@@ -40,9 +42,9 @@ class ObserveTodosUseCaseTest {
             )
         )
 
-        every { repository.observe(limit, "todo") } returns repositoryStream
+        every { repository.observe(limit, NO_DATE_RANGE, "todo") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -58,12 +60,13 @@ class ObserveTodosUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { repository.observe(limit) } throws RuntimeException("Test error")
+        every { repository.observe(limit, NO_DATE_RANGE) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

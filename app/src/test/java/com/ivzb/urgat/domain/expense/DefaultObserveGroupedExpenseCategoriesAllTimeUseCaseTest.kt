@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.expense
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpensesRepository
@@ -39,6 +40,7 @@ class ObserveGroupedExpenseCategoriesAllTimeUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
         val expenses = listOf(
@@ -51,9 +53,9 @@ class ObserveGroupedExpenseCategoriesAllTimeUseCaseTest {
         )
         val repositoryStream = flowOf(expenses)
 
-        every { expensesRepository.observe(limit, "coffee") } returns repositoryStream
+        every { expensesRepository.observe(limit, NO_DATE_RANGE, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -75,12 +77,13 @@ class ObserveGroupedExpenseCategoriesAllTimeUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { expensesRepository.observe(limit) } throws RuntimeException("Test error")
+        every { expensesRepository.observe(limit, NO_DATE_RANGE) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

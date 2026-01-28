@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.source.sample.SampleData
 import kotlinx.coroutines.flow.first
@@ -60,10 +61,10 @@ class TodoDaoTest {
         }
 
         // collect flow
-        val actual = todoDao.observeAll(-1).first()
+        val actual = todoDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
         assertEquals(todos.sortedByDescending { it.createdAt }, actual)
 
-        val actualLimit = todoDao.observeAll(3).first()
+        val actualLimit = todoDao.observeAll(3, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
         assertEquals(todos.sortedByDescending { it.createdAt }.take(3), actualLimit)
 
         todos.forEach { todo ->
@@ -72,7 +73,7 @@ class TodoDaoTest {
 
         todoDao.deleteCompleted()
 
-        val actualAfterComplete = todoDao.observeAll(-1).first()
+        val actualAfterComplete = todoDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
         assertTrue(actualAfterComplete.isEmpty())
     }
 

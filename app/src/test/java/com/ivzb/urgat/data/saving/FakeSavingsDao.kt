@@ -12,12 +12,12 @@ class FakeSavingDao : SavingDao {
     private val _flow = MutableStateFlow<List<SavingEntity>>(emptyList())
     private var _cursor = MatrixCursor(arrayOf())
 
-    override fun observeAll(limit: Int): Flow<List<SavingEntity>> =
-        _flow.map { it.take(limit) }
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<SavingEntity>> =
+        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
 
-    override fun observeAll(limit: Int, searchQuery: String): Flow<List<SavingEntity>> =
+    override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<SavingEntity>> =
         _flow.map { list ->
-            list.filter { it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
+            list.filter { it.date in dateStart..dateEnd && it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
     override fun stream(): Cursor = _cursor

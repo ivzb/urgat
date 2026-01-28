@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.saving
 
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.data.saving.SavingsRepository
@@ -40,6 +41,7 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by date`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val sortTypeFlow = flowOf(SavingsSortType.BY_DATE)
         val limit = 10
         val limitFlow = flowOf(limit)
@@ -62,9 +64,9 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
         )
         val repositoryStream = flowOf(savings)
 
-        every { savingsRepository.observe(limit, "coffee") } returns repositoryStream
+        every { savingsRepository.observe(limit, NO_DATE_RANGE, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -84,6 +86,7 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by min`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val sortTypeFlow = flowOf(SavingsSortType.BY_MIN)
         val limit = 10
         val limitFlow = flowOf(limit)
@@ -106,9 +109,9 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
         )
         val repositoryStream = flowOf(savings)
 
-        every { savingsRepository.observe(limit, "coffee") } returns repositoryStream
+        every { savingsRepository.observe(limit, NO_DATE_RANGE, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -128,6 +131,7 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
     @Test
     fun `invoke should return Success with filtered items sorted by max`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("coffee")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val sortTypeFlow = flowOf(SavingsSortType.BY_MAX)
         val limit = 10
         val limitFlow = flowOf(limit)
@@ -150,9 +154,9 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
         )
         val repositoryStream = flowOf(savings)
 
-        every { savingsRepository.observe(limit, "coffee") } returns repositoryStream
+        every { savingsRepository.observe(limit, NO_DATE_RANGE, "coffee") } returns repositoryStream
 
-        val results = observeUseCase(searchQueryFlow, null, sortTypeFlow, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -172,12 +176,13 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        every { savingsRepository.observe(limit) } throws RuntimeException("Test error")
+        every { savingsRepository.observe(limit, NO_DATE_RANGE) } throws RuntimeException("Test error")
 
-        val results = observeUseCase(searchQueryFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 

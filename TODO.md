@@ -2,7 +2,6 @@
 - make proper urgat CLI with multiple commands instead of having multiple scripts
 - consider extracting a framework
 - setup github build pipeline
-- make error tracker
 - consider having sample use case for each entity and use appropriate one in each main view model
 - write UI tests
 - consider making generic add/edit screen with forms abstraction
@@ -26,6 +25,7 @@
 - rethink which screens to be published to playstore screenshots - maybe focus more on finance tab
 - refactor duplicated tests and extract shared common tests into each Test class (see DefaultObserveBudgetUseCaseTest.kt)
 - consider not showing multiple fab add button actions - but directly open the one for currently selected page
+- move filtering to room DB instead of data filtering after that
 
 ## Bugs
 - check why the submit button is not ime positioned on top of the keyboard for sdk 31
@@ -79,4 +79,6 @@
 - add income tab with line chart to show each month (yearly)
 - show how many months can one survive without income based on currency savings/emergency fund
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
-- show remaining budget for the rest of the month inside budgets screen
+- add date index to every table
+- remove isDeleted column and just delete data
+- add tests for finance dashboard page

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
+import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsUseCase
@@ -15,6 +16,7 @@ import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
+import com.ivzb.urgat.util.currentMonthRange
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
+    observeDashboardBudgetUseCase: ObserveDashboardBudgetUseCase,
     observeExpensesUseCase: ObserveExpensesUseCase,
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
     observeSavingsUseCase: ObserveSavingsUseCase,
@@ -35,13 +38,16 @@ class FinanceViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
+    private val _budgetDateRange = MutableStateFlow(currentMonthRange())
+
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
     val uiState: StateFlow<FinanceUiState> = combineUiState(
-        observeExpensesUseCase(_searchQuery, null, null, _itemsLimit),
-        observeInvestmentsUseCase(_searchQuery, null, null, _itemsLimit),
-        observeSavingsUseCase(_searchQuery, null, null, _itemsLimit),
-        observeBudgetsUseCase(_searchQuery, null, null, _itemsLimit),
+        observeDashboardBudgetUseCase(_searchQuery, _budgetDateRange, null, null, _itemsLimit),
+        observeExpensesUseCase(_searchQuery, null, null, null, _itemsLimit),
+        observeInvestmentsUseCase(_searchQuery, null, null, null, _itemsLimit),
+        observeSavingsUseCase(_searchQuery, null, null, null, _itemsLimit),
+        observeBudgetsUseCase(_searchQuery, null, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {
@@ -50,8 +56,9 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { expenses, investments, savings, budgets, uiEvent ->
+        onSuccess = { dashboardBudget, expenses, investments, savings, budgets, uiEvent ->
             FinanceUiState(
+                dashboardBudget = dashboardBudget,
                 expenses = expenses,
                 expensesFilteringUiInfo = ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_expenses,

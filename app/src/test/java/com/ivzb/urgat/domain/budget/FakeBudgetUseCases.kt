@@ -26,6 +26,7 @@ class FakeObserveBudgetsUseCase : ObserveBudgetsUseCase {
 
     override operator fun invoke(
         searchQueryFlow: Flow<String>?,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
@@ -130,6 +131,7 @@ class FakeObserveGroupedBudgetsMonthlyUseCase: ObserveGroupedBudgetsMonthlyUseCa
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
@@ -155,6 +157,7 @@ class FakeObserveGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCate
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
@@ -180,6 +183,7 @@ class FakeObserveGroupedBudgetsYearlyUseCase: ObserveGroupedBudgetsYearlyUseCase
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
@@ -205,10 +209,37 @@ class FakeObserveGroupedBudgetsAllTimeUseCase: ObserveGroupedBudgetsAllTimeUseCa
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<GroupedBudget>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveDashboardBudgetUseCase: ObserveDashboardBudgetUseCase {
+
+    private val flow = MutableStateFlow<Async<GroupedBudget?>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<GroupedBudget?>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
+        filterTypeFlow: Flow<Unit>?,
+        sortTypeFlow: Flow<Unit>?,
+        limitFlow: Flow<Int>?,
+    ): Flow<Async<GroupedBudget?>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

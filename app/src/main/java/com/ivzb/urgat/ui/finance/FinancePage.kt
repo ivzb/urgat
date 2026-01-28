@@ -9,6 +9,7 @@ sealed class FinancePage(
     override val titleResId: Int,
     override val isHorizontalScrollEnabled: Boolean,
 ): Page {
+    data object Dashboard: FinancePage(R.string.dashboard, true)
     data object Expenses: FinancePage(R.string.expenses, true)
     data object Investments: FinancePage(R.string.investments, true)
     data object Savings: FinancePage(R.string.savings, true)
@@ -16,6 +17,7 @@ sealed class FinancePage(
 }
 
 val FINANCE_PAGES = listOf(
+    FinancePage.Dashboard,
     FinancePage.Expenses,
     FinancePage.Investments,
     FinancePage.Savings,
