@@ -27,7 +27,7 @@ abstract class DefaultObserveUseCase<T, FilterType, SortType>(
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     protected fun invokeFlow(
         searchQueryFlow: Flow<String>?,
-        dateRangeFlow: Flow<LongRange>?,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<FilterType>? = null,
         sortTypeFlow: Flow<SortType>? = null,
         limitFlow: Flow<Int>?

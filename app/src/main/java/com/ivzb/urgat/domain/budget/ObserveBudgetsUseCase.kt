@@ -13,7 +13,7 @@ interface ObserveBudgetsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
-        dateRangeFlow: Flow<LongRange>?,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<BudgetsFilterType>? = null,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>? = null,

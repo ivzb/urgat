@@ -51,6 +51,7 @@
 - check if it's possible to achieve staggered layout in notes without 2 columns because they have 2 different scrolls
 - budget remaining calculation is inaccurate because it sums different investment currencies
 - consider redesign of the Library tab with a page like Finance tab
+- think if it's good idea to hide budget and Fi/Re when current month doesn't have a budget or think of something else
 
 ## Features
 - consider adding version control (git) support in the app - maybe something like export -> push to git repo
@@ -82,3 +83,10 @@
 - add date index to every table
 - remove isDeleted column and just delete data
 - add tests for finance dashboard page
+- use monthly expenses to calculate annual average because yearly expenses can be incomplete
+- https://engaging-data.com/fire-calculator/
+- https://networthify.com/calculator/earlyretirement?income=75000&initialBalance=60000&expenses=30000&annualPct=7&withdrawalRate=4
+- https://www.playingwithfire.co/retirementcalculator
+- test Fi/Re empty state
+- restore prod backup and see if calculations are correct
+- calculate fi/re based on last month, last year and all time?

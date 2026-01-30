@@ -14,6 +14,7 @@ sealed class FinancePage(
     data object Investments: FinancePage(R.string.investments, true)
     data object Savings: FinancePage(R.string.savings, true)
     data object Budgets: FinancePage(R.string.budgets, true)
+    data object FIRE: FinancePage(R.string.FIRE, true)
 }
 
 val FINANCE_PAGES = listOf(
@@ -22,4 +23,5 @@ val FINANCE_PAGES = listOf(
     FinancePage.Investments,
     FinancePage.Savings,
     FinancePage.Budgets,
+    FinancePage.FIRE,
 )

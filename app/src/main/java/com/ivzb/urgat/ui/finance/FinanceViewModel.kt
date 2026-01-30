@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUseCase
+import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
@@ -31,6 +32,7 @@ class FinanceViewModel @Inject constructor(
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
     observeSavingsUseCase: ObserveSavingsUseCase,
     observeBudgetsUseCase: ObserveBudgetsUseCase,
+    observeFiReUseCase: ObserveFiReUseCase,
     resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
 
@@ -48,6 +50,7 @@ class FinanceViewModel @Inject constructor(
         observeInvestmentsUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeSavingsUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeBudgetsUseCase(_searchQuery, null, null, null, _itemsLimit),
+        observeFiReUseCase(_searchQuery, _budgetDateRange, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {
@@ -56,7 +59,7 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { dashboardBudget, expenses, investments, savings, budgets, uiEvent ->
+        onSuccess = { dashboardBudget, expenses, investments, savings, budgets, fire, uiEvent ->
             FinanceUiState(
                 dashboardBudget = dashboardBudget,
                 expenses = expenses,
@@ -87,6 +90,7 @@ class FinanceViewModel @Inject constructor(
                     emptyMessage = R.string.no_budgets_message,
                     emptyButtonLabel = R.string.add_budget,
                 ),
+                fire = fire,
                 isLoading = false,
                 uiEvent = uiEvent,
             )

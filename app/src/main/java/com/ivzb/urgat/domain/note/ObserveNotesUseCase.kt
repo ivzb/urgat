@@ -11,7 +11,7 @@ interface ObserveNotesUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
-        dateRangeFlow: Flow<LongRange>?,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<Unit>? = null,
         sortTypeFlow: Flow<Unit>? = null,
         limitFlow: Flow<Int>? = null,

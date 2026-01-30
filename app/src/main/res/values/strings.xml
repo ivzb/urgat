@@ -183,4 +183,5 @@
     <string name="loading_savings">Loading savings</string>
     <string name="error_savings">Error while loading savings</string>
     <string name="dashboard">Dashboard</string>
+    <string name="FIRE">FI/RE</string>
 </resources>

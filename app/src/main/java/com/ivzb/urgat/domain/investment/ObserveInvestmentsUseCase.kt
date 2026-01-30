@@ -12,7 +12,7 @@ interface ObserveInvestmentsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
-        dateRangeFlow: Flow<LongRange>?,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<String>? = null,
         sortTypeFlow: Flow<InvestmentsSortType>?,
         limitFlow: Flow<Int>? = null,

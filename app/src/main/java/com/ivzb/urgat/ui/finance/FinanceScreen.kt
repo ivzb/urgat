@@ -2,10 +2,13 @@ package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,11 +18,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -40,6 +45,8 @@ import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingItem
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.format
+import java.math.BigDecimal
 
 @Composable
 fun FinanceScreen(
@@ -221,6 +228,10 @@ fun FinanceScreen(
                                 onSeeAllBudgets = onSeeAllBudgets,
                                 onBudgetClick = onBudgetClick,
                             )
+
+                            FinancePage.FIRE -> itemFiRe(
+                                fire = uiState.fire,
+                            )
                         }
                     }
                 }
@@ -236,7 +247,6 @@ private fun LazyListScope.itemDashboard(
 ) {
 
     if (dashboardBudget == null) {
-        // todo: empty state
         return
     }
 
@@ -369,7 +379,6 @@ private fun LazyListScope.itemSavings(
     }
 }
 
-
 private fun LazyListScope.itemBudgets(
     budgets: List<Budget>,
     budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
@@ -408,6 +417,32 @@ private fun LazyListScope.itemBudgets(
                 )
             }
         }
+    }
+}
+
+private fun LazyListScope.itemFiRe(
+    fire: FiRe?,
+) {
+
+    if (fire == null) {
+        return
+    }
+
+    item {
+        Text("fire target: ${fire.target.format()}")
+        Text("fire remaining: ${fire.remaining.format()}")
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Text("last month income: ${fire.lastMonthIncome.format()}")
+        Text("last month expenses: ${fire.lastMonthExpenses.format()}")
+        Text("last month investments: ${fire.lastMonthInvestments.format()}")
+        Text("last month savings: ${fire.lastMonthSavings.format()}")
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Text("all time investments: ${fire.allTimeInvestments.format()}")
+        Text("all time savings: ${fire.allTimeSavings.format()}")
     }
 }
 

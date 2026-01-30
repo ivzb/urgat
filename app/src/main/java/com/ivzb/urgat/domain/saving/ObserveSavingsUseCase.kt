@@ -12,7 +12,7 @@ interface ObserveSavingsUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
-        dateRangeFlow: Flow<LongRange>?,
+        dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<Unit>? = null,
         sortTypeFlow: Flow<SavingsSortType>?,
         limitFlow: Flow<Int>? = null,

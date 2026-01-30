@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.finance
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
@@ -31,11 +32,19 @@ data class FinanceUiState(
     val budgets: List<Budget> = emptyList(),
     val budgetsFilteringUiInfo: BudgetsFilteringUiInfo = BudgetsFilteringUiInfo(),
 
+    val fire: FiRe? = null,
+
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,
     override val isEmpty: Boolean = false,
 
-    override val pages: List<Page> = FINANCE_PAGES,
+    override val pages: List<Page> = FINANCE_PAGES.filter {
+        when (it) {
+            FinancePage.Dashboard -> dashboardBudget != null
+            FinancePage.FIRE -> fire != null
+            else -> true
+        }
+    },
     override val initialPage: Int = 0,
 
     override val filteringUiInfo: FilteringUiInfo = FinanceFilteringUiInfo(),
