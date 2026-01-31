@@ -19,21 +19,29 @@ import org.junit.experimental.categories.Category
 class FinanceScreenshotTest: ScreenshotTest() {
 
     @Test
-    @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_FinanceScreen_sampleData_expenses() =
+    fun screenshotTest_FinanceScreen_sampleData_dashboard() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 0)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_investments() =
+    @Category(PlayStoreScreenshotTest::class)
+    fun screenshotTest_FinanceScreen_sampleData_expenses() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 1)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_savings() =
+    fun screenshotTest_FinanceScreen_sampleData_investments() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 2)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_budgets() =
+    fun screenshotTest_FinanceScreen_sampleData_savings() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 3)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_budgets() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 4)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_fire() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 5)
 
     private fun screenshotTest_FinanceScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = FinanceUiState(

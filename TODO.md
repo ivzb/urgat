@@ -88,5 +88,10 @@
 - https://networthify.com/calculator/earlyretirement?income=75000&initialBalance=60000&expenses=30000&annualPct=7&withdrawalRate=4
 - https://www.playingwithfire.co/retirementcalculator
 - test Fi/Re empty state
-- restore prod backup and see if calculations are correct
 - calculate fi/re based on last month, last year and all time?
+- show Fi/Re chart for each year
+- add tests for Fi/Re
+- store Fi/Re parameters into shared prefs
+- make _withdrawalRate, _returnOfInvestments, _taxRate configurable via UI
+- check what happens when the most recent budget is not complete
+- maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations

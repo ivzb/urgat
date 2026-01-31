@@ -18,7 +18,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
@@ -46,7 +45,6 @@ import com.ivzb.urgat.ui.savings.SavingItem
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
-import java.math.BigDecimal
 
 @Composable
 fun FinanceScreen(
@@ -429,20 +427,26 @@ private fun LazyListScope.itemFiRe(
     }
 
     item {
-        Text("fire target: ${fire.target.format()}")
-        Text("fire remaining: ${fire.remaining.format()}")
+        Text(stringResource(R.string.fire_title))
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
 
-        Text("last month income: ${fire.lastMonthIncome.format()}")
-        Text("last month expenses: ${fire.lastMonthExpenses.format()}")
-        Text("last month investments: ${fire.lastMonthInvestments.format()}")
-        Text("last month savings: ${fire.lastMonthSavings.format()}")
+        Text(stringResource(R.string.fire_savings_rate, fire.savingsRate.format()))
+        Text(stringResource(R.string.fire_accumulated_stash, fire.accumulatedStash.format()))
+        Text(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
+        Text(stringResource(R.string.fire_annual_expenses, fire.annualExpenses.format()))
+        Text(stringResource(R.string.fire_annual_investments, fire.annualInvestments.format()))
+        Text(stringResource(R.string.fire_target, fire.target.format()))
 
-        Spacer(modifier = Modifier.padding(8.dp))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
 
-        Text("all time investments: ${fire.allTimeInvestments.format()}")
-        Text("all time savings: ${fire.allTimeSavings.format()}")
+        Text(stringResource(R.string.fire_withdrawal_rate, fire.withdrawalRate.format()))
+        Text(stringResource(R.string.fire_return_of_investments, fire.returnOfInvestments.format()))
+        Text(stringResource(R.string.fire_tax_rate, fire.taxRate.format()))
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+
+        Text(stringResource(R.string.fire_years_until_fire, fire.yearsUntilFiRe.format()))
     }
 }
 
@@ -490,20 +494,32 @@ private fun FinanceScreenPreview(initialPage: Int = 0) {
 
 @AllDevicesPreview
 @Composable
-private fun FinanceScreenInvestmentsPreview() {
+private fun FinanceScreenExpensesPreview() {
     FinanceScreenPreview(initialPage = 1)
 }
 
 @AllDevicesPreview
 @Composable
-private fun FinanceScreenSavingsPreview() {
+private fun FinanceScreenInvestmentsPreview() {
     FinanceScreenPreview(initialPage = 2)
 }
 
 @AllDevicesPreview
 @Composable
-private fun FinanceScreenBudgetsPreview() {
+private fun FinanceScreenSavingsPreview() {
     FinanceScreenPreview(initialPage = 3)
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenBudgetsPreview() {
+    FinanceScreenPreview(initialPage = 4)
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenFiRePreview() {
+    FinanceScreenPreview(initialPage = 5)
 }
 
 @AllDevicesPreview

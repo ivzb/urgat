@@ -6,14 +6,18 @@ data class FiRe(
     val lastMonthIncome: BigDecimal,
     val lastMonthExpenses: BigDecimal,
     val lastMonthInvestments: BigDecimal,
-    val lastMonthSavings: BigDecimal,
 
-    val allTimeInvestments: BigDecimal,
-    val allTimeSavings: BigDecimal,
-) {
+    val annualIncome: BigDecimal,
+    val annualExpenses: BigDecimal,
+    val annualInvestments: BigDecimal,
 
-    val target: BigDecimal = lastMonthExpenses * (12 * 25).toBigDecimal()
+    val accumulatedStash: BigDecimal,
+    val savingsRate: BigDecimal,
+    val target: BigDecimal,
 
-    val remaining: BigDecimal = (target - (lastMonthInvestments - lastMonthSavings) * 12.toBigDecimal()).coerceAtLeast(0.toBigDecimal())
+    val withdrawalRate: BigDecimal,
+    val returnOfInvestments: BigDecimal,
+    val taxRate: BigDecimal,
 
-}
+    val yearsUntilFiRe: BigDecimal,
+)

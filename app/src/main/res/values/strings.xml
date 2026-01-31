@@ -184,4 +184,15 @@
     <string name="error_savings">Error while loading savings</string>
     <string name="dashboard">Dashboard</string>
     <string name="FIRE">FI/RE</string>
+    <string name="fire_title">All calculations are based on the most recent budget. At least one complete month of data is required for an accurate prediction.</string>
+    <string name="fire_savings_rate">Savings rate: %1$s%%</string>
+    <string name="fire_accumulated_stash">Accumulated stash: %1$s</string>
+    <string name="fire_annual_income">Annual income: %1$s</string>
+    <string name="fire_annual_expenses">Annual expenses: %1$s</string>
+    <string name="fire_annual_investments">Annual investments: %1$s</string>
+    <string name="fire_target">FI/RE Target: %1$s (25 x expenses + tax)</string>
+    <string name="fire_withdrawal_rate">Withdrawal rate: %1$s%%</string>
+    <string name="fire_return_of_investments">Return of Investments: %1$s%%</string>
+    <string name="fire_tax_rate">Tax rate: %1$s%%</string>
+    <string name="fire_years_until_fire">You can FI/RE in %1$s years.</string>
 </resources>
