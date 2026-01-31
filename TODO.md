@@ -95,3 +95,5 @@
 - make _withdrawalRate, _returnOfInvestments, _taxRate configurable via UI
 - check what happens when the most recent budget is not complete
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
+- add ObserveDashboardBudgetUseCaseTest
+- add DefaultObserveFiReUseCaseTest
