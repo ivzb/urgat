@@ -92,22 +92,19 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val withdrawalRatePercentage = withdrawalRate.toPercentage()
                 val returnOfInvestmentsPercentage = 1.toBigDecimal() + returnOfInvestments.toPercentage()
                 val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
-                
-                val isIncomplete =
-                    annualIncome == 0.toBigDecimal() ||
-                    annualExpenses == 0.toBigDecimal() ||
-                    accumulatedStash == 0.toBigDecimal()
+
+                val isIncomplete = annualIncome == "0.00".toBigDecimal() || annualExpenses == "0.00".toBigDecimal()
 
                 if (isIncomplete) {
                     return@combine Async.Success(null)
                 }
 
                 val savingsRate = (1.toBigDecimal() - (annualExpenses / annualIncome)) * 100.toBigDecimal()
-                val target = annualExpenses * taxRatePercentage / withdrawalRatePercentage
+                val target = (annualExpenses * taxRatePercentage / withdrawalRatePercentage).round()
 
                 val yearsUntilFiRe = calculateFiReYears(
                     annualIncome = annualIncome,
-                    annualInvestments = annualIncome - annualExpenses,//annualInvestments + annualSavings,
+                    annualInvestments = annualIncome - annualExpenses,
                     accumulatedStash = accumulatedStash,
                     target = target,
                     returnOfInvestments = returnOfInvestmentsPercentage.toDouble(),
@@ -179,7 +176,15 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
         val exactYear = y0 + (target.toDouble() - s0) / (s1 - s0)
 
-        return exactYear.toBigDecimal()
+        return if (exactYear.isFinite()) {
+            exactYear.toBigDecimal().round()
+        } else {
+            INVALID_YEAR
+        }
+    }
+
+    private fun BigDecimal.round(): BigDecimal {
+        return this.setScale(2, RoundingMode.HALF_UP)
     }
 
     private fun BigDecimal.toPercentage(): BigDecimal {
@@ -192,6 +197,12 @@ class DefaultObserveFiReUseCase @Inject constructor(
             maxOf(this.scale(), other.scale(), 2),
             RoundingMode.HALF_UP
         )
+    }
+
+    companion object {
+
+        private val INVALID_YEAR = 99.99.toBigDecimal()
+
     }
 
 }

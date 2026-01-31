@@ -90,10 +90,7 @@
 - test Fi/Re empty state
 - calculate fi/re based on last month, last year and all time?
 - show Fi/Re chart for each year
-- add tests for Fi/Re
 - store Fi/Re parameters into shared prefs
 - make _withdrawalRate, _returnOfInvestments, _taxRate configurable via UI
-- check what happens when the most recent budget is not complete
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
-- add ObserveDashboardBudgetUseCaseTest
-- add DefaultObserveFiReUseCaseTest
+- fire tab disappears when month changes and there is no budget and it's considered incomplete - fix it
