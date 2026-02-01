@@ -1,3 +1,8 @@
+## Release notes 26.02.00
+
+New:
+- Introduced FI/RE feature in the Finance tab.
+
 ## Release notes 26.01.29
 
 No release notes.
