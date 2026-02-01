@@ -18,6 +18,7 @@ import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import com.ivzb.urgat.util.currentMonthRange
+import com.ivzb.urgat.util.untilCurrentMonthRange
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,13 +49,15 @@ class FinanceViewModel @Inject constructor(
     private val _returnOfInvestments = MutableStateFlow(7.toBigDecimal())
     private val _taxRate = MutableStateFlow(10.toBigDecimal())
 
+    private val _fireDateRange = MutableStateFlow(untilCurrentMonthRange())
+
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeDashboardBudgetUseCase(_searchQuery, _budgetDateRange, null, null, _itemsLimit),
         observeExpensesUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeInvestmentsUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeSavingsUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeBudgetsUseCase(_searchQuery, null, null, null, _itemsLimit),
-        observeFiReUseCase(_withdrawalRate, _returnOfInvestments, _taxRate, _searchQuery, _budgetDateRange, null, null, _itemsLimit),
+        observeFiReUseCase(_withdrawalRate, _returnOfInvestments, _taxRate, _searchQuery, _fireDateRange, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {

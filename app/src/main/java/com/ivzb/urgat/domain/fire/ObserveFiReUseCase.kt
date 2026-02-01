@@ -66,24 +66,35 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 investmentsAllTimeAsync is Async.Success &&
                 savingsAllTimeAsync is Async.Success) {
 
-                val budgets = budgetCategoriesMonthlyAsync.data
-                val expenses = expensesMonthlyAsync.data
+                val budgetCategoriesMonthly = budgetCategoriesMonthlyAsync.data
+                val expensesMonthly = expensesMonthlyAsync.data
 
-                if (budgets.size > 1) {
-                    Assert.fail("Unexpected to find more han one monthly budgets for Fi/Re.")
+                val selection = (budgetCategoriesMonthly.map { it.group } + expensesMonthly.map { it.group })
+                    .distinct()
+                    .firstNotNullOfOrNull { group ->
+                        val budget = budgetCategoriesMonthly.find { budget -> budget.group == group }
+                        val expense = expensesMonthly.find { expense -> expense.group == group }
+
+                        if (budget != null && expense != null) {
+                            Triple(group, budget, expense)
+                        } else {
+                            null
+                        }
+                    }
+
+                if (selection == null) {
+                    return@combine Async.Success(null)
                 }
 
-                if (expenses.size > 1) {
-                    Assert.fail("Unexpected to find more han one monthly expenses for Fi/Re.")
-                }
+                val (selectionGroup, budget, expenses) = selection
 
-                val lastMonthIncome = budgets.sumOf { it.total } / budgets.size.coerceAtLeast(1).toBigDecimal()
-                val lastMonthExpenses = expenses.sumOf { it.total } / expenses.size.coerceAtLeast(1).toBigDecimal()
-                val lastMonthInvestments = lastMonthIncome - lastMonthExpenses
+                val monthlyIncome = budget.total
+                val monthlyExpenses = expenses.total
+                val monthlyInvestments = monthlyIncome - monthlyExpenses
 
-                val annualIncome = lastMonthIncome * 12.toBigDecimal()
-                val annualExpenses = lastMonthExpenses * 12.toBigDecimal()
-                val annualInvestments = lastMonthInvestments * 12.toBigDecimal()
+                val annualIncome = monthlyIncome * 12.toBigDecimal()
+                val annualExpenses = monthlyExpenses * 12.toBigDecimal()
+                val annualInvestments = monthlyInvestments * 12.toBigDecimal()
 
                 val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.marketValue }
                 val allTimeSavings = savingsAllTimeAsync.data.total
@@ -93,7 +104,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val returnOfInvestmentsPercentage = 1.toBigDecimal() + returnOfInvestments.toPercentage()
                 val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
 
-                val isIncomplete = annualIncome == "0.00".toBigDecimal() || annualExpenses == "0.00".toBigDecimal()
+                val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
 
                 if (isIncomplete) {
                     return@combine Async.Success(null)
@@ -111,9 +122,11 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 )
 
                 val fire = FiRe(
-                    lastMonthIncome = lastMonthIncome,
-                    lastMonthExpenses = lastMonthExpenses,
-                    lastMonthInvestments = lastMonthInvestments,
+                    selection = selectionGroup,
+
+                    monthlyIncome = monthlyIncome,
+                    monthlyExpenses = monthlyExpenses,
+                    monthlyInvestments = monthlyInvestments,
 
                     annualIncome = annualIncome,
                     annualExpenses = annualExpenses,

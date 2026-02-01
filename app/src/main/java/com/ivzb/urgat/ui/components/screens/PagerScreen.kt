@@ -13,10 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,8 +47,8 @@ fun PagerScreen(
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
-    val listStates = remember { List(uiState.pages.size) { LazyListState() } }
-    val currentListState = remember { mutableStateOf(listStates[0]) }
+    val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
+    val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
 
     ListDetailScreen(
         uiState = uiState,
@@ -85,8 +83,8 @@ fun PagerScreen(
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
-    val listStates = remember { List(uiState.pages.size) { LazyListState() } }
-    val currentListState = remember { mutableStateOf(listStates[0]) }
+    val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
+    val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
 
     PagerContent(
         pages = uiState.pages,
@@ -108,7 +106,7 @@ fun PagerContent(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
-    val isHorizontalScrollEnabled by remember {
+    val isHorizontalScrollEnabled by remember(pages.size) {
         derivedStateOf { pages[pagerState.currentPage].isHorizontalScrollEnabled }
     }
 

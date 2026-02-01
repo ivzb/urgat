@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
@@ -45,6 +46,7 @@ import com.ivzb.urgat.ui.savings.SavingItem
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.toLocalDate
 
 @Composable
 fun FinanceScreen(
@@ -427,15 +429,19 @@ private fun LazyListScope.itemFiRe(
     }
 
     item {
-        Text(stringResource(R.string.fire_title))
+        Text(stringResource(R.string.fire_title, fire.selection))
 
         Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
 
-        Text(stringResource(R.string.fire_savings_rate, fire.savingsRate.format()))
+        Text(stringResource(R.string.fire_info))
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+
         Text(stringResource(R.string.fire_accumulated_stash, fire.accumulatedStash.format()))
         Text(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
         Text(stringResource(R.string.fire_annual_expenses, fire.annualExpenses.format()))
         Text(stringResource(R.string.fire_annual_investments, fire.annualInvestments.format()))
+        Text(stringResource(R.string.fire_savings_rate, fire.savingsRate.format()))
         Text(stringResource(R.string.fire_target, fire.target.format()))
 
         Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))

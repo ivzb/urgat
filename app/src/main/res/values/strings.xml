@@ -184,7 +184,8 @@
     <string name="error_savings">Error while loading savings</string>
     <string name="dashboard">Dashboard</string>
     <string name="FIRE">FI/RE</string>
-    <string name="fire_title">All calculations are based on the most recent budget. At least one complete month of data is required for an accurate prediction.</string>
+    <string name="fire_title">The current data is based on %1$s.</string>
+    <string name="fire_info">All calculations are derived from the most recent month with complete data, meaning both budget and expenses are filled. The current ongoing month is always excluded, as it is not considered complete until it ends.</string>
     <string name="fire_savings_rate">Savings rate: %1$s%%</string>
     <string name="fire_accumulated_stash">Accumulated stash: %1$s</string>
     <string name="fire_annual_income">Annual income: %1$s</string>

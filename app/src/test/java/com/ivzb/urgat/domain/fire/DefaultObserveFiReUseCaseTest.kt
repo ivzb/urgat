@@ -59,16 +59,16 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 40 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 3000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 3000.toBigDecimal(), listOf(
                 Expense("1", "1", 1500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
             )),
         ),
         expected = EXPECTED_FIRE.copy(
-            lastMonthExpenses = "3000.00".toBigDecimal(),
-            lastMonthInvestments = "2000.00".toBigDecimal(),
-            annualExpenses = "36000.00".toBigDecimal(),
-            annualInvestments = "24000.00".toBigDecimal(),
+            monthlyExpenses = "3000".toBigDecimal(),
+            monthlyInvestments = "2000".toBigDecimal(),
+            annualExpenses = "36000".toBigDecimal(),
+            annualInvestments = "24000".toBigDecimal(),
             savingsRate = "40.00".toBigDecimal(),
             target = "990000.00".toBigDecimal(),
             yearsUntilFiRe = "17.74".toBigDecimal(),
@@ -78,7 +78,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 40 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 3000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 3000.toBigDecimal(), listOf(
                 Expense("1", "1", 1500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
             )),
@@ -86,10 +86,10 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
         expected = EXPECTED_FIRE.copy(
-            lastMonthExpenses = "3000.00".toBigDecimal(),
-            lastMonthInvestments = "2000.00".toBigDecimal(),
-            annualExpenses = "36000.00".toBigDecimal(),
-            annualInvestments = "24000.00".toBigDecimal(),
+            monthlyExpenses = "3000".toBigDecimal(),
+            monthlyInvestments = "2000".toBigDecimal(),
+            annualExpenses = "36000".toBigDecimal(),
+            annualInvestments = "24000".toBigDecimal(),
             accumulatedStash = "0.00".toBigDecimal(),
             savingsRate = "40.00".toBigDecimal(),
             target = "990000.00".toBigDecimal(),
@@ -114,16 +114,16 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 60 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 2000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 2000.toBigDecimal(), listOf(
                 Expense("1", "1", 500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
             )),
         ),
         expected = EXPECTED_FIRE.copy(
-            lastMonthExpenses = "2000.00".toBigDecimal(),
-            lastMonthInvestments = "3000.00".toBigDecimal(),
-            annualExpenses = "24000.00".toBigDecimal(),
-            annualInvestments = "36000.00".toBigDecimal(),
+            monthlyExpenses = "2000".toBigDecimal(),
+            monthlyInvestments = "3000".toBigDecimal(),
+            annualExpenses = "24000".toBigDecimal(),
+            annualInvestments = "36000".toBigDecimal(),
             savingsRate = "60.00".toBigDecimal(),
             target = "660000.00".toBigDecimal(),
             yearsUntilFiRe = "10.59".toBigDecimal(),
@@ -133,7 +133,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 60 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 2000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 2000.toBigDecimal(), listOf(
                 Expense("1", "1", 500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
             )),
@@ -141,10 +141,10 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
         expected = EXPECTED_FIRE.copy(
-            lastMonthExpenses = "2000.00".toBigDecimal(),
-            lastMonthInvestments = "3000.00".toBigDecimal(),
-            annualExpenses = "24000.00".toBigDecimal(),
-            annualInvestments = "36000.00".toBigDecimal(),
+            monthlyExpenses = "2000".toBigDecimal(),
+            monthlyInvestments = "3000".toBigDecimal(),
+            annualExpenses = "24000".toBigDecimal(),
+            annualInvestments = "36000".toBigDecimal(),
             accumulatedStash = "0.00".toBigDecimal(),
             savingsRate = "60.00".toBigDecimal(),
             target = "660000.00".toBigDecimal(),
@@ -155,7 +155,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 100 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
         ),
         expected = null,
     )
@@ -163,7 +163,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 100 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -173,7 +173,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 income with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
         ),
         expected = null,
     )
@@ -181,7 +181,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 income without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -191,16 +191,16 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 5000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 5000.toBigDecimal(), listOf(
                 Expense("1", "1", 3500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
             )),
         ),
         expected = EXPECTED_FIRE.copy(
-            lastMonthExpenses = "5000.00".toBigDecimal(),
-            lastMonthInvestments = "0.00".toBigDecimal(),
-            annualExpenses = "60000.00".toBigDecimal(),
-            annualInvestments = "0.00".toBigDecimal(),
+            monthlyExpenses = "5000".toBigDecimal(),
+            monthlyInvestments = "0".toBigDecimal(),
+            annualExpenses = "60000".toBigDecimal(),
+            annualInvestments = "0".toBigDecimal(),
             savingsRate = "0.00".toBigDecimal(),
             target = "1650000.00".toBigDecimal(),
             yearsUntilFiRe = "51.84".toBigDecimal(),
@@ -210,7 +210,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("2025/11", 5000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 5000.toBigDecimal(), listOf(
                 Expense("1", "1", 3500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
             )),
@@ -218,10 +218,10 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
         expected = EXPECTED_FIRE.copy(
-            lastMonthExpenses = "5000.00".toBigDecimal(),
-            lastMonthInvestments = "0.00".toBigDecimal(),
-            annualExpenses = "60000.00".toBigDecimal(),
-            annualInvestments = "0.00".toBigDecimal(),
+            monthlyExpenses = "5000".toBigDecimal(),
+            monthlyInvestments = "0".toBigDecimal(),
+            annualExpenses = "60000".toBigDecimal(),
+            annualInvestments = "0".toBigDecimal(),
             accumulatedStash = "0.00".toBigDecimal(),
             savingsRate = "0.00".toBigDecimal(),
             target = "1650000.00".toBigDecimal(),
@@ -408,12 +408,13 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     companion object {
 
         private val EXPECTED_FIRE = FiRe(
-            lastMonthIncome = "5000.00".toBigDecimal(),
-            lastMonthExpenses = "2500.00".toBigDecimal(),
-            lastMonthInvestments = "2500.00".toBigDecimal(),
-            annualIncome = "60000.00".toBigDecimal(),
-            annualExpenses = "30000.00".toBigDecimal(),
-            annualInvestments = "30000.00".toBigDecimal(),
+            selection = "December 2025",
+            monthlyIncome = "5000".toBigDecimal(),
+            monthlyExpenses = "2500".toBigDecimal(),
+            monthlyInvestments = "2500".toBigDecimal(),
+            annualIncome = "60000".toBigDecimal(),
+            annualExpenses = "30000".toBigDecimal(),
+            annualInvestments = "30000".toBigDecimal(),
             accumulatedStash = "50000".toBigDecimal(),
             savingsRate = "50.00".toBigDecimal(),
             target = "825000.00".toBigDecimal(),
@@ -425,7 +426,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
         private val BUDGET = listOf(
             GroupedBudgetCategories(
-                group = "2025",
+                group = "December 2025",
                 total = 5000.toBigDecimal(),
                 items = listOf(
                     BudgetCategory("1", "1", 5000.toBigDecimal()),
@@ -434,23 +435,23 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         )
 
         private val EXPENSES = listOf(
-            GroupedExpenses("2025/11", 2500.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", 2500.toBigDecimal(), listOf(
                 Expense("1", "1", 1500.toBigDecimal(), "1", 1, false, false, 1),
                 Expense("2", "2", 1000.toBigDecimal(), "2", 2, false, false, 2),
             )),
         )
         
-        private val NO_INVESTMENTS = GroupedInvestments("2025", "", listOf())
+        private val NO_INVESTMENTS = GroupedInvestments("December 2025", "", listOf())
 
-        private val INVESTMENTS = GroupedInvestments("2025", "40,000 EUR", listOf(
+        private val INVESTMENTS = GroupedInvestments("December 2025", "40,000 EUR", listOf(
             Investment("1", "1", 1.toBigDecimal(), 20_000.toBigDecimal(), "1", "EUR", 1, false, 1),
             Investment("2", "2", 1.toBigDecimal(), 10_000.toBigDecimal(), "2", "EUR", 2, false, 2),
             Investment("2", "2", 1.toBigDecimal(), 10_000.toBigDecimal(), "2", "EUR", 2, false, 2),
         ))
         
-        private val NO_SAVINGS = GroupedSavings("2025", "0.00".toBigDecimal(), listOf())
+        private val NO_SAVINGS = GroupedSavings("December 2025", "0.00".toBigDecimal(), listOf())
 
-        private val SAVINGS = GroupedSavings("2025", 10_000.toBigDecimal(), listOf(
+        private val SAVINGS = GroupedSavings("December 2025", 10_000.toBigDecimal(), listOf(
             Saving("1", "Emergency fund", 7_000.toBigDecimal(), 1, false, 1),
             Saving("2", "Emergency fund", 3_000.toBigDecimal(), 2, false, 2),
         ))

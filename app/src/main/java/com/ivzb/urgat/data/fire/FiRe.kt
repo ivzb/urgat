@@ -3,9 +3,11 @@ package com.ivzb.urgat.data.fire
 import java.math.BigDecimal
 
 data class FiRe(
-    val lastMonthIncome: BigDecimal,
-    val lastMonthExpenses: BigDecimal,
-    val lastMonthInvestments: BigDecimal,
+    val selection: String,
+
+    val monthlyIncome: BigDecimal,
+    val monthlyExpenses: BigDecimal,
+    val monthlyInvestments: BigDecimal,
 
     val annualIncome: BigDecimal,
     val annualExpenses: BigDecimal,

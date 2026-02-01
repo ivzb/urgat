@@ -128,9 +128,11 @@ class FinanceViewModelTest {
         fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
 
         val fakeFiRe = FiRe(
-            lastMonthIncome = 5000.toBigDecimal(),
-            lastMonthExpenses = 3000.toBigDecimal(),
-            lastMonthInvestments = 2000.toBigDecimal(),
+            selection = "Dedember 2025",
+
+            monthlyIncome = 5000.toBigDecimal(),
+            monthlyExpenses = 3000.toBigDecimal(),
+            monthlyInvestments = 2000.toBigDecimal(),
 
             annualIncome = 60_000.toBigDecimal(),
             annualExpenses = 36_000.toBigDecimal(),
@@ -184,9 +186,11 @@ class FinanceViewModelTest {
         fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
 
         val fakeFiRe = FiRe(
-            lastMonthIncome = 5000.toBigDecimal(),
-            lastMonthExpenses = 3000.toBigDecimal(),
-            lastMonthInvestments = 2000.toBigDecimal(),
+            selection = "December 2025",
+
+            monthlyIncome = 5000.toBigDecimal(),
+            monthlyExpenses = 3000.toBigDecimal(),
+            monthlyInvestments = 2000.toBigDecimal(),
 
             annualIncome = 60_000.toBigDecimal(),
             annualExpenses = 36_000.toBigDecimal(),

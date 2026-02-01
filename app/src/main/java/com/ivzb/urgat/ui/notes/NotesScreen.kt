@@ -65,7 +65,7 @@ fun NotesScreen(
     modifier: Modifier = Modifier
 ) {
     val pagesSize = 2
-    val listStates = remember { List(pagesSize) { LazyListState() } }
+    val listStates = remember(pagesSize) { List(pagesSize) { LazyListState() } }
 
     ListDetailScreen(
         uiState = uiState,
