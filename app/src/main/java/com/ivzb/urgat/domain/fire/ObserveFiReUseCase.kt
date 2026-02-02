@@ -5,7 +5,6 @@ import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
-import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
@@ -18,9 +17,9 @@ import kotlin.math.pow
 interface ObserveFiReUseCase {
 
     operator fun invoke(
-        withdrawalRateFlow: Flow<BigDecimal>,
-        returnOfInvestmentsFlow: Flow<BigDecimal>,
-        taxRateFlow: Flow<BigDecimal>,
+        withdrawalRateFlow: Flow<BigDecimal?>,
+        returnOfInvestmentsFlow: Flow<BigDecimal?>,
+        taxRateFlow: Flow<BigDecimal?>,
 
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>? = null,
@@ -39,9 +38,9 @@ class DefaultObserveFiReUseCase @Inject constructor(
 ): ObserveFiReUseCase {
 
     override fun invoke(
-        withdrawalRateFlow: Flow<BigDecimal>,
-        returnOfInvestmentsFlow: Flow<BigDecimal>,
-        taxRateFlow: Flow<BigDecimal>,
+        withdrawalRateFlow: Flow<BigDecimal?>,
+        returnOfInvestmentsFlow: Flow<BigDecimal?>,
+        taxRateFlow: Flow<BigDecimal?>,
 
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
@@ -100,15 +99,43 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val allTimeSavings = savingsAllTimeAsync.data.total
                 val accumulatedStash = allTimeInvestments + allTimeSavings
 
-                val withdrawalRatePercentage = withdrawalRate.toPercentage()
-                val returnOfInvestmentsPercentage = 1.toBigDecimal() + returnOfInvestments.toPercentage()
-                val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
-
                 val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
 
                 if (isIncomplete) {
                     return@combine Async.Success(null)
                 }
+
+                val isReady = withdrawalRate != null && returnOfInvestments != null && taxRate != null
+
+                if (!isReady) {
+                    return@combine Async.Success(
+                        FiRe(
+                            selection = selectionGroup,
+
+                            monthlyIncome = monthlyIncome,
+                            monthlyExpenses = monthlyExpenses,
+                            monthlyInvestments = monthlyInvestments,
+
+                            annualIncome = annualIncome,
+                            annualExpenses = annualExpenses,
+                            annualInvestments = annualInvestments,
+
+                            accumulatedStash = accumulatedStash,
+                            savingsRate = null,
+                            target = null,
+
+                            withdrawalRate = withdrawalRate,
+                            returnOfInvestments = returnOfInvestments,
+                            taxRate = taxRate,
+
+                            yearsUntilFiRe = null,
+                        )
+                    )
+                }
+
+                val withdrawalRatePercentage = withdrawalRate.coerceAtLeast(1.toBigDecimal()).toPercentage()
+                val returnOfInvestmentsPercentage = 1.toBigDecimal() + returnOfInvestments.toPercentage()
+                val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
 
                 val savingsRate = (1.toBigDecimal() - (annualExpenses / annualIncome)) * 100.toBigDecimal()
                 val target = (annualExpenses * taxRatePercentage / withdrawalRatePercentage).round()

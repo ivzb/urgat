@@ -14,12 +14,12 @@ data class FiRe(
     val annualInvestments: BigDecimal,
 
     val accumulatedStash: BigDecimal,
-    val savingsRate: BigDecimal,
-    val target: BigDecimal,
+    val savingsRate: BigDecimal?,
+    val target: BigDecimal?,
 
-    val withdrawalRate: BigDecimal,
-    val returnOfInvestments: BigDecimal,
-    val taxRate: BigDecimal,
+    val withdrawalRate: BigDecimal?,
+    val returnOfInvestments: BigDecimal?,
+    val taxRate: BigDecimal?,
 
-    val yearsUntilFiRe: BigDecimal,
+    val yearsUntilFiRe: BigDecimal?,
 )

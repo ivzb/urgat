@@ -4,5 +4,6 @@ sealed class FinanceIntent {
     data class ItemsLimitChanged(val itemsLimit: Int): FinanceIntent()
     data class SearchQueryChanged(val query: String): FinanceIntent()
     data class FabActionClick(val itemId: FinanceFabActionId): FinanceIntent()
+    data class UpdateFireWithdrawalRate(val withdrawalRate: String): FinanceIntent()
     object EventConsumed: FinanceIntent()
 }

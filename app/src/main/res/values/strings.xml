@@ -192,8 +192,9 @@
     <string name="fire_annual_expenses">Annual expenses: %1$s</string>
     <string name="fire_annual_investments">Annual investments: %1$s</string>
     <string name="fire_target">FI/RE Target: %1$s (25 x expenses + tax)</string>
-    <string name="fire_withdrawal_rate">Withdrawal rate: %1$s%%</string>
+    <string name="fire_withdrawal_rate">Withdrawal rate: </string>
     <string name="fire_return_of_investments">Return of Investments: %1$s%%</string>
     <string name="fire_tax_rate">Tax rate: %1$s%%</string>
     <string name="fire_years_until_fire">You can FI/RE in %1$s years.</string>
+    <string name="percent">%</string>
 </resources>

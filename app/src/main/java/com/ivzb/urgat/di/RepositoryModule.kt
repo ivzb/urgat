@@ -6,6 +6,8 @@ import com.ivzb.urgat.data.expense.DefaultExpensesRepository
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.exportData.DefaultExportDataRepository
 import com.ivzb.urgat.data.exportData.ExportDataRepository
+import com.ivzb.urgat.data.fire.DefaultFireRepository
+import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.importData.DefaultImportDataRepository
 import com.ivzb.urgat.data.importData.ImportDataRepository
 import com.ivzb.urgat.data.investment.DefaultInvestmentsRepository
@@ -69,5 +71,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsBudgetsRepository(budgetsRepository: DefaultBudgetsRepository): BudgetsRepository
+
+    @Singleton
+    @Binds
+    fun bindsFireRepository(fireRepository: DefaultFireRepository): FireRepository
 
 }

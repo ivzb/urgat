@@ -14,6 +14,7 @@ import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
+import java.math.BigDecimal
 
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,

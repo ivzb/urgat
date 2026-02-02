@@ -2,23 +2,27 @@ package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
@@ -46,7 +50,6 @@ import com.ivzb.urgat.ui.savings.SavingItem
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.toLocalDate
 
 @Composable
 fun FinanceScreen(
@@ -231,6 +234,9 @@ fun FinanceScreen(
 
                             FinancePage.FIRE -> itemFiRe(
                                 fire = uiState.fire,
+                                onWithdrawalRateChange = {
+                                    onIntent(FinanceIntent.UpdateFireWithdrawalRate(it))
+                                },
                             )
                         }
                     }
@@ -422,6 +428,7 @@ private fun LazyListScope.itemBudgets(
 
 private fun LazyListScope.itemFiRe(
     fire: FiRe?,
+    onWithdrawalRateChange: (String) -> Unit,
 ) {
 
     if (fire == null) {
@@ -441,18 +448,44 @@ private fun LazyListScope.itemFiRe(
         Text(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
         Text(stringResource(R.string.fire_annual_expenses, fire.annualExpenses.format()))
         Text(stringResource(R.string.fire_annual_investments, fire.annualInvestments.format()))
-        Text(stringResource(R.string.fire_savings_rate, fire.savingsRate.format()))
-        Text(stringResource(R.string.fire_target, fire.target.format()))
+
+        fire.savingsRate?.let {
+            Text(stringResource(R.string.fire_savings_rate, fire.savingsRate.format()))
+        }
+
+        fire.target?.let {
+            Text(stringResource(R.string.fire_target, fire.target.format()))
+        }
 
         Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
 
-        Text(stringResource(R.string.fire_withdrawal_rate, fire.withdrawalRate.format()))
-        Text(stringResource(R.string.fire_return_of_investments, fire.returnOfInvestments.format()))
-        Text(stringResource(R.string.fire_tax_rate, fire.taxRate.format()))
+        Row {
+            Text(stringResource(R.string.fire_withdrawal_rate))
+
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.vertical_margin)))
+
+            TextField(
+                value = fire.withdrawalRate?.toPlainString() ?: "",
+                onValueChange = { onWithdrawalRateChange(it) },
+                placeholder = { Text(text = stringResource(id = R.string.income_hint)) },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+            )
+
+            Text(stringResource(R.string.percent))
+        }
+
+        Text(stringResource(R.string.fire_return_of_investments, fire.returnOfInvestments?.format() ?: ""))
+        Text(stringResource(R.string.fire_tax_rate, fire.taxRate?.format() ?: ""))
 
         Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
 
-        Text(stringResource(R.string.fire_years_until_fire, fire.yearsUntilFiRe.format()))
+        fire.yearsUntilFiRe?.let {
+            Text(stringResource(R.string.fire_years_until_fire, fire.yearsUntilFiRe.format()))
+        }
     }
 }
 

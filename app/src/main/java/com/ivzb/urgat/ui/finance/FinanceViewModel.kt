@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.finance
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
@@ -35,6 +36,7 @@ class FinanceViewModel @Inject constructor(
     observeBudgetsUseCase: ObserveBudgetsUseCase,
     observeFiReUseCase: ObserveFiReUseCase,
     resourcesProvider: ResourcesProvider,
+    private val fireRepository: FireRepository,
 ) : ViewModel() {
 
     private val uiEventHolder = UiEventHolder<FinanceUiEvent>()
@@ -45,7 +47,7 @@ class FinanceViewModel @Inject constructor(
 
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
-    private val _withdrawalRate = MutableStateFlow(4.toBigDecimal())
+    private val _withdrawalRate = fireRepository.withdrawalRateFlow
     private val _returnOfInvestments = MutableStateFlow(7.toBigDecimal())
     private val _taxRate = MutableStateFlow(10.toBigDecimal())
 
@@ -114,6 +116,7 @@ class FinanceViewModel @Inject constructor(
             is FinanceIntent.ItemsLimitChanged -> onItemsLimitChanged(intent.itemsLimit)
             is FinanceIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is FinanceIntent.FabActionClick -> onFabActionClick(intent.itemId)
+            is FinanceIntent.UpdateFireWithdrawalRate -> onUpdateFireWithdrawalRate(intent.withdrawalRate)
             is FinanceIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -136,6 +139,12 @@ class FinanceViewModel @Inject constructor(
                     FinanceFabActionId.Budget -> FinanceUiEvent.AddBudget
                 }
             )
+        }
+    }
+
+    private fun onUpdateFireWithdrawalRate(withdrawalRate: String) {
+        viewModelScope.launch {
+            fireRepository.updateWithdrawalRate(withdrawalRate)
         }
     }
 
