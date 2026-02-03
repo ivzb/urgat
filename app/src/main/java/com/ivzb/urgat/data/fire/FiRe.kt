@@ -18,7 +18,7 @@ data class FiRe(
     val target: BigDecimal?,
 
     val withdrawalRate: BigDecimal?,
-    val returnOfInvestments: BigDecimal?,
+    val returnOfInvestment: BigDecimal?,
     val taxRate: BigDecimal?,
 
     val yearsUntilFiRe: BigDecimal?,

@@ -18,7 +18,7 @@ interface ObserveFiReUseCase {
 
     operator fun invoke(
         withdrawalRateFlow: Flow<BigDecimal?>,
-        returnOfInvestmentsFlow: Flow<BigDecimal?>,
+        returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
 
         searchQueryFlow: Flow<String>,
@@ -39,7 +39,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
     override fun invoke(
         withdrawalRateFlow: Flow<BigDecimal?>,
-        returnOfInvestmentsFlow: Flow<BigDecimal?>,
+        returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
 
         searchQueryFlow: Flow<String>,
@@ -51,14 +51,14 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
         return com.ivzb.urgat.util.combine(
             withdrawalRateFlow,
-            returnOfInvestmentsFlow,
+            returnOfInvestmentFlow,
             taxRateFlow,
 
             observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedExpensesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedSavingsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        ) { withdrawalRate, returnOfInvestments, taxRate, budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsAllTimeAsync, savingsAllTimeAsync ->
+        ) { withdrawalRate, returnOfInvestment, taxRate, budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsAllTimeAsync, savingsAllTimeAsync ->
 
             if (budgetCategoriesMonthlyAsync is Async.Success &&
                 expensesMonthlyAsync is Async.Success &&
@@ -105,7 +105,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     return@combine Async.Success(null)
                 }
 
-                val isReady = withdrawalRate != null && returnOfInvestments != null && taxRate != null
+                val isReady = withdrawalRate != null && returnOfInvestment != null && taxRate != null
 
                 if (!isReady) {
                     return@combine Async.Success(
@@ -125,7 +125,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                             target = null,
 
                             withdrawalRate = withdrawalRate,
-                            returnOfInvestments = returnOfInvestments,
+                            returnOfInvestment = returnOfInvestment,
                             taxRate = taxRate,
 
                             yearsUntilFiRe = null,
@@ -134,7 +134,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 }
 
                 val withdrawalRatePercentage = withdrawalRate.coerceAtLeast(1.toBigDecimal()).toPercentage()
-                val returnOfInvestmentsPercentage = 1.toBigDecimal() + returnOfInvestments.toPercentage()
+                val returnOfInvestmentPercentage = 1.toBigDecimal() + returnOfInvestment.toPercentage()
                 val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
 
                 val savingsRate = (1.toBigDecimal() - (annualExpenses / annualIncome)) * 100.toBigDecimal()
@@ -145,7 +145,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     annualInvestments = annualIncome - annualExpenses,
                     accumulatedStash = accumulatedStash,
                     target = target,
-                    returnOfInvestments = returnOfInvestmentsPercentage.toDouble(),
+                    returnOfInvestment = returnOfInvestmentPercentage.toDouble(),
                 )
 
                 val fire = FiRe(
@@ -164,7 +164,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     target = target,
 
                     withdrawalRate = withdrawalRate,
-                    returnOfInvestments = returnOfInvestments,
+                    returnOfInvestment = returnOfInvestment,
                     taxRate = taxRate,
 
                     yearsUntilFiRe = yearsUntilFiRe,
@@ -186,7 +186,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
         annualInvestments: BigDecimal,
         accumulatedStash: BigDecimal,
         target: BigDecimal,
-        returnOfInvestments: Double,
+        returnOfInvestment: Double,
         maxYears: Int = 50,
     ): BigDecimal {
 
@@ -200,7 +200,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
         var fireYear = maxYears
 
         for (year in 1..maxYears) {
-            stash[year] = (stash[year - 1] * returnOfInvestments) + (annualInvestments.toDouble() * returnOfInvestments.pow(0.5))
+            stash[year] = (stash[year - 1] * returnOfInvestment) + (annualInvestments.toDouble() * returnOfInvestment.pow(0.5))
 
             if (stash[year] >= target.toDouble()) {
                 fireYear = year

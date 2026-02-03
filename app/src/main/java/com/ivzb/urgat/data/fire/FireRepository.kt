@@ -7,6 +7,14 @@ interface FireRepository {
 
     val withdrawalRateFlow: Flow<BigDecimal?>
 
+    val returnOfInvestmentFlow: Flow<BigDecimal?>
+
+    val taxRateFlow: Flow<BigDecimal?>
+
     suspend fun updateWithdrawalRate(value: String)
+
+    suspend fun updateReturnOfInvestment(value: String)
+
+    suspend fun updateTaxRate(value: String)
 
 }

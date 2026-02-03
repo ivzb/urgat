@@ -48,8 +48,10 @@ class FinanceViewModel @Inject constructor(
     private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
 
     private val _withdrawalRate = fireRepository.withdrawalRateFlow
-    private val _returnOfInvestments = MutableStateFlow(7.toBigDecimal())
-    private val _taxRate = MutableStateFlow(10.toBigDecimal())
+
+    private val _returnOfInvestment = fireRepository.returnOfInvestmentFlow
+
+    private val _taxRate = fireRepository.taxRateFlow
 
     private val _fireDateRange = MutableStateFlow(untilCurrentMonthRange())
 
@@ -59,7 +61,7 @@ class FinanceViewModel @Inject constructor(
         observeInvestmentsUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeSavingsUseCase(_searchQuery, null, null, null, _itemsLimit),
         observeBudgetsUseCase(_searchQuery, null, null, null, _itemsLimit),
-        observeFiReUseCase(_withdrawalRate, _returnOfInvestments, _taxRate, _searchQuery, _fireDateRange, null, null, _itemsLimit),
+        observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _searchQuery, _fireDateRange, null, null, _itemsLimit),
         uiEventHolder(),
 
         onLoading = {
@@ -117,6 +119,8 @@ class FinanceViewModel @Inject constructor(
             is FinanceIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is FinanceIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is FinanceIntent.UpdateFireWithdrawalRate -> onUpdateFireWithdrawalRate(intent.withdrawalRate)
+            is FinanceIntent.UpdateFireReturnOfInvestment -> onUpdateFireReturnOfInvestment(intent.returnOfInvestment)
+            is FinanceIntent.UpdateFireTaxRate -> onUpdateFireTaxRate(intent.taxRate)
             is FinanceIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -145,6 +149,18 @@ class FinanceViewModel @Inject constructor(
     private fun onUpdateFireWithdrawalRate(withdrawalRate: String) {
         viewModelScope.launch {
             fireRepository.updateWithdrawalRate(withdrawalRate)
+        }
+    }
+
+    private fun onUpdateFireReturnOfInvestment(returnOfInvestment: String) {
+        viewModelScope.launch {
+            fireRepository.updateReturnOfInvestment(returnOfInvestment)
+        }
+    }
+
+    private fun onUpdateFireTaxRate(taxRate: String) {
+        viewModelScope.launch {
+            fireRepository.updateTaxRate(taxRate)
         }
     }
 

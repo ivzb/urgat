@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
@@ -234,9 +236,9 @@ fun FinanceScreen(
 
                             FinancePage.FIRE -> itemFiRe(
                                 fire = uiState.fire,
-                                onWithdrawalRateChange = {
-                                    onIntent(FinanceIntent.UpdateFireWithdrawalRate(it))
-                                },
+                                onWithdrawalRateChange = { onIntent(FinanceIntent.UpdateFireWithdrawalRate(it)) },
+                                onReturnOfInvestmentChange = { onIntent(FinanceIntent.UpdateFireReturnOfInvestment(it)) },
+                                onTaxRateChange = { onIntent(FinanceIntent.UpdateFireTaxRate(it)) },
                             )
                         }
                     }
@@ -429,6 +431,8 @@ private fun LazyListScope.itemBudgets(
 private fun LazyListScope.itemFiRe(
     fire: FiRe?,
     onWithdrawalRateChange: (String) -> Unit,
+    onReturnOfInvestmentChange: (String) -> Unit,
+    onTaxRateChange: (String) -> Unit,
 ) {
 
     if (fire == null) {
@@ -438,11 +442,11 @@ private fun LazyListScope.itemFiRe(
     item {
         Text(stringResource(R.string.fire_title, fire.selection))
 
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
 
         Text(stringResource(R.string.fire_info))
 
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
 
         Text(stringResource(R.string.fire_accumulated_stash, fire.accumulatedStash.format()))
         Text(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
@@ -457,31 +461,75 @@ private fun LazyListScope.itemFiRe(
             Text(stringResource(R.string.fire_target, fire.target.format()))
         }
 
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
 
-        Row {
-            Text(stringResource(R.string.fire_withdrawal_rate))
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.fire_withdrawal_rate),
+            )
 
-            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.vertical_margin)))
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin_text_fields)))
 
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.fire_return_of_investment),
+            )
+
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin_text_fields)))
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.fire_tax_rate),
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin_text_fields)))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             TextField(
+                modifier = Modifier.weight(1f),
                 value = fire.withdrawalRate?.toPlainString() ?: "",
                 onValueChange = { onWithdrawalRateChange(it) },
-                placeholder = { Text(text = stringResource(id = R.string.income_hint)) },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Done,
                 ),
             )
 
-            Text(stringResource(R.string.percent))
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin_text_fields)))
+
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = fire.returnOfInvestment?.toPlainString() ?: "",
+                onValueChange = { onReturnOfInvestmentChange(it) },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+            )
+
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin_text_fields)))
+
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = fire.taxRate?.toPlainString() ?: "",
+                onValueChange = { onTaxRateChange(it) },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+            )
         }
 
-        Text(stringResource(R.string.fire_return_of_investments, fire.returnOfInvestments?.format() ?: ""))
-        Text(stringResource(R.string.fire_tax_rate, fire.taxRate?.format() ?: ""))
-
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
 
         fire.yearsUntilFiRe?.let {
             Text(stringResource(R.string.fire_years_until_fire, fire.yearsUntilFiRe.format()))

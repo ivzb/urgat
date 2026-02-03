@@ -21,7 +21,7 @@ class FakeObserveFiReUseCase : ObserveFiReUseCase {
 
     override operator fun invoke(
         withdrawalRateFlow: Flow<BigDecimal>,
-        returnOfInvestmentsFlow: Flow<BigDecimal>,
+        returnOfInvestmentFlow: Flow<BigDecimal>,
         taxRateFlow: Flow<BigDecimal>,
 
         searchQueryFlow: Flow<String>,

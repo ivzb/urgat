@@ -143,7 +143,7 @@ class FinanceViewModelTest {
             target = 990_000.toBigDecimal(),
 
             withdrawalRate = 4.toBigDecimal(),
-            returnOfInvestments = 7.toBigDecimal(),
+            returnOfInvestment = 7.toBigDecimal(),
             taxRate = 10.toBigDecimal(),
 
             yearsUntilFiRe = 17.7.toBigDecimal(),
@@ -201,7 +201,7 @@ class FinanceViewModelTest {
             target = 990_000.toBigDecimal(),
 
             withdrawalRate = 4.toBigDecimal(),
-            returnOfInvestments = 7.toBigDecimal(),
+            returnOfInvestment = 7.toBigDecimal(),
             taxRate = 10.toBigDecimal(),
 
             yearsUntilFiRe = 17.7.toBigDecimal(),

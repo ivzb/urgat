@@ -251,20 +251,20 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
     @Test
     fun `invoke should return Success with 5 percent return of investments`() = `invoke should return Success with filtered items`(
-        returnOfInvestments = 5.toBigDecimal(),
+        returnOfInvestment = 5.toBigDecimal(),
         expected = EXPECTED_FIRE.copy(
             target = "825000.00".toBigDecimal(),
-            returnOfInvestments = "5".toBigDecimal(),
+            returnOfInvestment = "5".toBigDecimal(),
             yearsUntilFiRe = "15.84".toBigDecimal(),
         ),
     )
 
     @Test
     fun `invoke should return Success with 9 percent return of investments`() = `invoke should return Success with filtered items`(
-        returnOfInvestments = 9.toBigDecimal(),
+        returnOfInvestment = 9.toBigDecimal(),
         expected = EXPECTED_FIRE.copy(
             target = "825000.00".toBigDecimal(),
-            returnOfInvestments = "9".toBigDecimal(),
+            returnOfInvestment = "9".toBigDecimal(),
             yearsUntilFiRe = "12.53".toBigDecimal(),
         ),
     )
@@ -291,7 +291,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
     private fun `invoke should return Success with filtered items`(
         withdrawalRate: BigDecimal = 4.toBigDecimal(),
-        returnOfInvestments: BigDecimal = 7.toBigDecimal(),
+        returnOfInvestment: BigDecimal = 7.toBigDecimal(),
         taxRate: BigDecimal = 10.toBigDecimal(),
 
         budget: List<GroupedBudgetCategories> = BUDGET,
@@ -302,7 +302,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         expected: FiRe? = EXPECTED_FIRE,
     ) = runTest(testDispatcher) {
         val withdrawalRateFlow = flowOf(withdrawalRate)
-        val returnOfInvestmentsFlow = flowOf(returnOfInvestments)
+        val returnOfInvestmentFlow = flowOf(returnOfInvestment)
         val taxRateFlow = flowOf(taxRate)
 
         val searchQueryFlow = flowOf("coffee")
@@ -342,7 +342,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(savings))
 
-        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentsFlow, taxRateFlow, searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -356,7 +356,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val withdrawalRateFlow = flowOf(4.toBigDecimal())
-        val returnOfInvestmentsFlow = flowOf(7.toBigDecimal())
+        val returnOfInvestmentFlow = flowOf(7.toBigDecimal())
         val taxRateFlow = flowOf(10.toBigDecimal())
 
         val searchQueryFlow = flowOf("coffee")
@@ -396,7 +396,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(NO_SAVINGS))
 
-        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentsFlow, taxRateFlow, searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
 
         advanceUntilIdle()
 
@@ -419,7 +419,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             savingsRate = "50.00".toBigDecimal(),
             target = "825000.00".toBigDecimal(),
             withdrawalRate = "4".toBigDecimal(),
-            returnOfInvestments = "7".toBigDecimal(),
+            returnOfInvestment = "7".toBigDecimal(),
             taxRate = "10".toBigDecimal(),
             yearsUntilFiRe = "13.96".toBigDecimal(),
         )

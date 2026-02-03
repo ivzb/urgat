@@ -31,4 +31,6 @@
     <dimen name="pie_chart_stroke_width">50dp</dimen>
     <dimen name="expense_category_color_width">15dp</dimen>
     <dimen name="checkbox_padding">8dp</dimen>
+    <dimen name="fire_margin">8dp</dimen>
+    <dimen name="fire_margin_text_fields">4dp</dimen>
 </resources>

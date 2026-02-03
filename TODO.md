@@ -90,8 +90,6 @@
 - test Fi/Re empty state
 - calculate fi/re based on last month, last year and all time?
 - show Fi/Re chart for each year
-- store Fi/Re parameters into shared prefs
-- make _withdrawalRate, _returnOfInvestments, _taxRate configurable via UI
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
 - add info button to show description for each entity - start with fire title - show title saying current month is based on and add info icon - on click show more detailed info
 - check why text field position changes when typing new chars - probably has to update the selection
