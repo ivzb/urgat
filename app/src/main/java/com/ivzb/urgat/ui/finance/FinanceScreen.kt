@@ -16,6 +16,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalResources
@@ -23,8 +26,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
@@ -491,10 +496,14 @@ private fun LazyListScope.itemFiRe(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            var withdrawalRateValue by remember { mutableStateOf(TextFieldValue(fire.withdrawalRate?.toPlainString() ?: "")) }
+            var returnOfInvestmentValue by remember { mutableStateOf(TextFieldValue(fire.returnOfInvestment?.toPlainString() ?: "")) }
+            var taxRateValue by remember { mutableStateOf(TextFieldValue(fire.taxRate?.toPlainString() ?: "")) }
+
             TextField(
                 modifier = Modifier.weight(1f),
-                value = fire.withdrawalRate?.toPlainString() ?: "",
-                onValueChange = { onWithdrawalRateChange(it) },
+                value = withdrawalRateValue,
+                onValueChange = { onWithdrawalRateChange(it.text) },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -506,8 +515,8 @@ private fun LazyListScope.itemFiRe(
 
             TextField(
                 modifier = Modifier.weight(1f),
-                value = fire.returnOfInvestment?.toPlainString() ?: "",
-                onValueChange = { onReturnOfInvestmentChange(it) },
+                value = returnOfInvestmentValue,
+                onValueChange = { onReturnOfInvestmentChange(it.text) },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
@@ -519,14 +528,35 @@ private fun LazyListScope.itemFiRe(
 
             TextField(
                 modifier = Modifier.weight(1f),
-                value = fire.taxRate?.toPlainString() ?: "",
-                onValueChange = { onTaxRateChange(it) },
+                value = taxRateValue,
+                onValueChange = { onTaxRateChange(it.text) },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done,
                 ),
             )
+
+            LaunchedEffect(fire) {
+                val withdrawalRate = fire.withdrawalRate?.toPlainString() ?: ""
+                val returnOfInvestment = fire.returnOfInvestment?.toPlainString() ?: ""
+                val taxRate = fire.taxRate?.toPlainString() ?: ""
+
+                withdrawalRateValue = TextFieldValue(
+                    text = withdrawalRate,
+                    selection = TextRange(withdrawalRate.length)
+                )
+
+                returnOfInvestmentValue = TextFieldValue(
+                    text = returnOfInvestment,
+                    selection = TextRange(returnOfInvestment.length)
+                )
+
+                taxRateValue = TextFieldValue(
+                    text = taxRate,
+                    selection = TextRange(taxRate.length)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
