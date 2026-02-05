@@ -1,5 +1,8 @@
 package com.ivzb.urgat.data.fire
 
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_RETURN_OF_INVESTMENT
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_TAX_RATE
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_WITHDRAWAL_RATE
 import java.math.BigDecimal
 
 data class FiRe(
@@ -22,4 +25,8 @@ data class FiRe(
     val taxRate: BigDecimal?,
 
     val yearsUntilFiRe: BigDecimal?,
+
+    val withdrawalRatePlaceholder: BigDecimal = DEFAULT_FIRE_WITHDRAWAL_RATE,
+    val returnOfInvestmentPlaceholder: BigDecimal = DEFAULT_FIRE_RETURN_OF_INVESTMENT,
+    val taxRatePlaceholder: BigDecimal = DEFAULT_FIRE_TAX_RATE,
 )

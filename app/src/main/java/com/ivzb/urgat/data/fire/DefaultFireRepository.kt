@@ -5,6 +5,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_RETURN_OF_INVESTMENT
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_TAX_RATE
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_WITHDRAWAL_RATE
 import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -48,12 +51,6 @@ class DefaultFireRepository @Inject constructor(
         private val FIRE_RETURN_OF_INVESTMENT = stringPreferencesKey("fire_return_of_investment")
 
         private val FIRE_TAX_RATE = stringPreferencesKey("fire_tax_rate")
-
-        private val DEFAULT_FIRE_WITHDRAWAL_RATE = 4.toBigDecimal()
-
-        private val DEFAULT_FIRE_RETURN_OF_INVESTMENT = 7.toBigDecimal()
-
-        private val DEFAULT_FIRE_TAX_RATE = 10.toBigDecimal()
 
         private fun dataStoreFlow(
             dataStore: DataStore<Preferences>,
