@@ -289,10 +289,37 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ),
     )
 
+    @Test
+    fun `invoke without withdrawalRate should return incomplete fire`() = `invoke should return Success with filtered items`(
+        withdrawalRate = null,
+        expected = EXPECTED_FIRE_NOT_READY.copy(
+            returnOfInvestment = 7.toBigDecimal(),
+            taxRate = 10.toBigDecimal(),
+        ),
+    )
+
+    @Test
+    fun `invoke without returnOfInvestment should return incomplete fire`() = `invoke should return Success with filtered items`(
+        returnOfInvestment = null,
+        expected = EXPECTED_FIRE_NOT_READY.copy(
+            withdrawalRate = 4.toBigDecimal(),
+            taxRate = 10.toBigDecimal(),
+        ),
+    )
+
+    @Test
+    fun `invoke without taxRate should return incomplete fire`() = `invoke should return Success with filtered items`(
+        taxRate = null,
+        expected = EXPECTED_FIRE_NOT_READY.copy(
+            withdrawalRate = 4.toBigDecimal(),
+            returnOfInvestment = 7.toBigDecimal(),
+        ),
+    )
+
     private fun `invoke should return Success with filtered items`(
-        withdrawalRate: BigDecimal = 4.toBigDecimal(),
-        returnOfInvestment: BigDecimal = 7.toBigDecimal(),
-        taxRate: BigDecimal = 10.toBigDecimal(),
+        withdrawalRate: BigDecimal? = 4.toBigDecimal(),
+        returnOfInvestment: BigDecimal? = 7.toBigDecimal(),
+        taxRate: BigDecimal? = 10.toBigDecimal(),
 
         budget: List<GroupedBudgetCategories> = BUDGET,
         expenses: List<GroupedExpenses> = EXPENSES,
@@ -422,6 +449,17 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             returnOfInvestment = "7".toBigDecimal(),
             taxRate = "10".toBigDecimal(),
             yearsUntilFiRe = "13.96".toBigDecimal(),
+        )
+
+        private val EXPECTED_FIRE_NOT_READY = EXPECTED_FIRE.copy(
+            savingsRate = null,
+            target = null,
+
+            withdrawalRate = null,
+            returnOfInvestment = null,
+            taxRate = null,
+
+            yearsUntilFiRe = null,
         )
 
         private val BUDGET = listOf(

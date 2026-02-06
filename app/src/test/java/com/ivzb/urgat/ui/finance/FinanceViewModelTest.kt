@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
@@ -17,12 +18,19 @@ import com.ivzb.urgat.domain.budget.FakeObserveDashboardBudgetUseCase
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
 import com.ivzb.urgat.domain.fire.FakeObserveFiReUseCase
+import com.ivzb.urgat.ui.addEditTodo.AddEditTodoIntent
 import com.ivzb.urgat.util.Async
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -49,6 +57,7 @@ class FinanceViewModelTest {
     private lateinit var fakeObserveBudgetUseCase: FakeObserveBudgetsUseCase
     private lateinit var fakeObserveFiReUseCase: FakeObserveFiReUseCase
     private lateinit var mockResourcesProvider: ResourcesProvider
+    private lateinit var mockFireRepository: FireRepository
 
     private lateinit var viewModel: FinanceViewModel
 
@@ -65,8 +74,13 @@ class FinanceViewModelTest {
         fakeObserveBudgetUseCase = FakeObserveBudgetsUseCase()
         fakeObserveFiReUseCase = FakeObserveFiReUseCase()
         mockResourcesProvider = mockk()
+        mockFireRepository = mockk()
 
         every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
+
+        every { mockFireRepository.withdrawalRateFlow } returns flowOf(4.toBigDecimal())
+        every { mockFireRepository.returnOfInvestmentFlow } returns flowOf(7.toBigDecimal())
+        every { mockFireRepository.taxRateFlow } returns flowOf(10.toBigDecimal())
     }
 
     @After
@@ -78,6 +92,7 @@ class FinanceViewModelTest {
     fun `initial state is loading`() = runTest {
         fakeObserveExpensesUseCase.emit(Async.Loading)
         viewModel = createViewModel()
+
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -225,13 +240,6 @@ class FinanceViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
-        fakeObserveDashboardBudgetUseCase.emit(Async.Success(null))
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
-        fakeObserveSavingsUseCase.emit(Async.Success(listOf()))
-        fakeObserveBudgetUseCase.emit(Async.Success(listOf()))
-        fakeObserveFiReUseCase.emit(Async.Success(null))
         viewModel = createViewModel()
 
         viewModel.onIntent(FinanceIntent.SearchQueryChanged("coffee"))
@@ -279,6 +287,44 @@ class FinanceViewModelTest {
         job.cancel()
     }
 
+    @Test
+    fun `updateFireWithdrawalRate intent updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateWithdrawalRate(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireWithdrawalRate("4"))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateWithdrawalRate(eq("4")) }
+    }
+
+    @Test
+    fun `updateReturnOfInvestment intent updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateReturnOfInvestment(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireReturnOfInvestment("7"))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateReturnOfInvestment(eq("7")) }
+    }
+
+    @Test
+    fun `updateTaxRate intent updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateTaxRate(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireTaxRate("7"))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateTaxRate(eq("7")) }
+    }
 
     private fun createViewModel() = FinanceViewModel(
         fakeObserveDashboardBudgetUseCase,
@@ -288,5 +334,6 @@ class FinanceViewModelTest {
         fakeObserveBudgetUseCase,
         fakeObserveFiReUseCase,
         mockResourcesProvider,
+        mockFireRepository,
     )
 }

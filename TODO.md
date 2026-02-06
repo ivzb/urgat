@@ -91,4 +91,3 @@
 - calculate fi/re based on last month, last year and all time?
 - show Fi/Re chart for each year
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
-- fix/add fire unit tests
