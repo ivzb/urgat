@@ -1,3 +1,8 @@
+## Release notes 26.02.01
+
+Improved:
+- Users can now adjust custom values for their FI/RE prediction, along with clearer in-app explanations of how the calculation works.
+
 ## Release notes 26.02.00
 
 New:
