@@ -73,13 +73,12 @@ pushd ..
 
 files=(
   "LibraryScreenshotTest_screenshotTest_LibraryScreen_sampleData_todos.png:01_library_screen.png"
-  "TodosScreenshotTest_screenshotTest_TodosScreen_sampleData.png:02_todos_screen.png"
-  "AddEditTodoScreenshotTest_screenshotTest_AddEditTodoScreen_editTodo.png:03_edit_todo_screen.png"
-  "NotesScreenshotTest_screenshotTest_NotesScreen_sampleData.png:04_notes_screen.png"
-  "FinanceScreenshotTest_screenshotTest_FinanceScreen_sampleData_expenses.png:05_finance_screen.png"
-  "ExpensesScreenshotTest_screenshotTest_ExpensesScreen_sampleData_monthly.png:06_expenses_screen.png"
-  "InvestmentsScreenshotTest_screenshotTest_InvestmentsScreen_sampleData_allTime.png:07_investments_screen.png"
-  "WellbeingScreenshotTest_screenshotTest_WellbeingScreen_sampleData.png:08_wellbeing_screen.png"
+  "AddEditTodoScreenshotTest_screenshotTest_AddEditTodoScreen_editTodo.png:02_edit_todo_screen.png"
+  "FinanceScreenshotTest_screenshotTest_FinanceScreen_sampleData_expenses.png:03_finance_screen.png"
+  "ExpensesScreenshotTest_screenshotTest_ExpensesScreen_sampleData_monthly.png:04_expenses_monthly_screen.png"
+  "InvestmentsScreenshotTest_screenshotTest_InvestmentsScreen_sampleData_transactions.png:05_investments_transactions_screen.png"
+  "InvestmentsScreenshotTest_screenshotTest_InvestmentsScreen_sampleData_allTime.png:06_investments_all_time_screen.png"
+  "WellbeingScreenshotTest_screenshotTest_WellbeingScreen_sampleData.png:07_wellbeing_screen.png"
 )
 
 echo "#############################"

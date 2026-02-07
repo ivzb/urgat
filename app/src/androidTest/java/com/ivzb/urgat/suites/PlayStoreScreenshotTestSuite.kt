@@ -6,7 +6,6 @@ import com.ivzb.urgat.ui.expenses.ExpensesScreenshotTest
 import com.ivzb.urgat.ui.finance.FinanceScreenshotTest
 import com.ivzb.urgat.ui.investments.InvestmentsScreenshotTest
 import com.ivzb.urgat.ui.library.LibraryScreenshotTest
-import com.ivzb.urgat.ui.notes.NotesScreenshotTest
 import com.ivzb.urgat.ui.todos.TodosScreenshotTest
 import com.ivzb.urgat.ui.wellbeing.WellbeingScreenshotTest
 import org.junit.experimental.categories.Categories
@@ -20,7 +19,6 @@ import org.junit.runners.Suite
     LibraryScreenshotTest::class,
     TodosScreenshotTest::class,
     AddEditTodoScreenshotTest::class,
-    NotesScreenshotTest::class,
     FinanceScreenshotTest::class,
     ExpensesScreenshotTest::class,
     InvestmentsScreenshotTest::class,

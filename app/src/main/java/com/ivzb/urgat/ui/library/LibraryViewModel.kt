@@ -41,7 +41,7 @@ class LibraryViewModel @Inject constructor(
 
     val uiState: StateFlow<LibraryUiState> = combineUiState(
         observeTodosUseCase(_searchQuery, null, null, null, _itemsLimit),
-        observeNotesUseCase(_searchQuery, null, null, null, _itemsLimit),
+        observeNotesUseCase(_searchQuery, null, null, null, null),
         uiEventHolder(),
 
         onLoading = {

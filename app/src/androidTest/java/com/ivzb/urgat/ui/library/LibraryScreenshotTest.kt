@@ -22,7 +22,6 @@ class LibraryScreenshotTest: ScreenshotTest() {
         screenshotTest_LibraryScreen_sampleData(initialPage = 0)
 
     @Test
-    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_LibraryScreen_sampleData_notes() =
         screenshotTest_LibraryScreen_sampleData(initialPage = 1)
 
@@ -82,7 +81,6 @@ class LibraryScreenshotTest: ScreenshotTest() {
                     onSeeAllTodos = {},
                     onTodoClick = {},
 
-                    onSeeAllNotes = {},
                     onNoteClick = {},
 
                     navigator = FakeNavigator(),

@@ -43,7 +43,6 @@ fun LibraryScreen(
     onTodoClick: (Todo) -> Unit,
 
     onAddNote: () -> Unit,
-    onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
     navigator: Navigator,
@@ -59,7 +58,6 @@ fun LibraryScreen(
         onSeeAllTodos = onSeeAllTodos,
         onTodoClick = onTodoClick,
 
-        onSeeAllNotes = onSeeAllNotes,
         onNoteClick = onNoteClick,
 
         navigator = navigator,
@@ -94,7 +92,6 @@ fun LibraryScreen(
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
 
-    onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
     navigator: Navigator,
@@ -151,7 +148,6 @@ fun LibraryScreen(
                                 notes = uiState.notes,
                                 notesFilteringUiInfo = uiState.notesFilteringUiInfo,
                                 onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
-                                onSeeAllNotes = onSeeAllNotes,
                                 onNoteClick = onNoteClick
                             )
                         }
@@ -211,7 +207,6 @@ private fun LazyListScope.itemNotes(
     notes: List<Note>,
     notesFilteringUiInfo: NotesFilteringUiInfo,
     onAddNote: () -> Unit,
-    onSeeAllNotes: () -> Unit,
     onNoteClick: (Note) -> Unit,
 ) {
     when {
@@ -228,17 +223,11 @@ private fun LazyListScope.itemNotes(
         }
 
         else -> {
-            item {
-                ItemHeaderWithSeeAll(
-                    title = stringResource(notesFilteringUiInfo.currentFilteringLabel),
-                    onSeeAllClick = onSeeAllNotes,
-                )
-            }
-
             items(
                 items = notes,
                 key = { note -> note.id },
             ) { note ->
+
                 NoteItem(
                     note = note,
                     onNoteClick = onNoteClick
@@ -269,7 +258,6 @@ fun LibraryScreenPreview(initialPage: Int = 0) {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllNotes = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -300,7 +288,6 @@ fun LibraryScreenEmptyPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllNotes = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -325,7 +312,6 @@ fun LibraryScreenLoadingPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllNotes = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -350,7 +336,6 @@ fun LibraryScreenErrorPreview() {
             onIntent = {},
             onSeeAllTodos = {},
             onTodoClick = {},
-            onSeeAllNotes = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier

@@ -16,7 +16,6 @@ import com.ivzb.urgat.ui.finance.financeEntry
 import com.ivzb.urgat.ui.importData.importDataEntry
 import com.ivzb.urgat.ui.investments.investmentsEntry
 import com.ivzb.urgat.ui.library.libraryEntry
-import com.ivzb.urgat.ui.notes.notesEntry
 import com.ivzb.urgat.ui.sample.sampleEntry
 import com.ivzb.urgat.ui.todos.todosEntry
 import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
@@ -34,7 +33,6 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
         todosEntry(navigator, navActions)
         addEditTodoEntry(navigator)
 
-        notesEntry(navigator, navActions)
         addEditNoteEntry(navigator)
 
         expensesEntry(navigator, navActions)

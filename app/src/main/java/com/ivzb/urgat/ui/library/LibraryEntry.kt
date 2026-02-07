@@ -16,7 +16,6 @@ fun EntryProviderScope<NavKey>.libraryEntry(navigator: Navigator, navActions: Ur
             onTodoClick = { navActions.navigateToEditTodo(it.id) },
 
             onAddNote = { navActions.navigateToAddNote() },
-            onSeeAllNotes = { navActions.navigateToNotes() },
             onNoteClick = { navActions.navigateToEditNote(it.id) },
 
             navigator = navigator

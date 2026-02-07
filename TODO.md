@@ -91,3 +91,11 @@
 - calculate fi/re based on last month, last year and all time?
 - show Fi/Re chart for each year
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
+- car fuel
+- car maintenance
+- car reminders
+- move todos filtering to library screen
+- move inner todos/notes to library screen - no need to tap see all
+- remove notes screen
+- check how to add dashboard tab to finance screen
+- add one more playstore screenshot
