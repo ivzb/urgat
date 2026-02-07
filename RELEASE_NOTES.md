@@ -1,3 +1,8 @@
+## Release notes 26.02.02
+
+Improved:
+- All notes are now visible on the Library screen, without tapping ‘See all.’
+
 ## Release notes 26.02.01
 
 Improved:
