@@ -4,8 +4,7 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Page
-import com.ivzb.urgat.ui.components.uiState.NavigationUiState
-import com.ivzb.urgat.ui.components.uiState.PagerUiState
+import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 
@@ -28,4 +27,4 @@ data class LibraryUiState(
     override val filteringUiInfo: FilteringUiInfo = LibraryFilteringUiInfo(),
 
     val uiEvent: LibraryUiEvent? = null,
-): NavigationUiState<LibraryFabActionId>, PagerUiState
+): NavigationPagerUiState<LibraryFabActionId>

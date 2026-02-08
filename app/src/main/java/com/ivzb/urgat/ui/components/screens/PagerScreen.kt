@@ -19,8 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ivzb.urgat.navigation.Navigator
+import com.ivzb.urgat.navigation.UrgatRootRoute
 import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.ui.components.Page
+import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import kotlinx.coroutines.launch
 
@@ -29,6 +32,52 @@ typealias PagerContent = @Composable (
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) -> Unit
+
+@Composable
+fun <T> NavigationPagerScreen(
+    uiState: NavigationPagerUiState<T>,
+
+    route: UrgatRootRoute,
+    onSearchQueryChanged: (String) -> Unit,
+    onFabActionClick: ((T) -> Unit)? = null,
+    navigator: Navigator,
+
+    withTopAppBarActions: Boolean = true,
+    topAppBarActionsContent: (@Composable (Page) -> Unit)? = null,
+
+    content: PagerContent,
+
+    modifier: Modifier = Modifier,
+) {
+    val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
+    val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
+    val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
+
+    NavigationScreen(
+        uiState = uiState,
+
+        route = route,
+        onSearchQueryChanged = onSearchQueryChanged,
+        onFabActionClick = onFabActionClick,
+        navigator = navigator,
+
+        withTopAppBarActions = withTopAppBarActions,
+        topAppBarActionsContent = { topAppBarActionsContent?.invoke(uiState.pages[pagerState.currentPage]) },
+        listState = currentListState.value,
+
+        content = {
+            PagerContent(
+                pages = uiState.pages,
+                pagerState = pagerState,
+                listStates = listStates,
+                onListStateChanged = { currentListState.value = it },
+                content = content,
+            )
+        },
+
+        modifier = modifier
+    )
+}
 
 @Composable
 fun PagerScreen(

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -49,6 +51,7 @@ import com.ivzb.urgat.ui.components.uiState.NavigationUiState
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.library.LibraryUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.isScrollingUp
 import kotlinx.coroutines.launch
 
 @VisibleForTesting
@@ -62,6 +65,7 @@ fun <T> NavigationScreen(
     navigator: Navigator,
     withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
+    listState: LazyListState? = null,
 
     content: @Composable () -> Unit,
 
@@ -175,6 +179,7 @@ fun <T> NavigationScreen(
                 topAppBarActionsContent = topAppBarActionsContent,
                 floatingActionButtonContent = {
                     ExpandableFab(
+                        visible = listState?.isScrollingUp() ?: true,
                         fabActions = uiState.fabActions,
                         onFabActionClick = { fabActionId ->
                             onFabActionClick?.invoke(fabActionId)
@@ -232,6 +237,7 @@ fun NavigationScreenPreview() {
             navigator = FakeNavigator(),
             withTopAppBarActions = false,
             topAppBarActionsContent = {},
+            listState = rememberLazyListState(),
             modifier = Modifier,
             onFabActionClick = {},
             content = {},

@@ -26,7 +26,7 @@ class TodosViewModel @Inject constructor(
     private val completeTodoUseCase: CompleteTodoUseCase,
     private val activateTodoUseCase: ActivateTodoUseCase,
     private val clearCompletedTodosUseCase: ClearCompletedTodosUseCase,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _savedFilterType = savedStateHandle.getStateFlow(TODOS_FILTER_SAVED_STATE_KEY, TodosFilterType.ALL_TODOS)

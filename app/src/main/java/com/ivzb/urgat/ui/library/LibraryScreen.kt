@@ -4,7 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,10 +24,10 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
+import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.MoreTodosMenu
-import com.ivzb.urgat.ui.components.screens.NavigationScreen
-import com.ivzb.urgat.ui.components.screens.PagerScreen
+import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -98,140 +98,176 @@ fun LibraryScreen(
     modifier: Modifier = Modifier
 ) {
 
-    NavigationScreen(
+    NavigationPagerScreen(
         uiState = uiState,
 
         route = LibraryRoute,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
         onFabActionClick = { id -> onIntent(LibraryIntent.FabActionClick(id)) },
         navigator = navigator,
+
         withTopAppBarActions = uiState.todos.isNotEmpty() || uiState.notes.isNotEmpty(),
-        topAppBarActionsContent = {
+        topAppBarActionsContent = { page ->
+            if (page == LibraryPage.Todos) {
+                FilterMenu(
+                    items = uiState.todosFilteringUiInfo.filterMenuItems,
+                    onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
+                )
+            }
+
             MoreTodosMenu(
                 onClearCompletedTodos = { onIntent(LibraryIntent.ClearCompletedTodos) }
             )
         },
 
-        content = {
-            PagerScreen(
-                uiState = uiState,
-                content = { page, listState, onListStateChanged ->
+        content = { page, listState, onListStateChanged ->
+            when (page) {
+                LibraryPage.Todos -> TodosPage(
+                    todos = uiState.todos,
+                    todosFilteringUiInfo = uiState.todosFilteringUiInfo,
+                    onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
+                    onSeeAllTodos = onSeeAllTodos,
+                    onTodoClick = onTodoClick,
+                    onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
 
-                    LaunchedEffect(Unit) {
-                        onListStateChanged(listState)
-                    }
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
 
-                    val screenName = stringResource(R.string.finance)
+                LibraryPage.Notes -> NotesPage(
+                    notes = uiState.notes,
+                    notesFilteringUiInfo = uiState.notesFilteringUiInfo,
+                    onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
+                    onNoteClick = onNoteClick,
 
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .semantics { contentDescription = screenName },
-                        contentPadding = PaddingValues(
-                            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                            vertical = dimensionResource(R.dimen.content_padding_vertical),
-                        ),
-                        state = listState,
-                    ) {
-
-                        when (page) {
-                            LibraryPage.Todos -> itemTodo(
-                                todos = uiState.todos,
-                                todosFilteringUiInfo = uiState.todosFilteringUiInfo,
-                                onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
-                                onSeeAllTodos = onSeeAllTodos,
-                                onTodoClick = onTodoClick,
-                                onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
-                            )
-
-                            LibraryPage.Notes -> itemNotes(
-                                notes = uiState.notes,
-                                notesFilteringUiInfo = uiState.notesFilteringUiInfo,
-                                onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
-                                onNoteClick = onNoteClick
-                            )
-                        }
-                    }
-                }
-            )
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+            }
         },
 
         modifier = modifier
     )
 }
 
-private fun LazyListScope.itemTodo(
+@Composable
+private fun TodosPage(
     todos: List<Todo>,
     todosFilteringUiInfo: TodosFilteringUiInfo,
     onAddTodo: () -> Unit,
     onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-    onTodoCheckedChange: (Todo, Boolean) -> Unit
+    onTodoCheckedChange: (Todo, Boolean) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
-    when {
-        todos.isEmpty() -> {
-            item {
-                EmptyStateCard(
-                    iconRes = todosFilteringUiInfo.emptyIconRes,
-                    label = todosFilteringUiInfo.emptyLabel,
-                    message = todosFilteringUiInfo.emptyMessage,
-                    buttonLabel = todosFilteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onAddTodo,
-                )
-            }
-        }
 
-        else -> {
-            item {
-                ItemHeaderWithSeeAll(
-                    title = stringResource(todosFilteringUiInfo.currentFilteringLabel),
-                    onSeeAllClick = onSeeAllTodos,
-                )
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
+    val screenName = stringResource(R.string.finance)
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .semantics { contentDescription = screenName },
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.content_padding),
+            vertical = dimensionResource(R.dimen.content_padding),
+        ),
+        state = listState,
+    ) {
+
+        when {
+            todos.isEmpty() -> {
+                item {
+                    EmptyStateCard(
+                        iconRes = todosFilteringUiInfo.emptyIconRes,
+                        label = todosFilteringUiInfo.emptyLabel,
+                        message = todosFilteringUiInfo.emptyMessage,
+                        buttonLabel = todosFilteringUiInfo.emptyButtonLabel,
+                        onButtonClick = onAddTodo,
+                    )
+                }
             }
 
-            items(
-                items = todos,
-                key = { todo -> todo.id },
-            ) { todo ->
-                TodoItem(
-                    todo = todo,
-                    onTodoClick = onTodoClick,
-                    onCheckedChange = { onTodoCheckedChange(todo, it) }
-                )
+            else -> {
+                item {
+                    ItemHeaderWithSeeAll(
+                        title = stringResource(todosFilteringUiInfo.currentFilteringLabel),
+                        onSeeAllClick = onSeeAllTodos,
+                    )
+                }
+
+                items(
+                    items = todos,
+                    key = { todo -> todo.id },
+                ) { todo ->
+                    TodoItem(
+                        todo = todo,
+                        onTodoClick = onTodoClick,
+                        onCheckedChange = { onTodoCheckedChange(todo, it) }
+                    )
+                }
             }
         }
     }
 }
 
-private fun LazyListScope.itemNotes(
+@Composable
+private fun NotesPage(
     notes: List<Note>,
     notesFilteringUiInfo: NotesFilteringUiInfo,
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
-    when {
-        notes.isEmpty() -> {
-            item {
-                EmptyStateCard(
-                    iconRes = notesFilteringUiInfo.emptyIconRes,
-                    label = notesFilteringUiInfo.emptyLabel,
-                    message = notesFilteringUiInfo.emptyMessage,
-                    buttonLabel = notesFilteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onAddNote,
-                )
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
+    val screenName = stringResource(R.string.finance)
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .semantics { contentDescription = screenName },
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.content_padding),
+            vertical = dimensionResource(R.dimen.content_padding),
+        ),
+        state = listState,
+    ) {
+
+        when {
+            notes.isEmpty() -> {
+                item {
+                    EmptyStateCard(
+                        iconRes = notesFilteringUiInfo.emptyIconRes,
+                        label = notesFilteringUiInfo.emptyLabel,
+                        message = notesFilteringUiInfo.emptyMessage,
+                        buttonLabel = notesFilteringUiInfo.emptyButtonLabel,
+                        onButtonClick = onAddNote,
+                    )
+                }
             }
-        }
 
-        else -> {
-            items(
-                items = notes,
-                key = { note -> note.id },
-            ) { note ->
+            else -> {
+                items(
+                    items = notes,
+                    key = { note -> note.id },
+                ) { note ->
 
-                NoteItem(
-                    note = note,
-                    onNoteClick = onNoteClick
-                )
+                    NoteItem(
+                        note = note,
+                        onNoteClick = onNoteClick
+                    )
+                }
             }
         }
     }
