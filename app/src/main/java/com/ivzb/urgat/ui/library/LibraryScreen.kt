@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -25,7 +24,6 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.MoreTodosMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.notes.NoteItem
@@ -39,7 +37,6 @@ fun LibraryScreen(
     viewModel: LibraryViewModel,
 
     onAddTodo: () -> Unit,
-    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
 
     onAddNote: () -> Unit,
@@ -55,9 +52,7 @@ fun LibraryScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
 
-        onSeeAllTodos = onSeeAllTodos,
         onTodoClick = onTodoClick,
-
         onNoteClick = onNoteClick,
 
         navigator = navigator,
@@ -74,13 +69,6 @@ fun LibraryScreen(
             viewModel.onIntent(LibraryIntent.EventConsumed)
         }
     }
-
-    val resources = LocalResources.current
-    val itemsLimit = resources.getInteger(R.integer.items_limit)
-
-    LaunchedEffect(itemsLimit) {
-        viewModel.onIntent(LibraryIntent.ItemsLimitChanged(itemsLimit))
-    }
 }
 
 @VisibleForTesting
@@ -89,9 +77,7 @@ fun LibraryScreen(
     uiState: LibraryUiState,
     onIntent: (LibraryIntent) -> Unit,
 
-    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
-
     onNoteClick: (Note) -> Unit,
 
     navigator: Navigator,
@@ -126,7 +112,6 @@ fun LibraryScreen(
                     todos = uiState.todos,
                     todosFilteringUiInfo = uiState.todosFilteringUiInfo,
                     onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
-                    onSeeAllTodos = onSeeAllTodos,
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
 
@@ -155,7 +140,6 @@ private fun TodosPage(
     todos: List<Todo>,
     todosFilteringUiInfo: TodosFilteringUiInfo,
     onAddTodo: () -> Unit,
-    onSeeAllTodos: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
 
@@ -194,13 +178,6 @@ private fun TodosPage(
             }
 
             else -> {
-                item {
-                    ItemHeaderWithSeeAll(
-                        title = stringResource(todosFilteringUiInfo.currentFilteringLabel),
-                        onSeeAllClick = onSeeAllTodos,
-                    )
-                }
-
                 items(
                     items = todos,
                     key = { todo -> todo.id },
@@ -292,7 +269,6 @@ fun LibraryScreenPreview(initialPage: Int = 0) {
                 filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
-            onSeeAllTodos = {},
             onTodoClick = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
@@ -322,7 +298,6 @@ fun LibraryScreenEmptyPreview() {
                 filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
-            onSeeAllTodos = {},
             onTodoClick = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
@@ -346,7 +321,6 @@ fun LibraryScreenLoadingPreview() {
                 filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
-            onSeeAllTodos = {},
             onTodoClick = {},
             onNoteClick = {},
             navigator = FakeNavigator(),
@@ -370,7 +344,6 @@ fun LibraryScreenErrorPreview() {
                 filteringUiInfo = LibraryFilteringUiInfo()
             ),
             onIntent = {},
-            onSeeAllTodos = {},
             onTodoClick = {},
             onNoteClick = {},
             navigator = FakeNavigator(),

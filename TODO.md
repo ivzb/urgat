@@ -96,6 +96,4 @@
 - car reminders
 - check how to add dashboard tab to finance screen
 - add one more playstore screenshot
-- remove todos screen
-- move todos filtering to library screen
-- move inner todos to library screen - no need to tap see all
+- move inner finance tab screens like library screen

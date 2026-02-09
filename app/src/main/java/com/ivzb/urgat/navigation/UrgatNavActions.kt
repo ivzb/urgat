@@ -9,17 +9,12 @@ import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
 import com.ivzb.urgat.ui.expenses.ExpensesRoute
 import com.ivzb.urgat.ui.investments.InvestmentsRoute
-import com.ivzb.urgat.ui.todos.TodosRoute
 import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
 import com.ivzb.urgat.ui.budgets.BudgetsRoute
 import com.ivzb.urgat.ui.savings.SavingsRoute
 import com.ivzb.urgat.ui.weights.WeightsRoute
 
 class UrgatNavActions(private val navigator: Navigator) {
-
-    fun navigateToTodos() {
-        navigator.navigate(TodosRoute)
-    }
 
     fun navigateToAddTodo() {
         navigator.navigate(AddEditTodoRoute(

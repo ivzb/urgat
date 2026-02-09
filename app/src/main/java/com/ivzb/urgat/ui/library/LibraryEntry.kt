@@ -12,7 +12,6 @@ fun EntryProviderScope<NavKey>.libraryEntry(navigator: Navigator, navActions: Ur
             viewModel = hiltViewModel(),
 
             onAddTodo = { navActions.navigateToAddTodo() },
-            onSeeAllTodos = { navActions.navigateToTodos() },
             onTodoClick = { navActions.navigateToEditTodo(it.id) },
 
             onAddNote = { navActions.navigateToAddNote() },

@@ -18,7 +18,7 @@ import com.ivzb.urgat.ui.components.scaffolds.UrgatScaffold
 import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.todos.TodosUiState
+import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.isScrollingUp
 
 @Composable
@@ -75,7 +75,7 @@ fun ListDetailScreen(
 fun ListDetailsScreenPreview() {
     UrgatTheme {
         ListDetailScreen(
-            uiState = TodosUiState(),
+            uiState = WeightsUiState(),
             route = LibraryRoute,
             onSearchQueryChanged = {},
             onBack = {},
