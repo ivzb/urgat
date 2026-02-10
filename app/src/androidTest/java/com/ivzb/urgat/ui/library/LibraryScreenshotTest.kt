@@ -78,9 +78,7 @@ class LibraryScreenshotTest: ScreenshotTest() {
                     uiState = uiState,
                     onIntent = {},
 
-                    onSeeAllTodos = {},
                     onTodoClick = {},
-
                     onNoteClick = {},
 
                     navigator = FakeNavigator(),
