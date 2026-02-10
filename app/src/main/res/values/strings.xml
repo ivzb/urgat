@@ -182,7 +182,7 @@
     <string name="no_savings_search">You have no savings with this search criteria!</string>
     <string name="loading_savings">Loading savings</string>
     <string name="error_savings">Error while loading savings</string>
-    <string name="dashboard">Dashboard</string>
+    <string name="report">Report</string>
     <string name="FIRE">FI/RE</string>
     <string name="fire_title">FI/RE calculation is based on %1$s.</string>
     <string name="fire_info">All calculations are derived from the most recent month with complete data, meaning budget and expenses have to be filled.\n\nThe current ongoing month is always excluded, as it is not considered complete until it ends.</string>

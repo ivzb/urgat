@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.combine
 import java.math.BigDecimal
 import javax.inject.Inject
 
-interface ObserveDashboardBudgetUseCase {
+interface ObserveReportBudgetUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
@@ -25,12 +25,12 @@ interface ObserveDashboardBudgetUseCase {
 
 }
 
-class DefaultObserveDashboardBudgetUseCase @Inject constructor(
+class DefaultObserveReportBudgetUseCase @Inject constructor(
     private val observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase,
     private val observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase,
     private val observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase,
     private val observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase,
-): ObserveDashboardBudgetUseCase {
+): ObserveReportBudgetUseCase {
 
 
     override fun invoke(

@@ -6,6 +6,8 @@ import com.ivzb.urgat.ui.components.FilteringUiInfo
 data class WellbeingFilteringUiInfo(
     override val emptyLabel: Int = R.string.no_weights,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_weights,
+    override val emptyMessage: Int = 0,
+    override val emptyButtonLabel: Int = 0,
 
     override val loadingLabel: Int = R.string.loading_wellbeing,
 

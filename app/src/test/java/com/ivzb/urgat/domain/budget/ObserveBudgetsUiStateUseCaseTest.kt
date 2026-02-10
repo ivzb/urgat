@@ -1,32 +1,19 @@
-package com.ivzb.urgat.ui.budgets
+package com.ivzb.urgat.domain.budget
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
-import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
-import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
-import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsAllTimeUseCase
-import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsMonthlyUseCase
-import com.ivzb.urgat.domain.budget.FakeObserveGroupedBudgetsYearlyUseCase
-import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
+import com.ivzb.urgat.ui.budgets.BudgetsFilterType
+import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -34,9 +21,8 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class BudgetsViewModelTest {
+class ObserveBudgetsUiStateUseCaseTest {
 
-    private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var fakeObserveBudgetsUseCase: FakeObserveBudgetsUseCase
     private lateinit var fakeObserveGroupedBudgetsMonthlyUseCase: FakeObserveGroupedBudgetsMonthlyUseCase
     private lateinit var fakeObserveGroupedBudgetsYearlyUseCase: FakeObserveGroupedBudgetsYearlyUseCase
@@ -44,26 +30,25 @@ class BudgetsViewModelTest {
     private lateinit var fakeObserveBudgetsFilteringUseCase: FakeObserveBudgetsFilteringUseCase
     private lateinit var fakeObserveBudgetsSortingUseCase: FakeObserveBudgetsSortingUseCase
 
-    private lateinit var viewModel: BudgetsViewModel
-
-    private val testDispatcher = StandardTestDispatcher()
+    private lateinit var useCase: ObserveBudgetsUiStateUseCase
 
     @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-
-        savedStateHandle = SavedStateHandle(mapOf(BUDGETS_FILTER_SAVED_STATE_KEY to null))
+    fun setUp() {
         fakeObserveBudgetsUseCase = FakeObserveBudgetsUseCase()
         fakeObserveGroupedBudgetsMonthlyUseCase = FakeObserveGroupedBudgetsMonthlyUseCase()
         fakeObserveGroupedBudgetsYearlyUseCase = FakeObserveGroupedBudgetsYearlyUseCase()
         fakeObserveGroupedBudgetsAllTimeUseCase = FakeObserveGroupedBudgetsAllTimeUseCase()
         fakeObserveBudgetsFilteringUseCase = FakeObserveBudgetsFilteringUseCase()
         fakeObserveBudgetsSortingUseCase = FakeObserveBudgetsSortingUseCase()
-    }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        useCase = DefaultObserveBudgetsUiStateUseCase(
+            fakeObserveBudgetsUseCase,
+            fakeObserveGroupedBudgetsMonthlyUseCase,
+            fakeObserveGroupedBudgetsYearlyUseCase,
+            fakeObserveGroupedBudgetsAllTimeUseCase,
+            fakeObserveBudgetsFilteringUseCase,
+            fakeObserveBudgetsSortingUseCase,
+        )
     }
 
     @Test
@@ -74,27 +59,28 @@ class BudgetsViewModelTest {
         fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Loading)
         fakeObserveBudgetsFilteringUseCase.emit(Async.Loading)
         fakeObserveBudgetsSortingUseCase.emit(Async.Loading)
-        viewModel = createViewModel()
 
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect()
-        }
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
 
-        val initial = viewModel.uiState.value
-        assertTrue(initial.isLoading)
-        assertFalse(initial.hasError)
-        assertTrue(initial.budgets.isEmpty())
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
 
-        job.cancel()
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.isLoading)
+        assertFalse(uiState.hasError)
+        assertTrue(uiState.budgets.isEmpty())
     }
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val budgets = listOf(
+        val fakeBudgets = listOf(
             Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), 1L, false, 1L),
             Budget("2", 5500.toBigDecimal(), 7800.toBigDecimal(), 6200.toBigDecimal(), 1L, false, 1L),
         )
-        val fakeBudgets = budgets
         val fakeMonthlyBudgets = listOf(
             GroupedBudget(
                 category = GroupedBudgetCategories(
@@ -172,24 +158,27 @@ class BudgetsViewModelTest {
         fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(fakeAllTimeBudgets))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(fakeBudgetsFiltering))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(fakeBudgetsSorting))
-        viewModel = createViewModel()
 
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect()
-        }
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
 
         advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals(fakeBudgets, state.budgets)
-        assertEquals(fakeMonthlyBudgets, state.monthlyBudgets)
-        assertEquals(fakeYearlyBudgets, state.yearlyBudgets)
-        assertEquals(fakeAllTimeBudgets, state.allTimeBudget)
-        assertEquals(fakeBudgetsFiltering, state.filteringUiInfo.filterMenuItems)
-        assertEquals(fakeBudgetsSorting, state.filteringUiInfo.sortMenuItems)
-        assertFalse(state.isLoading)
-        assertFalse(state.hasError)
-        job.cancel()
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertEquals(fakeBudgets, uiState.budgets)
+        assertEquals(fakeMonthlyBudgets, uiState.monthlyBudgets)
+        assertEquals(fakeYearlyBudgets, uiState.yearlyBudgets)
+        assertEquals(fakeAllTimeBudgets, uiState.allTimeBudget)
+        assertEquals(fakeBudgetsFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertEquals(fakeBudgetsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertEquals(fakeBudgetsFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertEquals(fakeBudgetsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
     }
 
     @Test
@@ -213,128 +202,19 @@ class BudgetsViewModelTest {
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
-        viewModel = createViewModel()
 
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect()
-        }
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
 
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state.hasError)
-        assertFalse(state.isLoading)
-
-        job.cancel()
-    }
-
-    @Test
-    fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val fakeBudgets = SampleData.SAMPLE_BUDGETS
-
-        fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
-        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "All time",
-                total = 24_000.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
-                ),
-            ),
-            totalIncome = 24_000.toBigDecimal(),
-            totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = 11_200.toBigDecimal(),
-            totalInvestmentsFormatted = "11200 USD",
-            totalSavings = 500.toBigDecimal(),
-        )))
-        fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
-        viewModel = createViewModel()
-
-        viewModel.onIntent(BudgetsIntent.SearchQueryChanged("snp"))
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
 
         advanceUntilIdle()
 
-        assertEquals("snp", fakeObserveBudgetsUseCase.lastQuery)
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.hasError)
+        assertFalse(uiState.isLoading)
     }
 
-    @Test
-    fun `setFiltering updates saved state handle`() = runTest {
-        fakeObserveBudgetsUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "All time",
-                total = 24_000.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
-                ),
-            ),
-            totalIncome = 24_000.toBigDecimal(),
-            totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = 11_200.toBigDecimal(),
-            totalInvestmentsFormatted = "11200 USD",
-            totalSavings = 500.toBigDecimal(),
-        )))
-        fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
-        viewModel = createViewModel()
-
-        val expected = BudgetsFilterType.POSITIVE_BUDGETS
-
-        viewModel.onIntent(BudgetsIntent.SetFiltering(expected))
-        advanceUntilIdle()
-
-        assertEquals(
-            expected,
-            savedStateHandle[BUDGETS_FILTER_SAVED_STATE_KEY]
-        )
-    }
-
-    @Test
-    fun `setSorting updates saved state handle`() = runTest {
-        fakeObserveBudgetsUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "All time",
-                total = 24_000.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
-                ),
-            ),
-            totalIncome = 24_000.toBigDecimal(),
-            totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = 11_200.toBigDecimal(),
-            totalInvestmentsFormatted = "11200 USD",
-            totalSavings = 500.toBigDecimal(),
-        )))
-        fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
-        viewModel = createViewModel()
-
-        val expected = BudgetsSortType.BY_MIN
-
-        viewModel.onIntent(BudgetsIntent.SetSorting(expected))
-        advanceUntilIdle()
-
-        assertEquals(
-            expected,
-            savedStateHandle[BUDGETS_SORT_SAVED_STATE_KEY]
-        )
-    }
-
-    private fun createViewModel() = BudgetsViewModel(
-        fakeObserveBudgetsUseCase,
-        fakeObserveGroupedBudgetsMonthlyUseCase,
-        fakeObserveGroupedBudgetsYearlyUseCase,
-        fakeObserveGroupedBudgetsAllTimeUseCase,
-        fakeObserveBudgetsFilteringUseCase,
-        fakeObserveBudgetsSortingUseCase,
-        savedStateHandle
-    )
 }

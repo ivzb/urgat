@@ -8,8 +8,8 @@ data class InvestmentsFilteringUiInfo(
 
     override val emptyLabel: Int = R.string.no_investments,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_investments,
-    val emptyMessage: Int = R.string.no_investments_message,
-    val emptyButtonLabel: Int = R.string.add_investment,
+    override val emptyMessage: Int = R.string.no_investments_message,
+    override val emptyButtonLabel: Int = R.string.add_investment,
 
     override val loadingLabel: Int = R.string.loading_investments,
 

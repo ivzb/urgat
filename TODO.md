@@ -39,6 +39,7 @@
 - expenses/investments crashes when there are no items and click group/chart page
 - budgets/investments/expenses/notes/todos/weights screens should have empty state when you delete all items and you're still there
 - fix library/finance screen - there is not enough padding above the empty state card
+- encode or replace double quotes from any string to avoid import crash afterwards
 
 ## Spikes
 - check if app db is accessible in release and encrypt it
@@ -94,6 +95,6 @@
 - car fuel
 - car maintenance
 - car reminders
-- check how to add dashboard tab to finance screen
 - add one more playstore screenshot
-- move inner finance tab screens like library screen
+- move inner weight tab screens like library and finance screen
+- show red nudge to filter/sort button in the top bar if there is filtering/sorting applied

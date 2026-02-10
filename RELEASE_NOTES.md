@@ -1,3 +1,11 @@
+## Release notes 26.02.03
+
+New:
+- The Finance section has been simplified. All tabs are now accessible directly from the main Finance screen, so you can view full details without extra navigation.
+
+Improved:
+- All todos are now visible on the Library screen, without tapping ‘See all.’
+
 ## Release notes 26.02.02
 
 Improved:

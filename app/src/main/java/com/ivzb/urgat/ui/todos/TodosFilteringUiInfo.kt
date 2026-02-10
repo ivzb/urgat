@@ -8,8 +8,8 @@ data class TodosFilteringUiInfo(
 
     override val emptyLabel: Int = R.string.no_todos,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_todos,
-    val emptyMessage: Int = R.string.no_todos_message,
-    val emptyButtonLabel: Int = R.string.add_todo,
+    override val emptyMessage: Int = R.string.no_todos_message,
+    override val emptyButtonLabel: Int = R.string.add_todo,
 
     override val loadingLabel: Int = R.string.loading_todos,
 

@@ -13,6 +13,7 @@ import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentCategoriesUseCas
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentsSortingUseCase
+import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentsUiStateUseCase
 import com.ivzb.urgat.domain.investment.DefaultObserveInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.DefaultUpdateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.DeleteInvestmentUseCase
@@ -26,6 +27,7 @@ import com.ivzb.urgat.domain.investment.ObserveInvestmentCategoriesUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentNetWorthUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsSortingUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
 import com.ivzb.urgat.domain.investment.UpdateInvestmentUseCase
 import dagger.Binds
@@ -92,5 +94,9 @@ interface InvestmentsUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteInvestmentUseCase(useCase: DefaultDeleteInvestmentUseCase): DeleteInvestmentUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveInvestmentsUiStateUseCase(useCase: DefaultObserveInvestmentsUiStateUseCase): ObserveInvestmentsUiStateUseCase
 
 }

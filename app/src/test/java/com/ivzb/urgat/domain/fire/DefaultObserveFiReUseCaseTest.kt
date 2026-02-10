@@ -28,7 +28,6 @@ import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveDashboardBudgetUseCaseTest {
 

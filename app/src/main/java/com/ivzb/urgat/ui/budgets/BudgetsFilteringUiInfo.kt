@@ -8,8 +8,8 @@ data class BudgetsFilteringUiInfo(
 
     override val emptyLabel: Int = R.string.no_budgets,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_budgets,
-    val emptyMessage: Int = R.string.no_budgets_message,
-    val emptyButtonLabel: Int = R.string.add_budget,
+    override val emptyMessage: Int = R.string.no_budgets_message,
+    override val emptyButtonLabel: Int = R.string.add_budget,
 
     override val loadingLabel: Int = R.string.loading_budgets,
 

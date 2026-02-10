@@ -8,8 +8,8 @@ data class WeightsFilteringUiInfo(
 
     override val emptyLabel: Int = R.string.no_weights_label,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_weights,
-    val emptyMessage: Int = R.string.no_weights_message,
-    val emptyButtonLabel: Int = R.string.add_weight,
+    override val emptyMessage: Int = R.string.no_weights_message,
+    override val emptyButtonLabel: Int = R.string.add_weight,
 
     override val loadingLabel: Int = R.string.loading_weights,
 

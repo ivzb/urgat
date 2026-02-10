@@ -26,7 +26,6 @@ import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
 import com.ivzb.urgat.ui.components.screens.ListDetailScreen
-import com.ivzb.urgat.ui.investments.InvestmentsIntent
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate

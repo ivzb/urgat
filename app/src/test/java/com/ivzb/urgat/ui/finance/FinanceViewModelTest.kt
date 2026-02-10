@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.finance
 
-import com.ivzb.urgat.R
+import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
@@ -8,17 +8,34 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.resources.ResourcesProvider
-import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveExpensesUseCase
-import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUseCase
-import com.ivzb.urgat.domain.saving.FakeObserveSavingsUseCase
 import com.ivzb.urgat.data.saving.Saving
-import com.ivzb.urgat.domain.budget.FakeObserveDashboardBudgetUseCase
+import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUiStateUseCase
+import com.ivzb.urgat.domain.budget.FakeObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveExpensesUiStateUseCase
+import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.fire.FakeObserveFiReUseCase
-import com.ivzb.urgat.ui.addEditTodo.AddEditTodoIntent
+import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsUiStateUseCase
+import com.ivzb.urgat.domain.investment.GroupedInvestments
+import com.ivzb.urgat.domain.saving.FakeObserveSavingsUiStateUseCase
+import com.ivzb.urgat.domain.saving.GroupedSavings
+import com.ivzb.urgat.ui.budgets.BudgetsFilterType
+import com.ivzb.urgat.ui.budgets.BudgetsSortType
+import com.ivzb.urgat.ui.budgets.BudgetsUiState
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.expenses.ExpensesUiState
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_BUDGETS_SORT_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_EXPENSES_SORT_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_SAVINGS_SORT_SAVED_STATE_KEY
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
+import com.ivzb.urgat.ui.investments.InvestmentsUiState
+import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.util.Async
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -26,7 +43,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -50,14 +66,14 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class FinanceViewModelTest {
 
-    private lateinit var fakeObserveDashboardBudgetUseCase: FakeObserveDashboardBudgetUseCase
-    private lateinit var fakeObserveExpensesUseCase: FakeObserveExpensesUseCase
-    private lateinit var fakeObserveInvestmentsUseCase: FakeObserveInvestmentsUseCase
-    private lateinit var fakeObserveSavingsUseCase: FakeObserveSavingsUseCase
-    private lateinit var fakeObserveBudgetUseCase: FakeObserveBudgetsUseCase
+    private lateinit var fakeObserveReportBudgetUseCase: FakeObserveReportBudgetUseCase
+    private lateinit var fakeObserveExpensesUiStateUseCase: FakeObserveExpensesUiStateUseCase
+    private lateinit var fakeObserveInvestmentsUiStateUseCase: FakeObserveInvestmentsUiStateUseCase
+    private lateinit var fakeObserveSavingsUiStateUseCase: FakeObserveSavingsUiStateUseCase
+    private lateinit var fakeObserveBudgetUiStateUseCase: FakeObserveBudgetsUiStateUseCase
     private lateinit var fakeObserveFiReUseCase: FakeObserveFiReUseCase
-    private lateinit var mockResourcesProvider: ResourcesProvider
     private lateinit var mockFireRepository: FireRepository
+    private lateinit var savedStateHandle: SavedStateHandle
 
     private lateinit var viewModel: FinanceViewModel
 
@@ -67,16 +83,14 @@ class FinanceViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        fakeObserveDashboardBudgetUseCase = FakeObserveDashboardBudgetUseCase()
-        fakeObserveExpensesUseCase = FakeObserveExpensesUseCase()
-        fakeObserveInvestmentsUseCase = FakeObserveInvestmentsUseCase()
-        fakeObserveSavingsUseCase = FakeObserveSavingsUseCase()
-        fakeObserveBudgetUseCase = FakeObserveBudgetsUseCase()
+        fakeObserveReportBudgetUseCase = FakeObserveReportBudgetUseCase()
+        fakeObserveExpensesUiStateUseCase = FakeObserveExpensesUiStateUseCase()
+        fakeObserveInvestmentsUiStateUseCase = FakeObserveInvestmentsUiStateUseCase()
+        fakeObserveSavingsUiStateUseCase = FakeObserveSavingsUiStateUseCase()
+        fakeObserveBudgetUiStateUseCase = FakeObserveBudgetsUiStateUseCase()
         fakeObserveFiReUseCase = FakeObserveFiReUseCase()
-        mockResourcesProvider = mockk()
         mockFireRepository = mockk()
-
-        every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
+        savedStateHandle = SavedStateHandle(mapOf())
 
         every { mockFireRepository.withdrawalRateFlow } returns flowOf(4.toBigDecimal())
         every { mockFireRepository.returnOfInvestmentFlow } returns flowOf(7.toBigDecimal())
@@ -90,9 +104,8 @@ class FinanceViewModelTest {
 
     @Test
     fun `initial state is loading`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Loading)
+        fakeObserveReportBudgetUseCase.emit(Async.Loading)
         viewModel = createViewModel()
-
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()
@@ -101,11 +114,11 @@ class FinanceViewModelTest {
         val initial = viewModel.uiState.value
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
-        assertNull(initial.dashboardBudget)
-        assertTrue(initial.expenses.isEmpty())
-        assertTrue(initial.investments.isEmpty())
-        assertTrue(initial.savings.isEmpty())
-        assertTrue(initial.budgets.isEmpty())
+        assertNull(initial.reportBudget)
+        assertEquals(initial.expensesUiState, ExpensesUiState())
+        assertEquals(initial.investmentsUiState, InvestmentsUiState())
+        assertEquals(initial.savingsUiState, SavingsUiState())
+        assertEquals(initial.budgetsUiState, BudgetsUiState())
         assertNull(initial.fire)
         assertNull(initial.uiEvent)
 
@@ -114,7 +127,7 @@ class FinanceViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeDashboardBudget = GroupedBudget(
+        val fakeReportBudget = GroupedBudget(
             category = GroupedBudgetCategories(
                 group = "",
                 total = 5000.toBigDecimal(),
@@ -128,22 +141,30 @@ class FinanceViewModelTest {
             totalInvestmentsFormatted = "1300 EUR",
             totalSavings = 100.toBigDecimal(),
         )
-        fakeObserveDashboardBudgetUseCase.emit(Async.Success(fakeDashboardBudget))
+        fakeObserveReportBudgetUseCase.emit(Async.Success(fakeReportBudget))
 
-        val fakeExpenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
+        val fakeExpensesUiState = ExpensesUiState(
+            expenses = listOf(GroupedExpenses("1", 10.toBigDecimal(), listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))))
+        )
+        fakeObserveExpensesUiStateUseCase.emit(Async.Success(fakeExpensesUiState))
 
-        val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
-        fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+        val fakeInvestmentsUiState = InvestmentsUiState(
+            investments = listOf(GroupedInvestments("1", "500 USD", listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))))
+        )
+        fakeObserveInvestmentsUiStateUseCase.emit(Async.Success(fakeInvestmentsUiState))
 
-        val fakeSavings = listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))
-        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
+        val fakeSavingsUiState = SavingsUiState(
+            savings = listOf(GroupedSavings("1", 500.toBigDecimal(), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))))
+        )
+        fakeObserveSavingsUiStateUseCase.emit(Async.Success(fakeSavingsUiState))
 
-        val fakeBudgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
-        fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
+        val fakeBudgetsUiState = BudgetsUiState(
+            budgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
+        )
+        fakeObserveBudgetUiStateUseCase.emit(Async.Success(fakeBudgetsUiState))
 
         val fakeFiRe = FiRe(
-            selection = "Dedember 2025",
+            selection = "December 2025",
 
             monthlyIncome = 5000.toBigDecimal(),
             monthlyExpenses = 3000.toBigDecimal(),
@@ -174,11 +195,11 @@ class FinanceViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeDashboardBudget, state.dashboardBudget)
-        assertEquals(fakeExpenses, state.expenses)
-        assertEquals(fakeInvestments, state.investments)
-        assertEquals(fakeSavings, state.savings)
-        assertEquals(fakeBudgets, state.budgets)
+        assertEquals(fakeReportBudget, state.reportBudget)
+        assertEquals(fakeExpensesUiState, state.expensesUiState)
+        assertEquals(fakeInvestmentsUiState, state.investmentsUiState)
+        assertEquals(fakeSavingsUiState, state.savingsUiState)
+        assertEquals(fakeBudgetsUiState, state.budgetsUiState)
         assertEquals(fakeFiRe, state.fire)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
@@ -188,17 +209,23 @@ class FinanceViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveDashboardBudgetUseCase.emit(Async.Error)
-        fakeObserveExpensesUseCase.emit(Async.Error)
+        fakeObserveReportBudgetUseCase.emit(Async.Error)
+        fakeObserveExpensesUiStateUseCase.emit(Async.Error)
 
-        val fakeInvestments = listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))
-        fakeObserveInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+        val fakeInvestmentsUiState = InvestmentsUiState(
+            investments = listOf(GroupedInvestments("1", "500 USD", listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))))
+        )
+        fakeObserveInvestmentsUiStateUseCase.emit(Async.Success(fakeInvestmentsUiState))
 
-        val fakeSavings = listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))
-        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
+        val fakeSavingsUiState = SavingsUiState(
+            savings = listOf(GroupedSavings("1", 500.toBigDecimal(), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))))
+        )
+        fakeObserveSavingsUiStateUseCase.emit(Async.Success(fakeSavingsUiState))
 
-        val fakeBudgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
-        fakeObserveBudgetUseCase.emit(Async.Success(fakeBudgets))
+        val fakeBudgetsUiState = BudgetsUiState(
+            budgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
+        )
+        fakeObserveBudgetUiStateUseCase.emit(Async.Success(fakeBudgetsUiState))
 
         val fakeFiRe = FiRe(
             selection = "December 2025",
@@ -246,11 +273,11 @@ class FinanceViewModelTest {
 
         advanceUntilIdle()
 
-        assertEquals("coffee", fakeObserveDashboardBudgetUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveExpensesUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveInvestmentsUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveSavingsUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveBudgetUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveReportBudgetUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveExpensesUiStateUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveInvestmentsUiStateUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveSavingsUiStateUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveBudgetUiStateUseCase.lastQuery)
         assertEquals("coffee", fakeObserveFiReUseCase.lastQuery)
     }
 
@@ -265,11 +292,11 @@ class FinanceViewModelTest {
     }
 
     private fun `fab action click emits event`(fabActionId: FinanceFabActionId, expectedEvent: FinanceUiEvent) = runTest {
-        fakeObserveDashboardBudgetUseCase.emit(Async.Success(null))
-        fakeObserveExpensesUseCase.emit(Async.Success(listOf()))
-        fakeObserveInvestmentsUseCase.emit(Async.Success(listOf()))
-        fakeObserveSavingsUseCase.emit(Async.Success(listOf()))
-        fakeObserveBudgetUseCase.emit(Async.Success(listOf()))
+        fakeObserveReportBudgetUseCase.emit(Async.Success(null))
+        fakeObserveExpensesUiStateUseCase.emit(Async.Success(ExpensesUiState()))
+        fakeObserveInvestmentsUiStateUseCase.emit(Async.Success(InvestmentsUiState()))
+        fakeObserveSavingsUiStateUseCase.emit(Async.Success(SavingsUiState()))
+        fakeObserveBudgetUiStateUseCase.emit(Async.Success(BudgetsUiState()))
         fakeObserveFiReUseCase.emit(Async.Success(null))
         viewModel = createViewModel()
 
@@ -326,14 +353,113 @@ class FinanceViewModelTest {
         coVerify(exactly = 1) { mockFireRepository.updateTaxRate(eq("7")) }
     }
 
+    @Test
+    fun `SetExpensesFiltering updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = ExpensesFilterType.DEBIT_EXPENSES
+
+        viewModel.onIntent(FinanceIntent.SetExpensesFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, savedStateHandle[FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY])
+    }
+
+    @Test
+    fun `SetExpensesSorting updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = ExpensesSortType.BY_MIN
+
+        viewModel.onIntent(FinanceIntent.SetExpensesSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, savedStateHandle[FINANCE_EXPENSES_SORT_SAVED_STATE_KEY])
+    }
+
+    @Test
+    fun `SetInvestmentsFiltering updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = "etfs"
+
+        viewModel.onIntent(FinanceIntent.SetInvestmentsFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY]
+        )
+    }
+
+    @Test
+    fun `SetInvestmentsSorting updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = InvestmentsSortType.BY_MARKET_VALUE
+
+        viewModel.onIntent(FinanceIntent.SetInvestmentsSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY]
+        )
+    }
+
+    @Test
+    fun `SetSavingsSorting updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = SavingsSortType.BY_MAX
+
+        viewModel.onIntent(FinanceIntent.SetSavingsSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[FINANCE_SAVINGS_SORT_SAVED_STATE_KEY]
+        )
+    }
+
+    @Test
+    fun `SetBudgetsFiltering updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = BudgetsFilterType.POSITIVE_BUDGETS
+
+        viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY]
+        )
+    }
+
+    @Test
+    fun `SetBudgetsSorting updates saved state handle`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = BudgetsSortType.BY_MIN
+
+        viewModel.onIntent(FinanceIntent.SetBudgetsSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(
+            expected,
+            savedStateHandle[FINANCE_BUDGETS_SORT_SAVED_STATE_KEY]
+        )
+    }
+
     private fun createViewModel() = FinanceViewModel(
-        fakeObserveDashboardBudgetUseCase,
-        fakeObserveExpensesUseCase,
-        fakeObserveInvestmentsUseCase,
-        fakeObserveSavingsUseCase,
-        fakeObserveBudgetUseCase,
+        fakeObserveReportBudgetUseCase,
+        fakeObserveExpensesUiStateUseCase,
+        fakeObserveInvestmentsUiStateUseCase,
+        fakeObserveSavingsUiStateUseCase,
+        fakeObserveBudgetUiStateUseCase,
         fakeObserveFiReUseCase,
-        mockResourcesProvider,
         mockFireRepository,
+        savedStateHandle,
     )
 }
