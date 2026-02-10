@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.expenses
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
@@ -41,10 +38,8 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
-import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.format.formatExpensesChart
@@ -61,37 +56,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ExpensesScreen(
-    viewModel: ExpensesViewModel,
-
-    onAddExpense: () -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-    onBack: () -> Unit,
-
-    modifier: Modifier = Modifier,
-) {
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    ExpensesScreen(
-        uiState = uiState,
-        onIntent = viewModel::onIntent,
-        onAddExpense = onAddExpense,
-        onExpenseClick = onExpenseClick,
-        onBack = onBack,
-        modifier = modifier
-    )
-}
-
-@VisibleForTesting
-@Composable
-fun ExpensesScreen(
     uiState: ExpensesUiState,
-    onIntent: (ExpensesIntent) -> Unit,
-
-    onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
-
-    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -101,23 +67,6 @@ fun ExpensesScreen(
 
     PagerScreen(
         uiState = uiState,
-
-        route = ExpensesRoute,
-        onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddExpense,
-        onBack = onBack,
-
-        topAppBarActionsContent = {
-            FilterMenu(
-                items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
-            )
-
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                onFilter = { onIntent(ExpensesIntent.SetSorting(it)) },
-            )
-        },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
@@ -434,10 +383,7 @@ private fun ExpensesScreenPreview(initialPage: Int = 0) {
                 hasError = false,
                 initialPage = initialPage,
             ),
-            onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -473,10 +419,7 @@ private fun ExpensesScreenEmptyPreview() {
                 isLoading = false,
                 hasError = false
             ),
-            onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -494,10 +437,7 @@ private fun ExpensesScreenLoadingPreview() {
                 isLoading = true,
                 hasError = false
             ),
-            onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -515,10 +455,7 @@ private fun ExpensesScreenErrorPreview() {
                 isLoading = false,
                 hasError = true
             ),
-            onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }

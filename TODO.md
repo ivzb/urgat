@@ -97,3 +97,4 @@
 - check how to add dashboard tab to finance screen
 - add one more playstore screenshot
 - move inner finance tab screens like library screen
+- add support for savings search
