@@ -39,6 +39,7 @@
 - expenses/investments crashes when there are no items and click group/chart page
 - budgets/investments/expenses/notes/todos/weights screens should have empty state when you delete all items and you're still there
 - fix library/finance screen - there is not enough padding above the empty state card
+- encode or replace double quotes from any string to avoid import crash afterwards
 
 ## Spikes
 - check if app db is accessible in release and encrypt it

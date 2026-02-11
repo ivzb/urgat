@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -276,42 +277,33 @@ private fun ExpensesPage(
         onListStateChanged(listState)
     }
 
-    val screenName = stringResource(R.string.finance)
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .semantics { contentDescription = screenName },
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.content_padding),
-            vertical = dimensionResource(R.dimen.content_padding),
-        ),
-        state = listState,
-    ) {
-
-        when {
-            uiState.expenses.isEmpty() -> {
-                item {
-                    EmptyStateCard(
-                        iconRes = uiState.filteringUiInfo.emptyIconRes,
-                        label = uiState.filteringUiInfo.emptyLabel,
-                        message = uiState.filteringUiInfo.emptyMessage,
-                        buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
-                        onButtonClick = onAddExpense,
+    when {
+        uiState.expenses.isEmpty() -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.content_padding),
+                        vertical = dimensionResource(R.dimen.content_padding),
                     )
-                }
-            }
+            ) {
 
-            else -> {
-                item {
-                    ExpensesScreen(
-                        uiState = uiState,
-                        onExpenseClick = onExpenseClick,
-                    )
-                }
+                EmptyStateCard(
+                    iconRes = uiState.filteringUiInfo.emptyIconRes,
+                    label = uiState.filteringUiInfo.emptyLabel,
+                    message = uiState.filteringUiInfo.emptyMessage,
+                    buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
+                    onButtonClick = onAddExpense,
+                )
             }
         }
 
+        else -> {
+            ExpensesScreen(
+                uiState = uiState,
+                onExpenseClick = onExpenseClick,
+            )
+        }
     }
 }
 
