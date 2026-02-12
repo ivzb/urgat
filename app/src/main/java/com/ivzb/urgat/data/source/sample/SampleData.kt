@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.source.sample
 
 import com.ivzb.urgat.data.budget.Budget
+import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
@@ -8,6 +9,7 @@ import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
+import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.randomUUID
 import kotlin.collections.component1
 import kotlin.collections.component4
@@ -272,6 +274,15 @@ object SampleData {
                 createdAt = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000L),
             )
         }
+
+    val SAMPLE_DASHBOARD_BUDGET = GroupedBudget(
+        category = Group.groupBudgetCategoriesMonthly(SAMPLE_BUDGETS, ::randomUUID).first(),
+        totalIncome = 4021.34.toBigDecimal(),
+        totalExpenses = 571.34.toBigDecimal(),
+        totalInvestments = 2500.toBigDecimal(),
+        totalInvestmentsFormatted = "2500 USD",
+        totalSavings = 950.toBigDecimal(),
+    )
 
     private operator fun <T> List<T>.component6(): T = this[5]
     private operator fun <T> List<T>.component7(): T = this[6]

@@ -9,6 +9,7 @@ import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
+import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -24,8 +25,21 @@ class FinanceScreenshotTest: ScreenshotTest() {
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_FinanceScreen_sampleData_expenses() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1)
+    fun screenshotTest_FinanceScreen_sampleData_expenses_transactions() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 0)
+
+    @Test
+    @Category(PlayStoreScreenshotTest::class)
+    fun screenshotTest_FinanceScreen_sampleData_expenses_monthly() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 1)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_expenses_yearly() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 2)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_expenses_all_time() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 3)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_investments() =
@@ -43,11 +57,21 @@ class FinanceScreenshotTest: ScreenshotTest() {
     fun screenshotTest_FinanceScreen_sampleData_fire() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 5)
 
-    private fun screenshotTest_FinanceScreen_sampleData(initialPage: Int) = screenshotTest(
+    private fun screenshotTest_FinanceScreen_sampleData(
+        initialPage: Int,
+        expensesInitialPage: Int = 0,
+    ) = screenshotTest(
         uiState = FinanceUiState(
-            expenses = SampleData.SAMPLE_EXPENSES.take(itemsLimit),
-            expensesFilteringUiInfo = ExpensesFilteringUiInfo(
-                currentFilteringLabel = R.string.recent_expenses,
+            dashboardBudget = SampleData.SAMPLE_DASHBOARD_BUDGET,
+            expensesUiState = ExpensesUiState(
+                expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
+                categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
+                categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
+                categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
+                filteringUiInfo = ExpensesFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_expenses,
+                ),
+                initialPage = expensesInitialPage,
             ),
             investments = SampleData.SAMPLE_INVESTMENTS.take(itemsLimit),
             investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
@@ -70,8 +94,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_FinanceScreen_emptyState() = screenshotTest(
         uiState = FinanceUiState(
-            expenses = listOf(),
-            investments = listOf(),
             isLoading = false,
             hasError = false,
         ),
@@ -80,8 +102,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_FinanceScreen_loadingState() = screenshotTest(
         uiState = FinanceUiState(
-            expenses = listOf(),
-            investments = listOf(),
             isLoading = true,
             hasError = false,
         ),
@@ -90,8 +110,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_FinanceScreen_errorState() = screenshotTest(
         uiState = FinanceUiState(
-            expenses = listOf(),
-            investments = listOf(),
             isLoading = false,
             hasError = true,
         ),
@@ -104,16 +122,9 @@ class FinanceScreenshotTest: ScreenshotTest() {
                     uiState = uiState,
                     onIntent = {},
 
-                    onSeeAllExpenses = {},
                     onExpenseClick = {},
-
-                    onSeeAllInvestments = {},
                     onInvestmentClick = {},
-
-                    onSeeAllSavings = {},
                     onSavingClick = {},
-
-                    onSeeAllBudgets = {},
                     onBudgetClick = {},
 
                     navigator = FakeNavigator(),

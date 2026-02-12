@@ -6,6 +6,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -223,4 +224,28 @@ class FakeDeleteExpenseUseCase : DeleteExpenseUseCase {
     ) {
         deleted = listOf(id)
     }
+}
+
+class FakeObserveExpensesUiStateUseCase: ObserveExpensesUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<ExpensesUiState>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<ExpensesUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<ExpensesFilterType>,
+        sortTypeFlow: Flow<ExpensesSortType>
+    ): Flow<Async<ExpensesUiState>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
+        }
+        return flow
+    }
+
 }

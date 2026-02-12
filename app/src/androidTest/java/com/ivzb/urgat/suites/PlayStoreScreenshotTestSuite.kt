@@ -2,7 +2,6 @@ package com.ivzb.urgat.suites
 
 import com.ivzb.urgat.annotations.ExcludeFromUiTests
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoScreenshotTest
-import com.ivzb.urgat.ui.expenses.ExpensesScreenshotTest
 import com.ivzb.urgat.ui.finance.FinanceScreenshotTest
 import com.ivzb.urgat.ui.investments.InvestmentsScreenshotTest
 import com.ivzb.urgat.ui.library.LibraryScreenshotTest
@@ -18,7 +17,6 @@ import org.junit.runners.Suite
     LibraryScreenshotTest::class,
     AddEditTodoScreenshotTest::class,
     FinanceScreenshotTest::class,
-    ExpensesScreenshotTest::class,
     InvestmentsScreenshotTest::class,
     WellbeingScreenshotTest::class,
 )

@@ -2,7 +2,6 @@ package com.ivzb.urgat.ui.finance
 
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
-import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
@@ -10,13 +9,9 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
-import com.ivzb.urgat.ui.components.uiState.NavigationUiState
-import com.ivzb.urgat.ui.components.uiState.PagerUiState
-import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
-import java.math.BigDecimal
 
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
@@ -24,8 +19,6 @@ data class FinanceUiState(
     val dashboardBudget: GroupedBudget? = null,
 
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
-//    val expenses: List<Expense> = emptyList(),
-//    val expensesFilteringUiInfo: ExpensesFilteringUiInfo = ExpensesFilteringUiInfo(),
 
     val investments: List<Investment> = emptyList(),
     val investmentsFilteringUiInfo: InvestmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),

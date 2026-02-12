@@ -1,13 +1,11 @@
 package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -24,13 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
@@ -47,10 +44,11 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.budgetCategoryPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
+import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
+import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
-import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentItem
@@ -139,16 +137,15 @@ fun FinanceScreen(
             // todo: make it when statement
 
             if (page == FinancePage.Expenses) {
-                // todo
-//                FilterMenu(
-//                    items = uiState.filteringUiInfo.filterMenuItems,
-//                    onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
-//                )
-//
-//                SortMenu(
-//                    items = uiState.filteringUiInfo.sortMenuItems,
-//                    onFilter = { onIntent(ExpensesIntent.SetSorting(it)) },
-//                )
+                FilterMenu(
+                    items = uiState.expensesUiState.filteringUiInfo.filterMenuItems,
+                    onFilter = { onIntent(FinanceIntent.SetExpensesFiltering(it)) },
+                )
+
+                SortMenu(
+                    items = uiState.expensesUiState.filteringUiInfo.sortMenuItems,
+                    onFilter = { onIntent(FinanceIntent.SetExpensesSorting(it)) },
+                )
             }
 
             if (page == FinancePage.Investments) {
@@ -571,16 +568,22 @@ private fun LazyListScope.itemFiRe(
 }
 
 @AllDevicesPreview
+@Preview
 @Composable
-private fun FinanceScreenPreview(initialPage: Int = 0) {
+private fun FinanceScreenPreview(
+    initialPage: Int = 0,
+    expensesInitialPage: Int = 0,
+) {
     UrgatTheme {
         FinanceScreen(
             uiState = FinanceUiState(
+                dashboardBudget = SampleData.SAMPLE_DASHBOARD_BUDGET,
                 expensesUiState = ExpensesUiState(
                     expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
-                    filteringUiInfo = ExpensesFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_expenses,
-                    ),
+                    categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
+                    categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
+                    categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
+                    initialPage = expensesInitialPage,
                 ),
                 investments = SampleData.SAMPLE_INVESTMENTS.take(5),
                 investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
@@ -613,12 +616,35 @@ private fun FinanceScreenPreview(initialPage: Int = 0) {
 }
 
 @AllDevicesPreview
+@Preview
 @Composable
-private fun FinanceScreenExpensesPreview() {
-    FinanceScreenPreview(initialPage = 1)
+private fun FinanceScreenExpensesTransactionsPreview() {
+    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 0)
 }
 
 @AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenExpensesMonthlyPreview() {
+    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 1)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenExpensesYearlyPreview() {
+    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 2)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenExpensesAllTimePreview() {
+    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 3)
+}
+
+@AllDevicesPreview
+@Preview
 @Composable
 private fun FinanceScreenInvestmentsPreview() {
     FinanceScreenPreview(initialPage = 2)

@@ -35,8 +35,6 @@ fun Canvas3d(
     textStyle: TextStyle,
     modifier: Modifier = Modifier,
 ) {
-//    val context = LocalContext.current
-//    val model = read3dModel(context, "penger.obj")
 
     Canvas3dContent(
         model = CUBE_MODEL,
