@@ -16,8 +16,6 @@ import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
 
-    val dashboardBudget: GroupedBudget? = null,
-
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
 
     val investments: List<Investment> = emptyList(),
@@ -29,6 +27,8 @@ data class FinanceUiState(
     val budgets: List<Budget> = emptyList(),
     val budgetsFilteringUiInfo: BudgetsFilteringUiInfo = BudgetsFilteringUiInfo(),
 
+    val reportBudget: GroupedBudget? = null,
+
     val fire: FiRe? = null,
 
     override val isLoading: Boolean = false,
@@ -37,7 +37,7 @@ data class FinanceUiState(
 
     override val pages: List<Page> = FINANCE_PAGES.filter {
         when (it) {
-            FinancePage.Dashboard -> dashboardBudget != null
+            FinancePage.Report -> reportBudget != null
             FinancePage.FIRE -> fire != null
             else -> true
         }

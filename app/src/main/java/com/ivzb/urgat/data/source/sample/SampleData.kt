@@ -3,6 +3,7 @@ package com.ivzb.urgat.data.source.sample
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
@@ -275,13 +276,30 @@ object SampleData {
             )
         }
 
-    val SAMPLE_DASHBOARD_BUDGET = GroupedBudget(
+    val SAMPLE_REPORT_BUDGET = GroupedBudget(
         category = Group.groupBudgetCategoriesMonthly(SAMPLE_BUDGETS, ::randomUUID).first(),
         totalIncome = 4021.34.toBigDecimal(),
         totalExpenses = 571.34.toBigDecimal(),
         totalInvestments = 2500.toBigDecimal(),
         totalInvestmentsFormatted = "2500 USD",
         totalSavings = 950.toBigDecimal(),
+    )
+
+    val SAMPLE_FIRE = FiRe(
+        selection = "Feb 2025",
+        monthlyIncome = 5_000.toBigDecimal(),
+        monthlyExpenses = 2_500.toBigDecimal(),
+        monthlyInvestments = 1_500.toBigDecimal(),
+        annualIncome = 60_000.toBigDecimal(),
+        annualExpenses = 30_000.toBigDecimal(),
+        annualInvestments = 18_000.toBigDecimal(),
+        accumulatedStash = 150_000.toBigDecimal(),
+        savingsRate = 50.toBigDecimal(),
+        target = 750_000.toBigDecimal(),
+        withdrawalRate = 4.toBigDecimal(),
+        returnOfInvestment = 7.toBigDecimal(),
+        taxRate = 10.toBigDecimal(),
+        yearsUntilFiRe = 12.5.toBigDecimal(),
     )
 
     private operator fun <T> List<T>.component6(): T = this[5]

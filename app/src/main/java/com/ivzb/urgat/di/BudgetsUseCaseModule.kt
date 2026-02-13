@@ -7,7 +7,7 @@ import com.ivzb.urgat.domain.budget.DefaultGetBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.DefaultObserveDashboardBudgetUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesYearlyUseCase
@@ -20,7 +20,7 @@ import com.ivzb.urgat.domain.budget.GetBudgetUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
+import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesYearlyUseCase
@@ -90,6 +90,6 @@ interface BudgetsUseCaseModule {
 
     @Singleton
     @Binds
-    fun bindsObserveDashboardBudgetUseCase(useCase: DefaultObserveDashboardBudgetUseCase): ObserveDashboardBudgetUseCase
+    fun bindsObserveReportBudgetUseCase(useCase: DefaultObserveReportBudgetUseCase): ObserveReportBudgetUseCase
 
 }

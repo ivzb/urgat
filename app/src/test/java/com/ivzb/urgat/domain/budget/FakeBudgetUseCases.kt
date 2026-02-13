@@ -223,7 +223,7 @@ class FakeObserveGroupedBudgetsAllTimeUseCase: ObserveGroupedBudgetsAllTimeUseCa
 
 }
 
-class FakeObserveDashboardBudgetUseCase: ObserveDashboardBudgetUseCase {
+class FakeObserveReportBudgetUseCase: ObserveReportBudgetUseCase {
 
     private val flow = MutableStateFlow<Async<GroupedBudget?>>(Async.Loading)
 

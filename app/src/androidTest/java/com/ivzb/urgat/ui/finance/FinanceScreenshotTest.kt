@@ -62,7 +62,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
         expensesInitialPage: Int = 0,
     ) = screenshotTest(
         uiState = FinanceUiState(
-            dashboardBudget = SampleData.SAMPLE_DASHBOARD_BUDGET,
             expensesUiState = ExpensesUiState(
                 expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
                 categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
@@ -85,6 +84,8 @@ class FinanceScreenshotTest: ScreenshotTest() {
             budgetsFilteringUiInfo = BudgetsFilteringUiInfo(
                 currentFilteringLabel = R.string.recent_budgets,
             ),
+            reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
+            fire = SampleData.SAMPLE_FIRE,
             isLoading = false,
             initialPage = initialPage,
             hasError = false,

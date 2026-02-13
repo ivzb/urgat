@@ -2,12 +2,10 @@ package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -44,7 +42,6 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.budgets.BudgetItem
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.CategoriesPage
-import com.ivzb.urgat.ui.budgets.budgetCategoryPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
@@ -176,13 +173,6 @@ fun FinanceScreen(
 //            val screenName = stringResource(R.string.finance)
 
             when (page) {
-                FinancePage.Dashboard -> DashboardPage(
-                    dashboardBudget = uiState.dashboardBudget,
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
                 FinancePage.Expenses -> ExpensesPage(
                     uiState = uiState.expensesUiState,
                     onAddExpense = {
@@ -239,6 +229,14 @@ fun FinanceScreen(
 //                    onSeeAllBudgets = onSeeAllBudgets,
 //                    onBudgetClick = onBudgetClick,
 //                )
+
+                FinancePage.Report -> ReportPage(
+                    reportBudget = uiState.reportBudget,
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+
 //
 //                FinancePage.FIRE -> itemFiRe(
 //                    fire = uiState.fire,
@@ -254,19 +252,19 @@ fun FinanceScreen(
 }
 
 @Composable
-private fun DashboardPage(
-    dashboardBudget: GroupedBudget?,
+private fun ReportPage(
+    reportBudget: GroupedBudget?,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    if (dashboardBudget == null) {
+    if (reportBudget == null) {
         return
     }
 
     CategoriesPage(
-        budget = dashboardBudget,
+        budget = reportBudget,
         group = null,
         listState = listState,
         onListStateChanged = onListStateChanged,
@@ -590,7 +588,6 @@ private fun FinanceScreenPreview(
     UrgatTheme {
         FinanceScreen(
             uiState = FinanceUiState(
-                dashboardBudget = SampleData.SAMPLE_DASHBOARD_BUDGET,
                 expensesUiState = ExpensesUiState(
                     expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
                     categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
@@ -610,6 +607,8 @@ private fun FinanceScreenPreview(
                 budgetsFilteringUiInfo = BudgetsFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_budgets,
                 ),
+                reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
+                fire = SampleData.SAMPLE_FIRE,
                 isLoading = false,
                 hasError = false,
                 initialPage = initialPage,

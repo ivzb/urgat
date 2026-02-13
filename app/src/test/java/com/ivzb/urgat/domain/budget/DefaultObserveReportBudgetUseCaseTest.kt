@@ -26,14 +26,14 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DefaultObserveDashboardBudgetUseCaseTest {
+class DefaultObserveReportBudgetUseCaseTest {
 
     private lateinit var observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase
     private lateinit var observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase
     private lateinit var observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase
     private lateinit var observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase
 
-    private lateinit var observeUseCase: ObserveDashboardBudgetUseCase
+    private lateinit var observeUseCase: ObserveReportBudgetUseCase
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -44,7 +44,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         observeGroupedInvestmentsMonthlyUseCase = mockk()
         observeGroupedSavingsMonthlyUseCase = mockk()
 
-        observeUseCase = DefaultObserveDashboardBudgetUseCase(
+        observeUseCase = DefaultObserveReportBudgetUseCase(
             observeGroupedBudgetCategoriesMonthlyUseCase,
             observeGroupedExpensesMonthlyUseCase,
             observeGroupedInvestmentsMonthlyUseCase,

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.ObserveDashboardBudgetUseCase
+import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
 import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
-    observeDashboardBudgetUseCase: ObserveDashboardBudgetUseCase,
+    observeReportBudgetUseCase: ObserveReportBudgetUseCase,
     observeExpensesUiStateUseCase: ObserveExpensesUiStateUseCase,
     observeInvestmentsUseCase: ObserveInvestmentsUseCase,
     observeSavingsUseCase: ObserveSavingsUseCase,
@@ -60,11 +60,11 @@ class FinanceViewModel @Inject constructor(
     private val _savedExpensesSortType: Flow<ExpensesSortType> = savedStateHandle.getStateFlow(FINANCE_EXPENSES_SORT_SAVED_STATE_KEY, ExpensesSortType.BY_DATE)
 
     val uiState: StateFlow<FinanceUiState> = combineUiState(
-        observeDashboardBudgetUseCase(_searchQuery, _budgetDateRange, null, null, null),
         observeExpensesUiStateUseCase(_searchQuery, _savedExpensesFilterType, _savedExpensesSortType),
         observeInvestmentsUseCase(_searchQuery, null, null, null, null),
         observeSavingsUseCase(_searchQuery, null, null, null, null),
         observeBudgetsUseCase(_searchQuery, null, null, null, null),
+        observeReportBudgetUseCase(_searchQuery, _budgetDateRange, null, null, null),
         observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _searchQuery, _fireDateRange, null, null, null),
         uiEventHolder(),
 
@@ -74,9 +74,8 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { dashboardBudget, expensesUiState, investments, savings, budgets, fire, uiEvent ->
+        onSuccess = { expensesUiState, investments, savings, budgets, reportBudget, fire, uiEvent ->
             FinanceUiState(
-                dashboardBudget = dashboardBudget,
                 expensesUiState = expensesUiState,
                 investments = investments,
                 investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
@@ -99,6 +98,7 @@ class FinanceViewModel @Inject constructor(
                     emptyMessage = R.string.no_budgets_message,
                     emptyButtonLabel = R.string.add_budget,
                 ),
+                reportBudget = reportBudget,
                 fire = fire,
                 isLoading = false,
                 uiEvent = uiEvent,
