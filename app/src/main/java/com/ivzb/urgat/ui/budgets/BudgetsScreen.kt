@@ -233,7 +233,7 @@ private fun GroupedBudgetsPage(
 }
 
 @Composable
-private fun CategoriesPage(
+fun CategoriesPage(
     budget: GroupedBudget,
     group: String? = null,
 

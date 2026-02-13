@@ -99,3 +99,4 @@
 - add one more playstore screenshot
 - move inner finance tab screens like library screen
 - add support for savings search
+- rename finances /dashboard tab to report and move before /fire tab
