@@ -11,15 +11,14 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
 
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
-
-    val investments: List<Investment> = emptyList(),
-    val investmentsFilteringUiInfo: InvestmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
+    val investmentsUiState: InvestmentsUiState = InvestmentsUiState(),
 
     val savings: List<Saving> = emptyList(),
     val savingsFilteringUiInfo: SavingsFilteringUiInfo = SavingsFilteringUiInfo(),

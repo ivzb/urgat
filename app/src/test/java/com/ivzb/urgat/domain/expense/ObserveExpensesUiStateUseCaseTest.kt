@@ -12,7 +12,6 @@ import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -33,8 +32,6 @@ class ObserveExpensesUiStateUseCaseTest {
     private lateinit var fakeObserveExpensesSortingUseCase: FakeObserveExpensesSortingUseCase
 
     private lateinit var useCase: ObserveExpensesUiStateUseCase
-
-    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {

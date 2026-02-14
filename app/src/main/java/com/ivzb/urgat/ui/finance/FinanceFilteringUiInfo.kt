@@ -6,6 +6,8 @@ import com.ivzb.urgat.ui.components.FilteringUiInfo
 data class FinanceFilteringUiInfo(
     override val emptyLabel: Int = 0,
     override val emptyIconRes: Int = 0,
+    override val emptyMessage: Int = 0,
+    override val emptyButtonLabel: Int = 0,
 
     override val loadingLabel: Int = R.string.loading_finance,
 

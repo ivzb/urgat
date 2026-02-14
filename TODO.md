@@ -100,3 +100,4 @@
 - move inner finance tab screens like library screen
 - add support for savings search
 - rename finances /dashboard tab to report and move before /fire tab
+- show red nudge to filter/sort button in the top bar if there is filtering/sorting applied

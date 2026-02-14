@@ -7,10 +7,7 @@ import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
 import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
-import com.ivzb.urgat.ui.investments.InvestmentsRoute
 import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
-import com.ivzb.urgat.ui.budgets.BudgetsRoute
-import com.ivzb.urgat.ui.savings.SavingsRoute
 import com.ivzb.urgat.ui.weights.WeightsRoute
 
 class UrgatNavActions(private val navigator: Navigator) {

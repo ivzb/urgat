@@ -49,10 +49,13 @@ import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
+import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.ui.investments.InvestmentsScreen
+import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingItem
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -132,7 +135,8 @@ fun FinanceScreen(
         onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
         navigator = navigator,
 
-        withTopAppBarActions = uiState.expensesUiState.expenses.isNotEmpty() || uiState.investments.isNotEmpty(),
+        // todo: add savings and budgets?
+        withTopAppBarActions = uiState.expensesUiState.expenses.isNotEmpty() || uiState.investmentsUiState.investments.isNotEmpty(),
         topAppBarActionsContent = { page ->
             // todo: make it when statement
 
@@ -149,7 +153,15 @@ fun FinanceScreen(
             }
 
             if (page == FinancePage.Investments) {
-                // todo
+                FilterMenu(
+                    items = uiState.investmentsUiState.filteringUiInfo.filterMenuItems,
+                    onFilter = { onIntent(FinanceIntent.SetInvestmentsFiltering(it)) },
+                )
+
+                SortMenu(
+                    items = uiState.investmentsUiState.filteringUiInfo.sortMenuItems,
+                    onFilter = { onIntent(FinanceIntent.SetInvestmentsSorting(it)) },
+                )
             }
 
             if (page == FinancePage.Savings) {
@@ -187,21 +199,22 @@ fun FinanceScreen(
                     listState = listState,
                     onListStateChanged = onListStateChanged,
                 )
-//
-//                FinancePage.Investments -> itemInvestments(
-//                    investments = uiState.investments,
-//                    investmentsFilteringUiInfo = uiState.investmentsFilteringUiInfo,
-//                    onAddInvestment = {
-//                        onIntent(
-//                            FinanceIntent.FabActionClick(
-//                                FinanceFabActionId.Investment
-//                            )
-//                        )
-//                    },
-//                    onSeeAllInvestments = onSeeAllInvestments,
-//                    onInvestmentClick = onInvestmentClick,
-//                )
-//
+
+                FinancePage.Investments -> InvestmentsPage(
+                    uiState = uiState.investmentsUiState,
+                    onAddInvestment = {
+                        onIntent(
+                            FinanceIntent.FabActionClick(
+                                FinanceFabActionId.Investment
+                            )
+                        )
+                    },
+                    onInvestmentClick = onInvestmentClick,
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+
 //                FinancePage.Savings -> itemSavings(
 //                    savings = uiState.savings,
 //                    savingsFilteringUiInfo = uiState.savingsFilteringUiInfo,
@@ -287,23 +300,7 @@ private fun ExpensesPage(
 
     when {
         uiState.expenses.isEmpty() -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        horizontal = dimensionResource(R.dimen.content_padding),
-                        vertical = dimensionResource(R.dimen.content_padding),
-                    )
-            ) {
-
-                EmptyStateCard(
-                    iconRes = uiState.filteringUiInfo.emptyIconRes,
-                    label = uiState.filteringUiInfo.emptyLabel,
-                    message = uiState.filteringUiInfo.emptyMessage,
-                    buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onAddExpense,
-                )
-            }
+            EmptyState(uiState, onAddExpense)
         }
 
         else -> {
@@ -315,43 +312,30 @@ private fun ExpensesPage(
     }
 }
 
-private fun LazyListScope.itemInvestments(
-    investments: List<Investment>,
-    investmentsFilteringUiInfo: InvestmentsFilteringUiInfo,
+@Composable
+private fun InvestmentsPage(
+    uiState: InvestmentsUiState,
     onAddInvestment: () -> Unit,
-    onSeeAllInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
     when {
-        investments.isEmpty() -> {
-            item {
-                EmptyStateCard(
-                    iconRes = investmentsFilteringUiInfo.emptyIconRes,
-                    label = investmentsFilteringUiInfo.emptyLabel,
-                    message = investmentsFilteringUiInfo.emptyMessage,
-                    buttonLabel = investmentsFilteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onAddInvestment,
-                )
-            }
+        uiState.investments.isEmpty() -> {
+            EmptyState(uiState, onAddInvestment)
         }
 
         else -> {
-            item {
-                ItemHeaderWithSeeAll(
-                    title = stringResource(investmentsFilteringUiInfo.currentFilteringLabel),
-                    onSeeAllClick = onSeeAllInvestments,
-                )
-            }
-
-            items(
-                items = investments,
-                key = { investment -> investment.id },
-            ) { investment ->
-                InvestmentItem(
-                    investment = investment,
-                    onInvestmentClick = onInvestmentClick
-                )
-            }
+            InvestmentsScreen(
+                uiState = uiState,
+                onInvestmentClick = onInvestmentClick,
+            )
         }
     }
 }
@@ -578,12 +562,36 @@ private fun LazyListScope.itemFiRe(
     }
 }
 
+@Composable
+private fun EmptyState(
+    uiState: UiState,
+    onButtonClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = dimensionResource(R.dimen.content_padding),
+                vertical = dimensionResource(R.dimen.content_padding),
+            )
+    ) {
+        EmptyStateCard(
+            iconRes = uiState.filteringUiInfo.emptyIconRes,
+            label = uiState.filteringUiInfo.emptyLabel,
+            message = uiState.filteringUiInfo.emptyMessage,
+            buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
+            onButtonClick = onButtonClick,
+        )
+    }
+}
+
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenPreview(
     initialPage: Int = 0,
     expensesInitialPage: Int = 0,
+    investmentsInitialPage: Int = 0,
 ) {
     UrgatTheme {
         FinanceScreen(
@@ -595,9 +603,13 @@ private fun FinanceScreenPreview(
                     categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
                     initialPage = expensesInitialPage,
                 ),
-                investments = SampleData.SAMPLE_INVESTMENTS.take(5),
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_investments,
+                investmentsUiState = InvestmentsUiState(
+                    investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+                    categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
+                    assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
+                    categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+                    netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+                    initialPage = investmentsInitialPage,
                 ),
                 savings = SampleData.SAMPLE_SAVINGS.take(5),
                 savingsFilteringUiInfo = SavingsFilteringUiInfo(
@@ -631,46 +643,73 @@ private fun FinanceScreenPreview(
 @Preview
 @Composable
 private fun FinanceScreenExpensesTransactionsPreview() {
-    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 0)
+    FinanceScreenPreview(initialPage = 0, expensesInitialPage = 0)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenExpensesMonthlyPreview() {
-    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 1)
+    FinanceScreenPreview(initialPage = 0, expensesInitialPage = 1)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenExpensesYearlyPreview() {
-    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 2)
+    FinanceScreenPreview(initialPage = 0, expensesInitialPage = 2)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenExpensesAllTimePreview() {
-    FinanceScreenPreview(initialPage = 1, expensesInitialPage = 3)
+    FinanceScreenPreview(initialPage = 0, expensesInitialPage = 3)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
-private fun FinanceScreenInvestmentsPreview() {
-    FinanceScreenPreview(initialPage = 2)
+private fun FinanceScreenInvestmentsTransactionsPreview() {
+    FinanceScreenPreview(initialPage = 1, investmentsInitialPage = 0)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenInvestmentsYearlyPreview() {
+    FinanceScreenPreview(initialPage = 1, investmentsInitialPage = 1)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenInvestmentsAllTimePreview() {
+    FinanceScreenPreview(initialPage = 1, investmentsInitialPage = 2)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenInvestmentsAssetsPreview() {
+    FinanceScreenPreview(initialPage = 1, investmentsInitialPage = 3)
 }
 
 @AllDevicesPreview
 @Composable
 private fun FinanceScreenSavingsPreview() {
-    FinanceScreenPreview(initialPage = 3)
+    FinanceScreenPreview(initialPage = 2)
 }
 
 @AllDevicesPreview
 @Composable
 private fun FinanceScreenBudgetsPreview() {
+    FinanceScreenPreview(initialPage = 3)
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenReportPreview() {
     FinanceScreenPreview(initialPage = 4)
 }
 
@@ -687,8 +726,7 @@ fun FinanceScreenEmptyPreview() {
         FinanceScreen(
             uiState = FinanceUiState(
                 expensesUiState = ExpensesUiState(),
-                investments = listOf(),
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
+                investmentsUiState = InvestmentsUiState(),
                 savings = listOf(),
                 savingsFilteringUiInfo = SavingsFilteringUiInfo(),
                 isLoading = false,
@@ -715,8 +753,7 @@ fun FinanceScreenLoadingPreview() {
         FinanceScreen(
             uiState = FinanceUiState(
                 expensesUiState = ExpensesUiState(),
-                investments = listOf(),
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
+                investmentsUiState = InvestmentsUiState(),
                 savings = listOf(),
                 savingsFilteringUiInfo = SavingsFilteringUiInfo(),
                 isLoading = true,
@@ -743,8 +780,7 @@ fun FinanceScreenErrorPreview() {
         FinanceScreen(
             uiState = FinanceUiState(
                 expensesUiState = ExpensesUiState(),
-                investments = listOf(),
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(),
+                investmentsUiState = InvestmentsUiState(),
                 savings = listOf(),
                 savingsFilteringUiInfo = SavingsFilteringUiInfo(),
                 isLoading = false,

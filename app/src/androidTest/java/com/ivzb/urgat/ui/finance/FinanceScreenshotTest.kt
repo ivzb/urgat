@@ -10,7 +10,7 @@ import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
-import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
@@ -20,37 +20,51 @@ import org.junit.experimental.categories.Category
 class FinanceScreenshotTest: ScreenshotTest() {
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_dashboard() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 0)
-
-    @Test
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_FinanceScreen_sampleData_expenses_transactions() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 0)
+        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 0)
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_FinanceScreen_sampleData_expenses_monthly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 1)
+        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 1)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_expenses_yearly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 2)
+        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 2)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_expenses_all_time() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, expensesInitialPage = 3)
+        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 3)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_investments() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 2)
+    @Category(PlayStoreScreenshotTest::class)
+    fun screenshotTest_FinanceScreen_sampleData_investments_transactions() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 0)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_investments_yearly() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 1)
+
+    @Test
+    @Category(PlayStoreScreenshotTest::class)
+    fun screenshotTest_FinanceScreen_sampleData_investments_all_time() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 2)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_investments_assets() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 3)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_savings() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 3)
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_budgets() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 3)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_report() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 4)
 
     @Test
@@ -60,6 +74,7 @@ class FinanceScreenshotTest: ScreenshotTest() {
     private fun screenshotTest_FinanceScreen_sampleData(
         initialPage: Int,
         expensesInitialPage: Int = 0,
+        investmentsInitialPage: Int = 0,
     ) = screenshotTest(
         uiState = FinanceUiState(
             expensesUiState = ExpensesUiState(
@@ -72,9 +87,13 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 ),
                 initialPage = expensesInitialPage,
             ),
-            investments = SampleData.SAMPLE_INVESTMENTS.take(itemsLimit),
-            investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
-                currentFilteringLabel = R.string.recent_investments,
+            investmentsUiState = InvestmentsUiState(
+                investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+                categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
+                assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
+                categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+                netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+                initialPage = investmentsInitialPage,
             ),
             savings = SampleData.SAMPLE_SAVINGS.take(itemsLimit),
             savingsFilteringUiInfo = SavingsFilteringUiInfo(

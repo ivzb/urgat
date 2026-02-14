@@ -9,13 +9,14 @@ import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
 import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
-import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
@@ -33,7 +34,7 @@ import javax.inject.Inject
 class FinanceViewModel @Inject constructor(
     observeReportBudgetUseCase: ObserveReportBudgetUseCase,
     observeExpensesUiStateUseCase: ObserveExpensesUiStateUseCase,
-    observeInvestmentsUseCase: ObserveInvestmentsUseCase,
+    observeInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase,
     observeSavingsUseCase: ObserveSavingsUseCase,
     observeBudgetsUseCase: ObserveBudgetsUseCase,
     observeFiReUseCase: ObserveFiReUseCase,
@@ -59,9 +60,13 @@ class FinanceViewModel @Inject constructor(
     
     private val _savedExpensesSortType: Flow<ExpensesSortType> = savedStateHandle.getStateFlow(FINANCE_EXPENSES_SORT_SAVED_STATE_KEY, ExpensesSortType.BY_DATE)
 
+    private val _savedInvestmentsFilterType = savedStateHandle.getStateFlow(FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = InvestmentsFilterType_All)
+
+    private val _savedInvestmentsSortType: Flow<InvestmentsSortType> = savedStateHandle.getStateFlow(FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY, InvestmentsSortType.BY_DATE)
+
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeExpensesUiStateUseCase(_searchQuery, _savedExpensesFilterType, _savedExpensesSortType),
-        observeInvestmentsUseCase(_searchQuery, null, null, null, null),
+        observeInvestmentsUiStateUseCase(_searchQuery, _savedInvestmentsFilterType, _savedInvestmentsSortType),
         observeSavingsUseCase(_searchQuery, null, null, null, null),
         observeBudgetsUseCase(_searchQuery, null, null, null, null),
         observeReportBudgetUseCase(_searchQuery, _budgetDateRange, null, null, null),
@@ -74,16 +79,10 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { expensesUiState, investments, savings, budgets, reportBudget, fire, uiEvent ->
+        onSuccess = { expensesUiState, investmentsUiState, savings, budgets, reportBudget, fire, uiEvent ->
             FinanceUiState(
                 expensesUiState = expensesUiState,
-                investments = investments,
-                investmentsFilteringUiInfo = InvestmentsFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_investments,
-                    emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
-                    emptyMessage = R.string.no_investments_message,
-                    emptyButtonLabel = R.string.add_investment,
-                ),
+                investmentsUiState = investmentsUiState,
                 savings = savings,
                 savingsFilteringUiInfo = SavingsFilteringUiInfo(
                     currentFilteringLabel = R.string.recent_savings,
@@ -121,7 +120,10 @@ class FinanceViewModel @Inject constructor(
 
             is FinanceIntent.SetExpensesFiltering -> setExpensesFiltering(intent.filterType)
             is FinanceIntent.SetExpensesSorting -> setExpensesSorting(intent.sortType)
-            
+
+            is FinanceIntent.SetInvestmentsFiltering -> setInvestmentsFiltering(intent.filterType)
+            is FinanceIntent.SetInvestmentsSorting -> setInvestmentsSorting(intent.sortType)
+
             is FinanceIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -175,7 +177,22 @@ class FinanceViewModel @Inject constructor(
         savedStateHandle[FINANCE_EXPENSES_SORT_SAVED_STATE_KEY] = sortType
     }
 
-}
+    private fun setInvestmentsFiltering(filterType: String) {
+        savedStateHandle[FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY] = filterType
+    }
 
-const val FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY = "FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY"
-const val FINANCE_EXPENSES_SORT_SAVED_STATE_KEY = "FINANCE_EXPENSES_SORT_SAVED_STATE_KEY"
+    private fun setInvestmentsSorting(sortType: InvestmentsSortType) {
+        savedStateHandle[FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY] = sortType
+    }
+
+    companion object {
+
+        const val FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY = "FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY"
+        const val FINANCE_EXPENSES_SORT_SAVED_STATE_KEY = "FINANCE_EXPENSES_SORT_SAVED_STATE_KEY"
+
+        const val FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY = "FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY"
+        const val FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY = "FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY"
+
+    }
+
+}

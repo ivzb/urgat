@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.investments
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,7 +33,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
@@ -45,10 +42,8 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
-import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
@@ -64,37 +59,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun InvestmentsScreen(
-    viewModel: InvestmentsViewModel,
-
-    onAddInvestment: () -> Unit,
-    onInvestmentClick: (Investment) -> Unit,
-    onBack: () -> Unit,
-
-    modifier: Modifier = Modifier,
-) {
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    InvestmentsScreen(
-        uiState = uiState,
-        onIntent = viewModel::onIntent,
-        onAddInvestment = onAddInvestment,
-        onInvestmentClick = onInvestmentClick,
-        onBack = onBack,
-        modifier = modifier
-    )
-}
-
-@VisibleForTesting
-@Composable
-fun InvestmentsScreen(
     uiState: InvestmentsUiState,
-    onIntent: (InvestmentsIntent) -> Unit,
-
-    onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
-    onBack: () -> Unit,
-
     modifier: Modifier = Modifier,
 ) {
     val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
@@ -103,23 +69,6 @@ fun InvestmentsScreen(
 
     PagerScreen(
         uiState = uiState,
-
-        route = InvestmentsRoute,
-        onSearchQueryChanged = { query -> onIntent(InvestmentsIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddInvestment,
-        onBack = onBack,
-
-        topAppBarActionsContent = {
-            FilterMenu(
-                items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { onIntent(InvestmentsIntent.SetFiltering(it)) },
-            )
-
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                onFilter = { onIntent(InvestmentsIntent.SetSorting(it)) },
-            )
-        },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
@@ -551,10 +500,7 @@ private fun InvestmentsScreenPreview(initialPage: Int = 0) {
                 hasError = false,
                 initialPage = initialPage,
             ),
-            onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -592,10 +538,7 @@ private fun InvestmentsScreenEmptyPreview() {
                 isLoading = false,
                 hasError = false,
             ),
-            onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -609,10 +552,7 @@ private fun InvestmentsScreenLoadingPreview() {
             uiState = InvestmentsUiState(
                 isLoading = true,
             ),
-            onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -626,10 +566,7 @@ private fun InvestmentsScreenErrorPreview() {
             uiState = InvestmentsUiState(
                 hasError = true,
             ),
-            onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }

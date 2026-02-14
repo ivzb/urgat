@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
+import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -252,4 +253,28 @@ class FakeDeleteInvestmentUseCase : DeleteInvestmentUseCase {
     ) {
         deleted = listOf(id)
     }
+}
+
+class FakeObserveInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<InvestmentsUiState>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<InvestmentsUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<String>,
+        sortTypeFlow: Flow<InvestmentsSortType>
+    ): Flow<Async<InvestmentsUiState>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
+        }
+        return flow
+    }
+
 }
