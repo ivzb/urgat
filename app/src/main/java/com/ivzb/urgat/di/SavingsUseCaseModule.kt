@@ -14,6 +14,7 @@ import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsYearlyUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.saving.DefaultObserveSavingsUiStateUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveSavingsUseCase
 import com.ivzb.urgat.domain.saving.DefaultUpdateSavingUseCase
 import com.ivzb.urgat.domain.saving.DeleteSavingUseCase
@@ -22,6 +23,7 @@ import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.saving.ObserveSavingsUiStateUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsUseCase
 import com.ivzb.urgat.domain.saving.UpdateSavingUseCase
 import dagger.Binds
@@ -80,5 +82,9 @@ interface SavingsUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteSavingUseCase(useCase: DefaultDeleteSavingUseCase): DeleteSavingUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveSavingsUiStateUseCase(useCase: DefaultObserveSavingsUiStateUseCase): ObserveSavingsUiStateUseCase
 
 }

@@ -2,8 +2,12 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
+import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -203,4 +207,27 @@ class FakeDeleteSavingUseCase : DeleteSavingUseCase {
     ) {
         deleted = listOf(id)
     }
+}
+
+class FakeObserveSavingsUiStateUseCase: ObserveSavingsUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<SavingsUiState>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<SavingsUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        sortTypeFlow: Flow<SavingsSortType>
+    ): Flow<Async<SavingsUiState>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
+        }
+        return flow
+    }
+
 }

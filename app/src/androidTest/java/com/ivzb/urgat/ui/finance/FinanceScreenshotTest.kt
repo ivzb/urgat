@@ -11,7 +11,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
-import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
+import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
 import org.junit.experimental.categories.Category
@@ -56,8 +56,20 @@ class FinanceScreenshotTest: ScreenshotTest() {
         screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 3)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_savings() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 2)
+    fun screenshotTest_FinanceScreen_sampleData_savings_transactions() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 0)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_savings_monthly() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 1)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_savings_yearly() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 2)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_savings_all_time() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 3)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_budgets() =
@@ -75,6 +87,7 @@ class FinanceScreenshotTest: ScreenshotTest() {
         initialPage: Int,
         expensesInitialPage: Int = 0,
         investmentsInitialPage: Int = 0,
+        savingsInitialPage: Int = 0,
     ) = screenshotTest(
         uiState = FinanceUiState(
             expensesUiState = ExpensesUiState(
@@ -95,9 +108,12 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
                 initialPage = investmentsInitialPage,
             ),
-            savings = SampleData.SAMPLE_SAVINGS.take(itemsLimit),
-            savingsFilteringUiInfo = SavingsFilteringUiInfo(
-                currentFilteringLabel = R.string.recent_savings,
+            savingsUiState = SavingsUiState(
+                savings = SampleData.SAMPLE_SAVINGS_GROUPED,
+                categoriesMonthly = SampleData.SAMPLE_SAVINGS_CATEGORIES_MONTHLY,
+                categoriesYearly = SampleData.SAMPLE_SAVINGS_CATEGORIES_YEARLY,
+                categoriesAllTime = SampleData.SAMPLE_SAVINGS_CATEGORIES_ALL_TIME,
+                initialPage = savingsInitialPage,
             ),
             budgets = SampleData.SAMPLE_BUDGETS.take(itemsLimit),
             budgetsFilteringUiInfo = BudgetsFilteringUiInfo(

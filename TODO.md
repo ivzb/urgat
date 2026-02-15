@@ -101,3 +101,4 @@
 - add support for savings search
 - rename finances /dashboard tab to report and move before /fire tab
 - show red nudge to filter/sort button in the top bar if there is filtering/sorting applied
+- refactor ExpensesPage, InvestmentsPage, SavingsPage with common function which would change list state and show empty state

@@ -13,15 +13,14 @@ import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
+import com.ivzb.urgat.ui.savings.SavingsUiState
 
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
 
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
     val investmentsUiState: InvestmentsUiState = InvestmentsUiState(),
-
-    val savings: List<Saving> = emptyList(),
-    val savingsFilteringUiInfo: SavingsFilteringUiInfo = SavingsFilteringUiInfo(),
+    val savingsUiState: SavingsUiState = SavingsUiState(),
 
     val budgets: List<Budget> = emptyList(),
     val budgetsFilteringUiInfo: BudgetsFilteringUiInfo = BudgetsFilteringUiInfo(),

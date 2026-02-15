@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.savings
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
@@ -43,7 +40,6 @@ import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
-import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.format.formatSavingsChart
@@ -60,37 +56,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SavingsScreen(
-    viewModel: SavingsViewModel,
-
-    onAddSaving: () -> Unit,
-    onSavingClick: (Saving) -> Unit,
-    onBack: () -> Unit,
-
-    modifier: Modifier = Modifier,
-) {
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    SavingsScreen(
-        uiState = uiState,
-        onIntent = viewModel::onIntent,
-        onAddSaving = onAddSaving,
-        onSavingClick = onSavingClick,
-        onBack = onBack,
-        modifier = modifier
-    )
-}
-
-@VisibleForTesting
-@Composable
-fun SavingsScreen(
     uiState: SavingsUiState,
-    onIntent: (SavingsIntent) -> Unit,
-
-    onAddSaving: () -> Unit,
     onSavingClick: (Saving) -> Unit,
-
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -100,18 +67,6 @@ fun SavingsScreen(
 
     PagerScreen(
         uiState = uiState,
-
-        route = SavingsRoute,
-        onSearchQueryChanged = { query -> onIntent(SavingsIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddSaving,
-        onBack = onBack,
-
-        topAppBarActionsContent = {
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                onFilter = { onIntent(SavingsIntent.SetSorting(it)) },
-            )
-        },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
@@ -427,10 +382,7 @@ private fun SavingsScreenPreview(initialPage: Int = 0) {
                 hasError = false,
                 initialPage = initialPage,
             ),
-            onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -465,10 +417,7 @@ private fun SavingsScreenEmptyPreview() {
                 isLoading = false,
                 hasError = false,
             ),
-            onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -482,10 +431,7 @@ private fun SavingsScreenLoadingPreview() {
             uiState = SavingsUiState(
                 isLoading = true,
             ),
-            onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -499,10 +445,7 @@ private fun SavingsScreenErrorPreview() {
             uiState = SavingsUiState(
                 hasError = true,
             ),
-            onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
