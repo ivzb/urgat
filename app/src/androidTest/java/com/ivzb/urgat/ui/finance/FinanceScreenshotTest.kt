@@ -8,6 +8,7 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
+import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
@@ -72,8 +73,8 @@ class FinanceScreenshotTest: ScreenshotTest() {
         screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 3)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_budgets() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 3)
+    fun screenshotTest_FinanceScreen_sampleData_budgets_transactions() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 3, budgetsInitialPage = 0)
 
     @Test
     fun screenshotTest_FinanceScreen_sampleData_report() =
@@ -88,6 +89,7 @@ class FinanceScreenshotTest: ScreenshotTest() {
         expensesInitialPage: Int = 0,
         investmentsInitialPage: Int = 0,
         savingsInitialPage: Int = 0,
+        budgetsInitialPage: Int = 0,
     ) = screenshotTest(
         uiState = FinanceUiState(
             expensesUiState = ExpensesUiState(
@@ -115,9 +117,10 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 categoriesAllTime = SampleData.SAMPLE_SAVINGS_CATEGORIES_ALL_TIME,
                 initialPage = savingsInitialPage,
             ),
-            budgets = SampleData.SAMPLE_BUDGETS.take(itemsLimit),
-            budgetsFilteringUiInfo = BudgetsFilteringUiInfo(
-                currentFilteringLabel = R.string.recent_budgets,
+            budgetsUiState = BudgetsUiState(
+                budgets = SampleData.SAMPLE_BUDGETS,
+                filteringUiInfo = BudgetsFilteringUiInfo(),
+                initialPage = budgetsInitialPage,
             ),
             reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
             fire = SampleData.SAMPLE_FIRE,

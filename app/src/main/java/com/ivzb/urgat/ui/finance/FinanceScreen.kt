@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -39,13 +38,13 @@ import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
-import com.ivzb.urgat.ui.budgets.BudgetItem
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
+import com.ivzb.urgat.ui.budgets.BudgetsScreen
+import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
@@ -133,8 +132,11 @@ fun FinanceScreen(
         onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
         navigator = navigator,
 
-        // todo: add savings and budgets?
-        withTopAppBarActions = uiState.expensesUiState.expenses.isNotEmpty() || uiState.investmentsUiState.investments.isNotEmpty(),
+        withTopAppBarActions =
+            uiState.expensesUiState.expenses.isNotEmpty() ||
+            uiState.investmentsUiState.investments.isNotEmpty() ||
+            uiState.savingsUiState.savings.isNotEmpty() ||
+            uiState.budgetsUiState.budgets.isNotEmpty(),
         topAppBarActionsContent = { page ->
             when (page) {
                 FinancePage.Expenses -> {
@@ -169,7 +171,15 @@ fun FinanceScreen(
                 }
 
                 FinancePage.Budgets -> {
-                    // todo
+                    FilterMenu(
+                        items = uiState.budgetsUiState.filteringUiInfo.filterMenuItems,
+                        onFilter = { onIntent(FinanceIntent.SetBudgetsFiltering(it)) },
+                    )
+
+                    SortMenu(
+                        items = uiState.budgetsUiState.filteringUiInfo.sortMenuItems,
+                        onFilter = { onIntent(FinanceIntent.SetBudgetsSorting(it)) },
+                    )
                 }
             }
         },
@@ -189,11 +199,7 @@ fun FinanceScreen(
                 FinancePage.Expenses -> ExpensesPage(
                     uiState = uiState.expensesUiState,
                     onAddExpense = {
-                        onIntent(
-                            FinanceIntent.FabActionClick(
-                                FinanceFabActionId.Expense
-                            )
-                        )
+                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense))
                     },
                     onExpenseClick = onExpenseClick,
 
@@ -204,11 +210,7 @@ fun FinanceScreen(
                 FinancePage.Investments -> InvestmentsPage(
                     uiState = uiState.investmentsUiState,
                     onAddInvestment = {
-                        onIntent(
-                            FinanceIntent.FabActionClick(
-                                FinanceFabActionId.Investment
-                            )
-                        )
+                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment))
                     },
                     onInvestmentClick = onInvestmentClick,
 
@@ -219,11 +221,7 @@ fun FinanceScreen(
                 FinancePage.Savings -> SavingsPage(
                     uiState = uiState.savingsUiState,
                     onAddSaving = {
-                        onIntent(
-                            FinanceIntent.FabActionClick(
-                                FinanceFabActionId.Saving
-                            )
-                        )
+                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Saving))
                     },
                     onSavingClick = onSavingClick,
 
@@ -231,19 +229,16 @@ fun FinanceScreen(
                     onListStateChanged = onListStateChanged,
                 )
 
-//                FinancePage.Budgets -> itemBudgets(
-//                    budgets = uiState.budgets,
-//                    budgetsFilteringUiInfo = uiState.budgetsFilteringUiInfo,
-//                    onAddBudget = {
-//                        onIntent(
-//                            FinanceIntent.FabActionClick(
-//                                FinanceFabActionId.Budget
-//                            )
-//                        )
-//                    },
-//                    onSeeAllBudgets = onSeeAllBudgets,
-//                    onBudgetClick = onBudgetClick,
-//                )
+                FinancePage.Budgets -> BudgetsPage(
+                    uiState = uiState.budgetsUiState,
+                    onAddBudget = {
+                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget))
+                    },
+                    onBudgetClick = onBudgetClick,
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
 
                 FinancePage.Report -> ReportPage(
                     reportBudget = uiState.reportBudget,
@@ -262,26 +257,6 @@ fun FinanceScreen(
         },
 
         modifier = modifier
-    )
-}
-
-@Composable
-private fun ReportPage(
-    reportBudget: GroupedBudget?,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    if (reportBudget == null) {
-        return
-    }
-
-    CategoriesPage(
-        budget = reportBudget,
-        group = null,
-        listState = listState,
-        onListStateChanged = onListStateChanged,
     )
 }
 
@@ -369,46 +344,54 @@ private fun SavingsPage(
     }
 }
 
-private fun LazyListScope.itemBudgets(
-    budgets: List<Budget>,
-    budgetsFilteringUiInfo: BudgetsFilteringUiInfo,
+@Composable
+private fun BudgetsPage(
+    uiState: BudgetsUiState,
     onAddBudget: () -> Unit,
-    onSeeAllBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
     when {
-        budgets.isEmpty() -> {
-            item {
-                EmptyStateCard(
-                    iconRes = budgetsFilteringUiInfo.emptyIconRes,
-                    label = budgetsFilteringUiInfo.emptyLabel,
-                    message = budgetsFilteringUiInfo.emptyMessage,
-                    buttonLabel = budgetsFilteringUiInfo.emptyButtonLabel,
-                    onButtonClick = onAddBudget,
-                )
-            }
+        uiState.budgets.isEmpty() -> {
+            EmptyState(uiState, onAddBudget)
         }
 
         else -> {
-            item {
-                ItemHeaderWithSeeAll(
-                    title = stringResource(budgetsFilteringUiInfo.currentFilteringLabel),
-                    onSeeAllClick = onSeeAllBudgets,
-                )
-            }
-
-            items(
-                items = budgets,
-                key = { budget -> budget.id },
-            ) { budget ->
-                BudgetItem(
-                    budget = budget,
-                    onBudgetClick = onBudgetClick
-                )
-            }
+            BudgetsScreen(
+                uiState = uiState,
+                onBudgetClick = onBudgetClick
+            )
         }
     }
 }
+
+@Composable
+private fun ReportPage(
+    reportBudget: GroupedBudget?,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+
+    if (reportBudget == null) {
+        return
+    }
+
+    CategoriesPage(
+        budget = reportBudget,
+        group = null,
+        listState = listState,
+        onListStateChanged = onListStateChanged,
+    )
+}
+
 
 private fun LazyListScope.itemFiRe(
     fire: FiRe?,
@@ -581,6 +564,7 @@ private fun FinanceScreenPreview(
     expensesInitialPage: Int = 0,
     investmentsInitialPage: Int = 0,
     savingsInitialPage: Int = 0,
+    budgetsInitialPage: Int = 0,
 ) {
     UrgatTheme {
         FinanceScreen(
@@ -607,9 +591,10 @@ private fun FinanceScreenPreview(
                     categoriesAllTime = SampleData.SAMPLE_SAVINGS_CATEGORIES_ALL_TIME,
                     initialPage = savingsInitialPage,
                 ),
-                budgets = SampleData.SAMPLE_BUDGETS.take(5),
-                budgetsFilteringUiInfo = BudgetsFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_budgets,
+                budgetsUiState = BudgetsUiState(
+                    budgets = SampleData.SAMPLE_BUDGETS,
+                    filteringUiInfo = BudgetsFilteringUiInfo(),
+                    initialPage = budgetsInitialPage,
                 ),
                 reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
                 fire = SampleData.SAMPLE_FIRE,
@@ -716,9 +701,10 @@ private fun FinanceScreenSavingsAllTimePreview() {
 }
 
 @AllDevicesPreview
+@Preview
 @Composable
-private fun FinanceScreenBudgetsPreview() {
-    FinanceScreenPreview(initialPage = 3)
+private fun FinanceScreenBudgetsTransactionsPreview() {
+    FinanceScreenPreview(initialPage = 3, expensesInitialPage = 0)
 }
 
 @AllDevicesPreview

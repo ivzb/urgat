@@ -6,6 +6,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterMenuItem
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortMenuItem
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
+import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -243,6 +244,30 @@ class FakeObserveReportBudgetUseCase: ObserveReportBudgetUseCase {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveBudgetsUiStateUseCase: ObserveBudgetsUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<BudgetsUiState>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<BudgetsUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<BudgetsFilterType>,
+        sortTypeFlow: Flow<BudgetsSortType>
+    ): Flow<Async<BudgetsUiState>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
         }
         return flow
     }

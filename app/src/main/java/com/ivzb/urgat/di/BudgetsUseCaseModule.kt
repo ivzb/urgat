@@ -6,6 +6,7 @@ import com.ivzb.urgat.domain.budget.DefaultDeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultGetBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsSortingUseCase
+import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetCategoriesAllTimeUseCase
@@ -19,6 +20,7 @@ import com.ivzb.urgat.domain.budget.DeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.GetBudgetUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
+import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
 import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesAllTimeUseCase
@@ -91,5 +93,9 @@ interface BudgetsUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveReportBudgetUseCase(useCase: DefaultObserveReportBudgetUseCase): ObserveReportBudgetUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveBudgetsUiStateUseCase(useCase: DefaultObserveBudgetsUiStateUseCase): ObserveBudgetsUiStateUseCase
 
 }

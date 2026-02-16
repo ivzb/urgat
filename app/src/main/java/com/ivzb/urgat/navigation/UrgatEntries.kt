@@ -16,7 +16,6 @@ import com.ivzb.urgat.ui.importData.importDataEntry
 import com.ivzb.urgat.ui.library.libraryEntry
 import com.ivzb.urgat.ui.sample.sampleEntry
 import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
-import com.ivzb.urgat.ui.budgets.budgetsEntry
 import com.ivzb.urgat.ui.weights.weightsEntry
 import com.ivzb.urgat.ui.wellbeing.wellbeingEntry
 
@@ -31,8 +30,6 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
         addEditExpenseEntry(navigator)
         addEditInvestmentEntry(navigator)
         addEditSavingEntry(navigator)
-
-        budgetsEntry(navigator, navActions)
         addEditBudgetEntry(navigator)
 
         weightsEntry(navigator, navActions)

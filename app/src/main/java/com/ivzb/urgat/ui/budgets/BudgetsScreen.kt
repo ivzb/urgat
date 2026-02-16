@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.budgets
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -27,15 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ListItem
-import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.format.formatBudgetsChart
@@ -52,59 +47,13 @@ import java.math.BigDecimal
 
 @Composable
 fun BudgetsScreen(
-    viewModel: BudgetsViewModel,
-
-    onAddBudget: () -> Unit,
-    onBudgetClick: (Budget) -> Unit,
-    onBack: () -> Unit,
-
-    modifier: Modifier = Modifier,
-) {
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    BudgetsScreen(
-        uiState = uiState,
-        onIntent = viewModel::onIntent,
-        onAddBudget = onAddBudget,
-        onBudgetClick = onBudgetClick,
-        onBack = onBack,
-        modifier = modifier
-    )
-}
-
-@VisibleForTesting
-@Composable
-fun BudgetsScreen(
     uiState: BudgetsUiState,
-    onIntent: (BudgetsIntent) -> Unit,
-
-    onAddBudget: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
-
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     PagerScreen(
         uiState = uiState,
-
-        route = BudgetsRoute,
-        onSearchQueryChanged = { query -> onIntent(BudgetsIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddBudget,
-        onBack = onBack,
-
-        topAppBarActionsContent = {
-            FilterMenu(
-                items = uiState.filteringUiInfo.filterMenuItems,
-                onFilter = { onIntent(BudgetsIntent.SetFiltering(it)) },
-            )
-
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                onFilter = { onIntent(BudgetsIntent.SetSorting(it)) },
-            )
-        },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
@@ -391,10 +340,7 @@ private fun BudgetsScreenPreview(initialPage: Int = 0) {
                 hasError = false,
                 initialPage = initialPage,
             ),
-            onIntent = {},
-            onAddBudget = {},
             onBudgetClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -429,10 +375,7 @@ private fun BudgetsScreenEmptyPreview() {
                 isLoading = false,
                 hasError = false,
             ),
-            onIntent = {},
-            onAddBudget = {},
             onBudgetClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -446,10 +389,7 @@ private fun BudgetsScreenLoadingPreview() {
             uiState = BudgetsUiState(
                 isLoading = true,
             ),
-            onIntent = {},
-            onAddBudget = {},
             onBudgetClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }
@@ -463,10 +403,7 @@ private fun BudgetsScreenErrorPreview() {
             uiState = BudgetsUiState(
                 hasError = true,
             ),
-            onIntent = {},
-            onAddBudget = {},
             onBudgetClick = {},
-            onBack = {},
             modifier = Modifier
         )
     }

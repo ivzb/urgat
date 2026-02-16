@@ -1,18 +1,13 @@
 package com.ivzb.urgat.ui.finance
 
-import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.fire.FiRe
-import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.saving.Saving
-import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
+import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
-import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
-import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsUiState
 
 data class FinanceUiState(
@@ -21,12 +16,9 @@ data class FinanceUiState(
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
     val investmentsUiState: InvestmentsUiState = InvestmentsUiState(),
     val savingsUiState: SavingsUiState = SavingsUiState(),
-
-    val budgets: List<Budget> = emptyList(),
-    val budgetsFilteringUiInfo: BudgetsFilteringUiInfo = BudgetsFilteringUiInfo(),
+    val budgetsUiState: BudgetsUiState = BudgetsUiState(),
 
     val reportBudget: GroupedBudget? = null,
-
     val fire: FiRe? = null,
 
     override val isLoading: Boolean = false,
