@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
@@ -48,6 +47,7 @@ import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
+import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.expenses.ExpensesScreen
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
@@ -185,16 +185,6 @@ fun FinanceScreen(
         },
 
         content = { page, listState, onListStateChanged ->
-
-            // todo: consider extracting listState/onListStateChanged code here
-
-//            // todo: move to each screen
-//            LaunchedEffect(Unit) {
-//                onListStateChanged(listState)
-//            }
-//
-//            val screenName = stringResource(R.string.finance)
-
             when (page) {
                 FinancePage.Expenses -> ExpensesPage(
                     uiState = uiState.expensesUiState,
@@ -264,6 +254,31 @@ fun FinanceScreen(
 }
 
 @Composable
+private fun FinancePage(
+    uiState: PagerUiState,
+    onEmptyStateButtonClick: () -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+
+    content: @Composable () -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
+    }
+
+    when {
+        uiState.isEmpty -> {
+            EmptyState(uiState, onEmptyStateButtonClick)
+        }
+
+        else -> {
+            content()
+        }
+    }
+}
+
+@Composable
 private fun ExpensesPage(
     uiState: ExpensesUiState,
     onAddExpense: () -> Unit,
@@ -273,22 +288,20 @@ private fun ExpensesPage(
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = onAddExpense,
 
-    when {
-        uiState.expenses.isEmpty() -> {
-            EmptyState(uiState, onAddExpense)
-        }
+        listState = listState,
+        onListStateChanged = onListStateChanged,
 
-        else -> {
+        content = {
             ExpensesScreen(
                 uiState = uiState,
                 onExpenseClick = onExpenseClick,
             )
         }
-    }
+    )
 }
 
 @Composable
@@ -301,22 +314,20 @@ private fun InvestmentsPage(
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = onAddInvestment,
 
-    when {
-        uiState.investments.isEmpty() -> {
-            EmptyState(uiState, onAddInvestment)
-        }
+        listState = listState,
+        onListStateChanged = onListStateChanged,
 
-        else -> {
+        content = {
             InvestmentsScreen(
                 uiState = uiState,
                 onInvestmentClick = onInvestmentClick,
             )
         }
-    }
+    )
 }
 
 @Composable
@@ -329,22 +340,20 @@ private fun SavingsPage(
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = onAddSaving,
 
-    when {
-        uiState.savings.isEmpty() -> {
-            EmptyState(uiState, onAddSaving)
-        }
+        listState = listState,
+        onListStateChanged = onListStateChanged,
 
-        else -> {
+        content = {
             SavingsScreen(
                 uiState = uiState,
                 onSavingClick = onSavingClick,
             )
         }
-    }
+    )
 }
 
 @Composable
@@ -357,22 +366,20 @@ private fun BudgetsPage(
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = onAddBudget,
 
-    when {
-        uiState.budgets.isEmpty() -> {
-            EmptyState(uiState, onAddBudget)
-        }
+        listState = listState,
+        onListStateChanged = onListStateChanged,
 
-        else -> {
+        content = {
             BudgetsScreen(
                 uiState = uiState,
-                onBudgetClick = onBudgetClick
+                onBudgetClick = onBudgetClick,
             )
         }
-    }
+    )
 }
 
 @Composable
@@ -406,12 +413,12 @@ private fun FiRePage(
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
-
     if (fire == null) {
         return
+    }
+
+    LaunchedEffect(Unit) {
+        onListStateChanged(listState)
     }
 
     ScreenTitleWithInfo(
