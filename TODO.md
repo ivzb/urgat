@@ -95,10 +95,6 @@
 - car fuel
 - car maintenance
 - car reminders
-- check how to add dashboard tab to finance screen
 - add one more playstore screenshot
-- move inner finance tab screens like library screen
-- add support for savings search
-- rename finances /dashboard tab to report and move before /fire tab
+- move inner weight tab screens like library and finance screen
 - show red nudge to filter/sort button in the top bar if there is filtering/sorting applied
-- refactor ExpensesPage, InvestmentsPage, SavingsPage with common function which would change list state and show empty state

@@ -421,131 +421,213 @@ private fun FiRePage(
         onListStateChanged(listState)
     }
 
-    ScreenTitleWithInfo(
-        title = stringResource(R.string.fire_title, fire.selection),
-        dialogTitle = stringResource(R.string.how_does_it_work),
-        dialogText = StringBuilder().apply {
-            appendLine(stringResource(R.string.fire_info))
-            appendLine()
-
-            appendLine(stringResource(R.string.fire_accumulated_stash, fire.accumulatedStash.format()))
-            appendLine(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
-            appendLine(stringResource(R.string.fire_annual_expenses, fire.annualExpenses.format()))
-            appendLine(stringResource(R.string.fire_annual_investments, fire.annualInvestments.format()))
-
-            appendLine()
-
-            appendLine(stringResource(R.string.fire_savings_rate, fire.savingsRate?.format() ?: EMPTY_FIRE_CALCULATION))
-            appendLine(stringResource(R.string.fire_target, fire.target?.format() ?: EMPTY_FIRE_CALCULATION))
-
-            appendLine()
-
-            appendLine(stringResource(R.string.fire_years_until_fire, fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION))
-        }.toString(),
-    )
-
-    Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                vertical = dimensionResource(R.dimen.content_padding_vertical),
+            )
     ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = stringResource(R.string.fire_withdrawal_rate),
+
+        ScreenTitleWithInfo(
+            title = stringResource(R.string.fire_title, fire.selection),
+            dialogTitle = stringResource(R.string.how_does_it_work),
+            dialogText = StringBuilder().apply {
+                appendLine(stringResource(R.string.fire_info))
+                appendLine()
+
+                appendLine(
+                    stringResource(
+                        R.string.fire_accumulated_stash,
+                        fire.accumulatedStash.format()
+                    )
+                )
+                appendLine(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
+                appendLine(
+                    stringResource(
+                        R.string.fire_annual_expenses,
+                        fire.annualExpenses.format()
+                    )
+                )
+                appendLine(
+                    stringResource(
+                        R.string.fire_annual_investments,
+                        fire.annualInvestments.format()
+                    )
+                )
+
+                appendLine()
+
+                appendLine(
+                    stringResource(
+                        R.string.fire_savings_rate,
+                        fire.savingsRate?.format() ?: EMPTY_FIRE_CALCULATION
+                    )
+                )
+                appendLine(
+                    stringResource(
+                        R.string.fire_target,
+                        fire.target?.format() ?: EMPTY_FIRE_CALCULATION
+                    )
+                )
+
+                appendLine()
+
+                appendLine(
+                    stringResource(
+                        R.string.fire_years_until_fire,
+                        fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION
+                    )
+                )
+            }.toString(),
         )
 
-        Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
 
-        Text(
-            modifier = Modifier.weight(1f),
-            text = stringResource(R.string.fire_return_of_investment),
-        )
-
-        Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
-
-        Text(
-            modifier = Modifier.weight(1f),
-            text = stringResource(R.string.fire_tax_rate),
-        )
-    }
-
-    Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        var withdrawalRateValue by remember { mutableStateOf(TextFieldValue(fire.withdrawalRate?.toPlainString() ?: "")) }
-        var returnOfInvestmentValue by remember { mutableStateOf(TextFieldValue(fire.returnOfInvestment?.toPlainString() ?: "")) }
-        var taxRateValue by remember { mutableStateOf(TextFieldValue(fire.taxRate?.toPlainString() ?: "")) }
-
-        TextField(
-            modifier = Modifier.weight(1f),
-            value = withdrawalRateValue,
-            onValueChange = { onWithdrawalRateChange(it.text) },
-            placeholder = { Text(stringResource(R.string.format_default, fire.withdrawalRatePlaceholder.toPlainString())) },
-            maxLines = 1,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-            ),
-        )
-
-        Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
-
-        TextField(
-            modifier = Modifier.weight(1f),
-            value = returnOfInvestmentValue,
-            onValueChange = { onReturnOfInvestmentChange(it.text) },
-            placeholder = { Text(stringResource(R.string.format_default, fire.returnOfInvestmentPlaceholder.toPlainString())) },
-            maxLines = 1,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-            ),
-        )
-
-        Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
-
-        TextField(
-            modifier = Modifier.weight(1f),
-            value = taxRateValue,
-            onValueChange = { onTaxRateChange(it.text) },
-            placeholder = { Text(stringResource(R.string.format_default, fire.taxRatePlaceholder.toPlainString())) },
-            maxLines = 1,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-            ),
-        )
-
-        LaunchedEffect(fire) {
-            val withdrawalRate = fire.withdrawalRate?.toPlainString() ?: ""
-            val returnOfInvestment = fire.returnOfInvestment?.toPlainString() ?: ""
-            val taxRate = fire.taxRate?.toPlainString() ?: ""
-
-            withdrawalRateValue = TextFieldValue(
-                text = withdrawalRate,
-                selection = TextRange(withdrawalRate.length)
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.fire_withdrawal_rate),
             )
 
-            returnOfInvestmentValue = TextFieldValue(
-                text = returnOfInvestment,
-                selection = TextRange(returnOfInvestment.length)
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.fire_return_of_investment),
             )
 
-            taxRateValue = TextFieldValue(
-                text = taxRate,
-                selection = TextRange(taxRate.length)
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.fire_tax_rate),
             )
         }
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            var withdrawalRateValue by remember {
+                mutableStateOf(
+                    TextFieldValue(
+                        fire.withdrawalRate?.toPlainString() ?: ""
+                    )
+                )
+            }
+            var returnOfInvestmentValue by remember {
+                mutableStateOf(
+                    TextFieldValue(
+                        fire.returnOfInvestment?.toPlainString() ?: ""
+                    )
+                )
+            }
+            var taxRateValue by remember {
+                mutableStateOf(
+                    TextFieldValue(
+                        fire.taxRate?.toPlainString() ?: ""
+                    )
+                )
+            }
+
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = withdrawalRateValue,
+                onValueChange = { onWithdrawalRateChange(it.text) },
+                placeholder = {
+                    Text(
+                        stringResource(
+                            R.string.format_default,
+                            fire.withdrawalRatePlaceholder.toPlainString()
+                        )
+                    )
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+            )
+
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = returnOfInvestmentValue,
+                onValueChange = { onReturnOfInvestmentChange(it.text) },
+                placeholder = {
+                    Text(
+                        stringResource(
+                            R.string.format_default,
+                            fire.returnOfInvestmentPlaceholder.toPlainString()
+                        )
+                    )
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+            )
+
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+
+            TextField(
+                modifier = Modifier.weight(1f),
+                value = taxRateValue,
+                onValueChange = { onTaxRateChange(it.text) },
+                placeholder = {
+                    Text(
+                        stringResource(
+                            R.string.format_default,
+                            fire.taxRatePlaceholder.toPlainString()
+                        )
+                    )
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+            )
+
+            LaunchedEffect(fire) {
+                val withdrawalRate = fire.withdrawalRate?.toPlainString() ?: ""
+                val returnOfInvestment = fire.returnOfInvestment?.toPlainString() ?: ""
+                val taxRate = fire.taxRate?.toPlainString() ?: ""
+
+                withdrawalRateValue = TextFieldValue(
+                    text = withdrawalRate,
+                    selection = TextRange(withdrawalRate.length)
+                )
+
+                returnOfInvestmentValue = TextFieldValue(
+                    text = returnOfInvestment,
+                    selection = TextRange(returnOfInvestment.length)
+                )
+
+                taxRateValue = TextFieldValue(
+                    text = taxRate,
+                    selection = TextRange(taxRate.length)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
+
+        Text(
+            text = stringResource(
+                R.string.fire_years_until_fire,
+                fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION
+            ),
+            fontWeight = FontWeight.Bold,
+        )
     }
-
-    Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
-
-    Text(
-        text = stringResource(R.string.fire_years_until_fire, fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION),
-        fontWeight = FontWeight.Bold,
-    )
 }
 
 @Composable
