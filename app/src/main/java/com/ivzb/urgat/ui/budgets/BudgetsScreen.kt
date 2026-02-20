@@ -142,7 +142,7 @@ fun BudgetsScreen(
 }
 
 @Composable
-private fun TransactionsPage(
+fun TransactionsPage(
     budgets: List<Budget>,
     onBudgetClick: (Budget) -> Unit,
     listState: LazyListState,
@@ -233,7 +233,7 @@ private fun GroupedBudgetsPage(
 }
 
 @Composable
-private fun CategoriesPage(
+fun CategoriesPage(
     budget: GroupedBudget,
     group: String? = null,
 

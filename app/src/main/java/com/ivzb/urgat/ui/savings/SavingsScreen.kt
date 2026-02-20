@@ -156,7 +156,7 @@ fun SavingsScreen(
 }
 
 @Composable
-private fun TransactionsPage(
+fun TransactionsPage(
     savings: List<GroupedSavings>,
     onSavingClick: (Saving) -> Unit,
     listState: LazyListState,

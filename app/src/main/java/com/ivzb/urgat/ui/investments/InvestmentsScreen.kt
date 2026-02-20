@@ -174,7 +174,7 @@ fun InvestmentsScreen(
 }
 
 @Composable
-private fun TransactionsPage(
+fun TransactionsPage(
     investments: List<GroupedInvestments>,
     onInvestmentClick: (Investment) -> Unit,
     listState: LazyListState,

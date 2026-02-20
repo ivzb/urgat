@@ -162,7 +162,7 @@ fun ExpensesScreen(
 }
 
 @Composable
-private fun TransactionsPage(
+fun TransactionsPage(
     expenses: List<GroupedExpenses>,
     onExpenseClick: (Expense) -> Unit,
     listState: LazyListState,
