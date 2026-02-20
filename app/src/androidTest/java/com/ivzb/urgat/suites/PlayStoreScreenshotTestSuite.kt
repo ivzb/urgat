@@ -6,7 +6,6 @@ import com.ivzb.urgat.ui.expenses.ExpensesScreenshotTest
 import com.ivzb.urgat.ui.finance.FinanceScreenshotTest
 import com.ivzb.urgat.ui.investments.InvestmentsScreenshotTest
 import com.ivzb.urgat.ui.library.LibraryScreenshotTest
-import com.ivzb.urgat.ui.todos.TodosScreenshotTest
 import com.ivzb.urgat.ui.wellbeing.WellbeingScreenshotTest
 import org.junit.experimental.categories.Categories
 import org.junit.runner.RunWith
@@ -17,7 +16,6 @@ import org.junit.runners.Suite
 @Categories.IncludeCategory(PlayStoreScreenshotTest::class)
 @Suite.SuiteClasses(
     LibraryScreenshotTest::class,
-    TodosScreenshotTest::class,
     AddEditTodoScreenshotTest::class,
     FinanceScreenshotTest::class,
     ExpensesScreenshotTest::class,

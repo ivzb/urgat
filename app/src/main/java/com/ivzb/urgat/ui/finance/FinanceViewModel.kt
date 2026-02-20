@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsUiStateUseCase
@@ -32,11 +33,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
-    observeReportBudgetUseCase: ObserveReportBudgetUseCase,
     observeExpensesUiStateUseCase: ObserveExpensesUiStateUseCase,
     observeInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase,
     observeSavingsUiStateUseCase: ObserveSavingsUiStateUseCase,
     observeBudgetsUiStateUseCase: ObserveBudgetsUiStateUseCase,
+    observeReportBudgetUseCase: ObserveReportBudgetUseCase,
     observeFiReUseCase: ObserveFiReUseCase,
     private val fireRepository: FireRepository,
     private val savedStateHandle: SavedStateHandle

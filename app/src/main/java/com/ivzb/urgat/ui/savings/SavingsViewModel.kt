@@ -3,11 +3,7 @@ package com.ivzb.urgat.ui.savings
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesAllTimeUseCase
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
-import com.ivzb.urgat.domain.saving.ObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.saving.ObserveSavingsUiStateUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,11 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SavingsViewModel @Inject constructor(
-    observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase,
-    observeGroupedSavingCategoriesMonthlyUseCase: ObserveGroupedSavingCategoriesMonthlyUseCase,
-    observeGroupedSavingCategoriesYearlyUseCase: ObserveGroupedSavingCategoriesYearlyUseCase,
-    observeGroupedSavingCategoriesAllTimeUseCase: ObserveGroupedSavingCategoriesAllTimeUseCase,
-    observeSavingsSortingUseCase: ObserveSavingsSortingUseCase,
+    observeSavingsUiStateUseCase: ObserveSavingsUiStateUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -32,30 +24,11 @@ class SavingsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<SavingsUiState> = combineUiState(
-        observeGroupedSavingsMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedSavingCategoriesMonthlyUseCase(_searchQuery, dateRangeFlow = null, null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedSavingCategoriesYearlyUseCase(_searchQuery, dateRangeFlow = null, null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedSavingCategoriesAllTimeUseCase(_searchQuery, dateRangeFlow = null, null, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeSavingsSortingUseCase(),
+        observeSavingsUiStateUseCase(_searchQuery, _savedSortType),
 
-        onLoading = {
-            SavingsUiState(isLoading = true)
-        },
-        onError = {
-            SavingsUiState(hasError = true)
-        },
-        onSuccess = { savings, categoriesMonthly, categoriesYearly, categoriesAllTime, sorting ->
-            SavingsUiState(
-                savings = savings,
-                categoriesMonthly = categoriesMonthly,
-                categoriesYearly = categoriesYearly,
-                categoriesAllTime = categoriesAllTime,
-                filteringUiInfo = SavingsFilteringUiInfo(
-                    sortMenuItems = sorting,
-                ),
-                isLoading = false,
-            )
-        }
+        onLoading = { SavingsUiState(isLoading = true) },
+        onError = { SavingsUiState(hasError = true) },
+        onSuccess = { savingsUiState -> savingsUiState },
     )
     .stateIn(
         scope = viewModelScope,

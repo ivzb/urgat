@@ -7,10 +7,10 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 
 data class ExpensesUiState(
-    val expenses: List<GroupedExpenses> = emptyList(),
-    val categoriesMonthly: List<GroupedExpenseCategories> = emptyList(),
-    val categoriesYearly: List<GroupedExpenseCategories> = emptyList(),
-    val categoriesAllTime: List<ExpenseCategory> = emptyList(),
+    val expenses: List<GroupedExpenses> = listOf(),
+    val categoriesMonthly: List<GroupedExpenseCategories> = listOf(),
+    val categoriesYearly: List<GroupedExpenseCategories> = listOf(),
+    val categoriesAllTime: List<ExpenseCategory> = listOf(),
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,

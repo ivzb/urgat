@@ -11,10 +11,10 @@ import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 data class LibraryUiState(
     override val fabActions: List<LibraryFabAction> = LIBRARY_FAB_ACTIONS,
 
-    val todos: List<Todo> = emptyList(),
+    val todos: List<Todo> = listOf(),
     val todosFilteringUiInfo: TodosFilteringUiInfo = TodosFilteringUiInfo(),
 
-    val notes: List<Note> = emptyList(),
+    val notes: List<Note> = listOf(),
     val notesFilteringUiInfo: NotesFilteringUiInfo = NotesFilteringUiInfo(),
 
     override val isLoading: Boolean = false,

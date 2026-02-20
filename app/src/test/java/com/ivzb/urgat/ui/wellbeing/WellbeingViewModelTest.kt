@@ -126,7 +126,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `fab action click emits AddWeight event`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Success(emptyList()))
+        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight))
@@ -145,7 +145,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `onEventConsumed clears uiEvent`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Success(emptyList()))
+        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight))

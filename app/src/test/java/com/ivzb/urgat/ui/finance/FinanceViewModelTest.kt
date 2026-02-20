@@ -66,12 +66,12 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class FinanceViewModelTest {
 
-    private lateinit var fakeObserveReportBudgetUseCase: FakeObserveReportBudgetUseCase
     private lateinit var fakeObserveExpensesUiStateUseCase: FakeObserveExpensesUiStateUseCase
     private lateinit var fakeObserveInvestmentsUiStateUseCase: FakeObserveInvestmentsUiStateUseCase
     private lateinit var fakeObserveSavingsUiStateUseCase: FakeObserveSavingsUiStateUseCase
     private lateinit var fakeObserveBudgetUiStateUseCase: FakeObserveBudgetsUiStateUseCase
     private lateinit var fakeObserveFiReUseCase: FakeObserveFiReUseCase
+    private lateinit var fakeObserveReportBudgetUseCase: FakeObserveReportBudgetUseCase
     private lateinit var mockFireRepository: FireRepository
     private lateinit var savedStateHandle: SavedStateHandle
 
@@ -453,11 +453,11 @@ class FinanceViewModelTest {
     }
 
     private fun createViewModel() = FinanceViewModel(
-        fakeObserveReportBudgetUseCase,
         fakeObserveExpensesUiStateUseCase,
         fakeObserveInvestmentsUiStateUseCase,
         fakeObserveSavingsUiStateUseCase,
         fakeObserveBudgetUiStateUseCase,
+        fakeObserveReportBudgetUseCase,
         fakeObserveFiReUseCase,
         mockFireRepository,
         savedStateHandle,

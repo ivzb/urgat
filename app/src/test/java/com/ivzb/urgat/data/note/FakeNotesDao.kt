@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 class FakeNoteDao : NoteDao {
 
     private val items = mutableListOf<NoteEntity>()
-    private val _flow = MutableStateFlow<List<NoteEntity>>(emptyList())
+    private val _flow = MutableStateFlow<List<NoteEntity>>(listOf())
     private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<NoteEntity>> =

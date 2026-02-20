@@ -1,38 +1,37 @@
 package com.ivzb.urgat.ui.expenses
 
 import androidx.lifecycle.SavedStateHandle
-import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.*
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
-import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveExpensesSortingUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesAllTimeUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpenseCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesMonthlyUseCase
+import com.ivzb.urgat.domain.expense.FakeObserveExpensesUiStateUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
+import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
-import org.junit.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
-import kotlin.test.*
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExpensesViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var fakeObserveExpensesUseCase: FakeObserveGroupedExpensesMonthlyUseCase
-    private lateinit var fakeObserveGroupedExpenseCategoriesMonthlyUseCase: FakeObserveGroupedExpenseCategoriesMonthlyUseCase
-    private lateinit var fakeObserveGroupedExpenseCategoriesYearlyUseCase: FakeObserveGroupedExpenseCategoriesYearlyUseCase
-    private lateinit var fakeObserveGroupedExpenseCategoriesAllTimeUseCase: FakeObserveGroupedExpenseCategoriesAllTimeUseCase
-    private lateinit var fakeObserveExpensesFilteringUseCase: FakeObserveExpensesFilteringUseCase
-    private lateinit var fakeObserveExpensesSortingUseCase: FakeObserveExpensesSortingUseCase
+    private lateinit var fakeObserveExpensesUiStateUseCase: FakeObserveExpensesUiStateUseCase
 
     private lateinit var viewModel: ExpensesViewModel
 
@@ -42,12 +41,7 @@ class ExpensesViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         savedStateHandle = SavedStateHandle(mapOf())
-        fakeObserveExpensesUseCase = FakeObserveGroupedExpensesMonthlyUseCase()
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase = FakeObserveGroupedExpenseCategoriesMonthlyUseCase()
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase = FakeObserveGroupedExpenseCategoriesYearlyUseCase()
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase = FakeObserveGroupedExpenseCategoriesAllTimeUseCase()
-        fakeObserveExpensesFilteringUseCase = FakeObserveExpensesFilteringUseCase()
-        fakeObserveExpensesSortingUseCase = FakeObserveExpensesSortingUseCase()
+        fakeObserveExpensesUiStateUseCase = FakeObserveExpensesUiStateUseCase()
     }
 
     @After
@@ -57,12 +51,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `initial state is loading`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Loading)
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Loading)
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Loading)
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Loading)
-        fakeObserveExpensesFilteringUseCase.emit(Async.Loading)
-        fakeObserveExpensesSortingUseCase.emit(Async.Loading)
+        fakeObserveExpensesUiStateUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -138,12 +127,18 @@ class ExpensesViewModelTest {
             SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
         )
 
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
-        fakeObserveExpensesFilteringUseCase.emit(Async.Success(fakeExpensesFiltering))
-        fakeObserveExpensesSortingUseCase.emit(Async.Success(fakeExpensesSorting))
+        val fakeExpensesUiState = ExpensesUiState(
+            expenses = fakeExpenses,
+            categoriesMonthly = fakeCategoriesMonthly,
+            categoriesYearly = fakeCategoriesYearly,
+            categoriesAllTime = fakeCategoriesAllTime,
+            filteringUiInfo = ExpensesFilteringUiInfo(
+                filterMenuItems = fakeExpensesFiltering,
+                sortMenuItems = fakeExpensesSorting,
+            )
+        )
+        fakeObserveExpensesUiStateUseCase.emit(Async.Success(fakeExpensesUiState))
+
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -167,12 +162,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Error)
-        fakeObserveExpensesFilteringUseCase.emit(Async.Error)
-        fakeObserveExpensesSortingUseCase.emit(Async.Error)
+        fakeObserveExpensesUiStateUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -232,30 +222,41 @@ class ExpensesViewModelTest {
                 expenses = expenses,
             )
         )
+        val fakeExpensesFiltering = listOf(
+            FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
+            FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
+            FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 0),
+        )
+        val fakeExpensesSorting = listOf(
+            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
+        )
 
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
-        fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveExpensesSortingUseCase.emit(Async.Success(listOf()))
+        val fakeExpensesUiState = ExpensesUiState(
+            expenses = fakeExpenses,
+            categoriesMonthly = fakeCategoriesMonthly,
+            categoriesYearly = fakeCategoriesYearly,
+            categoriesAllTime = fakeCategoriesAllTime,
+            filteringUiInfo = ExpensesFilteringUiInfo(
+                filterMenuItems = fakeExpensesFiltering,
+                sortMenuItems = fakeExpensesSorting,
+            )
+        )
+        fakeObserveExpensesUiStateUseCase.emit(Async.Success(fakeExpensesUiState))
+
         viewModel = createViewModel()
 
         viewModel.onIntent(ExpensesIntent.SearchQueryChanged("coffee"))
 
         advanceUntilIdle()
 
-        assertEquals("coffee", fakeObserveExpensesUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveExpensesUiStateUseCase.lastQuery)
     }
 
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(emptyList()))
-        fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveExpensesSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val expected = ExpensesFilterType.DEBIT_EXPENSES
@@ -268,12 +269,6 @@ class ExpensesViewModelTest {
 
     @Test
     fun `setSorting updates saved state handle`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(emptyList()))
-        fakeObserveExpensesFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveExpensesSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val expected = ExpensesSortType.BY_MIN
@@ -285,12 +280,7 @@ class ExpensesViewModelTest {
     }
 
     private fun createViewModel() = ExpensesViewModel(
-        fakeObserveExpensesUseCase,
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase,
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase,
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase,
-        fakeObserveExpensesFilteringUseCase,
-        fakeObserveExpensesSortingUseCase,
+        fakeObserveExpensesUiStateUseCase,
         savedStateHandle
     )
 }

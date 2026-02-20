@@ -3,12 +3,7 @@ package com.ivzb.urgat.ui.budgets
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
-import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
-import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
-import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsAllTimeUseCase
-import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsMonthlyUseCase
-import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetsYearlyUseCase
+import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,12 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BudgetsViewModel @Inject constructor(
-    observeBudgetsUseCase: ObserveBudgetsUseCase,
-    observeGroupedBudgetsMonthlyUseCase: ObserveGroupedBudgetsMonthlyUseCase,
-    observeGroupedBudgetsYearlyUseCase: ObserveGroupedBudgetsYearlyUseCase,
-    observeGroupedBudgetsAllTimeUseCase: ObserveGroupedBudgetsAllTimeUseCase,
-    observeBudgetsFilteringUseCase: ObserveBudgetsFilteringUseCase,
-    observeBudgetsSortingUseCase: ObserveBudgetsSortingUseCase,
+    observeBudgetsUiStateUseCase: ObserveBudgetsUiStateUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -35,32 +25,11 @@ class BudgetsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<BudgetsUiState> = combineUiState(
-        observeBudgetsUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedBudgetsMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedBudgetsYearlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedBudgetsAllTimeUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeBudgetsFilteringUseCase(),
-        observeBudgetsSortingUseCase(),
+        observeBudgetsUiStateUseCase(searchQueryFlow = _searchQuery, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType),
 
-        onLoading = {
-            BudgetsUiState(isLoading = true)
-        },
-        onError = {
-            BudgetsUiState(hasError = true)
-        },
-        onSuccess = { budgets, monthlyBudgets, yearlyBudgets, allTimeBudget, filtering, sorting ->
-
-            BudgetsUiState(
-                budgets = budgets,
-                monthlyBudgets = monthlyBudgets,
-                yearlyBudgets = yearlyBudgets,
-                allTimeBudget = allTimeBudget,
-                filteringUiInfo = BudgetsFilteringUiInfo(
-                    filterMenuItems = filtering,
-                    sortMenuItems = sorting,
-                ),
-            )
-        }
+        onLoading = { BudgetsUiState(isLoading = true) },
+        onError = { BudgetsUiState(hasError = true) },
+        onSuccess = { budgetsUiState -> budgetsUiState },
     )
     .stateIn(
         scope = viewModelScope,

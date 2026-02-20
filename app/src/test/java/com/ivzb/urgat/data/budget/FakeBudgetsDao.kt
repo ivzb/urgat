@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 class FakeBudgetDao : BudgetDao {
 
     private val items = mutableListOf<BudgetEntity>()
-    private val _flow = MutableStateFlow<List<BudgetEntity>>(emptyList())
+    private val _flow = MutableStateFlow<List<BudgetEntity>>(listOf())
     private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<BudgetEntity>> =

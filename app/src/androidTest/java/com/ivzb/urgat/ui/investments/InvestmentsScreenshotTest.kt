@@ -13,7 +13,6 @@ import org.junit.experimental.categories.Category
 class InvestmentsScreenshotTest: ScreenshotTest() {
 
     @Test
-    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_InvestmentsScreen_sampleData_transactions() =
         screenshotTest_InvestmentsScreen_sampleData(initialPage = 0)
 

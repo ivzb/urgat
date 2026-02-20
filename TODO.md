@@ -101,3 +101,5 @@
 - consider moving the reports back the their own screen and only show transactions on the main screen so the tabs are not so cluttered
 - remove listState from FinancePage or TransactionsPage
 - move use cases to inner screens
+- add button to see all for each finance screen
+- remove transactions from inner screens?

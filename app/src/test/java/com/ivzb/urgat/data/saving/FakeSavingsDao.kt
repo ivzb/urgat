@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 class FakeSavingDao : SavingDao {
 
     private val items = mutableListOf<SavingEntity>()
-    private val _flow = MutableStateFlow<List<SavingEntity>>(emptyList())
+    private val _flow = MutableStateFlow<List<SavingEntity>>(listOf())
     private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<SavingEntity>> =

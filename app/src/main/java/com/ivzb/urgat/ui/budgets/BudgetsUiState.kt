@@ -6,7 +6,7 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 
 data class BudgetsUiState(
-    val budgets: List<Budget> = emptyList(),
+    val budgets: List<Budget> = listOf(),
     val monthlyBudgets: List<GroupedBudget> = listOf(),
     val yearlyBudgets: List<GroupedBudget> = listOf(),
     val allTimeBudget: GroupedBudget? = null,

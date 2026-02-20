@@ -4,11 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
-import com.ivzb.urgat.domain.saving.FakeObserveGroupedSavingCategoriesAllTimeUseCase
-import com.ivzb.urgat.domain.saving.FakeObserveGroupedSavingCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.saving.FakeObserveGroupedSavingCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.saving.FakeObserveGroupedSavingsMonthlyUseCase
-import com.ivzb.urgat.domain.saving.FakeObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.saving.FakeObserveSavingsUiStateUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
@@ -34,11 +30,7 @@ import kotlin.test.assertTrue
 class SavingsViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var fakeObserveSavingsUseCase: FakeObserveGroupedSavingsMonthlyUseCase
-    private lateinit var fakeObserveGroupedSavingCategoriesMonthlyUseCase: FakeObserveGroupedSavingCategoriesMonthlyUseCase
-    private lateinit var fakeObserveGroupedSavingCategoriesYearlyUseCase: FakeObserveGroupedSavingCategoriesYearlyUseCase
-    private lateinit var fakeObserveGroupedSavingCategoriesAllTimeUseCase: FakeObserveGroupedSavingCategoriesAllTimeUseCase
-    private lateinit var fakeObserveSavingsSortingUseCase: FakeObserveSavingsSortingUseCase
+    private lateinit var fakeObserveSavingsUiStateUseCase: FakeObserveSavingsUiStateUseCase
 
     private lateinit var viewModel: SavingsViewModel
 
@@ -48,11 +40,7 @@ class SavingsViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         savedStateHandle = SavedStateHandle(mapOf())
-        fakeObserveSavingsUseCase = FakeObserveGroupedSavingsMonthlyUseCase()
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase = FakeObserveGroupedSavingCategoriesMonthlyUseCase()
-        fakeObserveGroupedSavingCategoriesYearlyUseCase = FakeObserveGroupedSavingCategoriesYearlyUseCase()
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase = FakeObserveGroupedSavingCategoriesAllTimeUseCase()
-        fakeObserveSavingsSortingUseCase = FakeObserveSavingsSortingUseCase()
+        fakeObserveSavingsUiStateUseCase = FakeObserveSavingsUiStateUseCase()
     }
 
     @After
@@ -62,11 +50,7 @@ class SavingsViewModelTest {
 
     @Test
     fun `initial state is loading`() = runTest {
-        fakeObserveSavingsUseCase.emit(Async.Loading)
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Loading)
-        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Loading)
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Loading)
-        fakeObserveSavingsSortingUseCase.emit(Async.Loading)
+        fakeObserveSavingsUiStateUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -136,11 +120,17 @@ class SavingsViewModelTest {
             SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
         )
 
-        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
-        fakeObserveSavingsSortingUseCase.emit(Async.Success(fakeSavingsSorting))
+        val fakeSavingsUiState = SavingsUiState(
+            savings = fakeSavings,
+            categoriesMonthly = fakeCategoriesMonthly,
+            categoriesYearly = fakeCategoriesYearly,
+            categoriesAllTime = fakeCategoriesAllTime,
+            filteringUiInfo = SavingsFilteringUiInfo(
+                sortMenuItems = fakeSavingsSorting,
+            ),
+        )
+        fakeObserveSavingsUiStateUseCase.emit(Async.Success(fakeSavingsUiState))
+
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -163,11 +153,7 @@ class SavingsViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveSavingsUseCase.emit(Async.Error)
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Error)
-        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Error)
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Error)
-        fakeObserveSavingsSortingUseCase.emit(Async.Error)
+        fakeObserveSavingsUiStateUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -227,28 +213,34 @@ class SavingsViewModelTest {
                 savings = savings,
             )
         )
+        val fakeSavingsSorting = listOf(
+            SortMenuItem(type = SavingsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = SavingsSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
+        )
 
-        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
-        fakeObserveSavingsSortingUseCase.emit(Async.Success(listOf()))
+        val fakeSavingsUiState = SavingsUiState(
+            savings = fakeSavings,
+            categoriesMonthly = fakeCategoriesMonthly,
+            categoriesYearly = fakeCategoriesYearly,
+            categoriesAllTime = fakeCategoriesAllTime,
+            filteringUiInfo = SavingsFilteringUiInfo(
+                sortMenuItems = fakeSavingsSorting,
+            ),
+        )
+        fakeObserveSavingsUiStateUseCase.emit(Async.Success(fakeSavingsUiState))
+
         viewModel = createViewModel()
 
         viewModel.onIntent(SavingsIntent.SearchQueryChanged("coffee"))
 
         advanceUntilIdle()
 
-        assertEquals("coffee", fakeObserveSavingsUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveSavingsUiStateUseCase.lastQuery)
     }
 
     @Test
     fun `setFiltering updates saved state handle`() = runTest {
-        fakeObserveSavingsUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Success(emptyList()))
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Success(emptyList()))
-        fakeObserveSavingsSortingUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         val expected = SavingsSortType.BY_MIN
@@ -258,11 +250,7 @@ class SavingsViewModelTest {
     }
 
     private fun createViewModel() = SavingsViewModel(
-        fakeObserveSavingsUseCase,
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase,
-        fakeObserveGroupedSavingCategoriesYearlyUseCase,
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase,
-        fakeObserveSavingsSortingUseCase,
+        fakeObserveSavingsUiStateUseCase,
         savedStateHandle
     )
 }

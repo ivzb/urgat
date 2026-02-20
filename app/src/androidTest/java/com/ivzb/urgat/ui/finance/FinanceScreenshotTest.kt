@@ -162,9 +162,16 @@ class FinanceScreenshotTest: ScreenshotTest() {
                     onIntent = {},
 
                     onExpenseClick = {},
+                    onSeeAllExpenses = {},
+
                     onInvestmentClick = {},
+                    onSeeAllInvestments = {},
+
                     onSavingClick = {},
+                    onSeeAllSavings = {},
+
                     onBudgetClick = {},
+                    onSeeAllBudgets = {},
 
                     navigator = FakeNavigator(),
 

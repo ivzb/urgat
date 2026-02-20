@@ -9,10 +9,10 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 
 data class InvestmentsUiState(
-    val investments: List<GroupedInvestments> = emptyList(),
-    val categoriesYearly: List<GroupedInvestmentCategories> = emptyList(),
-    val assets: List<InvestmentAsset> = emptyList(),
-    val categories: List<InvestmentCategory> = emptyList(),
+    val investments: List<GroupedInvestments> = listOf(),
+    val categoriesYearly: List<GroupedInvestmentCategories> = listOf(),
+    val assets: List<InvestmentAsset> = listOf(),
+    val categories: List<InvestmentCategory> = listOf(),
     val netWorth: InvestmentNetWorth? = null,
 
     override val isLoading: Boolean = false,

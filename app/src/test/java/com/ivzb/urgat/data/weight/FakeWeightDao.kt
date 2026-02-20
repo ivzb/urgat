@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 class FakeWeightDao: WeightDao {
 
     private val items = mutableListOf<WeightEntity>()
-    private val _flow = MutableStateFlow<List<WeightEntity>>(emptyList())
+    private val _flow = MutableStateFlow<List<WeightEntity>>(listOf())
     private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<WeightEntity>> =

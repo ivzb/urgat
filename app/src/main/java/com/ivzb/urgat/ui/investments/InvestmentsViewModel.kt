@@ -3,13 +3,7 @@ package com.ivzb.urgat.ui.investments
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsSortingUseCase
-import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentAssetsUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentCategoriesUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentNetWorthUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
+import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,13 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InvestmentsViewModel @Inject constructor(
-    observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase,
-    observeGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestmentCategoriesYearlyUseCase,
-    observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
-    observeInvestmentCategoriesUseCase: ObserveInvestmentCategoriesUseCase,
-    observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
-    observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
-    observeInvestmentsSortingUseCase: ObserveInvestmentsSortingUseCase,
+    observeInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase,
     val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -37,33 +25,11 @@ class InvestmentsViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
-        observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeGroupedInvestmentCategoriesYearlyUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentAssetsUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentCategoriesUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentNetWorthUseCase(searchQueryFlow = _searchQuery, dateRangeFlow = null, filterTypeFlow = _savedFilterType, sortTypeFlow = _savedSortType, limitFlow = null),
-        observeInvestmentsFilteringUseCase(),
-        observeInvestmentsSortingUseCase(),
+        observeInvestmentsUiStateUseCase(_searchQuery, _savedFilterType, _savedSortType),
 
-        onLoading = {
-            InvestmentsUiState(isLoading = true)
-        },
-        onError = {
-            InvestmentsUiState(hasError = true)
-        },
-        onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering, sorting ->
-            InvestmentsUiState(
-                investments = investments,
-                categoriesYearly = categoriesYearly,
-                assets = assets,
-                categories = categories,
-                netWorth = netWorth,
-                filteringUiInfo = InvestmentsFilteringUiInfo(
-                    filterMenuItems = filtering,
-                    sortMenuItems = sorting,
-                ),
-            )
-        }
+        onLoading = { InvestmentsUiState(isLoading = true) },
+        onError = { InvestmentsUiState(hasError = true) },
+        onSuccess = { investmentsUiState -> investmentsUiState },
     )
     .stateIn(
         scope = viewModelScope,
