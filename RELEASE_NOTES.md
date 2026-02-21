@@ -1,3 +1,11 @@
+## Release notes 26.02.04
+
+New:
+- The Finance section has been simplified. All tabs are now accessible directly from the main Finance screen, so you can view full details without extra navigation.
+
+Fixed:
+- Fixed visual issues on the Fire screen for a smoother experience
+
 ## Release notes 26.02.03
 
 New:
