@@ -121,14 +121,6 @@ fun ExpensesScreen(
 
         content = { page, listState, onListStateChanged ->
             when (page) {
-                ExpensesPage.Transactions -> TransactionsPage(
-                    expenses = uiState.expenses,
-                    onExpenseClick = onExpenseClick,
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
                 ExpensesPage.Monthly -> GroupedCategoriesPage(
                     categories = uiState.categoriesMonthly,
                     expandedCategoryIds = expandedMonthlyIds,
@@ -165,6 +157,9 @@ fun ExpensesScreen(
 fun TransactionsPage(
     expenses: List<GroupedExpenses>,
     onExpenseClick: (Expense) -> Unit,
+
+    header: (@Composable () -> Unit)? = null,
+
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
@@ -175,13 +170,17 @@ fun TransactionsPage(
 
     LazyColumn(
         contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
         state = listState,
         modifier = Modifier
             .fillMaxSize(),
     ) {
+
+        item {
+            header?.invoke()
+        }
 
         expenses.forEachIndexed { index, (group, total, expenses) ->
             item {

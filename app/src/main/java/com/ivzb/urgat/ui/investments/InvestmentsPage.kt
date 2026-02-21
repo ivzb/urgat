@@ -9,14 +9,12 @@ sealed class InvestmentsPage(
     override val titleResId: Int,
     override val isHorizontalScrollEnabled: Boolean,
 ): Page {
-    data object Transactions: InvestmentsPage(R.string.transactions, true)
     data object Yearly: InvestmentsPage(R.string.yearly, false)
     data object AllTime: InvestmentsPage(R.string.all_time, true)
     data object Assets: InvestmentsPage(R.string.assets, true)
 }
 
 val INVESTMENT_PAGES = listOf(
-    InvestmentsPage.Transactions,
     InvestmentsPage.Yearly,
     InvestmentsPage.AllTime,
     InvestmentsPage.Assets,

@@ -31,7 +31,7 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
-import com.ivzb.urgat.ui.components.ItemHeaderWithSeeAll
+import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.screens.NavigationScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightItem
@@ -43,7 +43,7 @@ fun WellbeingScreen(
     viewModel: WellbeingViewModel,
 
     onAddWeight: () -> Unit,
-    onSeeAllWeights: () -> Unit,
+    onMoreWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
     navigator: Navigator,
@@ -56,7 +56,7 @@ fun WellbeingScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
 
-        onSeeAllWeights = onSeeAllWeights,
+        onMoreWeights = onMoreWeights,
         onWeightClick = onWeightClick,
 
         navigator = navigator,
@@ -80,7 +80,7 @@ fun WellbeingScreen(
     uiState: WellbeingUiState,
     onIntent: (WellbeingIntent) -> Unit,
 
-    onSeeAllWeights: () -> Unit,
+    onMoreWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
     navigator: Navigator,
@@ -101,7 +101,7 @@ fun WellbeingScreen(
                 weights = uiState.weights,
                 weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
                 onAddWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
-                onSeeAllWeights = onSeeAllWeights,
+                onMoreWeights = onMoreWeights,
                 onWeightClick = onWeightClick,
             )
         },
@@ -116,7 +116,7 @@ private fun WellbeingContent(
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
 
     onAddWeight: () -> Unit,
-    onSeeAllWeights: () -> Unit,
+    onMoreWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
     modifier: Modifier = Modifier
@@ -129,7 +129,7 @@ private fun WellbeingContent(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onAddWeight = onAddWeight,
-            onSeeAllWeights = onSeeAllWeights,
+            onMoreWeights = onMoreWeights,
             onWeightClick = onWeightClick,
             modifier = modifier,
         )
@@ -138,7 +138,7 @@ private fun WellbeingContent(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onAddWeight = onAddWeight,
-            onSeeAllWeights = onSeeAllWeights,
+            onMoreWeights = onMoreWeights,
             onWeightClick = onWeightClick,
             modifier = modifier,
         )
@@ -151,7 +151,7 @@ private fun WellbeingContentPortrait(
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
 
     onAddWeight: () -> Unit,
-    onSeeAllWeights: () -> Unit,
+    onMoreWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
     modifier: Modifier = Modifier
@@ -172,7 +172,7 @@ private fun WellbeingContentPortrait(
             weights = weights,
             weightsFilteringUiInfo = weightsFilteringUiInfo,
             onAddWeight = onAddWeight,
-            onSeeAllWeights = onSeeAllWeights,
+            onMoreWeights = onMoreWeights,
             onWeightClick = onWeightClick,
         )
 
@@ -191,7 +191,7 @@ private fun WellbeingContentLandscape(
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
 
     onAddWeight: () -> Unit,
-    onSeeAllWeights: () -> Unit,
+    onMoreWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 
     modifier: Modifier = Modifier
@@ -221,7 +221,7 @@ private fun WellbeingContentLandscape(
                 weights = weights,
                 weightsFilteringUiInfo = weightsFilteringUiInfo,
                 onAddWeight = onAddWeight,
-                onSeeAllWeights = onSeeAllWeights,
+                onMoreWeights = onMoreWeights,
                 onWeightClick = onWeightClick,
             )
 
@@ -263,7 +263,7 @@ private fun LazyListScope.itemWeights(
     weights: List<Weight>,
     weightsFilteringUiInfo: WeightsFilteringUiInfo,
     onAddWeight: () -> Unit,
-    onSeeAllWeights: () -> Unit,
+    onMoreWeights: () -> Unit,
     onWeightClick: (Weight) -> Unit,
 ) {
 
@@ -282,9 +282,9 @@ private fun LazyListScope.itemWeights(
 
         else -> {
             item {
-                ItemHeaderWithSeeAll(
+                ItemHeaderWithMore(
                     title = stringResource(weightsFilteringUiInfo.currentFilteringLabel),
-                    onSeeAllClick = onSeeAllWeights,
+                    onMoreClick = onMoreWeights,
                 )
             }
 
@@ -328,7 +328,7 @@ private fun WellbeingScreenPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            onSeeAllWeights = {},
+            onMoreWeights = {},
             onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -349,7 +349,7 @@ private fun WellbeingScreenEmptyPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            onSeeAllWeights = {},
+            onMoreWeights = {},
             onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -370,7 +370,7 @@ private fun WellbeingScreenLoadingPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            onSeeAllWeights = {},
+            onMoreWeights = {},
             onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -391,7 +391,7 @@ private fun WellbeingScreenErrorPreview() {
                 filteringUiInfo = WellbeingFilteringUiInfo(),
             ),
             onIntent = {},
-            onSeeAllWeights = {},
+            onMoreWeights = {},
             onWeightClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier

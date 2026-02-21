@@ -12,19 +12,19 @@ fun EntryProviderScope<NavKey>.financeEntry(navigator: Navigator, navActions: Ur
             viewModel = hiltViewModel(),
 
             onAddExpense = { navActions.navigateToAddExpense() },
-            onSeeAllExpenses = { navActions.navigateToExpenses() },
+            onMoreExpenses = { navActions.navigateToExpenses() },
             onExpenseClick = { navActions.navigateToEditExpense(it.id) },
 
             onAddInvestment = { navActions.navigateToAddInvestment() },
-            onSeeAllInvestments = { navActions.navigateToInvestments() },
+            onMoreInvestments = { navActions.navigateToInvestments() },
             onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
 
             onAddSaving = { navActions.navigateToAddSaving() },
-            onSeeAllSavings = { navActions.navigateToSavings() },
+            onMoreSavings = { navActions.navigateToSavings() },
             onSavingClick = { navActions.navigateToEditSaving(it.id) },
 
             onAddBudget = { navActions.navigateToAddBudget() },
-            onSeeAllBudgets = { navActions.navigateToBudgets() },
+            onMoreBudgets = { navActions.navigateToBudgets() },
             onBudgetClick = { navActions.navigateToEditBudget(it.id) },
 
             navigator = navigator,

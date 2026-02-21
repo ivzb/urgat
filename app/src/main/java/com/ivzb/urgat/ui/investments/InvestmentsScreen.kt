@@ -123,14 +123,6 @@ fun InvestmentsScreen(
 
         content = { page, listState, onListStateChanged ->
             when (page) {
-                InvestmentsPage.Transactions -> TransactionsPage(
-                    investments = uiState.investments,
-                    onInvestmentClick = onInvestmentClick,
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
                 InvestmentsPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
                     expandedCategoryIds = expandedYearlyIds,
@@ -177,6 +169,9 @@ fun InvestmentsScreen(
 fun TransactionsPage(
     investments: List<GroupedInvestments>,
     onInvestmentClick: (Investment) -> Unit,
+
+    header: (@Composable () -> Unit)? = null,
+
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
@@ -187,13 +182,17 @@ fun TransactionsPage(
 
     LazyColumn(
         contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
         state = listState,
         modifier = Modifier
             .fillMaxSize(),
     ) {
+
+        item {
+            header?.invoke()
+        }
 
         investments.forEachIndexed { index, (group, total, investments) ->
             item {

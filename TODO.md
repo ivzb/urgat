@@ -98,8 +98,3 @@
 - add one more playstore screenshot
 - move inner weight tab screens like library and finance screen
 - show red nudge to filter/sort button in the top bar if there is filtering/sorting applied
-- consider moving the reports back the their own screen and only show transactions on the main screen so the tabs are not so cluttered
-- remove listState from FinancePage or TransactionsPage
-- move use cases to inner screens
-- add button to see all for each finance screen
-- remove transactions from inner screens?

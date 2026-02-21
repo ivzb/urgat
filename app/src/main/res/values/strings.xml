@@ -85,7 +85,6 @@
     <string name="no_excluded_from_analytics_expenses">You have no expenses excluded from analytics!</string>
     <string name="recent_expenses">Recent expenses</string>
     <string name="no_expenses_search">You have no expenses with this search criteria!</string>
-    <string name="see_all">See all</string>
     <string name="press_back_once_more_to_exit">Press back once more to exit.</string>
     <string name="select_date">Select date</string>
     <string name="all_notes">All notes</string>
@@ -183,6 +182,7 @@
     <string name="loading_savings">Loading savings</string>
     <string name="error_savings">Error while loading savings</string>
     <string name="report">Report</string>
+    <string name="monthly_report">Monthly report</string>
     <string name="FIRE">FI/RE</string>
     <string name="fire_title">FI/RE calculation is based on %1$s.</string>
     <string name="fire_info">All calculations are derived from the most recent month with complete data, meaning budget and expenses have to be filled.\n\nThe current ongoing month is always excluded, as it is not considered complete until it ends.</string>

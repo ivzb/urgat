@@ -115,14 +115,6 @@ fun SavingsScreen(
 
         content = { page, listState, onListStateChanged ->
             when (page) {
-                SavingsPage.Transactions -> TransactionsPage(
-                    savings = uiState.savings,
-                    onSavingClick = onSavingClick,
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
                 SavingsPage.Monthly -> GroupedCategoriesPage(
                     categories = uiState.categoriesMonthly,
                     expandedCategoryIds = expandedMonthlyIds,
@@ -159,6 +151,9 @@ fun SavingsScreen(
 fun TransactionsPage(
     savings: List<GroupedSavings>,
     onSavingClick: (Saving) -> Unit,
+
+    header: (@Composable () -> Unit)? = null,
+
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
@@ -169,13 +164,17 @@ fun TransactionsPage(
 
     LazyColumn(
         contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
         ),
         state = listState,
         modifier = Modifier
             .fillMaxSize(),
     ) {
+
+        item {
+            header?.invoke()
+        }
 
         savings.forEachIndexed { index, (group, total, savings) ->
             item {

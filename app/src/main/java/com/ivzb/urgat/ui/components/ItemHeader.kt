@@ -95,9 +95,9 @@ fun ItemHeaderSmall(
 }
 
 @Composable
-fun ItemHeaderWithSeeAll(
+fun ItemHeaderWithMore(
     title: String,
-    onSeeAllClick: () -> Unit,
+    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -110,11 +110,11 @@ fun ItemHeaderWithSeeAll(
         ItemHeaderLarge(text = title)
 
         TextButton(
-            onClick = onSeeAllClick
+            onClick = onMoreClick
         ) {
 
             Text(
-                text = stringResource(R.string.see_all)
+                text = stringResource(R.string.more)
             )
         }
     }
@@ -159,11 +159,11 @@ private fun ItemHeaderSmallPreview() {
 @Preview
 @DarkModePreview
 @Composable
-private fun ItemHeaderWithSeeAllPreview() {
+private fun ItemHeaderWithMorePreview() {
     UrgatTheme {
-        ItemHeaderWithSeeAll(
+        ItemHeaderWithMore(
             title = "Home",
-            onSeeAllClick = {},
+            onMoreClick = {},
             modifier = Modifier.padding(16.dp)
         )
     }

@@ -43,6 +43,7 @@ import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
@@ -61,19 +62,19 @@ fun FinanceScreen(
     viewModel: FinanceViewModel,
 
     onAddExpense: () -> Unit,
-    onSeeAllExpenses: () -> Unit,
+    onMoreExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
     onAddInvestment: () -> Unit,
-    onSeeAllInvestments: () -> Unit,
+    onMoreInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
     onAddSaving: () -> Unit,
-    onSeeAllSavings: () -> Unit,
+    onMoreSavings: () -> Unit,
     onSavingClick: (Saving) -> Unit,
 
     onAddBudget: () -> Unit,
-    onSeeAllBudgets: () -> Unit,
+    onMoreBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
 
     navigator: Navigator,
@@ -86,16 +87,16 @@ fun FinanceScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
 
-        onSeeAllExpenses = onSeeAllExpenses,
+        onMoreExpenses = onMoreExpenses,
         onExpenseClick = onExpenseClick,
 
-        onSeeAllInvestments = onSeeAllInvestments,
+        onMoreInvestments = onMoreInvestments,
         onInvestmentClick = onInvestmentClick,
 
-        onSeeAllSavings = onSeeAllSavings,
+        onMoreSavings = onMoreSavings,
         onSavingClick = onSavingClick,
 
-        onSeeAllBudgets = onSeeAllBudgets,
+        onMoreBudgets = onMoreBudgets,
         onBudgetClick = onBudgetClick,
 
         navigator = navigator,
@@ -122,16 +123,16 @@ fun FinanceScreen(
     uiState: FinanceUiState,
     onIntent: (FinanceIntent) -> Unit,
 
-    onSeeAllExpenses: () -> Unit,
+    onMoreExpenses: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
-    onSeeAllInvestments: () -> Unit,
+    onMoreInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
-    onSeeAllSavings: () -> Unit,
+    onMoreSavings: () -> Unit,
     onSavingClick: (Saving) -> Unit,
 
-    onSeeAllBudgets: () -> Unit,
+    onMoreBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
 
     navigator: Navigator,
@@ -202,9 +203,9 @@ fun FinanceScreen(
             when (page) {
                 FinancePage.Expenses -> ExpensesPage(
                     uiState = uiState.expensesUiState,
-                    onAddExpense = {
-                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense))
-                    },
+
+                    onMoreExpenses = onMoreExpenses,
+                    onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
                     onExpenseClick = onExpenseClick,
 
                     listState = listState,
@@ -213,9 +214,9 @@ fun FinanceScreen(
 
                 FinancePage.Investments -> InvestmentsPage(
                     uiState = uiState.investmentsUiState,
-                    onAddInvestment = {
-                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment))
-                    },
+
+                    onMoreInvestments = onMoreInvestments,
+                    onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
                     onInvestmentClick = onInvestmentClick,
 
                     listState = listState,
@@ -224,9 +225,9 @@ fun FinanceScreen(
 
                 FinancePage.Savings -> SavingsPage(
                     uiState = uiState.savingsUiState,
-                    onAddSaving = {
-                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Saving))
-                    },
+
+                    onMoreSavings = onMoreSavings,
+                    onAddSaving = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Saving)) },
                     onSavingClick = onSavingClick,
 
                     listState = listState,
@@ -235,9 +236,9 @@ fun FinanceScreen(
 
                 FinancePage.Budgets -> BudgetsPage(
                     uiState = uiState.budgetsUiState,
-                    onAddBudget = {
-                        onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget))
-                    },
+
+                    onMoreBudgets = onMoreBudgets,
+                    onAddBudget = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget)) },
                     onBudgetClick = onBudgetClick,
 
                     listState = listState,
@@ -271,16 +272,8 @@ fun FinanceScreen(
 private fun FinancePage(
     uiState: PagerUiState,
     onEmptyStateButtonClick: () -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-
     content: @Composable () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
-
     when {
         uiState.isEmpty -> {
             EmptyState(uiState, onEmptyStateButtonClick)
@@ -295,6 +288,8 @@ private fun FinancePage(
 @Composable
 private fun ExpensesPage(
     uiState: ExpensesUiState,
+
+    onMoreExpenses: () -> Unit,
     onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
@@ -306,13 +301,17 @@ private fun ExpensesPage(
         uiState = uiState,
         onEmptyStateButtonClick = onAddExpense,
 
-        listState = listState,
-        onListStateChanged = onListStateChanged,
-
         content = {
             com.ivzb.urgat.ui.expenses.TransactionsPage(
                 expenses = uiState.expenses,
                 onExpenseClick = onExpenseClick,
+
+                header = {
+                    ItemHeaderWithMore(
+                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                        onMoreClick = onMoreExpenses,
+                    )
+                },
 
                 listState = listState,
                 onListStateChanged = onListStateChanged,
@@ -324,6 +323,8 @@ private fun ExpensesPage(
 @Composable
 private fun InvestmentsPage(
     uiState: InvestmentsUiState,
+
+    onMoreInvestments: () -> Unit,
     onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
@@ -334,14 +335,17 @@ private fun InvestmentsPage(
     FinancePage(
         uiState = uiState,
         onEmptyStateButtonClick = onAddInvestment,
-
-        listState = listState,
-        onListStateChanged = onListStateChanged,
-
         content = {
             com.ivzb.urgat.ui.investments.TransactionsPage(
                 investments = uiState.investments,
                 onInvestmentClick = onInvestmentClick,
+
+                header = {
+                    ItemHeaderWithMore(
+                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                        onMoreClick = onMoreInvestments,
+                    )
+                },
 
                 listState = listState,
                 onListStateChanged = onListStateChanged,
@@ -353,6 +357,8 @@ private fun InvestmentsPage(
 @Composable
 private fun SavingsPage(
     uiState: SavingsUiState,
+
+    onMoreSavings: () -> Unit,
     onAddSaving: () -> Unit,
     onSavingClick: (Saving) -> Unit,
 
@@ -363,14 +369,17 @@ private fun SavingsPage(
     FinancePage(
         uiState = uiState,
         onEmptyStateButtonClick = onAddSaving,
-
-        listState = listState,
-        onListStateChanged = onListStateChanged,
-
         content = {
             com.ivzb.urgat.ui.savings.TransactionsPage(
                 savings = uiState.savings,
                 onSavingClick = onSavingClick,
+
+                header = {
+                    ItemHeaderWithMore(
+                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                        onMoreClick = onMoreSavings,
+                    )
+                },
 
                 listState = listState,
                 onListStateChanged = onListStateChanged,
@@ -382,6 +391,8 @@ private fun SavingsPage(
 @Composable
 private fun BudgetsPage(
     uiState: BudgetsUiState,
+
+    onMoreBudgets: () -> Unit,
     onAddBudget: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
 
@@ -392,14 +403,17 @@ private fun BudgetsPage(
     FinancePage(
         uiState = uiState,
         onEmptyStateButtonClick = onAddBudget,
-
-        listState = listState,
-        onListStateChanged = onListStateChanged,
-
         content = {
             com.ivzb.urgat.ui.budgets.TransactionsPage(
                 budgets = uiState.budgets,
                 onBudgetClick = onBudgetClick,
+
+                header = {
+                    ItemHeaderWithMore(
+                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                        onMoreClick = onMoreBudgets,
+                    )
+                },
 
                 listState = listState,
                 onListStateChanged = onListStateChanged,
@@ -729,16 +743,16 @@ private fun FinanceScreenPreview(
             onIntent = {},
 
             onExpenseClick = {},
-            onSeeAllExpenses = {},
+            onMoreExpenses = {},
 
             onInvestmentClick = {},
-            onSeeAllInvestments = {},
+            onMoreInvestments = {},
 
             onSavingClick = {},
-            onSeeAllSavings = {},
+            onMoreSavings = {},
 
             onBudgetClick = {},
-            onSeeAllBudgets = {},
+            onMoreBudgets = {},
 
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -865,16 +879,16 @@ fun FinanceScreenEmptyPreview() {
             onIntent = {},
 
             onExpenseClick = {},
-            onSeeAllExpenses = {},
+            onMoreExpenses = {},
 
             onInvestmentClick = {},
-            onSeeAllInvestments = {},
+            onMoreInvestments = {},
 
             onSavingClick = {},
-            onSeeAllSavings = {},
+            onMoreSavings = {},
 
             onBudgetClick = {},
-            onSeeAllBudgets = {},
+            onMoreBudgets = {},
 
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -898,16 +912,16 @@ fun FinanceScreenLoadingPreview() {
             onIntent = {},
 
             onExpenseClick = {},
-            onSeeAllExpenses = {},
+            onMoreExpenses = {},
 
             onInvestmentClick = {},
-            onSeeAllInvestments = {},
+            onMoreInvestments = {},
 
             onSavingClick = {},
-            onSeeAllSavings = {},
+            onMoreSavings = {},
 
             onBudgetClick = {},
-            onSeeAllBudgets = {},
+            onMoreBudgets = {},
 
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -931,16 +945,16 @@ fun FinanceScreenErrorPreview() {
             onIntent = {},
 
             onExpenseClick = {},
-            onSeeAllExpenses = {},
+            onMoreExpenses = {},
 
             onInvestmentClick = {},
-            onSeeAllInvestments = {},
+            onMoreInvestments = {},
 
             onSavingClick = {},
-            onSeeAllSavings = {},
+            onMoreSavings = {},
 
             onBudgetClick = {},
-            onSeeAllBudgets = {},
+            onMoreBudgets = {},
 
             navigator = FakeNavigator(),
             modifier = Modifier

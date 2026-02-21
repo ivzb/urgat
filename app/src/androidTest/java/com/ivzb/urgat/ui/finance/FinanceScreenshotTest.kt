@@ -26,7 +26,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
         screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 0)
 
     @Test
-    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_FinanceScreen_sampleData_expenses_monthly() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 1)
 
@@ -48,7 +47,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
         screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 1)
 
     @Test
-    @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_FinanceScreen_sampleData_investments_all_time() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 2)
 
@@ -162,16 +160,16 @@ class FinanceScreenshotTest: ScreenshotTest() {
                     onIntent = {},
 
                     onExpenseClick = {},
-                    onSeeAllExpenses = {},
+                    onMoreExpenses = {},
 
                     onInvestmentClick = {},
-                    onSeeAllInvestments = {},
+                    onMoreInvestments = {},
 
                     onSavingClick = {},
-                    onSeeAllSavings = {},
+                    onMoreSavings = {},
 
                     onBudgetClick = {},
-                    onSeeAllBudgets = {},
+                    onMoreBudgets = {},
 
                     navigator = FakeNavigator(),
 

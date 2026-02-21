@@ -13,7 +13,7 @@ sealed class FinancePage(
     data object Investments: FinancePage(R.string.investments, true)
     data object Savings: FinancePage(R.string.savings, true)
     data object Budgets: FinancePage(R.string.budgets, true)
-    data object Report: FinancePage(R.string.report, true)
+    data object Report: FinancePage(R.string.monthly_report, true)
     data object FIRE: FinancePage(R.string.FIRE, true)
 }
 

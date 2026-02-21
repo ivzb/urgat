@@ -25,6 +25,8 @@ extract_tag_content() {
       inside {print "- " $0}
     ')
 
+    content=$(echo "$content" | uniq)
+
     if [[ -n "$content" ]]; then
         HAS_RELEASE_NOTES=1
         key="$(echo "$search_key" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')"
