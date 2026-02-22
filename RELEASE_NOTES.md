@@ -1,3 +1,8 @@
+## Release notes 26.02.05
+
+New:
+- Show a badge on the search/filter/sort button in the top bar when search, filter, or sort is active.
+
 ## Release notes 26.02.04
 
 New:
