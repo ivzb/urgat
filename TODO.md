@@ -97,4 +97,5 @@
 - car reminders
 - add one more playstore screenshot
 - move inner weight tab screens like library and finance screen
-- show red nudge to filter/sort button in the top bar if there is filtering/sorting applied
+- extract todos and notes to their own ui states, extract weights ui state to use case
+- pass filter/sort to inner finance screen when finance screen has applied filter/sort

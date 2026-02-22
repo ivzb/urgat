@@ -14,6 +14,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -45,9 +46,9 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
         observeGroupedExpenseCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeGroupedExpenseCategoriesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeGroupedExpenseCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
-        filterTypeFlow.map { Async.Success(it) },
         observeExpensesFilteringUseCase(),
         observeExpensesSortingUseCase(),
+        combine(filterTypeFlow, sortTypeFlow, ::Pair).map { Async.Success(it) },
 
         onLoading = {
             ExpensesUiState(isLoading = true)
@@ -55,7 +56,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
         onError = {
             ExpensesUiState(hasError = true)
         },
-        onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, filterType, filtering, sorting ->
+        onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, sorting, (filterType, sortType) ->
             ExpensesUiState(
                 expenses = expenses,
                 categoriesMonthly = categoriesMonthly,
@@ -65,6 +66,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 filteringUiInfo = getFilterUiInfo(
                     filterType = filterType,
                     filterMenuItems = filtering,
+                    sortType = sortType,
                     sortMenuItems = sorting,
                 ),
             )
@@ -74,15 +76,21 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
     private fun getFilterUiInfo(
         filterType: ExpensesFilterType,
         filterMenuItems: List<ExpensesFilterMenuItem>,
+        sortType: ExpensesSortType,
         sortMenuItems: List<ExpensesSortMenuItem>,
     ): ExpensesFilteringUiInfo {
+        val showFilterBadge = filterType != ALL_EXPENSES
+        val showSortBadge = sortType != ExpensesSortType.BY_DATE
+
         return when (filterType) {
             ALL_EXPENSES -> {
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.all_expenses,
                     emptyLabel = R.string.no_expenses,
                     filterMenuItems = filterMenuItems,
+                    showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
+                    showSortBadge = showSortBadge,
                 )
             }
 
@@ -91,7 +99,9 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                     currentFilteringLabel = R.string.debit_expenses,
                     emptyLabel = R.string.no_debit_expenses,
                     filterMenuItems = filterMenuItems,
+                    showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
+                    showSortBadge = showSortBadge,
                 )
             }
 
@@ -100,7 +110,9 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                     currentFilteringLabel = R.string.cost_expenses,
                     emptyLabel = R.string.no_cost_expenses,
                     filterMenuItems = filterMenuItems,
+                    showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
+                    showSortBadge = showSortBadge,
                 )
             }
 
@@ -109,7 +121,9 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                     currentFilteringLabel = R.string.exclude_from_analytics,
                     emptyLabel = R.string.no_excluded_from_analytics_expenses,
                     filterMenuItems = filterMenuItems,
+                    showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
+                    showSortBadge = showSortBadge,
                 )
             }
         }

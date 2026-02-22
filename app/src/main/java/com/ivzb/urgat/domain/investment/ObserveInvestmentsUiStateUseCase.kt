@@ -1,12 +1,14 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -42,7 +44,7 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
         observeInvestmentNetWorthUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeInvestmentsFilteringUseCase(),
         observeInvestmentsSortingUseCase(),
-        searchQueryFlow.map { Async.Success(it) },
+        combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
 
         onLoading = {
             InvestmentsUiState(isLoading = true)
@@ -50,7 +52,7 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
         onError = {
             InvestmentsUiState(hasError = true)
         },
-        onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering, sorting, searchQuery ->
+        onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering, sorting, (searchQuery, filterType, sortType) ->
             InvestmentsUiState(
                 investments = investments,
                 categoriesYearly = categoriesYearly,
@@ -64,7 +66,10 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
                     emptyButtonLabel = R.string.add_investment,
 
                     filterMenuItems = filtering,
+                    showFilterBadge = filterType != InvestmentsFilterType_All,
+
                     sortMenuItems = sorting,
+                    showSortBadge = sortType != InvestmentsSortType.BY_DATE,
                 ),
             )
         }

@@ -110,11 +110,13 @@ fun ExpensesScreen(
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
+                showBadge = uiState.filteringUiInfo.showFilterBadge,
                 onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
             )
 
             SortMenu(
                 items = uiState.filteringUiInfo.sortMenuItems,
+                showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(ExpensesIntent.SetSorting(it)) },
             )
         },

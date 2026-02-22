@@ -77,87 +77,7 @@ class ObserveBudgetsUiStateUseCaseTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeBudgets = listOf(
-            Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), 1L, false, 1L),
-            Budget("2", 5500.toBigDecimal(), 7800.toBigDecimal(), 6200.toBigDecimal(), 1L, false, 1L),
-        )
-        val fakeMonthlyBudgets = listOf(
-            GroupedBudget(
-                category = GroupedBudgetCategories(
-                    group = "2025/12",
-                    total = 6_500.toBigDecimal(),
-                    items = listOf(
-                        BudgetCategory(id = "1", name = "1", value = 6_500.toBigDecimal())
-                    ),
-                ),
-                totalIncome = 6_500.toBigDecimal(),
-                totalExpenses = 2_000.toBigDecimal(),
-                totalInvestments = 3_000.toBigDecimal(),
-                totalInvestmentsFormatted = "3000 USD",
-                totalSavings = 500.toBigDecimal(),
-            ),
-            GroupedBudget(
-                category = GroupedBudgetCategories(
-                    group = "2025/11",
-                    total = 5_500.toBigDecimal(),
-                    items = listOf(
-                        BudgetCategory(id = "1", name = "1", value = 5_500.toBigDecimal())
-                    ),
-                ),
-                totalIncome = 5_500.toBigDecimal(),
-                totalExpenses = 1_800.toBigDecimal(),
-                totalInvestments = 2_600.toBigDecimal(),
-                totalInvestmentsFormatted = "2600 USD",
-                totalSavings = 500.toBigDecimal(),
-            ),
-        )
-        val fakeYearlyBudgets = listOf(
-            GroupedBudget(
-                category = GroupedBudgetCategories(
-                    group = "2025",
-                    total = 12_000.toBigDecimal(),
-                    items = listOf(
-                        BudgetCategory(id = "1", name = "1", value = 12_000.toBigDecimal())
-                    ),
-                ),
-                totalIncome = 12_000.toBigDecimal(),
-                totalExpenses = 3_800.toBigDecimal(),
-                totalInvestments = 5_600.toBigDecimal(),
-                totalInvestmentsFormatted = "5600 USD",
-                totalSavings = 500.toBigDecimal(),
-            ),
-        )
-        val fakeAllTimeBudgets = GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "All time",
-                total = 24_000.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
-                ),
-            ),
-            totalIncome = 24_000.toBigDecimal(),
-            totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = 11_200.toBigDecimal(),
-            totalInvestmentsFormatted = "11200 USD",
-            totalSavings = 500.toBigDecimal(),
-        )
-        val fakeBudgetsFiltering = listOf(
-            FilterMenuItem(type = BudgetsFilterType.ALL_BUDGETS, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = BudgetsFilterType.POSITIVE_BUDGETS, labelResId = R.string.filter_positive, size = 1),
-            FilterMenuItem(type = BudgetsFilterType.NEGATIVE_BUDGETS, labelResId = R.string.filter_negative, size = 0),
-        )
-        val fakeBudgetsSorting = listOf(
-            SortMenuItem(type = BudgetsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = BudgetsSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = BudgetsSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
-
-        fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
-        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(fakeMonthlyBudgets))
-        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(fakeYearlyBudgets))
-        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(fakeAllTimeBudgets))
-        fakeObserveBudgetsFilteringUseCase.emit(Async.Success(fakeBudgetsFiltering))
-        fakeObserveBudgetsSortingUseCase.emit(Async.Success(fakeBudgetsSorting))
+        emitSuccessData()
 
         val searchQueryFlow = flowOf("")
         val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
@@ -174,9 +94,35 @@ class ObserveBudgetsUiStateUseCaseTest {
         assertEquals(fakeYearlyBudgets, uiState.yearlyBudgets)
         assertEquals(fakeAllTimeBudgets, uiState.allTimeBudget)
         assertEquals(fakeBudgetsFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
         assertEquals(fakeBudgetsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `emits success state when use case returns data with badges`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.POSITIVE_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertEquals(fakeBudgets, uiState.budgets)
+        assertEquals(fakeMonthlyBudgets, uiState.monthlyBudgets)
+        assertEquals(fakeYearlyBudgets, uiState.yearlyBudgets)
+        assertEquals(fakeAllTimeBudgets, uiState.allTimeBudget)
         assertEquals(fakeBudgetsFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
         assertEquals(fakeBudgetsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
         assertFalse(uiState.isLoading)
         assertFalse(uiState.hasError)
     }
@@ -215,6 +161,91 @@ class ObserveBudgetsUiStateUseCaseTest {
         val uiState = results.data
         assertTrue(uiState.hasError)
         assertFalse(uiState.isLoading)
+    }
+
+    private fun emitSuccessData() {
+        fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
+        fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(fakeMonthlyBudgets))
+        fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(fakeYearlyBudgets))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(fakeAllTimeBudgets))
+        fakeObserveBudgetsFilteringUseCase.emit(Async.Success(fakeBudgetsFiltering))
+        fakeObserveBudgetsSortingUseCase.emit(Async.Success(fakeBudgetsSorting))
+    }
+
+    companion object {
+
+        private val fakeBudgets = listOf(
+            Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), 1L, false, 1L),
+            Budget("2", 5500.toBigDecimal(), 7800.toBigDecimal(), 6200.toBigDecimal(), 1L, false, 1L),
+        )
+
+        private val fakeMonthlyBudgets = listOf(
+            GroupedBudget(
+                category = GroupedBudgetCategories(
+                    group = "2025/12",
+                    total = 6_500.toBigDecimal(),
+                    items = listOf(BudgetCategory(id = "1", name = "1", value = 6_500.toBigDecimal())),
+                ),
+                totalIncome = 6_500.toBigDecimal(),
+                totalExpenses = 2_000.toBigDecimal(),
+                totalInvestments = 3_000.toBigDecimal(),
+                totalInvestmentsFormatted = "3000 USD",
+                totalSavings = 500.toBigDecimal(),
+            ),
+            GroupedBudget(
+                category = GroupedBudgetCategories(
+                    group = "2025/11",
+                    total = 5_500.toBigDecimal(),
+                    items = listOf(BudgetCategory(id = "1", name = "1", value = 5_500.toBigDecimal())),
+                ),
+                totalIncome = 5_500.toBigDecimal(),
+                totalExpenses = 1_800.toBigDecimal(),
+                totalInvestments = 2_600.toBigDecimal(),
+                totalInvestmentsFormatted = "2600 USD",
+                totalSavings = 500.toBigDecimal(),
+            ),
+        )
+
+        private val fakeYearlyBudgets = listOf(
+            GroupedBudget(
+                category = GroupedBudgetCategories(
+                    group = "2025",
+                    total = 12_000.toBigDecimal(),
+                    items = listOf(BudgetCategory(id = "1", name = "1", value = 12_000.toBigDecimal())),
+                ),
+                totalIncome = 12_000.toBigDecimal(),
+                totalExpenses = 3_800.toBigDecimal(),
+                totalInvestments = 5_600.toBigDecimal(),
+                totalInvestmentsFormatted = "5600 USD",
+                totalSavings = 500.toBigDecimal(),
+            ),
+        )
+
+        private val fakeAllTimeBudgets = GroupedBudget(
+            category = GroupedBudgetCategories(
+                group = "All time",
+                total = 24_000.toBigDecimal(),
+                items = listOf(BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())),
+            ),
+            totalIncome = 24_000.toBigDecimal(),
+            totalExpenses = 7_600.toBigDecimal(),
+            totalInvestments = 11_200.toBigDecimal(),
+            totalInvestmentsFormatted = "11200 USD",
+            totalSavings = 500.toBigDecimal(),
+        )
+
+        private val fakeBudgetsFiltering = listOf(
+            FilterMenuItem(type = BudgetsFilterType.ALL_BUDGETS, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = BudgetsFilterType.POSITIVE_BUDGETS, labelResId = R.string.filter_positive, size = 1),
+            FilterMenuItem(type = BudgetsFilterType.NEGATIVE_BUDGETS, labelResId = R.string.filter_negative, size = 0),
+        )
+
+        private val fakeBudgetsSorting = listOf(
+            SortMenuItem(type = BudgetsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = BudgetsSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = BudgetsSortType.BY_MAX, labelResId = R.string.sort_by_max),
+        )
+
     }
 
 }

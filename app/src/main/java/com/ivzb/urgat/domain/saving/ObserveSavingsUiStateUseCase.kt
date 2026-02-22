@@ -7,6 +7,7 @@ import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
         observeGroupedSavingCategoriesYearlyUseCase(searchQueryFlow, dateRangeFlow = null, null, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeGroupedSavingCategoriesAllTimeUseCase(searchQueryFlow, dateRangeFlow = null, null, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeSavingsSortingUseCase(),
-        searchQueryFlow.map { Async.Success(it) },
+        combine(searchQueryFlow, sortTypeFlow, ::Pair).map { Async.Success(it) },
 
         onLoading = {
             SavingsUiState(isLoading = true)
@@ -44,7 +45,7 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
         onError = {
             SavingsUiState(hasError = true)
         },
-        onSuccess = { savings, categoriesMonthly, categoriesYearly, categoriesAllTime, sorting, searchQuery ->
+        onSuccess = { savings, categoriesMonthly, categoriesYearly, categoriesAllTime, sorting, (searchQuery, sortType) ->
             SavingsUiState(
                 savings = savings,
                 categoriesMonthly = categoriesMonthly,
@@ -57,6 +58,7 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
                     emptyButtonLabel = R.string.add_saving,
 
                     sortMenuItems = sorting,
+                    showSortBadge = sortType != SavingsSortType.BY_DATE,
                 ),
                 isLoading = false,
             )

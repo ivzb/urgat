@@ -109,6 +109,7 @@ fun SavingsScreen(
         topAppBarActionsContent = {
             SortMenu(
                 items = uiState.filteringUiInfo.sortMenuItems,
+                showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(SavingsIntent.SetSorting(it)) },
             )
         },

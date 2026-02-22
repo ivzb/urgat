@@ -17,4 +17,5 @@ data class WeightsFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     val sortMenuItems: List<WeightsSortMenuItem> = listOf(),
+    val showSortBadge: Boolean = false,
 ) : FilteringUiInfo

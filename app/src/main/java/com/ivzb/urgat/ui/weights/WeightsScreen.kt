@@ -76,6 +76,7 @@ fun WeightsScreen(
         topAppBarActionsContent = {
             SortMenu(
                 items = uiState.filteringUiInfo.sortMenuItems,
+                showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(WeightsIntent.SetSorting(it)) },
             )
         },

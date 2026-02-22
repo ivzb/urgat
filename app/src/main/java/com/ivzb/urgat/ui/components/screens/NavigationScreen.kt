@@ -54,7 +54,6 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.isScrollingUp
 import kotlinx.coroutines.launch
 
-@VisibleForTesting
 @Composable
 fun <T> NavigationScreen(
     uiState: NavigationUiState<T>,

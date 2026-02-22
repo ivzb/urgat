@@ -6,11 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.weight.ObserveWeightsSortingUseCase
 import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -26,6 +28,7 @@ class WeightsViewModel @Inject constructor(
     val uiState: StateFlow<WeightsUiState> = combineUiState(
         observeWeightsUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = _savedSortType, limitFlow = null),
         observeWeightsSortingUseCase(),
+        _savedSortType.map { Async.Success(it) },
 
         onLoading = {
             WeightsUiState(isLoading = true)
@@ -33,7 +36,7 @@ class WeightsViewModel @Inject constructor(
         onError = {
             WeightsUiState(hasError = true)
         },
-        onSuccess = { weights, sorting ->
+        onSuccess = { weights, sorting, sortType ->
             WeightsUiState(
                 items = weights,
                 isLoading = false,
@@ -41,6 +44,7 @@ class WeightsViewModel @Inject constructor(
                     currentFilteringLabel = R.string.all_weights,
                     emptyLabel = R.string.no_weights,
                     sortMenuItems = sorting,
+                    showSortBadge = sortType != WeightsSortType.BY_DATE,
                 )
             )
         }

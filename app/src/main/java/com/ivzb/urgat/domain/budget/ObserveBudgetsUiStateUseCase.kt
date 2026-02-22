@@ -8,6 +8,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -41,7 +42,7 @@ class DefaultObserveBudgetsUiStateUseCase @Inject constructor(
         observeGroupedBudgetsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeBudgetsFilteringUseCase(),
         observeBudgetsSortingUseCase(),
-        searchQueryFlow.map { Async.Success(it) },
+        combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
 
         onLoading = {
             BudgetsUiState(isLoading = true)
@@ -49,7 +50,7 @@ class DefaultObserveBudgetsUiStateUseCase @Inject constructor(
         onError = {
             BudgetsUiState(hasError = true)
         },
-        onSuccess = { budgets, monthlyBudgets, yearlyBudgets, allTimeBudget, filtering, sorting, searchQuery ->
+        onSuccess = { budgets, monthlyBudgets, yearlyBudgets, allTimeBudget, filtering, sorting, (searchQuery, filterType, sortType) ->
             BudgetsUiState(
                 budgets = budgets,
                 monthlyBudgets = monthlyBudgets,
@@ -62,7 +63,10 @@ class DefaultObserveBudgetsUiStateUseCase @Inject constructor(
                     emptyButtonLabel = R.string.add_budget,
 
                     filterMenuItems = filtering,
+                    showFilterBadge = filterType != BudgetsFilterType.ALL_BUDGETS,
+
                     sortMenuItems = sorting,
+                    showSortBadge = sortType != BudgetsSortType.BY_DATE,
                 ),
 
             )

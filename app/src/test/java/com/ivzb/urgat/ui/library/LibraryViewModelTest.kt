@@ -56,7 +56,7 @@ class LibraryViewModelTest {
         fakeCompleteTodoUseCase = FakeCompleteTodoUseCase()
         fakeActivateTodoUseCase = FakeActivateTodoUseCase()
         fakeClearCompletedTodosUseCase = FakeClearCompletedTodosUseCase()
-        savedStateHandle = SavedStateHandle(mapOf(LIBRARY_TODOS_FILTER_SAVED_STATE_KEY to null))
+        savedStateHandle = SavedStateHandle(mapOf())
     }
 
     @After
@@ -85,19 +85,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeTodo = listOf(Todo("1", "Lunch", false, false, 1L))
-        fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
-
-        val fakeTodoFiltering = listOf(
-            FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
-            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
-        )
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(fakeTodoFiltering))
-
-        val fakeNotes = listOf(Note("1", "Note", false, 1L))
-        fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
-
+        emitSuccessData()
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -107,8 +95,32 @@ class LibraryViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeTodo, state.todos)
-        assertEquals(fakeTodoFiltering, state.todosFilteringUiInfo.filterMenuItems)
+        assertEquals(fakeTodos, state.todos)
+        assertEquals(fakeTodosFiltering, state.todosFilteringUiInfo.filterMenuItems)
+        assertFalse(state.todosFilteringUiInfo.showFilterBadge)
+        assertEquals(fakeNotes, state.notes)
+        assertFalse(state.isLoading)
+        assertFalse(state.hasError)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `emits success state when use case returns data with filter badge`() = runTest {
+        emitSuccessData()
+        savedStateHandle = SavedStateHandle(mapOf(LIBRARY_TODOS_FILTER_SAVED_STATE_KEY to TodosFilterType.COMPLETED_TODOS))
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(fakeTodos, state.todos)
+        assertEquals(fakeTodosFiltering, state.todosFilteringUiInfo.filterMenuItems)
+        assertTrue(state.todosFilteringUiInfo.showFilterBadge)
         assertEquals(fakeNotes, state.notes)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
@@ -119,15 +131,7 @@ class LibraryViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveTodosUseCase.emit(Async.Error)
-
-        val fakeTodoFiltering = listOf(
-            FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
-            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
-        )
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(fakeTodoFiltering))
-
-        val fakeNotes = listOf(Note("1", "Note", false, 1L))
+        fakeObserveTodosFilteringUseCase.emit(Async.Success(fakeTodosFiltering))
         fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
 
         viewModel = createViewModel()
@@ -249,4 +253,20 @@ class LibraryViewModelTest {
         fakeClearCompletedTodosUseCase,
         savedStateHandle,
     )
+
+    private fun emitSuccessData() {
+        fakeObserveTodosUseCase.emit(Async.Success(fakeTodos))
+        fakeObserveTodosFilteringUseCase.emit(Async.Success(fakeTodosFiltering))
+        fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
+    }
+
+    companion object {
+        private val fakeTodos = listOf(Todo("1", "Lunch", false, false, 1L))
+        private val fakeTodosFiltering = listOf(
+            FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
+            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
+        )
+        private val fakeNotes = listOf(Note("1", "Note", false, 1L))
+    }
 }

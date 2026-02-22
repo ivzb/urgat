@@ -15,11 +15,13 @@ import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,6 +46,7 @@ class LibraryViewModel @Inject constructor(
     val uiState: StateFlow<LibraryUiState> = combineUiState(
         observeTodosUseCase(_searchQuery, null, _savedTodosFilterType, null, null),
         observeTodosFilteringUseCase(),
+        _savedTodosFilterType.map { Async.Success(it) },
         observeNotesUseCase(_searchQuery, null, null, null, null),
         uiEventHolder(),
 
@@ -53,7 +56,7 @@ class LibraryViewModel @Inject constructor(
         onError = {
             LibraryUiState(hasError = true)
         },
-        onSuccess = { todos, todosFiltering, notes, uiEvent ->
+        onSuccess = { todos, todosFiltering, todosFilterType, notes, uiEvent ->
             LibraryUiState(
                 todos = todos,
                 todosFilteringUiInfo = TodosFilteringUiInfo(
@@ -62,6 +65,7 @@ class LibraryViewModel @Inject constructor(
                     emptyMessage = R.string.no_todos_message,
                     emptyButtonLabel = R.string.add_todo,
                     filterMenuItems = todosFiltering,
+                    showFilterBadge = todosFilterType != TodosFilterType.ALL_TODOS,
                 ),
                 notes = notes,
                 notesFilteringUiInfo = NotesFilteringUiInfo(

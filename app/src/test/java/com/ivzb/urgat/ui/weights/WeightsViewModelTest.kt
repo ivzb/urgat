@@ -30,7 +30,7 @@ class WeightsViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        savedStateHandle = SavedStateHandle(mapOf(WEIGHTS_SORT_SAVED_STATE_KEY to null))
+        savedStateHandle = SavedStateHandle(mapOf())
         fakeObserveWeightsUseCase = FakeObserveWeightsUseCase()
         fakeObserveWeightsSortingUseCase = FakeObserveWeightsSortingUseCase()
     }
@@ -60,15 +60,7 @@ class WeightsViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeWeights = listOf(Weight("1", "80.5".toBigDecimal(), 1L, false, 1L))
-        val fakeWeightsSorting = listOf(
-            SortMenuItem(type = WeightsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = WeightsSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = WeightsSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
-
-        fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
-        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+        emitSuccessData()
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -80,6 +72,29 @@ class WeightsViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(fakeWeights, state.items)
         assertEquals(fakeWeightsSorting, state.filteringUiInfo.sortMenuItems)
+        assertFalse(state.filteringUiInfo.showSortBadge)
+        assertFalse(state.isLoading)
+        assertFalse(state.hasError)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `emits success state when use case returns data with sort badge`() = runTest {
+        emitSuccessData()
+        savedStateHandle = SavedStateHandle(mapOf(WEIGHTS_SORT_SAVED_STATE_KEY to WeightsSortType.BY_MIN))
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(fakeWeights, state.items)
+        assertEquals(fakeWeightsSorting, state.filteringUiInfo.sortMenuItems)
+        assertTrue(state.filteringUiInfo.showSortBadge)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -127,4 +142,21 @@ class WeightsViewModelTest {
         fakeObserveWeightsSortingUseCase,
         savedStateHandle,
     )
+
+    private fun emitSuccessData() {
+        fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
+        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+    }
+
+    companion object {
+
+        private val fakeWeights = listOf(Weight("1", "80.5".toBigDecimal(), 1L, false, 1L))
+
+        private val fakeWeightsSorting = listOf(
+            SortMenuItem(type = WeightsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = WeightsSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = WeightsSortType.BY_MAX, labelResId = R.string.sort_by_max),
+        )
+
+    }
 }

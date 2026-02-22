@@ -17,5 +17,8 @@ data class ExpensesFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     val filterMenuItems: List<ExpensesFilterMenuItem> = listOf(),
+    val showFilterBadge: Boolean = false,
+
     val sortMenuItems: List<ExpensesSortMenuItem> = listOf(),
+    val showSortBadge: Boolean = false,
 ) : FilteringUiInfo

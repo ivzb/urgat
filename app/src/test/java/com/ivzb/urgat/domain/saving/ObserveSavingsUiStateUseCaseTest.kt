@@ -74,61 +74,7 @@ class ObserveSavingsUiStateUseCaseTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, 1L, false, 1L))
-        val fakeSavings = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = "10".toBigDecimal(),
-                items = savings,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = "10".toBigDecimal(),
-                items = listOf(
-                    SavingCategory(
-                        id = "1",
-                        name = "food",
-                        value = "10".toBigDecimal(),
-                        savings = savings,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesYearly = listOf(
-            GroupedItems(
-                group = "2025",
-                total = "10".toBigDecimal(),
-                items = listOf(
-                    SavingCategory(
-                        id = "1",
-                        name = "food",
-                        value = "10".toBigDecimal(),
-                        savings = savings,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesAllTime = listOf(
-            SavingCategory(
-                id = "1",
-                name = "food",
-                value = "10".toBigDecimal(),
-                savings = savings,
-            )
-        )
-        val fakeSavingsSorting = listOf(
-            SortMenuItem(type = SavingsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = SavingsSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
-
-        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
-        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
-        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
-        fakeObserveSavingsSortingUseCase.emit(Async.Success(fakeSavingsSorting))
+        emitSuccessData()
 
         val searchQueryFlow = flowOf("")
         val sortTypeFlow = flowOf(SavingsSortType.BY_DATE)
@@ -144,6 +90,30 @@ class ObserveSavingsUiStateUseCaseTest {
         assertEquals(fakeCategoriesYearly, uiState.categoriesYearly)
         assertEquals(fakeCategoriesAllTime, uiState.categoriesAllTime)
         assertEquals(fakeSavingsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `emits success state when use case returns data with sort badge`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val sortTypeFlow = flowOf(SavingsSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertEquals(fakeSavings, uiState.savings)
+        assertEquals(fakeCategoriesMonthly, uiState.categoriesMonthly)
+        assertEquals(fakeCategoriesYearly, uiState.categoriesYearly)
+        assertEquals(fakeCategoriesAllTime, uiState.categoriesAllTime)
+        assertEquals(fakeSavingsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
         assertFalse(uiState.isLoading)
         assertFalse(uiState.hasError)
     }
@@ -167,6 +137,48 @@ class ObserveSavingsUiStateUseCaseTest {
         val uiState = results.data
         assertTrue(uiState.hasError)
         assertFalse(uiState.isLoading)
+    }
+
+    private fun emitSuccessData() {
+        fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
+        fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
+        fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
+        fakeObserveGroupedSavingCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
+        fakeObserveSavingsSortingUseCase.emit(Async.Success(fakeSavingsSorting))
+    }
+
+    companion object {
+
+        private val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, 1L, false, 1L))
+
+        private val fakeSavings = listOf(
+            GroupedItems(group = "2025/12", total = "10".toBigDecimal(), items = savings)
+        )
+
+        private val fakeCategoriesMonthly = listOf(
+            GroupedItems(
+                group = "2025/12", total = "10".toBigDecimal(),
+                items = listOf(SavingCategory(id = "1", name = "food", value = "10".toBigDecimal(), savings = savings))
+            )
+        )
+
+        private val fakeCategoriesYearly = listOf(
+            GroupedItems(
+                group = "2025", total = "10".toBigDecimal(),
+                items = listOf(SavingCategory(id = "1", name = "food", value = "10".toBigDecimal(), savings = savings))
+            )
+        )
+
+        private val fakeCategoriesAllTime = listOf(
+            SavingCategory(id = "1", name = "food", value = "10".toBigDecimal(), savings = savings)
+        )
+
+        private val fakeSavingsSorting = listOf(
+            SortMenuItem(type = SavingsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = SavingsSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
+        )
+
     }
 
 }

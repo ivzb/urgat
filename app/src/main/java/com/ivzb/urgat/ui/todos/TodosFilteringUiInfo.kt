@@ -16,5 +16,6 @@ data class TodosFilteringUiInfo(
     override val errorLabel: Int = R.string.error_todos,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val filterMenuItems: List<TodosFilterMenuItem> = listOf()
+    val filterMenuItems: List<TodosFilterMenuItem> = listOf(),
+    val showFilterBadge: Boolean = false,
 ) : FilteringUiInfo

@@ -17,5 +17,8 @@ data class InvestmentsFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     val filterMenuItems: List<InvestmentsFilterMenuItem> = listOf(),
+    val showFilterBadge: Boolean = false,
+
     val sortMenuItems: List<InvestmentsSortMenuItem> = listOf(),
+    val showSortBadge: Boolean = false,
 ) : FilteringUiInfo

@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
@@ -81,68 +81,7 @@ class ObserveExpensesUiStateUseCaseTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
-        val fakeExpenses = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = "10".toBigDecimal(),
-                items = expenses,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = "10".toBigDecimal(),
-                items = listOf(
-                    ExpenseCategory(
-                        id = "1",
-                        name = "food",
-                        value = "10".toBigDecimal(),
-                        expenses = expenses,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesYearly = listOf(
-            GroupedItems(
-                group = "2025",
-                total = "10".toBigDecimal(),
-                items = listOf(
-                    ExpenseCategory(
-                        id = "1",
-                        name = "food",
-                        value = "10".toBigDecimal(),
-                        expenses = expenses,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesAllTime = listOf(
-            ExpenseCategory(
-                id = "1",
-                name = "food",
-                value = "10".toBigDecimal(),
-                expenses = expenses,
-            )
-        )
-        val fakeExpensesFiltering = listOf(
-            FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
-            FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
-            FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 0),
-        )
-        val fakeExpensesSorting = listOf(
-            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
-
-        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
-        fakeObserveExpensesFilteringUseCase.emit(Async.Success(fakeExpensesFiltering))
-        fakeObserveExpensesSortingUseCase.emit(Async.Success(fakeExpensesSorting))
+        emitSuccessData()
 
         val searchQueryFlow = flowOf("")
         val filterTypeFlow = flowOf(ExpensesFilterType.ALL_EXPENSES)
@@ -154,12 +93,40 @@ class ObserveExpensesUiStateUseCaseTest {
 
         assertTrue(results is Async.Success)
         val uiState = results.data
-        Assert.assertEquals(fakeExpenses, uiState.expenses)
-        Assert.assertEquals(fakeCategoriesMonthly, uiState.categoriesMonthly)
-        Assert.assertEquals(fakeCategoriesYearly, uiState.categoriesYearly)
-        Assert.assertEquals(fakeCategoriesAllTime, uiState.categoriesAllTime)
-        Assert.assertEquals(fakeExpensesFiltering, uiState.filteringUiInfo.filterMenuItems)
-        Assert.assertEquals(fakeExpensesSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertEquals(fakeExpenses, uiState.expenses)
+        assertEquals(fakeCategoriesMonthly, uiState.categoriesMonthly)
+        assertEquals(fakeCategoriesYearly, uiState.categoriesYearly)
+        assertEquals(fakeCategoriesAllTime, uiState.categoriesAllTime)
+        assertEquals(fakeExpensesFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertEquals(fakeExpensesSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `emits success state when use case returns data with badges`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(ExpensesFilterType.DEBIT_EXPENSES)
+        val sortTypeFlow = flowOf(ExpensesSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertEquals(fakeExpenses, uiState.expenses)
+        assertEquals(fakeCategoriesMonthly, uiState.categoriesMonthly)
+        assertEquals(fakeCategoriesYearly, uiState.categoriesYearly)
+        assertEquals(fakeCategoriesAllTime, uiState.categoriesAllTime)
+        assertEquals(fakeExpensesFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
+        assertEquals(fakeExpensesSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
         assertFalse(uiState.isLoading)
         assertFalse(uiState.hasError)
     }
@@ -185,6 +152,58 @@ class ObserveExpensesUiStateUseCaseTest {
         val uiState = results.data
         assertTrue(uiState.hasError)
         assertFalse(uiState.isLoading)
+    }
+
+    private fun emitSuccessData() {
+        fakeObserveExpensesUseCase.emit(Async.Success(fakeExpenses))
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
+        fakeObserveExpensesFilteringUseCase.emit(Async.Success(fakeExpensesFiltering))
+        fakeObserveExpensesSortingUseCase.emit(Async.Success(fakeExpensesSorting))
+    }
+
+    companion object {
+
+        private val expenses = listOf(
+            Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L)
+        )
+
+        private val fakeExpenses = listOf(
+            GroupedItems(group = "2025/12", total = "10".toBigDecimal(), items = expenses)
+        )
+
+        private val fakeCategoriesMonthly = listOf(
+            GroupedItems(
+                group = "2025/12", total = "10".toBigDecimal(),
+                items = listOf(ExpenseCategory(id = "1", name = "food", value = "10".toBigDecimal(), expenses = expenses))
+            )
+        )
+
+        private val fakeCategoriesYearly = listOf(
+            GroupedItems(
+                group = "2025", total = "10".toBigDecimal(),
+                items = listOf(ExpenseCategory(id = "1", name = "food", value = "10".toBigDecimal(), expenses = expenses))
+            )
+        )
+
+        private val fakeCategoriesAllTime = listOf(
+            ExpenseCategory(id = "1", name = "food", value = "10".toBigDecimal(), expenses = expenses)
+        )
+
+        private val fakeExpensesFiltering = listOf(
+            FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
+            FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
+            FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 0),
+        )
+
+        private val fakeExpensesSorting = listOf(
+            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
+            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
+        )
+
     }
 
 }

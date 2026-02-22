@@ -97,11 +97,13 @@ fun BudgetsScreen(
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
+                showBadge = uiState.filteringUiInfo.showFilterBadge,
                 onFilter = { onIntent(BudgetsIntent.SetFiltering(it)) },
             )
 
             SortMenu(
                 items = uiState.filteringUiInfo.sortMenuItems,
+                showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(BudgetsIntent.SetSorting(it)) },
             )
         },

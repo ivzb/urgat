@@ -112,11 +112,13 @@ fun InvestmentsScreen(
         topAppBarActionsContent = {
             FilterMenu(
                 items = uiState.filteringUiInfo.filterMenuItems,
+                showBadge = uiState.filteringUiInfo.showFilterBadge,
                 onFilter = { onIntent(InvestmentsIntent.SetFiltering(it)) },
             )
 
             SortMenu(
                 items = uiState.filteringUiInfo.sortMenuItems,
+                showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(InvestmentsIntent.SetSorting(it)) },
             )
         },

@@ -88,78 +88,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val investments = listOf(
-            Investment(
-                "1",
-                "SNP 500",
-                500.toBigDecimal(),
-                300.toBigDecimal(),
-                "etfs",
-                "USD",
-                1L,
-                false,
-                1L
-            )
-        )
-        val fakeInvestments = listOf(
-            GroupedItems(
-                "2025/12",
-                "1500 USD",
-                investments,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = "1500 USD",
-                items = listOf(
-                    InvestmentCategory(
-                        id = "1",
-                        name = "etfs",
-                        total = "500 USD",
-                        investments = investments,
-                    )
-                )
-            )
-        )
-        val fakeNetWorth = InvestmentNetWorth(
-            total = "500 USD",
-        )
-        val fakeCategories = listOf(
-            InvestmentCategory(
-                id = "1",
-                name = "etfs",
-                total = "500 USD",
-                investments = investments,
-            )
-        )
-        val fakeAssets = listOf(
-            InvestmentAsset(
-                id = "1",
-                name = "SNP 500",
-                category = "etfs",
-                shares = 500.toBigDecimal(),
-                marketValue = 500.toBigDecimal(),
-                currency = "USD",
-                investments = investments,
-                total = "1,750.59 EUR | 2,891.05 USD",
-            )
-        )
-        val fakeInvestmentsFiltering = listOf(
-            FilterMenuItem(type = "stocks", label = "stocks", size = 1),
-        )
-        val fakeInvestmentsSorting = listOf(
-            SortMenuItem(type = InvestmentsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = InvestmentsSortType.BY_MARKET_VALUE, labelResId = R.string.sort_by_market_value),
-        )
-
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
-        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
-        fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
-        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
-        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
-        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
+        emitSuccessData()
 
         val searchQueryFlow = flowOf("")
         val filterTypeFlow = flowOf(InvestmentsFilterType_All)
@@ -176,7 +105,35 @@ class ObserveInvestmentsUiStateUseCaseTest {
         assertEquals(fakeCategories, uiState.categories)
         assertEquals(fakeAssets, uiState.assets)
         assertEquals(fakeInvestmentsFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
         assertEquals(fakeInvestmentsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `emits success state when use case returns data with badges`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf("stocks")
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertEquals(fakeInvestments, uiState.investments)
+        assertEquals(fakeNetWorth, uiState.netWorth)
+        assertEquals(fakeCategories, uiState.categories)
+        assertEquals(fakeAssets, uiState.assets)
+        assertEquals(fakeInvestmentsFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
+        assertEquals(fakeInvestmentsSorting, uiState.filteringUiInfo.sortMenuItems)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
         assertFalse(uiState.isLoading)
         assertFalse(uiState.hasError)
     }
@@ -203,6 +160,58 @@ class ObserveInvestmentsUiStateUseCaseTest {
         val uiState = results.data
         assertTrue(uiState.hasError)
         assertFalse(uiState.isLoading)
+    }
+
+    private fun emitSuccessData() {
+        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+        fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
+        fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
+        fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
+        fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
+    }
+
+    companion object {
+
+        private val investments = listOf(
+            Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L)
+        )
+
+        private val fakeInvestments = listOf(
+            GroupedItems("2025/12", "1500 USD", investments)
+        )
+
+        private val fakeCategoriesYearly = listOf(
+            GroupedItems(
+                group = "2025/12", total = "1500 USD",
+                items = listOf(InvestmentCategory(id = "1", name = "etfs", total = "500 USD", investments = investments))
+            )
+        )
+
+        private val fakeNetWorth = InvestmentNetWorth(total = "500 USD")
+
+        private val fakeCategories = listOf(
+            InvestmentCategory(id = "1", name = "etfs", total = "500 USD", investments = investments)
+        )
+
+        private val fakeAssets = listOf(
+            InvestmentAsset(
+                id = "1", name = "SNP 500", category = "etfs",
+                shares = 500.toBigDecimal(), marketValue = 500.toBigDecimal(), currency = "USD",
+                investments = investments, total = "1,750.59 EUR | 2,891.05 USD",
+            )
+        )
+
+        private val fakeInvestmentsFiltering = listOf(
+            FilterMenuItem(type = "stocks", label = "stocks", size = 1),
+        )
+
+        private val fakeInvestmentsSorting = listOf(
+            SortMenuItem(type = InvestmentsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            SortMenuItem(type = InvestmentsSortType.BY_MARKET_VALUE, labelResId = R.string.sort_by_market_value),
+        )
+
     }
 
 }
