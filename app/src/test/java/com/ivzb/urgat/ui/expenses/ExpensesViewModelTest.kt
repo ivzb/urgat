@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.expenses
 
-import androidx.lifecycle.SavedStateHandle
+import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExpensesViewModelTest {
 
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeFinanceRepository: FakeFinanceRepository
     private lateinit var fakeObserveExpensesUiStateUseCase: FakeObserveExpensesUiStateUseCase
 
     private lateinit var viewModel: ExpensesViewModel
@@ -40,7 +40,7 @@ class ExpensesViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf())
+        fakeFinanceRepository = FakeFinanceRepository()
         fakeObserveExpensesUiStateUseCase = FakeObserveExpensesUiStateUseCase()
     }
 
@@ -256,7 +256,7 @@ class ExpensesViewModelTest {
     }
 
     @Test
-    fun `setFiltering updates saved state handle`() = runTest {
+    fun `setFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = ExpensesFilterType.DEBIT_EXPENSES
@@ -264,11 +264,11 @@ class ExpensesViewModelTest {
         viewModel.onIntent(ExpensesIntent.SetFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(expected, savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY])
+        assertEquals(expected, fakeFinanceRepository.expensesFilterTypeFlow.value)
     }
 
     @Test
-    fun `setSorting updates saved state handle`() = runTest {
+    fun `setSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = ExpensesSortType.BY_MIN
@@ -276,11 +276,11 @@ class ExpensesViewModelTest {
         viewModel.onIntent(ExpensesIntent.SetSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(expected, savedStateHandle[EXPENSES_SORT_SAVED_STATE_KEY])
+        assertEquals(expected, fakeFinanceRepository.expensesSortTypeFlow.value)
     }
 
     private fun createViewModel() = ExpensesViewModel(
         fakeObserveExpensesUiStateUseCase,
-        savedStateHandle
+        fakeFinanceRepository,
     )
 }

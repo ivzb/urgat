@@ -1,10 +1,10 @@
 package com.ivzb.urgat.ui.finance
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.investment.Investment
@@ -25,13 +25,6 @@ import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_BUDGETS_SORT_SAVED_STATE_KEY
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_EXPENSES_SORT_SAVED_STATE_KEY
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY
-import com.ivzb.urgat.ui.finance.FinanceViewModel.Companion.FINANCE_SAVINGS_SORT_SAVED_STATE_KEY
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortType
@@ -73,7 +66,7 @@ class FinanceViewModelTest {
     private lateinit var fakeObserveFiReUseCase: FakeObserveFiReUseCase
     private lateinit var fakeObserveReportBudgetUseCase: FakeObserveReportBudgetUseCase
     private lateinit var mockFireRepository: FireRepository
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeFinanceRepository: FakeFinanceRepository
 
     private lateinit var viewModel: FinanceViewModel
 
@@ -90,7 +83,7 @@ class FinanceViewModelTest {
         fakeObserveBudgetUiStateUseCase = FakeObserveBudgetsUiStateUseCase()
         fakeObserveFiReUseCase = FakeObserveFiReUseCase()
         mockFireRepository = mockk()
-        savedStateHandle = SavedStateHandle(mapOf())
+        fakeFinanceRepository = FakeFinanceRepository()
 
         every { mockFireRepository.withdrawalRateFlow } returns flowOf(4.toBigDecimal())
         every { mockFireRepository.returnOfInvestmentFlow } returns flowOf(7.toBigDecimal())
@@ -354,7 +347,7 @@ class FinanceViewModelTest {
     }
 
     @Test
-    fun `SetExpensesFiltering updates saved state handle`() = runTest {
+    fun `SetExpensesFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = ExpensesFilterType.DEBIT_EXPENSES
@@ -362,11 +355,11 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetExpensesFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(expected, savedStateHandle[FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY])
+        assertEquals(expected, fakeFinanceRepository.expensesFilterTypeFlow.value)
     }
 
     @Test
-    fun `SetExpensesSorting updates saved state handle`() = runTest {
+    fun `SetExpensesSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = ExpensesSortType.BY_MIN
@@ -374,11 +367,11 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetExpensesSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(expected, savedStateHandle[FINANCE_EXPENSES_SORT_SAVED_STATE_KEY])
+        assertEquals(expected, fakeFinanceRepository.expensesSortTypeFlow.value)
     }
 
     @Test
-    fun `SetInvestmentsFiltering updates saved state handle`() = runTest {
+    fun `SetInvestmentsFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = "etfs"
@@ -386,14 +379,11 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetInvestmentsFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.investmentsFilterTypeFlow.value)
     }
 
     @Test
-    fun `SetInvestmentsSorting updates saved state handle`() = runTest {
+    fun `SetInvestmentsSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = InvestmentsSortType.BY_MARKET_VALUE
@@ -401,14 +391,11 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetInvestmentsSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.investmentsSortTypeFlow.value)
     }
 
     @Test
-    fun `SetSavingsSorting updates saved state handle`() = runTest {
+    fun `SetSavingsSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = SavingsSortType.BY_MAX
@@ -416,14 +403,11 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetSavingsSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[FINANCE_SAVINGS_SORT_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.savingsSortTypeFlow.value)
     }
 
     @Test
-    fun `SetBudgetsFiltering updates saved state handle`() = runTest {
+    fun `SetBudgetsFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = BudgetsFilterType.POSITIVE_BUDGETS
@@ -431,14 +415,11 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.budgetsFilterTypeFlow.value)
     }
 
     @Test
-    fun `SetBudgetsSorting updates saved state handle`() = runTest {
+    fun `SetBudgetsSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = BudgetsSortType.BY_MIN
@@ -446,10 +427,7 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetBudgetsSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[FINANCE_BUDGETS_SORT_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.budgetsSortTypeFlow.value)
     }
 
     private fun createViewModel() = FinanceViewModel(
@@ -460,6 +438,6 @@ class FinanceViewModelTest {
         fakeObserveReportBudgetUseCase,
         fakeObserveFiReUseCase,
         mockFireRepository,
-        savedStateHandle,
+        fakeFinanceRepository,
     )
 }

@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.investments
 
-import androidx.lifecycle.SavedStateHandle
+import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class InvestmentsViewModelTest {
 
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeFinanceRepository: FakeFinanceRepository
     private lateinit var fakeObserveInvestmentsUiStateUseCase: FakeObserveInvestmentsUiStateUseCase
 
     private lateinit var viewModel: InvestmentsViewModel
@@ -43,7 +43,7 @@ class InvestmentsViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        savedStateHandle = SavedStateHandle(mapOf())
+        fakeFinanceRepository = FakeFinanceRepository()
         fakeObserveInvestmentsUiStateUseCase = FakeObserveInvestmentsUiStateUseCase()
     }
 
@@ -280,7 +280,7 @@ class InvestmentsViewModelTest {
     }
 
     @Test
-    fun `setFiltering updates saved state handle`() = runTest {
+    fun `setFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = "etfs"
@@ -288,14 +288,11 @@ class InvestmentsViewModelTest {
         viewModel.onIntent(InvestmentsIntent.SetFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[INVESTMENTS_FILTER_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.investmentsFilterTypeFlow.value)
     }
 
     @Test
-    fun `setSorting updates saved state handle`() = runTest {
+    fun `setSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = InvestmentsSortType.BY_MARKET_VALUE
@@ -303,14 +300,11 @@ class InvestmentsViewModelTest {
         viewModel.onIntent(InvestmentsIntent.SetSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[INVESTMENTS_SORT_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.investmentsSortTypeFlow.value)
     }
 
     private fun createViewModel() = InvestmentsViewModel(
         fakeObserveInvestmentsUiStateUseCase,
-        savedStateHandle
+        fakeFinanceRepository,
     )
 }

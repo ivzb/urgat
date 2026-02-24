@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.savings
 
-import androidx.lifecycle.SavedStateHandle
+import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
@@ -29,7 +29,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class SavingsViewModelTest {
 
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeFinanceRepository: FakeFinanceRepository
     private lateinit var fakeObserveSavingsUiStateUseCase: FakeObserveSavingsUiStateUseCase
 
     private lateinit var viewModel: SavingsViewModel
@@ -39,7 +39,7 @@ class SavingsViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        savedStateHandle = SavedStateHandle(mapOf())
+        fakeFinanceRepository = FakeFinanceRepository()
         fakeObserveSavingsUiStateUseCase = FakeObserveSavingsUiStateUseCase()
     }
 
@@ -240,7 +240,7 @@ class SavingsViewModelTest {
     }
 
     @Test
-    fun `setFiltering updates saved state handle`() = runTest {
+    fun `setFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = SavingsSortType.BY_MIN
@@ -251,6 +251,6 @@ class SavingsViewModelTest {
 
     private fun createViewModel() = SavingsViewModel(
         fakeObserveSavingsUiStateUseCase,
-        savedStateHandle
+        fakeFinanceRepository,
     )
 }

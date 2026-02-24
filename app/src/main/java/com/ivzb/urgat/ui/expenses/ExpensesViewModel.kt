@@ -1,29 +1,26 @@
 package com.ivzb.urgat.ui.expenses
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.data.finance.FinanceRepository
 import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
     observeExpensesUiStateUseCase: ObserveExpensesUiStateUseCase,
-    val savedStateHandle: SavedStateHandle
+    private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
-    private val _savedFilterType: Flow<ExpensesFilterType> = savedStateHandle.getStateFlow(EXPENSES_FILTER_SAVED_STATE_KEY, ExpensesFilterType.ALL_EXPENSES)
-
-    private val _savedSortType: Flow<ExpensesSortType> = savedStateHandle.getStateFlow(EXPENSES_SORT_SAVED_STATE_KEY, ExpensesSortType.BY_DATE)
-
-    private val _searchQuery = MutableStateFlow("")
+    private val _savedFilterType = financeRepository.expensesFilterTypeFlow
+    private val _savedSortType = financeRepository.expensesSortTypeFlow
+    private val _searchQuery = financeRepository.searchQueryFlow
 
     val uiState: StateFlow<ExpensesUiState> = combineUiState(
         observeExpensesUiStateUseCase(_searchQuery, _savedFilterType, _savedSortType),
@@ -47,17 +44,15 @@ class ExpensesViewModel @Inject constructor(
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
-        _searchQuery.value = newQuery
+        viewModelScope.launch { financeRepository.updateSearchQuery(newQuery) }
     }
 
     private fun setFiltering(filterType: ExpensesFilterType) {
-        savedStateHandle[EXPENSES_FILTER_SAVED_STATE_KEY] = filterType
+        viewModelScope.launch { financeRepository.updateExpensesFilterType(filterType) }
     }
 
     private fun setSorting(sortType: ExpensesSortType) {
-        savedStateHandle[EXPENSES_SORT_SAVED_STATE_KEY] = sortType
+        viewModelScope.launch { financeRepository.updateExpensesSortType(sortType) }
     }
 }
 
-const val EXPENSES_FILTER_SAVED_STATE_KEY = "EXPENSES_FILTER_SAVED_STATE_KEY"
-const val EXPENSES_SORT_SAVED_STATE_KEY = "EXPENSES_SORT_SAVED_STATE_KEY"

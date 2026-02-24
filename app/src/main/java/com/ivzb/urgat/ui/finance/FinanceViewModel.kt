@@ -1,13 +1,12 @@
 package com.ivzb.urgat.ui.finance
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivzb.urgat.data.finance.FinanceRepository
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
-import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsUiStateUseCase
@@ -16,7 +15,6 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -24,7 +22,6 @@ import com.ivzb.urgat.util.combineUiState
 import com.ivzb.urgat.util.currentMonthRange
 import com.ivzb.urgat.util.untilCurrentMonthRange
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -40,12 +37,12 @@ class FinanceViewModel @Inject constructor(
     observeReportBudgetUseCase: ObserveReportBudgetUseCase,
     observeFiReUseCase: ObserveFiReUseCase,
     private val fireRepository: FireRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
     private val uiEventHolder = UiEventHolder<FinanceUiEvent>()
 
-    private val _searchQuery = MutableStateFlow("")
+    private val _searchQuery = financeRepository.searchQueryFlow
 
     private val _budgetDateRange = MutableStateFlow(currentMonthRange())
 
@@ -57,25 +54,22 @@ class FinanceViewModel @Inject constructor(
 
     private val _fireDateRange = MutableStateFlow(untilCurrentMonthRange())
 
-    private val _savedExpensesFilterType: Flow<ExpensesFilterType> = savedStateHandle.getStateFlow(FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY, ExpensesFilterType.ALL_EXPENSES)
-    
-    private val _savedExpensesSortType: Flow<ExpensesSortType> = savedStateHandle.getStateFlow(FINANCE_EXPENSES_SORT_SAVED_STATE_KEY, ExpensesSortType.BY_DATE)
+    private val _savedExpensesFilterType = financeRepository.expensesFilterTypeFlow
+    private val _savedExpensesSortType = financeRepository.expensesSortTypeFlow
 
-    private val _savedInvestmentsFilterType = savedStateHandle.getStateFlow(FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY, initialValue = InvestmentsFilterType_All)
+    private val _savedInvestmentsFilterType = financeRepository.investmentsFilterTypeFlow
+    private val _savedInvestmentsSortType = financeRepository.investmentsSortTypeFlow
 
-    private val _savedInvestmentsSortType: Flow<InvestmentsSortType> = savedStateHandle.getStateFlow(FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY, InvestmentsSortType.BY_DATE)
+    private val _savedSavingsSortType = financeRepository.savingsSortTypeFlow
 
-    private val _savedSavingsSortType: Flow<SavingsSortType> = savedStateHandle.getStateFlow(FINANCE_SAVINGS_SORT_SAVED_STATE_KEY, SavingsSortType.BY_DATE)
-
-    private val _savedFilterType: Flow<BudgetsFilterType> = savedStateHandle.getStateFlow(FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY, initialValue = BudgetsFilterType.ALL_BUDGETS)
-
-    private val _savedSortType: Flow<BudgetsSortType> = savedStateHandle.getStateFlow(FINANCE_BUDGETS_SORT_SAVED_STATE_KEY, BudgetsSortType.BY_DATE)
+    private val _savedBudgetsFilterType = financeRepository.budgetsFilterTypeFlow
+    private val _savedBudgetsSortType = financeRepository.budgetsSortTypeFlow
 
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeExpensesUiStateUseCase(_searchQuery, _savedExpensesFilterType, _savedExpensesSortType),
         observeInvestmentsUiStateUseCase(_searchQuery, _savedInvestmentsFilterType, _savedInvestmentsSortType),
         observeSavingsUiStateUseCase(_searchQuery, _savedSavingsSortType),
-        observeBudgetsUiStateUseCase(_searchQuery, _savedFilterType, _savedSortType),
+        observeBudgetsUiStateUseCase(_searchQuery, _savedBudgetsFilterType, _savedBudgetsSortType),
         observeReportBudgetUseCase(_searchQuery, _budgetDateRange, null, null, null),
         observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _searchQuery, _fireDateRange, null, null, null),
         uiEventHolder(),
@@ -129,7 +123,7 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
-        _searchQuery.value = newQuery
+        viewModelScope.launch { financeRepository.updateSearchQuery(newQuery) }
     }
 
     private fun onFabActionClick(id: FinanceFabActionId) {
@@ -146,70 +140,47 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun onUpdateFireWithdrawalRate(withdrawalRate: String) {
-        viewModelScope.launch {
-            fireRepository.updateWithdrawalRate(withdrawalRate)
-        }
+        viewModelScope.launch { fireRepository.updateWithdrawalRate(withdrawalRate) }
     }
 
     private fun onUpdateFireReturnOfInvestment(returnOfInvestment: String) {
-        viewModelScope.launch {
-            fireRepository.updateReturnOfInvestment(returnOfInvestment)
-        }
+        viewModelScope.launch { fireRepository.updateReturnOfInvestment(returnOfInvestment) }
     }
 
     private fun onUpdateFireTaxRate(taxRate: String) {
-        viewModelScope.launch {
-            fireRepository.updateTaxRate(taxRate)
-        }
+        viewModelScope.launch { fireRepository.updateTaxRate(taxRate) }
     }
 
     private fun onEventConsumed() {
-        viewModelScope.launch {
-            uiEventHolder.emit(null)
-        }
+        viewModelScope.launch { uiEventHolder.emit(null) }
     }
 
     private fun setExpensesFiltering(filterType: ExpensesFilterType) {
-        savedStateHandle[FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY] = filterType
+        viewModelScope.launch { financeRepository.updateExpensesFilterType(filterType) }
     }
 
     private fun setExpensesSorting(sortType: ExpensesSortType) {
-        savedStateHandle[FINANCE_EXPENSES_SORT_SAVED_STATE_KEY] = sortType
+        viewModelScope.launch { financeRepository.updateExpensesSortType(sortType) }
     }
 
     private fun setInvestmentsFiltering(filterType: String) {
-        savedStateHandle[FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY] = filterType
+        viewModelScope.launch { financeRepository.updateInvestmentsFilterType(filterType) }
     }
 
     private fun setInvestmentsSorting(sortType: InvestmentsSortType) {
-        savedStateHandle[FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY] = sortType
+        viewModelScope.launch { financeRepository.updateInvestmentsSortType(sortType) }
     }
 
     private fun setSavingsSorting(sortType: SavingsSortType) {
-        savedStateHandle[FINANCE_SAVINGS_SORT_SAVED_STATE_KEY] = sortType
+        viewModelScope.launch { financeRepository.updateSavingsSortType(sortType) }
     }
 
     private fun setBudgetsFiltering(filterType: BudgetsFilterType) {
-        savedStateHandle[FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY] = filterType
+        viewModelScope.launch { financeRepository.updateBudgetsFilterType(filterType) }
     }
 
     private fun setBudgetsSorting(sortType: BudgetsSortType) {
-        savedStateHandle[FINANCE_BUDGETS_SORT_SAVED_STATE_KEY] = sortType
-    }
-
-    companion object {
-
-        const val FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY = "FINANCE_EXPENSES_FILTER_SAVED_STATE_KEY"
-        const val FINANCE_EXPENSES_SORT_SAVED_STATE_KEY = "FINANCE_EXPENSES_SORT_SAVED_STATE_KEY"
-
-        const val FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY = "FINANCE_INVESTMENTS_FILTER_SAVED_STATE_KEY"
-        const val FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY = "FINANCE_INVESTMENTS_SORT_SAVED_STATE_KEY"
-
-        const val FINANCE_SAVINGS_SORT_SAVED_STATE_KEY = "FINANCE_SAVINGS_SORT_SAVED_STATE_KEY"
-
-        const val FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY = "FINANCE_BUDGETS_FILTER_SAVED_STATE_KEY"
-        const val FINANCE_BUDGETS_SORT_SAVED_STATE_KEY = "FINANCE_BUDGETS_SORT_SAVED_STATE_KEY"
-
+        viewModelScope.launch { financeRepository.updateBudgetsSortType(sortType) }
     }
 
 }

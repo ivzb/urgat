@@ -98,4 +98,7 @@
 - add one more playstore screenshot
 - move inner weight tab screens like library and finance screen
 - extract todos and notes to their own ui states, extract weights ui state to use case
-- pass filter/sort to inner finance screen when finance screen has applied filter/sort
+- pass query/filter/sort to inner finance screen when finance screen has applied filter/sort
+- old?: try to use actual enumt types in the route which is passed to nav entry - look at AddEditBudgetRoute for reference
+- prompt: what is the best approach to share 3 parameters - search query, filter and sort between main compose screen and inner screen. i also want the main page parameters to match the inner ones if they change and go back to main page
+- I want to share 3 parameters - search query, filter and sort between main compose screen and inner screens - investments, expenses, budgets and savings. i also want the main page parameters to match the inner ones if they change and go back to main page. in order to achieve that i want to migrate from current saved state handle to data store. but i also want to have that into finance repository. and to interact with this repository. this way the three params can be safely shared and stored in subsequent app runs or configuration changes

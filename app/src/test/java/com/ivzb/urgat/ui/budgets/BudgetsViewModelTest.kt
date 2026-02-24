@@ -1,6 +1,6 @@
 package com.ivzb.urgat.ui.budgets
 
-import androidx.lifecycle.SavedStateHandle
+import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
@@ -32,7 +32,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class BudgetsViewModelTest {
 
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeFinanceRepository: FakeFinanceRepository
     private lateinit var fakeObserveBudgetsUiStateUseCase: FakeObserveBudgetsUiStateUseCase
 
     private lateinit var viewModel: BudgetsViewModel
@@ -43,7 +43,7 @@ class BudgetsViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        savedStateHandle = SavedStateHandle(mapOf())
+        fakeFinanceRepository = FakeFinanceRepository()
         fakeObserveBudgetsUiStateUseCase = FakeObserveBudgetsUiStateUseCase()
     }
 
@@ -274,7 +274,7 @@ class BudgetsViewModelTest {
     }
 
     @Test
-    fun `setFiltering updates saved state handle`() = runTest {
+    fun `setFiltering updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = BudgetsFilterType.POSITIVE_BUDGETS
@@ -282,14 +282,11 @@ class BudgetsViewModelTest {
         viewModel.onIntent(BudgetsIntent.SetFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[BUDGETS_FILTER_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.budgetsFilterTypeFlow.value)
     }
 
     @Test
-    fun `setSorting updates saved state handle`() = runTest {
+    fun `setSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = BudgetsSortType.BY_MIN
@@ -297,14 +294,11 @@ class BudgetsViewModelTest {
         viewModel.onIntent(BudgetsIntent.SetSorting(expected))
         advanceUntilIdle()
 
-        assertEquals(
-            expected,
-            savedStateHandle[BUDGETS_SORT_SAVED_STATE_KEY]
-        )
+        assertEquals(expected, fakeFinanceRepository.budgetsSortTypeFlow.value)
     }
 
     private fun createViewModel() = BudgetsViewModel(
         fakeObserveBudgetsUiStateUseCase,
-        savedStateHandle
+        fakeFinanceRepository,
     )
 }
