@@ -15,21 +15,24 @@ class FakeFinanceRepository : FinanceRepository {
     override suspend fun updateSearchQuery(value: String) { searchQueryFlow.value = value }
 
     override val expensesFilterTypeFlow = MutableStateFlow(ExpensesFilterType.ALL_EXPENSES)
-    override val expensesSortTypeFlow = MutableStateFlow(ExpensesSortType.BY_DATE)
     override suspend fun updateExpensesFilterType(value: ExpensesFilterType) { expensesFilterTypeFlow.value = value }
+
+    override val expensesSortTypeFlow = MutableStateFlow(ExpensesSortType.BY_DATE)
     override suspend fun updateExpensesSortType(value: ExpensesSortType) { expensesSortTypeFlow.value = value }
 
     override val investmentsFilterTypeFlow = MutableStateFlow(InvestmentsFilterType_All)
-    override val investmentsSortTypeFlow = MutableStateFlow(InvestmentsSortType.BY_DATE)
     override suspend fun updateInvestmentsFilterType(value: String) { investmentsFilterTypeFlow.value = value }
+
+    override val investmentsSortTypeFlow = MutableStateFlow(InvestmentsSortType.BY_DATE)
     override suspend fun updateInvestmentsSortType(value: InvestmentsSortType) { investmentsSortTypeFlow.value = value }
 
     override val savingsSortTypeFlow = MutableStateFlow(SavingsSortType.BY_DATE)
     override suspend fun updateSavingsSortType(value: SavingsSortType) { savingsSortTypeFlow.value = value }
 
     override val budgetsFilterTypeFlow = MutableStateFlow(BudgetsFilterType.ALL_BUDGETS)
-    override val budgetsSortTypeFlow = MutableStateFlow(BudgetsSortType.BY_DATE)
     override suspend fun updateBudgetsFilterType(value: BudgetsFilterType) { budgetsFilterTypeFlow.value = value }
+
+    override val budgetsSortTypeFlow = MutableStateFlow(BudgetsSortType.BY_DATE)
     override suspend fun updateBudgetsSortType(value: BudgetsSortType) { budgetsSortTypeFlow.value = value }
 
 }

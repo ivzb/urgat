@@ -44,15 +44,21 @@ class BudgetsViewModel @Inject constructor(
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
-        viewModelScope.launch { financeRepository.updateSearchQuery(newQuery) }
+        viewModelScope.launch {
+            financeRepository.updateSearchQuery(newQuery)
+        }
     }
 
     private fun setFiltering(filterType: BudgetsFilterType) {
-        viewModelScope.launch { financeRepository.updateBudgetsFilterType(filterType) }
+        viewModelScope.launch {
+            financeRepository.updateBudgetsFilterType(filterType)
+        }
     }
 
     private fun setSorting(sortType: BudgetsSortType) {
-        viewModelScope.launch { financeRepository.updateBudgetsSortType(sortType) }
+        viewModelScope.launch {
+            financeRepository.updateBudgetsSortType(sortType)
+        }
     }
 
 }

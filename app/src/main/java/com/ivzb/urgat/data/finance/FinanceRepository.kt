@@ -14,21 +14,24 @@ interface FinanceRepository {
     suspend fun updateSearchQuery(value: String)
 
     val expensesFilterTypeFlow: Flow<ExpensesFilterType>
-    val expensesSortTypeFlow: Flow<ExpensesSortType>
     suspend fun updateExpensesFilterType(value: ExpensesFilterType)
+
+    val expensesSortTypeFlow: Flow<ExpensesSortType>
     suspend fun updateExpensesSortType(value: ExpensesSortType)
 
     val investmentsFilterTypeFlow: Flow<String>
-    val investmentsSortTypeFlow: Flow<InvestmentsSortType>
     suspend fun updateInvestmentsFilterType(value: String)
+
+    val investmentsSortTypeFlow: Flow<InvestmentsSortType>
     suspend fun updateInvestmentsSortType(value: InvestmentsSortType)
 
     val savingsSortTypeFlow: Flow<SavingsSortType>
     suspend fun updateSavingsSortType(value: SavingsSortType)
 
     val budgetsFilterTypeFlow: Flow<BudgetsFilterType>
-    val budgetsSortTypeFlow: Flow<BudgetsSortType>
     suspend fun updateBudgetsFilterType(value: BudgetsFilterType)
+
+    val budgetsSortTypeFlow: Flow<BudgetsSortType>
     suspend fun updateBudgetsSortType(value: BudgetsSortType)
 
 }

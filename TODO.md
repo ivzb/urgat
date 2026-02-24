@@ -102,3 +102,4 @@
 - align library view model to finance view model
 - change filtering info to take search query into account when showing empty state - say something like you don't have X with this search criteria
 - make empty state for inner finance screen - they crash when search doesn't match anything and there is no data
+- add extra button to reset all filters - the same way as done for library which clears todos

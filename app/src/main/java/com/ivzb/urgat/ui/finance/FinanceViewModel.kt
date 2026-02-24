@@ -129,7 +129,9 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
-        viewModelScope.launch { financeRepository.updateSearchQuery(newQuery) }
+        viewModelScope.launch {
+            financeRepository.updateSearchQuery(newQuery)
+        }
     }
 
     private fun onFabActionClick(id: FinanceFabActionId) {
@@ -146,47 +148,69 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun onUpdateFireWithdrawalRate(withdrawalRate: String) {
-        viewModelScope.launch { fireRepository.updateWithdrawalRate(withdrawalRate) }
+        viewModelScope.launch {
+            fireRepository.updateWithdrawalRate(withdrawalRate)
+        }
     }
 
     private fun onUpdateFireReturnOfInvestment(returnOfInvestment: String) {
-        viewModelScope.launch { fireRepository.updateReturnOfInvestment(returnOfInvestment) }
+        viewModelScope.launch {
+            fireRepository.updateReturnOfInvestment(returnOfInvestment)
+        }
     }
 
     private fun onUpdateFireTaxRate(taxRate: String) {
-        viewModelScope.launch { fireRepository.updateTaxRate(taxRate) }
+        viewModelScope.launch {
+            fireRepository.updateTaxRate(taxRate)
+        }
     }
 
     private fun onEventConsumed() {
-        viewModelScope.launch { uiEventHolder.emit(null) }
+        viewModelScope.launch {
+            uiEventHolder.emit(null)
+        }
     }
 
     private fun setExpensesFiltering(filterType: ExpensesFilterType) {
-        viewModelScope.launch { financeRepository.updateExpensesFilterType(filterType) }
+        viewModelScope.launch {
+            financeRepository.updateExpensesFilterType(filterType)
+        }
     }
 
     private fun setExpensesSorting(sortType: ExpensesSortType) {
-        viewModelScope.launch { financeRepository.updateExpensesSortType(sortType) }
+        viewModelScope.launch {
+            financeRepository.updateExpensesSortType(sortType)
+        }
     }
 
     private fun setInvestmentsFiltering(filterType: String) {
-        viewModelScope.launch { financeRepository.updateInvestmentsFilterType(filterType) }
+        viewModelScope.launch {
+            financeRepository.updateInvestmentsFilterType(filterType)
+        }
     }
 
     private fun setInvestmentsSorting(sortType: InvestmentsSortType) {
-        viewModelScope.launch { financeRepository.updateInvestmentsSortType(sortType) }
+        viewModelScope.launch {
+            financeRepository.updateInvestmentsSortType(sortType)
+        }
     }
 
     private fun setSavingsSorting(sortType: SavingsSortType) {
-        viewModelScope.launch { financeRepository.updateSavingsSortType(sortType) }
+        viewModelScope.launch {
+            financeRepository.updateSavingsSortType(sortType)
+        }
     }
 
     private fun setBudgetsFiltering(filterType: BudgetsFilterType) {
-        viewModelScope.launch { financeRepository.updateBudgetsFilterType(filterType) }
+        viewModelScope.launch {
+            financeRepository.updateBudgetsFilterType(filterType)
+        }
     }
 
     private fun setBudgetsSorting(sortType: BudgetsSortType) {
-        viewModelScope.launch { financeRepository.updateBudgetsSortType(sortType) }
+        viewModelScope.launch {
+            financeRepository.updateBudgetsSortType(sortType)
+        }
     }
 
 }

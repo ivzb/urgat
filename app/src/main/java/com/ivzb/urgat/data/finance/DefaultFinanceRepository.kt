@@ -13,6 +13,8 @@ import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.dataStoreEnumFlow
+import com.ivzb.urgat.util.dataStoreStringFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -22,49 +24,49 @@ class DefaultFinanceRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : FinanceRepository {
 
-    override val searchQueryFlow: Flow<String> = dataStoreFlow(SEARCH_QUERY, "")
+    override val searchQueryFlow: Flow<String> = dataStoreStringFlow(dataStore, SEARCH_QUERY, "")
 
     override suspend fun updateSearchQuery(value: String) {
         dataStore.edit { it[SEARCH_QUERY] = value }
     }
 
-    override val expensesFilterTypeFlow: Flow<ExpensesFilterType> = dataStoreEnumFlow(EXPENSES_FILTER_TYPE, ExpensesFilterType.ALL_EXPENSES)
-
-    override val expensesSortTypeFlow: Flow<ExpensesSortType> = dataStoreEnumFlow(EXPENSES_SORT_TYPE, ExpensesSortType.BY_DATE)
+    override val expensesFilterTypeFlow: Flow<ExpensesFilterType> = dataStoreEnumFlow(dataStore, EXPENSES_FILTER_TYPE, ExpensesFilterType.ALL_EXPENSES)
 
     override suspend fun updateExpensesFilterType(value: ExpensesFilterType) {
         dataStore.edit { it[EXPENSES_FILTER_TYPE] = value.name }
     }
 
+    override val expensesSortTypeFlow: Flow<ExpensesSortType> = dataStoreEnumFlow(dataStore, EXPENSES_SORT_TYPE, ExpensesSortType.BY_DATE)
+
     override suspend fun updateExpensesSortType(value: ExpensesSortType) {
         dataStore.edit { it[EXPENSES_SORT_TYPE] = value.name }
     }
 
-    override val investmentsFilterTypeFlow: Flow<String> = dataStoreFlow(INVESTMENTS_FILTER_TYPE, InvestmentsFilterType_All)
-
-    override val investmentsSortTypeFlow: Flow<InvestmentsSortType> = dataStoreEnumFlow(INVESTMENTS_SORT_TYPE, InvestmentsSortType.BY_DATE)
+    override val investmentsFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, INVESTMENTS_FILTER_TYPE, InvestmentsFilterType_All)
 
     override suspend fun updateInvestmentsFilterType(value: String) {
         dataStore.edit { it[INVESTMENTS_FILTER_TYPE] = value }
     }
 
+    override val investmentsSortTypeFlow: Flow<InvestmentsSortType> = dataStoreEnumFlow(dataStore, INVESTMENTS_SORT_TYPE, InvestmentsSortType.BY_DATE)
+
     override suspend fun updateInvestmentsSortType(value: InvestmentsSortType) {
         dataStore.edit { it[INVESTMENTS_SORT_TYPE] = value.name }
     }
 
-    override val savingsSortTypeFlow: Flow<SavingsSortType> = dataStoreEnumFlow(SAVINGS_SORT_TYPE, SavingsSortType.BY_DATE)
+    override val savingsSortTypeFlow: Flow<SavingsSortType> = dataStoreEnumFlow(dataStore, SAVINGS_SORT_TYPE, SavingsSortType.BY_DATE)
 
     override suspend fun updateSavingsSortType(value: SavingsSortType) {
         dataStore.edit { it[SAVINGS_SORT_TYPE] = value.name }
     }
 
-    override val budgetsFilterTypeFlow: Flow<BudgetsFilterType> = dataStoreEnumFlow(BUDGETS_FILTER_TYPE, BudgetsFilterType.ALL_BUDGETS)
-
-    override val budgetsSortTypeFlow: Flow<BudgetsSortType> = dataStoreEnumFlow(BUDGETS_SORT_TYPE, BudgetsSortType.BY_DATE)
+    override val budgetsFilterTypeFlow: Flow<BudgetsFilterType> = dataStoreEnumFlow(dataStore, BUDGETS_FILTER_TYPE, BudgetsFilterType.ALL_BUDGETS)
 
     override suspend fun updateBudgetsFilterType(value: BudgetsFilterType) {
         dataStore.edit { it[BUDGETS_FILTER_TYPE] = value.name }
     }
+
+    override val budgetsSortTypeFlow: Flow<BudgetsSortType> = dataStoreEnumFlow(dataStore, BUDGETS_SORT_TYPE, BudgetsSortType.BY_DATE)
 
     override suspend fun updateBudgetsSortType(value: BudgetsSortType) {
         dataStore.edit { it[BUDGETS_SORT_TYPE] = value.name }
@@ -86,38 +88,6 @@ class DefaultFinanceRepository @Inject constructor(
         private val BUDGETS_SORT_TYPE = stringPreferencesKey("finance_budgets_sort_type")
 
     }
-
-    private fun dataStoreFlow(
-        key: Preferences.Key<String>,
-        defaultValue: String,
-    ): Flow<String> = dataStore.data
-        .catch { exception ->
-            Tracker.error(exception)
-            emit(emptyPreferences())
-        }.map { preferences ->
-            preferences[key] ?: defaultValue
-        }
-
-    private inline fun <reified T : Enum<T>> dataStoreEnumFlow(
-        key: Preferences.Key<String>,
-        defaultValue: T,
-    ): Flow<T> = dataStore.data
-        .catch { exception ->
-            Tracker.error(exception)
-            emit(emptyPreferences())
-        }.map { preferences ->
-            val name = preferences[key]
-
-            if (name != null) {
-                try {
-                    enumValueOf<T>(name)
-                } catch (_: IllegalArgumentException) {
-                    defaultValue
-                }
-            } else {
-                defaultValue
-            }
-        }
 
 }
 

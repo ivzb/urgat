@@ -44,15 +44,21 @@ class ExpensesViewModel @Inject constructor(
     }
 
     private fun onSearchQueryChanged(newQuery: String) {
-        viewModelScope.launch { financeRepository.updateSearchQuery(newQuery) }
+        viewModelScope.launch {
+            financeRepository.updateSearchQuery(newQuery)
+        }
     }
 
     private fun setFiltering(filterType: ExpensesFilterType) {
-        viewModelScope.launch { financeRepository.updateExpensesFilterType(filterType) }
+        viewModelScope.launch {
+            financeRepository.updateExpensesFilterType(filterType)
+        }
     }
 
     private fun setSorting(sortType: ExpensesSortType) {
-        viewModelScope.launch { financeRepository.updateExpensesSortType(sortType) }
+        viewModelScope.launch {
+            financeRepository.updateExpensesSortType(sortType)
+        }
     }
 }
 

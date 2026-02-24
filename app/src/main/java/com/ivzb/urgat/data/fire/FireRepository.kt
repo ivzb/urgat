@@ -6,15 +6,12 @@ import java.math.BigDecimal
 interface FireRepository {
 
     val withdrawalRateFlow: Flow<BigDecimal?>
-
-    val returnOfInvestmentFlow: Flow<BigDecimal?>
-
-    val taxRateFlow: Flow<BigDecimal?>
-
     suspend fun updateWithdrawalRate(value: String)
 
+    val returnOfInvestmentFlow: Flow<BigDecimal?>
     suspend fun updateReturnOfInvestment(value: String)
 
+    val taxRateFlow: Flow<BigDecimal?>
     suspend fun updateTaxRate(value: String)
 
     companion object {

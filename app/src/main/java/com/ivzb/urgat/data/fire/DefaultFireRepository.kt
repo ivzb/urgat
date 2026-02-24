@@ -9,6 +9,7 @@ import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_RETURN_OF_
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_TAX_RATE
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_WITHDRAWAL_RATE
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.dataStoreBigDecimalFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -20,11 +21,7 @@ class DefaultFireRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ): FireRepository {
 
-    override val withdrawalRateFlow: Flow<BigDecimal?> = dataStoreFlow(dataStore, FIRE_WITHDRAWAL_RATE, DEFAULT_FIRE_WITHDRAWAL_RATE)
-
-    override val returnOfInvestmentFlow: Flow<BigDecimal?> = dataStoreFlow(dataStore, FIRE_RETURN_OF_INVESTMENT, DEFAULT_FIRE_RETURN_OF_INVESTMENT)
-
-    override val taxRateFlow: Flow<BigDecimal?> = dataStoreFlow(dataStore, FIRE_TAX_RATE, DEFAULT_FIRE_TAX_RATE)
+    override val withdrawalRateFlow: Flow<BigDecimal?> = dataStoreBigDecimalFlow(dataStore, FIRE_WITHDRAWAL_RATE, DEFAULT_FIRE_WITHDRAWAL_RATE)
 
     override suspend fun updateWithdrawalRate(value: String) {
         dataStore.edit { preferences ->
@@ -32,11 +29,15 @@ class DefaultFireRepository @Inject constructor(
         }
     }
 
+    override val returnOfInvestmentFlow: Flow<BigDecimal?> = dataStoreBigDecimalFlow(dataStore, FIRE_RETURN_OF_INVESTMENT, DEFAULT_FIRE_RETURN_OF_INVESTMENT)
+
     override suspend fun updateReturnOfInvestment(value: String) {
         dataStore.edit { preferences ->
             preferences[FIRE_RETURN_OF_INVESTMENT] = value
         }
     }
+
+    override val taxRateFlow: Flow<BigDecimal?> = dataStoreBigDecimalFlow(dataStore, FIRE_TAX_RATE, DEFAULT_FIRE_TAX_RATE)
 
     override suspend fun updateTaxRate(value: String) {
         dataStore.edit { preferences ->
@@ -52,26 +53,6 @@ class DefaultFireRepository @Inject constructor(
 
         private val FIRE_TAX_RATE = stringPreferencesKey("fire_tax_rate")
 
-        private fun dataStoreFlow(
-            dataStore: DataStore<Preferences>,
-            key: Preferences.Key<String>,
-            defaultValue: BigDecimal,
-        ): Flow<BigDecimal?> = dataStore.data
-            .catch { exception ->
-                if (exception is IOException) {
-                    Tracker.error(exception)
-                    emit(emptyPreferences())
-                } else {
-                    throw exception
-                }
-            }.map { preferences ->
-                val value = preferences[key]
-
-                when {
-                    value == null -> defaultValue
-                    else -> value.toBigDecimalOrNull()
-                }
-            }
 
     }
 
