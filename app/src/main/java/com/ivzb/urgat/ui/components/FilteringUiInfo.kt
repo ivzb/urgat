@@ -1,7 +1,5 @@
 package com.ivzb.urgat.ui.components
 
-import com.ivzb.urgat.R
-
 interface FilteringUiInfo {
 
     val emptyLabel: Int

@@ -24,7 +24,7 @@ data class LibraryUiState(
     override val pages: List<Page> = LIBRARY_PAGES,
     override val initialPage: Int = 0,
 
-    override val filteringUiInfo: FilteringUiInfo = LibraryFilteringUiInfo(),
+    override val filteringUiInfo: LibraryFilteringUiInfo = LibraryFilteringUiInfo(),
 
     val uiEvent: LibraryUiEvent? = null,
 ): NavigationPagerUiState<LibraryFabActionId>

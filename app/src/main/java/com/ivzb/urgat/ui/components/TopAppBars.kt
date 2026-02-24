@@ -57,25 +57,22 @@ fun topBarInsets() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_IC
 @Composable
 fun TopAppBarContent(
     selectedRoute: UrgatRoute,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
+    withSearch: Boolean,
     navigationIcon: (@Composable () -> Unit)? = null,
-    withActions: Boolean = true,
     actionsContent: (@Composable () -> Unit)? = null
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
-    var searchQuery by rememberSaveable { mutableStateOf("") }
 
     SearchableTopBar(
         isSearching = isSearching,
         onIsSearchingChanged = { isSearching = it },
         searchQuery = searchQuery,
-        onSearchQueryChanged = {
-            searchQuery = it
-            onSearchQueryChanged(it)
-        },
+        onSearchQueryChanged = onSearchQueryChanged,
         titleResId = selectedRoute.titleResId,
+        withSearch = withSearch,
         navigationIcon = navigationIcon,
-        withActions = withActions,
         actionsContent = actionsContent
     )
 }
@@ -277,8 +274,9 @@ fun TopAppBarContentLibraryRoutePreview() {
     UrgatTheme {
         TopAppBarContent(
             selectedRoute = LibraryRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
-            withActions = true,
+            withSearch = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -298,8 +296,9 @@ fun TopAppBarContentLibraryRoutePreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
             selectedRoute = LibraryRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
-            withActions = true,
+            withSearch = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -319,8 +318,9 @@ fun TopAppBarContentLibraryRouteWithoutActionsPreview() {
     UrgatTheme {
         TopAppBarContent(
             selectedRoute = LibraryRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
-            withActions = false,
+            withSearch = false,
         )
     }
 }
@@ -332,7 +332,8 @@ fun TopAppBarContentLibraryRouteWithoutActionsPreviewWithoutBack() {
     UrgatTheme {
         TopAppBarContent(
             selectedRoute = LibraryRoute,
-            withActions = false,
+            searchQuery = "",
+            withSearch = false,
             onSearchQueryChanged = {},
         )
     }
@@ -345,8 +346,9 @@ fun TopAppBarContentWellbeingRoutePreview() {
     UrgatTheme {
         TopAppBarContent(
             selectedRoute = WellbeingRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
-            withActions = false,
+            withSearch = false,
             actionsContent = {}
         )
     }

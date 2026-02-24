@@ -24,10 +24,11 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 @Composable
 fun UrgatScaffold(
     selectedRoute: UrgatRoute,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
 
+    withSearch: Boolean,
     navigationIcon: (@Composable () -> Unit)? = null,
-    withTopAppBarActions: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     floatingActionButtonContent: (@Composable () -> Unit)? = null,
 
@@ -38,9 +39,10 @@ fun UrgatScaffold(
         topBar = {
             TopAppBarContent(
                 selectedRoute = selectedRoute,
+                searchQuery = searchQuery,
                 onSearchQueryChanged = onSearchQueryChanged,
+                withSearch = withSearch,
                 navigationIcon = navigationIcon,
-                withActions = withTopAppBarActions,
                 actionsContent = topAppBarActionsContent,
             )
         },
@@ -67,6 +69,7 @@ fun UrgatScaffoldPreview() {
     UrgatTheme {
         UrgatScaffold(
             selectedRoute = LibraryRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
 
             navigationIcon = {
@@ -77,7 +80,7 @@ fun UrgatScaffoldPreview() {
                     )
                 }
             },
-            withTopAppBarActions = true,
+            withSearch = true,
             topAppBarActionsContent = {
                 IconButton(onClick = {}) {
                     Icon(

@@ -91,10 +91,11 @@ fun WellbeingScreen(
         uiState = uiState,
 
         route = WellbeingRoute,
+        searchQuery = "",
         onSearchQueryChanged = { /* NOOP */ },
         onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
         navigator = navigator,
-        withTopAppBarActions = false,
+        withSearch = false,
 
         content = {
             WellbeingContent(

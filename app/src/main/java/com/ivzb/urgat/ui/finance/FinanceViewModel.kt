@@ -17,6 +17,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import com.ivzb.urgat.util.currentMonthRange
@@ -24,6 +25,7 @@ import com.ivzb.urgat.util.untilCurrentMonthRange
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -72,6 +74,7 @@ class FinanceViewModel @Inject constructor(
         observeBudgetsUiStateUseCase(_searchQuery, _savedBudgetsFilterType, _savedBudgetsSortType),
         observeReportBudgetUseCase(_searchQuery, _budgetDateRange, null, null, null),
         observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _searchQuery, _fireDateRange, null, null, null),
+        _searchQuery.map { Async.Success(it) },
         uiEventHolder(),
 
         onLoading = {
@@ -80,7 +83,7 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { expensesUiState, investmentsUiState, savingsUiState, budgetsUiState, reportBudget, fire, uiEvent ->
+        onSuccess = { expensesUiState, investmentsUiState, savingsUiState, budgetsUiState, reportBudget, fire, searchQuery, uiEvent ->
             FinanceUiState(
                 expensesUiState = expensesUiState,
                 investmentsUiState = investmentsUiState,
@@ -89,6 +92,9 @@ class FinanceViewModel @Inject constructor(
                 reportBudget = reportBudget,
                 fire = fire,
                 isLoading = false,
+                filteringUiInfo = FinanceFilteringUiInfo(
+                    searchQuery = searchQuery,
+                ),
                 uiEvent = uiEvent,
             )
         }

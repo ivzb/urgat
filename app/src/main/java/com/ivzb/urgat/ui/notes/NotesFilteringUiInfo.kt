@@ -15,4 +15,6 @@ data class NotesFilteringUiInfo(
 
     override val errorLabel: Int = R.string.error_notes,
     override val errorIconRes: Int = R.drawable.ic_error,
+
+    val searchQuery: String = "",
 ) : FilteringUiInfo

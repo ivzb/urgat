@@ -26,11 +26,12 @@ fun ListDetailScreen(
     uiState: UiState,
 
     route: UrgatRoute,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onAddItem: () -> Unit,
     onBack: () -> Unit,
 
-    withTopAppBarActions: Boolean = true,
+    withSearch: Boolean,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     listState: LazyListState,
 
@@ -41,6 +42,7 @@ fun ListDetailScreen(
 
     UrgatScaffold(
         selectedRoute = route,
+        searchQuery = searchQuery,
         onSearchQueryChanged = onSearchQueryChanged,
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -50,7 +52,7 @@ fun ListDetailScreen(
                 )
             }
         },
-        withTopAppBarActions = withTopAppBarActions,
+        withSearch = withSearch,
         topAppBarActionsContent = topAppBarActionsContent,
         floatingActionButtonContent = {
             ScrollAwareFAB(
@@ -77,10 +79,11 @@ fun ListDetailsScreenPreview() {
         ListDetailScreen(
             uiState = WeightsUiState(),
             route = LibraryRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
             onBack = {},
             onAddItem = {},
-            withTopAppBarActions = false,
+            withSearch = false,
             topAppBarActionsContent = {},
             listState = rememberLazyListState(),
             content = {},

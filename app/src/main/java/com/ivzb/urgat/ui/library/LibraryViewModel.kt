@@ -64,6 +64,7 @@ class LibraryViewModel @Inject constructor(
                     emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
                     emptyMessage = R.string.no_todos_message,
                     emptyButtonLabel = R.string.add_todo,
+                    searchQuery = _searchQuery.value,
                     filterMenuItems = todosFiltering,
                     showFilterBadge = todosFilterType != TodosFilterType.ALL_TODOS,
                 ),
@@ -73,8 +74,12 @@ class LibraryViewModel @Inject constructor(
                     emptyLabel = if (_searchQuery.value.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
                     emptyMessage = R.string.no_notes_message,
                     emptyButtonLabel = R.string.add_note,
+                    searchQuery = _searchQuery.value,
                 ),
                 isLoading = false,
+                filteringUiInfo = LibraryFilteringUiInfo(
+                    searchQuery = _searchQuery.value,
+                ),
                 uiEvent = uiEvent,
             )
         }

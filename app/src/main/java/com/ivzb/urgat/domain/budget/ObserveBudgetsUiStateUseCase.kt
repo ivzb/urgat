@@ -62,6 +62,8 @@ class DefaultObserveBudgetsUiStateUseCase @Inject constructor(
                     emptyMessage = R.string.no_budgets_message,
                     emptyButtonLabel = R.string.add_budget,
 
+                    searchQuery = searchQuery,
+
                     filterMenuItems = filtering,
                     showFilterBadge = filterType != BudgetsFilterType.ALL_BUDGETS,
 

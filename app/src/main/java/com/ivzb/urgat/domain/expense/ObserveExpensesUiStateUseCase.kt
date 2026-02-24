@@ -48,7 +48,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
         observeGroupedExpenseCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeExpensesFilteringUseCase(),
         observeExpensesSortingUseCase(),
-        combine(filterTypeFlow, sortTypeFlow, ::Pair).map { Async.Success(it) },
+        combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
 
         onLoading = {
             ExpensesUiState(isLoading = true)
@@ -56,7 +56,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
         onError = {
             ExpensesUiState(hasError = true)
         },
-        onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, sorting, (filterType, sortType) ->
+        onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, sorting, (searchQuery, filterType, sortType) ->
             ExpensesUiState(
                 expenses = expenses,
                 categoriesMonthly = categoriesMonthly,
@@ -64,6 +64,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 categoriesAllTime = categoriesAllTime,
                 isLoading = false,
                 filteringUiInfo = getFilterUiInfo(
+                    searchQuery = searchQuery,
                     filterType = filterType,
                     filterMenuItems = filtering,
                     sortType = sortType,
@@ -74,6 +75,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
     ).map { Async.Success(it) }
 
     private fun getFilterUiInfo(
+        searchQuery: String,
         filterType: ExpensesFilterType,
         filterMenuItems: List<ExpensesFilterMenuItem>,
         sortType: ExpensesSortType,
@@ -87,6 +89,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.all_expenses,
                     emptyLabel = R.string.no_expenses,
+                    searchQuery = searchQuery,
                     filterMenuItems = filterMenuItems,
                     showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
@@ -98,6 +101,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.debit_expenses,
                     emptyLabel = R.string.no_debit_expenses,
+                    searchQuery = searchQuery,
                     filterMenuItems = filterMenuItems,
                     showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
@@ -109,6 +113,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.cost_expenses,
                     emptyLabel = R.string.no_cost_expenses,
+                    searchQuery = searchQuery,
                     filterMenuItems = filterMenuItems,
                     showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,
@@ -120,6 +125,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 ExpensesFilteringUiInfo(
                     currentFilteringLabel = R.string.exclude_from_analytics,
                     emptyLabel = R.string.no_excluded_from_analytics_expenses,
+                    searchQuery = searchQuery,
                     filterMenuItems = filterMenuItems,
                     showFilterBadge = showFilterBadge,
                     sortMenuItems = sortMenuItems,

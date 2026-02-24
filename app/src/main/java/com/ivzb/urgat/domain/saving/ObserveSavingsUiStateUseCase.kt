@@ -57,6 +57,8 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
                     emptyMessage = R.string.no_savings_message,
                     emptyButtonLabel = R.string.add_saving,
 
+                    searchQuery = searchQuery,
+
                     sortMenuItems = sorting,
                     showSortBadge = sortType != SavingsSortType.BY_DATE,
                 ),

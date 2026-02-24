@@ -103,6 +103,7 @@ fun ExpensesScreen(
         uiState = uiState,
 
         route = ExpensesRoute,
+        searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
         onAddItem = onAddExpense,
         onBack = onBack,

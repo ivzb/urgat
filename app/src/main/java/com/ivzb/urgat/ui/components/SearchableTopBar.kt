@@ -56,8 +56,8 @@ fun SearchableTopBar(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     titleResId: Int,
+    withSearch: Boolean,
     navigationIcon: (@Composable () -> Unit)? = null,
-    withActions: Boolean = true,
     actionsContent: @Composable (() -> Unit)? = null
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -88,7 +88,7 @@ fun SearchableTopBar(
                         navigationIcon?.invoke()
                     },
                     actions = {
-                        if (withActions || searchQuery.isNotEmpty()) {
+                        if (withSearch || searchQuery.isNotEmpty()) {
                             IconButton(onClick = {
                                 onIsSearchingChanged(!isSearching)
                             }) {
@@ -110,9 +110,7 @@ fun SearchableTopBar(
                             }
                         }
 
-                        if (withActions) {
-                            actionsContent?.invoke()
-                        }
+                        actionsContent?.invoke()
                     },
                     windowInsets = WindowInsets(0)
                 )
@@ -204,7 +202,7 @@ fun SearchableTopBarPreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            withActions = true,
+            withSearch = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -233,7 +231,7 @@ fun SearchableTopBarPreviewWithBackButton() {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
                 }
             },
-            withActions = true,
+            withSearch = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -262,7 +260,7 @@ fun SearchableTopBarPreviewWithMenuButton() {
                     Icon(Icons.Default.Menu, contentDescription = "Menu")
                 }
             },
-            withActions = true,
+            withSearch = true,
             actionsContent = {
                 IconButton(onClick = {}) {
                     Icon(
@@ -285,7 +283,7 @@ fun SearchableTopBarWithoutActionsPreview() {
             onIsSearchingChanged = {},
             searchQuery = "",
             onSearchQueryChanged = {},
-            withActions = false,
+            withSearch = false,
             titleResId = R.string.search,
         )
     }
@@ -302,7 +300,7 @@ fun SearchableTopBarWithoutActionsPreviewWithBackButton() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            withActions = false,
+            withSearch = false,
             navigationIcon = {
                 IconButton(onClick = {}) {
                     Icon(Icons.Default.Menu, contentDescription = "Menu")
@@ -323,7 +321,7 @@ fun SearchableTopBarSearchingEmptyStatePreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            withActions = false,
+            withSearch = false,
             actionsContent = {},
         )
     }
@@ -340,7 +338,7 @@ fun SearchableTopBarSearchingTextStatePreview() {
             searchQuery = "John",
             onSearchQueryChanged = {},
             titleResId = R.string.search,
-            withActions = false,
+            withSearch = false,
             actionsContent = {},
         )
     }

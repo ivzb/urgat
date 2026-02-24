@@ -38,11 +38,12 @@ fun <T> NavigationPagerScreen(
     uiState: NavigationPagerUiState<T>,
 
     route: UrgatRootRoute,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onFabActionClick: ((T) -> Unit)? = null,
     navigator: Navigator,
 
-    withTopAppBarActions: Boolean = true,
+    withSearch: Boolean = true,
     topAppBarActionsContent: (@Composable (Page) -> Unit)? = null,
 
     content: PagerContent,
@@ -57,11 +58,12 @@ fun <T> NavigationPagerScreen(
         uiState = uiState,
 
         route = route,
+        searchQuery = searchQuery,
         onSearchQueryChanged = onSearchQueryChanged,
         onFabActionClick = onFabActionClick,
         navigator = navigator,
 
-        withTopAppBarActions = withTopAppBarActions,
+        withSearch = withSearch,
         topAppBarActionsContent = { topAppBarActionsContent?.invoke(uiState.pages[pagerState.currentPage]) },
         listState = currentListState.value,
 
@@ -84,11 +86,12 @@ fun PagerScreen(
     uiState: PagerUiState,
 
     route: UrgatRoute,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onAddItem: () -> Unit,
     onBack: () -> Unit,
 
-    withTopAppBarActions: Boolean = true,
+    withSearch: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     content: PagerContent,
@@ -103,11 +106,12 @@ fun PagerScreen(
         uiState = uiState,
 
         route = route,
+        searchQuery = searchQuery,
         onSearchQueryChanged = onSearchQueryChanged,
         onAddItem = onAddItem,
         onBack = onBack,
 
-        withTopAppBarActions = withTopAppBarActions,
+        withSearch = withSearch,
         topAppBarActionsContent = topAppBarActionsContent,
         listState = currentListState.value,
 

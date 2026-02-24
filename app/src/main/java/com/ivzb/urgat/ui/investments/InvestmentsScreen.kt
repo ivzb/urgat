@@ -105,6 +105,7 @@ fun InvestmentsScreen(
         uiState = uiState,
 
         route = InvestmentsRoute,
+        searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(InvestmentsIntent.SearchQueryChanged(query)) },
         onAddItem = onAddInvestment,
         onBack = onBack,

@@ -69,10 +69,12 @@ fun WeightsScreen(
         uiState = uiState,
 
         route = WeightsRoute,
+        searchQuery = "",
         onSearchQueryChanged = { /* NOOP */ },
         onAddItem = onAddWeight,
         onBack = onBack,
 
+        withSearch = false,
         topAppBarActionsContent = {
             SortMenu(
                 items = uiState.filteringUiInfo.sortMenuItems,

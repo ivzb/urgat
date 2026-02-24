@@ -65,6 +65,8 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
                     emptyMessage = R.string.no_investments_message,
                     emptyButtonLabel = R.string.add_investment,
 
+                    searchQuery = searchQuery,
+
                     filterMenuItems = filtering,
                     showFilterBadge = filterType != InvestmentsFilterType_All,
 

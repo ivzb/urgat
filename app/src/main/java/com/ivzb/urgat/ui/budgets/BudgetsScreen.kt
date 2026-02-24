@@ -90,6 +90,7 @@ fun BudgetsScreen(
         uiState = uiState,
 
         route = BudgetsRoute,
+        searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(BudgetsIntent.SearchQueryChanged(query)) },
         onAddItem = onAddBudget,
         onBack = onBack,

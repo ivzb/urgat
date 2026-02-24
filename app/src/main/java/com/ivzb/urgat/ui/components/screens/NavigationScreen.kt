@@ -1,7 +1,6 @@
 package com.ivzb.urgat.ui.components.screens
 
 import android.content.res.Configuration
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,10 +58,11 @@ fun <T> NavigationScreen(
     uiState: NavigationUiState<T>,
 
     route: UrgatRootRoute,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onFabActionClick: ((T) -> Unit)? = null,
     navigator: Navigator,
-    withTopAppBarActions: Boolean = true,
+    withSearch: Boolean,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     listState: LazyListState? = null,
 
@@ -157,8 +157,9 @@ fun <T> NavigationScreen(
 
             UrgatScaffold(
                 selectedRoute = route,
+                searchQuery = searchQuery,
                 onSearchQueryChanged = onSearchQueryChanged,
-                withTopAppBarActions = withTopAppBarActions,
+                withSearch = withSearch,
                 navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {
@@ -232,9 +233,10 @@ fun NavigationScreenPreview() {
         NavigationScreen(
             uiState = LibraryUiState(),
             route = LibraryRoute,
+            searchQuery = "",
             onSearchQueryChanged = {},
             navigator = FakeNavigator(),
-            withTopAppBarActions = false,
+            withSearch = false,
             topAppBarActionsContent = {},
             listState = rememberLazyListState(),
             modifier = Modifier,

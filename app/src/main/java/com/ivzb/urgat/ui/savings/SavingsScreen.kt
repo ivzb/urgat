@@ -102,6 +102,7 @@ fun SavingsScreen(
         uiState = uiState,
 
         route = SavingsRoute,
+        searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(SavingsIntent.SearchQueryChanged(query)) },
         onAddItem = onAddSaving,
         onBack = onBack,

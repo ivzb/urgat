@@ -34,7 +34,7 @@ data class FinanceUiState(
     },
     override val initialPage: Int = 0,
 
-    override val filteringUiInfo: FilteringUiInfo = FinanceFilteringUiInfo(),
+    override val filteringUiInfo: FinanceFilteringUiInfo = FinanceFilteringUiInfo(),
 
     val uiEvent: FinanceUiEvent? = null,
 ): NavigationPagerUiState<FinanceFabActionId>

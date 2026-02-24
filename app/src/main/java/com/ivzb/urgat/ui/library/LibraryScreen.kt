@@ -88,11 +88,11 @@ fun LibraryScreen(
         uiState = uiState,
 
         route = LibraryRoute,
+        searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
         onFabActionClick = { id -> onIntent(LibraryIntent.FabActionClick(id)) },
         navigator = navigator,
 
-        withTopAppBarActions = uiState.todos.isNotEmpty(),
         topAppBarActionsContent = { page ->
             if (page == LibraryPage.Todos) {
                 FilterMenu(
@@ -101,9 +101,11 @@ fun LibraryScreen(
                     onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
                 )
 
-                MoreTodosMenu(
-                    onClearCompletedTodos = { onIntent(LibraryIntent.ClearCompletedTodos) }
-                )
+                if (!uiState.todos.isEmpty()) {
+                    MoreTodosMenu(
+                        onClearCompletedTodos = { onIntent(LibraryIntent.ClearCompletedTodos) }
+                    )
+                }
             }
         },
 

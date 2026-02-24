@@ -143,15 +143,11 @@ fun FinanceScreen(
         uiState = uiState,
 
         route = FinanceRoute,
+        searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(FinanceIntent.SearchQueryChanged(query)) },
         onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
         navigator = navigator,
 
-        withTopAppBarActions =
-            uiState.expensesUiState.expenses.isNotEmpty() ||
-            uiState.investmentsUiState.investments.isNotEmpty() ||
-            uiState.savingsUiState.savings.isNotEmpty() ||
-            uiState.budgetsUiState.budgets.isNotEmpty(),
         topAppBarActionsContent = { page ->
             when (page) {
                 FinancePage.Expenses -> {
