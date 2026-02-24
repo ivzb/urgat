@@ -1,3 +1,8 @@
+## Release notes 26.02.06
+
+New:
+- Finance screens now all share search query/filter/sort.
+
 ## Release notes 26.02.05
 
 New:
