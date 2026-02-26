@@ -24,7 +24,7 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
@@ -101,11 +101,12 @@ fun LibraryScreen(
                     onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
                 )
 
-                if (!uiState.todos.isEmpty()) {
-                    MoreTodosMenu(
-                        onClearCompletedTodos = { onIntent(LibraryIntent.ClearCompletedTodos) }
+                MoreMenu(
+                    listOfNotNull(
+                        (R.string.clear_completed to { onIntent(LibraryIntent.ClearCompletedTodos) }).takeIf { uiState.hasCompletedTodos },
+                        (R.string.reset_filters to { onIntent(LibraryIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
                     )
-                }
+                )
             }
         },
 

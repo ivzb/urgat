@@ -20,4 +20,8 @@ data class TodosFilteringUiInfo(
 
     val filterMenuItems: List<TodosFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge
+
+}

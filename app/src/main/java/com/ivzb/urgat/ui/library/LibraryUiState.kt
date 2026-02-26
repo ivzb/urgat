@@ -27,4 +27,10 @@ data class LibraryUiState(
     override val filteringUiInfo: LibraryFilteringUiInfo = LibraryFilteringUiInfo(),
 
     val uiEvent: LibraryUiEvent? = null,
-): NavigationPagerUiState<LibraryFabActionId>
+): NavigationPagerUiState<LibraryFabActionId> {
+
+    val hasCompletedTodos: Boolean = todos.any { it.isCompleted }
+
+    val hasAppliedFilters: Boolean = todosFilteringUiInfo.hasAppliedFilters || notesFilteringUiInfo.hasAppliedFilters
+
+}

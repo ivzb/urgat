@@ -25,6 +25,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
+import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortType
@@ -428,6 +429,158 @@ class FinanceViewModelTest {
         advanceUntilIdle()
 
         assertEquals(expected, fakeFinanceRepository.budgetsSortTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets search query to empty`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SearchQueryChanged("coffee"))
+        advanceUntilIdle()
+        assertEquals("coffee", fakeFinanceRepository.searchQueryFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets expenses filter type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetExpensesFiltering(ExpensesFilterType.DEBIT_EXPENSES))
+        advanceUntilIdle()
+        assertEquals(ExpensesFilterType.DEBIT_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(ExpensesFilterType.ALL_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets expenses sort type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetExpensesSorting(ExpensesSortType.BY_MIN))
+        advanceUntilIdle()
+        assertEquals(ExpensesSortType.BY_MIN, fakeFinanceRepository.expensesSortTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(ExpensesSortType.BY_DATE, fakeFinanceRepository.expensesSortTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets investments filter type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetInvestmentsFiltering("etfs"))
+        advanceUntilIdle()
+        assertEquals("etfs", fakeFinanceRepository.investmentsFilterTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets investments sort type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetInvestmentsSorting(InvestmentsSortType.BY_MARKET_VALUE))
+        advanceUntilIdle()
+        assertEquals(InvestmentsSortType.BY_MARKET_VALUE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(InvestmentsSortType.BY_DATE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets savings sort type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetSavingsSorting(SavingsSortType.BY_MAX))
+        advanceUntilIdle()
+        assertEquals(SavingsSortType.BY_MAX, fakeFinanceRepository.savingsSortTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(SavingsSortType.BY_DATE, fakeFinanceRepository.savingsSortTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets budgets filter type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(BudgetsFilterType.POSITIVE_BUDGETS))
+        advanceUntilIdle()
+        assertEquals(BudgetsFilterType.POSITIVE_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(BudgetsFilterType.ALL_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets budgets sort type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetBudgetsSorting(BudgetsSortType.BY_MIN))
+        advanceUntilIdle()
+        assertEquals(BudgetsSortType.BY_MIN, fakeFinanceRepository.budgetsSortTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(BudgetsSortType.BY_DATE, fakeFinanceRepository.budgetsSortTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets all filters and sort types at once`() = runTest {
+        viewModel = createViewModel()
+
+        // Set non-default values for everything
+        viewModel.onIntent(FinanceIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(FinanceIntent.SetExpensesFiltering(ExpensesFilterType.DEBIT_EXPENSES))
+        viewModel.onIntent(FinanceIntent.SetExpensesSorting(ExpensesSortType.BY_MIN))
+        viewModel.onIntent(FinanceIntent.SetInvestmentsFiltering("etfs"))
+        viewModel.onIntent(FinanceIntent.SetInvestmentsSorting(InvestmentsSortType.BY_MARKET_VALUE))
+        viewModel.onIntent(FinanceIntent.SetSavingsSorting(SavingsSortType.BY_MAX))
+        viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(BudgetsFilterType.POSITIVE_BUDGETS))
+        viewModel.onIntent(FinanceIntent.SetBudgetsSorting(BudgetsSortType.BY_MIN))
+        advanceUntilIdle()
+
+        // Verify non-default values are set
+        assertEquals("coffee", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(ExpensesFilterType.DEBIT_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
+        assertEquals(ExpensesSortType.BY_MIN, fakeFinanceRepository.expensesSortTypeFlow.value)
+        assertEquals("etfs", fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(InvestmentsSortType.BY_MARKET_VALUE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+        assertEquals(SavingsSortType.BY_MAX, fakeFinanceRepository.savingsSortTypeFlow.value)
+        assertEquals(BudgetsFilterType.POSITIVE_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
+        assertEquals(BudgetsSortType.BY_MIN, fakeFinanceRepository.budgetsSortTypeFlow.value)
+
+        // Reset all
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        // Verify all reset to defaults
+        assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(ExpensesFilterType.ALL_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
+        assertEquals(ExpensesSortType.BY_DATE, fakeFinanceRepository.expensesSortTypeFlow.value)
+        assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(InvestmentsSortType.BY_DATE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+        assertEquals(SavingsSortType.BY_DATE, fakeFinanceRepository.savingsSortTypeFlow.value)
+        assertEquals(BudgetsFilterType.ALL_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
+        assertEquals(BudgetsSortType.BY_DATE, fakeFinanceRepository.budgetsSortTypeFlow.value)
     }
 
     private fun createViewModel() = FinanceViewModel(

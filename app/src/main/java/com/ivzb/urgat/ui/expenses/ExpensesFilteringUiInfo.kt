@@ -23,4 +23,8 @@ data class ExpensesFilteringUiInfo(
 
     val sortMenuItems: List<ExpensesSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
+
+}

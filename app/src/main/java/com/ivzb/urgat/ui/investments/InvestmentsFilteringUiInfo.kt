@@ -23,4 +23,8 @@ data class InvestmentsFilteringUiInfo(
 
     val sortMenuItems: List<InvestmentsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
+
+}

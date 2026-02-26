@@ -44,6 +44,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
@@ -200,6 +201,12 @@ fun FinanceScreen(
                     )
                 }
             }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.reset_filters to { onIntent(FinanceIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
+                )
+            )
         },
 
         content = { page, listState, onListStateChanged ->

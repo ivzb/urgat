@@ -20,4 +20,8 @@ data class SavingsFilteringUiInfo(
 
     val sortMenuItems: List<SavingsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showSortBadge
+
+}

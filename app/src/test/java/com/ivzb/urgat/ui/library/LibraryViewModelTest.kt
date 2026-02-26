@@ -244,6 +244,93 @@ class LibraryViewModelTest {
         assertEquals(expected, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
     }
 
+    @Test
+    fun `resetFilters resets search query to empty`() = runTest {
+        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
+        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
+        advanceUntilIdle()
+        assertEquals("coffee", fakeObserveTodosUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
+
+        viewModel.onIntent(LibraryIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals("", fakeObserveTodosUseCase.lastQuery)
+        assertEquals("", fakeObserveNotesUseCase.lastQuery)
+    }
+
+    @Test
+    fun `resetFilters resets todos filter type to default`() = runTest {
+        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
+        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        viewModel.onIntent(LibraryIntent.SetTodosFiltering(TodosFilterType.COMPLETED_TODOS))
+        advanceUntilIdle()
+        assertEquals(TodosFilterType.COMPLETED_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+
+        viewModel.onIntent(LibraryIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(TodosFilterType.ALL_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+    }
+
+    @Test
+    fun `resetFilters resets search query and todos filter type at once`() = runTest {
+        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
+        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
+        viewModel = createViewModel()
+
+        // Set non-default values
+        viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(LibraryIntent.SetTodosFiltering(TodosFilterType.COMPLETED_TODOS))
+        advanceUntilIdle()
+
+        // Verify non-default values are set
+        assertEquals("coffee", fakeObserveTodosUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
+        assertEquals(TodosFilterType.COMPLETED_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+
+        // Reset all
+        viewModel.onIntent(LibraryIntent.ResetFilters)
+        advanceUntilIdle()
+
+        // Verify all reset to defaults
+        assertEquals("", fakeObserveTodosUseCase.lastQuery)
+        assertEquals("", fakeObserveNotesUseCase.lastQuery)
+        assertEquals(TodosFilterType.ALL_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+    }
+
+    @Test
+    fun `resetFilters clears filter badge in ui state`() = runTest {
+        emitSuccessData()
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        // Set non-default filter to show badge
+        viewModel.onIntent(LibraryIntent.SetTodosFiltering(TodosFilterType.COMPLETED_TODOS))
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.todosFilteringUiInfo.showFilterBadge)
+
+        // Reset filters
+        viewModel.onIntent(LibraryIntent.ResetFilters)
+        advanceUntilIdle()
+
+        // Badge should be cleared
+        assertFalse(viewModel.uiState.value.todosFilteringUiInfo.showFilterBadge)
+
+        job.cancel()
+    }
+
     private fun createViewModel() = LibraryViewModel(
         fakeObserveTodosUseCase,
         fakeObserveTodosFilteringUseCase,

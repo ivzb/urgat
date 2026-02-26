@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.MoreTodosMenu
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TopAppBarContent
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -89,8 +89,10 @@ fun UrgatScaffoldPreview() {
                     )
                 }
 
-                MoreTodosMenu(
-                    onClearCompletedTodos = {}
+                MoreMenu(
+                    listOf(
+                        R.string.clear_completed to {},
+                    ),
                 )
             },
             modifier = Modifier

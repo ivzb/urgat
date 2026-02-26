@@ -15,6 +15,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
@@ -124,6 +125,8 @@ class FinanceViewModel @Inject constructor(
             is FinanceIntent.SetBudgetsFiltering -> setBudgetsFiltering(intent.filterType)
             is FinanceIntent.SetBudgetsSorting -> setBudgetsSorting(intent.sortType)
 
+            is FinanceIntent.ResetFilters -> resetFilters()
+
             is FinanceIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -211,6 +214,17 @@ class FinanceViewModel @Inject constructor(
         viewModelScope.launch {
             financeRepository.updateBudgetsSortType(sortType)
         }
+    }
+
+    private fun resetFilters() {
+        onSearchQueryChanged("")
+        setExpensesFiltering(ExpensesFilterType.ALL_EXPENSES)
+        setExpensesSorting(ExpensesSortType.BY_DATE)
+        setInvestmentsFiltering(InvestmentsFilterType_All)
+        setInvestmentsSorting(InvestmentsSortType.BY_DATE)
+        setBudgetsFiltering(BudgetsFilterType.ALL_BUDGETS)
+        setBudgetsSorting(BudgetsSortType.BY_DATE)
+        setSavingsSorting(SavingsSortType.BY_DATE)
     }
 
 }

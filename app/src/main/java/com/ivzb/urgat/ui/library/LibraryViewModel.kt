@@ -65,6 +65,7 @@ class LibraryViewModel @Inject constructor(
                     emptyMessage = R.string.no_todos_message,
                     emptyButtonLabel = R.string.add_todo,
                     searchQuery = _searchQuery.value,
+
                     filterMenuItems = todosFiltering,
                     showFilterBadge = todosFilterType != TodosFilterType.ALL_TODOS,
                 ),
@@ -96,6 +97,7 @@ class LibraryViewModel @Inject constructor(
             is LibraryIntent.CompleteTodo -> completeTodo(intent.todo, intent.completed)
             is LibraryIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is LibraryIntent.SetTodosFiltering -> setTodosFiltering(intent.filterType)
+            is LibraryIntent.ResetFilters -> resetFilters()
             is LibraryIntent.FabActionClick -> onFabActionClick(intent.itemId)
             is LibraryIntent.EventConsumed -> onEventConsumed()
         }
@@ -107,6 +109,11 @@ class LibraryViewModel @Inject constructor(
 
     private fun setTodosFiltering(filterType: TodosFilterType) {
         savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY] = filterType
+    }
+
+    private fun resetFilters() {
+        onSearchQueryChanged("")
+        setTodosFiltering(TodosFilterType.ALL_TODOS)
     }
 
     private fun completeTodo(todo: Todo, completed: Boolean) = viewModelScope.launch {

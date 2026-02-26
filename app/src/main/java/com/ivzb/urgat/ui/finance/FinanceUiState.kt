@@ -37,4 +37,12 @@ data class FinanceUiState(
     override val filteringUiInfo: FinanceFilteringUiInfo = FinanceFilteringUiInfo(),
 
     val uiEvent: FinanceUiEvent? = null,
-): NavigationPagerUiState<FinanceFabActionId>
+): NavigationPagerUiState<FinanceFabActionId> {
+
+    val hasAppliedFilters: Boolean =
+        expensesUiState.filteringUiInfo.hasAppliedFilters ||
+        investmentsUiState.filteringUiInfo.hasAppliedFilters ||
+        savingsUiState.filteringUiInfo.hasAppliedFilters ||
+        budgetsUiState.filteringUiInfo.hasAppliedFilters
+
+}

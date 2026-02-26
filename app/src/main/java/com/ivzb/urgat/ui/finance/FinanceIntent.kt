@@ -25,5 +25,7 @@ sealed class FinanceIntent {
     data class SetBudgetsFiltering(val filterType: BudgetsFilterType): FinanceIntent()
     data class SetBudgetsSorting(val sortType: BudgetsSortType): FinanceIntent()
 
+    object ResetFilters: FinanceIntent()
+
     object EventConsumed: FinanceIntent()
 }

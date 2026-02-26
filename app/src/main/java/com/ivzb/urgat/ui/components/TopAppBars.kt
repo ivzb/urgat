@@ -249,21 +249,28 @@ private fun <T> Menu(
 }
 
 @Composable
-fun MoreTodosMenu(
-    onClearCompletedTodos: () -> Unit
+fun MoreMenu(
+    items: List<Pair<Int, () -> Unit>>,
 ) {
+    if (items.isEmpty()) {
+        return
+    }
+
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(Icons.Filled.MoreVert, stringResource(id = R.string.more))
         }
     ) { closeMenu ->
-        DropdownMenuItem(
-            text = { Text(text = stringResource(id = R.string.clear_completed)) },
-            onClick = {
-                onClearCompletedTodos()
-                closeMenu()
-            }
-        )
+
+        items.forEach { (textResId, completion) ->
+            DropdownMenuItem(
+                text = { Text(text = stringResource(id = textResId)) },
+                onClick = {
+                    completion()
+                    closeMenu()
+                }
+            )
+        }
     }
 }
 
@@ -389,10 +396,12 @@ private fun TextTopAppBarPreviewWithDelete() {
 @Preview
 @DarkModePreview
 @Composable
-private fun MoreTodosMenuPreview() {
+private fun MoreMenuPreview() {
     UrgatTheme {
-        MoreTodosMenu(
-            onClearCompletedTodos = {}
+        MoreMenu(
+            listOf(
+                R.string.clear_completed to {},
+            ),
         )
     }
 }
