@@ -1,3 +1,8 @@
+## Release notes 26.02.07
+
+New:
+- You can now quickly reset Library and Finance filters with a new reset button.
+
 ## Release notes 26.02.06
 
 New:
