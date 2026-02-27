@@ -11,11 +11,13 @@ import com.ivzb.urgat.domain.todo.DefaultCreateTodoUseCase
 import com.ivzb.urgat.domain.todo.DefaultDeleteTodoUseCase
 import com.ivzb.urgat.domain.todo.DefaultGetTodoUseCase
 import com.ivzb.urgat.domain.todo.DefaultObserveTodosFilteringUseCase
+import com.ivzb.urgat.domain.todo.DefaultObserveTodosUiStateUseCase
 import com.ivzb.urgat.domain.todo.DefaultObserveTodosUseCase
 import com.ivzb.urgat.domain.todo.DefaultUpdateTodoUseCase
 import com.ivzb.urgat.domain.todo.DeleteTodoUseCase
 import com.ivzb.urgat.domain.todo.GetTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosFilteringUseCase
+import com.ivzb.urgat.domain.todo.ObserveTodosUiStateUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUseCase
 import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import dagger.Binds
@@ -63,5 +65,9 @@ interface TodoUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteTodoUseCase(useCase: DefaultDeleteTodoUseCase): DeleteTodoUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveTodosUiStateUseCase(useCase: DefaultObserveTodosUiStateUseCase): ObserveTodosUiStateUseCase
 
 }

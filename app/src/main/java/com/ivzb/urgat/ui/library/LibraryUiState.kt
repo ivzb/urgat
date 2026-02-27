@@ -1,21 +1,15 @@
 package com.ivzb.urgat.ui.library
 
-import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
-import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
-import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.ui.notes.NotesUiState
+import com.ivzb.urgat.ui.todos.TodosUiState
 
 data class LibraryUiState(
     override val fabActions: List<LibraryFabAction> = LIBRARY_FAB_ACTIONS,
 
-    val todos: List<Todo> = listOf(),
-    val todosFilteringUiInfo: TodosFilteringUiInfo = TodosFilteringUiInfo(),
-
-    val notes: List<Note> = listOf(),
-    val notesFilteringUiInfo: NotesFilteringUiInfo = NotesFilteringUiInfo(),
+    val todosUiState: TodosUiState = TodosUiState(),
+    val notesUiState: NotesUiState = NotesUiState(),
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,
@@ -29,8 +23,10 @@ data class LibraryUiState(
     val uiEvent: LibraryUiEvent? = null,
 ): NavigationPagerUiState<LibraryFabActionId> {
 
-    val hasCompletedTodos: Boolean = todos.any { it.isCompleted }
+    val hasAppliedFilters: Boolean =
+        todosUiState.filteringUiInfo.hasAppliedFilters ||
+        notesUiState.filteringUiInfo.hasAppliedFilters
 
-    val hasAppliedFilters: Boolean = todosFilteringUiInfo.hasAppliedFilters || notesFilteringUiInfo.hasAppliedFilters
+    val hasCompletedTodos: Boolean = todosUiState.todos.any { it.isCompleted }
 
 }

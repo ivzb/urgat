@@ -77,11 +77,11 @@ class FinanceViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        fakeObserveReportBudgetUseCase = FakeObserveReportBudgetUseCase()
         fakeObserveExpensesUiStateUseCase = FakeObserveExpensesUiStateUseCase()
         fakeObserveInvestmentsUiStateUseCase = FakeObserveInvestmentsUiStateUseCase()
         fakeObserveSavingsUiStateUseCase = FakeObserveSavingsUiStateUseCase()
         fakeObserveBudgetUiStateUseCase = FakeObserveBudgetsUiStateUseCase()
+        fakeObserveReportBudgetUseCase = FakeObserveReportBudgetUseCase()
         fakeObserveFiReUseCase = FakeObserveFiReUseCase()
         mockFireRepository = mockk()
         fakeFinanceRepository = FakeFinanceRepository()

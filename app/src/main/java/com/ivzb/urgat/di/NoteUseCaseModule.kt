@@ -4,10 +4,12 @@ import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.note.DefaultCreateNoteUseCase
 import com.ivzb.urgat.domain.note.DefaultDeleteNoteUseCase
 import com.ivzb.urgat.domain.note.DefaultGetNoteUseCase
+import com.ivzb.urgat.domain.note.DefaultObserveNotesUiStateUseCase
 import com.ivzb.urgat.domain.note.DefaultObserveNotesUseCase
 import com.ivzb.urgat.domain.note.DefaultUpdateNoteUseCase
 import com.ivzb.urgat.domain.note.DeleteNoteUseCase
 import com.ivzb.urgat.domain.note.GetNoteUseCase
+import com.ivzb.urgat.domain.note.ObserveNotesUiStateUseCase
 import com.ivzb.urgat.domain.note.ObserveNotesUseCase
 import com.ivzb.urgat.domain.note.UpdateNoteUseCase
 import dagger.Binds
@@ -39,5 +41,9 @@ interface NoteUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteNoteUseCase(useCase: DefaultDeleteNoteUseCase): DeleteNoteUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveNotesUiStateUseCase(useCase: DefaultObserveNotesUiStateUseCase): ObserveNotesUiStateUseCase
 
 }

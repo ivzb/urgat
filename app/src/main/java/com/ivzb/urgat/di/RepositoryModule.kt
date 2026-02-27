@@ -14,6 +14,8 @@ import com.ivzb.urgat.data.importData.DefaultImportDataRepository
 import com.ivzb.urgat.data.importData.ImportDataRepository
 import com.ivzb.urgat.data.investment.DefaultInvestmentsRepository
 import com.ivzb.urgat.data.investment.InvestmentsRepository
+import com.ivzb.urgat.data.library.DefaultLibraryRepository
+import com.ivzb.urgat.data.library.LibraryRepository
 import com.ivzb.urgat.data.note.DefaultNotesRepository
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.data.random.DefaultRandomRepository
@@ -81,5 +83,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsFinanceRepository(financeRepository: DefaultFinanceRepository): FinanceRepository
+
+    @Singleton
+    @Binds
+    fun bindsLibraryRepository(libraryRepository: DefaultLibraryRepository): LibraryRepository
 
 }

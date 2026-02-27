@@ -28,9 +28,11 @@ import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
+import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todos.TodoItem
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodosUiState
 
 @Composable
 fun LibraryScreen(
@@ -96,8 +98,8 @@ fun LibraryScreen(
         topAppBarActionsContent = { page ->
             if (page == LibraryPage.Todos) {
                 FilterMenu(
-                    items = uiState.todosFilteringUiInfo.filterMenuItems,
-                    showBadge = uiState.todosFilteringUiInfo.showFilterBadge,
+                    items = uiState.todosUiState.filteringUiInfo.filterMenuItems,
+                    showBadge = uiState.todosUiState.filteringUiInfo.showFilterBadge,
                     onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
                 )
 
@@ -113,8 +115,7 @@ fun LibraryScreen(
         content = { page, listState, onListStateChanged ->
             when (page) {
                 LibraryPage.Todos -> TodosPage(
-                    todos = uiState.todos,
-                    todosFilteringUiInfo = uiState.todosFilteringUiInfo,
+                    uiState = uiState.todosUiState,
                     onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
@@ -124,8 +125,7 @@ fun LibraryScreen(
                 )
 
                 LibraryPage.Notes -> NotesPage(
-                    notes = uiState.notes,
-                    notesFilteringUiInfo = uiState.notesFilteringUiInfo,
+                    uiState = uiState.notesUiState,
                     onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
                     onNoteClick = onNoteClick,
 
@@ -141,8 +141,7 @@ fun LibraryScreen(
 
 @Composable
 private fun TodosPage(
-    todos: List<Todo>,
-    todosFilteringUiInfo: TodosFilteringUiInfo,
+    uiState: TodosUiState,
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
@@ -169,13 +168,13 @@ private fun TodosPage(
     ) {
 
         when {
-            todos.isEmpty() -> {
+            uiState.todos.isEmpty() -> {
                 item {
                     EmptyStateCard(
-                        iconRes = todosFilteringUiInfo.emptyIconRes,
-                        label = todosFilteringUiInfo.emptyLabel,
-                        message = todosFilteringUiInfo.emptyMessage,
-                        buttonLabel = todosFilteringUiInfo.emptyButtonLabel,
+                        iconRes = uiState.filteringUiInfo.emptyIconRes,
+                        label = uiState.filteringUiInfo.emptyLabel,
+                        message = uiState.filteringUiInfo.emptyMessage,
+                        buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
                         onButtonClick = onAddTodo,
                     )
                 }
@@ -183,7 +182,7 @@ private fun TodosPage(
 
             else -> {
                 items(
-                    items = todos,
+                    items = uiState.todos,
                     key = { todo -> todo.id },
                 ) { todo ->
 
@@ -200,8 +199,7 @@ private fun TodosPage(
 
 @Composable
 private fun NotesPage(
-    notes: List<Note>,
-    notesFilteringUiInfo: NotesFilteringUiInfo,
+    uiState: NotesUiState,
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
 
@@ -227,13 +225,13 @@ private fun NotesPage(
     ) {
 
         when {
-            notes.isEmpty() -> {
+            uiState.notes.isEmpty() -> {
                 item {
                     EmptyStateCard(
-                        iconRes = notesFilteringUiInfo.emptyIconRes,
-                        label = notesFilteringUiInfo.emptyLabel,
-                        message = notesFilteringUiInfo.emptyMessage,
-                        buttonLabel = notesFilteringUiInfo.emptyButtonLabel,
+                        iconRes = uiState.filteringUiInfo.emptyIconRes,
+                        label = uiState.filteringUiInfo.emptyLabel,
+                        message = uiState.filteringUiInfo.emptyMessage,
+                        buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
                         onButtonClick = onAddNote,
                     )
                 }
@@ -241,7 +239,7 @@ private fun NotesPage(
 
             else -> {
                 items(
-                    items = notes,
+                    items = uiState.notes,
                     key = { note -> note.id },
                 ) { note ->
 
@@ -261,14 +259,19 @@ fun LibraryScreenPreview(initialPage: Int = 0) {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
-                todos = SampleData.SAMPLE_TODOS.take(5),
-                todosFilteringUiInfo = TodosFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_todos,
+                todosUiState = TodosUiState(
+                    todos = SampleData.SAMPLE_TODOS.take(5),
+                    filteringUiInfo = TodosFilteringUiInfo(
+                        currentFilteringLabel = R.string.recent_todos,
+                    ),
                 ),
-                notes = SampleData.SAMPLE_NOTES.take(5),
-                notesFilteringUiInfo = NotesFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_notes,
-                ),                isLoading = false,
+                notesUiState = NotesUiState(
+                    notes = SampleData.SAMPLE_NOTES.take(5),
+                    filteringUiInfo = NotesFilteringUiInfo(
+                        currentFilteringLabel = R.string.recent_notes,
+                    ),
+                ),
+                isLoading = false,
                 hasError = false,
                 initialPage = initialPage,
                 filteringUiInfo = LibraryFilteringUiInfo()
@@ -294,10 +297,8 @@ fun LibraryScreenEmptyPreview() {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
-                todos = listOf(),
-                todosFilteringUiInfo = TodosFilteringUiInfo(),
-                notes = listOf(),
-                notesFilteringUiInfo = NotesFilteringUiInfo(),
+                todosUiState = TodosUiState(),
+                notesUiState = NotesUiState(),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = LibraryFilteringUiInfo()
@@ -317,10 +318,8 @@ fun LibraryScreenLoadingPreview() {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
-                todos = listOf(),
-                todosFilteringUiInfo = TodosFilteringUiInfo(),
-                notes = listOf(),
-                notesFilteringUiInfo = NotesFilteringUiInfo(),
+                todosUiState = TodosUiState(),
+                notesUiState = NotesUiState(),
                 isLoading = true,
                 hasError = false,
                 filteringUiInfo = LibraryFilteringUiInfo()
@@ -340,10 +339,8 @@ fun LibraryScreenErrorPreview() {
     UrgatTheme {
         LibraryScreen(
             uiState = LibraryUiState(
-                todos = listOf(),
-                todosFilteringUiInfo = TodosFilteringUiInfo(),
-                notes = listOf(),
-                notesFilteringUiInfo = NotesFilteringUiInfo(),
+                todosUiState = TodosUiState(),
+                notesUiState = NotesUiState(),
                 isLoading = false,
                 hasError = true,
                 filteringUiInfo = LibraryFilteringUiInfo()

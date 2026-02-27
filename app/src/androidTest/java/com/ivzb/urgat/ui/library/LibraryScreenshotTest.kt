@@ -8,8 +8,10 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
+import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodosUiState
 import org.junit.Test
 import org.junit.experimental.categories.Category
 
@@ -27,13 +29,17 @@ class LibraryScreenshotTest: ScreenshotTest() {
 
     private fun screenshotTest_LibraryScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = LibraryUiState(
-            todos = SampleData.SAMPLE_TODOS.take(itemsLimit),
-            todosFilteringUiInfo = TodosFilteringUiInfo(
-                currentFilteringLabel = R.string.recent_todos,
+            todosUiState = TodosUiState(
+                todos = SampleData.SAMPLE_TODOS.take(itemsLimit),
+                filteringUiInfo = TodosFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_todos,
+                ),
             ),
-            notes = SampleData.SAMPLE_NOTES.take(itemsLimit),
-            notesFilteringUiInfo = NotesFilteringUiInfo(
-                currentFilteringLabel = R.string.recent_notes,
+            notesUiState = NotesUiState(
+                notes = SampleData.SAMPLE_NOTES.take(itemsLimit),
+                filteringUiInfo = NotesFilteringUiInfo(
+                    currentFilteringLabel = R.string.recent_notes,
+                ),
             ),
             initialPage = initialPage,
             isLoading = false,
@@ -44,8 +50,8 @@ class LibraryScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_LibraryScreen_emptyState() = screenshotTest(
         uiState = LibraryUiState(
-            todos = listOf(),
-            notes = listOf(),
+            todosUiState = TodosUiState(),
+            notesUiState = NotesUiState(),
             isLoading = false,
             hasError = false,
         ),
@@ -54,8 +60,8 @@ class LibraryScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_LibraryScreen_loadingState() = screenshotTest(
         uiState = LibraryUiState(
-            todos = listOf(),
-            notes = listOf(),
+            todosUiState = TodosUiState(),
+            notesUiState = NotesUiState(),
             isLoading = true,
             hasError = false,
         ),
@@ -64,8 +70,8 @@ class LibraryScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_LibraryScreen_errorState() = screenshotTest(
         uiState = LibraryUiState(
-            todos = listOf(),
-            notes = listOf(),
+            todosUiState = TodosUiState(),
+            notesUiState = NotesUiState(),
             isLoading = false,
             hasError = true,
         ),

@@ -1,7 +1,12 @@
 package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.data.note.Note
+import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
+import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,4 +78,26 @@ class FakeDeleteNoteUseCase : DeleteNoteUseCase {
     ) {
         deleted = listOf(id)
     }
+}
+
+class FakeObserveNotesUiStateUseCase: ObserveNotesUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<NotesUiState>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<NotesUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+    ): Flow<Async<NotesUiState>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
+        }
+        return flow
+    }
+
 }

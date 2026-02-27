@@ -1,17 +1,19 @@
 package com.ivzb.urgat.ui.library
 
-import androidx.lifecycle.SavedStateHandle
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.library.FakeLibraryRepository
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.domain.note.FakeObserveNotesUseCase
+import com.ivzb.urgat.domain.note.FakeObserveNotesUiStateUseCase
 import com.ivzb.urgat.domain.todo.FakeActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase
-import com.ivzb.urgat.domain.todo.FakeObserveTodosFilteringUseCase
-import com.ivzb.urgat.domain.todo.FakeObserveTodosUseCase
+import com.ivzb.urgat.domain.todo.FakeObserveTodosUiStateUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.ui.todos.TodosFilterType
+import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodosUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,13 +36,12 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryViewModelTest {
 
-    private lateinit var fakeObserveTodosUseCase: FakeObserveTodosUseCase
-    private lateinit var fakeObserveTodosFilteringUseCase: FakeObserveTodosFilteringUseCase
-    private lateinit var fakeObserveNotesUseCase: FakeObserveNotesUseCase
+    private lateinit var fakeObserveTodosUiStateUseCase: FakeObserveTodosUiStateUseCase
+    private lateinit var fakeObserveNotesUiStateUseCase: FakeObserveNotesUiStateUseCase
     private lateinit var fakeCompleteTodoUseCase: FakeCompleteTodoUseCase
     private lateinit var fakeActivateTodoUseCase: FakeActivateTodoUseCase
     private lateinit var fakeClearCompletedTodosUseCase: FakeClearCompletedTodosUseCase
-    private lateinit var savedStateHandle: SavedStateHandle
+    private lateinit var fakeLibraryRepository: FakeLibraryRepository
 
     private lateinit var viewModel: LibraryViewModel
 
@@ -50,13 +51,12 @@ class LibraryViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        fakeObserveTodosUseCase = FakeObserveTodosUseCase()
-        fakeObserveTodosFilteringUseCase = FakeObserveTodosFilteringUseCase()
-        fakeObserveNotesUseCase = FakeObserveNotesUseCase()
+        fakeObserveTodosUiStateUseCase = FakeObserveTodosUiStateUseCase()
+        fakeObserveNotesUiStateUseCase = FakeObserveNotesUiStateUseCase()
         fakeCompleteTodoUseCase = FakeCompleteTodoUseCase()
         fakeActivateTodoUseCase = FakeActivateTodoUseCase()
         fakeClearCompletedTodosUseCase = FakeClearCompletedTodosUseCase()
-        savedStateHandle = SavedStateHandle(mapOf())
+        fakeLibraryRepository = FakeLibraryRepository()
     }
 
     @After
@@ -66,7 +66,8 @@ class LibraryViewModelTest {
 
     @Test
     fun `initial state is loading`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Loading)
+        fakeObserveTodosUiStateUseCase.emit(Async.Loading)
+        fakeObserveNotesUiStateUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -76,8 +77,8 @@ class LibraryViewModelTest {
         val initial = viewModel.uiState.value
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
-        assertTrue(initial.todos.isEmpty())
-        assertTrue(initial.notes.isEmpty())
+        assertTrue(initial.todosUiState.todos.isEmpty())
+        assertTrue(initial.notesUiState.notes.isEmpty())
         assertNull(initial.uiEvent)
 
         job.cancel()
@@ -85,7 +86,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        emitSuccessData()
+        emitSuccessData(showFilterBadge = false)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -95,10 +96,10 @@ class LibraryViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeTodos, state.todos)
-        assertEquals(fakeTodosFiltering, state.todosFilteringUiInfo.filterMenuItems)
-        assertFalse(state.todosFilteringUiInfo.showFilterBadge)
-        assertEquals(fakeNotes, state.notes)
+        assertEquals(fakeTodos, state.todosUiState.todos)
+        assertEquals(fakeTodosFiltering, state.todosUiState.filteringUiInfo.filterMenuItems)
+        assertFalse(state.todosUiState.filteringUiInfo.showFilterBadge)
+        assertEquals(fakeNotes, state.notesUiState.notes)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -107,8 +108,7 @@ class LibraryViewModelTest {
 
     @Test
     fun `emits success state when use case returns data with filter badge`() = runTest {
-        emitSuccessData()
-        savedStateHandle = SavedStateHandle(mapOf(LIBRARY_TODOS_FILTER_SAVED_STATE_KEY to TodosFilterType.COMPLETED_TODOS))
+        emitSuccessData(showFilterBadge = true)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -118,10 +118,10 @@ class LibraryViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeTodos, state.todos)
-        assertEquals(fakeTodosFiltering, state.todosFilteringUiInfo.filterMenuItems)
-        assertTrue(state.todosFilteringUiInfo.showFilterBadge)
-        assertEquals(fakeNotes, state.notes)
+        assertEquals(fakeTodos, state.todosUiState.todos)
+        assertEquals(fakeTodosFiltering, state.todosUiState.filteringUiInfo.filterMenuItems)
+        assertTrue(state.todosUiState.filteringUiInfo.showFilterBadge)
+        assertEquals(fakeNotes, state.notesUiState.notes)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -130,9 +130,8 @@ class LibraryViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Error)
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(fakeTodosFiltering))
-        fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
+        fakeObserveTodosUiStateUseCase.emit(Async.Error)
+        fakeObserveNotesUiStateUseCase.emit(Async.Success(NotesUiState(notes = fakeNotes)))
 
         viewModel = createViewModel()
 
@@ -152,17 +151,16 @@ class LibraryViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeTodo = listOf(Todo("2", "Coffee", false, false, 1L))
-        fakeObserveTodosUseCase.emit(Async.Success(fakeTodo))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
+        fakeObserveTodosUiStateUseCase.emit(Async.Success(TodosUiState(todos = fakeTodo)))
+        fakeObserveNotesUiStateUseCase.emit(Async.Success(NotesUiState()))
         viewModel = createViewModel()
 
         viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
 
         advanceUntilIdle()
 
-        assertEquals("coffee", fakeObserveTodosUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveTodosUiStateUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveNotesUiStateUseCase.lastQuery)
     }
 
     @Test
@@ -210,9 +208,8 @@ class LibraryViewModelTest {
     }
 
     private fun `fab action click emits event`(itemId: LibraryFabActionId, expectedEvent: LibraryUiEvent) = runTest {
-        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
+        fakeObserveTodosUiStateUseCase.emit(Async.Success(TodosUiState()))
+        fakeObserveNotesUiStateUseCase.emit(Async.Success(NotesUiState()))
         viewModel = createViewModel()
 
         viewModel.onIntent(LibraryIntent.FabActionClick(itemId))
@@ -230,10 +227,7 @@ class LibraryViewModelTest {
     }
 
     @Test
-    fun `setFiltering updates saved state handle`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
+    fun `SetTodosFiltering updates library repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = TodosFilterType.COMPLETED_TODOS
@@ -241,110 +235,88 @@ class LibraryViewModelTest {
         viewModel.onIntent(LibraryIntent.SetTodosFiltering(expected))
         advanceUntilIdle()
 
-        assertEquals(expected, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+        assertEquals(expected, fakeLibraryRepository.todosFilterTypeFlow.value)
     }
 
     @Test
     fun `resetFilters resets search query to empty`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
         advanceUntilIdle()
-        assertEquals("coffee", fakeObserveTodosUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
+        assertEquals("coffee", fakeLibraryRepository.searchQueryFlow.value)
 
         viewModel.onIntent(LibraryIntent.ResetFilters)
         advanceUntilIdle()
 
-        assertEquals("", fakeObserveTodosUseCase.lastQuery)
-        assertEquals("", fakeObserveNotesUseCase.lastQuery)
+        assertEquals("", fakeLibraryRepository.searchQueryFlow.value)
     }
 
     @Test
     fun `resetFilters resets todos filter type to default`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
         viewModel.onIntent(LibraryIntent.SetTodosFiltering(TodosFilterType.COMPLETED_TODOS))
         advanceUntilIdle()
-        assertEquals(TodosFilterType.COMPLETED_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+        assertEquals(TodosFilterType.COMPLETED_TODOS, fakeLibraryRepository.todosFilterTypeFlow.value)
 
         viewModel.onIntent(LibraryIntent.ResetFilters)
         advanceUntilIdle()
 
-        assertEquals(TodosFilterType.ALL_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+        assertEquals(TodosFilterType.ALL_TODOS, fakeLibraryRepository.todosFilterTypeFlow.value)
     }
 
     @Test
     fun `resetFilters resets search query and todos filter type at once`() = runTest {
-        fakeObserveTodosUseCase.emit(Async.Success(listOf()))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(listOf()))
-        fakeObserveNotesUseCase.emit(Async.Success(listOf()))
         viewModel = createViewModel()
 
-        // Set non-default values
         viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
         viewModel.onIntent(LibraryIntent.SetTodosFiltering(TodosFilterType.COMPLETED_TODOS))
         advanceUntilIdle()
 
-        // Verify non-default values are set
-        assertEquals("coffee", fakeObserveTodosUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveNotesUseCase.lastQuery)
-        assertEquals(TodosFilterType.COMPLETED_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+        assertEquals("coffee", fakeLibraryRepository.searchQueryFlow.value)
+        assertEquals(TodosFilterType.COMPLETED_TODOS, fakeLibraryRepository.todosFilterTypeFlow.value)
 
-        // Reset all
         viewModel.onIntent(LibraryIntent.ResetFilters)
         advanceUntilIdle()
 
-        // Verify all reset to defaults
-        assertEquals("", fakeObserveTodosUseCase.lastQuery)
-        assertEquals("", fakeObserveNotesUseCase.lastQuery)
-        assertEquals(TodosFilterType.ALL_TODOS, savedStateHandle[LIBRARY_TODOS_FILTER_SAVED_STATE_KEY])
+        assertEquals("", fakeLibraryRepository.searchQueryFlow.value)
+        assertEquals(TodosFilterType.ALL_TODOS, fakeLibraryRepository.todosFilterTypeFlow.value)
     }
 
     @Test
-    fun `resetFilters clears filter badge in ui state`() = runTest {
-        emitSuccessData()
+    fun `resetFilters clears search query in ui state`() = runTest {
         viewModel = createViewModel()
 
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.collect()
-        }
-
-        // Set non-default filter to show badge
-        viewModel.onIntent(LibraryIntent.SetTodosFiltering(TodosFilterType.COMPLETED_TODOS))
+        viewModel.onIntent(LibraryIntent.SearchQueryChanged("coffee"))
         advanceUntilIdle()
-        assertTrue(viewModel.uiState.value.todosFilteringUiInfo.showFilterBadge)
+        assertEquals("coffee", fakeLibraryRepository.searchQueryFlow.value)
 
-        // Reset filters
+
         viewModel.onIntent(LibraryIntent.ResetFilters)
         advanceUntilIdle()
 
-        // Badge should be cleared
-        assertFalse(viewModel.uiState.value.todosFilteringUiInfo.showFilterBadge)
-
-        job.cancel()
+        assertEquals("", fakeLibraryRepository.searchQueryFlow.value)
     }
 
     private fun createViewModel() = LibraryViewModel(
-        fakeObserveTodosUseCase,
-        fakeObserveTodosFilteringUseCase,
-        fakeObserveNotesUseCase,
+        fakeObserveTodosUiStateUseCase,
+        fakeObserveNotesUiStateUseCase,
         fakeCompleteTodoUseCase,
         fakeActivateTodoUseCase,
         fakeClearCompletedTodosUseCase,
-        savedStateHandle,
+        fakeLibraryRepository,
     )
 
-    private fun emitSuccessData() {
-        fakeObserveTodosUseCase.emit(Async.Success(fakeTodos))
-        fakeObserveTodosFilteringUseCase.emit(Async.Success(fakeTodosFiltering))
-        fakeObserveNotesUseCase.emit(Async.Success(fakeNotes))
+    private fun emitSuccessData(showFilterBadge: Boolean) {
+        fakeObserveTodosUiStateUseCase.emit(Async.Success(TodosUiState(
+            todos = fakeTodos,
+            filteringUiInfo = TodosFilteringUiInfo(
+                filterMenuItems = fakeTodosFiltering,
+                showFilterBadge = showFilterBadge,
+            ),
+        )))
+        fakeObserveNotesUiStateUseCase.emit(Async.Success(NotesUiState(notes = fakeNotes)))
     }
 
     companion object {

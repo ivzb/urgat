@@ -1,8 +1,13 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.todos.TodosFilterMenuItem
 import com.ivzb.urgat.ui.todos.TodosFilterType
+import com.ivzb.urgat.ui.todos.TodosUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -116,4 +121,27 @@ class FakeDeleteTodoUseCase : DeleteTodoUseCase {
     ) {
         deleted = listOf(id)
     }
+}
+
+class FakeObserveTodosUiStateUseCase: ObserveTodosUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<TodosUiState>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<TodosUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<TodosFilterType>,
+    ): Flow<Async<TodosUiState>> {
+        // Record query changes for assertions
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
+        }
+        return flow
+    }
+
 }
