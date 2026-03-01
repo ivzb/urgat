@@ -48,6 +48,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.CheckboxWithLabel
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.components.responsiveButtonWidth
@@ -107,6 +108,13 @@ fun AddEditExpenseScreen(
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditExpenseIntent.DeleteExpense) },
+                actionsContent = {
+                    MoreMenu(
+                        listOfNotNull(
+                            (R.string.duplicate to { onIntent(AddEditExpenseIntent.DuplicateExpense) }).takeIf { uiState.withDuplicate },
+                        )
+                    )
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

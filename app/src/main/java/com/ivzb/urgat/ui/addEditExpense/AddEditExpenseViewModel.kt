@@ -33,6 +33,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
 
     private val _uiState = MutableStateFlow(AddEditExpenseUiState(
         screenTitleResId = screenTitleResId,
+        withDuplicate = expenseId != null,
     ))
     val uiState: StateFlow<AddEditExpenseUiState> = _uiState.asStateFlow()
 
@@ -51,6 +52,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             is AddEditExpenseIntent.UpdateExcludeFromAnalytics -> updateExcludeFromAnalytics(intent.value)
             AddEditExpenseIntent.SaveExpense -> saveExpense()
             AddEditExpenseIntent.DeleteExpense -> deleteExpense()
+            AddEditExpenseIntent.DuplicateExpense -> duplicateExpense()
             AddEditExpenseIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -143,6 +145,26 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun duplicateExpense() {
+        if (expenseId == null) {
+            Assert.fail("duplicateExpense() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(date = System.currentTimeMillis())
+            }
+
+            createNewExpense()
         }
     }
 

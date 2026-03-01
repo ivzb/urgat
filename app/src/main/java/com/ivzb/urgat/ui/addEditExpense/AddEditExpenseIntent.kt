@@ -8,5 +8,6 @@ sealed class AddEditExpenseIntent {
     data class UpdateExcludeFromAnalytics(val value: Boolean): AddEditExpenseIntent()
     object SaveExpense: AddEditExpenseIntent()
     object DeleteExpense: AddEditExpenseIntent()
+    object DuplicateExpense: AddEditExpenseIntent()
     object UserMessageShown: AddEditExpenseIntent()
 }

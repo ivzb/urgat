@@ -107,6 +107,8 @@ fun TextTopAppBar(
 
     withDelete: Boolean,
     onDelete: () -> Unit,
+
+    actionsContent: (@Composable () -> Unit)? = null,
 ) {
     TopAppBar(
         title = {
@@ -128,6 +130,8 @@ fun TextTopAppBar(
                     )
                 }
             }
+
+            actionsContent?.invoke()
         },
         windowInsets = topBarInsets(),
         modifier = Modifier

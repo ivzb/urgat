@@ -261,6 +261,81 @@ class AddEditExpenseViewModelTest {
     }
 
     @Test
+    fun `duplicateExpense creates new expense with current date`() = runTest {
+        val expenseId = "123"
+        val expense = Expense(
+            id = expenseId,
+            name = "Taxi",
+            amount = BigDecimal("15"),
+            category = "Transport",
+            date = 123L,
+            excludeFromAnalytics = false,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = expense
+
+        viewModel = createViewModel(expenseId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditExpenseIntent.DuplicateExpense)
+
+        advanceUntilIdle()
+
+        val (name, amount, category, date, excludeFromAnalytics) = createUseCase.created
+        assertEquals("Taxi", name)
+        assertEquals(BigDecimal("15"), amount)
+        assertEquals("Transport", category)
+        assertTrue((date as Long) > 123L)
+        assertEquals(false, excludeFromAnalytics)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateExpense with modified fields creates new expense`() = runTest {
+        val expenseId = "456"
+        val expense = Expense(
+            id = expenseId,
+            name = "Coffee",
+            amount = BigDecimal("5"),
+            category = "Food",
+            date = 100L,
+            excludeFromAnalytics = true,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = expense
+
+        viewModel = createViewModel(expenseId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditExpenseIntent.UpdateName("Tea"))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateAmount("3"))
+        viewModel.onIntent(AddEditExpenseIntent.DuplicateExpense)
+
+        advanceUntilIdle()
+
+        val (name, amount, category, _, excludeFromAnalytics) = createUseCase.created
+        assertEquals("Tea", name)
+        assertEquals(BigDecimal("3"), amount)
+        assertEquals("Food", category)
+        assertEquals(true, excludeFromAnalytics)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateExpense without id shows error`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditExpenseIntent.DuplicateExpense)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
+        }
+    }
+
+    @Test
     fun `userMessageShown clears message`() = runTest {
         viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
         assertNotNull(viewModel.uiState.value.userMessage)
