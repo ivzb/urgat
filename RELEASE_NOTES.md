@@ -1,3 +1,8 @@
+## Release notes 26.03.00
+
+New:
+- Quickly duplicate any existing expense.
+
 ## Release notes 26.02.07
 
 New:
