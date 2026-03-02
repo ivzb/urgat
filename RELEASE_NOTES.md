@@ -1,3 +1,8 @@
+## Release notes 26.03.01
+
+New:
+- Quickly duplicate any existing investment.
+
 ## Release notes 26.03.00
 
 New:
