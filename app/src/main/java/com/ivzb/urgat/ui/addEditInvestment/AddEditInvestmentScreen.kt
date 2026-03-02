@@ -47,6 +47,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.components.responsiveButtonWidth
@@ -109,6 +110,13 @@ fun AddEditInvestmentScreen(
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditInvestmentIntent.DeleteInvestment) },
+                actionsContent = {
+                    MoreMenu(
+                        listOfNotNull(
+                            (R.string.duplicate to { onIntent(AddEditInvestmentIntent.DuplicateInvestment) }).takeIf { uiState.withDuplicate },
+                        )
+                    )
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

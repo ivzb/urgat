@@ -287,6 +287,89 @@ class AddEditInvestmentViewModelTest {
             assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
+    
+    @Test
+    fun `duplicateInvestment creates new investment with current date`() = runTest {
+        val investmentId = "123"
+        val investment = Investment(
+            id = investmentId,
+            name = "SNP 500",
+            shares = BigDecimal("150"),
+            cost = BigDecimal("250"),
+            category = "etfs",
+            currency = "USD",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = investment
+
+        viewModel = createViewModel(investmentId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditInvestmentIntent.DuplicateInvestment)
+
+        advanceUntilIdle()
+
+        val (name, shares, cost, category, currency, date) = createUseCase.created
+        assertEquals("SNP 500", name)
+        assertEquals(BigDecimal("150"), shares)
+        assertEquals(BigDecimal("250"), cost)
+        assertEquals("etfs", category)
+        assertEquals("USD", currency)
+        assertTrue((date as Long) > 123L)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateInvestment with modified fields creates new investment`() = runTest {
+        val investmentId = "456"
+        val investment = Investment(
+            id = investmentId,
+            name = "SNP 500",
+            shares = BigDecimal("150"),
+            cost = BigDecimal("250"),
+            category = "etfs",
+            currency = "USD",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = investment
+
+        viewModel = createViewModel(investmentId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateName("NVDA"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateShares("300"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost("500"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory("stocks"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("EUR"))
+        viewModel.onIntent(AddEditInvestmentIntent.DuplicateInvestment)
+
+        advanceUntilIdle()
+
+        val (name, shares, cost, category, currency, date) = createUseCase.created
+        assertEquals("NVDA", name)
+        assertEquals(BigDecimal("300"), shares)
+        assertEquals(BigDecimal("500"), cost)
+        assertEquals("stocks", category)
+        assertEquals("EUR", currency)
+        assertTrue((date as Long) > 123L)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateInvestment without id shows error`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditInvestmentIntent.DuplicateInvestment)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
+        }
+    }
 
     @Test
     fun `userMessageShown clears message`() = runTest {
@@ -308,4 +391,7 @@ class AddEditInvestmentViewModelTest {
             deleteUseCase,
         )
     }
+
+    private operator fun <T> List<T>.component6(): T = this[5]
+
 }

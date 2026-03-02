@@ -9,5 +9,6 @@ sealed class AddEditInvestmentIntent {
     data class UpdateDate(val value: Long): AddEditInvestmentIntent()
     object SaveInvestment: AddEditInvestmentIntent()
     object DeleteInvestment: AddEditInvestmentIntent()
+    object DuplicateInvestment: AddEditInvestmentIntent()
     object UserMessageShown: AddEditInvestmentIntent()
 }

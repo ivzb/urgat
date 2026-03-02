@@ -34,6 +34,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
 
     private val _uiState = MutableStateFlow(AddEditInvestmentUiState(
         screenTitleResId = screenTitleResId,
+        withDuplicate = investmentId != null,
     ))
     val uiState: StateFlow<AddEditInvestmentUiState> = _uiState.asStateFlow()
 
@@ -53,6 +54,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
             is AddEditInvestmentIntent.UpdateDate -> updateDate(intent.value)
             AddEditInvestmentIntent.SaveInvestment -> saveInvestment()
             AddEditInvestmentIntent.DeleteInvestment -> deleteInvestment()
+            AddEditInvestmentIntent.DuplicateInvestment -> duplicateInvestment()
             AddEditInvestmentIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -182,6 +184,26 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun duplicateInvestment() {
+        if (investmentId == null) {
+            Assert.fail("duplicateInvestment() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(date = System.currentTimeMillis())
+            }
+
+            createNewInvestment()
         }
     }
 
