@@ -100,6 +100,4 @@
 - change filtering info to take search query into account when showing empty state - say something like you don't have X with this search criteria
 - make empty state for inner finance screen - they crash when search doesn't match anything and there is no data
 - remove withDelete and onDelete from TopAppBars - let each screen to define it
-- savings duplicate function as done for add/edit expense
 - budgets duplicate function as done for add/edit expense
-- investment duplicate function as done for add/edit expense

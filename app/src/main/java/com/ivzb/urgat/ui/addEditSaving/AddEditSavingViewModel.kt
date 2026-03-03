@@ -34,6 +34,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
 
     private val _uiState = MutableStateFlow(AddEditSavingUiState(
         screenTitleResId = screenTitleResId,
+        withDuplicate = savingId != null,
     ))
     val uiState: StateFlow<AddEditSavingUiState> = _uiState.asStateFlow()
 
@@ -50,6 +51,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
             is AddEditSavingIntent.UpdateDate -> updateDate(intent.value)
             AddEditSavingIntent.SaveSaving -> saveSaving()
             AddEditSavingIntent.DeleteSaving -> deleteSaving()
+            AddEditSavingIntent.DuplicateSaving -> duplicateSaving()
             AddEditSavingIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -152,6 +154,26 @@ class AddEditSavingViewModel @AssistedInject constructor(
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun duplicateSaving() {
+        if (savingId == null) {
+            Assert.fail("duplicateSaving() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(date = System.currentTimeMillis())
+            }
+
+            createNewSaving()
         }
     }
 

@@ -6,5 +6,6 @@ sealed class AddEditSavingIntent {
     data class UpdateDate(val value: Long): AddEditSavingIntent()
     object SaveSaving: AddEditSavingIntent()
     object DeleteSaving: AddEditSavingIntent()
+    object DuplicateSaving: AddEditSavingIntent()
     object UserMessageShown: AddEditSavingIntent()
 }

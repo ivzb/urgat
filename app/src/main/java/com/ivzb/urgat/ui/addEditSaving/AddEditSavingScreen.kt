@@ -47,6 +47,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.components.responsiveButtonWidth
@@ -106,6 +107,13 @@ fun AddEditSavingScreen(
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditSavingIntent.DeleteSaving) },
+                actionsContent = {
+                    MoreMenu(
+                        listOfNotNull(
+                            (R.string.duplicate to { onIntent(AddEditSavingIntent.DuplicateSaving) }).takeIf { uiState.withDuplicate },
+                        )
+                    )
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

@@ -15,6 +15,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
@@ -232,6 +234,75 @@ class AddEditSavingViewModelTest {
 
             val uiState = viewModel.uiState.value
             Assert.assertEquals(R.string.something_went_wrong, uiState.userMessage)
+        }
+    }
+
+
+    @Test
+    fun `duplicateSaving creates new saving with current date`() = runTest {
+        val savingId = "123"
+        val saving = Saving(
+            id = savingId,
+            name = "SNP 500",
+            amount = BigDecimal("1500"),
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = saving
+
+        viewModel = createViewModel(savingId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditSavingIntent.DuplicateSaving)
+
+        advanceUntilIdle()
+
+        val (name, amount, date) = createUseCase.created
+        assertEquals("SNP 500", name)
+        assertEquals(BigDecimal("1500"), amount)
+        assertTrue((date as Long) > 123L)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateSaving with modified fields creates new saving`() = runTest {
+        val savingId = "456"
+        val saving = Saving(
+            id = savingId,
+            name = "SNP 500",
+            amount = BigDecimal("1500"),
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = saving
+
+        viewModel = createViewModel(savingId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditSavingIntent.UpdateName("NVDA"))
+        viewModel.onIntent(AddEditSavingIntent.UpdateAmount("3000"))
+        viewModel.onIntent(AddEditSavingIntent.DuplicateSaving)
+
+        advanceUntilIdle()
+
+        val (name, amount, date) = createUseCase.created
+        assertEquals("NVDA", name)
+        assertEquals(BigDecimal("3000"), amount)
+        assertTrue((date as Long) > 123L)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateSaving without id shows error`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditSavingIntent.DuplicateSaving)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
 
