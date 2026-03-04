@@ -1,3 +1,8 @@
+## Release notes 26.03.03
+
+New:
+- Quickly duplicate any existing budget.
+
 ## Release notes 26.03.02
 
 New:
