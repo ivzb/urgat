@@ -7,5 +7,6 @@ sealed class AddEditBudgetIntent {
     data class UpdateDate(val value: Long): AddEditBudgetIntent()
     object SaveBudget: AddEditBudgetIntent()
     object DeleteBudget: AddEditBudgetIntent()
+    object DuplicateBudget: AddEditBudgetIntent()
     object UserMessageShown: AddEditBudgetIntent()
 }

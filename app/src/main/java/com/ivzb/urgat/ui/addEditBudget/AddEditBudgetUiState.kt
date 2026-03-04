@@ -13,5 +13,6 @@ data class AddEditBudgetUiState(
     val isLoading: Boolean = false,
     val userMessage: Int? = null,
     val withDelete: Boolean = false,
+    val withDuplicate: Boolean = false,
     val shouldNavigateBack: Boolean = false
 )

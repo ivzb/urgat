@@ -270,6 +270,79 @@ class AddEditBudgetViewModelTest {
     }
 
     @Test
+    fun `duplicateBudget creates new budget with current date`() = runTest {
+        val budgetId = "123"
+        val budget = Budget(
+            id = budgetId,
+            income = BigDecimal("5000"),
+            bankStart = BigDecimal("3500"),
+            bankEnd = BigDecimal("7500"),
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = budget
+
+        viewModel = createViewModel(budgetId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditBudgetIntent.DuplicateBudget)
+
+        advanceUntilIdle()
+
+        val (income, bankStart, bankEnd, date) = createUseCase.created
+        assertEquals(BigDecimal("5000"), income)
+        assertEquals(BigDecimal("3500"), bankStart)
+        assertEquals(BigDecimal("7500"), bankEnd)
+        assertTrue((date as Long) > 123L)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateBudget with modified fields creates new budget`() = runTest {
+        val budgetId = "456"
+        val budget = Budget(
+            id = budgetId,
+            income = BigDecimal("5000"),
+            bankStart = BigDecimal("3500"),
+            bankEnd = BigDecimal("7500"),
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = budget
+
+        viewModel = createViewModel(budgetId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditBudgetIntent.UpdateIncome("6000"))
+        viewModel.onIntent(AddEditBudgetIntent.UpdateBankStart("4500"))
+        viewModel.onIntent(AddEditBudgetIntent.UpdateBankEnd("8500"))
+        viewModel.onIntent(AddEditBudgetIntent.DuplicateBudget)
+
+        advanceUntilIdle()
+
+        val (income, bankStart, bankEnd, date) = createUseCase.created
+        assertEquals(BigDecimal("6000"), income)
+        assertEquals(BigDecimal("4500"), bankStart)
+        assertEquals(BigDecimal("8500"), bankEnd)
+        assertTrue((date as Long) > 123L)
+        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateBudget without id shows error`() = runTest {
+        assertFailsWith<Exception> {
+            viewModel.onIntent(AddEditBudgetIntent.DuplicateBudget)
+
+            val uiState = viewModel.uiState.value
+            assertEquals(R.string.something_went_wrong, uiState.userMessage)
+        }
+    }
+
+    @Test
     fun `userMessageShown clears message`() = runTest {
         viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
         assertNotNull(viewModel.uiState.value.userMessage)

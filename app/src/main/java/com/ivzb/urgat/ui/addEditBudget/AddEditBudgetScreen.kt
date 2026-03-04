@@ -45,9 +45,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.CheckboxWithLabel
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.LoadingState
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
 import com.ivzb.urgat.ui.components.responsiveButtonWidth
@@ -107,6 +107,13 @@ fun AddEditBudgetScreen(
                 onBack = onBack,
                 withDelete = uiState.withDelete,
                 onDelete = { onIntent(AddEditBudgetIntent.DeleteBudget) },
+                actionsContent = {
+                    MoreMenu(
+                        listOfNotNull(
+                            (R.string.duplicate to { onIntent(AddEditBudgetIntent.DuplicateBudget) }).takeIf { uiState.withDuplicate },
+                        )
+                    )
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

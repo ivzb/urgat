@@ -33,6 +33,7 @@ class AddEditBudgetViewModel @AssistedInject constructor(
 
     private val _uiState = MutableStateFlow(AddEditBudgetUiState(
         screenTitleResId = screenTitleResId,
+        withDuplicate = budgetId != null,
     ))
     val uiState: StateFlow<AddEditBudgetUiState> = _uiState.asStateFlow()
 
@@ -50,6 +51,7 @@ class AddEditBudgetViewModel @AssistedInject constructor(
             is AddEditBudgetIntent.UpdateDate -> updateDate(intent.value)
             AddEditBudgetIntent.SaveBudget -> saveBudget()
             AddEditBudgetIntent.DeleteBudget -> deleteBudget()
+            AddEditBudgetIntent.DuplicateBudget -> duplicateBudget()
             AddEditBudgetIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -134,6 +136,26 @@ class AddEditBudgetViewModel @AssistedInject constructor(
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
             }
+        }
+    }
+
+    private fun duplicateBudget() {
+        if (budgetId == null) {
+            Assert.fail("duplicateBudget() was called but id is null.")
+
+            _uiState.update {
+                it.copy(userMessage = R.string.something_went_wrong)
+            }
+
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(date = System.currentTimeMillis())
+            }
+
+            createNewBudget()
         }
     }
 
