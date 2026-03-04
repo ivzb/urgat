@@ -1,3 +1,8 @@
+## Release notes 26.03.02
+
+New:
+- Quickly duplicate any existing saving.
+
 ## Release notes 26.03.01
 
 New:
