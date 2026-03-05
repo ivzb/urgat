@@ -52,7 +52,7 @@ class FakeObserveGroupedExpensesMonthlyUseCase : ObserveGroupedExpensesMonthlyUs
     }
 
     override operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<ExpensesFilterType>?,
         sortTypeFlow: Flow<ExpensesSortType>?,
@@ -60,7 +60,7 @@ class FakeObserveGroupedExpensesMonthlyUseCase : ObserveGroupedExpensesMonthlyUs
     ): Flow<Async<List<GroupedExpenses>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow.collect { lastQuery = it }
+            searchQueryFlow?.collect { lastQuery = it }
         }
         return flow
     }

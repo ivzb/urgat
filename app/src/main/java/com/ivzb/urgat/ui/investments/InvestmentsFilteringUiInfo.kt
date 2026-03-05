@@ -16,7 +16,7 @@ data class InvestmentsFilteringUiInfo(
     override val errorLabel: Int = R.string.error_investments,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val searchQuery: String = "",
+    override val searchQuery: String = "",
 
     val filterMenuItems: List<InvestmentsFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,

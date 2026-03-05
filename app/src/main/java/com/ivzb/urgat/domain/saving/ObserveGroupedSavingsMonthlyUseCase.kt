@@ -16,7 +16,7 @@ typealias GroupedSavings = GroupedItems<String, BigDecimal, Saving>
 interface ObserveGroupedSavingsMonthlyUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
@@ -37,7 +37,7 @@ class DefaultObserveGroupedSavingsMonthlyUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,

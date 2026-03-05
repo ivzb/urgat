@@ -15,7 +15,7 @@ typealias GroupedInvestments = GroupedItems<String, String, Investment>
 interface ObserveGroupedInvestmentsMonthlyUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
@@ -36,7 +36,7 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,

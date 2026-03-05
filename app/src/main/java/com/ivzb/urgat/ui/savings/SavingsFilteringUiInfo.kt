@@ -16,7 +16,7 @@ data class SavingsFilteringUiInfo(
     override val errorLabel: Int = R.string.error_savings,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val searchQuery: String = "",
+    override val searchQuery: String = "",
 
     val sortMenuItems: List<SavingsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,

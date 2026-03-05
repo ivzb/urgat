@@ -331,13 +331,10 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         val returnOfInvestmentFlow = flowOf(returnOfInvestment)
         val taxRateFlow = flowOf(taxRate)
 
-        val searchQueryFlow = flowOf("coffee")
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
-        val limit = 10
-        val limitFlow = flowOf(limit)
 
         every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+            searchQueryFlow = null,
             dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
@@ -345,7 +342,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ) } returns flowOf(Async.Success(budget))
 
         every { observeGroupedExpensesMonthlyUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+            searchQueryFlow = null,
             dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
@@ -353,7 +350,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ) } returns flowOf(Async.Success(expenses))
 
         every { observeGroupedInvestmentsAllTimeUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+            searchQueryFlow = null,
             dateRangeFlow = null,
             filterTypeFlow = null,
             sortTypeFlow = null,
@@ -361,14 +358,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ) } returns flowOf(Async.Success(investments))
 
         every { observeGroupedSavingsAllTimeUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+            searchQueryFlow = null,
             dateRangeFlow = null,
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(savings))
 
-        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, dateRangeFlow).toList()
 
         advanceUntilIdle()
 
@@ -385,13 +382,10 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         val returnOfInvestmentFlow = flowOf(7.toBigDecimal())
         val taxRateFlow = flowOf(10.toBigDecimal())
 
-        val searchQueryFlow = flowOf("coffee")
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
-        val limit = 10
-        val limitFlow = flowOf(limit)
 
         every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+             searchQueryFlow = null,
             dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
@@ -399,7 +393,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ) } returns flowOf(Async.Error)
 
         every { observeGroupedExpensesMonthlyUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+             searchQueryFlow = null,
             dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,
             sortTypeFlow = null,
@@ -407,7 +401,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ) } returns flowOf(Async.Success(listOf()))
 
         every { observeGroupedInvestmentsAllTimeUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+             searchQueryFlow = null,
             dateRangeFlow = null,
             filterTypeFlow = null,
             sortTypeFlow = null,
@@ -415,14 +409,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         ) } returns flowOf(Async.Success(NO_INVESTMENTS))
 
         every { observeGroupedSavingsAllTimeUseCase.invoke(
-            searchQueryFlow = eq(searchQueryFlow),
+             searchQueryFlow = null,
             dateRangeFlow = null,
             filterTypeFlow = null,
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(NO_SAVINGS))
 
-        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
+        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, dateRangeFlow).toList()
 
         advanceUntilIdle()
 

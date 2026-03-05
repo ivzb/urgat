@@ -11,4 +11,6 @@ interface FilteringUiInfo {
 
     val errorLabel: Int
     val errorIconRes: Int
+
+    val searchQuery: String
 }

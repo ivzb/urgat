@@ -267,12 +267,10 @@ class FinanceViewModelTest {
 
         advanceUntilIdle()
 
-        assertEquals("coffee", fakeObserveReportBudgetUseCase.lastQuery)
         assertEquals("coffee", fakeObserveExpensesUiStateUseCase.lastQuery)
         assertEquals("coffee", fakeObserveInvestmentsUiStateUseCase.lastQuery)
         assertEquals("coffee", fakeObserveSavingsUiStateUseCase.lastQuery)
         assertEquals("coffee", fakeObserveBudgetUiStateUseCase.lastQuery)
-        assertEquals("coffee", fakeObserveFiReUseCase.lastQuery)
     }
 
     @Test

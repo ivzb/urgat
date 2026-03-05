@@ -16,7 +16,7 @@ data class ExpensesFilteringUiInfo(
     override val errorLabel: Int = R.string.error_expenses,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val searchQuery: String = "",
+    override val searchQuery: String = "",
 
     val filterMenuItems: List<ExpensesFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,

@@ -18,7 +18,7 @@ typealias GroupedBudgetCategories = GroupedItems<String, BigDecimal, BudgetCateg
 interface ObserveGroupedBudgetCategoriesMonthlyUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
@@ -40,7 +40,7 @@ class DefaultObserveGroupedBudgetCategoriesMonthlyUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,

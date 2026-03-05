@@ -13,4 +13,6 @@ data class WellbeingFilteringUiInfo(
 
     override val errorLabel: Int = R.string.error_wellbeing,
     override val errorIconRes: Int = R.drawable.ic_error,
+
+    override val searchQuery: String = "",
 ) : FilteringUiInfo

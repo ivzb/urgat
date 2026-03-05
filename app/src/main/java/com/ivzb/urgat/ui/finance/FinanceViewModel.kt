@@ -73,8 +73,8 @@ class FinanceViewModel @Inject constructor(
         observeInvestmentsUiStateUseCase(_searchQuery, _savedInvestmentsFilterType, _savedInvestmentsSortType),
         observeSavingsUiStateUseCase(_searchQuery, _savedSavingsSortType),
         observeBudgetsUiStateUseCase(_searchQuery, _savedBudgetsFilterType, _savedBudgetsSortType),
-        observeReportBudgetUseCase(_searchQuery, _budgetDateRange, null, null, null),
-        observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _searchQuery, _fireDateRange, null, null, null),
+        observeReportBudgetUseCase(_budgetDateRange),
+        observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _fireDateRange),
         _searchQuery.map { Async.Success(it) },
         uiEventHolder(),
 

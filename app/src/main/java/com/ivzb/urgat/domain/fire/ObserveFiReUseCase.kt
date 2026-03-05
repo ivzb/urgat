@@ -21,11 +21,7 @@ interface ObserveFiReUseCase {
         returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
 
-        searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>? = null,
-        filterTypeFlow: Flow<Unit>? = null,
-        sortTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>? = null,
     ): Flow<Async<FiRe?>>
 
 }
@@ -42,11 +38,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
         returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
 
-        searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<Unit>?,
-        sortTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>?
     ): Flow<Async<FiRe?>> {
 
         return com.ivzb.urgat.util.combine(
@@ -54,10 +46,10 @@ class DefaultObserveFiReUseCase @Inject constructor(
             returnOfInvestmentFlow,
             taxRateFlow,
 
-            observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedExpensesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedSavingsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedExpensesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedSavingsAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         ) { withdrawalRate, returnOfInvestment, taxRate, budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsAllTimeAsync, savingsAllTimeAsync ->
 
             if (budgetCategoriesMonthlyAsync is Async.Success &&

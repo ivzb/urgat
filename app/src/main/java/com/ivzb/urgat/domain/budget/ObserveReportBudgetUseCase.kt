@@ -16,11 +16,7 @@ import javax.inject.Inject
 interface ObserveReportBudgetUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<Unit>?,
-        sortTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>?,
     ): Flow<Async<GroupedBudget?>>
 
 }
@@ -34,18 +30,14 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
 
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<Unit>?,
-        sortTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>?
     ): Flow<Async<GroupedBudget?>> {
 
         return combine(
-            observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedExpensesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedSavingsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedExpensesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedSavingsMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         ) { budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsMonthlyAsync, savingsMonthlyAsync ->
 
             if (budgetCategoriesMonthlyAsync is Async.Success &&

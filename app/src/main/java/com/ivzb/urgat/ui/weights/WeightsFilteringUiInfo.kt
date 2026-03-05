@@ -16,6 +16,8 @@ data class WeightsFilteringUiInfo(
     override val errorLabel: Int = R.string.error_weights,
     override val errorIconRes: Int = R.drawable.ic_error,
 
+    override val searchQuery: String = "",
+
     val sortMenuItems: List<WeightsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
 ) : FilteringUiInfo

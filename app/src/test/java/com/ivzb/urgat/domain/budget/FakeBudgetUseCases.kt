@@ -157,7 +157,7 @@ class FakeObserveGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCate
     }
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
@@ -165,7 +165,7 @@ class FakeObserveGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCate
     ): Flow<Async<List<GroupedBudgetCategories>>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow.collect { lastQuery = it }
+            searchQueryFlow?.collect { lastQuery = it }
         }
         return flow
     }
@@ -228,23 +228,13 @@ class FakeObserveReportBudgetUseCase: ObserveReportBudgetUseCase {
 
     private val flow = MutableStateFlow<Async<GroupedBudget?>>(Async.Loading)
 
-    var lastQuery: String = ""
-
     fun emit(value: Async<GroupedBudget?>) {
         flow.value = value
     }
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<Unit>?,
-        sortTypeFlow: Flow<Unit>?,
-        limitFlow: Flow<Int>?,
     ): Flow<Async<GroupedBudget?>> {
-        // Record query changes for assertions
-        CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow.collect { lastQuery = it }
-        }
         return flow
     }
 

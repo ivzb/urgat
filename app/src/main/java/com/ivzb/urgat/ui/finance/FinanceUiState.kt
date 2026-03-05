@@ -3,7 +3,6 @@ package com.ivzb.urgat.ui.finance
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
-import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
@@ -44,5 +43,17 @@ data class FinanceUiState(
         investmentsUiState.filteringUiInfo.hasAppliedFilters ||
         savingsUiState.filteringUiInfo.hasAppliedFilters ||
         budgetsUiState.filteringUiInfo.hasAppliedFilters
+
+    fun withTopbarActions(page: Page): Boolean {
+        val uiState = when (page) {
+            FinancePage.Expenses -> expensesUiState
+            FinancePage.Investments -> investmentsUiState
+            FinancePage.Savings -> savingsUiState
+            FinancePage.Budgets -> budgetsUiState
+            else -> null
+        }
+
+        return uiState?.let { !it.isEmpty || it.filteringUiInfo.searchQuery.isNotEmpty() } ?: false
+    }
 
 }

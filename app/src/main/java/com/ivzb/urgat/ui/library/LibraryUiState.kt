@@ -27,6 +27,14 @@ data class LibraryUiState(
         todosUiState.filteringUiInfo.hasAppliedFilters ||
         notesUiState.filteringUiInfo.hasAppliedFilters
 
-    val hasCompletedTodos: Boolean = todosUiState.todos.any { it.isCompleted }
+    fun withTopbarActions(page: Page): Boolean {
+        val uiState = when (page) {
+            LibraryPage.Todos -> todosUiState
+            LibraryPage.Notes -> notesUiState
+            else -> null
+        }
+
+        return uiState?.let { !it.isEmpty || it.filteringUiInfo.searchQuery.isNotEmpty() } ?: false
+    }
 
 }

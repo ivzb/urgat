@@ -16,7 +16,7 @@ data class BudgetsFilteringUiInfo(
     override val errorLabel: Int = R.string.error_budgets,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val searchQuery: String = "",
+    override val searchQuery: String = "",
 
     val filterMenuItems: List<BudgetsFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,

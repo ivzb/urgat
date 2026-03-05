@@ -1,6 +1,5 @@
 package com.ivzb.urgat.domain.common
 
-import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
@@ -20,7 +19,7 @@ class ObserveGroupedUseCase<T, FilterType, SortType, Group>(
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>? = null,
         dateRangeFlow: Flow<LongRange>? = null,
         filterTypeFlow: Flow<FilterType>? = null,
         sortTypeFlow: Flow<SortType>? = null,

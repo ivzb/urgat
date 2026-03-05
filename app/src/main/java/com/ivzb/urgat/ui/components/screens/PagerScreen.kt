@@ -43,7 +43,7 @@ fun <T> NavigationPagerScreen(
     onFabActionClick: ((T) -> Unit)? = null,
     navigator: Navigator,
 
-    withSearch: Boolean = true,
+    withSearch: (Page) -> Boolean,
     topAppBarActionsContent: (@Composable (Page) -> Unit)? = null,
 
     content: PagerContent,
@@ -53,6 +53,7 @@ fun <T> NavigationPagerScreen(
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
     val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
     val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
+    val page = uiState.pages[pagerState.currentPage]
 
     NavigationScreen(
         uiState = uiState,
@@ -63,8 +64,8 @@ fun <T> NavigationPagerScreen(
         onFabActionClick = onFabActionClick,
         navigator = navigator,
 
-        withSearch = withSearch,
-        topAppBarActionsContent = { topAppBarActionsContent?.invoke(uiState.pages[pagerState.currentPage]) },
+        withSearch = withSearch(page),
+        topAppBarActionsContent = { topAppBarActionsContent?.invoke(page) },
         listState = currentListState.value,
 
         content = {

@@ -11,4 +11,8 @@ data class TodosUiState(
     override val isEmpty: Boolean = todos.isEmpty(),
 
     override val filteringUiInfo: TodosFilteringUiInfo = TodosFilteringUiInfo(),
-): UiState
+): UiState {
+
+    val hasCompletedTodos: Boolean = todos.any { it.isCompleted }
+
+}

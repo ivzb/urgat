@@ -149,64 +149,67 @@ fun FinanceScreen(
         onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
         navigator = navigator,
 
+        withSearch = { page -> uiState.withTopbarActions(page) },
         topAppBarActionsContent = { page ->
-            when (page) {
-                FinancePage.Expenses -> {
-                    FilterMenu(
-                        items = uiState.expensesUiState.filteringUiInfo.filterMenuItems,
-                        showBadge = uiState.expensesUiState.filteringUiInfo.showFilterBadge,
-                        onFilter = { onIntent(FinanceIntent.SetExpensesFiltering(it)) },
-                    )
+            if (uiState.withTopbarActions(page)) {
+                when (page) {
+                    FinancePage.Expenses -> {
+                        FilterMenu(
+                            items = uiState.expensesUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.expensesUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(FinanceIntent.SetExpensesFiltering(it)) },
+                        )
 
-                    SortMenu(
-                        items = uiState.expensesUiState.filteringUiInfo.sortMenuItems,
-                        showBadge = uiState.expensesUiState.filteringUiInfo.showSortBadge,
-                        onFilter = { onIntent(FinanceIntent.SetExpensesSorting(it)) },
-                    )
+                        SortMenu(
+                            items = uiState.expensesUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.expensesUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(FinanceIntent.SetExpensesSorting(it)) },
+                        )
+                    }
+
+                    FinancePage.Investments -> {
+                        FilterMenu(
+                            items = uiState.investmentsUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.investmentsUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(FinanceIntent.SetInvestmentsFiltering(it)) },
+                        )
+
+                        SortMenu(
+                            items = uiState.investmentsUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.investmentsUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(FinanceIntent.SetInvestmentsSorting(it)) },
+                        )
+                    }
+
+                    FinancePage.Savings -> {
+                        SortMenu(
+                            items = uiState.savingsUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.savingsUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(FinanceIntent.SetSavingsSorting(it)) },
+                        )
+                    }
+
+                    FinancePage.Budgets -> {
+                        FilterMenu(
+                            items = uiState.budgetsUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.budgetsUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(FinanceIntent.SetBudgetsFiltering(it)) },
+                        )
+
+                        SortMenu(
+                            items = uiState.budgetsUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.budgetsUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(FinanceIntent.SetBudgetsSorting(it)) },
+                        )
+                    }
                 }
 
-                FinancePage.Investments -> {
-                    FilterMenu(
-                        items = uiState.investmentsUiState.filteringUiInfo.filterMenuItems,
-                        showBadge = uiState.investmentsUiState.filteringUiInfo.showFilterBadge,
-                        onFilter = { onIntent(FinanceIntent.SetInvestmentsFiltering(it)) },
+                MoreMenu(
+                    listOfNotNull(
+                        (R.string.reset_filters to { onIntent(FinanceIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
                     )
-
-                    SortMenu(
-                        items = uiState.investmentsUiState.filteringUiInfo.sortMenuItems,
-                        showBadge = uiState.investmentsUiState.filteringUiInfo.showSortBadge,
-                        onFilter = { onIntent(FinanceIntent.SetInvestmentsSorting(it)) },
-                    )
-                }
-
-                FinancePage.Savings -> {
-                    SortMenu(
-                        items = uiState.savingsUiState.filteringUiInfo.sortMenuItems,
-                        showBadge = uiState.savingsUiState.filteringUiInfo.showSortBadge,
-                        onFilter = { onIntent(FinanceIntent.SetSavingsSorting(it)) },
-                    )
-                }
-
-                FinancePage.Budgets -> {
-                    FilterMenu(
-                        items = uiState.budgetsUiState.filteringUiInfo.filterMenuItems,
-                        showBadge = uiState.budgetsUiState.filteringUiInfo.showFilterBadge,
-                        onFilter = { onIntent(FinanceIntent.SetBudgetsFiltering(it)) },
-                    )
-
-                    SortMenu(
-                        items = uiState.budgetsUiState.filteringUiInfo.sortMenuItems,
-                        showBadge = uiState.budgetsUiState.filteringUiInfo.showSortBadge,
-                        onFilter = { onIntent(FinanceIntent.SetBudgetsSorting(it)) },
-                    )
-                }
-            }
-
-            MoreMenu(
-                listOfNotNull(
-                    (R.string.reset_filters to { onIntent(FinanceIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
                 )
-            )
+            }
         },
 
         content = { page, listState, onListStateChanged ->

@@ -14,5 +14,5 @@ data class LibraryFilteringUiInfo(
     override val errorLabel: Int = R.string.error_library,
     override val errorIconRes: Int = R.drawable.ic_error,
 
-    val searchQuery: String = "",
+    override val searchQuery: String = "",
 ) : FilteringUiInfo

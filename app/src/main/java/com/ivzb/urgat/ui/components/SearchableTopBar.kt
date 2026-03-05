@@ -88,7 +88,7 @@ fun SearchableTopBar(
                         navigationIcon?.invoke()
                     },
                     actions = {
-                        if (withSearch || searchQuery.isNotEmpty()) {
+                        if (withSearch) {
                             IconButton(onClick = {
                                 onIsSearchingChanged(!isSearching)
                             }) {

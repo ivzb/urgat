@@ -95,17 +95,22 @@ fun LibraryScreen(
         onFabActionClick = { id -> onIntent(LibraryIntent.FabActionClick(id)) },
         navigator = navigator,
 
+        withSearch = { page -> uiState.withTopbarActions(page) },
         topAppBarActionsContent = { page ->
-            if (page == LibraryPage.Todos) {
-                FilterMenu(
-                    items = uiState.todosUiState.filteringUiInfo.filterMenuItems,
-                    showBadge = uiState.todosUiState.filteringUiInfo.showFilterBadge,
-                    onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
-                )
+            if (uiState.withTopbarActions(page)) {
+                when (page) {
+                    LibraryPage.Todos -> {
+                        FilterMenu(
+                            items = uiState.todosUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.todosUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
+                        )
+                    }
+                }
 
                 MoreMenu(
                     listOfNotNull(
-                        (R.string.clear_completed to { onIntent(LibraryIntent.ClearCompletedTodos) }).takeIf { uiState.hasCompletedTodos },
+                        (R.string.clear_completed to { onIntent(LibraryIntent.ClearCompletedTodos) }).takeIf { page == LibraryPage.Todos && uiState.todosUiState.hasCompletedTodos },
                         (R.string.reset_filters to { onIntent(LibraryIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
                     )
                 )

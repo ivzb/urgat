@@ -12,7 +12,7 @@ import javax.inject.Inject
 interface ObserveGroupedSavingsAllTimeUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
@@ -33,7 +33,7 @@ class DefaultObserveGroupedSavingsAllTimeUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<SavingsSortType>?,
