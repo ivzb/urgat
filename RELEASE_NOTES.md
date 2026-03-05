@@ -1,3 +1,8 @@
+## Release notes 26.03.04
+
+New:
+- Hide top bar actions when no content is available.
+
 ## Release notes 26.03.03
 
 New:
