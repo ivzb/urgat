@@ -13,7 +13,7 @@ import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.timestamp
 import java.math.BigDecimal
-import kotlin.test.Test
+import org.junit.Test
 import kotlin.test.assertEquals
 
 class GroupTest {
