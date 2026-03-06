@@ -46,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.DatePicker
+import com.ivzb.urgat.ui.components.DeleteButton
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TextTopAppBar
@@ -108,9 +109,11 @@ fun AddEditInvestmentScreen(
             TextTopAppBar(
                 title = uiState.screenTitleResId,
                 onBack = onBack,
-                withDelete = uiState.withDelete,
-                onDelete = { onIntent(AddEditInvestmentIntent.DeleteInvestment) },
                 actionsContent = {
+                    if (uiState.withDelete) {
+                        DeleteButton(onClick = { onIntent(AddEditInvestmentIntent.DeleteInvestment) })
+                    }
+
                     MoreMenu(
                         listOfNotNull(
                             (R.string.duplicate to { onIntent(AddEditInvestmentIntent.DuplicateInvestment) }).takeIf { uiState.withDuplicate },

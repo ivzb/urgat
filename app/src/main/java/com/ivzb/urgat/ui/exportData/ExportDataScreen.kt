@@ -91,8 +91,6 @@ fun ExportDataScreen(
             TextTopAppBar(
                 title = R.string.export_data,
                 onBack = onBack,
-                withDelete = false,
-                onDelete = {},
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

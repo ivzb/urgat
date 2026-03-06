@@ -88,8 +88,6 @@ fun ImportDataScreen(
             TextTopAppBar(
                 title = R.string.import_data,
                 onBack = onBack,
-                withDelete = false,
-                onDelete = {},
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

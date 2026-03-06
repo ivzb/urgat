@@ -73,8 +73,6 @@ fun SampleScreen(
             TextTopAppBar(
                 title = R.string.sample_data,
                 onBack = onBack,
-                withDelete = false,
-                onDelete = {},
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

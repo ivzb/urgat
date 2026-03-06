@@ -15,8 +15,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -47,6 +49,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.CheckboxWithLabel
 import com.ivzb.urgat.ui.components.DatePicker
+import com.ivzb.urgat.ui.components.DeleteButton
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.TextTopAppBar
@@ -106,9 +109,11 @@ fun AddEditExpenseScreen(
             TextTopAppBar(
                 title = uiState.screenTitleResId,
                 onBack = onBack,
-                withDelete = uiState.withDelete,
-                onDelete = { onIntent(AddEditExpenseIntent.DeleteExpense) },
                 actionsContent = {
+                    if (uiState.withDelete) {
+                        DeleteButton(onClick = { onIntent(AddEditExpenseIntent.DeleteExpense) })
+                    }
+
                     MoreMenu(
                         listOfNotNull(
                             (R.string.duplicate to { onIntent(AddEditExpenseIntent.DuplicateExpense) }).takeIf { uiState.withDuplicate },

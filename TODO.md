@@ -99,5 +99,4 @@
 - move inner weight tab screens like library and finance screen
 - change filtering info to take search query into account when showing empty state - say something like you don't have X with this search criteria
 - make empty state for inner finance screen - they crash when search doesn't match anything and there is no data
-- remove withDelete and onDelete from TopAppBars - let each screen to define it on their own
 - show labels for each textfield because its not clear which field is which when editing or duplicating

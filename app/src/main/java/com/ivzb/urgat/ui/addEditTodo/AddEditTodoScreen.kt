@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.DeleteButton
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -92,8 +93,11 @@ fun AddEditTodoScreen(
             TextTopAppBar(
                 title = uiState.screenTitleResId,
                 onBack = onBack,
-                withDelete = uiState.withDelete,
-                onDelete = { onIntent(AddEditTodoIntent.DeleteTodo) },
+                actionsContent = {
+                    if (uiState.withDelete) {
+                        DeleteButton(onClick = { onIntent(AddEditTodoIntent.DeleteTodo) })
+                    }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

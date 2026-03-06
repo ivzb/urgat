@@ -105,9 +105,6 @@ fun TextTopAppBar(
     @StringRes title: Int?,
     onBack: () -> Unit,
 
-    withDelete: Boolean,
-    onDelete: () -> Unit,
-
     actionsContent: (@Composable () -> Unit)? = null,
 ) {
     TopAppBar(
@@ -122,15 +119,6 @@ fun TextTopAppBar(
             }
         },
         actions = {
-            if (withDelete) {
-                IconButton(onClick = onDelete) {
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = stringResource(R.string.delete)
-                    )
-                }
-            }
-
             actionsContent?.invoke()
         },
         windowInsets = topBarInsets(),
@@ -249,6 +237,16 @@ private fun <T> Menu(
                 }
             )
         }
+    }
+}
+
+@Composable
+fun DeleteButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            Icons.Default.Delete,
+            contentDescription = stringResource(R.string.delete)
+        )
     }
 }
 
@@ -374,8 +372,6 @@ private fun TextTopAppBarPreview() {
             TextTopAppBar(
                 title = R.string.add_todo,
                 onBack = {},
-                withDelete = false,
-                onDelete = {},
             )
         }
     }
@@ -390,8 +386,9 @@ private fun TextTopAppBarPreviewWithDelete() {
             TextTopAppBar(
                 title = R.string.add_todo,
                 onBack = {},
-                withDelete = true,
-                onDelete = {},
+                actionsContent = {
+                    DeleteButton(onClick = {})
+                }
             )
         }
     }

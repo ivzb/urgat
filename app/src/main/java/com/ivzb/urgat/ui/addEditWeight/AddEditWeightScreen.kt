@@ -44,6 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.DatePicker
+import com.ivzb.urgat.ui.components.DeleteButton
 import com.ivzb.urgat.ui.components.LoadingState
 import com.ivzb.urgat.ui.components.TextTopAppBar
 import com.ivzb.urgat.ui.components.rememberDebouncedClick
@@ -102,8 +103,11 @@ fun AddEditWeightScreen(
             TextTopAppBar(
                 title = uiState.screenTitleResId,
                 onBack = onBack,
-                withDelete = uiState.withDelete,
-                onDelete = { onIntent(AddEditWeightIntent.DeleteWeight) },
+                actionsContent = {
+                    if (uiState.withDelete) {
+                        DeleteButton(onClick = { onIntent(AddEditWeightIntent.DeleteWeight) })
+                    }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

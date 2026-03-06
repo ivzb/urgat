@@ -57,8 +57,6 @@ fun AboutScreen(
             TextTopAppBar(
                 title = R.string.about,
                 onBack = onBack,
-                withDelete = false,
-                onDelete = {},
             )
         },
         modifier = Modifier
