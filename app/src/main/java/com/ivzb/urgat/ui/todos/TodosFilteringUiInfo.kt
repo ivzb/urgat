@@ -22,6 +22,6 @@ data class TodosFilteringUiInfo(
     val showFilterBadge: Boolean = false,
 ) : FilteringUiInfo {
 
-    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge
+    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge
 
 }

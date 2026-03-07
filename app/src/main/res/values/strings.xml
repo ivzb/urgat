@@ -85,6 +85,7 @@
     <string name="no_excluded_from_analytics_expenses">You have no expenses excluded from analytics!</string>
     <string name="recent_expenses">Recent expenses</string>
     <string name="no_expenses_search">You have no expenses with this search criteria!</string>
+    <string name="no_expenses_search_message">Tap “Reset filters” to reset to default.</string>
     <string name="press_back_once_more_to_exit">Press back once more to exit.</string>
     <string name="select_date">Select date</string>
     <string name="all_notes">All notes</string>

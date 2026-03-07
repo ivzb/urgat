@@ -40,6 +40,7 @@ class ExpensesViewModel @Inject constructor(
             is ExpensesIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is ExpensesIntent.SetFiltering -> setFiltering(intent.filterType)
             is ExpensesIntent.SetSorting -> setSorting(intent.sortType)
+            is ExpensesIntent.ResetFilters -> resetFilters()
         }
     }
 
@@ -59,6 +60,12 @@ class ExpensesViewModel @Inject constructor(
         viewModelScope.launch {
             financeRepository.updateExpensesSortType(sortType)
         }
+    }
+
+    private fun resetFilters() {
+        onSearchQueryChanged("")
+        setFiltering(ExpensesFilterType.ALL_EXPENSES)
+        setSorting(ExpensesSortType.BY_DATE)
     }
 }
 

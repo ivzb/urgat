@@ -83,56 +83,37 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
     ): ExpensesFilteringUiInfo {
         val showFilterBadge = filterType != ALL_EXPENSES
         val showSortBadge = sortType != ExpensesSortType.BY_DATE
+        val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 
-        return when (filterType) {
-            ALL_EXPENSES -> {
-                ExpensesFilteringUiInfo(
-                    currentFilteringLabel = R.string.all_expenses,
-                    emptyLabel = R.string.no_expenses,
-                    searchQuery = searchQuery,
-                    filterMenuItems = filterMenuItems,
-                    showFilterBadge = showFilterBadge,
-                    sortMenuItems = sortMenuItems,
-                    showSortBadge = showSortBadge,
-                )
-            }
-
-            DEBIT_EXPENSES -> {
-                ExpensesFilteringUiInfo(
-                    currentFilteringLabel = R.string.debit_expenses,
-                    emptyLabel = R.string.no_debit_expenses,
-                    searchQuery = searchQuery,
-                    filterMenuItems = filterMenuItems,
-                    showFilterBadge = showFilterBadge,
-                    sortMenuItems = sortMenuItems,
-                    showSortBadge = showSortBadge,
-                )
-            }
-
-            COST_EXPENSES -> {
-                ExpensesFilteringUiInfo(
-                    currentFilteringLabel = R.string.cost_expenses,
-                    emptyLabel = R.string.no_cost_expenses,
-                    searchQuery = searchQuery,
-                    filterMenuItems = filterMenuItems,
-                    showFilterBadge = showFilterBadge,
-                    sortMenuItems = sortMenuItems,
-                    showSortBadge = showSortBadge,
-                )
-            }
-
-            EXCLUDED_FROM_ANALYTICS -> {
-                ExpensesFilteringUiInfo(
-                    currentFilteringLabel = R.string.exclude_from_analytics,
-                    emptyLabel = R.string.no_excluded_from_analytics_expenses,
-                    searchQuery = searchQuery,
-                    filterMenuItems = filterMenuItems,
-                    showFilterBadge = showFilterBadge,
-                    sortMenuItems = sortMenuItems,
-                    showSortBadge = showSortBadge,
-                )
-            }
-        }
+        return ExpensesFilteringUiInfo(
+            currentFilteringLabel = when (filterType) {
+                ALL_EXPENSES -> R.string.all_expenses
+                DEBIT_EXPENSES -> R.string.debit_expenses
+                COST_EXPENSES -> R.string.cost_expenses
+                EXCLUDED_FROM_ANALYTICS -> R.string.exclude_from_analytics
+            },
+            emptyLabel = when {
+                hasAppliedFilters -> R.string.no_expenses_search
+                filterType == DEBIT_EXPENSES -> R.string.no_debit_expenses
+                filterType == COST_EXPENSES -> R.string.no_cost_expenses
+                filterType == EXCLUDED_FROM_ANALYTICS -> R.string.no_excluded_from_analytics_expenses
+                else -> R.string.no_expenses
+            },
+            emptyMessage = when {
+                hasAppliedFilters -> R.string.no_expenses_search_message
+                else -> R.string.no_expenses_message
+            },
+            emptyButtonLabel = when {
+                hasAppliedFilters -> R.string.reset_filters
+                else -> R.string.add_expense
+            },
+            searchQuery = searchQuery,
+            hasAppliedFilters = hasAppliedFilters,
+            filterMenuItems = filterMenuItems,
+            showFilterBadge = showFilterBadge,
+            sortMenuItems = sortMenuItems,
+            showSortBadge = showSortBadge,
+        )
     }
 
 }

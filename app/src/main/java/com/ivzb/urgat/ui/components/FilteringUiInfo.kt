@@ -13,4 +13,7 @@ interface FilteringUiInfo {
     val errorIconRes: Int
 
     val searchQuery: String
+
+    val hasAppliedFilters: Boolean
+
 }

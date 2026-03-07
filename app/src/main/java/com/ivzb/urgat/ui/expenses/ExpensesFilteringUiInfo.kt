@@ -18,13 +18,12 @@ data class ExpensesFilteringUiInfo(
 
     override val searchQuery: String = "",
 
+    override val hasAppliedFilters: Boolean = false,
+
     val filterMenuItems: List<ExpensesFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,
 
     val sortMenuItems: List<ExpensesSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo {
 
-    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
-
-}
+) : FilteringUiInfo

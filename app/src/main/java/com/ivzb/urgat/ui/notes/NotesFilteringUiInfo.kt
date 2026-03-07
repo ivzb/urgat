@@ -19,6 +19,6 @@ data class NotesFilteringUiInfo(
     override val searchQuery: String = "",
 ) : FilteringUiInfo {
 
-    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty()
+    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty()
 
 }

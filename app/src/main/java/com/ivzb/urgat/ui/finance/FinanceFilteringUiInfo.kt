@@ -15,4 +15,8 @@ data class FinanceFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     override val searchQuery: String = "",
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    override val hasAppliedFilters: Boolean = false
+
+}

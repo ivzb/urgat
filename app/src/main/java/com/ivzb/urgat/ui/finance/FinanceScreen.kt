@@ -41,6 +41,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
@@ -219,6 +220,7 @@ fun FinanceScreen(
 
                     onMoreExpenses = onMoreExpenses,
                     onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
                     onExpenseClick = onExpenseClick,
 
                     listState = listState,
@@ -289,7 +291,7 @@ private fun FinancePage(
 ) {
     when {
         uiState.isEmpty -> {
-            EmptyState(uiState, onEmptyStateButtonClick)
+            EmptyState(uiState.filteringUiInfo, onEmptyStateButtonClick)
         }
 
         else -> {
@@ -304,6 +306,7 @@ private fun ExpensesPage(
 
     onMoreExpenses: () -> Unit,
     onAddExpense: () -> Unit,
+    onResetFilters: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
     listState: LazyListState,
@@ -312,7 +315,7 @@ private fun ExpensesPage(
 
     FinancePage(
         uiState = uiState,
-        onEmptyStateButtonClick = onAddExpense,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddExpense,
 
         content = {
             com.ivzb.urgat.ui.expenses.TransactionsPage(
@@ -679,29 +682,6 @@ private fun FiRePage(
                 fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION
             ),
             fontWeight = FontWeight.Bold,
-        )
-    }
-}
-
-@Composable
-private fun EmptyState(
-    uiState: UiState,
-    onButtonClick: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                horizontal = dimensionResource(R.dimen.content_padding),
-                vertical = dimensionResource(R.dimen.content_padding),
-            )
-    ) {
-        EmptyStateCard(
-            iconRes = uiState.filteringUiInfo.emptyIconRes,
-            label = uiState.filteringUiInfo.emptyLabel,
-            message = uiState.filteringUiInfo.emptyMessage,
-            buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
-            onButtonClick = onButtonClick,
         )
     }
 }

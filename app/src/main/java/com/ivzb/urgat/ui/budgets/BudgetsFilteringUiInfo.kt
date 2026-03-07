@@ -25,6 +25,6 @@ data class BudgetsFilteringUiInfo(
     val showSortBadge: Boolean = false,
 ) : FilteringUiInfo {
 
-    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
+    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 
 }

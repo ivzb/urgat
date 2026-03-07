@@ -100,3 +100,8 @@
 - change filtering info to take search query into account when showing empty state - say something like you don't have X with this search criteria
 - make empty state for inner finance screen - they crash when search doesn't match anything and there is no data
 - show labels for each textfield because its not clear which field is which when editing or duplicating
+- improve empty state for notes as done for todos
+- improve empty state for todos as done for savings
+- improve empty state for budgets as done for savings
+- improve empty state for savings as done for investments
+- improve empty state for investments as done for expenses

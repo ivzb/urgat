@@ -279,6 +279,27 @@ class ExpensesViewModelTest {
         assertEquals(expected, fakeFinanceRepository.expensesSortTypeFlow.value)
     }
 
+    @Test
+    fun `resetFilters resets search query, filter type, and sort type to defaults`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(ExpensesIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(ExpensesIntent.SetFiltering(ExpensesFilterType.DEBIT_EXPENSES))
+        viewModel.onIntent(ExpensesIntent.SetSorting(ExpensesSortType.BY_MAX))
+        advanceUntilIdle()
+
+        assertEquals("coffee", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(ExpensesFilterType.DEBIT_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
+        assertEquals(ExpensesSortType.BY_MAX, fakeFinanceRepository.expensesSortTypeFlow.value)
+
+        viewModel.onIntent(ExpensesIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(ExpensesFilterType.ALL_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
+        assertEquals(ExpensesSortType.BY_DATE, fakeFinanceRepository.expensesSortTypeFlow.value)
+    }
+
     private fun createViewModel() = ExpensesViewModel(
         fakeObserveExpensesUiStateUseCase,
         fakeFinanceRepository,

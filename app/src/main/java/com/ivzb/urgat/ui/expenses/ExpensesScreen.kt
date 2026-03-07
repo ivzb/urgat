@@ -41,9 +41,12 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
@@ -120,23 +123,33 @@ fun ExpensesScreen(
                 showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(ExpensesIntent.SetSorting(it)) },
             )
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.reset_filters to { onIntent(ExpensesIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+                )
+            )
         },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
                 ExpensesPage.Monthly -> GroupedCategoriesPage(
                     categories = uiState.categoriesMonthly,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedMonthlyIds,
                     onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
+                    onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
                 ExpensesPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedYearlyIds,
                     onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
+                    onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -147,6 +160,8 @@ fun ExpensesScreen(
                     listState = listState,
                     onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
+                    filteringUiInfo = uiState.filteringUiInfo,
+                    onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
             }
@@ -215,15 +230,25 @@ fun TransactionsPage(
 @Composable
 private fun GroupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
+    filteringUiInfo: FilteringUiInfo,
     expandedCategoryIds: Set<String>,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    onResetFilters: () -> Unit,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { categories.size }
     val nestedListStates = remember(categories.size) {
         List(categories.size) { LazyListState() }
+    }
+
+    if (categories.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     Column(
@@ -267,6 +292,9 @@ private fun GroupedCategoriesPage(
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
+                filteringUiInfo = filteringUiInfo,
+                onResetFilters = onResetFilters,
+
                 onCategoryClick = onCategoryClick,
                 onExpenseClick = onExpenseClick,
 
@@ -283,6 +311,9 @@ private fun CategoriesPage(
     categories: List<ExpenseCategory>,
     expandedCategoryIds: Set<String>,
 
+    filteringUiInfo: FilteringUiInfo,
+    onResetFilters: () -> Unit,
+
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
@@ -292,6 +323,14 @@ private fun CategoriesPage(
 
     LaunchedEffect(Unit) {
         onListStateChanged(listState)
+    }
+
+    if (categories.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     LazyColumn(

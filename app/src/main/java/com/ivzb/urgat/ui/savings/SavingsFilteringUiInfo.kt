@@ -22,6 +22,6 @@ data class SavingsFilteringUiInfo(
     val showSortBadge: Boolean = false,
 ) : FilteringUiInfo {
 
-    val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showSortBadge
+    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showSortBadge
 
 }

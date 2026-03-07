@@ -53,7 +53,7 @@ data class FinanceUiState(
             else -> null
         }
 
-        return uiState?.let { !it.isEmpty || it.filteringUiInfo.searchQuery.isNotEmpty() } ?: false
+        return uiState?.let { !it.isEmpty || it.filteringUiInfo.hasAppliedFilters } ?: false
     }
 
 }

@@ -20,4 +20,8 @@ data class WeightsFilteringUiInfo(
 
     val sortMenuItems: List<WeightsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    override val hasAppliedFilters: Boolean = false
+
+}
