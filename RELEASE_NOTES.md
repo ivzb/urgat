@@ -1,3 +1,8 @@
+## Release notes 26.03.06
+
+New:
+- You can now reset expenses filters directly when no results are found.
+
 ## Release notes 26.03.05
 
 No release notes.
