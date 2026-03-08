@@ -1,3 +1,8 @@
+## Release notes 26.03.07
+
+New:
+- You can now reset investments filters directly when no results are found.
+
 ## Release notes 26.03.06
 
 New:
