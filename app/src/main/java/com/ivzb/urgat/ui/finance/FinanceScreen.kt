@@ -220,8 +220,8 @@ fun FinanceScreen(
 
                     onMoreExpenses = onMoreExpenses,
                     onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
                     onExpenseClick = onExpenseClick,
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -233,6 +233,7 @@ fun FinanceScreen(
                     onMoreInvestments = onMoreInvestments,
                     onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
                     onInvestmentClick = onInvestmentClick,
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -306,8 +307,8 @@ private fun ExpensesPage(
 
     onMoreExpenses: () -> Unit,
     onAddExpense: () -> Unit,
-    onResetFilters: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -343,6 +344,7 @@ private fun InvestmentsPage(
     onMoreInvestments: () -> Unit,
     onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -350,7 +352,8 @@ private fun InvestmentsPage(
 
     FinancePage(
         uiState = uiState,
-        onEmptyStateButtonClick = onAddInvestment,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddInvestment,
+
         content = {
             com.ivzb.urgat.ui.investments.TransactionsPage(
                 investments = uiState.investments,

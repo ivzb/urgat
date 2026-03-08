@@ -1,8 +1,10 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
+import com.ivzb.urgat.ui.investments.InvestmentsSortMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.util.Async
@@ -59,22 +61,53 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
                 assets = assets,
                 categories = categories,
                 netWorth = netWorth,
-                filteringUiInfo = InvestmentsFilteringUiInfo(
-                    currentFilteringLabel = R.string.all_investments,
-                    emptyLabel = if (searchQuery.isEmpty()) R.string.no_investments_label else R.string.no_investments_search,
-                    emptyMessage = R.string.no_investments_message,
-                    emptyButtonLabel = R.string.add_investment,
-
+                filteringUiInfo = getFilterUiInfo(
                     searchQuery = searchQuery,
-
+                    filterType = filterType,
                     filterMenuItems = filtering,
-                    showFilterBadge = filterType != InvestmentsFilterType_All,
-
+                    sortType = sortType,
                     sortMenuItems = sorting,
-                    showSortBadge = sortType != InvestmentsSortType.BY_DATE,
                 ),
             )
         }
     ).map { Async.Success(it) }
+    
+    private fun getFilterUiInfo(
+        searchQuery: String,
+        filterType: String,
+        filterMenuItems: List<InvestmentsFilterMenuItem>,
+        sortType: InvestmentsSortType,
+        sortMenuItems: List<InvestmentsSortMenuItem>,
+    ): InvestmentsFilteringUiInfo {
+        val showFilterBadge = filterType != InvestmentsFilterType_All
+        val showSortBadge = sortType != InvestmentsSortType.BY_DATE
+        val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
+
+        return InvestmentsFilteringUiInfo(
+            currentFilteringLabel = R.string.all_investments,
+
+            emptyLabel = when {
+                hasAppliedFilters -> R.string.no_investments_search
+                else -> R.string.no_investments
+            },
+            emptyMessage = when {
+                hasAppliedFilters -> R.string.no_investments_search_message
+                else -> R.string.no_investments_message
+            },
+            emptyButtonLabel = when {
+                hasAppliedFilters -> R.string.reset_filters
+                else -> R.string.add_investment
+            },
+
+            searchQuery = searchQuery,
+            hasAppliedFilters = hasAppliedFilters,
+
+            filterMenuItems = filterMenuItems,
+            showFilterBadge = showFilterBadge,
+
+            sortMenuItems = sortMenuItems,
+            showSortBadge = showSortBadge,
+        )
+    }
 
 }

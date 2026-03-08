@@ -17,14 +17,11 @@ data class InvestmentsFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     override val searchQuery: String = "",
+    override val hasAppliedFilters: Boolean = false,
 
     val filterMenuItems: List<InvestmentsFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,
 
     val sortMenuItems: List<InvestmentsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo {
-
-    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
-
-}
+) : FilteringUiInfo

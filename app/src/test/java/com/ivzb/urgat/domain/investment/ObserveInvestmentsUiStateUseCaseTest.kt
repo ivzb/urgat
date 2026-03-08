@@ -8,8 +8,8 @@ import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
+import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -160,6 +160,121 @@ class ObserveInvestmentsUiStateUseCaseTest {
         val uiState = results.data
         assertTrue(uiState.hasError)
         assertFalse(uiState.isLoading)
+    }
+
+    @Test
+    fun `hasAppliedFilters is false when no filters are applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertFalse(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_investments, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_investments_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.add_investment, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when search query is not empty`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("lunch")
+        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("lunch", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_investments_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_investments_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when filter type is applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf("stocks")
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_investments_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_investments_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when sort type is applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_investments_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_investments_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when all filters are applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("lunch")
+        val filterTypeFlow = flowOf("stocks")
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("lunch", uiState.filteringUiInfo.searchQuery)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_investments_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_investments_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
     }
 
     private fun emitSuccessData() {

@@ -111,6 +111,7 @@
     <string name="no_investments_label">Your savings journey starts here.</string>
     <string name="no_investments_message">Tap "Add Investment" to track your first one.</string>
     <string name="no_investments_search">You have no investments with this search criteria!</string>
+    <string name="no_investments_search_message">Tap “Reset filters” to reset to default.</string>
     <string name="no_weights">You have no weights</string>
     <string name="no_weights_label">See how your weight changes.</string>
     <string name="no_weights_message">Tap "Track weight" to track your first one.</string>

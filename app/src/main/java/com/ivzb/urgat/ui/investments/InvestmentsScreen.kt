@@ -45,9 +45,12 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
@@ -122,16 +125,23 @@ fun InvestmentsScreen(
                 showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(InvestmentsIntent.SetSorting(it)) },
             )
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.reset_filters to { onIntent(InvestmentsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+                )
+            )
         },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
                 InvestmentsPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedYearlyIds,
                     onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
                     onInvestmentClick = onInvestmentClick,
-
+                    onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -140,6 +150,9 @@ fun InvestmentsScreen(
                     total = uiState.netWorth?.total.orEmpty(),
                     categories = uiState.categories,
                     expandedCategoryIds = expandedCategoryIds,
+
+                    filteringUiInfo = uiState.filteringUiInfo,
+                    onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
 
                     onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
                     onInvestmentClick = onInvestmentClick,
@@ -154,8 +167,11 @@ fun InvestmentsScreen(
 
                     assets = uiState.assets,
                     expandedAssetIds = expandedAssetIds,
-                    onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
 
+                    filteringUiInfo = uiState.filteringUiInfo,
+                    onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
+
+                    onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
                     onInvestmentClick = onInvestmentClick,
 
                     listState = listState,
@@ -231,15 +247,25 @@ fun TransactionsPage(
 @Composable
 private fun GroupedCategoriesPage(
     categories: List<GroupedInvestmentCategories>,
+    filteringUiInfo: FilteringUiInfo,
     expandedCategoryIds: Set<String>,
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+    onResetFilters: () -> Unit,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { categories.size }
     val nestedListStates = remember(categories.size) {
         List(categories.size) { LazyListState() }
+    }
+
+    if (categories.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     Column(
@@ -284,6 +310,9 @@ private fun GroupedCategoriesPage(
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
+                filteringUiInfo = filteringUiInfo,
+                onResetFilters = onResetFilters,
+
                 onCategoryClick = onCategoryClick,
                 onInvestmentClick = onInvestmentClick,
 
@@ -302,6 +331,9 @@ private fun CategoriesPage(
     categories: List<InvestmentCategory>,
     expandedCategoryIds: Set<String>,
 
+    filteringUiInfo: FilteringUiInfo,
+    onResetFilters: () -> Unit,
+
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
@@ -311,6 +343,14 @@ private fun CategoriesPage(
 
     LaunchedEffect(Unit) {
         onListStateChanged(listState)
+    }
+
+    if (categories.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     LazyColumn(
@@ -372,8 +412,11 @@ private fun AssetsPage(
 
     assets: List<InvestmentAsset>,
     expandedAssetIds: Set<String>,
-    onAssetClick: (String) -> Unit,
 
+    filteringUiInfo: FilteringUiInfo,
+    onResetFilters: () -> Unit,
+
+    onAssetClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
 
     listState: LazyListState,
@@ -382,6 +425,14 @@ private fun AssetsPage(
 
     LaunchedEffect(Unit) {
         onListStateChanged(listState)
+    }
+
+    if (assets.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     LazyColumn(

@@ -92,6 +92,7 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 COST_EXPENSES -> R.string.cost_expenses
                 EXCLUDED_FROM_ANALYTICS -> R.string.exclude_from_analytics
             },
+
             emptyLabel = when {
                 hasAppliedFilters -> R.string.no_expenses_search
                 filterType == DEBIT_EXPENSES -> R.string.no_debit_expenses
@@ -107,10 +108,13 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 hasAppliedFilters -> R.string.reset_filters
                 else -> R.string.add_expense
             },
+
             searchQuery = searchQuery,
             hasAppliedFilters = hasAppliedFilters,
+
             filterMenuItems = filterMenuItems,
             showFilterBadge = showFilterBadge,
+
             sortMenuItems = sortMenuItems,
             showSortBadge = showSortBadge,
         )

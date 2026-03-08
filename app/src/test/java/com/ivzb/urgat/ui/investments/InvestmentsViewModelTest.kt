@@ -303,6 +303,27 @@ class InvestmentsViewModelTest {
         assertEquals(expected, fakeFinanceRepository.investmentsSortTypeFlow.value)
     }
 
+    @Test
+    fun `resetFilters resets search query, filter type, and sort type to defaults`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(InvestmentsIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(InvestmentsIntent.SetFiltering("stocks"))
+        viewModel.onIntent(InvestmentsIntent.SetSorting(InvestmentsSortType.BY_MARKET_VALUE))
+        advanceUntilIdle()
+
+        assertEquals("coffee", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals("stocks", fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(InvestmentsSortType.BY_MARKET_VALUE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+
+        viewModel.onIntent(InvestmentsIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(InvestmentsSortType.BY_DATE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+    }
+
     private fun createViewModel() = InvestmentsViewModel(
         fakeObserveInvestmentsUiStateUseCase,
         fakeFinanceRepository,

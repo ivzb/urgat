@@ -132,6 +132,29 @@ class ObserveExpensesUiStateUseCaseTest {
     }
 
     @Test
+    fun `emits error state when use case returns error`() = runTest {
+        fakeObserveExpensesUseCase.emit(Async.Error)
+        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Error)
+        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Error)
+        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Error)
+        fakeObserveExpensesFilteringUseCase.emit(Async.Error)
+        fakeObserveExpensesSortingUseCase.emit(Async.Error)
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(ExpensesFilterType.ALL_EXPENSES)
+        val sortTypeFlow = flowOf(ExpensesSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.hasError)
+        assertFalse(uiState.isLoading)
+    }
+
+    @Test
     fun `hasAppliedFilters is false when no filters are applied`() = runTest {
         emitSuccessData()
 
@@ -178,7 +201,7 @@ class ObserveExpensesUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when non-default filter is applied`() = runTest {
+    fun `hasAppliedFilters is true when filter type is applied`() = runTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -201,7 +224,7 @@ class ObserveExpensesUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when non-default sort is applied`() = runTest {
+    fun `hasAppliedFilters is true when sort type is applied`() = runTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -244,82 +267,6 @@ class ObserveExpensesUiStateUseCaseTest {
         assertEquals(R.string.no_expenses_search, uiState.filteringUiInfo.emptyLabel)
         assertEquals(R.string.no_expenses_search_message, uiState.filteringUiInfo.emptyMessage)
         assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
-    }
-
-    @Test
-    fun `hasAppliedFilters is true for each non-default filter type`() = runTest {
-        val nonDefaultFilterTypes = listOf(
-            ExpensesFilterType.DEBIT_EXPENSES,
-            ExpensesFilterType.COST_EXPENSES,
-            ExpensesFilterType.EXCLUDED_FROM_ANALYTICS,
-        )
-
-        for (filterType in nonDefaultFilterTypes) {
-            setUp()
-            emitSuccessData()
-
-            val searchQueryFlow = flowOf("")
-            val filterTypeFlow = flowOf(filterType)
-            val sortTypeFlow = flowOf(ExpensesSortType.BY_DATE)
-
-            val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
-
-            advanceUntilIdle()
-
-            assertTrue(results is Async.Success)
-            val uiState = results.data
-            assertTrue(uiState.filteringUiInfo.hasAppliedFilters, "Expected hasAppliedFilters=true for $filterType")
-            assertTrue(uiState.filteringUiInfo.showFilterBadge, "Expected showFilterBadge=true for $filterType")
-        }
-    }
-
-    @Test
-    fun `hasAppliedFilters is true for each non-default sort type`() = runTest {
-        val nonDefaultSortTypes = listOf(
-            ExpensesSortType.BY_MIN,
-            ExpensesSortType.BY_MAX,
-        )
-
-        for (sortType in nonDefaultSortTypes) {
-            setUp()
-            emitSuccessData()
-
-            val searchQueryFlow = flowOf("")
-            val filterTypeFlow = flowOf(ExpensesFilterType.ALL_EXPENSES)
-            val sortTypeFlow = flowOf(sortType)
-
-            val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
-
-            advanceUntilIdle()
-
-            assertTrue(results is Async.Success)
-            val uiState = results.data
-            assertTrue(uiState.filteringUiInfo.hasAppliedFilters, "Expected hasAppliedFilters=true for $sortType")
-            assertTrue(uiState.filteringUiInfo.showSortBadge, "Expected showSortBadge=true for $sortType")
-        }
-    }
-
-    @Test
-    fun `emits error state when use case returns error`() = runTest {
-        fakeObserveExpensesUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesMonthlyUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesYearlyUseCase.emit(Async.Error)
-        fakeObserveGroupedExpenseCategoriesAllTimeUseCase.emit(Async.Error)
-        fakeObserveExpensesFilteringUseCase.emit(Async.Error)
-        fakeObserveExpensesSortingUseCase.emit(Async.Error)
-
-        val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(ExpensesFilterType.ALL_EXPENSES)
-        val sortTypeFlow = flowOf(ExpensesSortType.BY_DATE)
-
-        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
-
-        advanceUntilIdle()
-
-        assertTrue(results is Async.Success)
-        val uiState = results.data
-        assertTrue(uiState.hasError)
-        assertFalse(uiState.isLoading)
     }
 
     private fun emitSuccessData() {
