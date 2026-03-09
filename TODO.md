@@ -103,5 +103,4 @@
 - improve empty state for notes as done for todos
 - improve empty state for todos as done for savings
 - improve empty state for budgets as done for savings
-- improve empty state for savings as done for investments
-- improve empty state for investments as done for expenses
+- if user taps "reset filters" while typing the search text field is not cleared or closed

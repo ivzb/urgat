@@ -139,6 +139,90 @@ class ObserveSavingsUiStateUseCaseTest {
         assertFalse(uiState.isLoading)
     }
 
+    @Test
+    fun `hasAppliedFilters is false when no filters are applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val sortTypeFlow = flowOf(SavingsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertFalse(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_savings, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_savings_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.add_saving, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when search query is not empty`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("emergency fund")
+        val sortTypeFlow = flowOf(SavingsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("emergency fund", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_savings_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_savings_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when sort type is applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val sortTypeFlow = flowOf(SavingsSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_savings_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_savings_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when all filters are applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("emergency fund")
+        val sortTypeFlow = flowOf(SavingsSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("emergency fund", uiState.filteringUiInfo.searchQuery)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_savings_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_savings_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
     private fun emitSuccessData() {
         fakeObserveSavingsUseCase.emit(Async.Success(fakeSavings))
         fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))

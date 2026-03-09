@@ -41,8 +41,11 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.saving.GroupedSavingCategories
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
@@ -113,23 +116,33 @@ fun SavingsScreen(
                 showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(SavingsIntent.SetSorting(it)) },
             )
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.reset_filters to { onIntent(SavingsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+                )
+            )
         },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
                 SavingsPage.Monthly -> GroupedCategoriesPage(
                     categories = uiState.categoriesMonthly,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedMonthlyIds,
                     onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
                     onSavingClick = onSavingClick,
+                    onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
                 SavingsPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
+                    filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedYearlyIds,
                     onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
                     onSavingClick = onSavingClick,
+                    onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -137,6 +150,10 @@ fun SavingsScreen(
                     group = stringResource(R.string.all_time),
                     categories = uiState.categoriesAllTime,
                     expandedCategoryIds = expandedAllTimeIds,
+
+                    filteringUiInfo = uiState.filteringUiInfo,
+                    onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
+
                     listState = listState,
                     onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
                     onSavingClick = onSavingClick,
@@ -208,15 +225,25 @@ fun TransactionsPage(
 @Composable
 private fun GroupedCategoriesPage(
     categories: List<GroupedSavingCategories>,
+    filteringUiInfo: FilteringUiInfo,
     expandedCategoryIds: Set<String>,
     onCategoryClick: (String) -> Unit,
     onSavingClick: (Saving) -> Unit,
+    onResetFilters: () -> Unit,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { categories.size }
     val nestedListStates = remember(categories.size) {
         List(categories.size) { LazyListState() }
+    }
+
+    if (categories.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     Column(
@@ -260,6 +287,9 @@ private fun GroupedCategoriesPage(
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
+                filteringUiInfo = filteringUiInfo,
+                onResetFilters = onResetFilters,
+
                 onCategoryClick = onCategoryClick,
                 onSavingClick = onSavingClick,
 
@@ -276,6 +306,9 @@ private fun CategoriesPage(
     categories: List<SavingCategory>,
     expandedCategoryIds: Set<String>,
 
+    filteringUiInfo: FilteringUiInfo,
+    onResetFilters: () -> Unit,
+
     onCategoryClick: (String) -> Unit,
     onSavingClick: (Saving) -> Unit,
 
@@ -285,6 +318,14 @@ private fun CategoriesPage(
 
     LaunchedEffect(Unit) {
         onListStateChanged(listState)
+    }
+
+    if (categories.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     LazyColumn(

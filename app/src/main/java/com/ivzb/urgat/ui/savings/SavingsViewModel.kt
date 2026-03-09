@@ -38,6 +38,7 @@ class SavingsViewModel @Inject constructor(
         when (intent) {
             is SavingsIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is SavingsIntent.SetSorting -> setSorting(intent.sortType)
+            is SavingsIntent.ResetFilters -> resetFilters()
         }
     }
 
@@ -51,6 +52,11 @@ class SavingsViewModel @Inject constructor(
         viewModelScope.launch {
             financeRepository.updateSavingsSortType(sortType)
         }
+    }
+
+    private fun resetFilters() {
+        onSearchQueryChanged("")
+        setSorting(SavingsSortType.BY_DATE)
     }
 }
 

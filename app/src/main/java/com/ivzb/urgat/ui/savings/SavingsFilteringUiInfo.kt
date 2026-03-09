@@ -17,11 +17,8 @@ data class SavingsFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     override val searchQuery: String = "",
+    override val hasAppliedFilters: Boolean = false,
 
     val sortMenuItems: List<SavingsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo {
-
-    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showSortBadge
-
-}
+) : FilteringUiInfo

@@ -245,6 +245,7 @@ fun FinanceScreen(
                     onMoreSavings = onMoreSavings,
                     onAddSaving = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Saving)) },
                     onSavingClick = onSavingClick,
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -380,6 +381,7 @@ private fun SavingsPage(
     onMoreSavings: () -> Unit,
     onAddSaving: () -> Unit,
     onSavingClick: (Saving) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -387,7 +389,7 @@ private fun SavingsPage(
 
     FinancePage(
         uiState = uiState,
-        onEmptyStateButtonClick = onAddSaving,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddSaving,
         content = {
             com.ivzb.urgat.ui.savings.TransactionsPage(
                 savings = uiState.savings,

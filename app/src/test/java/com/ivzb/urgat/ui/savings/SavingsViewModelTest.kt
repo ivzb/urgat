@@ -249,6 +249,24 @@ class SavingsViewModelTest {
         advanceUntilIdle()
     }
 
+    @Test
+    fun `resetFilters resets search query and sort type to defaults`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(SavingsIntent.SearchQueryChanged("emergency fund"))
+        viewModel.onIntent(SavingsIntent.SetSorting(SavingsSortType.BY_MAX))
+        advanceUntilIdle()
+
+        assertEquals("emergency fund", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(SavingsSortType.BY_MAX, fakeFinanceRepository.savingsSortTypeFlow.value)
+
+        viewModel.onIntent(SavingsIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(SavingsSortType.BY_DATE, fakeFinanceRepository.savingsSortTypeFlow.value)
+    }
+
     private fun createViewModel() = SavingsViewModel(
         fakeObserveSavingsUiStateUseCase,
         fakeFinanceRepository,
