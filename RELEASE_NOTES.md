@@ -1,3 +1,8 @@
+## Release notes 26.03.08
+
+New:
+- You can now reset savings filters directly when no results are found.
+
 ## Release notes 26.03.07
 
 New:
