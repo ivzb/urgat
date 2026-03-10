@@ -44,7 +44,7 @@ class DefaultObserveTodosUiStateUseCase @Inject constructor(
                 todos = todos,
                 isLoading = false,
                 filteringUiInfo = TodosFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_todos,
+                    currentFilteringLabel = R.string.all_todos,
                     emptyLabel = if (searchQuery.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
                     emptyMessage = R.string.no_todos_message,
                     emptyButtonLabel = R.string.add_todo,

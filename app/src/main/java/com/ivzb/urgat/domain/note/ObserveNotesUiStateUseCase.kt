@@ -38,7 +38,7 @@ class DefaultObserveNotesUiStateUseCase @Inject constructor(
                 notes = notes,
                 isLoading = false,
                 filteringUiInfo = NotesFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_notes,
+                    currentFilteringLabel = R.string.all_notes,
                     emptyLabel = if (searchQuery.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
                     emptyMessage = R.string.no_notes_message,
                     emptyButtonLabel = R.string.add_note,

@@ -33,8 +33,11 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
+import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ListItem
+import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
@@ -55,7 +58,6 @@ fun BudgetsScreen(
     viewModel: BudgetsViewModel,
 
     onAddBudget: () -> Unit,
-    onBudgetClick: (Budget) -> Unit,
     onBack: () -> Unit,
 
     modifier: Modifier = Modifier,
@@ -67,7 +69,6 @@ fun BudgetsScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
         onAddBudget = onAddBudget,
-        onBudgetClick = onBudgetClick,
         onBack = onBack,
         modifier = modifier
     )
@@ -80,7 +81,6 @@ fun BudgetsScreen(
     onIntent: (BudgetsIntent) -> Unit,
 
     onAddBudget: () -> Unit,
-    onBudgetClick: (Budget) -> Unit,
 
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -107,28 +107,37 @@ fun BudgetsScreen(
                 showBadge = uiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(BudgetsIntent.SetSorting(it)) },
             )
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.reset_filters to { onIntent(BudgetsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+                )
+            )
         },
 
         content = { page, listState, onListStateChanged ->
             when (page) {
                 BudgetsPage.Monthly -> GroupedBudgetsPage(
                     monthlyBudgets = uiState.monthlyBudgets,
+                    filteringUiInfo = uiState.filteringUiInfo,
+                    onResetFilters = { onIntent(BudgetsIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
                 BudgetsPage.Yearly -> GroupedBudgetsPage(
                     monthlyBudgets = uiState.yearlyBudgets,
+                    filteringUiInfo = uiState.filteringUiInfo,
+                    onResetFilters = { onIntent(BudgetsIntent.ResetFilters) },
                     onListStateChanged = onListStateChanged,
                 )
 
-                BudgetsPage.AllTime -> uiState.allTimeBudget?.let { budget ->
-                    CategoriesPage(
-                        budget = budget,
-                        group = stringResource(R.string.all_time),
-                        listState = listState,
-                        onListStateChanged = onListStateChanged,
-                    )
-                }
+                BudgetsPage.AllTime -> CategoriesPage(
+                    budget = uiState.allTimeBudget,
+                    group = stringResource(R.string.all_time),
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
             }
         },
 
@@ -181,12 +190,22 @@ fun TransactionsPage(
 @Composable
 private fun GroupedBudgetsPage(
     monthlyBudgets: List<GroupedBudget>,
+    filteringUiInfo: FilteringUiInfo,
+    onResetFilters: () -> Unit,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { monthlyBudgets.size }
     val nestedListStates = remember(monthlyBudgets.size) {
         List(monthlyBudgets.size) { LazyListState() }
+    }
+
+    if (monthlyBudgets.isEmpty()) {
+        EmptyState(
+            filteringUiInfo = filteringUiInfo,
+            onButtonClick = { onResetFilters() },
+        )
+        return
     }
 
     Column(
@@ -227,6 +246,7 @@ private fun GroupedBudgetsPage(
 
             CategoriesPage(
                 budget = budget,
+
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
             )
@@ -236,7 +256,7 @@ private fun GroupedBudgetsPage(
 
 @Composable
 fun CategoriesPage(
-    budget: GroupedBudget,
+    budget: GroupedBudget?,
     group: String? = null,
 
     listState: LazyListState,
@@ -245,6 +265,10 @@ fun CategoriesPage(
 
     LaunchedEffect(Unit) {
         onListStateChanged(listState)
+    }
+
+    if (budget == null) {
+        return
     }
 
     LazyColumn(
@@ -395,7 +419,6 @@ private fun BudgetsScreenPreview(initialPage: Int = 0) {
             ),
             onIntent = {},
             onAddBudget = {},
-            onBudgetClick = {},
             onBack = {},
             modifier = Modifier
         )
@@ -433,7 +456,6 @@ private fun BudgetsScreenEmptyPreview() {
             ),
             onIntent = {},
             onAddBudget = {},
-            onBudgetClick = {},
             onBack = {},
             modifier = Modifier
         )
@@ -450,7 +472,6 @@ private fun BudgetsScreenLoadingPreview() {
             ),
             onIntent = {},
             onAddBudget = {},
-            onBudgetClick = {},
             onBack = {},
             modifier = Modifier
         )
@@ -467,7 +488,6 @@ private fun BudgetsScreenErrorPreview() {
             ),
             onIntent = {},
             onAddBudget = {},
-            onBudgetClick = {},
             onBack = {},
             modifier = Modifier
         )

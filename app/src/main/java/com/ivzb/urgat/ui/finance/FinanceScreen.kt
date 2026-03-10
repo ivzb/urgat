@@ -44,6 +44,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
@@ -257,6 +258,7 @@ fun FinanceScreen(
                     onMoreBudgets = onMoreBudgets,
                     onAddBudget = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget)) },
                     onBudgetClick = onBudgetClick,
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -416,6 +418,7 @@ private fun BudgetsPage(
     onMoreBudgets: () -> Unit,
     onAddBudget: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -423,7 +426,7 @@ private fun BudgetsPage(
 
     FinancePage(
         uiState = uiState,
-        onEmptyStateButtonClick = onAddBudget,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddBudget,
         content = {
             com.ivzb.urgat.ui.budgets.TransactionsPage(
                 budgets = uiState.budgets,
@@ -451,13 +454,10 @@ private fun ReportPage(
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    if (reportBudget == null) {
-        return
-    }
-
     CategoriesPage(
         budget = reportBudget,
         group = null,
+
         listState = listState,
         onListStateChanged = onListStateChanged,
     )

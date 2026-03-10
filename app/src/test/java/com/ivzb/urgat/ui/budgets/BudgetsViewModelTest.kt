@@ -297,6 +297,27 @@ class BudgetsViewModelTest {
         assertEquals(expected, fakeFinanceRepository.budgetsSortTypeFlow.value)
     }
 
+    @Test
+    fun `resetFilters resets search query, filter type, and sort type to defaults`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(BudgetsIntent.SearchQueryChanged("rent"))
+        viewModel.onIntent(BudgetsIntent.SetFiltering(BudgetsFilterType.POSITIVE_BUDGETS))
+        viewModel.onIntent(BudgetsIntent.SetSorting(BudgetsSortType.BY_MAX))
+        advanceUntilIdle()
+
+        assertEquals("rent", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(BudgetsFilterType.POSITIVE_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
+        assertEquals(BudgetsSortType.BY_MAX, fakeFinanceRepository.budgetsSortTypeFlow.value)
+
+        viewModel.onIntent(BudgetsIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
+        assertEquals(BudgetsFilterType.ALL_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
+        assertEquals(BudgetsSortType.BY_DATE, fakeFinanceRepository.budgetsSortTypeFlow.value)
+    }
+
     private fun createViewModel() = BudgetsViewModel(
         fakeObserveBudgetsUiStateUseCase,
         fakeFinanceRepository,

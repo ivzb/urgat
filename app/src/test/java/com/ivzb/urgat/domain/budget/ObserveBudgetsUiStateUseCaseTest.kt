@@ -163,6 +163,121 @@ class ObserveBudgetsUiStateUseCaseTest {
         assertFalse(uiState.isLoading)
     }
 
+    @Test
+    fun `hasAppliedFilters is false when no filters are applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertFalse(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_budgets, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_budgets_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.add_budget, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when search query is not empty`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("rent")
+        val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("rent", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_budgets_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_budgets_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when filter type is applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.POSITIVE_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_budgets_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_budgets_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when sort type is applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(BudgetsFilterType.ALL_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("", uiState.filteringUiInfo.searchQuery)
+        assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_budgets_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_budgets_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `hasAppliedFilters is true when all filters are applied`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("rent")
+        val filterTypeFlow = flowOf(BudgetsFilterType.POSITIVE_BUDGETS)
+        val sortTypeFlow = flowOf(BudgetsSortType.BY_MAX)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.filteringUiInfo.hasAppliedFilters)
+        assertEquals("rent", uiState.filteringUiInfo.searchQuery)
+        assertTrue(uiState.filteringUiInfo.showFilterBadge)
+        assertTrue(uiState.filteringUiInfo.showSortBadge)
+        assertEquals(R.string.no_budgets_search, uiState.filteringUiInfo.emptyLabel)
+        assertEquals(R.string.no_budgets_search_message, uiState.filteringUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
+    }
+
     private fun emitSuccessData() {
         fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(fakeMonthlyBudgets))

@@ -95,9 +95,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
                 categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
                 categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
-                filteringUiInfo = ExpensesFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_expenses,
-                ),
                 initialPage = expensesInitialPage,
             ),
             investmentsUiState = InvestmentsUiState(
@@ -117,7 +114,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
             ),
             budgetsUiState = BudgetsUiState(
                 budgets = SampleData.SAMPLE_BUDGETS,
-                filteringUiInfo = BudgetsFilteringUiInfo(),
                 initialPage = budgetsInitialPage,
             ),
             reportBudget = SampleData.SAMPLE_REPORT_BUDGET,

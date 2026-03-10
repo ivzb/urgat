@@ -13,7 +13,6 @@
     <string name="all_todos">All todos</string>
     <string name="active_todos">Active todos</string>
     <string name="completed_todos">Completed todos</string>
-    <string name="recent_todos">Recent todos</string>
     <string name="no_todos_label">Let\'s get things done.</string>
     <string name="no_todos_message">Tap "Add Todo" to plan your next task.</string>
     <string name="no_todos">You have no todos!</string>
@@ -83,7 +82,6 @@
     <string name="no_cost_expenses">You have no cost expenses!</string>
     <string name="excluded_from_analytics">Excluded from analytics</string>
     <string name="no_excluded_from_analytics_expenses">You have no expenses excluded from analytics!</string>
-    <string name="recent_expenses">Recent expenses</string>
     <string name="no_expenses_search">You have no expenses with this search criteria!</string>
     <string name="no_expenses_search_message">Tap “Reset filters” to reset to default.</string>
     <string name="press_back_once_more_to_exit">Press back once more to exit.</string>
@@ -94,7 +92,6 @@
     <string name="no_notes_message">Tap "Add Note" to write down your thoughts.</string>
     <string name="loading_notes">Loading notes</string>
     <string name="error_notes">Error while loading notes</string>
-    <string name="recent_notes">Recent notes</string>
     <string name="no_notes_search">You have no notes with this search criteria!</string>
     <string name="add_weight">Add weight</string>
     <string name="edit_weight">Edit weight</string>
@@ -118,7 +115,6 @@
     <string name="loading_weights">Loading weights</string>
     <string name="delete">Delete</string>
     <string name="something_went_wrong">Something went wrong.</string>
-    <string name="recent_investments">Recent investments</string>
     <string name="finance">Finance</string>
     <string name="all_weights">All weights</string>
     <string name="recent_weights">Recent weights</string>
@@ -154,7 +150,6 @@
     <string name="version_format">Version: %1$s</string>
     <string name="chart_text_format">%1$s\n%2$s</string>
     <string name="exclude_from_analytics">Exclude from analytics</string>
-    <string name="recent_budgets">Recent budgets</string>
     <string name="add_budget">Add Budget</string>
     <string name="edit_budget">Edit Budget</string>
     <string name="income_hint">Income</string>
@@ -165,6 +160,7 @@
     <string name="no_budgets_label">Your savings journey starts here.</string>
     <string name="no_budgets_message">Tap "Add Budget" to track your first one.</string>
     <string name="no_budgets_search">You have no budgets with this search criteria!</string>
+    <string name="no_budgets_search_message">Tap "Reset filters" to reset to default.</string>
     <string name="loading_budgets">Loading budgets</string>
     <string name="error_budgets">Error while loading budgets</string>
     <string name="bank_start_end_format">Bank start: %1$s, end: %2$s</string>
@@ -175,7 +171,6 @@
     <string name="edit_saving">Edit Saving</string>
     <string name="saving_hint">Enter your saving here.</string>
     <string name="savings">Savings</string>
-    <string name="recent_savings">Recent savings</string>
     <string name="all_savings">All savings</string>
     <string name="no_savings">You have no savings</string>
     <string name="no_savings_label">Your savings journey starts here.</string>

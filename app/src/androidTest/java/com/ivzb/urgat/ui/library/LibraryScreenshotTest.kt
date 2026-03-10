@@ -1,7 +1,6 @@
 package com.ivzb.urgat.ui.library
 
 import androidx.compose.ui.Modifier
-import com.ivzb.urgat.R
 import com.ivzb.urgat.annotations.Screenshot
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
@@ -31,15 +30,11 @@ class LibraryScreenshotTest: ScreenshotTest() {
         uiState = LibraryUiState(
             todosUiState = TodosUiState(
                 todos = SampleData.SAMPLE_TODOS.take(itemsLimit),
-                filteringUiInfo = TodosFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_todos,
-                ),
+                filteringUiInfo = TodosFilteringUiInfo(),
             ),
             notesUiState = NotesUiState(
                 notes = SampleData.SAMPLE_NOTES.take(itemsLimit),
-                filteringUiInfo = NotesFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_notes,
-                ),
+                filteringUiInfo = NotesFilteringUiInfo(),
             ),
             initialPage = initialPage,
             isLoading = false,

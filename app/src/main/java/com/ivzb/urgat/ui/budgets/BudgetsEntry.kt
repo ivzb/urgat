@@ -12,7 +12,6 @@ fun EntryProviderScope<NavKey>.budgetsEntry(navigator: Navigator, navActions: Ur
             viewModel = hiltViewModel(),
 
             onAddBudget = { navActions.navigateToAddBudget() },
-            onBudgetClick = { navActions.navigateToEditBudget(it.id) },
             onBack = { navigator.goBack() },
         )
     }

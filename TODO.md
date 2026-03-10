@@ -102,5 +102,4 @@
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - improve empty state for notes as done for todos
 - improve empty state for todos as done for savings
-- improve empty state for budgets as done for savings
 - if user taps "reset filters" while typing the search text field is not cleared or closed

@@ -267,13 +267,13 @@ fun LibraryScreenPreview(initialPage: Int = 0) {
                 todosUiState = TodosUiState(
                     todos = SampleData.SAMPLE_TODOS.take(5),
                     filteringUiInfo = TodosFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_todos,
+                        currentFilteringLabel = R.string.all_todos,
                     ),
                 ),
                 notesUiState = NotesUiState(
                     notes = SampleData.SAMPLE_NOTES.take(5),
                     filteringUiInfo = NotesFilteringUiInfo(
-                        currentFilteringLabel = R.string.recent_notes,
+                        currentFilteringLabel = R.string.all_notes,
                     ),
                 ),
                 isLoading = false,
