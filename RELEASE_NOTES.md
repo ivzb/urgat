@@ -1,3 +1,8 @@
+## Release notes 26.03.09
+
+New:
+- You can now reset budgets filters directly when no results are found.
+
 ## Release notes 26.03.08
 
 New:
