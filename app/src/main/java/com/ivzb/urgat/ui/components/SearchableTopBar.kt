@@ -124,6 +124,21 @@ fun SearchableTopBar(
                     )
                 }
 
+                // Sync local text field state when searchQuery changes externally (e.g. reset filters)
+                LaunchedEffect(searchQuery) {
+                    if (searchQueryTextFieldValue.text != searchQuery) {
+                        searchQueryTextFieldValue = TextFieldValue(
+                            text = searchQuery,
+                            selection = TextRange(searchQuery.length)
+                        )
+
+                        // Close search bar when query is cleared externally
+                        if (searchQuery.isEmpty()) {
+                            onIsSearchingChanged(false)
+                        }
+                    }
+                }
+
                 val keyboardController = LocalSoftwareKeyboardController.current
 
                 TextField(
