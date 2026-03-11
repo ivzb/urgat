@@ -1,3 +1,8 @@
+## Release notes 26.03.10
+
+Fixed:
+- Fixed a bug where tapping Reset Filters while the search text field was active would not clear or close it - the field stayed focused with stale text. Now it properly clears the search text and dismisses the search bar.
+
 ## Release notes 26.03.09
 
 New:
