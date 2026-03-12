@@ -1,3 +1,8 @@
+## Release notes 26.03.11
+
+New:
+- You can now reset todos filters directly when no results are found.
+
 ## Release notes 26.03.10
 
 Fixed:
