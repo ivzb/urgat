@@ -1,9 +1,10 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.R
-import com.ivzb.urgat.ui.todos.TodosUiState
+import com.ivzb.urgat.ui.todos.TodosFilterMenuItem
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
+import com.ivzb.urgat.ui.todos.TodosUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import kotlinx.coroutines.flow.Flow
@@ -43,18 +44,45 @@ class DefaultObserveTodosUiStateUseCase @Inject constructor(
             TodosUiState(
                 todos = todos,
                 isLoading = false,
-                filteringUiInfo = TodosFilteringUiInfo(
-                    currentFilteringLabel = R.string.all_todos,
-                    emptyLabel = if (searchQuery.isEmpty()) R.string.no_todos_label else R.string.no_todos_search,
-                    emptyMessage = R.string.no_todos_message,
-                    emptyButtonLabel = R.string.add_todo,
+                filteringUiInfo = getFilterUiInfo(
                     searchQuery = searchQuery,
-
+                    filterType = filterType,
                     filterMenuItems = filtering,
-                    showFilterBadge = filterType != TodosFilterType.ALL_TODOS,
                 ),
             )
         }
     ).map { Async.Success(it) }
+
+    private fun getFilterUiInfo(
+        searchQuery: String,
+        filterType: TodosFilterType,
+        filterMenuItems: List<TodosFilterMenuItem>,
+    ): TodosFilteringUiInfo {
+        val showFilterBadge = filterType != TodosFilterType.ALL_TODOS
+        val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge
+
+        return TodosFilteringUiInfo(
+            currentFilteringLabel = R.string.all_todos,
+
+            emptyLabel = when {
+                hasAppliedFilters -> R.string.no_todos_search
+                else -> R.string.no_todos
+            },
+            emptyMessage = when {
+                hasAppliedFilters -> R.string.no_todos_search_message
+                else -> R.string.no_todos_message
+            },
+            emptyButtonLabel = when {
+                hasAppliedFilters -> R.string.reset_filters
+                else -> R.string.add_todo
+            },
+
+            searchQuery = searchQuery,
+            hasAppliedFilters = hasAppliedFilters,
+
+            filterMenuItems = filterMenuItems,
+            showFilterBadge = showFilterBadge,
+        )
+    }
 
 }

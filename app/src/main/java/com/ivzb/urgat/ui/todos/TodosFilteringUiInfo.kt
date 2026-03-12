@@ -17,11 +17,8 @@ data class TodosFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     override val searchQuery: String = "",
+    override val hasAppliedFilters: Boolean = false,
 
     val filterMenuItems: List<TodosFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,
-) : FilteringUiInfo {
-
-    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty() || showFilterBadge
-
-}
+) : FilteringUiInfo

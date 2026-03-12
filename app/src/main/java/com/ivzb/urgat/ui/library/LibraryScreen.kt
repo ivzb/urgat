@@ -124,6 +124,7 @@ fun LibraryScreen(
                     onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
+                    onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -150,6 +151,7 @@ private fun TodosPage(
     onAddTodo: () -> Unit,
     onTodoClick: (Todo) -> Unit,
     onTodoCheckedChange: (Todo, Boolean) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -180,7 +182,7 @@ private fun TodosPage(
                         label = uiState.filteringUiInfo.emptyLabel,
                         message = uiState.filteringUiInfo.emptyMessage,
                         buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
-                        onButtonClick = onAddTodo,
+                        onButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddTodo,
                     )
                 }
             }
