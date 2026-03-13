@@ -1,3 +1,8 @@
+## Release notes 26.03.12
+
+New:
+- You can now reset notes filters directly when no results are found.
+
 ## Release notes 26.03.11
 
 New:
