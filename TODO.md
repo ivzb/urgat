@@ -98,5 +98,3 @@
 - add one more playstore screenshot
 - move inner weight tab screens like library and finance screen
 - show labels for each textfield because its not clear which field is which when editing or duplicating
-- improve empty state for notes as done for todos
-- improve empty state for todos as done for savings

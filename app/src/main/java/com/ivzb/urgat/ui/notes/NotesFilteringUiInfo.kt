@@ -17,8 +17,5 @@ data class NotesFilteringUiInfo(
     override val errorIconRes: Int = R.drawable.ic_error,
 
     override val searchQuery: String = "",
-) : FilteringUiInfo {
-
-    override val hasAppliedFilters: Boolean = searchQuery.isNotEmpty()
-
-}
+    override val hasAppliedFilters: Boolean = false,
+) : FilteringUiInfo

@@ -134,6 +134,7 @@ fun LibraryScreen(
                     uiState = uiState.notesUiState,
                     onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
                     onNoteClick = onNoteClick,
+                    onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -209,6 +210,7 @@ private fun NotesPage(
     uiState: NotesUiState,
     onAddNote: () -> Unit,
     onNoteClick: (Note) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -239,7 +241,7 @@ private fun NotesPage(
                         label = uiState.filteringUiInfo.emptyLabel,
                         message = uiState.filteringUiInfo.emptyMessage,
                         buttonLabel = uiState.filteringUiInfo.emptyButtonLabel,
-                        onButtonClick = onAddNote,
+                        onButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddNote,
                     )
                 }
             }

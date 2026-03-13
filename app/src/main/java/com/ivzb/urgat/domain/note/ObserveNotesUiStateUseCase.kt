@@ -37,15 +37,37 @@ class DefaultObserveNotesUiStateUseCase @Inject constructor(
             NotesUiState(
                 notes = notes,
                 isLoading = false,
-                filteringUiInfo = NotesFilteringUiInfo(
-                    currentFilteringLabel = R.string.all_notes,
-                    emptyLabel = if (searchQuery.isEmpty()) R.string.no_notes_label else R.string.no_notes_search,
-                    emptyMessage = R.string.no_notes_message,
-                    emptyButtonLabel = R.string.add_note,
+                filteringUiInfo = getFilterUiInfo(
                     searchQuery = searchQuery,
                 ),
             )
         }
     ).map { Async.Success(it) }
+
+    private fun getFilterUiInfo(
+        searchQuery: String,
+    ): NotesFilteringUiInfo {
+        val hasAppliedFilters = searchQuery.isNotEmpty()
+
+        return NotesFilteringUiInfo(
+            currentFilteringLabel = R.string.all_notes,
+
+            emptyLabel = when {
+                hasAppliedFilters -> R.string.no_notes_search
+                else -> R.string.no_notes
+            },
+            emptyMessage = when {
+                hasAppliedFilters -> R.string.no_notes_search_message
+                else -> R.string.no_notes_message
+            },
+            emptyButtonLabel = when {
+                hasAppliedFilters -> R.string.reset_filters
+                else -> R.string.add_note
+            },
+
+            searchQuery = searchQuery,
+            hasAppliedFilters = hasAppliedFilters,
+        )
+    }
 
 }
