@@ -11,7 +11,6 @@ fun EntryProviderScope<NavKey>.expensesEntry(navigator: Navigator, navActions: U
         ExpensesScreen(
             viewModel = hiltViewModel(),
 
-            onAddExpense = { navActions.navigateToAddExpense() },
             onExpenseClick = { navActions.navigateToEditExpense(it.id) },
             onBack = { navigator.goBack() },
         )

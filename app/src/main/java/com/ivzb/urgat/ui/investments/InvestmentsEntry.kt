@@ -11,7 +11,6 @@ fun EntryProviderScope<NavKey>.investmentsEntry(navigator: Navigator, navActions
         InvestmentsScreen(
             viewModel = hiltViewModel(),
 
-            onAddInvestment = { navActions.navigateToAddInvestment() },
             onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
             onBack = { navigator.goBack() },
         )

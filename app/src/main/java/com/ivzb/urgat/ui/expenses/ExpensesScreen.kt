@@ -66,7 +66,6 @@ import kotlinx.coroutines.launch
 fun ExpensesScreen(
     viewModel: ExpensesViewModel,
 
-    onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
     onBack: () -> Unit,
 
@@ -78,7 +77,6 @@ fun ExpensesScreen(
     ExpensesScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        onAddExpense = onAddExpense,
         onExpenseClick = onExpenseClick,
         onBack = onBack,
         modifier = modifier
@@ -91,7 +89,6 @@ fun ExpensesScreen(
     uiState: ExpensesUiState,
     onIntent: (ExpensesIntent) -> Unit,
 
-    onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
 
     onBack: () -> Unit,
@@ -108,7 +105,6 @@ fun ExpensesScreen(
         route = ExpensesRoute,
         searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(ExpensesIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddExpense,
         onBack = onBack,
 
         topAppBarActionsContent = {
@@ -476,7 +472,6 @@ private fun ExpensesScreenPreview(initialPage: Int = 0) {
                 initialPage = initialPage,
             ),
             onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
             onBack = {},
             modifier = Modifier
@@ -515,7 +510,6 @@ private fun ExpensesScreenEmptyPreview() {
                 hasError = false
             ),
             onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
             onBack = {},
             modifier = Modifier
@@ -536,7 +530,6 @@ private fun ExpensesScreenLoadingPreview() {
                 hasError = false
             ),
             onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
             onBack = {},
             modifier = Modifier
@@ -557,7 +550,6 @@ private fun ExpensesScreenErrorPreview() {
                 hasError = true
             ),
             onIntent = {},
-            onAddExpense = {},
             onExpenseClick = {},
             onBack = {},
             modifier = Modifier

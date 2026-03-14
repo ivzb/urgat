@@ -35,9 +35,6 @@
 - fix pie chart in landscape and tablet (put them in 2 columns side by side)
 - when lists are not long enough the FAB stays on top of last item 
 - close keyboard when going back from add/edit investment to analytics screen / transactions
-- expenses chart doesn't update when searching - probably investments too
-- expenses/investments crashes when there are no items and click group/chart page
-- budgets/investments/expenses/notes/todos/weights screens should have empty state when you delete all items and you're still there
 - fix library/finance screen - there is not enough padding above the empty state card
 - encode or replace double quotes from any string to avoid import crash afterwards
 
@@ -96,5 +93,7 @@
 - car maintenance
 - car reminders
 - add one more playstore screenshot
-- move inner weight tab screens like library and finance screen
 - show labels for each textfield because its not clear which field is which when editing or duplicating
+- hide FAB from finance/FIRE tab
+- hide FAB from finance/monthly report tab
+- move inner weight tab screens like library and finance screen - probably just remove the weight screen and remove the limit from wellbeing screen

@@ -66,7 +66,6 @@ class BudgetsScreenshotTest: ScreenshotTest() {
                 BudgetsScreen(
                     uiState = uiState,
                     onIntent = {},
-                    onAddBudget = {},
                     onBack = {},
                     modifier = Modifier
                 )

@@ -89,7 +89,6 @@ fun PagerScreen(
     route: UrgatRoute,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onAddItem: () -> Unit,
     onBack: () -> Unit,
 
     withSearch: Boolean = true,
@@ -109,7 +108,6 @@ fun PagerScreen(
         route = route,
         searchQuery = searchQuery,
         onSearchQueryChanged = onSearchQueryChanged,
-        onAddItem = onAddItem,
         onBack = onBack,
 
         withSearch = withSearch,
@@ -126,26 +124,6 @@ fun PagerScreen(
             )
         },
 
-        modifier = modifier,
-    )
-}
-
-@Composable
-fun PagerScreen(
-    uiState: PagerUiState,
-    content: PagerContent,
-    modifier: Modifier = Modifier,
-) {
-    val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
-    val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
-    val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
-
-    PagerContent(
-        pages = uiState.pages,
-        pagerState = pagerState,
-        listStates = listStates,
-        onListStateChanged = { currentListState.value = it },
-        content = content,
         modifier = modifier,
     )
 }

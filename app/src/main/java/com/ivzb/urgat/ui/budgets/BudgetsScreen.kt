@@ -56,10 +56,7 @@ import java.math.BigDecimal
 @Composable
 fun BudgetsScreen(
     viewModel: BudgetsViewModel,
-
-    onAddBudget: () -> Unit,
     onBack: () -> Unit,
-
     modifier: Modifier = Modifier,
 ) {
 
@@ -68,7 +65,6 @@ fun BudgetsScreen(
     BudgetsScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        onAddBudget = onAddBudget,
         onBack = onBack,
         modifier = modifier
     )
@@ -80,8 +76,6 @@ fun BudgetsScreen(
     uiState: BudgetsUiState,
     onIntent: (BudgetsIntent) -> Unit,
 
-    onAddBudget: () -> Unit,
-
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -92,7 +86,6 @@ fun BudgetsScreen(
         route = BudgetsRoute,
         searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(BudgetsIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddBudget,
         onBack = onBack,
 
         topAppBarActionsContent = {
@@ -418,7 +411,6 @@ private fun BudgetsScreenPreview(initialPage: Int = 0) {
                 initialPage = initialPage,
             ),
             onIntent = {},
-            onAddBudget = {},
             onBack = {},
             modifier = Modifier
         )
@@ -455,7 +447,6 @@ private fun BudgetsScreenEmptyPreview() {
                 hasError = false,
             ),
             onIntent = {},
-            onAddBudget = {},
             onBack = {},
             modifier = Modifier
         )
@@ -471,7 +462,6 @@ private fun BudgetsScreenLoadingPreview() {
                 isLoading = true,
             ),
             onIntent = {},
-            onAddBudget = {},
             onBack = {},
             modifier = Modifier
         )
@@ -487,7 +477,6 @@ private fun BudgetsScreenErrorPreview() {
                 hasError = true,
             ),
             onIntent = {},
-            onAddBudget = {},
             onBack = {},
             modifier = Modifier
         )

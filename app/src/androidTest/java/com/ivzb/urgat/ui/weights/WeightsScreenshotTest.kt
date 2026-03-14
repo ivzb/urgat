@@ -55,7 +55,6 @@ class WeightsScreenshotTest: ScreenshotTest() {
                 WeightsScreen(
                     uiState = uiState,
                     onIntent = {},
-                    onAddWeight = {},
                     onWeightClick = {},
                     onBack = {},
                     modifier = Modifier

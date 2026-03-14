@@ -83,7 +83,6 @@ class ExpensesScreenshotTest: ScreenshotTest() {
                 ExpensesScreen(
                     uiState = uiState,
                     onIntent = {},
-                    onAddExpense = {},
                     onExpenseClick = {},
                     onBack = {},
                     modifier = Modifier

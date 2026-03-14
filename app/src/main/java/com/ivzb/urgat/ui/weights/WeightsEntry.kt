@@ -11,7 +11,6 @@ fun EntryProviderScope<NavKey>.weightsEntry(navigator: Navigator, navActions: Ur
         WeightsScreen(
             viewModel = hiltViewModel(),
 
-            onAddWeight = { navActions.navigateToAddWeight() },
             onWeightClick = { navActions.navigateToEditWeight(it.id) },
             onBack = { navigator.goBack() },
         )

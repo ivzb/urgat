@@ -69,7 +69,6 @@ import kotlinx.coroutines.launch
 fun InvestmentsScreen(
     viewModel: InvestmentsViewModel,
 
-    onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onBack: () -> Unit,
 
@@ -81,7 +80,6 @@ fun InvestmentsScreen(
     InvestmentsScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        onAddInvestment = onAddInvestment,
         onInvestmentClick = onInvestmentClick,
         onBack = onBack,
         modifier = modifier
@@ -94,7 +92,6 @@ fun InvestmentsScreen(
     uiState: InvestmentsUiState,
     onIntent: (InvestmentsIntent) -> Unit,
 
-    onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onBack: () -> Unit,
 
@@ -110,7 +107,6 @@ fun InvestmentsScreen(
         route = InvestmentsRoute,
         searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(InvestmentsIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddInvestment,
         onBack = onBack,
 
         topAppBarActionsContent = {
@@ -605,7 +601,6 @@ private fun InvestmentsScreenPreview(initialPage: Int = 0) {
                 initialPage = initialPage,
             ),
             onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier
@@ -646,7 +641,6 @@ private fun InvestmentsScreenEmptyPreview() {
                 hasError = false,
             ),
             onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier
@@ -663,7 +657,6 @@ private fun InvestmentsScreenLoadingPreview() {
                 isLoading = true,
             ),
             onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier
@@ -680,7 +673,6 @@ private fun InvestmentsScreenErrorPreview() {
                 hasError = true,
             ),
             onIntent = {},
-            onAddInvestment = {},
             onInvestmentClick = {},
             onBack = {},
             modifier = Modifier

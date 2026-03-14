@@ -65,7 +65,6 @@ import kotlinx.coroutines.launch
 fun SavingsScreen(
     viewModel: SavingsViewModel,
 
-    onAddSaving: () -> Unit,
     onSavingClick: (Saving) -> Unit,
     onBack: () -> Unit,
 
@@ -77,7 +76,6 @@ fun SavingsScreen(
     SavingsScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        onAddSaving = onAddSaving,
         onSavingClick = onSavingClick,
         onBack = onBack,
         modifier = modifier
@@ -90,7 +88,6 @@ fun SavingsScreen(
     uiState: SavingsUiState,
     onIntent: (SavingsIntent) -> Unit,
 
-    onAddSaving: () -> Unit,
     onSavingClick: (Saving) -> Unit,
 
     onBack: () -> Unit,
@@ -107,7 +104,6 @@ fun SavingsScreen(
         route = SavingsRoute,
         searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(SavingsIntent.SearchQueryChanged(query)) },
-        onAddItem = onAddSaving,
         onBack = onBack,
 
         topAppBarActionsContent = {
@@ -470,7 +466,6 @@ private fun SavingsScreenPreview(initialPage: Int = 0) {
                 initialPage = initialPage,
             ),
             onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
             onBack = {},
             modifier = Modifier
@@ -508,7 +503,6 @@ private fun SavingsScreenEmptyPreview() {
                 hasError = false,
             ),
             onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
             onBack = {},
             modifier = Modifier
@@ -525,7 +519,6 @@ private fun SavingsScreenLoadingPreview() {
                 isLoading = true,
             ),
             onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
             onBack = {},
             modifier = Modifier
@@ -542,7 +535,6 @@ private fun SavingsScreenErrorPreview() {
                 hasError = true,
             ),
             onIntent = {},
-            onAddSaving = {},
             onSavingClick = {},
             onBack = {},
             modifier = Modifier

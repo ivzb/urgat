@@ -73,7 +73,6 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
                 InvestmentsScreen(
                     uiState = uiState,
                     onIntent = {},
-                    onAddInvestment = {},
                     onInvestmentClick = {},
                     onBack = {},
                     modifier = Modifier

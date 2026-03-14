@@ -34,7 +34,6 @@ import com.ivzb.urgat.util.toLocalDate
 fun WeightsScreen(
     viewModel: WeightsViewModel,
 
-    onAddWeight: () -> Unit,
     onWeightClick: (Weight) -> Unit,
     onBack: () -> Unit,
 
@@ -46,7 +45,6 @@ fun WeightsScreen(
     WeightsScreen(
         uiState = uiState,
         onIntent = viewModel::onIntent,
-        onAddWeight = onAddWeight,
         onWeightClick = onWeightClick,
         onBack = onBack,
         modifier = modifier
@@ -58,7 +56,6 @@ fun WeightsScreen(
 fun WeightsScreen(
     uiState: WeightsUiState,
     onIntent: (WeightsIntent) -> Unit,
-    onAddWeight: () -> Unit,
     onWeightClick: (Weight) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -71,7 +68,6 @@ fun WeightsScreen(
         route = WeightsRoute,
         searchQuery = "",
         onSearchQueryChanged = { /* NOOP */ },
-        onAddItem = onAddWeight,
         onBack = onBack,
 
         withSearch = false,
@@ -201,7 +197,6 @@ private fun WeightsScreenPreview() {
                 hasError = false
             ),
             onIntent = {},
-            onAddWeight = {},
             onWeightClick = {},
             onBack = {},
             modifier = Modifier
@@ -221,7 +216,6 @@ private fun WeightsScreenEmptyPreview() {
                 hasError = false
             ),
             onIntent = {},
-            onAddWeight = {},
             onWeightClick = {},
             onBack = {},
             modifier = Modifier
@@ -241,7 +235,6 @@ private fun WeightsScreenLoadingPreview() {
                 hasError = false
             ),
             onIntent = {},
-            onAddWeight = {},
             onWeightClick = {},
             onBack = {},
             modifier = Modifier
@@ -261,7 +254,6 @@ private fun WeightsScreenErrorPreview() {
                 hasError = true
             ),
             onIntent = {},
-            onAddWeight = {},
             onWeightClick = {},
             onBack = {},
             modifier = Modifier

@@ -4,7 +4,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -13,13 +12,11 @@ import androidx.compose.ui.res.stringResource
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.ScrollAwareFAB
 import com.ivzb.urgat.ui.components.scaffolds.UrgatScaffold
 import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightsUiState
-import com.ivzb.urgat.util.isScrollingUp
 
 @Composable
 fun ListDetailScreen(
@@ -28,7 +25,6 @@ fun ListDetailScreen(
     route: UrgatRoute,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onAddItem: () -> Unit,
     onBack: () -> Unit,
 
     withSearch: Boolean,
@@ -54,14 +50,6 @@ fun ListDetailScreen(
         },
         withSearch = withSearch,
         topAppBarActionsContent = topAppBarActionsContent,
-        floatingActionButtonContent = {
-            ScrollAwareFAB(
-                visible = listState.isScrollingUp(),
-                icon = Icons.Default.Add,
-                labelResId = R.string.add,
-                onClick = onAddItem
-            )
-        },
         modifier = modifier,
         content = {
             UrgatScreen(
@@ -82,7 +70,6 @@ fun ListDetailsScreenPreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             onBack = {},
-            onAddItem = {},
             withSearch = false,
             topAppBarActionsContent = {},
             listState = rememberLazyListState(),

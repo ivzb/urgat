@@ -11,7 +11,6 @@ fun EntryProviderScope<NavKey>.savingsEntry(navigator: Navigator, navActions: Ur
         SavingsScreen(
             viewModel = hiltViewModel(),
 
-            onAddSaving = { navActions.navigateToAddSaving() },
             onSavingClick = { navActions.navigateToEditSaving(it.id) },
             onBack = { navigator.goBack() },
         )

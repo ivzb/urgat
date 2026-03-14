@@ -83,7 +83,6 @@ class SavingsScreenshotTest: ScreenshotTest() {
                 SavingsScreen(
                     uiState = uiState,
                     onIntent = {},
-                    onAddSaving = {},
                     onSavingClick = {},
                     onBack = {},
                     modifier = Modifier

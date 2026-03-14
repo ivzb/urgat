@@ -48,7 +48,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
 
         aboutEntry(navigator)
 
-        budgetsEntry(navigator, navActions)
+        budgetsEntry(navigator)
         addEditBudgetEntry(navigator)
 
         savingsEntry(navigator, navActions)
