@@ -1,3 +1,8 @@
+## Release notes 26.03.13
+
+Improved:
+- Removed Floating Action Button (FAB) from inner finance screens.
+
 ## Release notes 26.03.12
 
 New:
