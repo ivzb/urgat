@@ -1,3 +1,8 @@
+## Release notes 26.03.14
+
+Improved:
+- Weights can now be sorted on the Wellbeing screen.
+
 ## Release notes 26.03.13
 
 Improved:
