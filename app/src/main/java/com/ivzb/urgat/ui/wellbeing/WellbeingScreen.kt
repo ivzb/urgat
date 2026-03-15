@@ -32,6 +32,7 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
+import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightItem
@@ -96,6 +97,14 @@ fun WellbeingScreen(
         onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
         navigator = navigator,
         withSearch = false,
+
+        topAppBarActionsContent = {
+            SortMenu(
+                items = uiState.weightsFilteringUiInfo.sortMenuItems,
+                showBadge = uiState.weightsFilteringUiInfo.showSortBadge,
+                onFilter = { onIntent(WellbeingIntent.SetWeightsSorting(it)) },
+            )
+        },
 
         content = {
             WellbeingContent(
