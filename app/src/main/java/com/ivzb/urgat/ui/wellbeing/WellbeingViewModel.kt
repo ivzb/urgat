@@ -3,43 +3,30 @@ package com.ivzb.urgat.ui.wellbeing
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.R
-import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.ui.components.UiEventHolder
-import com.ivzb.urgat.domain.weight.ObserveWeightsSortingUseCase
-import com.ivzb.urgat.domain.weight.ObserveWeightsUseCase
-import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
+import com.ivzb.urgat.domain.weight.ObserveWeightsUiStateUseCase
 import com.ivzb.urgat.ui.weights.WeightsSortType
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WellbeingViewModel @Inject constructor(
-    observeWeightsUseCase: ObserveWeightsUseCase,
-    observeWeightsSortingUseCase: ObserveWeightsSortingUseCase,
-    resourcesProvider: ResourcesProvider,
+    observeWeightsUiStateUseCase: ObserveWeightsUiStateUseCase,
     val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val uiEventHolder = UiEventHolder<WellbeingUiEvent>()
 
-    private val _itemsLimit = MutableStateFlow(resourcesProvider.getInteger(R.integer.items_limit))
-
     private val _savedWeightsSortType: Flow<WeightsSortType> = savedStateHandle.getStateFlow(WELLBEING_WEIGHTS_SORT_SAVED_STATE_KEY, WeightsSortType.BY_DATE)
 
     val uiState: StateFlow<WellbeingUiState> = combineUiState(
-        observeWeightsUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = _savedWeightsSortType, limitFlow = _itemsLimit),
-        observeWeightsSortingUseCase(),
-        _savedWeightsSortType.map { Async.Success(it) },
+        observeWeightsUiStateUseCase(_savedWeightsSortType),
         uiEventHolder(),
 
         onLoading = {
@@ -48,14 +35,9 @@ class WellbeingViewModel @Inject constructor(
         onError = {
             WellbeingUiState(hasError = true)
         },
-        onSuccess = { weights, sorting, sortType, uiEvent ->
+        onSuccess = { weightsUiState, uiEvent ->
             WellbeingUiState(
-                weights = weights,
-                weightsFilteringUiInfo = WeightsFilteringUiInfo(
-                    currentFilteringLabel = R.string.recent_weights,
-                    sortMenuItems = sorting,
-                    showSortBadge = sortType != WeightsSortType.BY_DATE,
-                ),
+                weightsUiState = weightsUiState,
                 isLoading = false,
                 uiEvent = uiEvent,
             )

@@ -7,6 +7,7 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.weights.WeightsUiState
 import org.junit.Test
 import org.junit.experimental.categories.Category
 
@@ -17,7 +18,9 @@ class WellbeingScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_WellbeingScreen_sampleData() = screenshotTest(
         uiState = WellbeingUiState(
-            weights = SampleData.SAMPLE_WEIGHTS.take(itemsLimit),
+            weightsUiState = WeightsUiState(
+                weights = SampleData.SAMPLE_WEIGHTS.take(itemsLimit),
+            ),
             isLoading = false,
             hasError = false,
         ),
@@ -26,7 +29,7 @@ class WellbeingScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_WellbeingScreen_emptyState() = screenshotTest(
         uiState = WellbeingUiState(
-            weights = listOf(),
+            weightsUiState = WeightsUiState(),
             isLoading = false,
             hasError = false,
         ),
@@ -35,7 +38,7 @@ class WellbeingScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_WellbeingScreen_loadingState() = screenshotTest(
         uiState = WellbeingUiState(
-            weights = listOf(),
+            weightsUiState = WeightsUiState(),
             isLoading = true,
             hasError = false,
         ),
@@ -44,7 +47,7 @@ class WellbeingScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_WellbeingScreen_errorState() = screenshotTest(
         uiState = WellbeingUiState(
-            weights = listOf(),
+            weightsUiState = WeightsUiState(),
             isLoading = false,
             hasError = true,
         ),

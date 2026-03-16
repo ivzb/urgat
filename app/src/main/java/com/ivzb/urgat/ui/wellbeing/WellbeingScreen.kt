@@ -38,6 +38,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightItem
 import com.ivzb.urgat.ui.weights.WeightsChart
 import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
+import com.ivzb.urgat.ui.weights.WeightsUiState
 
 @Composable
 fun WellbeingScreen(
@@ -100,16 +101,16 @@ fun WellbeingScreen(
 
         topAppBarActionsContent = {
             SortMenu(
-                items = uiState.weightsFilteringUiInfo.sortMenuItems,
-                showBadge = uiState.weightsFilteringUiInfo.showSortBadge,
+                items = uiState.weightsUiState.filteringUiInfo.sortMenuItems,
+                showBadge = uiState.weightsUiState.filteringUiInfo.showSortBadge,
                 onFilter = { onIntent(WellbeingIntent.SetWeightsSorting(it)) },
             )
         },
 
         content = {
             WellbeingContent(
-                weights = uiState.weights,
-                weightsFilteringUiInfo = uiState.weightsFilteringUiInfo,
+                weights = uiState.weightsUiState.weights,
+                weightsFilteringUiInfo = uiState.weightsUiState.filteringUiInfo,
                 onAddWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
                 onMoreWeights = onMoreWeights,
                 onWeightClick = onWeightClick,
@@ -331,8 +332,10 @@ private fun WellbeingScreenPreview() {
     UrgatTheme {
         WellbeingScreen(
             uiState = WellbeingUiState(
-                weights = SampleData.SAMPLE_WEIGHTS.take(5),
-                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                weightsUiState = WeightsUiState(
+                    weights = SampleData.SAMPLE_WEIGHTS.take(5),
+                    filteringUiInfo = WeightsFilteringUiInfo(),
+                ),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = WellbeingFilteringUiInfo(),
@@ -352,8 +355,10 @@ private fun WellbeingScreenEmptyPreview() {
     UrgatTheme {
         WellbeingScreen(
             uiState = WellbeingUiState(
-                weights = listOf(),
-                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                weightsUiState = WeightsUiState(
+                    weights = listOf(),
+                    filteringUiInfo = WeightsFilteringUiInfo(),
+                ),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = WellbeingFilteringUiInfo(),
@@ -373,8 +378,10 @@ private fun WellbeingScreenLoadingPreview() {
     UrgatTheme {
         WellbeingScreen(
             uiState = WellbeingUiState(
-                weights = listOf(),
-                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                weightsUiState = WeightsUiState(
+                    weights = listOf(),
+                    filteringUiInfo = WeightsFilteringUiInfo(),
+                ),
                 isLoading = true,
                 hasError = false,
                 filteringUiInfo = WellbeingFilteringUiInfo(),
@@ -394,8 +401,10 @@ private fun WellbeingScreenErrorPreview() {
     UrgatTheme {
         WellbeingScreen(
             uiState = WellbeingUiState(
-                weights = listOf(),
-                weightsFilteringUiInfo = WeightsFilteringUiInfo(),
+                weightsUiState = WeightsUiState(
+                    weights = listOf(),
+                    filteringUiInfo = WeightsFilteringUiInfo(),
+                ),
                 isLoading = false,
                 hasError = true,
                 filteringUiInfo = WellbeingFilteringUiInfo(),

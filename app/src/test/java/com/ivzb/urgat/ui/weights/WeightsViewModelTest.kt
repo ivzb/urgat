@@ -53,7 +53,7 @@ class WeightsViewModelTest {
         val initial = viewModel.uiState.value
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
-        assertTrue(initial.items.isEmpty())
+        assertTrue(initial.weights.isEmpty())
 
         job.cancel()
     }
@@ -70,7 +70,7 @@ class WeightsViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeWeights, state.items)
+        assertEquals(fakeWeights, state.weights)
         assertEquals(fakeWeightsSorting, state.filteringUiInfo.sortMenuItems)
         assertFalse(state.filteringUiInfo.showSortBadge)
         assertFalse(state.isLoading)
@@ -92,7 +92,7 @@ class WeightsViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeWeights, state.items)
+        assertEquals(fakeWeights, state.weights)
         assertEquals(fakeWeightsSorting, state.filteringUiInfo.sortMenuItems)
         assertTrue(state.filteringUiInfo.showSortBadge)
         assertFalse(state.isLoading)

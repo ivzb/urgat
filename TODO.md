@@ -97,5 +97,4 @@
 - hide FAB from finance/FIRE tab
 - hide FAB from finance/monthly report tab
 - move weights chart to inner screen along with other visualizations
-- move inner weight tab screens like library and finance screen - probably just remove the weight screen and remove the limit from wellbeing screen
-- extract weight use cases to ui use case and use it in wellbeing view model
+- move inner weight tab screens like library and finance screen - probably just remove the weight screen

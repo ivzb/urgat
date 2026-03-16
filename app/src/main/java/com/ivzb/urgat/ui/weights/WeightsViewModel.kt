@@ -38,7 +38,7 @@ class WeightsViewModel @Inject constructor(
         },
         onSuccess = { weights, sorting, sortType ->
             WeightsUiState(
-                items = weights,
+                weights = weights,
                 isLoading = false,
                 filteringUiInfo = WeightsFilteringUiInfo(
                     currentFilteringLabel = R.string.all_weights,

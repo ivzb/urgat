@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.weight
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.ui.weights.WeightsSortMenuItem
 import com.ivzb.urgat.ui.weights.WeightsSortType
+import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -97,3 +98,21 @@ class FakeDeleteWeightUseCase : DeleteWeightUseCase {
         deleted = listOf(id)
     }
 }
+
+class FakeObserveWeightsUiStateUseCase : ObserveWeightsUiStateUseCase {
+
+    private val flow = MutableStateFlow<Async<WeightsUiState>>(Async.Loading)
+
+    fun emit(value: Async<WeightsUiState>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        sortTypeFlow: Flow<WeightsSortType>,
+        limitFlow: Flow<Int>?,
+    ): Flow<Async<WeightsUiState>> {
+        return flow
+    }
+
+}
+

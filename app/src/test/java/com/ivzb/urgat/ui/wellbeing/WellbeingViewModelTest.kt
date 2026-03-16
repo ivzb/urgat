@@ -1,16 +1,11 @@
 package com.ivzb.urgat.ui.wellbeing
 
 import androidx.lifecycle.SavedStateHandle
-import com.ivzb.urgat.R
-import com.ivzb.urgat.data.resources.ResourcesProvider
 import com.ivzb.urgat.data.weight.Weight
-import com.ivzb.urgat.domain.weight.FakeObserveWeightsSortingUseCase
-import com.ivzb.urgat.domain.weight.FakeObserveWeightsUseCase
-import com.ivzb.urgat.ui.components.SortMenuItem
+import com.ivzb.urgat.domain.weight.FakeObserveWeightsUiStateUseCase
 import com.ivzb.urgat.ui.weights.WeightsSortType
+import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.Async
-import io.mockk.every
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -33,9 +28,7 @@ import kotlin.test.assertNull
 class WellbeingViewModelTest {
 
     private lateinit var savedStateHandle: SavedStateHandle
-    private lateinit var fakeObserveWeightsUseCase: FakeObserveWeightsUseCase
-    private lateinit var fakeObserveWeightsSortingUseCase: FakeObserveWeightsSortingUseCase
-    private lateinit var mockResourcesProvider: ResourcesProvider
+    private lateinit var fakeObserveWeightsUiStateUseCase: FakeObserveWeightsUiStateUseCase
 
     private lateinit var viewModel: WellbeingViewModel
 
@@ -45,11 +38,7 @@ class WellbeingViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         savedStateHandle = SavedStateHandle(mapOf())
-        fakeObserveWeightsUseCase = FakeObserveWeightsUseCase()
-        fakeObserveWeightsSortingUseCase = FakeObserveWeightsSortingUseCase()
-        mockResourcesProvider = mockk()
-
-        every { mockResourcesProvider.getInteger(R.integer.items_limit) } returns 5
+        fakeObserveWeightsUiStateUseCase = FakeObserveWeightsUiStateUseCase()
     }
 
     @After
@@ -59,8 +48,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `initial state is loading`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Loading)
-        fakeObserveWeightsSortingUseCase.emit(Async.Loading)
+        fakeObserveWeightsUiStateUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -70,7 +58,7 @@ class WellbeingViewModelTest {
         val initial = viewModel.uiState.value
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
-        assertTrue(initial.weights.isEmpty())
+        assertTrue(initial.weightsUiState.weights.isEmpty())
         assertNull(initial.uiEvent)
 
         job.cancel()
@@ -79,8 +67,7 @@ class WellbeingViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeWeights = listOf(Weight("1", 80.toBigDecimal(), 1764523811, false, 1L))
-        fakeObserveWeightsUseCase.emit(Async.Success(fakeWeights))
-        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+        fakeObserveWeightsUiStateUseCase.emit(Async.Success(WeightsUiState(weights = fakeWeights)))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -90,7 +77,7 @@ class WellbeingViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertEquals(fakeWeights, state.weights)
+        assertEquals(fakeWeights, state.weightsUiState.weights)
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -99,8 +86,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `emits success state when use case returns empty data`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
-        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+        fakeObserveWeightsUiStateUseCase.emit(Async.Success(WeightsUiState(weights = listOf())))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -110,7 +96,7 @@ class WellbeingViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.weights.isEmpty())
+        assertTrue(state.weightsUiState.weights.isEmpty())
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -119,8 +105,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `emits error state when use case returns error`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Error)
-        fakeObserveWeightsSortingUseCase.emit(Async.Error)
+        fakeObserveWeightsUiStateUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -138,8 +123,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `fab action click emits AddWeight event`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
-        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+        fakeObserveWeightsUiStateUseCase.emit(Async.Success(WeightsUiState(weights = listOf())))
         viewModel = createViewModel()
 
         viewModel.onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight))
@@ -158,8 +142,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `onEventConsumed clears uiEvent`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
-        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+        fakeObserveWeightsUiStateUseCase.emit(Async.Success(WeightsUiState(weights = listOf())))
         viewModel = createViewModel()
 
         viewModel.onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight))
@@ -181,8 +164,7 @@ class WellbeingViewModelTest {
 
     @Test
     fun `setWeightsSorting updates saved state handle`() = runTest {
-        fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
-        fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
+        fakeObserveWeightsUiStateUseCase.emit(Async.Success(WeightsUiState(weights = listOf())))
         viewModel = createViewModel()
 
         val expected = WeightsSortType.BY_MIN
@@ -197,19 +179,8 @@ class WellbeingViewModelTest {
     }
 
     private fun createViewModel() = WellbeingViewModel(
-        fakeObserveWeightsUseCase,
-        fakeObserveWeightsSortingUseCase,
-        mockResourcesProvider,
+        fakeObserveWeightsUiStateUseCase,
         savedStateHandle,
     )
 
-    companion object {
-
-        private val fakeWeightsSorting = listOf(
-            SortMenuItem(type = WeightsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = WeightsSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = WeightsSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
-
-    }
 }

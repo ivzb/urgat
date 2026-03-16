@@ -16,7 +16,7 @@ class WeightsScreenshotTest: ScreenshotTest() {
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_WeightsScreen_sampleData() = screenshotTest(
         uiState = WeightsUiState(
-            items = SampleData.SAMPLE_WEIGHTS,
+            weights = SampleData.SAMPLE_WEIGHTS,
             isLoading = false,
             hasError = false,
         ),
@@ -25,7 +25,7 @@ class WeightsScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_WeightsScreen_emptyState() = screenshotTest(
         uiState = WeightsUiState(
-            items = listOf(),
+            weights = listOf(),
             isLoading = false,
             hasError = false,
         ),
@@ -34,7 +34,7 @@ class WeightsScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_WeightsScreen_loadingState() = screenshotTest(
         uiState = WeightsUiState(
-            items = listOf(),
+            weights = listOf(),
             isLoading = true,
             hasError = false,
         ),
@@ -43,7 +43,7 @@ class WeightsScreenshotTest: ScreenshotTest() {
     @Test
     fun screenshotTest_WeightsScreen_errorState() = screenshotTest(
         uiState = WeightsUiState(
-            items = listOf(),
+            weights = listOf(),
             isLoading = false,
             hasError = true,
         ),

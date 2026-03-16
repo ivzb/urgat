@@ -82,7 +82,7 @@ fun WeightsScreen(
 
         content = {
             WeightsContent(
-                weights = uiState.items,
+                weights = uiState.weights,
                 onWeightClick = onWeightClick,
                 filteringUiInfo = uiState.filteringUiInfo,
                 listState = listState
@@ -191,7 +191,7 @@ private fun WeightsScreenPreview() {
     UrgatTheme {
         WeightsScreen(
             uiState = WeightsUiState(
-                items = SampleData.SAMPLE_WEIGHTS,
+                weights = SampleData.SAMPLE_WEIGHTS,
                 filteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -210,7 +210,7 @@ private fun WeightsScreenEmptyPreview() {
     UrgatTheme {
         WeightsScreen(
             uiState = WeightsUiState(
-                items = listOf(),
+                weights = listOf(),
                 filteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false
@@ -229,7 +229,7 @@ private fun WeightsScreenLoadingPreview() {
     UrgatTheme {
         WeightsScreen(
             uiState = WeightsUiState(
-                items = listOf(),
+                weights = listOf(),
                 filteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = true,
                 hasError = false
@@ -248,7 +248,7 @@ private fun WeightsScreenErrorPreview() {
     UrgatTheme {
         WeightsScreen(
             uiState = WeightsUiState(
-                items = listOf(),
+                weights = listOf(),
                 filteringUiInfo = WeightsFilteringUiInfo(),
                 isLoading = false,
                 hasError = true
