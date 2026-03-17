@@ -12,7 +12,6 @@ import com.ivzb.urgat.ui.investments.InvestmentsRoute
 import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
 import com.ivzb.urgat.ui.budgets.BudgetsRoute
 import com.ivzb.urgat.ui.savings.SavingsRoute
-import com.ivzb.urgat.ui.weights.WeightsRoute
 
 class UrgatNavActions(private val navigator: Navigator) {
 
@@ -114,10 +113,6 @@ class UrgatNavActions(private val navigator: Navigator) {
             id = budgetId,
             titleResId = R.string.edit_budget,
         ))
-    }
-
-    fun navigateToWeights() {
-        navigator.navigate(WeightsRoute)
     }
 
     fun navigateToAddWeight() {

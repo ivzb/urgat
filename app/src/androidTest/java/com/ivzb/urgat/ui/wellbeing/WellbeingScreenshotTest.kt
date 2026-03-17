@@ -60,7 +60,6 @@ class WellbeingScreenshotTest: ScreenshotTest() {
                     uiState = uiState,
                     onIntent = {},
 
-                    onMoreWeights = {},
                     onWeightClick = {},
 
                     navigator = FakeNavigator(),

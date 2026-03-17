@@ -97,4 +97,4 @@
 - hide FAB from finance/FIRE tab
 - hide FAB from finance/monthly report tab
 - move weights chart to inner screen along with other visualizations
-- move inner weight tab screens like library and finance screen - probably just remove the weight screen
+- when a category is expanded, group the category and show in instead of the whole month expenses
