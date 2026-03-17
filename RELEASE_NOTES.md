@@ -1,3 +1,8 @@
+## Release notes 26.03.16
+
+Improved:
+- Removed the inner weight screen to streamline the user flow and simplify the overall experience.
+
 ## Release notes 26.03.15
 
 No release notes.
