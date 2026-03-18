@@ -1,3 +1,8 @@
+## Release notes 26.03.17
+
+Improved:
+- Removed the FAB from Finance/FIRE and Monthly tabs
+
 ## Release notes 26.03.16
 
 Improved:
