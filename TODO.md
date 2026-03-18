@@ -94,7 +94,5 @@
 - car reminders
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
-- hide FAB from finance/FIRE tab
-- hide FAB from finance/monthly report tab
 - move weights chart to inner screen along with other visualizations
 - when a category is expanded, group the category and show in instead of the whole month expenses

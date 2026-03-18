@@ -152,6 +152,7 @@ fun FinanceScreen(
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
+        withFab = { page -> page != FinancePage.Report && page != FinancePage.FIRE },
         topAppBarActionsContent = { page ->
             if (uiState.withTopbarActions(page)) {
                 when (page) {

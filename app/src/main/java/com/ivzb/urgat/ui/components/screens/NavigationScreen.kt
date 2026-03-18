@@ -63,6 +63,7 @@ fun <T> NavigationScreen(
     onFabActionClick: ((T) -> Unit)? = null,
     navigator: Navigator,
     withSearch: Boolean,
+    withFab: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     listState: LazyListState? = null,
 
@@ -178,13 +179,15 @@ fun <T> NavigationScreen(
                 },
                 topAppBarActionsContent = topAppBarActionsContent,
                 floatingActionButtonContent = {
-                    ExpandableFab(
-                        visible = listState?.isScrollingUp() ?: true,
-                        fabActions = uiState.fabActions,
-                        onFabActionClick = { fabActionId ->
-                            onFabActionClick?.invoke(fabActionId)
-                        }
-                    )
+                    if (withFab) {
+                        ExpandableFab(
+                            visible = listState?.isScrollingUp() ?: true,
+                            fabActions = uiState.fabActions,
+                            onFabActionClick = { fabActionId ->
+                                onFabActionClick?.invoke(fabActionId)
+                            }
+                        )
+                    }
                 },
                 content = {
                     UrgatScreen(
