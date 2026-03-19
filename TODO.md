@@ -80,12 +80,10 @@
 - make another entity in finance tab (FIRE) - calculate FIRE value by avg(summed expenses for every month) * 12 * 25 - calculate money, % and time left according to current growth rate
 - add date index to every table
 - remove isDeleted column and just delete data
-- add tests for finance dashboard page
 - use monthly expenses to calculate annual average because yearly expenses can be incomplete
 - https://engaging-data.com/fire-calculator/
 - https://networthify.com/calculator/earlyretirement?income=75000&initialBalance=60000&expenses=30000&annualPct=7&withdrawalRate=4
 - https://www.playingwithfire.co/retirementcalculator
-- test Fi/Re empty state
 - calculate fi/re based on last month, last year and all time?
 - show Fi/Re chart for each year
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
@@ -96,3 +94,5 @@
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
 - when a category is expanded, group the category and show in instead of the whole month expenses
+- add watch list to investing or yahoo finance to track instruments
+- make http requests to investing or yahoo to get latest price of each investment instrument
