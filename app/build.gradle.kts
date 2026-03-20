@@ -151,6 +151,11 @@ dependencies {
     // Json Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // Networking
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converterKotlinxSerialization)
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
 

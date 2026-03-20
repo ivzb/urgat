@@ -93,5 +93,6 @@
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
-- add watch list to investing or yahoo finance to track instruments
-- make http requests to investing or yahoo to get latest price of each investment instrument
+- add watch list to /investments to track any instruments user is interested in
+- add portfolio tab to /investments to see all instruments latest price
+- use market price repository to fetch instruments latest market price

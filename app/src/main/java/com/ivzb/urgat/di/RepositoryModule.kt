@@ -26,6 +26,8 @@ import com.ivzb.urgat.data.todo.DefaultTodoRepository
 import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.data.weight.DefaultWeightsRepository
 import com.ivzb.urgat.data.weight.WeightsRepository
+import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
+import com.ivzb.urgat.data.marketPrice.YahooFinanceMarketPriceRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -87,5 +89,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsLibraryRepository(libraryRepository: DefaultLibraryRepository): LibraryRepository
+
+    @Singleton
+    @Binds
+    fun bindsMarketPriceRepository(marketPriceRepository: YahooFinanceMarketPriceRepository): MarketPriceRepository
 
 }
