@@ -1,3 +1,8 @@
+## Release notes 26.03.18
+
+New:
+- When a category is expanded, the chart switches to its grouped data, hiding the full overview.
+
 ## Release notes 26.03.17
 
 Improved:
