@@ -93,6 +93,5 @@
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
-- when a category is expanded, group the category and show in instead of the whole month expenses
 - add watch list to investing or yahoo finance to track instruments
 - make http requests to investing or yahoo to get latest price of each investment instrument

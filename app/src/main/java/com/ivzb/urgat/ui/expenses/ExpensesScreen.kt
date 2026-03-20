@@ -23,13 +23,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateSetOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -95,9 +96,9 @@ fun ExpensesScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val expandedMonthlyIds = rememberSaveable { mutableStateSetOf<String>() }
-    val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
-    val expandedAllTimeIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedMonthlyIds = rememberSaveable { mutableStateListOf<String>() }
+    val expandedYearlyIds = rememberSaveable { mutableStateListOf<String>() }
+    val expandedAllTimeIds = rememberSaveable { mutableStateListOf<String>() }
 
     PagerScreen(
         uiState = uiState,
@@ -227,7 +228,7 @@ fun TransactionsPage(
 private fun GroupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
     filteringUiInfo: FilteringUiInfo,
-    expandedCategoryIds: Set<String>,
+    expandedCategoryIds: List<String>,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
     onResetFilters: () -> Unit,
@@ -305,7 +306,7 @@ private fun GroupedCategoriesPage(
 private fun CategoriesPage(
     group: String,
     categories: List<ExpenseCategory>,
-    expandedCategoryIds: Set<String>,
+    expandedCategoryIds: List<String>,
 
     filteringUiInfo: FilteringUiInfo,
     onResetFilters: () -> Unit,
@@ -340,14 +341,36 @@ private fun CategoriesPage(
     ) {
 
         item {
-            val data = categories.map {
-                PieChartItem(
-                    value = it.value.toFloat(),
-                    selectedText = formatExpensesChart(it.name, it.value)
-                )
+            val lastExpandedId = expandedCategoryIds.lastOrNull()
+            val expandedCategory = categories.firstOrNull { it.id == lastExpandedId }
+
+            val data: List<PieChartItem>
+            val defaultText: AnnotatedString
+
+            if (expandedCategory == null) {
+                // all categories pie chart
+                data = categories.map {
+                    PieChartItem(
+                        value = it.value.toFloat(),
+                        selectedText = formatExpensesChart(it.name, it.value)
+                    )
+                }
+                val total = categories.sumOf { it.value }
+                defaultText = formatExpensesChart(group, total)
+            } else {
+                // expanded category pie chart
+                data = expandedCategory.expenses
+                    .groupBy { it.name }
+                    .map { (name, expenses) ->
+                        val total = expenses.sumOf { it.amount }
+
+                        PieChartItem(
+                            value = total.toFloat(),
+                            selectedText = formatExpensesChart(name, total)
+                        )
+                    }
+                defaultText = formatExpensesChart(expandedCategory.name, expandedCategory.value)
             }
-            val total = categories.sumOf { it.value }
-            val defaultText = formatExpensesChart(group, total)
 
             PieChart(
                 data = data,

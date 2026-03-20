@@ -55,7 +55,7 @@ fun PieChart(
     val strokeWidth = with(LocalDensity.current) { strokeWidthDp.toPx() }
 
     val sliceAngles = remember(data) { mutableListOf<PieChartSliceAngle>() }
-    val selectedIndex = remember { mutableStateOf<Int?>(null) }
+    val selectedIndex = remember(data) { mutableStateOf<Int?>(null) }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -72,7 +72,7 @@ fun PieChart(
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .pointerInput(Unit) {
+                .pointerInput(data) {
                     detectTapGestures { tapOffset ->
                         val center = Offset(size.width / 2f, size.height / 2f)
                         val dx = tapOffset.x - center.x
@@ -139,7 +139,7 @@ fun PieChart(
             }
         }
 
-        val centerText = remember(selectedIndex.value) {
+        val centerText = remember(selectedIndex.value, defaultText, data) {
             val selectedIndex = selectedIndex.value
 
             if (selectedIndex == null) {

@@ -23,7 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateSetOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -97,9 +97,9 @@ fun InvestmentsScreen(
 
     modifier: Modifier = Modifier,
 ) {
-    val expandedYearlyIds = rememberSaveable { mutableStateSetOf<String>() }
-    val expandedAssetIds = rememberSaveable { mutableStateSetOf<String>() }
-    val expandedCategoryIds = rememberSaveable { mutableStateSetOf<String>() }
+    val expandedYearlyIds = rememberSaveable { mutableStateListOf<String>() }
+    val expandedAssetIds = rememberSaveable { mutableStateListOf<String>() }
+    val expandedCategoryIds = rememberSaveable { mutableStateListOf<String>() }
 
     PagerScreen(
         uiState = uiState,
@@ -244,7 +244,7 @@ fun TransactionsPage(
 private fun GroupedCategoriesPage(
     categories: List<GroupedInvestmentCategories>,
     filteringUiInfo: FilteringUiInfo,
-    expandedCategoryIds: Set<String>,
+    expandedCategoryIds: List<String>,
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onResetFilters: () -> Unit,
@@ -325,7 +325,7 @@ private fun CategoriesPage(
     total: String,
 
     categories: List<InvestmentCategory>,
-    expandedCategoryIds: Set<String>,
+    expandedCategoryIds: List<String>,
 
     filteringUiInfo: FilteringUiInfo,
     onResetFilters: () -> Unit,
@@ -360,14 +360,35 @@ private fun CategoriesPage(
     ) {
 
         item {
-            val data = categories.map {
-                PieChartItem(
-                    value = it.investments.sumOf { it.marketValue }.toFloat(),
-                    selectedText = formatInvestmentsChart(it.name, it.total)
-                )
-            }
+            val lastExpandedId = expandedCategoryIds.lastOrNull()
+            val expandedCategory = categories.firstOrNull { it.id == lastExpandedId }
 
-            val defaultText = formatInvestmentsChart(group, total)
+            val data: List<PieChartItem>
+            val defaultText: AnnotatedString
+
+            if (expandedCategory == null) {
+                // all categories pie chart
+                data = categories.map {
+                    PieChartItem(
+                        value = it.investments.sumOf { it.marketValue }.toFloat(),
+                        selectedText = formatInvestmentsChart(it.name, it.total)
+                    )
+                }
+                defaultText = formatInvestmentsChart(group, total)
+            } else {
+                // expanded category pie chart
+                data = expandedCategory.investments
+                    .groupBy { it.name }
+                    .map { (name, investments) ->
+                        val investmentTotal = Investment.total(investments)
+
+                        PieChartItem(
+                            value = investments.sumOf { it.marketValue }.toFloat(),
+                            selectedText = formatInvestmentsChart(name, investmentTotal)
+                        )
+                    }
+                defaultText = formatInvestmentsChart(expandedCategory.name, expandedCategory.total)
+            }
 
             PieChart(
                 data = data,
@@ -407,7 +428,7 @@ private fun AssetsPage(
     total: String,
 
     assets: List<InvestmentAsset>,
-    expandedAssetIds: Set<String>,
+    expandedAssetIds: List<String>,
 
     filteringUiInfo: FilteringUiInfo,
     onResetFilters: () -> Unit,
@@ -456,14 +477,35 @@ private fun AssetsPage(
                 )
             }
 
-            val data = assets.map {
-                PieChartItem(
-                    value = it.marketValue.toFloat(),
-                    selectedText = formattedText(it.name, it.total)
-                )
-            }
+            val lastExpandedId = expandedAssetIds.lastOrNull()
+            val expandedAsset = assets.firstOrNull { it.id == lastExpandedId }
 
-            val defaultText = formattedText(group, total)
+            val data: List<PieChartItem>
+            val defaultText: AnnotatedString
+
+            if (expandedAsset == null) {
+                // all assets pie chart
+                data = assets.map {
+                    PieChartItem(
+                        value = it.marketValue.toFloat(),
+                        selectedText = formattedText(it.name, it.total)
+                    )
+                }
+                defaultText = formattedText(group, total)
+            } else {
+                // expanded asset pie chart
+                data = expandedAsset.investments
+                    .groupBy { it.name }
+                    .map { (name, investments) ->
+                        val investmentTotal = Investment.total(investments)
+
+                        PieChartItem(
+                            value = investments.sumOf { it.marketValue }.toFloat(),
+                            selectedText = formattedText(name, investmentTotal)
+                        )
+                    }
+                defaultText = formattedText(expandedAsset.name, expandedAsset.total)
+            }
 
             PieChart(
                 data = data,
