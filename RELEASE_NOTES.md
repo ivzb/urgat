@@ -1,3 +1,8 @@
+## Release notes 26.03.19
+
+New:
+- Added a Portfolio tab to the Investments screen, showing live market values for each asset with a pie chart breakdown and totals by currency.
+
 ## Release notes 26.03.18
 
 New:
