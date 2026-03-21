@@ -96,3 +96,5 @@
 - add watch list to /investments to track any instruments user is interested in
 - add portfolio tab to /investments to see all instruments latest price
 - use market price repository to fetch instruments latest market price
+- this what should be done when an investment symbol can't be found on yahoo finance - add mapping [user instrument -> yahoo instrument]
+- consider showing current market price for all investments - load all instruments from yahoo finance on app start

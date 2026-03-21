@@ -7,10 +7,12 @@ import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.div
+import com.ivzb.urgat.util.round
+import com.ivzb.urgat.util.toPercentage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import java.math.BigDecimal
-import java.math.RoundingMode
 import javax.inject.Inject
 import kotlin.math.pow
 
@@ -213,22 +215,6 @@ class DefaultObserveFiReUseCase @Inject constructor(
         } else {
             INVALID_YEAR
         }
-    }
-
-    private fun BigDecimal.round(): BigDecimal {
-        return this.setScale(2, RoundingMode.HALF_UP)
-    }
-
-    private fun BigDecimal.toPercentage(): BigDecimal {
-        return this / 100.toBigDecimal()
-    }
-
-    private operator fun BigDecimal.div(other: BigDecimal): BigDecimal {
-        return this.divide(
-            other,
-            maxOf(this.scale(), other.scale(), 2),
-            RoundingMode.HALF_UP
-        )
     }
 
     companion object {

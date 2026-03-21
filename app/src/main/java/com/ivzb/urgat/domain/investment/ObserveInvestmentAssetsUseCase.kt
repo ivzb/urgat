@@ -13,7 +13,7 @@ import javax.inject.Inject
 interface ObserveInvestmentAssetsUseCase {
 
     operator fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,
@@ -35,7 +35,7 @@ class DefaultObserveInvestmentAssetsUseCase @Inject constructor(
     )
 
     override fun invoke(
-        searchQueryFlow: Flow<String>,
+        searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
         filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<InvestmentsSortType>?,

@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
@@ -31,6 +32,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
     private lateinit var fakeObserveGroupedInvestmentCategoriesYearlyUseCase: FakeObserveGroupedInvestmentCategoriesYearlyUseCase
     private lateinit var fakeObserveInvestmentCategoriesUseCase: FakeObserveInvestmentCategoriesUseCase
     private lateinit var fakeObserveInvestmentNetWorthUseCase: FakeObserveInvestmentNetWorthUseCase
+    private lateinit var fakeObservePortfolioUseCase: FakeObservePortfolioUseCase
     private lateinit var fakeObserveInvestmentsFilteringUseCase: FakeObserveInvestmentsFilteringUseCase
     private lateinit var fakeObserveInvestmentsSortingUseCase: FakeObserveInvestmentsSortingUseCase
 
@@ -43,6 +45,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         fakeObserveGroupedInvestmentCategoriesYearlyUseCase = FakeObserveGroupedInvestmentCategoriesYearlyUseCase()
         fakeObserveInvestmentCategoriesUseCase = FakeObserveInvestmentCategoriesUseCase()
         fakeObserveInvestmentNetWorthUseCase = FakeObserveInvestmentNetWorthUseCase()
+        fakeObservePortfolioUseCase = FakeObservePortfolioUseCase()
         fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()
         fakeObserveInvestmentsSortingUseCase = FakeObserveInvestmentsSortingUseCase()
 
@@ -52,6 +55,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
             fakeObserveInvestmentAssetsUseCase,
             fakeObserveInvestmentCategoriesUseCase,
             fakeObserveInvestmentNetWorthUseCase,
+            fakeObservePortfolioUseCase,
             fakeObserveInvestmentsFilteringUseCase,
             fakeObserveInvestmentsSortingUseCase,
         )
@@ -64,6 +68,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         fakeObserveInvestmentAssetsUseCase.emit(Async.Loading)
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Loading)
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Loading)
+        fakeObservePortfolioUseCase.emit(Async.Loading)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Loading)
         fakeObserveInvestmentsSortingUseCase.emit(Async.Loading)
 
@@ -130,6 +135,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         assertEquals(fakeNetWorth, uiState.netWorth)
         assertEquals(fakeCategories, uiState.categories)
         assertEquals(fakeAssets, uiState.assets)
+        assertEquals(fakePortfolio, uiState.portfolio)
         assertEquals(fakeInvestmentsFiltering, uiState.filteringUiInfo.filterMenuItems)
         assertTrue(uiState.filteringUiInfo.showFilterBadge)
         assertEquals(fakeInvestmentsSorting, uiState.filteringUiInfo.sortMenuItems)
@@ -145,6 +151,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         fakeObserveInvestmentAssetsUseCase.emit(Async.Error)
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Error)
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Error)
+        fakeObservePortfolioUseCase.emit(Async.Error)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveInvestmentsSortingUseCase.emit(Async.Success(listOf()))
 
@@ -283,6 +290,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
+        fakeObservePortfolioUseCase.emit(Async.Success(fakePortfolio))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
         fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
     }
@@ -315,6 +323,16 @@ class ObserveInvestmentsUiStateUseCaseTest {
                 id = "1", name = "SNP 500", category = "etfs",
                 shares = 500.toBigDecimal(), marketValue = 500.toBigDecimal(), currency = "USD",
                 investments = investments, total = "1,750.59 EUR | 2,891.05 USD",
+            )
+        )
+
+        private val fakePortfolio = listOf(
+            Portfolio(
+                name = "SNP 500",
+                category = "etfs",
+                shares = 500.toBigDecimal(),
+                marketValue = 1000.toBigDecimal(),
+                currency = "USD",
             )
         )
 

@@ -30,6 +30,7 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
     private val observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
     private val observeInvestmentCategoriesUseCase: ObserveInvestmentCategoriesUseCase,
     private val observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
+    private val observePortfolioUseCase: ObservePortfolioUseCase,
     private val observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     private val observeInvestmentsSortingUseCase: ObserveInvestmentsSortingUseCase,
 ): ObserveInvestmentsUiStateUseCase {
@@ -44,6 +45,7 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
         observeInvestmentAssetsUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeInvestmentCategoriesUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeInvestmentNetWorthUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observePortfolioUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeInvestmentsFilteringUseCase(),
         observeInvestmentsSortingUseCase(),
         combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
@@ -54,13 +56,14 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
         onError = {
             InvestmentsUiState(hasError = true)
         },
-        onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering, sorting, (searchQuery, filterType, sortType) ->
+        onSuccess = { investments, categoriesYearly, assets, categories, netWorth, portfolio, filtering, sorting, (searchQuery, filterType, sortType) ->
             InvestmentsUiState(
                 investments = investments,
                 categoriesYearly = categoriesYearly,
                 assets = assets,
                 categories = categories,
                 netWorth = netWorth,
+                portfolio = portfolio,
                 filteringUiInfo = getFilterUiInfo(
                     searchQuery = searchQuery,
                     filterType = filterType,

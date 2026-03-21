@@ -5,13 +5,15 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
-import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.randomUUID
+import com.ivzb.urgat.util.round
+import java.math.BigDecimal
 import kotlin.collections.component1
 import kotlin.collections.component4
 
@@ -141,21 +143,21 @@ object SampleData {
         }
 
     val SAMPLE_INVESTMENTS = listOf(
-        listOf("Alphabet (Google)", "0.20", "323.44", "Stocks", "USD", "6048000"),
-        listOf("Microsoft Corp.", "0.15", "485.5", "Stocks", "USD", "4752000"),
-        listOf("Amazon.com Inc.", "0.17", "229.16", "Stocks", "USD", "4752000"),
-        listOf("Tesla Inc.", "0.19", "419.40", "Stocks", "USD", "3024000"),
-        listOf("NVIDIA Corp.", "0.16", "180.26", "Stocks", "USD", "3024000"),
-        listOf("Apple Inc.", "0.20", "276.97", "Stocks", "USD", "2160000"),
-        listOf("Meta Platforms", "0.15", "636.22", "Stocks", "USD", "2160000"),
-        listOf("Vanguard S&P 500 ETF", "0.32", "621.88", "ETF", "USD", "1296000"),
-        listOf("Bitcoin", "0.025", "90966", "Cryptocurrency", "USD", "1296000"),
-        listOf("Ethereum", "0.08", "3021", "Cryptocurrency", "USD", "864000"),
-        listOf("US Government Bonds", "0.2", "2000.00", "US Bonds", "USD", "864000"),
-        listOf("Rental Property Deposit", "0.1", "17000.00", "Real Estate", "USD", "432000"),
-        listOf("Alibaba Group", "0.30", "133", "Stocks", "EUR", "432000"),
-        listOf("Samsung Electronics", "0.24", "1128", "Stocks", "EUR", "0"),
-        listOf("Toyota Motor Corp.", "0.15", "210", "Stocks", "EUR", "0"),
+        listOf("GOOGL", "15", "323.44", "Stocks", "USD", "6048000"),
+        listOf("MSFT", "10", "485.5", "Stocks", "USD", "4752000"),
+        listOf("AMZN", "20", "229.16", "Stocks", "USD", "4752000"),
+        listOf("TSLA", "12", "419.40", "Stocks", "USD", "3024000"),
+        listOf("NVDA", "25", "180.26", "Stocks", "USD", "3024000"),
+        listOf("AAPL", "18", "276.97", "Stocks", "USD", "2160000"),
+        listOf("META", "8", "636.22", "Stocks", "USD", "2160000"),
+        listOf("VOO", "30", "621.88", "ETF", "USD", "1296000"),
+        listOf("BTC", "0.5", "90966", "Cryptocurrency", "USD", "1296000"),
+        listOf("ETH", "3", "3021", "Cryptocurrency", "USD", "864000"),
+        listOf("TLT", "50", "88.50", "US Bonds", "USD", "864000"),
+        listOf("VNQ", "25", "82.40", "Real Estate", "USD", "432000"),
+        listOf("BABA", "40", "133", "Stocks", "EUR", "432000"),
+        listOf("SSNLF", "5", "1128", "Stocks", "EUR", "0"),
+        listOf("TM", "30", "210", "Stocks", "EUR", "0"),
     )
         .reversed().mapIndexed { index, (name, shares, cost, category, currency, dateOffset) ->
             Investment(
@@ -183,6 +185,20 @@ object SampleData {
         Group.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
 
     val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
+
+    val SAMPLE_PORTFOLIO = SAMPLE_INVESTMENTS_ASSETS.map { asset ->
+        Portfolio(
+            name = asset.name,
+            category = asset.category,
+            shares = asset.shares,
+            marketValue = if (asset.shares.compareTo(BigDecimal.ZERO) != 0) {
+                asset.marketValue.divide(asset.shares).round()
+            } else {
+                BigDecimal.ZERO
+            },
+            currency = asset.currency,
+        )
+    }
 
     val SAMPLE_SAVINGS =
         listOf(

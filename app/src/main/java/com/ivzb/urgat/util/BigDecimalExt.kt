@@ -13,3 +13,19 @@ private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply 
 }
 
 fun BigDecimal.format(): String = NUMBER_FORMAT.format(this)
+
+fun BigDecimal.round(): BigDecimal {
+    return this.setScale(2, RoundingMode.HALF_UP)
+}
+
+fun BigDecimal.toPercentage(): BigDecimal {
+    return this / 100.toBigDecimal()
+}
+
+operator fun BigDecimal.div(other: BigDecimal): BigDecimal {
+    return this.divide(
+        other,
+        maxOf(this.scale(), other.scale(), 2),
+        RoundingMode.HALF_UP
+    )
+}

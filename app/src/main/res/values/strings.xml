@@ -121,6 +121,7 @@
     <string name="all_weights">All weights</string>
     <string name="categories">Categories</string>
     <string name="assets">Assets</string>
+    <string name="portfolio">Portfolio</string>
     <string name="transactions">Transactions</string>
     <string name="shares_hint">Shares</string>
     <string name="menu">Menu</string>
