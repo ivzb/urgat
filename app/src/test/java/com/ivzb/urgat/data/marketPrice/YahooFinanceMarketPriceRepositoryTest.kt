@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.marketPrice
 
+import com.ivzb.urgat.util.FakeLogger
 import com.ivzb.urgat.util.round
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -27,6 +28,7 @@ class YahooFinanceMarketPriceRepositoryTest {
         repository = YahooFinanceMarketPriceRepository(
             dispatcher = testDispatcher,
             api = api,
+            logger = FakeLogger(),
         )
     }
 

@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.investment
 
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
@@ -27,6 +28,7 @@ interface ObservePortfolioUseCase {
 
 class DefaultObservePortfolioUseCase @Inject constructor(
     private val marketPriceRepository: MarketPriceRepository,
+    private val forexRepository: ForexRepository,
     private val observeInvestmentAssetsUseCase: ObserveInvestmentAssetsUseCase,
     @ApplicationScope private val scope: CoroutineScope,
 ) : ObservePortfolioUseCase {
@@ -59,13 +61,23 @@ class DefaultObservePortfolioUseCase @Inject constructor(
                     val marketPrice = marketPriceRepository.fetchPrice(asset.name)
                     val sameCurrency = asset.currency.equals(marketPrice.currency, ignoreCase = true)
 
+                    val marketValue = if (sameCurrency) {
+                        asset.shares * marketPrice.price
+                    } else {
+                        forexRepository.convert(
+                            amount = asset.shares * marketPrice.price,
+                            fromCurrency = marketPrice.currency,
+                            toCurrency = asset.currency,
+                        )
+                    }
+
                     Portfolio(
                         name = asset.name,
                         category = asset.category,
                         shares = asset.shares,
-                        costValue = asset.marketValue.takeIf { sameCurrency },
-                        marketValue = asset.shares * marketPrice.price,
-                        currency = marketPrice.currency,
+                        costValue = asset.marketValue,
+                        marketValue = marketValue,
+                        currency = asset.currency,
                     )
                 } catch (e: Exception) {
                     Tracker.error(e)

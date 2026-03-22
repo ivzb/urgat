@@ -96,4 +96,5 @@
 - consider showing current market price for all investments - load all instruments from yahoo finance on app start
 - think how to properly calculate portfolio item diff since the currency might be different
 - add watch list to /investments to track any instruments user is interested in
-- create forex data layer which would track and store forex exchange rate in memory so portfolio entity diff can be properly calculated when there is a mismatch in currencies
+- when calculating sum of investments with different currencies use forex repository to convert to single currency so they can be summed correctly
+- combine portfolio item market price and diff on a single line, and bring back shares to the first line as AssetsScreen item. make the ListItem last line annotation string instead of passing colors. this way market price stays original color but diff gets colored

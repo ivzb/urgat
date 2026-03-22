@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.investment
 
+import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
@@ -24,6 +25,7 @@ class DefaultObservePortfolioUseCaseTest {
 
     private lateinit var fakeObserveInvestmentAssetsUseCase: FakeObserveInvestmentAssetsUseCase
     private lateinit var fakeMarketPriceRepository: FakeMarketPriceRepository
+    private lateinit var fakeForexRepository: FakeForexRepository
     private lateinit var useCase: ObservePortfolioUseCase
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -33,9 +35,11 @@ class DefaultObservePortfolioUseCaseTest {
     fun setUp() {
         fakeObserveInvestmentAssetsUseCase = FakeObserveInvestmentAssetsUseCase()
         fakeMarketPriceRepository = FakeMarketPriceRepository()
+        fakeForexRepository = FakeForexRepository()
 
         useCase = DefaultObservePortfolioUseCase(
             marketPriceRepository = fakeMarketPriceRepository,
+            forexRepository = fakeForexRepository,
             observeInvestmentAssetsUseCase = fakeObserveInvestmentAssetsUseCase,
             scope = testScope,
         )
