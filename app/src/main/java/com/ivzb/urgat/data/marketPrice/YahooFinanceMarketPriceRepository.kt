@@ -12,7 +12,7 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
 ) : MarketPriceRepository {
 
     override suspend fun fetchPrice(symbol: String): MarketPrice = withContext(dispatcher) {
-        val meta = api.fetch(symbol).chart.result.first().meta
+        val meta = api.fetch(yahooSymbolMapping[symbol] ?: symbol).chart.result.first().meta
 
         MarketPrice(
             symbol = symbol,
@@ -20,4 +20,17 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
             currency = meta.currency,
         )
     }
+
+    companion object {
+
+        // replace user symbol with yahoo finance symbol
+        private val yahooSymbolMapping = mapOf(
+            "BRK.B" to "BRK-B",
+            "SXR8" to "SXR8.DE",
+            "XAU" to "GC=F",
+            "BTC" to "BTC-USD",
+        )
+
+    }
+
 }
