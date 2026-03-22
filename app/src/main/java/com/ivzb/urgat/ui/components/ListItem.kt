@@ -19,8 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,17 +31,15 @@ import com.ivzb.urgat.ui.theme.dataColor
 @Composable
 fun ListItem(
     textLeft: String,
-    subTextLeft: String,
+    subTextLeft: String = "",
 
     textRight: String,
-    subTextRight: String,
-    subTextRightFontWeight: FontWeight? = null,
-    subTextRightColor: Color = Color.Unspecified,
+    subTextRight: AnnotatedString = AnnotatedString(""),
     subTextRightCanBeEmpty: Boolean = false,
 
     colorIndex: Int? = null,
 
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
 ) {
 
     Surface(
@@ -108,12 +106,10 @@ fun ListItem(
                         )
                     }
 
-                    if (subTextRight.isNotBlank() || subTextRightCanBeEmpty) {
+                    if (subTextRight.text.isNotBlank() || subTextRightCanBeEmpty) {
                         Text(
                             text = subTextRight,
                             style = MaterialTheme.typography.bodySmall,
-                            fontWeight = subTextRightFontWeight,
-                            color = subTextRightColor,
                         )
                     }
                 }
@@ -133,7 +129,7 @@ private fun ListItemPreview() {
             subTextLeft = "Stocks",
 
             textRight = "300",
-            subTextRight = "USD",
+            subTextRight = AnnotatedString("USD"),
 
             onClick = {},
         )
@@ -150,7 +146,7 @@ private fun ListItemSingleLeftText() {
             subTextLeft = "",
 
             textRight = "300",
-            subTextRight = "USD",
+            subTextRight = AnnotatedString("USD"),
 
             onClick = {},
         )
@@ -167,7 +163,7 @@ private fun ListItemSingleRightText() {
             subTextLeft = "Stocks",
 
             textRight = "300",
-            subTextRight = "",
+            subTextRight = AnnotatedString(""),
 
             onClick = {},
         )
@@ -184,8 +180,8 @@ private fun ListItemWithColorPreview() {
             subTextLeft = "Stocks",
 
             textRight = "300",
-            subTextRight = "USD",
-            
+            subTextRight = AnnotatedString("USD"),
+
             colorIndex = 0,
 
             onClick = {},

@@ -24,7 +24,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,13 +40,13 @@ import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.components.format.formatBudgetsChart
-import com.ivzb.urgat.ui.components.format.formatExpensesChart
-import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
-import com.ivzb.urgat.ui.components.format.formatSavingsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.theme.budgetColor
+import com.ivzb.urgat.util.annotateBudgetChart
+import com.ivzb.urgat.util.annotateExpenseChart
+import com.ivzb.urgat.util.annotateFinance
+import com.ivzb.urgat.util.annotateInvestmentChart
+import com.ivzb.urgat.util.annotateSavingsChart
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 import kotlinx.coroutines.launch
@@ -287,28 +286,28 @@ fun LazyListScope.budgetCategoryPage(
         val data = buildList {
             add(PieChartItem(
                 value = budget.totalExpenses.toFloat(),
-                selectedText = formatExpensesChart(stringResource(R.string.expenses), budget.totalExpenses)
+                selectedText = annotateExpenseChart(stringResource(R.string.expenses), budget.totalExpenses)
             ))
 
             add(PieChartItem(
                 value = budget.totalInvestments.toFloat(),
-                selectedText = formatInvestmentsChart(stringResource(R.string.investments), budget.totalInvestmentsFormatted)
+                selectedText = annotateInvestmentChart(stringResource(R.string.investments), budget.totalInvestmentsFormatted)
             ))
 
             add(PieChartItem(
                 value = budget.totalSavings.toFloat(),
-                selectedText = formatSavingsChart(stringResource(R.string.savings), budget.totalSavings)
+                selectedText = annotateSavingsChart(stringResource(R.string.savings), budget.totalSavings)
             ))
 
             if (budget.remaining > BigDecimal.ZERO) {
                 add(PieChartItem(
                     value = budget.remaining.toFloat(),
-                    selectedText = formatBudgetsChart(stringResource(R.string.remaining), budget.remaining)
+                    selectedText = annotateBudgetChart(stringResource(R.string.remaining), budget.remaining)
                 ))
             }
         }
 
-        val defaultText = formatBudgetsChart(group ?: budget.category.group, budget.total)
+        val defaultText = annotateBudgetChart(group ?: budget.category.group, budget.total)
 
         PieChart(
             data = data,
@@ -370,10 +369,7 @@ fun BudgetItem(
         subTextLeft = date.year.toString(),
 
         textRight = budget.income.format(),
-        subTextRight = budget.total?.format() ?: "",
-
-        subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = budgetColor(budget.total),
+        subTextRight = annotateFinance(budget.total?.format() ?: "", budget.total),
 
         onClick = { onBudgetClick(budget) }
     )
@@ -387,14 +383,8 @@ private fun CategoryItem(
 ) {
     ListItem(
         textLeft = name,
-        subTextLeft = "",
-
         textRight = value,
-        subTextRight = "",
-
         colorIndex = colorIndex,
-
-        onClick = { /* NOOP */ },
     )
 }
 

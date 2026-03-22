@@ -28,12 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,11 +53,10 @@ import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.theme.savingColor
-import com.ivzb.urgat.util.annotateFormattedString
+import com.ivzb.urgat.util.annotateFinance
+import com.ivzb.urgat.util.annotateInvestmentChart
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -385,10 +381,10 @@ private fun CategoriesPage(
                 data = categories.map {
                     PieChartItem(
                         value = it.investments.sumOf { it.marketValue }.toFloat(),
-                        selectedText = formatInvestmentsChart(it.name, it.total)
+                        selectedText = annotateInvestmentChart(it.name, it.total)
                     )
                 }
-                defaultText = formatInvestmentsChart(group, total)
+                defaultText = annotateInvestmentChart(group, total)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.investments
@@ -398,10 +394,10 @@ private fun CategoriesPage(
 
                         PieChartItem(
                             value = investments.sumOf { it.marketValue }.toFloat(),
-                            selectedText = formatInvestmentsChart(name, investmentTotal)
+                            selectedText = annotateInvestmentChart(name, investmentTotal)
                         )
                     }
-                defaultText = formatInvestmentsChart(expandedCategory.name, expandedCategory.total)
+                defaultText = annotateInvestmentChart(expandedCategory.name, expandedCategory.total)
             }
 
             PieChart(
@@ -477,20 +473,6 @@ private fun AssetsPage(
     ) {
 
         item {
-            @Composable
-            fun formattedText(name: String, total: String): AnnotatedString {
-                val totalFormatted = total.split(Investment.SEPARATOR).joinToString("\n")
-                val textFormatted = stringResource(R.string.chart_text_format, name, totalFormatted).trim()
-
-                return annotateFormattedString(
-                    formattedString = textFormatted,
-                    part = totalFormatted,
-                    spanStyle = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
-            }
-
             val lastExpandedId = expandedAssetIds.lastOrNull()
             val expandedAsset = assets.firstOrNull { it.id == lastExpandedId }
 
@@ -502,10 +484,10 @@ private fun AssetsPage(
                 data = assets.map {
                     PieChartItem(
                         value = it.marketValue.toFloat(),
-                        selectedText = formattedText(it.name, it.total)
+                        selectedText = annotateInvestmentChart(it.name, it.total)
                     )
                 }
-                defaultText = formattedText(group, total)
+                defaultText = annotateInvestmentChart(group, total)
             } else {
                 // expanded asset pie chart
                 data = expandedAsset.investments
@@ -515,10 +497,10 @@ private fun AssetsPage(
 
                         PieChartItem(
                             value = investments.sumOf { it.marketValue }.toFloat(),
-                            selectedText = formattedText(name, investmentTotal)
+                            selectedText = annotateInvestmentChart(name, investmentTotal)
                         )
                     }
-                defaultText = formattedText(expandedAsset.name, expandedAsset.total)
+                defaultText = annotateInvestmentChart(expandedAsset.name, expandedAsset.total)
             }
 
             PieChart(
@@ -600,13 +582,13 @@ private fun PortfolioPage(
                 data = portfolio.mapIndexed { index, item ->
                     PieChartItem(
                         value = item.marketValue.toFloat(),
-                        selectedText = formatInvestmentsChart(
+                        selectedText = annotateInvestmentChart(
                             item.name,
                             "${item.marketValue.format()} ${item.currency}",
                         ),
                     )
                 },
-                defaultText = formatInvestmentsChart(
+                defaultText = annotateInvestmentChart(
                     stringResource(R.string.portfolio),
                     totalByCurrency,
                 ),
@@ -629,16 +611,21 @@ private fun PortfolioPage(
             val diffPercent = item.diffPercent
             val diffFormatted = diffPercent?.let {
                 "${if (diffPercent >= BigDecimal.ZERO) "+" else "-"}${diffPercent.format()}%"
-            }
+            }.orEmpty()
+
+            val marketPriceText = "${item.marketValue.format()} ${item.currency}"
 
             ListItem(
                 textLeft = item.name,
                 subTextLeft = item.category,
 
-                textRight = "${item.marketValue.format()} ${item.currency}",
-                subTextRight = diffFormatted.orEmpty(),
-                subTextRightFontWeight = FontWeight.Bold,
-                subTextRightColor = if (diffPercent != null) savingColor(diffPercent) else Color.Unspecified,
+                textRight = item.shares.toString(),
+                subTextRight = annotateFinance(
+                    text = diffFormatted,
+                    amount = diffPercent ?: BigDecimal.ZERO,
+                    prefix = "$marketPriceText (",
+                    suffix = ")"
+                ),
                 subTextRightCanBeEmpty = true,
 
                 colorIndex = index,
@@ -692,7 +679,7 @@ fun InvestmentItem(
         subTextLeft = investment.category,
 
         textRight = investment.shares.toString(),
-        subTextRight = "${investment.marketValue.format()} ${investment.currency}",
+        subTextRight = AnnotatedString("${investment.marketValue.format()} ${investment.currency}"),
 
         onClick = { onInvestmentClick(investment) }
     )
@@ -709,7 +696,7 @@ private fun AssetItem(
         subTextLeft = asset.category,
 
         textRight = asset.shares.toString(),
-        subTextRight = "${asset.marketValue.format()} ${asset.currency}",
+        subTextRight = AnnotatedString("${asset.marketValue.format()} ${asset.currency}"),
 
         colorIndex = colorIndex,
 
@@ -725,13 +712,8 @@ private fun CategoryItem(
 ) {
     ListItem(
         textLeft = category.name,
-        subTextLeft = "",
-
         textRight = category.total,
-        subTextRight = "",
-
         colorIndex = colorIndex,
-
         onClick = onClick,
     )
 }

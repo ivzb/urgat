@@ -34,7 +34,6 @@ fun WeightItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = weight.value.format(),
-        subTextRight = "",
 
         onClick = { onWeightClick(weight) }
     )

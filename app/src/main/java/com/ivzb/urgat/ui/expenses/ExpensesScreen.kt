@@ -51,10 +51,11 @@ import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.components.format.formatExpensesChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.theme.expenseColor
+import com.ivzb.urgat.util.annotateExpense
+import com.ivzb.urgat.util.annotateExpenseChart
+import com.ivzb.urgat.util.expenseColor
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -201,7 +202,7 @@ fun TransactionsPage(
             item {
                 ItemHeaderSmall(
                     text = group,
-                    total = (total * -1.toBigDecimal()).format(),
+                    total = (-total).format(),
                     totalFontWeight = FontWeight.Bold,
                     totalColor = expenseColor(total),
                     modifier = Modifier
@@ -352,11 +353,11 @@ private fun CategoriesPage(
                 data = categories.map {
                     PieChartItem(
                         value = it.value.toFloat(),
-                        selectedText = formatExpensesChart(it.name, it.value)
+                        selectedText = annotateExpenseChart(it.name, it.value)
                     )
                 }
                 val total = categories.sumOf { it.value }
-                defaultText = formatExpensesChart(group, total)
+                defaultText = annotateExpenseChart(group, total)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.expenses
@@ -366,10 +367,10 @@ private fun CategoriesPage(
 
                         PieChartItem(
                             value = total.toFloat(),
-                            selectedText = formatExpensesChart(name, total)
+                            selectedText = annotateExpenseChart(name, total)
                         )
                     }
-                defaultText = formatExpensesChart(expandedCategory.name, expandedCategory.value)
+                defaultText = annotateExpenseChart(expandedCategory.name, expandedCategory.value)
             }
 
             PieChart(
@@ -448,10 +449,7 @@ fun ExpenseItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = expense.name,
-        subTextRight = (expense.amount * -1.toBigDecimal()).format(),
-
-        subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = expenseColor(expense.amount),
+        subTextRight = annotateExpense(expense.amount),
 
         onClick = { onExpenseClick(expense) }
     )
@@ -469,9 +467,7 @@ private fun CategoryItem(
         subTextLeft = "",
 
         textRight = "",
-        subTextRight = (category.value * -1.toBigDecimal()).format(),
-        subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = expenseColor(category.value),
+        subTextRight = annotateExpense(category.value),
 
         colorIndex = colorIndex,
 

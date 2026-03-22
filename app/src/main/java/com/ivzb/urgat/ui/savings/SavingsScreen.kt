@@ -49,10 +49,11 @@ import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
-import com.ivzb.urgat.ui.components.format.formatSavingsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.ui.theme.savingColor
+import com.ivzb.urgat.util.annotateFinance
+import com.ivzb.urgat.util.annotateSavingsChart
+import com.ivzb.urgat.util.financeColor
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -197,7 +198,7 @@ fun TransactionsPage(
                     text = group,
                     total = total.format(),
                     totalFontWeight = FontWeight.Bold,
-                    totalColor = savingColor(total),
+                    totalColor = financeColor(total),
                     modifier = Modifier
                         .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                         .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -338,11 +339,11 @@ private fun CategoriesPage(
             val data = categories.map {
                 PieChartItem(
                     value = it.value.toFloat(),
-                    selectedText = formatSavingsChart(it.name, it.value)
+                    selectedText = annotateSavingsChart(it.name, it.value)
                 )
             }
             val total = categories.sumOf { it.value }
-            val defaultText = formatSavingsChart(group, total)
+            val defaultText = annotateSavingsChart(group, total)
 
             PieChart(
                 data = data,
@@ -420,10 +421,7 @@ fun SavingItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = saving.name,
-        subTextRight = saving.amount.format(),
-
-        subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = savingColor(saving.amount),
+        subTextRight = annotateFinance(saving.amount.format(), saving.amount),
 
         onClick = { onSavingClick(saving) }
     )
@@ -440,9 +438,7 @@ private fun CategoryItem(
         subTextLeft = "",
 
         textRight = "",
-        subTextRight = category.value.format(),
-        subTextRightFontWeight = FontWeight.Bold,
-        subTextRightColor = savingColor(category.value),
+        subTextRight = annotateFinance(category.value.format(), category.value),
 
         colorIndex = colorIndex,
 

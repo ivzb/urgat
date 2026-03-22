@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import java.math.BigDecimal
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -96,30 +95,6 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
-private val NEGATIVE_AMOUNT_COLOR = Color(0xFFF44336)
-
-fun expenseColor(amount: BigDecimal) =
-    if (amount > BigDecimal.ZERO) {
-        NEGATIVE_AMOUNT_COLOR
-    } else {
-        POSITIVE_AMOUNT_COLOR
-    }
-
-fun savingColor(amount: BigDecimal) =
-    if (amount > BigDecimal.ZERO) {
-        POSITIVE_AMOUNT_COLOR
-    } else {
-        NEGATIVE_AMOUNT_COLOR
-    }
-
-fun budgetColor(amount: BigDecimal?) =
-    when {
-        amount == null -> Color.Unspecified
-        amount >= BigDecimal.ZERO -> POSITIVE_AMOUNT_COLOR
-        amount < BigDecimal.ZERO -> NEGATIVE_AMOUNT_COLOR
-        else -> Color.Unspecified
-    }
 
 fun dataColor(index: Int) = dataColors[index % dataColors.size]
 
