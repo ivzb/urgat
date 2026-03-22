@@ -151,12 +151,13 @@ object SampleData {
         listOf("NVDA", "25", "180.26", "Stocks", "USD", "3024000"),
         listOf("AAPL", "18", "276.97", "Stocks", "USD", "2160000"),
         listOf("META", "8", "636.22", "Stocks", "USD", "2160000"),
-        listOf("SXR8", "10", "550", "ETF", "USD", "1760000"),
+        listOf("SXR8", "10", "550", "ETF", "EUR", "1760000"),
         listOf("VOO", "30", "621.88", "ETF", "USD", "1296000"),
         listOf("BTC", "0.5", "90966", "Cryptocurrency", "USD", "1296000"),
+        listOf("FLUT", "30", "195", "Stocks", "EUR", "1296000"),
         listOf("ETH", "3", "3021", "Cryptocurrency", "USD", "864000"),
         listOf("TLT", "50", "88.50", "US Bonds", "USD", "864000"),
-        listOf("XAU", "10", "2500", "Commodity", "USD", "664000"),
+        listOf("XAU", "10", "2500", "Commodity", "EUR", "664000"),
         listOf("VNQ", "25", "82.40", "Real Estate", "USD", "432000"),
         listOf("BABA", "40", "133", "Stocks", "EUR", "432000"),
         listOf("SSNLF", "5", "1128", "Stocks", "EUR", "0"),
@@ -194,6 +195,7 @@ object SampleData {
             name = asset.name,
             category = asset.category,
             shares = asset.shares,
+            costValue = asset.marketValue,
             marketValue = if (asset.shares.compareTo(BigDecimal.ZERO) != 0) {
                 asset.marketValue.divide(asset.shares).round()
             } else {

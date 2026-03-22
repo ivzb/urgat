@@ -93,8 +93,7 @@
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
-- add watch list to /investments to track any instruments user is interested in
-- add portfolio tab to /investments to see all instruments latest price
-- use market price repository to fetch instruments latest market price
-- this what should be done when an investment symbol can't be found on yahoo finance - add mapping [user instrument -> yahoo instrument]
 - consider showing current market price for all investments - load all instruments from yahoo finance on app start
+- think how to properly calculate portfolio item diff since the currency might be different
+- add watch list to /investments to track any instruments user is interested in
+- create forex data layer which would track and store forex exchange rate in memory so portfolio entity diff can be properly calculated when there is a mismatch in currencies

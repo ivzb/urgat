@@ -331,6 +331,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
                 name = "SNP 500",
                 category = "etfs",
                 shares = 500.toBigDecimal(),
+                costValue = 500.toBigDecimal(),
                 marketValue = 1000.toBigDecimal(),
                 currency = "USD",
             )

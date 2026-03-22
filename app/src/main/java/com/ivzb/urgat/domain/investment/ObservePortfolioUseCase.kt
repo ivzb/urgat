@@ -57,11 +57,13 @@ class DefaultObservePortfolioUseCase @Inject constructor(
             scope.async {
                 try {
                     val marketPrice = marketPriceRepository.fetchPrice(asset.name)
+                    val sameCurrency = asset.currency.equals(marketPrice.currency, ignoreCase = true)
 
                     Portfolio(
                         name = asset.name,
                         category = asset.category,
                         shares = asset.shares,
+                        costValue = asset.marketValue.takeIf { sameCurrency },
                         marketValue = asset.shares * marketPrice.price,
                         currency = marketPrice.currency,
                     )
@@ -72,6 +74,7 @@ class DefaultObservePortfolioUseCase @Inject constructor(
                         name = asset.name,
                         category = asset.category,
                         shares = asset.shares,
+                        costValue = null,
                         marketValue = BigDecimal.ZERO,
                         currency = asset.currency,
                     )

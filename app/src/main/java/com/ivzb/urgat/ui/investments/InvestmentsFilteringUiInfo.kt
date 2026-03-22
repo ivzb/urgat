@@ -24,4 +24,46 @@ data class InvestmentsFilteringUiInfo(
 
     val sortMenuItems: List<InvestmentsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    companion object {
+
+        fun from(
+            searchQuery: String,
+            filterType: String,
+            filterMenuItems: List<InvestmentsFilterMenuItem>,
+            sortType: InvestmentsSortType,
+            sortMenuItems: List<InvestmentsSortMenuItem>,
+        ): InvestmentsFilteringUiInfo {
+            val showFilterBadge = filterType != InvestmentsFilterType_All
+            val showSortBadge = sortType != InvestmentsSortType.BY_DATE
+            val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
+
+            return InvestmentsFilteringUiInfo(
+                currentFilteringLabel = R.string.all_investments,
+
+                emptyLabel = when {
+                    hasAppliedFilters -> R.string.no_investments_search
+                    else -> R.string.no_investments
+                },
+                emptyMessage = when {
+                    hasAppliedFilters -> R.string.no_investments_search_message
+                    else -> R.string.no_investments_message
+                },
+                emptyButtonLabel = when {
+                    hasAppliedFilters -> R.string.reset_filters
+                    else -> R.string.add_investment
+                },
+
+                searchQuery = searchQuery,
+                hasAppliedFilters = hasAppliedFilters,
+
+                filterMenuItems = filterMenuItems,
+                showFilterBadge = showFilterBadge,
+
+                sortMenuItems = sortMenuItems,
+                showSortBadge = showSortBadge,
+            )
+        }
+    }
+}

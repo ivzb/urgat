@@ -280,6 +280,7 @@ class FakeObserveInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase {
 
 }
 
+
 class FakeObservePortfolioUseCase : ObservePortfolioUseCase {
 
     private val flow = MutableStateFlow<Async<List<Portfolio>>>(Async.Loading)

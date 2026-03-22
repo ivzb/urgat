@@ -37,6 +37,7 @@ fun ListItem(
     subTextRight: String,
     subTextRightFontWeight: FontWeight? = null,
     subTextRightColor: Color = Color.Unspecified,
+    subTextRightCanBeEmpty: Boolean = false,
 
     colorIndex: Int? = null,
 
@@ -107,7 +108,7 @@ fun ListItem(
                         )
                     }
 
-                    if (subTextRight.isNotBlank()) {
+                    if (subTextRight.isNotBlank() || subTextRightCanBeEmpty) {
                         Text(
                             text = subTextRight,
                             style = MaterialTheme.typography.bodySmall,

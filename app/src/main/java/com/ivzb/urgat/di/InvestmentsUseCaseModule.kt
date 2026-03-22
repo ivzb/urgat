@@ -101,6 +101,7 @@ interface InvestmentsUseCaseModule {
     @Binds
     fun bindsObserveInvestmentsUiStateUseCase(useCase: DefaultObserveInvestmentsUiStateUseCase): ObserveInvestmentsUiStateUseCase
 
+
     @Singleton
     @Binds
     fun bindsObservePortfolioUseCase(useCase: DefaultObservePortfolioUseCase): ObservePortfolioUseCase

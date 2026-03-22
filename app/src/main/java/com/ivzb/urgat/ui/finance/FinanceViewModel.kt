@@ -4,12 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.data.finance.FinanceRepository
 import com.ivzb.urgat.data.fire.FireRepository
-import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
-import com.ivzb.urgat.domain.budget.ObserveReportBudgetUseCase
-import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
-import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
-import com.ivzb.urgat.domain.saving.ObserveSavingsUiStateUseCase
+import com.ivzb.urgat.domain.finance.ObserveFinanceUiStateUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.UiEventHolder
@@ -18,7 +13,6 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import com.ivzb.urgat.util.currentMonthRange
@@ -26,19 +20,13 @@ import com.ivzb.urgat.util.untilCurrentMonthRange
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
-    observeExpensesUiStateUseCase: ObserveExpensesUiStateUseCase,
-    observeInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase,
-    observeSavingsUiStateUseCase: ObserveSavingsUiStateUseCase,
-    observeBudgetsUiStateUseCase: ObserveBudgetsUiStateUseCase,
-    observeReportBudgetUseCase: ObserveReportBudgetUseCase,
-    observeFiReUseCase: ObserveFiReUseCase,
+    observeFinanceUiStateUseCase: ObserveFinanceUiStateUseCase,
     private val fireRepository: FireRepository,
     private val financeRepository: FinanceRepository,
 ) : ViewModel() {
@@ -69,13 +57,21 @@ class FinanceViewModel @Inject constructor(
     private val _savedBudgetsSortType = financeRepository.budgetsSortTypeFlow
 
     val uiState: StateFlow<FinanceUiState> = combineUiState(
-        observeExpensesUiStateUseCase(_searchQuery, _savedExpensesFilterType, _savedExpensesSortType),
-        observeInvestmentsUiStateUseCase(_searchQuery, _savedInvestmentsFilterType, _savedInvestmentsSortType),
-        observeSavingsUiStateUseCase(_searchQuery, _savedSavingsSortType),
-        observeBudgetsUiStateUseCase(_searchQuery, _savedBudgetsFilterType, _savedBudgetsSortType),
-        observeReportBudgetUseCase(_budgetDateRange),
-        observeFiReUseCase(_withdrawalRate, _returnOfInvestment, _taxRate, _fireDateRange),
-        _searchQuery.map { Async.Success(it) },
+        observeFinanceUiStateUseCase(
+            searchQueryFlow = _searchQuery,
+            expensesFilterTypeFlow = _savedExpensesFilterType,
+            expensesSortTypeFlow = _savedExpensesSortType,
+            investmentsFilterTypeFlow = _savedInvestmentsFilterType,
+            investmentsSortTypeFlow = _savedInvestmentsSortType,
+            savingsSortTypeFlow = _savedSavingsSortType,
+            budgetsFilterTypeFlow = _savedBudgetsFilterType,
+            budgetsSortTypeFlow = _savedBudgetsSortType,
+            budgetDateRangeFlow = _budgetDateRange,
+            withdrawalRateFlow = _withdrawalRate,
+            returnOfInvestmentFlow = _returnOfInvestment,
+            taxRateFlow = _taxRate,
+            fireDateRangeFlow = _fireDateRange,
+        ),
         uiEventHolder(),
 
         onLoading = {
@@ -84,20 +80,8 @@ class FinanceViewModel @Inject constructor(
         onError = {
             FinanceUiState(hasError = true)
         },
-        onSuccess = { expensesUiState, investmentsUiState, savingsUiState, budgetsUiState, reportBudget, fire, searchQuery, uiEvent ->
-            FinanceUiState(
-                expensesUiState = expensesUiState,
-                investmentsUiState = investmentsUiState,
-                savingsUiState = savingsUiState,
-                budgetsUiState = budgetsUiState,
-                reportBudget = reportBudget,
-                fire = fire,
-                isLoading = false,
-                filteringUiInfo = FinanceFilteringUiInfo(
-                    searchQuery = searchQuery,
-                ),
-                uiEvent = uiEvent,
-            )
+        onSuccess = { financeUiState, uiEvent ->
+            financeUiState.copy(uiEvent = uiEvent)
         }
     )
     .stateIn(

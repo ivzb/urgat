@@ -21,4 +21,40 @@ data class SavingsFilteringUiInfo(
 
     val sortMenuItems: List<SavingsSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
-) : FilteringUiInfo
+) : FilteringUiInfo {
+
+    companion object {
+
+        fun from(
+            searchQuery: String,
+            sortType: SavingsSortType,
+            sortMenuItems: List<SavingsSortMenuItem>,
+        ): SavingsFilteringUiInfo {
+            val showSortBadge = sortType != SavingsSortType.BY_DATE
+            val hasAppliedFilters = searchQuery.isNotEmpty() || showSortBadge
+
+            return SavingsFilteringUiInfo(
+                currentFilteringLabel = R.string.all_savings,
+
+                emptyLabel = when {
+                    hasAppliedFilters -> R.string.no_savings_search
+                    else -> R.string.no_savings
+                },
+                emptyMessage = when {
+                    hasAppliedFilters -> R.string.no_savings_search_message
+                    else -> R.string.no_savings_message
+                },
+                emptyButtonLabel = when {
+                    hasAppliedFilters -> R.string.reset_filters
+                    else -> R.string.add_saving
+                },
+
+                searchQuery = searchQuery,
+                hasAppliedFilters = hasAppliedFilters,
+
+                sortMenuItems = sortMenuItems,
+                showSortBadge = showSortBadge,
+            )
+        }
+    }
+}

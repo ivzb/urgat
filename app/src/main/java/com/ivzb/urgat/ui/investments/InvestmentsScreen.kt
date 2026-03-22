@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -58,6 +59,7 @@ import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.format.formatInvestmentsChart
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.theme.savingColor
 import com.ivzb.urgat.util.annotateFormattedString
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
@@ -65,6 +67,7 @@ import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 @Composable
 fun InvestmentsScreen(
@@ -623,12 +626,20 @@ private fun PortfolioPage(
             key = { _, item -> item.name },
         ) { index, item ->
 
+            val diffPercent = item.diffPercent
+            val diffFormatted = diffPercent?.let {
+                "${if (diffPercent >= BigDecimal.ZERO) "+" else "-"}${diffPercent.format()}%"
+            }
+
             ListItem(
                 textLeft = item.name,
                 subTextLeft = item.category,
 
-                textRight = item.shares.format(),
-                subTextRight = "${item.marketValue.format()} ${item.currency}",
+                textRight = "${item.marketValue.format()} ${item.currency}",
+                subTextRight = diffFormatted.orEmpty(),
+                subTextRightFontWeight = FontWeight.Bold,
+                subTextRightColor = if (diffPercent != null) savingColor(diffPercent) else Color.Unspecified,
+                subTextRightCanBeEmpty = true,
 
                 colorIndex = index,
 
