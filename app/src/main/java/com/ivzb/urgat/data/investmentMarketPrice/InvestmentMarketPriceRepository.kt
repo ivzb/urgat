@@ -1,0 +1,9 @@
+package com.ivzb.urgat.data.investmentMarketPrice
+
+import java.math.BigDecimal
+
+interface InvestmentMarketPriceRepository {
+
+    suspend fun calculateMarketPrice(symbol: String, currency: String, shares: BigDecimal): BigDecimal
+
+}

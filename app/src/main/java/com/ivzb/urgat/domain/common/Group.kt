@@ -18,6 +18,7 @@ import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.saving.GroupedSavingCategories
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
+import java.math.BigDecimal
 import java.time.Year
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -104,18 +105,25 @@ object Group {
                 )
             }
 
-    fun groupInvestmentAssets(investments: List<Investment>, random: () -> String): List<InvestmentAsset> =
+    suspend fun groupInvestmentAssets(
+        investments: List<Investment>,
+        random: () -> String,
+        calculateMarketPrice: suspend (symbol: String, currency: String, shares: BigDecimal) -> BigDecimal
+    ): List<InvestmentAsset> =
         investments
             .groupBy { Triple(it.name, it.category, it.currency) }
             .map { (key, investments) ->
                 val (name, category, currency) = key
+                val shares = investments.sumOf { it.shares }
+                val marketPrice = calculateMarketPrice(name, currency, shares)
 
                 InvestmentAsset(
                     id = random(),
                     name = name,
                     category = category,
-                    shares = investments.sumOf { it.shares },
-                    marketValue = investments.sumOf { it.marketValue },
+                    shares = shares,
+                    costPrice = investments.sumOf { it.marketValue },
+                    marketPrice = marketPrice,
                     currency = currency,
                     total = Investment.total(investments),
 

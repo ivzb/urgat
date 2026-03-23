@@ -98,6 +98,9 @@
 - add watch list to /investments to track any instruments user is interested in
 - when calculating sum of investments with different currencies use forex repository to convert to single currency so they can be summed correctly (also annotateInvestmentChart)
 - show all investment charts into latest market price - show only transactions in the original market price
-- add finance market value to assets and remove portfolio
 - remove assets tab since portfolio covers it
 - show unrealized P&L (profit & loss) on chart total
+- fix assets tab chart total since it's calculated based on cost price instead of market price
+- add PnL based on market price to Investment
+- make DefaultInvestmentMarketMarketPriceRepository cache prices in case it gets called multiple times for the same instrument
+- add currency to budget so investments can be converted to single currency for proper calculation

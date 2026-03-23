@@ -4,7 +4,6 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
-import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
@@ -279,30 +278,3 @@ class FakeObserveInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase {
     }
 
 }
-
-
-class FakeObservePortfolioUseCase : ObservePortfolioUseCase {
-
-    private val flow = MutableStateFlow<Async<List<Portfolio>>>(Async.Loading)
-
-    var lastQuery: String = ""
-
-    fun emit(value: Async<List<Portfolio>>) {
-        flow.value = value
-    }
-
-    override operator fun invoke(
-        searchQueryFlow: Flow<String>?,
-        dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
-        sortTypeFlow: Flow<InvestmentsSortType>?,
-        limitFlow: Flow<Int>?,
-    ): Flow<Async<List<Portfolio>>> {
-        CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow?.collect { lastQuery = it }
-        }
-        return flow
-    }
-
-}
-

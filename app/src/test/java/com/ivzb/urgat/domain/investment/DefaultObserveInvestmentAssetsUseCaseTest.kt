@@ -4,9 +4,10 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentsRepository
+import com.ivzb.urgat.data.investmentMarketPrice.InvestmentMarketPriceRepository
 import com.ivzb.urgat.data.random.RandomRepository
-import com.ivzb.urgat.domain.expense.ObserveGroupedExpenseCategoriesAllTimeUseCaseTest
 import com.ivzb.urgat.util.Async
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +26,7 @@ class ObserveInvestmentAssetsUseCaseTest {
 
     private lateinit var investmentsRepository: InvestmentsRepository
     private lateinit var randomRepository: RandomRepository
+    private lateinit var investmentMarketPriceRepository: InvestmentMarketPriceRepository
     private lateinit var observeUseCase: ObserveInvestmentAssetsUseCase
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -32,9 +34,11 @@ class ObserveInvestmentAssetsUseCaseTest {
     fun setUp() {
         investmentsRepository = mockk()
         randomRepository = mockk()
-        observeUseCase = DefaultObserveInvestmentAssetsUseCase(investmentsRepository, randomRepository)
+        investmentMarketPriceRepository = mockk()
+        observeUseCase = DefaultObserveInvestmentAssetsUseCase(investmentsRepository, randomRepository, investmentMarketPriceRepository)
 
         every { randomRepository.uuid() } returns TEST_UUID
+        coEvery { investmentMarketPriceRepository.calculateMarketPrice(any(), any(), any()) } returns BigDecimal.ZERO
     }
 
     @Test
@@ -62,14 +66,14 @@ class ObserveInvestmentAssetsUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "USD", investments = listOf(investments[1]), total = "660 USD",),
-            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("660"), currency = "EUR", investments = listOf(investments[4]), total = "660 EUR",),
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), costPrice = BigDecimal("660"), marketPrice = BigDecimal.ZERO, currency = "USD", investments = listOf(investments[1]), total = "660 USD",),
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), costPrice = BigDecimal("660"), marketPrice = BigDecimal.ZERO, currency = "EUR", investments = listOf(investments[4]), total = "660 EUR",),
 
-            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "USD", investments = listOf(investments[2]), total = "771.05 USD",),
-            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), marketValue = BigDecimal("771.05"), currency = "EUR", investments = listOf(investments[5]), total = "771.05 EUR",),
+            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), costPrice = BigDecimal("771.05"), marketPrice = BigDecimal.ZERO, currency = "USD", investments = listOf(investments[2]), total = "771.05 USD",),
+            InvestmentAsset(id = TEST_UUID, name = "GOOGL", category = "stocks", shares = BigDecimal("3.5"), costPrice = BigDecimal("771.05"), marketPrice = BigDecimal.ZERO, currency = "EUR", investments = listOf(investments[5]), total = "771.05 EUR",),
 
-            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "USD", investments = listOf(investments[0]), total = "500 USD",),
-            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), marketValue = BigDecimal("500"), currency = "EUR", investments = listOf(investments[3]), total = "500 EUR",),
+            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), costPrice = BigDecimal("500"), marketPrice = BigDecimal.ZERO, currency = "USD", investments = listOf(investments[0]), total = "500 USD",),
+            InvestmentAsset(id = TEST_UUID, name = "SNP 500", category = "etfs", shares = BigDecimal("2"), costPrice = BigDecimal("500"), marketPrice = BigDecimal.ZERO, currency = "EUR", investments = listOf(investments[3]), total = "500 EUR",),
         )
 
         assertEquals(1, results.size)

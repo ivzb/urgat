@@ -3,7 +3,6 @@ package com.ivzb.urgat.ui.investments
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
-import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.ui.components.Page
@@ -15,7 +14,6 @@ data class InvestmentsUiState(
     val assets: List<InvestmentAsset> = listOf(),
     val categories: List<InvestmentCategory> = listOf(),
     val netWorth: InvestmentNetWorth? = null,
-    val portfolio: List<Portfolio> = listOf(),
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,

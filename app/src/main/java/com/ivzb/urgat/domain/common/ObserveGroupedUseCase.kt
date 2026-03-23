@@ -14,7 +14,7 @@ class ObserveGroupedUseCase<T, FilterType, SortType, Group>(
     filter: ((List<T>, FilterType) -> List<T>)? = null,
     sort: ((List<T>, SortType) -> List<T>)? = null,
     transform: ((List<T>) -> List<T>)? = null,
-    private val group: (List<T>) -> Group,
+    private val group: suspend (List<T>) -> Group,
 ) : DefaultObserveUseCase<T, FilterType, SortType>(repository, filter, sort, transform) {
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)

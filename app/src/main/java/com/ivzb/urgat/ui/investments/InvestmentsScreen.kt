@@ -39,7 +39,6 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
-import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.investment.GroupedInvestments
@@ -58,6 +57,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.annotateInvestmentChart
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatPnL
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -169,16 +169,6 @@ fun InvestmentsScreen(
 
                     onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
                     onInvestmentClick = onInvestmentClick,
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                InvestmentsPage.Portfolio -> PortfolioPage(
-                    portfolio = uiState.portfolio,
-
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -459,6 +449,7 @@ private fun AssetsPage(
             filteringUiInfo = filteringUiInfo,
             onButtonClick = { onResetFilters() },
         )
+
         return
     }
 
@@ -483,7 +474,7 @@ private fun AssetsPage(
                 // all assets pie chart
                 data = assets.map {
                     PieChartItem(
-                        value = it.marketValue.toFloat(),
+                        value = it.marketPrice.toFloat(),
                         selectedText = annotateInvestmentChart(it.name, it.total)
                     )
                 }
@@ -534,108 +525,6 @@ private fun AssetsPage(
         }
     }
 }
-
-
-@Composable
-private fun PortfolioPage(
-    portfolio: List<Portfolio>,
-
-    filteringUiInfo: FilteringUiInfo,
-    onResetFilters: () -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
-
-    if (portfolio.isEmpty()) {
-        EmptyState(
-            filteringUiInfo = filteringUiInfo,
-            onButtonClick = { onResetFilters() },
-        )
-
-        return
-    }
-
-    val totalByCurrency = portfolio
-        .groupBy { it.currency }
-        .map { (currency, items) ->
-            "${items.sumOf { it.marketValue }.format()} $currency"
-        }
-        .joinToString(Investment.SEPARATOR)
-
-    LazyColumn(
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
-        ),
-        state = listState,
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-
-        item {
-            PieChart(
-                data = portfolio.mapIndexed { index, item ->
-                    PieChartItem(
-                        value = item.marketValue.toFloat(),
-                        selectedText = annotateInvestmentChart(
-                            item.name,
-                            "${item.marketValue.format()} ${item.currency}",
-                        ),
-                    )
-                },
-                defaultText = annotateInvestmentChart(
-                    stringResource(R.string.portfolio),
-                    totalByCurrency,
-                ),
-                textStyle = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        itemsIndexed(
-            portfolio,
-            key = { _, item -> item.name },
-        ) { index, item ->
-
-            val diffPercent = item.diffPercent
-            val diffFormatted = diffPercent?.let {
-                "${if (diffPercent >= BigDecimal.ZERO) "+" else "-"}${diffPercent.format()}%"
-            }.orEmpty()
-
-            val marketPriceText = "${item.marketValue.format()} ${item.currency}"
-
-            ListItem(
-                textLeft = item.name,
-                subTextLeft = item.category,
-
-                textRight = item.shares.toString(),
-                subTextRight = annotateFinance(
-                    text = diffFormatted,
-                    amount = diffPercent ?: BigDecimal.ZERO,
-                    prefix = "$marketPriceText (",
-                    suffix = ")"
-                ),
-                subTextRightCanBeEmpty = true,
-
-                colorIndex = index,
-
-                onClick = { /* NOOP */ },
-            )
-        }
-    }
-}
-
 
 private fun LazyListScope.subInvestments(
     investments: List<Investment>,
@@ -691,12 +580,20 @@ private fun AssetItem(
     colorIndex: Int,
     onClick: () -> Unit,
 ) {
+    val unrealisedPnL = asset.unrealisedPnL
+    val marketPriceText = "${asset.marketPrice.format()} ${asset.currency}"
+
     ListItem(
         textLeft = asset.name,
         subTextLeft = asset.category,
 
         textRight = asset.shares.toString(),
-        subTextRight = AnnotatedString("${asset.marketValue.format()} ${asset.currency}"),
+        subTextRight = annotateFinance(
+            text = unrealisedPnL.formatPnL(),
+            amount = unrealisedPnL ?: BigDecimal.ZERO,
+            prefix = "$marketPriceText (",
+            suffix = ")"
+        ),
 
         colorIndex = colorIndex,
 
@@ -758,31 +655,6 @@ private fun InvestmentsScreenAllTimePreview() {
 @Composable
 private fun InvestmentsScreeAssetsPreview() {
     InvestmentsScreenPreview(initialPage = 3)
-}
-
-@AllDevicesPreview
-@Composable
-private fun InvestmentsScreenPortfolioPreview() {
-    UrgatTheme {
-        InvestmentsScreen(
-            uiState = InvestmentsUiState(
-                investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
-                categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
-                assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
-                categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
-                netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
-                portfolio = SampleData.SAMPLE_PORTFOLIO,
-                filteringUiInfo = InvestmentsFilteringUiInfo(),
-                isLoading = false,
-                hasError = false,
-                initialPage = 3,
-            ),
-            onIntent = {},
-            onInvestmentClick = {},
-            onBack = {},
-            modifier = Modifier
-        )
-    }
 }
 
 @AllDevicesPreview

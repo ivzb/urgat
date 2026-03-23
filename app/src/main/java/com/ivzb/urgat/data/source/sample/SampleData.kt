@@ -5,14 +5,13 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.portfolio.Portfolio
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.util.randomUUID
-import com.ivzb.urgat.util.round
+import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import kotlin.collections.component1
 import kotlin.collections.component4
@@ -188,20 +187,11 @@ object SampleData {
     val SAMPLE_INVESTMENTS_CATEGORIES =
         Group.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
 
-    val SAMPLE_INVESTMENTS_ASSETS = Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
-
-    val SAMPLE_PORTFOLIO = SAMPLE_INVESTMENTS_ASSETS.map { asset ->
-        Portfolio(
-            name = asset.name,
-            category = asset.category,
-            shares = asset.shares,
-            costValue = asset.marketValue,
-            marketValue = if (asset.shares.compareTo(BigDecimal.ZERO) != 0) {
-                asset.marketValue.divide(asset.shares).round()
-            } else {
-                BigDecimal.ZERO
-            },
-            currency = asset.currency,
+    val SAMPLE_INVESTMENTS_ASSETS = runBlocking {
+        Group.groupInvestmentAssets(
+            SAMPLE_INVESTMENTS,
+            ::randomUUID,
+            calculateMarketPrice = { _, _, _ -> BigDecimal.ZERO },
         )
     }
 

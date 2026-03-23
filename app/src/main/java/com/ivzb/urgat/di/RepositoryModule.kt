@@ -28,6 +28,8 @@ import com.ivzb.urgat.data.weight.DefaultWeightsRepository
 import com.ivzb.urgat.data.weight.WeightsRepository
 import com.ivzb.urgat.data.forex.DefaultForexRepository
 import com.ivzb.urgat.data.forex.ForexRepository
+import com.ivzb.urgat.data.investmentMarketPrice.DefaultInvestmentMarketMarketPriceRepository
+import com.ivzb.urgat.data.investmentMarketPrice.InvestmentMarketPriceRepository
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.data.marketPrice.YahooFinanceMarketPriceRepository
 import dagger.Binds
@@ -99,5 +101,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsForexRepository(forexRepository: DefaultForexRepository): ForexRepository
+
+    @Singleton
+    @Binds
+    fun bindsInvestmentPriceRepository(investmentPriceRepository: DefaultInvestmentMarketMarketPriceRepository): InvestmentMarketPriceRepository
 
 }

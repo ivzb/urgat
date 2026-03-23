@@ -12,12 +12,10 @@ sealed class InvestmentsPage(
     data object Yearly: InvestmentsPage(R.string.yearly, false)
     data object AllTime: InvestmentsPage(R.string.all_time, true)
     data object Assets: InvestmentsPage(R.string.assets, true)
-    data object Portfolio: InvestmentsPage(R.string.portfolio, true)
 }
 
 val INVESTMENT_PAGES = listOf(
     InvestmentsPage.Yearly,
     InvestmentsPage.AllTime,
     InvestmentsPage.Assets,
-    InvestmentsPage.Portfolio,
 )
