@@ -10,6 +10,7 @@ interface CreateBudgetUseCase {
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     )
 
@@ -23,10 +24,11 @@ class DefaultCreateBudgetUseCase @Inject constructor(
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     ) {
 
-        repository.create(income, bankStart, bankEnd, date)
+        repository.create(income, bankStart, bankEnd, currency, date)
     }
 
 }

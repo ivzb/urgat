@@ -59,6 +59,7 @@ enum class FieldId {
     Income,
     BankStart,
     BankEnd,
+    Currency,
     Date,
 }
 
@@ -233,13 +234,43 @@ fun AddEditBudgetScreen(
                         placeholder = { Text(stringResource(id = R.string.bank_end_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         maxLines = 1,
                         modifier = Modifier
                             .weight(1f)
                             .focusRequester(focusRequesters[FieldId.BankEnd.ordinal]),
                     )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+                ) {
+                    TextField(
+                        value = uiState.currency,
+                        onValueChange = {
+                            onIntent(AddEditBudgetIntent.UpdateCurrency(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+                    )
+
+                    // empty space to keep currency text field take only half of the row
+                    Spacer(modifier = Modifier.weight(1f))
                 }
 
                 Spacer(

@@ -104,3 +104,5 @@
 - add PnL based on market price to Investment
 - make DefaultInvestmentMarketMarketPriceRepository cache prices in case it gets called multiple times for the same instrument
 - add currency to budget so investments can be converted to single currency for proper calculation
+- add currency to expense
+- add currency to saving

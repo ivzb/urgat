@@ -37,9 +37,9 @@ class ObserveBudgetsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = BudgetsSortType.BY_DATE,
             expected = listOf(
-                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), 3L, false, 3L),
-                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), 2L, false, 2L),
-                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
+                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), "EUR", 3L, false, 3L),
+                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), "EUR", 2L, false, 2L),
+                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
             ),
         )
     }
@@ -49,9 +49,9 @@ class ObserveBudgetsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = BudgetsSortType.BY_MIN,
             expected = listOf(
-                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
-                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), 2L, false, 2L),
-                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), 3L, false, 3L),
+                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
+                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), "EUR", 2L, false, 2L),
+                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), "EUR", 3L, false, 3L),
             ),
         )
     }
@@ -61,9 +61,9 @@ class ObserveBudgetsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = BudgetsSortType.BY_MAX,
             expected = listOf(
-                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), 3L, false, 3L),
-                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), 2L, false, 2L),
-                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
+                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), "EUR", 3L, false, 3L),
+                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), "EUR", 2L, false, 2L),
+                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
             ),
         )
     }
@@ -77,9 +77,9 @@ class ObserveBudgetsUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
-                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), 2L, false, 2L),
-                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), 3L, false, 3L),
+                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
+                Budget("2", BigDecimal("6300"), BigDecimal("6300"), BigDecimal("1250"), "EUR", 2L, false, 2L),
+                Budget("3", BigDecimal("6400"), BigDecimal("6400"), BigDecimal("2250"), "EUR", 3L, false, 3L),
             )
         )
 

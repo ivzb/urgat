@@ -9,6 +9,7 @@ data class Budget(
     val income: BigDecimal,
     val bankStart: BigDecimal,
     val bankEnd: BigDecimal?,
+    val currency: String,
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long,
@@ -36,7 +37,7 @@ data class Budget(
         }
 
     fun formatCsv(): String =
-        "\"$id\", \"$income\", \"$bankStart\", \"$bankEnd\", $date, $createdAt"
+        "\"$id\", \"$income\", \"$bankStart\", \"$bankEnd\", \"$currency\", $date, $createdAt"
 
     companion object {
 

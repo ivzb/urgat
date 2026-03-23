@@ -70,6 +70,7 @@ class AddEditBudgetViewModelTest {
             income = 6500.toBigDecimal(),
             bankStart = 11000.toBigDecimal(),
             bankEnd = 8400.toBigDecimal(),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,
@@ -140,12 +141,13 @@ class AddEditBudgetViewModelTest {
         viewModel.onIntent(AddEditBudgetIntent.UpdateIncome("6500"))
         viewModel.onIntent(AddEditBudgetIntent.UpdateBankStart("11000"))
         viewModel.onIntent(AddEditBudgetIntent.UpdateBankEnd("8400"))
+        viewModel.onIntent(AddEditBudgetIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditBudgetIntent.UpdateDate(123L))
         viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
         
         advanceUntilIdle()
 
-        val expected = listOf(BigDecimal("6500"), BigDecimal("11000"), BigDecimal("8400"), 123L)
+        val expected = listOf(BigDecimal("6500"), BigDecimal("11000"), BigDecimal("8400"), "EUR", 123L)
         val actual = createUseCase.created
         assertEquals(expected, actual)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
@@ -156,12 +158,13 @@ class AddEditBudgetViewModelTest {
         viewModel.onIntent(AddEditBudgetIntent.UpdateIncome(" 6500 "))
         viewModel.onIntent(AddEditBudgetIntent.UpdateBankStart(" 11000 "))
         viewModel.onIntent(AddEditBudgetIntent.UpdateBankEnd(" 8400 "))
+        viewModel.onIntent(AddEditBudgetIntent.UpdateCurrency(" EUR "))
         viewModel.onIntent(AddEditBudgetIntent.UpdateDate(123L))
         viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
 
         advanceUntilIdle()
 
-        val expected = listOf(BigDecimal("6500"), BigDecimal("11000"), BigDecimal("8400"), 123L)
+        val expected = listOf(BigDecimal("6500"), BigDecimal("11000"), BigDecimal("8400"), "EUR", 123L)
         val actual = createUseCase.created
         assertEquals(expected, actual)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
@@ -175,6 +178,7 @@ class AddEditBudgetViewModelTest {
             income = BigDecimal("6500"),
             bankStart = BigDecimal("11000"),
             bankEnd = BigDecimal("8400"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,
@@ -189,6 +193,7 @@ class AddEditBudgetViewModelTest {
         assertEquals(budget.income.toString(), uiState.income)
         assertEquals(budget.bankStart.toString(), uiState.bankStart)
         assertEquals(budget.bankEnd?.toString(), uiState.bankEnd)
+        assertEquals(budget.currency, uiState.currency)
         assertEquals(budget.date, uiState.date)
         assertFalse(uiState.isLoading)
 
@@ -196,12 +201,13 @@ class AddEditBudgetViewModelTest {
         viewModel.onIntent(AddEditBudgetIntent.UpdateBankStart("11200"))
         viewModel.onIntent(AddEditBudgetIntent.UpdateBankEnd("8600"))
         viewModel.onIntent(AddEditBudgetIntent.UpdateDate(123L))
+        viewModel.onIntent(AddEditBudgetIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
 
         advanceUntilIdle()
 
         val expected = updateUseCase.updated
-        val actual = listOf(budgetId, BigDecimal("6300"), BigDecimal("11200"), BigDecimal("8600"), 123L)
+        val actual = listOf(budgetId, BigDecimal("6300"), BigDecimal("11200"), BigDecimal("8600"), "EUR", 123L)
         assertEquals(expected, actual)
         assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
@@ -214,6 +220,7 @@ class AddEditBudgetViewModelTest {
             income = BigDecimal("6500"),
             bankStart = BigDecimal("11000"),
             bankEnd = BigDecimal("8400"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,
@@ -240,7 +247,7 @@ class AddEditBudgetViewModelTest {
         advanceUntilIdle()
 
         val expected = updateUseCase.updated
-        val actual = listOf(budgetId, BigDecimal("6300"), BigDecimal("11200"), BigDecimal("8600"), 123L)
+        val actual = listOf(budgetId, BigDecimal("6300"), BigDecimal("11200"), BigDecimal("8600"), "EUR", 123L)
         assertEquals(expected, actual)
         assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
@@ -277,6 +284,7 @@ class AddEditBudgetViewModelTest {
             income = BigDecimal("5000"),
             bankStart = BigDecimal("3500"),
             bankEnd = BigDecimal("7500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -291,10 +299,11 @@ class AddEditBudgetViewModelTest {
 
         advanceUntilIdle()
 
-        val (income, bankStart, bankEnd, date) = createUseCase.created
+        val (income, bankStart, bankEnd, currency, date) = createUseCase.created
         assertEquals(BigDecimal("5000"), income)
         assertEquals(BigDecimal("3500"), bankStart)
         assertEquals(BigDecimal("7500"), bankEnd)
+        assertEquals("EUR", currency)
         assertTrue((date as Long) > 123L)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -307,6 +316,7 @@ class AddEditBudgetViewModelTest {
             income = BigDecimal("5000"),
             bankStart = BigDecimal("3500"),
             bankEnd = BigDecimal("7500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -324,10 +334,11 @@ class AddEditBudgetViewModelTest {
 
         advanceUntilIdle()
 
-        val (income, bankStart, bankEnd, date) = createUseCase.created
+        val (income, bankStart, bankEnd, currency, date) = createUseCase.created
         assertEquals(BigDecimal("6000"), income)
         assertEquals(BigDecimal("4500"), bankStart)
         assertEquals(BigDecimal("8500"), bankEnd)
+        assertEquals("EUR", currency)
         assertTrue((date as Long) > 123L)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }

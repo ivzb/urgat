@@ -31,6 +31,7 @@ class DefaultGetBudgetUseCaseTest {
             income = 6500.toBigDecimal(),
             bankStart = 11000.toBigDecimal(),
             bankEnd = 8400.toBigDecimal(),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,

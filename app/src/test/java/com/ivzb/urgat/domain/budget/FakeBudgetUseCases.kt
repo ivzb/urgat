@@ -60,9 +60,10 @@ class FakeCreateBudgetUseCase : CreateBudgetUseCase {
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     ) {
-        created = listOf(income, bankStart, bankEnd, date)
+        created = listOf(income, bankStart, bankEnd, currency, date)
     }
 }
 
@@ -75,9 +76,10 @@ class FakeUpdateBudgetUseCase : UpdateBudgetUseCase {
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     ) {
-        updated = listOf(id, income, bankStart, bankEnd, date)
+        updated = listOf(id, income, bankStart, bankEnd, currency, date)
     }
 }
 

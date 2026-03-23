@@ -71,6 +71,7 @@ data class CsvMapping(
             CsvMapping("income", "big_decimal"),
             CsvMapping("bankStart", "big_decimal"),
             CsvMapping("bankEnd", "big_decimal?"),
+            CsvMapping("currency", "string"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -157,9 +158,10 @@ data class CsvMapping(
                 income = split[1].toBigDecimal(),
                 bankStart = split[2].toBigDecimal(),
                 bankEnd = split[3].toBigDecimalOrNull(),
-                date = split[4].toLong(),
+                currency = split[4],
+                date = split[5].toLong(),
                 isDeleted = false,
-                createdAt = split[5].toLong(),
+                createdAt = split[6].toLong(),
             )
         }
 

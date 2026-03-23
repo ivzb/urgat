@@ -8,6 +8,7 @@ data class AddEditBudgetUiState(
     val income: String = "",
     val bankStart: String = "",
     val bankEnd: String = "",
+    val currency: String = "",
     val date: Long = System.currentTimeMillis(),
     val focusIndex: Int = 0,
     val isLoading: Boolean = false,

@@ -32,6 +32,7 @@ class DefaultBudgetsRepository @Inject constructor(
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     ): String {
         // ID creation might be a complex operation so it's executed using the supplied
@@ -44,6 +45,7 @@ class DefaultBudgetsRepository @Inject constructor(
             income = income,
             bankStart = bankStart,
             bankEnd = bankEnd,
+            currency = currency,
             date = date,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
@@ -57,12 +59,14 @@ class DefaultBudgetsRepository @Inject constructor(
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     ) {
         val budget = get(id)?.copy(
             income = income,
             bankStart = bankStart,
             bankEnd = bankEnd,
+            currency = currency,
             date = date,
         )
 

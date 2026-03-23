@@ -78,6 +78,7 @@ class DefaultSampleUseCase @Inject constructor(
                 it.income,
                 it.bankStart,
                 it.bankEnd,
+                it.currency,
                 it.date,
             )
         }

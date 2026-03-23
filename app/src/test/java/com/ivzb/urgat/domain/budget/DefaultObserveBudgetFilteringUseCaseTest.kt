@@ -45,11 +45,11 @@ class ObserveBudgetsFilteringUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
-                Budget("2", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("1250"), 1L, false, 1L),
-                Budget("3", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("0"), 1L, false, 1L),
-                Budget("4", BigDecimal("6500"), BigDecimal("10000"), BigDecimal("2500"), 1L, false, 1L),
-                Budget("4", BigDecimal("6500"), BigDecimal("10000"), BigDecimal("7000"), 1L, false, 1L),
+                Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
+                Budget("2", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("1250"), "EUR", 1L, false, 1L),
+                Budget("3", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("0"), "EUR", 1L, false, 1L),
+                Budget("4", BigDecimal("6500"), BigDecimal("10000"), BigDecimal("2500"), "EUR", 1L, false, 1L),
+                Budget("4", BigDecimal("6500"), BigDecimal("10000"), BigDecimal("7000"), "EUR", 1L, false, 1L),
             )
         )
 

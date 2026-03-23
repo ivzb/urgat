@@ -281,6 +281,7 @@ object SampleData {
                 income = income.toBigDecimal(),
                 bankStart = bankStart.toBigDecimal(),
                 bankEnd = bankEnd.toBigDecimal(),
+                currency = "EUR",
                 date = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000L),
                 isDeleted = false,
                 createdAt = System.currentTimeMillis() - (index * 86_400 * 31 * 1_000L),

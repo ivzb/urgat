@@ -11,6 +11,7 @@ interface UpdateBudgetUseCase {
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     )
 
@@ -25,10 +26,11 @@ class DefaultUpdateBudgetUseCase @Inject constructor(
         income: BigDecimal,
         bankStart: BigDecimal,
         bankEnd: BigDecimal?,
+        currency: String,
         date: Long,
     ) {
 
-        repository.update(id, income, bankStart, bankEnd, date)
+        repository.update(id, income, bankStart, bankEnd, currency, date)
     }
 
 }

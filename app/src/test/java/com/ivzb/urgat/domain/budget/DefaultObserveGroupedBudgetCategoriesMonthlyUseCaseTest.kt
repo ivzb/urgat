@@ -48,11 +48,11 @@ class ObserveGroupedBudgetCategoriesMonthlyUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
         val budgets = listOf(
-            Budget("1", 3000.toBigDecimal(), 5000.toBigDecimal(), 6200.toBigDecimal(), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
-            Budget("2", 3200.toBigDecimal(), 5200.toBigDecimal(), 6400.toBigDecimal(), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25)),
-            Budget("3", 3400.toBigDecimal(), 5400.toBigDecimal(), 6600.toBigDecimal(), timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
-            Budget("4", 3800.toBigDecimal(), 5600.toBigDecimal(), 6800.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 25)),
-            Budget("5", 4000.toBigDecimal(), 5800.toBigDecimal(), 7000.toBigDecimal(), timestamp(2026, 1, 25), false, timestamp(2026, 1, 27)),
+            Budget("1", 3000.toBigDecimal(), 5000.toBigDecimal(), 6200.toBigDecimal(), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Budget("2", 3200.toBigDecimal(), 5200.toBigDecimal(), 6400.toBigDecimal(), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25)),
+            Budget("3", 3400.toBigDecimal(), 5400.toBigDecimal(), 6600.toBigDecimal(), "EUR", timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
+            Budget("4", 3800.toBigDecimal(), 5600.toBigDecimal(), 6800.toBigDecimal(), "EUR", timestamp(2026, 1, 25), false, timestamp(2026, 1, 25)),
+            Budget("5", 4000.toBigDecimal(), 5800.toBigDecimal(), 7000.toBigDecimal(), "EUR", timestamp(2026, 1, 25), false, timestamp(2026, 1, 27)),
         )
         val repositoryStream = flowOf(budgets)
 

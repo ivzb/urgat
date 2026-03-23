@@ -75,7 +75,7 @@ class BudgetsViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val fakeBudgets = listOf(
-            Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
+            Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
         )
         val fakeMonthlyBudgets = listOf(
             GroupedBudget(
@@ -190,7 +190,7 @@ class BudgetsViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val fakeBudgets = listOf(
-            Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), 1L, false, 1L),
+            Budget("1", BigDecimal("6500"), BigDecimal("6500"), BigDecimal("-1250"), "EUR", 1L, false, 1L),
         )
         val fakeCategoriesMonthly = listOf(
             GroupedBudget(

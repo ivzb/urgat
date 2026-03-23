@@ -290,8 +290,8 @@ class ObserveBudgetsUiStateUseCaseTest {
     companion object {
 
         private val fakeBudgets = listOf(
-            Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), 1L, false, 1L),
-            Budget("2", 5500.toBigDecimal(), 7800.toBigDecimal(), 6200.toBigDecimal(), 1L, false, 1L),
+            Budget("1", 6500.toBigDecimal(), 8800.toBigDecimal(), 7200.toBigDecimal(), "EUR", 1L, false, 1L),
+            Budget("2", 5500.toBigDecimal(), 7800.toBigDecimal(), 6200.toBigDecimal(), "EUR", 1L, false, 1L),
         )
 
         private val fakeMonthlyBudgets = listOf(

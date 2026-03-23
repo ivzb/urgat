@@ -24,12 +24,13 @@ class DefaultCreateBudgetUseCaseTest {
         val income = BigDecimal("6500")
         val bankStart = BigDecimal("11000")
         val bankEnd = BigDecimal("8800")
+        val currency = "EUR"
         val date = 1L
 
-        createUseCase(income, bankStart, bankEnd, date)
+        createUseCase(income, bankStart, bankEnd, currency, date)
 
         coVerify(exactly = 1) {
-            repository.create(income, bankStart, bankEnd, date)
+            repository.create(income, bankStart, bankEnd, currency, date)
         }
     }
 }

@@ -10,6 +10,7 @@ data class BudgetEntity(
     val income: BigDecimal,
     val bankStart: BigDecimal,
     val bankEnd: BigDecimal?,
+    val currency: String,
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long

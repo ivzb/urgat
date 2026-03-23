@@ -40,6 +40,7 @@ class DefaultBudgetsRepositoryTest {
             income = BigDecimal("6500"),
             bankStart = BigDecimal("11000"),
             bankEnd = BigDecimal("8800"),
+            currency = "EUR",
             date = 1L,
         )
 
@@ -58,6 +59,7 @@ class DefaultBudgetsRepositoryTest {
             income = BigDecimal("6500"),
             bankStart = BigDecimal("11000"),
             bankEnd = null,
+            currency = "EUR",
             date = 1L,
         )
 
@@ -76,6 +78,7 @@ class DefaultBudgetsRepositoryTest {
             income = BigDecimal("6500"),
             bankStart = BigDecimal("11000"),
             bankEnd = BigDecimal("8800"),
+            currency = "EUR",
             date = 1L,
         )
 
@@ -89,9 +92,9 @@ class DefaultBudgetsRepositoryTest {
 
     @Test
     fun `update modifies existing budget`() = runTest {
-        val id = repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), 1L)
+        val id = repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), "EUR", 1L)
 
-        repository.update(id, 6300.toBigDecimal(), 11200.toBigDecimal(), 9000.toBigDecimal(), 2L)
+        repository.update(id, 6300.toBigDecimal(), 11200.toBigDecimal(), 9000.toBigDecimal(), "EUR", 2L)
 
         val updated = repository.get(id)
         assertNotNull(updated)
@@ -104,7 +107,7 @@ class DefaultBudgetsRepositoryTest {
     @Test
     fun `update throws when budget does not exist`() = runTest {
         val exception = assertFailsWith<Exception> {
-            repository.update("missing", 6300.toBigDecimal(), 11200.toBigDecimal(), 9000.toBigDecimal(), 2L)
+            repository.update("missing", 6300.toBigDecimal(), 11200.toBigDecimal(), 9000.toBigDecimal(), "EUR", 2L)
         }
 
         assertTrue(exception.message?.contains("not found") == true)
@@ -112,7 +115,7 @@ class DefaultBudgetsRepositoryTest {
 
     @Test
     fun `delete removes budget`() = runTest {
-        val id = repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), 1L)
+        val id = repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), "EUR", 1L)
         assertNotNull(dao.getById(id))
 
         repository.delete(id)
@@ -121,8 +124,8 @@ class DefaultBudgetsRepositoryTest {
 
     @Test
     fun `observe emits mapped budgets`() = runTest {
-        repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), 1L)
-        repository.create(6000.toBigDecimal(), 10000.toBigDecimal(), 8000.toBigDecimal(), 2L)
+        repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), "EUR", 1L)
+        repository.create(6000.toBigDecimal(), 10000.toBigDecimal(), 8000.toBigDecimal(), "EUR", 2L)
 
         val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
@@ -132,8 +135,8 @@ class DefaultBudgetsRepositoryTest {
 
     @Test
     fun `observe with searchQuery filters correctly`() = runTest {
-        repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), 1L)
-        repository.create(6000.toBigDecimal(), 10000.toBigDecimal(), 8000.toBigDecimal(), 2L)
+        repository.create(6500.toBigDecimal(), 11000.toBigDecimal(), 8800.toBigDecimal(), "EUR", 1L)
+        repository.create(6000.toBigDecimal(), 10000.toBigDecimal(), 8000.toBigDecimal(), "EUR", 2L)
 
         val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "search is not supported").first()
 

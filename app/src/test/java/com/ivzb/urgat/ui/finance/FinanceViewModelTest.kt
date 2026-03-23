@@ -133,7 +133,7 @@ class FinanceViewModelTest {
         )
 
         val fakeBudgetsUiState = BudgetsUiState(
-            budgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), 1L, false, 1L))
+            budgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), "EUR", 1L, false, 1L))
         )
 
         val fakeFiRe = FiRe(
