@@ -1,3 +1,11 @@
+## Release notes 26.03.20
+
+New:
+- Introduced forex support with real-time currency conversion.
+
+Improved:
+- Portfolio tab can now display market prices for a wider range of instruments.
+
 ## Release notes 26.03.19
 
 New:
