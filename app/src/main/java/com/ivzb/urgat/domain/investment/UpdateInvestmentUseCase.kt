@@ -10,7 +10,7 @@ interface UpdateInvestmentUseCase {
         id: String,
         name: String,
         shares: BigDecimal,
-        cost: BigDecimal,
+        costPrice: BigDecimal,
         category: String,
         currency: String,
         date: Long,
@@ -26,13 +26,13 @@ class DefaultUpdateInvestmentUseCase @Inject constructor(
         id: String,
         name: String,
         shares: BigDecimal,
-        cost: BigDecimal,
+        costPrice: BigDecimal,
         category: String,
         currency: String,
         date: Long,
     ) {
 
-        repository.update(id, name, shares, cost, category, currency, date)
+        repository.update(id, name, shares, costPrice, category, currency, date)
     }
 
 }

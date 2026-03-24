@@ -106,3 +106,4 @@
 - add currency to budget so investments can be converted to single currency for proper calculation
 - add currency to expense
 - add currency to saving
+- rename InvestmentEntity cost to costPrice

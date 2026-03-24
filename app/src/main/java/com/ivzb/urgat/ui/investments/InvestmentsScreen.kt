@@ -370,7 +370,7 @@ private fun CategoriesPage(
                 // all categories pie chart
                 data = categories.map {
                     PieChartItem(
-                        value = it.investments.sumOf { it.marketValue }.toFloat(),
+                        value = it.investments.sumOf { it.totalMarketPrice }.toFloat(),
                         selectedText = annotateInvestmentChart(it.name, it.total)
                     )
                 }
@@ -383,7 +383,7 @@ private fun CategoriesPage(
                         val investmentTotal = Investment.total(investments)
 
                         PieChartItem(
-                            value = investments.sumOf { it.marketValue }.toFloat(),
+                            value = investments.sumOf { it.totalMarketPrice }.toFloat(),
                             selectedText = annotateInvestmentChart(name, investmentTotal)
                         )
                     }
@@ -487,7 +487,7 @@ private fun AssetsPage(
                         val investmentTotal = Investment.total(investments)
 
                         PieChartItem(
-                            value = investments.sumOf { it.marketValue }.toFloat(),
+                            value = investments.sumOf { it.totalMarketPrice }.toFloat(),
                             selectedText = annotateInvestmentChart(name, investmentTotal)
                         )
                     }
@@ -568,7 +568,7 @@ fun InvestmentItem(
         subTextLeft = investment.category,
 
         textRight = investment.shares.toString(),
-        subTextRight = AnnotatedString("${investment.marketValue.format()} ${investment.currency}"),
+        subTextRight = AnnotatedString("${investment.totalMarketPrice.format()} ${investment.currency}"),
 
         onClick = { onInvestmentClick(investment) }
     )

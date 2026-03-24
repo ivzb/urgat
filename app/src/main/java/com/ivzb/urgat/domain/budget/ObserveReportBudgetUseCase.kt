@@ -54,7 +54,7 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
                         category = category,
                         totalIncome = category.total,
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                        totalInvestments = investments?.items?.sumOf { it.marketValue } ?: BigDecimal.ZERO,
+                        totalInvestments = investments?.items?.sumOf { it.totalMarketPrice } ?: BigDecimal.ZERO,
                         totalInvestmentsFormatted = investments?.total ?: "",
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )

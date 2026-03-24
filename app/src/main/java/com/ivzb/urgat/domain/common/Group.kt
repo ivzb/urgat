@@ -122,7 +122,7 @@ object Group {
                     name = name,
                     category = category,
                     shares = shares,
-                    costPrice = investments.sumOf { it.marketValue },
+                    costPrice = investments.sumOf { it.totalMarketPrice },
                     marketPrice = marketPrice,
                     currency = currency,
                     total = Investment.total(investments),

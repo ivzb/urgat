@@ -36,7 +36,7 @@
     <string name="todo_hint">Enter your todo here.</string>
     <string name="expense_hint">Expense</string>
     <string name="amount_hint">Amount</string>
-    <string name="cost_hint">Market price</string>
+    <string name="cost_price_hint">Market cost price</string>
     <string name="category_hint">Category</string>
     <string name="date_hint" translatable="false">dd/MM/yyyy</string>
     <string name="note_hint">Enter your note here.</string>

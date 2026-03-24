@@ -1,10 +1,12 @@
 package com.ivzb.urgat.data.investment
 
+import java.math.BigDecimal
+
 fun Investment.toEntity() = InvestmentEntity(
     id = id,
     name = name,
     shares = shares,
-    cost = cost,
+    cost = costPrice,
     category = category,
     currency = currency,
     date = date,
@@ -18,7 +20,8 @@ fun InvestmentEntity.toExternal() = Investment(
     id = id,
     name = name,
     shares = shares,
-    cost = cost,
+    costPrice = cost,
+    marketPrice = BigDecimal.ZERO,
     category = category,
     currency = currency,
     date = date,

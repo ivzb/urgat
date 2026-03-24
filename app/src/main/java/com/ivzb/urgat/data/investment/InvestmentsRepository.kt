@@ -8,7 +8,7 @@ interface InvestmentsRepository: BaseRepository<Investment> {
     suspend fun create(
         name: String,
         shares: BigDecimal,
-        cost: BigDecimal,
+        costPrice: BigDecimal,
         category: String,
         currency: String,
         date: Long,
@@ -18,7 +18,7 @@ interface InvestmentsRepository: BaseRepository<Investment> {
         id: String,
         name: String,
         shares: BigDecimal,
-        cost: BigDecimal,
+        costPrice: BigDecimal,
         category: String,
         currency: String,
         date: Long,

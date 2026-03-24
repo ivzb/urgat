@@ -89,7 +89,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val annualExpenses = monthlyExpenses * 12.toBigDecimal()
                 val annualInvestments = monthlyInvestments * 12.toBigDecimal()
 
-                val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.marketValue }
+                val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.totalMarketPrice }
                 val allTimeSavings = savingsAllTimeAsync.data.total
                 val accumulatedStash = allTimeInvestments + allTimeSavings
 

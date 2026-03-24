@@ -7,7 +7,7 @@ data class AddEditInvestmentUiState(
     val screenTitleResId: Int? = null,
     val name: String = "",
     val shares: String = "",
-    val cost: String = "",
+    val costPrice: String = "",
     val category: String = "",
     val currency: String = "",
     val date: Long = System.currentTimeMillis(),

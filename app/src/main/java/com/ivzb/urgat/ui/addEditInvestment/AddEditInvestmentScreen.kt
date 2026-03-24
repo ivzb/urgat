@@ -191,11 +191,11 @@ fun AddEditInvestmentScreen(
                     )
 
                     TextField(
-                        value = uiState.cost,
+                        value = uiState.costPrice,
                         onValueChange = {
-                            onIntent(AddEditInvestmentIntent.UpdateCost(it))
+                            onIntent(AddEditInvestmentIntent.UpdateCostPrice(it))
                         },
-                        placeholder = { Text(stringResource(id = R.string.cost_hint)) },
+                        placeholder = { Text(stringResource(id = R.string.cost_price_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next
