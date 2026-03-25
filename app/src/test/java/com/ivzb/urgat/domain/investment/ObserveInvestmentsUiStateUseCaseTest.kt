@@ -19,6 +19,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -290,7 +291,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
     companion object {
 
         private val investments = listOf(
-            Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L)
+            Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L)
         )
 
         private val fakeInvestments = listOf(

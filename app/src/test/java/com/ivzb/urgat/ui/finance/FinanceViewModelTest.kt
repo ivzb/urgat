@@ -125,7 +125,7 @@ class FinanceViewModelTest {
         )
 
         val fakeInvestmentsUiState = InvestmentsUiState(
-            investments = listOf(GroupedInvestments("1", "500 USD", listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), "etfs", "USD", 1L, false, 1L))))
+            investments = listOf(GroupedInvestments("1", "500 USD", listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), BigDecimal.ZERO,  "etfs", "USD", 1L, false, 1L))))
         )
 
         val fakeSavingsUiState = SavingsUiState(

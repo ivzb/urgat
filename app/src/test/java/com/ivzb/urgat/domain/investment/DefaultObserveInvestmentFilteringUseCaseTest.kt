@@ -46,11 +46,11 @@ class ObserveInvestmentsFilteringUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
-                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 1L, false, 1L),
-                Investment("3", "NVDA", BigDecimal("120"), BigDecimal("250"), "stocks", "USD", 1L, false, 1L),
-                Investment("4", "GOOG", BigDecimal("190"), BigDecimal("390"), "stocks", "USD", 1L, false, 1L),
-                Investment("5", "GOOG", BigDecimal("500"), BigDecimal("400"), "gold", "USD", 1L, false, 1L),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L),
+                Investment("3", "NVDA", BigDecimal("120"), BigDecimal("250"), BigDecimal.ZERO, "stocks", "USD", 1L, false, 1L),
+                Investment("4", "GOOG", BigDecimal("190"), BigDecimal("390"), BigDecimal.ZERO, "stocks", "USD", 1L, false, 1L),
+                Investment("5", "GOOG", BigDecimal("500"), BigDecimal("400"), BigDecimal.ZERO, "gold", "USD", 1L, false, 1L),
             )
         )
 

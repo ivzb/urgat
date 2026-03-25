@@ -475,9 +475,9 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         private val NO_INVESTMENTS = GroupedInvestments("December 2025", "", listOf())
 
         private val INVESTMENTS = GroupedInvestments("December 2025", "40,000 EUR", listOf(
-            Investment("1", "1", 1.toBigDecimal(), 20_000.toBigDecimal(), "1", "EUR", 1, false, 1),
-            Investment("2", "2", 1.toBigDecimal(), 10_000.toBigDecimal(), "2", "EUR", 2, false, 2),
-            Investment("2", "2", 1.toBigDecimal(), 10_000.toBigDecimal(), "2", "EUR", 2, false, 2),
+            Investment("1", "1", 1.toBigDecimal(), 20_000.toBigDecimal(), 20_000.toBigDecimal(), "1", "EUR", 1, false, 1),
+            Investment("2", "2", 1.toBigDecimal(), 10_000.toBigDecimal(), 10_000.toBigDecimal(), "2", "EUR", 2, false, 2),
+            Investment("2", "2", 1.toBigDecimal(), 10_000.toBigDecimal(), 10_000.toBigDecimal(), "2", "EUR", 2, false, 2),
         ))
         
         private val NO_SAVINGS = GroupedSavings("December 2025", "0.00".toBigDecimal(), listOf())

@@ -7,6 +7,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -21,6 +22,7 @@ class YahooFinanceMarketPriceRepositoryTest {
     private lateinit var repository: YahooFinanceMarketPriceRepository
 
     private val testDispatcher = StandardTestDispatcher()
+    private val testScope = TestScope(testDispatcher)
 
     @Before
     fun setUp() {
@@ -29,6 +31,7 @@ class YahooFinanceMarketPriceRepositoryTest {
             dispatcher = testDispatcher,
             api = api,
             logger = FakeLogger(),
+            scope = testScope,
         )
     }
 
@@ -142,6 +145,30 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("DELISTED", result.symbol)
         assertEquals(BigDecimal("0"), result.price)
         assertEquals("USD", result.currency)
+    }
+
+    @Test
+    fun `fetchPrice caches result and calls api only once per symbol`() = runTest(testDispatcher) {
+        val response = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 150.0,
+                            currency = "USD",
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("MSFT") } returns response
+
+        val first = repository.fetchPrice("MSFT")
+        val second = repository.fetchPrice("MSFT")
+
+        assertEquals(first, second)
+        coVerify(exactly = 1) { api.fetch("MSFT") }
     }
 
     @Test

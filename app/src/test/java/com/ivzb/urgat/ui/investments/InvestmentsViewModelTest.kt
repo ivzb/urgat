@@ -25,6 +25,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -80,6 +81,7 @@ class InvestmentsViewModelTest {
                 "SNP 500",
                 500.toBigDecimal(),
                 300.toBigDecimal(),
+                BigDecimal.ZERO,
                 "etfs",
                 "USD",
                 1L,
@@ -199,6 +201,7 @@ class InvestmentsViewModelTest {
                 "SNP 500",
                 500.toBigDecimal(),
                 300.toBigDecimal(),
+                BigDecimal.ZERO,
                 "etfs",
                 "USD",
                 1L,

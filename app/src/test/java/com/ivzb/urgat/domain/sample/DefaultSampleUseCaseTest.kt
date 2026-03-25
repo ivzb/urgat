@@ -78,7 +78,7 @@ class DefaultSampleUseCaseTest {
                 createInvestmentUseCase(
                     it.name,
                     it.shares,
-                    it.cost,
+                    it.costPrice,
                     it.category,
                     it.currency,
                     it.date,

@@ -36,9 +36,9 @@ class ObserveInvestmentsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = InvestmentsSortType.BY_DATE,
             expected = listOf(
-                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
-                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
-                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
+                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
             ),
         )
     }
@@ -48,9 +48,9 @@ class ObserveInvestmentsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = InvestmentsSortType.BY_MARKET_VALUE,
             expected = listOf(
-                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
-                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
-                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
+                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
             ),
         )
     }
@@ -64,9 +64,9 @@ class ObserveInvestmentsUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
-                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
-                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
+                Investment("1", "SNP 500", BigDecimal("350"), BigDecimal("250"), BigDecimal("250"), "etfs", "USD", 1L, false, 1L),
+                Investment("2", "BRK.B", BigDecimal("430"), BigDecimal("330"), BigDecimal("330"), "etfs", "USD", 2L, false, 2L),
+                Investment("3", "NVDA", BigDecimal("200"), BigDecimal("200"), BigDecimal("200"), "stocks", "USD", 3L, false, 3L),
             )
         )
 

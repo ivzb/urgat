@@ -599,7 +599,7 @@ class ObserveFinanceUiStateUseCaseTest {
         )
 
         private val investments = listOf(
-            Investment("1", "SNP", BigDecimal.ONE, BigDecimal.TEN, "stocks", "USD", 1L, false, 1L)
+            Investment("1", "SNP", BigDecimal.ONE, BigDecimal.TEN, BigDecimal.ZERO, "stocks", "USD", 1L, false, 1L)
         )
 
         private val fakeInvestments = listOf(

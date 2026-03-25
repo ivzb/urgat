@@ -69,7 +69,8 @@ class AddEditInvestmentViewModelTest {
             id = investmentId,
             name = "SNP 500",
             shares = BigDecimal("150"),
-            cost = BigDecimal("250"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal.ZERO,
             category = "etfs",
             currency = "USD",
             date = 1L,
@@ -86,7 +87,7 @@ class AddEditInvestmentViewModelTest {
         val state = viewModel.uiState.value
         assertEquals("SNP 500", state.name)
         assertEquals("150", state.shares)
-        assertEquals("250", state.cost)
+        assertEquals("250", state.costPrice)
         assertEquals("etfs", state.category)
         assertEquals("USD", state.currency)
         assertEquals(1L, state.date)
@@ -144,7 +145,7 @@ class AddEditInvestmentViewModelTest {
     fun `saveInvestment creates new investment`() = runTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName("SNP 500"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateShares("250"))
-        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost("120"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCostPrice("120"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory("etfs"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("USD"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
@@ -162,7 +163,7 @@ class AddEditInvestmentViewModelTest {
     fun `saveInvestment creates new investment trimmed`() = runTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" SNP 500 "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateShares(" 250 "))
-        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost(" 370 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCostPrice(" 370 "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" etfs "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" USD "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
@@ -183,7 +184,8 @@ class AddEditInvestmentViewModelTest {
             id = investmentId,
             name = "SNP 500",
             shares = BigDecimal("150"),
-            cost = BigDecimal("250"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal.ZERO,
             category = "etfs",
             currency = "USD",
             date = 1L,
@@ -199,7 +201,7 @@ class AddEditInvestmentViewModelTest {
         val uiState = viewModel.uiState.value
         assertEquals(investment.name, uiState.name)
         assertEquals(investment.shares.toString(), uiState.shares)
-        assertEquals(investment.cost.toString(), uiState.cost)
+        assertEquals(investment.costPrice.toString(), uiState.costPrice)
         assertEquals(investment.category, uiState.category)
         assertEquals(investment.currency, uiState.currency)
         assertEquals(investment.date, uiState.date)
@@ -226,7 +228,8 @@ class AddEditInvestmentViewModelTest {
             id = investmentId,
             name = "SNP 500",
             shares = BigDecimal("150"),
-            cost = BigDecimal("250"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal.ZERO,
             category = "etfs",
             currency = "USD",
             date = 1L,
@@ -242,7 +245,7 @@ class AddEditInvestmentViewModelTest {
         val uiState = viewModel.uiState.value
         assertEquals(investment.name, uiState.name)
         assertEquals(investment.shares.toString(), uiState.shares)
-        assertEquals(investment.cost.toString(), uiState.cost)
+        assertEquals(investment.costPrice.toString(), uiState.costPrice)
         assertEquals(investment.category, uiState.category)
         assertEquals(investment.currency, uiState.currency)
         assertEquals(investment.date, uiState.date)
@@ -251,7 +254,7 @@ class AddEditInvestmentViewModelTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName(" NVDA "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency(" EUR "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateShares(" 370 "))
-        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost(" 250 "))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCostPrice(" 250 "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory(" stocks "))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
@@ -295,7 +298,8 @@ class AddEditInvestmentViewModelTest {
             id = investmentId,
             name = "SNP 500",
             shares = BigDecimal("150"),
-            cost = BigDecimal("250"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal.ZERO,
             category = "etfs",
             currency = "USD",
             date = 123L,
@@ -329,7 +333,8 @@ class AddEditInvestmentViewModelTest {
             id = investmentId,
             name = "SNP 500",
             shares = BigDecimal("150"),
-            cost = BigDecimal("250"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal.ZERO,
             category = "etfs",
             currency = "USD",
             date = 123L,
@@ -344,7 +349,7 @@ class AddEditInvestmentViewModelTest {
 
         viewModel.onIntent(AddEditInvestmentIntent.UpdateName("NVDA"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateShares("300"))
-        viewModel.onIntent(AddEditInvestmentIntent.UpdateCost("500"))
+        viewModel.onIntent(AddEditInvestmentIntent.UpdateCostPrice("500"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCategory("stocks"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditInvestmentIntent.DuplicateInvestment)

@@ -44,21 +44,21 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
         val investments = listOf(
-            Investment("1", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
-            Investment("2", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
-            Investment("3", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Investment("1", "SNP 500", BigDecimal("2"), BigDecimal("250"), BigDecimal("250"), "etfs", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Investment("2", "BRK.B", BigDecimal("2"), BigDecimal("330"), BigDecimal("330"), "etfs", "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+            Investment("3", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), BigDecimal("220.3"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
 
-            Investment("4", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "EUR", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
-            Investment("5", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "EUR", timestamp(2025, 12, 29), false, timestamp(2025, 12, 29)),
-            Investment("6", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "EUR", timestamp(2025, 12, 29), false, timestamp(2025, 12, 29)),
+            Investment("4", "SNP 500", BigDecimal("2"), BigDecimal("250"), BigDecimal("250"), "etfs", "EUR", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Investment("5", "BRK.B", BigDecimal("2"), BigDecimal("330"), BigDecimal("330"), "etfs", "EUR", timestamp(2025, 12, 29), false, timestamp(2025, 12, 29)),
+            Investment("6", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), BigDecimal("220.3"), "stocks", "EUR", timestamp(2025, 12, 29), false, timestamp(2025, 12, 29)),
 
-            Investment("7", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "USD", timestamp(2024, 11, 25), false, timestamp(2024, 11, 25)),
-            Investment("8", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "USD", timestamp(2024, 11, 27), false, timestamp(2024, 11, 27)),
-            Investment("9", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "USD", timestamp(2024, 12, 9), false, timestamp(2024, 12, 9)),
+            Investment("7", "SNP 500", BigDecimal("2"), BigDecimal("250"), BigDecimal("250"), "etfs", "USD", timestamp(2024, 11, 25), false, timestamp(2024, 11, 25)),
+            Investment("8", "BRK.B", BigDecimal("2"), BigDecimal("330"), BigDecimal("330"), "etfs", "USD", timestamp(2024, 11, 27), false, timestamp(2024, 11, 27)),
+            Investment("9", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), BigDecimal("220.3"), "stocks", "USD", timestamp(2024, 12, 9), false, timestamp(2024, 12, 9)),
 
-            Investment("10", "SNP 500", BigDecimal("2"), BigDecimal("250"), "etfs", "EUR", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
-            Investment("11", "BRK.B", BigDecimal("2"), BigDecimal("330"), "etfs", "EUR", timestamp(2024, 12, 29), false, timestamp(2024, 12, 29)),
-            Investment("12", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), "stocks", "EUR", timestamp(2024, 12, 29), false, timestamp(2024, 12, 29)),
+            Investment("10", "SNP 500", BigDecimal("2"), BigDecimal("250"), BigDecimal("250"), "etfs", "EUR", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+            Investment("11", "BRK.B", BigDecimal("2"), BigDecimal("330"), BigDecimal("330"), "etfs", "EUR", timestamp(2024, 12, 29), false, timestamp(2024, 12, 29)),
+            Investment("12", "GOOGL", BigDecimal("3.5"), BigDecimal("220.3"), BigDecimal("220.3"), "stocks", "EUR", timestamp(2024, 12, 29), false, timestamp(2024, 12, 29)),
         )
         val repositoryStream = flowOf(investments)
 

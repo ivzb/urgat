@@ -26,7 +26,7 @@ class DefaultGetInvestmentUseCaseTest {
     @Test
     fun `invoke should return investment when repository returns investment`() = runTest {
         val id = "123"
-        val expectedInvestment = Investment(id, "SNP 500",  BigDecimal("350"), BigDecimal("220"), "etfs", "USD", 1L, false, 1L)
+        val expectedInvestment = Investment(id, "SNP 500",  BigDecimal("350"), BigDecimal("220"), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L)
         coEvery { repository.get(id) } returns expectedInvestment
 
         val result = getUseCase(id)

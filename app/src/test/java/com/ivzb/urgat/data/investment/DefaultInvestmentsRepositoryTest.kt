@@ -39,7 +39,7 @@ class DefaultInvestmentsRepositoryTest {
         val id = repository.create(
             name = "SNP 500",
             shares = BigDecimal("350"),
-            cost = BigDecimal("200"),
+            costPrice = BigDecimal("200"),
             category = "etfs",
             currency = "USD",
             date = 1L,
@@ -61,7 +61,7 @@ class DefaultInvestmentsRepositoryTest {
         val id = repository.create(
             name = "SNP 500",
             shares = BigDecimal("350"),
-            cost = BigDecimal("200"),
+            costPrice = BigDecimal("200"),
             category = "etfs",
             currency = "USD",
             date = 1L,
@@ -71,7 +71,7 @@ class DefaultInvestmentsRepositoryTest {
         assertNotNull(investment)
         assertEquals("SNP 500", investment?.name)
         assertEquals(BigDecimal("350"), investment?.shares)
-        assertEquals(BigDecimal("200"), investment?.cost)
+        assertEquals(BigDecimal("200"), investment?.costPrice)
         assertEquals("etfs", investment?.category)
         assertEquals("USD", investment?.currency)
         assertEquals(1L, investment?.date)
@@ -87,7 +87,7 @@ class DefaultInvestmentsRepositoryTest {
         assertNotNull(updated)
         assertEquals("S&P 500", updated?.name)
         assertEquals(BigDecimal("550"), updated?.shares)
-        assertEquals(BigDecimal("250"), updated?.cost)
+        assertEquals(BigDecimal("250"), updated?.costPrice)
         assertEquals("etfs", updated?.category)
         assertEquals("EUR", updated?.currency)
         assertEquals(2L, updated?.date)

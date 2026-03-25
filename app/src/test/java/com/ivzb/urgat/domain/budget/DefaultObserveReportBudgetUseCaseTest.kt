@@ -78,8 +78,8 @@ class DefaultObserveReportBudgetUseCaseTest {
 
         val investments = listOf(
             GroupedInvestments("2025/11", "1800 EUR", listOf(
-                Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
-                Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
+                Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
+                Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
             )),
         )
 

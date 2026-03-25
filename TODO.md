@@ -107,3 +107,4 @@
 - add currency to expense
 - add currency to saving
 - rename InvestmentEntity cost to costPrice
+- show percentages for each selected section of a chart
