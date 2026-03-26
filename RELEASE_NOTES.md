@@ -1,3 +1,9 @@
+## Release notes 26.03.22
+
+New:
+- Investments now show real-time market prices.
+- Pie chart now shows the percentage of the selected slice.
+
 ## Release notes 26.03.21
 
 No release notes.
