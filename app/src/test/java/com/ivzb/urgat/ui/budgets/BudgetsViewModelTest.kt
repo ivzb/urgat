@@ -89,7 +89,7 @@ class BudgetsViewModelTest {
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
                 totalInvestments = 1800.toBigDecimal(),
-                totalInvestmentsFormatted = "1800 EUR",
+                totalInvestmentsFormatted = "1,800 EUR",
                 totalSavings = 1100.toBigDecimal(),
             ),
         )
@@ -108,7 +108,7 @@ class BudgetsViewModelTest {
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
                 totalInvestments = 3800.toBigDecimal(),
-                totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+                totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
                 totalSavings = 1800.toBigDecimal(),
             ),
         )
@@ -123,7 +123,7 @@ class BudgetsViewModelTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3800.toBigDecimal(),
-            totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+            totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
             totalSavings = 1500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(
@@ -204,7 +204,7 @@ class BudgetsViewModelTest {
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
                 totalInvestments = 1800.toBigDecimal(),
-                totalInvestmentsFormatted = "1800 EUR",
+                totalInvestmentsFormatted = "1,800 EUR",
                 totalSavings = 1100.toBigDecimal(),
             ),
         )
@@ -223,7 +223,7 @@ class BudgetsViewModelTest {
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
                 totalInvestments = 3800.toBigDecimal(),
-                totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+                totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
                 totalSavings = 1800.toBigDecimal(),
             ),
         )
@@ -238,7 +238,7 @@ class BudgetsViewModelTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3800.toBigDecimal(),
-            totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+            totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
             totalSavings = 1500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(

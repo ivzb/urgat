@@ -101,4 +101,4 @@
 - add currency to expense
 - add currency to saving
 - rename InvestmentEntity cost to costPrice
-- show unrealized P&L (profit & loss) on chart total
+- show unrealized P&L (profit & loss) on chart total and grouped list items

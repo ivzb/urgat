@@ -8,9 +8,11 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.ui.components.GroupedItems
+import com.ivzb.urgat.util.calculatePnL
 import com.ivzb.urgat.util.timestamp
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
@@ -123,15 +125,123 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentAsset(id = TEST_UUID, name="AAPL", category = "stocks", shares = BigDecimal("4.6"), costPrice = BigDecimal("1258.882"), marketPrice = BigDecimal("1258.882"), currency="USD", investments = listOf(investments[2], investments[3]), total = "1,258.88 USD",),
-            InvestmentAsset(id = TEST_UUID, name="BRK.B", category = "etf", shares = BigDecimal("3.4"), costPrice = BigDecimal("1681.402"), marketPrice = BigDecimal("1681.402"), currency="USD", investments = listOf(investments[8], investments[9]), total = "1,681.4 USD",),
-            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), costPrice = BigDecimal("1290.072"), marketPrice = BigDecimal("1290.072"), currency="USD", investments = listOf(investments[0], investments[1]), total = "1,290.07 USD",),
-            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), costPrice = BigDecimal("1101.450"), marketPrice = BigDecimal("1101.450"), currency="EUR", investments = listOf(investments[12], investments[13]), total = "1,101.45 EUR",),
-            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), costPrice = BigDecimal("8677.10"), marketPrice = BigDecimal("8677.10"), currency="USD", investments = listOf(investments[10], investments[11]), total = "8,677.1 USD",),
-            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), costPrice = BigDecimal("7408.50"), marketPrice = BigDecimal("7408.50"), currency="EUR", investments = listOf(investments[16], investments[17]), total = "7,408.5 EUR",),
-            InvestmentAsset(id = TEST_UUID, name="NVDA", category = "stocks", shares = BigDecimal("5.0"), costPrice = BigDecimal("904.950"), marketPrice = BigDecimal("904.950"), currency="USD", investments = listOf(investments[4], investments[5]), total = "904.95 USD",),
-            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), costPrice = BigDecimal("4100.70"), marketPrice = BigDecimal("4100.70"), currency="USD", investments = listOf(investments[6], investments[7]), total = "4,100.7 USD",),
-            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), costPrice = BigDecimal("3501.18"), marketPrice = BigDecimal("3501.18"), currency="EUR", investments = listOf(investments[14], investments[15]), total = "3,501.18 EUR",),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "AAPL",
+                category = "stocks",
+                shares = BigDecimal("4.6"),
+                costPrice = BigDecimal("1258.882"),
+                marketPrice = BigDecimal("1258.882"),
+                currency = "USD",
+                totals = listOf(
+                    InvestmentTotal("USD", BigDecimal("1258.882"), BigDecimal("1258.882"), calculatePnL(BigDecimal("1258.882"), BigDecimal("1258.882"))),
+                ),
+                investments = listOf(investments[2], investments[3]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "BRK.B",
+                category = "etf",
+                shares = BigDecimal("3.4"),
+                costPrice = BigDecimal("1681.402"),
+                marketPrice = BigDecimal("1681.402"),
+                currency = "USD",
+                totals = listOf(
+                    InvestmentTotal("USD", BigDecimal("1681.402"), BigDecimal("1681.402"), calculatePnL(BigDecimal("1681.402"), BigDecimal("1681.402"))),
+                ),
+                investments = listOf(investments[8], investments[9]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "GOOGL",
+                category = "stocks",
+                shares = BigDecimal("4.2"),
+                costPrice = BigDecimal("1290.072"),
+                marketPrice = BigDecimal("1290.072"),
+                currency = "USD",
+                totals = listOf(
+                    InvestmentTotal("USD", BigDecimal("1290.072"), BigDecimal("1290.072"), calculatePnL(BigDecimal("1290.072"), BigDecimal("1290.072"))),
+                ),
+                investments = listOf(investments[0], investments[1]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "GOOGL",
+                category = "stocks",
+                shares = BigDecimal("4.2"),
+                costPrice = BigDecimal("1101.450"),
+                marketPrice = BigDecimal("1101.450"),
+                currency = "EUR",
+                totals = listOf(
+                    InvestmentTotal("EUR", BigDecimal("1101.450"), BigDecimal("1101.450"), calculatePnL(BigDecimal("1101.450"), BigDecimal("1101.450"))),
+                ),
+                investments = listOf(investments[12], investments[13]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "Gold",
+                category = "gold",
+                shares = BigDecimal("2"),
+                costPrice = BigDecimal("8677.10"),
+                marketPrice = BigDecimal("8677.10"),
+                currency = "USD",
+                totals = listOf(
+                    InvestmentTotal("USD", BigDecimal("8677.10"), BigDecimal("8677.10"), calculatePnL(BigDecimal("8677.10"), BigDecimal("8677.10"))),
+                ),
+                investments = listOf(investments[10], investments[11]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "Gold",
+                category = "gold",
+                shares = BigDecimal("2"),
+                costPrice = BigDecimal("7408.50"),
+                marketPrice = BigDecimal("7408.50"),
+                currency = "EUR",
+                totals = listOf(
+                    InvestmentTotal("EUR", BigDecimal("7408.50"), BigDecimal("7408.50"), calculatePnL(BigDecimal("7408.50"), BigDecimal("7408.50"))),
+                ),
+                investments = listOf(investments[16], investments[17]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "NVDA",
+                category = "stocks",
+                shares = BigDecimal("5.0"),
+                costPrice = BigDecimal("904.950"),
+                marketPrice = BigDecimal("904.950"),
+                currency = "USD",
+                totals = listOf(
+                    InvestmentTotal("USD", BigDecimal("904.950"), BigDecimal("904.950"), calculatePnL(BigDecimal("904.950"), BigDecimal("904.950"))),
+                ),
+                investments = listOf(investments[4], investments[5]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "SNP 500",
+                category = "etf",
+                shares = BigDecimal("0.6"),
+                costPrice = BigDecimal("4100.70"),
+                marketPrice = BigDecimal("4100.70"),
+                currency = "USD",
+                totals = listOf(
+                    InvestmentTotal("USD", BigDecimal("4100.70"), BigDecimal("4100.70"), calculatePnL(BigDecimal("4100.70"), BigDecimal("4100.70"))),
+                ),
+                investments = listOf(investments[6], investments[7]),
+            ),
+            InvestmentAsset(
+                id = TEST_UUID,
+                name = "SNP 500",
+                category = "etf",
+                shares = BigDecimal("0.6"),
+                costPrice = BigDecimal("3501.18"),
+                marketPrice = BigDecimal("3501.18"),
+                currency = "EUR",
+                totals = listOf(
+                    InvestmentTotal("EUR", BigDecimal("3501.18"), BigDecimal("3501.18"), calculatePnL(BigDecimal("3501.18"), BigDecimal("3501.18"))),
+                ),
+                investments = listOf(investments[14], investments[15]),
+            ),
         )
 
         val actual = Group.groupInvestmentAssets(investments, randomTestUUID)
@@ -154,9 +264,33 @@ class GroupTest {
         )
 
         val expected = listOf(
-            InvestmentCategory(id = TEST_UUID, name = "etf", total = "1,750.59 EUR | 2,891.05 USD", investments = listOf(investments[3], investments[4], investments[7])),
-            InvestmentCategory(id = TEST_UUID, name = "gold", total = "3,704.25 EUR | 4,338.55 USD", investments = listOf(investments[5], investments[8])),
-            InvestmentCategory(id = TEST_UUID, name = "stocks", total = "550.72 EUR | 1,726.95 USD", investments = listOf(investments[0], investments[1], investments[2], investments[6])),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "etf",
+                totals = listOf(
+                    InvestmentTotal("EUR", BigDecimal("1750.59"), BigDecimal("1750.59"), calculatePnL(BigDecimal("1750.59"), BigDecimal("1750.59"))),
+                    InvestmentTotal("USD", BigDecimal("2891.051"), BigDecimal("2891.051"), calculatePnL(BigDecimal("2891.051"), BigDecimal("2891.051"))),
+                ),
+                investments = listOf(investments[3], investments[4], investments[7]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "gold",
+                totals = listOf(
+                    InvestmentTotal("EUR", BigDecimal("3704.25"), BigDecimal("3704.25"), calculatePnL(BigDecimal("3704.25"), BigDecimal("3704.25"))),
+                    InvestmentTotal("USD", BigDecimal("4338.55"), BigDecimal("4338.55"), calculatePnL(BigDecimal("4338.55"), BigDecimal("4338.55"))),
+                ),
+                investments = listOf(investments[5], investments[8]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stocks",
+                totals = listOf(
+                    InvestmentTotal("EUR", BigDecimal("550.725"), BigDecimal("550.725"), calculatePnL(BigDecimal("550.725"), BigDecimal("550.725"))),
+                    InvestmentTotal("USD", BigDecimal("1726.952"), BigDecimal("1726.952"), calculatePnL(BigDecimal("1726.952"), BigDecimal("1726.952"))),
+                ),
+                investments = listOf(investments[0], investments[1], investments[2], investments[6]),
+            ),
         )
 
         val actual = Group.groupInvestmentCategories(investments, randomTestUUID)
@@ -178,7 +312,12 @@ class GroupTest {
             Investment("9", "Gold", BigDecimal("1"), BigDecimal("3704.25"), BigDecimal("3704.25"), "gold", "EUR", timestamp(2025, 12, 18), false, timestamp(2025, 12, 18)),
         )
 
-        val expected = InvestmentNetWorth(total = "6,005.56 EUR | 8,956.55 USD")
+        val expected = InvestmentNetWorth(
+            totals = listOf(
+                InvestmentTotal("EUR", BigDecimal("6005.565"), BigDecimal("6005.565"), calculatePnL(BigDecimal("6005.565"), BigDecimal("6005.565"))),
+                InvestmentTotal("USD", BigDecimal("8956.553"), BigDecimal("8956.553"), calculatePnL(BigDecimal("8956.553"), BigDecimal("8956.553"))),
+            ),
+        )
         val actual = Group.groupInvestmentNetWorth(investments)
 
         assertEquals(expected, actual)

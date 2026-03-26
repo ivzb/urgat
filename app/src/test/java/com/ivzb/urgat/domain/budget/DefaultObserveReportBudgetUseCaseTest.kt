@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
@@ -77,10 +78,16 @@ class DefaultObserveReportBudgetUseCaseTest {
         )
 
         val investments = listOf(
-            GroupedInvestments("2025/11", "1800 EUR", listOf(
-                Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
-                Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
-            )),
+            GroupedInvestments(
+                group = "2025/11",
+                total = listOf(
+                    InvestmentTotal("EUR", 1800.toBigDecimal(), 1800.toBigDecimal(), 0.toBigDecimal()),
+                ),
+                items = listOf(
+                    Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
+                    Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
+                ),
+            ),
         )
 
         val savings = listOf(
@@ -137,7 +144,7 @@ class DefaultObserveReportBudgetUseCaseTest {
             totalIncome = 6800.toBigDecimal(),
             totalExpenses = 1200.toBigDecimal(),
             totalInvestments = 1800.toBigDecimal(),
-            totalInvestmentsFormatted = "1800 EUR",
+            totalInvestmentsFormatted = "1,800 EUR",
             totalSavings = 1100.toBigDecimal(),
         )
 

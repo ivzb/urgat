@@ -1,7 +1,6 @@
 package com.ivzb.urgat.data.investment
 
-import com.ivzb.urgat.util.div
-import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.calculatePnL
 import java.math.BigDecimal
 
 data class Investment(
@@ -23,33 +22,28 @@ data class Investment(
     val totalMarketPrice: BigDecimal
         get() = marketPrice * shares
 
-    val unrealisedPnL: BigDecimal? = totalCostPrice
-        .takeIf { it.compareTo(BigDecimal.ZERO) != 0 }
-        ?.let { (totalMarketPrice - it) / it * BigDecimal(100) }
+    val unrealisedPnL: BigDecimal? = calculatePnL(totalCostPrice, totalMarketPrice)
 
     fun formatCsv(): String =
         "\"$id\", \"$name\", \"$shares\", \"$costPrice\", \"$category\", \"$currency\", $date, $createdAt"
 
     companion object {
 
-        const val SEPARATOR = " | "
-
-        fun totalCostPrice(investments: List<Investment>): String =
-            total(investments) { it.totalCostPrice }
-
-        fun totalMarketPrice(investments: List<Investment>): String =
-            total(investments) { it.totalMarketPrice }
-
-        private fun total(investments: List<Investment>, total: (Investment) -> BigDecimal): String =
+        fun total(investments: List<Investment>): List<InvestmentTotal> =
             investments
                 .groupBy { it.currency }
                 .map { (currency, investments) ->
-                    val totalMarketPrice = investments.sumOf { total(it) }.format()
-                    val total = "$totalMarketPrice $currency"
-                    currency to total
+                    val costPrice = investments.sumOf { it.totalCostPrice }
+                    val marketPrice = investments.sumOf { it.totalMarketPrice }
+
+                    InvestmentTotal(
+                        currency = currency,
+                        costPrice = costPrice,
+                        marketPrice = marketPrice,
+                        pnl = calculatePnL(costPrice, marketPrice),
+                    )
                 }
-                .sortedBy { (currency, _) -> currency }
-                .joinToString(SEPARATOR) { (_, total) -> total }
+                .sortedBy { it.currency }
 
     }
 

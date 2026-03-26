@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
@@ -116,7 +117,7 @@ class FinanceViewModelTest {
             totalIncome = 5000.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 1300.toBigDecimal(),
-            totalInvestmentsFormatted = "1300 EUR",
+            totalInvestmentsFormatted = "1,300 EUR",
             totalSavings = 100.toBigDecimal(),
         )
 
@@ -125,7 +126,22 @@ class FinanceViewModelTest {
         )
 
         val fakeInvestmentsUiState = InvestmentsUiState(
-            investments = listOf(GroupedInvestments("1", "500 USD", listOf(Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), BigDecimal.ZERO,  "etfs", "USD", 1L, false, 1L))))
+            investments = listOf(
+                GroupedInvestments(
+                    group = "1",
+                    total = listOf(
+                        InvestmentTotal(
+                            currency = "USD",
+                            costPrice = BigDecimal("150000"),
+                            marketPrice = BigDecimal.ZERO,
+                            pnl = BigDecimal("-100"),
+                        ),
+                    ),
+                    items = listOf(
+                        Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L),
+                    ),
+                ),
+            ),
         )
 
         val fakeSavingsUiState = SavingsUiState(

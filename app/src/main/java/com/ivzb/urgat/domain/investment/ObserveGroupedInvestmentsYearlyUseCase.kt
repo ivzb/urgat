@@ -29,7 +29,7 @@ class DefaultObserveGroupedInvestmentsYearlyUseCase @Inject constructor(
         repository = repository,
         filter = ::filterInvestments,
         sort = ::sortInvestments,
-        group = { items -> Group.byDateYearly(items, Investment::date, Investment::totalCostPrice) },
+        group = { items -> Group.byDateYearly(items, Investment::date, Investment::total) },
     )
 
     override fun invoke(

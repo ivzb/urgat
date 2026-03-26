@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
@@ -63,7 +64,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCase @Inject constructor(
                         totalIncome = category.total,
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
                         totalInvestments = investments?.items?.sumOf { it.totalCostPrice } ?: BigDecimal.ZERO,
-                        totalInvestmentsFormatted = investments?.total ?: "",
+                        totalInvestmentsFormatted = investments?.total?.formatCostPrice() ?: "",
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )
                 }

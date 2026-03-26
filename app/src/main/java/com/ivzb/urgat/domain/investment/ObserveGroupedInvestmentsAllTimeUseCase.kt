@@ -29,7 +29,7 @@ class DefaultObserveGroupedInvestmentsAllTimeUseCase @Inject constructor(
         repository = repository,
         filter = ::filterInvestments,
         sort = ::sortInvestments,
-        group = { items -> Group.byDateAllTime(items, Investment::totalCostPrice) },
+        group = { items -> Group.byDateAllTime(items, Investment::total) },
     )
 
     override fun invoke(

@@ -95,7 +95,7 @@ object Group {
             }
 
     fun groupInvestmentCategoriesYearly(investments: List<Investment>, random: () -> String): List<GroupedInvestmentCategories> =
-        byDateYearly(investments, Investment::date, Investment::totalMarketPrice)
+        byDateYearly(investments, Investment::date, Investment::total)
             .map { (group, total, items) ->
                 GroupedItems(
                     group = group,
@@ -121,7 +121,7 @@ object Group {
                     costPrice = investments.sumOf { it.totalCostPrice },
                     marketPrice = investments.sumOf { it.totalMarketPrice },
                     currency = currency,
-                    total = Investment.totalMarketPrice(investments),
+                    totals = Investment.total(investments),
 
                     investments = investments,
                 )
@@ -133,7 +133,7 @@ object Group {
 
     fun groupInvestmentNetWorth(investments: List<Investment>): InvestmentNetWorth =
         InvestmentNetWorth(
-            total = Investment.totalMarketPrice(investments),
+            totals = Investment.total(investments),
         )
 
     fun groupExpenseCategoriesMonthly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
@@ -181,7 +181,7 @@ object Group {
                 InvestmentCategory(
                     id = random(),
                     name = category,
-                    total = Investment.totalMarketPrice(investments),
+                    totals = Investment.total(investments),
 
                     investments = investments,
                 )

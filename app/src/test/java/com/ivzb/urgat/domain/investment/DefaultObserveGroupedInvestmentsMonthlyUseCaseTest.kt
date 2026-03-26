@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -58,7 +59,14 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
-                total = "1,186,432 USD",
+                total = listOf(
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = BigDecimal("1186432.00"),
+                        marketPrice = BigDecimal("1186432.00"),
+                        pnl = BigDecimal.ZERO,
+                    ),
+                ),
                 items = listOf(
                     Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
                     Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), BigDecimal("229.16"), "Stocks", "USD", 1765231200000, false, 1765231200000),
@@ -66,7 +74,14 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "1,585,468 USD",
+                total = listOf(
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = BigDecimal("1585468.00"),
+                        marketPrice = BigDecimal("1585468.00"),
+                        pnl = BigDecimal.ZERO,
+                    ),
+                ),
                 items = listOf(
                     Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
                     Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD",  1764021600000, false, 1764021600000),
@@ -106,7 +121,14 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
-                total = "1,186,432 USD",
+                total = listOf(
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = BigDecimal("1186432.00"),
+                        marketPrice = BigDecimal("1186432.00"),
+                        pnl = BigDecimal.ZERO,
+                    ),
+                ),
                 items = listOf(
                     Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
                     Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), BigDecimal("229.16"), "Stocks", "USD", 1765231200000, false, 1765231200000),
@@ -114,7 +136,14 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "1,585,468 USD",
+                total = listOf(
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = BigDecimal("1585468.00"),
+                        marketPrice = BigDecimal("1585468.00"),
+                        pnl = BigDecimal.ZERO,
+                    ),
+                ),
                 items = listOf(
                     Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
                     Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD",  1764021600000, false, 1764021600000),

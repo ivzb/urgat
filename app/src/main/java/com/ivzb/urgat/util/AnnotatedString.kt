@@ -6,6 +6,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
@@ -36,7 +37,7 @@ fun annotateExpenseChart(name: String, value: BigDecimal): AnnotatedString =
     annotateExpense(value, "$name\n")
 
 fun annotateInvestmentChart(name: String, total: String): AnnotatedString {
-    val totalFormatted = total.split(Investment.SEPARATOR).joinToString("\n")
+    val totalFormatted = total.split(InvestmentTotal.SEPARATOR).joinToString("\n")
     return annotateFormattedString(
         formattedString = "$name\n$totalFormatted",
         part = totalFormatted,

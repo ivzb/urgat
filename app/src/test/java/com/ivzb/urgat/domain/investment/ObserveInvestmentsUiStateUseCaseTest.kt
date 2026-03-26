@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
@@ -295,28 +296,61 @@ class ObserveInvestmentsUiStateUseCaseTest {
         )
 
         private val fakeInvestments = listOf(
-            GroupedItems("2025/12", "1500 USD", investments)
+            GroupedItems(
+                group = "2025/12",
+                total = listOf(
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                ),
+                items = investments,
+            ),
         )
 
         private val fakeCategoriesYearly = listOf(
             GroupedItems(
-                group = "2025/12", total = "1500 USD",
-                items = listOf(InvestmentCategory(id = "1", name = "etfs", total = "500 USD", investments = investments))
-            )
+                group = "2025/12",
+                total = listOf(
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                ),
+                items = listOf(
+                    InvestmentCategory(
+                        id = "1",
+                        name = "etfs",
+                        totals = listOf(
+                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                        ),
+                        investments = investments,
+                    ),
+                ),
+            ),
         )
 
-        private val fakeNetWorth = InvestmentNetWorth(total = "500 USD")
+        private val fakeNetWorth = InvestmentNetWorth(
+            totals = listOf(
+                InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+            ),
+        )
 
         private val fakeCategories = listOf(
-            InvestmentCategory(id = "1", name = "etfs", total = "500 USD", investments = investments)
+            InvestmentCategory(
+                id = "1",
+                name = "etfs",
+                totals = listOf(
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                ),
+                investments = investments,
+            ),
         )
 
         private val fakeAssets = listOf(
             InvestmentAsset(
                 id = "1", name = "SNP 500", category = "etfs",
                 shares = 500.toBigDecimal(), costPrice = 500.toBigDecimal(), marketPrice = 600.toBigDecimal(), currency = "USD",
-                investments = investments, total = "1,750.59 EUR | 2,891.05 USD",
-            )
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal.ZERO),
+                ),
+                investments = investments,
+            ),
         )
 
         private val fakeInvestmentsFiltering = listOf(

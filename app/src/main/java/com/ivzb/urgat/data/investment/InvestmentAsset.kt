@@ -1,6 +1,6 @@
 package com.ivzb.urgat.data.investment
 
-import com.ivzb.urgat.util.div
+import com.ivzb.urgat.util.calculatePnL
 import java.math.BigDecimal
 
 data class InvestmentAsset(
@@ -11,13 +11,11 @@ data class InvestmentAsset(
     val costPrice: BigDecimal,
     val marketPrice: BigDecimal,
     val currency: String,
-    val total: String,
+    val totals: List<InvestmentTotal>,
 
     val investments: List<Investment>,
 ) {
 
-    val unrealisedPnL: BigDecimal? = costPrice
-        .takeIf { it.compareTo(BigDecimal.ZERO) != 0 }
-        ?.let { (marketPrice - it) / it * BigDecimal(100) }
+    val unrealisedPnL: BigDecimal? = calculatePnL(costPrice, marketPrice)
 
 }

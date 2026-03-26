@@ -143,7 +143,7 @@ class ObserveBudgetsUiStateUseCaseTest {
             totalIncome = 24_000.toBigDecimal(),
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
-            totalInvestmentsFormatted = "11200 USD",
+            totalInvestmentsFormatted = "11,200 USD",
             totalSavings = 500.toBigDecimal(),
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
@@ -304,7 +304,7 @@ class ObserveBudgetsUiStateUseCaseTest {
                 totalIncome = 6_500.toBigDecimal(),
                 totalExpenses = 2_000.toBigDecimal(),
                 totalInvestments = 3_000.toBigDecimal(),
-                totalInvestmentsFormatted = "3000 USD",
+                totalInvestmentsFormatted = "3,000 USD",
                 totalSavings = 500.toBigDecimal(),
             ),
             GroupedBudget(
@@ -316,7 +316,7 @@ class ObserveBudgetsUiStateUseCaseTest {
                 totalIncome = 5_500.toBigDecimal(),
                 totalExpenses = 1_800.toBigDecimal(),
                 totalInvestments = 2_600.toBigDecimal(),
-                totalInvestmentsFormatted = "2600 USD",
+                totalInvestmentsFormatted = "2,600 USD",
                 totalSavings = 500.toBigDecimal(),
             ),
         )
@@ -331,7 +331,7 @@ class ObserveBudgetsUiStateUseCaseTest {
                 totalIncome = 12_000.toBigDecimal(),
                 totalExpenses = 3_800.toBigDecimal(),
                 totalInvestments = 5_600.toBigDecimal(),
-                totalInvestmentsFormatted = "5600 USD",
+                totalInvestmentsFormatted = "5,600 USD",
                 totalSavings = 500.toBigDecimal(),
             ),
         )
@@ -345,7 +345,7 @@ class ObserveBudgetsUiStateUseCaseTest {
             totalIncome = 24_000.toBigDecimal(),
             totalExpenses = 7_600.toBigDecimal(),
             totalInvestments = 11_200.toBigDecimal(),
-            totalInvestmentsFormatted = "11200 USD",
+            totalInvestmentsFormatted = "11,200 USD",
             totalSavings = 500.toBigDecimal(),
         )
 

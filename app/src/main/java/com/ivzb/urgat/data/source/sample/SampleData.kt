@@ -11,7 +11,6 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.util.randomUUID
-import java.math.BigDecimal
 import kotlin.collections.component1
 import kotlin.collections.component4
 
@@ -177,7 +176,7 @@ object SampleData {
         }
 
     val SAMPLE_INVESTMENTS_GROUPED =
-        Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::totalMarketPrice)
+        Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::total)
 
     val SAMPLE_INVESTMENTS_CATEGORIES_YEARLY =
         Group.groupInvestmentCategoriesYearly(SAMPLE_INVESTMENTS, ::randomUUID)
@@ -288,7 +287,7 @@ object SampleData {
         totalIncome = 4021.34.toBigDecimal(),
         totalExpenses = 571.34.toBigDecimal(),
         totalInvestments = 2500.toBigDecimal(),
-        totalInvestmentsFormatted = "2500 USD",
+        totalInvestmentsFormatted = "2,500 USD",
         totalSavings = 950.toBigDecimal(),
     )
 

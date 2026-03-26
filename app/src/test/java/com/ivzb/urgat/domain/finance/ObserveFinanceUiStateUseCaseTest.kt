@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
@@ -228,7 +229,7 @@ class ObserveFinanceUiStateUseCaseTest {
         assertFalse(expensesUiInfo.hasAppliedFilters)
         assertFalse(expensesUiInfo.showFilterBadge)
         assertFalse(expensesUiInfo.showSortBadge)
-        assertEquals(R.string.all_expenses, expensesUiInfo.currentFilteringLabel)
+        assertEquals(R.string.transactions, expensesUiInfo.currentFilteringLabel)
         assertEquals(R.string.no_expenses, expensesUiInfo.emptyLabel)
         assertEquals(R.string.no_expenses_message, expensesUiInfo.emptyMessage)
         assertEquals(R.string.add_expense, expensesUiInfo.emptyButtonLabel)
@@ -603,7 +604,7 @@ class ObserveFinanceUiStateUseCaseTest {
         )
 
         private val fakeInvestments = listOf(
-            GroupedItems(group = "2025/12", total = "10 USD", items = investments)
+            GroupedItems(group = "2025/12", total = listOf(InvestmentTotal("USD", costPrice = 10.toBigDecimal(), marketPrice = 10.toBigDecimal(), pnl = 0.toBigDecimal())), items = investments)
         )
 
         private val fakeInvestmentsFiltering = listOf(
@@ -655,7 +656,7 @@ class ObserveFinanceUiStateUseCaseTest {
             totalIncome = 6_500.toBigDecimal(),
             totalExpenses = 2_000.toBigDecimal(),
             totalInvestments = 3_000.toBigDecimal(),
-            totalInvestmentsFormatted = "3000 USD",
+            totalInvestmentsFormatted = "3,000 USD",
             totalSavings = 500.toBigDecimal(),
         )
 

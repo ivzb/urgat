@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentCategory
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.util.Async
@@ -69,8 +70,24 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            InvestmentCategory(id = TEST_UUID, "etfs", "2,320 EUR | 2,320 USD", investments = listOf(investments[0], investments[1], investments[3], investments[4], investments[6], investments[7], investments[9], investments[10])),
-            InvestmentCategory(id = TEST_UUID, "stocks", "1,542.1 EUR | 1,542.1 USD", investments = listOf(investments[2], investments[5], investments[8], investments[11])),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "etfs",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("2320"), marketPrice = BigDecimal("2320"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2320"), marketPrice = BigDecimal("2320"), pnl = BigDecimal.ZERO),
+                ),
+                investments = listOf(investments[0], investments[1], investments[3], investments[4], investments[6], investments[7], investments[9], investments[10]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stocks",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1542.10"), marketPrice = BigDecimal("1542.10"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1542.10"), marketPrice = BigDecimal("1542.10"), pnl = BigDecimal.ZERO),
+                ),
+                investments = listOf(investments[2], investments[5], investments[8], investments[11]),
+            ),
         )
 
         assertEquals(1, results.size)

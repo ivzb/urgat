@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesAllTimeUseCase
@@ -87,11 +88,18 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             Expense("3", "3", 1400.toBigDecimal(), "3", 3, false, false, 3),
         ))
 
-        val investments = GroupedInvestments("2025", "1800 EUR | 2000 USD", listOf(
-            Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
-            Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
-            Investment("3", "3", 1.toBigDecimal(), 2000.toBigDecimal(), 2000.toBigDecimal(), "3", "USD", 3, false, 3),
-        ))
+        val investments = GroupedInvestments(
+            "2025",
+            listOf(
+                InvestmentTotal("EUR", 1800.toBigDecimal(), 1800.toBigDecimal(), 0.toBigDecimal()),
+                InvestmentTotal("USD", 2000.toBigDecimal(), 2000.toBigDecimal(), 0.toBigDecimal()),
+            ),
+            listOf(
+                Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
+                Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
+                Investment("3", "3", 1.toBigDecimal(), 2000.toBigDecimal(), 2000.toBigDecimal(), "3", "USD", 3, false, 3),
+            )
+        )
 
         val savings = GroupedSavings("2025", 1500.toBigDecimal(), listOf(
             Saving("1", "Emergency fund", 500.toBigDecimal(), 1, false, 1),
@@ -146,7 +154,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3800.toBigDecimal(),
-            totalInvestmentsFormatted = "1800 EUR | 2000 USD",
+            totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
             totalSavings = 1500.toBigDecimal(),
         )
 
@@ -193,7 +201,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(GroupedInvestments(
             group = "",
-            total = "",
+            total = emptyList(),
             items = listOf(),
         )))
 

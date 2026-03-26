@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
@@ -10,7 +11,7 @@ import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-typealias GroupedInvestments = GroupedItems<String, String, Investment>
+typealias GroupedInvestments = GroupedItems<String, List<InvestmentTotal>, Investment>
 
 interface ObserveGroupedInvestmentsMonthlyUseCase {
 
@@ -32,7 +33,7 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCase @Inject constructor(
         repository = repository,
         filter = ::filterInvestments,
         sort = ::sortInvestments,
-        group = { items -> Group.byDateMonthly(items, Investment::date, Investment::totalCostPrice) },
+        group = { items -> Group.byDateMonthly(items, Investment::date, Investment::total) },
     )
 
     override fun invoke(

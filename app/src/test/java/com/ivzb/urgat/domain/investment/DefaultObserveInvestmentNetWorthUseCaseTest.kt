@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import io.mockk.every
@@ -56,7 +57,12 @@ class ObserveInvestmentNetWorthUseCaseTest {
 
         advanceUntilIdle()
 
-        val expected = InvestmentNetWorth(total = "1,931.05 EUR | 1,931.05 USD")
+        val expected = InvestmentNetWorth(
+            totals = listOf(
+                InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal.ZERO),
+                InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal.ZERO),
+            ),
+        )
 
         assertEquals(1, results.size)
         val first = results.first()

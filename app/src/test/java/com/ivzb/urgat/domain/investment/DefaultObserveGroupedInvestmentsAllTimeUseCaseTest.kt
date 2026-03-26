@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -59,7 +60,14 @@ class DefaultObserveGroupedInvestmentsAllTimeUseCaseTest {
 
         val expected = GroupedItems(
             group = "",
-            total = "3,604,585 USD",
+            total = listOf(
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = BigDecimal("3604585.00"),
+                    marketPrice = BigDecimal("3604585.00"),
+                    pnl = BigDecimal.ZERO,
+                ),
+            ),
             items = listOf(
                 Investment("6", "Apple Inc.", BigDecimal("1900"), BigDecimal("276.97"), BigDecimal("276.97"), "Stocks", "USD", timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
                 Investment("5", "NVIDIA Corp.", BigDecimal("1700"), BigDecimal("180.26"), BigDecimal("180.26"), "Stocks", "USD", timestamp(2026, 1, 9), false, timestamp(2026, 1, 9)),
@@ -103,7 +111,14 @@ class DefaultObserveGroupedInvestmentsAllTimeUseCaseTest {
 
         val expected = GroupedItems(
             group = "",
-            total = "3,604,585 USD",
+            total = listOf(
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = BigDecimal("3604585.00"),
+                    marketPrice = BigDecimal("3604585.00"),
+                    pnl = BigDecimal.ZERO,
+                ),
+            ),
             items = listOf(
                 Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
                 Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
