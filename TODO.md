@@ -102,4 +102,3 @@
 - add currency to saving
 - rename InvestmentEntity cost to costPrice
 - show unrealized P&L (profit & loss) on chart total
-- check why assets P&L doesn't work anymore

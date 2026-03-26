@@ -4,7 +4,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class ExpensesFilteringUiInfo(
-    val currentFilteringLabel: Int = R.string.all_expenses,
+    val currentFilteringLabel: Int = R.string.transactions,
 
     override val emptyLabel: Int = R.string.no_expenses_label,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_expenses,
@@ -42,7 +42,7 @@ data class ExpensesFilteringUiInfo(
 
             return ExpensesFilteringUiInfo(
                 currentFilteringLabel = when (filterType) {
-                    ExpensesFilterType.ALL_EXPENSES -> R.string.all_expenses
+                    ExpensesFilterType.ALL_EXPENSES -> R.string.transactions
                     ExpensesFilterType.DEBIT_EXPENSES -> R.string.debit_expenses
                     ExpensesFilterType.COST_EXPENSES -> R.string.cost_expenses
                     ExpensesFilterType.EXCLUDED_FROM_ANALYTICS -> R.string.exclude_from_analytics

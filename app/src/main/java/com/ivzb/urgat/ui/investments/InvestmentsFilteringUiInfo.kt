@@ -4,7 +4,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 
 data class InvestmentsFilteringUiInfo(
-    val currentFilteringLabel: Int = R.string.all_investments,
+    val currentFilteringLabel: Int = R.string.transactions,
 
     override val emptyLabel: Int = R.string.no_investments,
     override val emptyIconRes: Int = R.drawable.ic_empty_state_card_investments,
@@ -40,7 +40,7 @@ data class InvestmentsFilteringUiInfo(
             val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 
             return InvestmentsFilteringUiInfo(
-                currentFilteringLabel = R.string.all_investments,
+                currentFilteringLabel = R.string.transactions,
 
                 emptyLabel = when {
                     hasAppliedFilters -> R.string.no_investments_search

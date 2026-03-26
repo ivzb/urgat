@@ -71,7 +71,6 @@
     <string name="sort_by_min">Sort by min</string>
     <string name="sort_by_max">Sort by max</string>
     <string name="sort_by_market_value">Sort by market value</string>
-    <string name="all_expenses">All expenses</string>
     <string name="no_expenses">You have no expenses!</string>
     <string name="no_expenses_label">See where your money goes.</string>
     <string name="no_expenses_message">Tap "Add Expense" to track your first one.</string>
@@ -105,7 +104,6 @@
     <string name="loading">Loading</string>
     <string name="error_investments">Error while loading investments</string>
     <string name="loading_investments">Loading investments</string>
-    <string name="all_investments">All investments</string>
     <string name="no_investments">You have no investments</string>
     <string name="no_investments_label">Your savings journey starts here.</string>
     <string name="no_investments_message">Tap "Add Investment" to track your first one.</string>
@@ -156,7 +154,6 @@
     <string name="income_hint">Income</string>
     <string name="bank_start_hint">Bank start</string>
     <string name="bank_end_hint">Bank end (optional)</string>
-    <string name="all_budgets">All budgets</string>
     <string name="no_budgets">You have no budgets</string>
     <string name="no_budgets_label">Your savings journey starts here.</string>
     <string name="no_budgets_message">Tap "Add Budget" to track your first one.</string>
@@ -172,7 +169,6 @@
     <string name="edit_saving">Edit Saving</string>
     <string name="saving_hint">Enter your saving here.</string>
     <string name="savings">Savings</string>
-    <string name="all_savings">All savings</string>
     <string name="no_savings">You have no savings</string>
     <string name="no_savings_label">Your savings journey starts here.</string>
     <string name="no_savings_message">Tap "Add Saving" to track your first one.</string>

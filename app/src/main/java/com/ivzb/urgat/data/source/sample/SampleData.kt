@@ -167,7 +167,7 @@ object SampleData {
                 name = name,
                 shares = shares.toBigDecimal(),
                 costPrice = cost.toBigDecimal(),
-                marketPrice = BigDecimal.ZERO,
+                marketPrice = cost.toBigDecimal() + (-100 .. 100).random().toBigDecimal(),
                 category = category,
                 currency = currency,
                 date = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),

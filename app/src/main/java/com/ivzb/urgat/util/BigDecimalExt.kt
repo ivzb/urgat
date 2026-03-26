@@ -15,7 +15,7 @@ private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply 
 fun BigDecimal.format(): String = NUMBER_FORMAT.format(this)
 
 fun BigDecimal?.formatPnL(): String = this?.let {
-    "${if (this >= BigDecimal.ZERO) "+" else "-"}${this.format()}%"
+    "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format()}%"
 }.orEmpty()
 
 fun BigDecimal.round(): BigDecimal {
