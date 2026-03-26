@@ -18,7 +18,6 @@ import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
 import com.ivzb.urgat.domain.saving.GroupedSavingCategories
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.toLocalDate
-import java.math.BigDecimal
 import java.time.Year
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -96,7 +95,7 @@ object Group {
             }
 
     fun groupInvestmentCategoriesYearly(investments: List<Investment>, random: () -> String): List<GroupedInvestmentCategories> =
-        byDateYearly(investments, Investment::date, Investment::total)
+        byDateYearly(investments, Investment::date, Investment::totalMarketPrice)
             .map { (group, total, items) ->
                 GroupedItems(
                     group = group,
@@ -105,27 +104,24 @@ object Group {
                 )
             }
 
-    suspend fun groupInvestmentAssets(
+    fun groupInvestmentAssets(
         investments: List<Investment>,
         random: () -> String,
-        calculateMarketPrice: suspend (symbol: String, currency: String, shares: BigDecimal) -> BigDecimal
     ): List<InvestmentAsset> =
         investments
             .groupBy { Triple(it.name, it.category, it.currency) }
             .map { (key, investments) ->
                 val (name, category, currency) = key
-                val shares = investments.sumOf { it.shares }
-                val marketPrice = calculateMarketPrice(name, currency, shares)
 
                 InvestmentAsset(
                     id = random(),
                     name = name,
                     category = category,
-                    shares = shares,
-                    costPrice = investments.sumOf { it.totalMarketPrice },
-                    marketPrice = marketPrice,
+                    shares = investments.sumOf { it.shares },
+                    costPrice = investments.sumOf { it.totalCostPrice },
+                    marketPrice = investments.sumOf { it.totalMarketPrice },
                     currency = currency,
-                    total = Investment.total(investments),
+                    total = Investment.totalMarketPrice(investments),
 
                     investments = investments,
                 )
@@ -137,7 +133,7 @@ object Group {
 
     fun groupInvestmentNetWorth(investments: List<Investment>): InvestmentNetWorth =
         InvestmentNetWorth(
-            total = Investment.total(investments),
+            total = Investment.totalMarketPrice(investments),
         )
 
     fun groupExpenseCategoriesMonthly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
@@ -185,7 +181,7 @@ object Group {
                 InvestmentCategory(
                     id = random(),
                     name = category,
-                    total = Investment.total(investments),
+                    total = Investment.totalMarketPrice(investments),
 
                     investments = investments,
                 )

@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.investment
 
+import com.ivzb.urgat.util.div
 import com.ivzb.urgat.util.format
 import java.math.BigDecimal
 
@@ -22,6 +23,10 @@ data class Investment(
     val totalMarketPrice: BigDecimal
         get() = marketPrice * shares
 
+    val unrealisedPnL: BigDecimal? = totalCostPrice
+        .takeIf { it.compareTo(BigDecimal.ZERO) != 0 }
+        ?.let { (totalMarketPrice - it) / it * BigDecimal(100) }
+
     fun formatCsv(): String =
         "\"$id\", \"$name\", \"$shares\", \"$costPrice\", \"$category\", \"$currency\", $date, $createdAt"
 
@@ -29,11 +34,17 @@ data class Investment(
 
         const val SEPARATOR = " | "
 
-        fun total(investments: List<Investment>): String =
+        fun totalCostPrice(investments: List<Investment>): String =
+            total(investments) { it.totalCostPrice }
+
+        fun totalMarketPrice(investments: List<Investment>): String =
+            total(investments) { it.totalMarketPrice }
+
+        private fun total(investments: List<Investment>, total: (Investment) -> BigDecimal): String =
             investments
                 .groupBy { it.currency }
                 .map { (currency, investments) ->
-                    val totalMarketPrice = investments.sumOf { it.totalMarketPrice }.format()
+                    val totalMarketPrice = investments.sumOf { total(it) }.format()
                     val total = "$totalMarketPrice $currency"
                     currency to total
                 }

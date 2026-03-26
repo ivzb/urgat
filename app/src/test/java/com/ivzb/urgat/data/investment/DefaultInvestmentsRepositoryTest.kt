@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import com.ivzb.urgat.data.investmentMarketPrice.FakeInvestmentMarketPriceRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -19,12 +20,15 @@ class DefaultInvestmentsRepositoryTest {
     private lateinit var dao: FakeInvestmentDao
     private lateinit var repository: DefaultInvestmentsRepository
 
+    private val fakeMarketPriceRepository = FakeInvestmentMarketPriceRepository()
+
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
         dao = FakeInvestmentDao()
         repository = DefaultInvestmentsRepository(
             localDataSource = dao,
+            investmentMarketPriceRepository = fakeMarketPriceRepository,
             dispatcher = dispatcher,
         )
     }

@@ -380,7 +380,7 @@ private fun CategoriesPage(
                 data = expandedCategory.investments
                     .groupBy { it.name }
                     .map { (name, investments) ->
-                        val investmentTotal = Investment.total(investments)
+                        val investmentTotal = Investment.totalMarketPrice(investments)
 
                         PieChartItem(
                             value = investments.sumOf { it.totalMarketPrice }.toFloat(),
@@ -484,7 +484,7 @@ private fun AssetsPage(
                 data = expandedAsset.investments
                     .groupBy { it.name }
                     .map { (name, investments) ->
-                        val investmentTotal = Investment.total(investments)
+                        val investmentTotal = Investment.totalMarketPrice(investments)
 
                         PieChartItem(
                             value = investments.sumOf { it.totalMarketPrice }.toFloat(),
@@ -563,12 +563,21 @@ fun InvestmentItem(
     investment: Investment,
     onInvestmentClick: (Investment) -> Unit
 ) {
+
+    val unrealisedPnL = investment.unrealisedPnL
+    val marketPriceText = "${investment.totalMarketPrice.format()} ${investment.currency}"
+
     ListItem(
         textLeft = investment.name,
         subTextLeft = investment.category,
 
         textRight = investment.shares.toString(),
-        subTextRight = AnnotatedString("${investment.totalMarketPrice.format()} ${investment.currency}"),
+        subTextRight = annotateFinance(
+            text = unrealisedPnL.formatPnL(),
+            amount = unrealisedPnL ?: BigDecimal.ZERO,
+            prefix = "$marketPriceText (",
+            suffix = ")"
+        ),
 
         onClick = { onInvestmentClick(investment) }
     )

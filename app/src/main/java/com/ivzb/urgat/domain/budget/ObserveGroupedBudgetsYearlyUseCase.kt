@@ -63,7 +63,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
                         category = category,
                         totalIncome = category.total,
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                        totalInvestments = investments?.items?.sumOf { it.totalMarketPrice } ?: BigDecimal.ZERO,
+                        totalInvestments = investments?.items?.sumOf { it.totalCostPrice } ?: BigDecimal.ZERO,
                         totalInvestmentsFormatted = investments?.total ?: "",
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )

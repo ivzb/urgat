@@ -11,7 +11,6 @@ import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.util.randomUUID
-import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import kotlin.collections.component1
 import kotlin.collections.component4
@@ -178,7 +177,7 @@ object SampleData {
         }
 
     val SAMPLE_INVESTMENTS_GROUPED =
-        Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::total)
+        Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::totalMarketPrice)
 
     val SAMPLE_INVESTMENTS_CATEGORIES_YEARLY =
         Group.groupInvestmentCategoriesYearly(SAMPLE_INVESTMENTS, ::randomUUID)
@@ -188,13 +187,8 @@ object SampleData {
     val SAMPLE_INVESTMENTS_CATEGORIES =
         Group.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
 
-    val SAMPLE_INVESTMENTS_ASSETS = runBlocking {
-        Group.groupInvestmentAssets(
-            SAMPLE_INVESTMENTS,
-            ::randomUUID,
-            calculateMarketPrice = { _, _, _ -> BigDecimal.ZERO },
-        )
-    }
+    val SAMPLE_INVESTMENTS_ASSETS =
+        Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
 
     val SAMPLE_SAVINGS =
         listOf(

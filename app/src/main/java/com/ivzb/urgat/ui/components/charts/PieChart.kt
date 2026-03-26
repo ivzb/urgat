@@ -145,7 +145,14 @@ fun PieChart(
             if (selectedIndex == null) {
                 defaultText
             } else {
-                data[selectedIndex].selectedText
+                val item = data[selectedIndex]
+                val percentage = (item.value.absoluteValue / total) * 100f
+
+                buildAnnotatedString {
+                    append(item.selectedText)
+                    append("\n")
+                    append("%.1f%%".format(percentage))
+                }
             }
         }
 

@@ -122,21 +122,19 @@ class GroupTest {
             Investment("18", "Gold", BigDecimal("1"), BigDecimal("3704.25"), BigDecimal("3704.25"), "gold", "EUR", timestamp(2025, 12, 18), false, timestamp(2025, 12, 18)),
         )
 
-        val mockMarketPrice = BigDecimal.ZERO
-
         val expected = listOf(
-            InvestmentAsset(id = TEST_UUID, name="AAPL", category = "stocks", shares = BigDecimal("4.6"), costPrice = BigDecimal("1258.882"), marketPrice = mockMarketPrice, currency="USD", investments = listOf(investments[2], investments[3]), total = "1,258.88 USD",),
-            InvestmentAsset(id = TEST_UUID, name="BRK.B", category = "etf", shares = BigDecimal("3.4"), costPrice = BigDecimal("1681.402"), marketPrice = mockMarketPrice, currency="USD", investments = listOf(investments[8], investments[9]), total = "1,681.4 USD",),
-            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), costPrice = BigDecimal("1290.072"), marketPrice = mockMarketPrice, currency="USD", investments = listOf(investments[0], investments[1]), total = "1,290.07 USD",),
-            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), costPrice = BigDecimal("1101.450"), marketPrice = mockMarketPrice, currency="EUR", investments = listOf(investments[12], investments[13]), total = "1,101.45 EUR",),
-            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), costPrice = BigDecimal("8677.10"), marketPrice = mockMarketPrice, currency="USD", investments = listOf(investments[10], investments[11]), total = "8,677.1 USD",),
-            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), costPrice = BigDecimal("7408.50"), marketPrice = mockMarketPrice, currency="EUR", investments = listOf(investments[16], investments[17]), total = "7,408.5 EUR",),
-            InvestmentAsset(id = TEST_UUID, name="NVDA", category = "stocks", shares = BigDecimal("5.0"), costPrice = BigDecimal("904.950"), marketPrice = mockMarketPrice, currency="USD", investments = listOf(investments[4], investments[5]), total = "904.95 USD",),
-            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), costPrice = BigDecimal("4100.70"), marketPrice = mockMarketPrice, currency="USD", investments = listOf(investments[6], investments[7]), total = "4,100.7 USD",),
-            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), costPrice = BigDecimal("3501.18"), marketPrice = mockMarketPrice, currency="EUR", investments = listOf(investments[14], investments[15]), total = "3,501.18 EUR",),
+            InvestmentAsset(id = TEST_UUID, name="AAPL", category = "stocks", shares = BigDecimal("4.6"), costPrice = BigDecimal("1258.882"), marketPrice = BigDecimal("1258.882"), currency="USD", investments = listOf(investments[2], investments[3]), total = "1,258.88 USD",),
+            InvestmentAsset(id = TEST_UUID, name="BRK.B", category = "etf", shares = BigDecimal("3.4"), costPrice = BigDecimal("1681.402"), marketPrice = BigDecimal("1681.402"), currency="USD", investments = listOf(investments[8], investments[9]), total = "1,681.4 USD",),
+            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), costPrice = BigDecimal("1290.072"), marketPrice = BigDecimal("1290.072"), currency="USD", investments = listOf(investments[0], investments[1]), total = "1,290.07 USD",),
+            InvestmentAsset(id = TEST_UUID, name="GOOGL", category = "stocks", shares = BigDecimal("4.2"), costPrice = BigDecimal("1101.450"), marketPrice = BigDecimal("1101.450"), currency="EUR", investments = listOf(investments[12], investments[13]), total = "1,101.45 EUR",),
+            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), costPrice = BigDecimal("8677.10"), marketPrice = BigDecimal("8677.10"), currency="USD", investments = listOf(investments[10], investments[11]), total = "8,677.1 USD",),
+            InvestmentAsset(id = TEST_UUID, name="Gold", category = "gold", shares = BigDecimal("2"), costPrice = BigDecimal("7408.50"), marketPrice = BigDecimal("7408.50"), currency="EUR", investments = listOf(investments[16], investments[17]), total = "7,408.5 EUR",),
+            InvestmentAsset(id = TEST_UUID, name="NVDA", category = "stocks", shares = BigDecimal("5.0"), costPrice = BigDecimal("904.950"), marketPrice = BigDecimal("904.950"), currency="USD", investments = listOf(investments[4], investments[5]), total = "904.95 USD",),
+            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), costPrice = BigDecimal("4100.70"), marketPrice = BigDecimal("4100.70"), currency="USD", investments = listOf(investments[6], investments[7]), total = "4,100.7 USD",),
+            InvestmentAsset(id = TEST_UUID, name="SNP 500", category = "etf", shares = BigDecimal("0.6"), costPrice = BigDecimal("3501.18"), marketPrice = BigDecimal("3501.18"), currency="EUR", investments = listOf(investments[14], investments[15]), total = "3,501.18 EUR",),
         )
 
-        val actual = Group.groupInvestmentAssets(investments, randomTestUUID, calculateMarketPrice = { _, _, _ -> mockMarketPrice })
+        val actual = Group.groupInvestmentAssets(investments, randomTestUUID)
 
         assertEquals(expected, actual)
     }

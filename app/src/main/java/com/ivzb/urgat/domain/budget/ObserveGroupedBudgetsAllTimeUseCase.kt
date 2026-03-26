@@ -67,7 +67,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
                     ),
                     totalIncome = budget.value,
                     totalExpenses = expenses.total,
-                    totalInvestments = investments.items.sumOf { it.totalMarketPrice },
+                    totalInvestments = investments.items.sumOf { it.totalCostPrice },
                     totalInvestmentsFormatted = investments.total,
                     totalSavings = savings.total,
                 )

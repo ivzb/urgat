@@ -1,6 +1,11 @@
 package com.ivzb.urgat.data.investment
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import java.math.BigDecimal
+
+typealias CalculateMarketPrice = suspend (symbol: String, currency: String) -> BigDecimal
 
 fun Investment.toEntity() = InvestmentEntity(
     id = id,
@@ -16,12 +21,12 @@ fun Investment.toEntity() = InvestmentEntity(
 
 fun List<Investment>.toEntity() = map(Investment::toEntity)
 
-fun InvestmentEntity.toExternal() = Investment(
+suspend fun InvestmentEntity.toExternal(calculateMarketPrice: CalculateMarketPrice) = Investment(
     id = id,
     name = name,
     shares = shares,
     costPrice = cost,
-    marketPrice = BigDecimal.ZERO,
+    marketPrice = calculateMarketPrice(name, currency),
     category = category,
     currency = currency,
     date = date,
@@ -30,4 +35,7 @@ fun InvestmentEntity.toExternal() = Investment(
 )
 
 @JvmName("entityToExternal")
-fun List<InvestmentEntity>.toExternal() = map(InvestmentEntity::toExternal)
+suspend fun List<InvestmentEntity>.toExternal(calculateMarketPrice: CalculateMarketPrice) =
+    coroutineScope {
+        map { async { it.toExternal(calculateMarketPrice) } }.awaitAll()
+    }

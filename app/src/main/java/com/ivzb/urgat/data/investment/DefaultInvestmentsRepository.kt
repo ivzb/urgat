@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.investment
 
+import com.ivzb.urgat.data.investmentMarketPrice.InvestmentMarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,13 +13,14 @@ import javax.inject.Inject
 
 class DefaultInvestmentsRepository @Inject constructor(
     private val localDataSource: InvestmentDao,
+    private val investmentMarketPriceRepository: InvestmentMarketPriceRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : InvestmentsRepository {
 
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { investments ->
             withContext(dispatcher) {
-                investments.toExternal()
+                investments.toExternal(investmentMarketPriceRepository::calculateMarketPrice)
             }
         }
     }
@@ -26,7 +28,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { investments ->
             withContext(dispatcher) {
-                investments.toExternal()
+                investments.toExternal(investmentMarketPriceRepository::calculateMarketPrice)
             }
         }
     }
@@ -87,7 +89,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     }
 
     override suspend fun get(id: String): Investment? {
-        return localDataSource.getById(id)?.toExternal()
+        return localDataSource.getById(id)?.toExternal(investmentMarketPriceRepository::calculateMarketPrice)
     }
 
     override suspend fun delete(id: String) {
