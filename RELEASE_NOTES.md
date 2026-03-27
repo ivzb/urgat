@@ -1,3 +1,8 @@
+## Release notes 26.03.23
+
+Fixed:
+- Hide market price when fetching data fails
+
 ## Release notes 26.03.22
 
 New:
