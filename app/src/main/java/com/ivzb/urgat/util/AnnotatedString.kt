@@ -5,8 +5,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.investment.InvestmentTotal
+import androidx.compose.ui.text.withStyle
 import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
@@ -43,25 +42,29 @@ fun annotateFinancePnL(text: String, pnl: BigDecimal?): AnnotatedString {
     )
 }
 
-fun expenseColor(amount: BigDecimal): Color =
-    financeColor(-amount)
-
-fun annotateExpense(amount: BigDecimal, prefix: String = ""): AnnotatedString =
+fun annotateExpenses(amount: BigDecimal, prefix: String = ""): AnnotatedString =
     annotateFinance((-amount).format(), -amount, prefix = prefix)
 
-fun annotateExpenseChart(name: String, value: BigDecimal): AnnotatedString =
-    annotateExpense(value, "$name\n")
+fun annotateExpensesChart(name: String, value: BigDecimal): AnnotatedString =
+    annotateExpenses(value, "$name\n")
 
-fun annotateInvestmentChart(name: String, total: String): AnnotatedString {
-    val totalFormatted = total.split(InvestmentTotal.SEPARATOR).joinToString("\n")
-    return annotateFormattedString(
-        formattedString = "$name\n$totalFormatted",
-        part = totalFormatted,
-        spanStyle = SpanStyle(fontWeight = FontWeight.Bold),
-    )
-}
+fun annotateInvestmentsChart(name: String, total: AnnotatedString?): AnnotatedString =
+    buildAnnotatedString {
+        append(name)
 
-fun annotateBudgetChart(name: String, total: BigDecimal): AnnotatedString {
+        if (total != null) {
+            appendLine()
+
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(total)
+            }
+        }
+    }
+
+fun annotateFinance(amount: BigDecimal, prefix: String = ""): AnnotatedString =
+    annotateFinance(amount.format(), amount, prefix = prefix)
+
+fun annotateBudgetsChart(name: String, total: BigDecimal): AnnotatedString {
     val totalFormatted = total.format()
     return annotateFormattedString(
         formattedString = "$name\n$totalFormatted",
@@ -71,7 +74,14 @@ fun annotateBudgetChart(name: String, total: BigDecimal): AnnotatedString {
 }
 
 fun annotateSavingsChart(name: String, total: BigDecimal): AnnotatedString =
-    annotateBudgetChart(name, total)
+    annotateBudgetsChart(name, total)
+
+fun annotateBold(text: String): AnnotatedString =
+    buildAnnotatedString {
+        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+            append(text)
+        }
+    }
 
 private fun annotateFormattedString(
     formattedString: String,

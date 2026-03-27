@@ -1,8 +1,8 @@
 package com.ivzb.urgat.domain.common
 
-import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -27,12 +27,7 @@ class ObserveUseCase<T, FilterType, SortType>(
         invokeFlow(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
             .map<List<T>, Async<List<T>>> { Async.Success(it) }
             .catch { e ->
-                // todo: use error tracker instead
-
-                if (BuildConfig.DEBUG) {
-                    e.printStackTrace()
-                }
-
+                Tracker.error(e)
                 emit(Async.Error)
             }
 

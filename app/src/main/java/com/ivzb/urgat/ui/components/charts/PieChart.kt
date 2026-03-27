@@ -149,9 +149,13 @@ fun PieChart(
                 val percentage = (item.value.absoluteValue / total) * 100f
 
                 buildAnnotatedString {
-                    append(item.selectedText)
-                    append("\n")
-                    append("%.1f%%".format(percentage))
+                    append(item.title)
+                    append(" (%.1f%%)".format(percentage))
+                    appendLine()
+
+                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(item.total)
+                    }
                 }
             }
         }
@@ -167,7 +171,8 @@ fun PieChart(
 
 data class PieChartItem(
     val value: Float,
-    val selectedText: AnnotatedString,
+    val title: String,
+    val total: AnnotatedString,
 )
 
 private data class PieChartSliceAngle(
@@ -183,10 +188,10 @@ private fun PieChartPreview() {
     UrgatTheme {
         PieChart(
             data = listOf(
-                PieChartItem(45f, AnnotatedString("45f")),
-                PieChartItem(25f, AnnotatedString("25f")),
-                PieChartItem(20f, AnnotatedString("20f")),
-                PieChartItem(10f, AnnotatedString("10f")),
+                PieChartItem(45f, "18-34", AnnotatedString("45%")),
+                PieChartItem(25f, "35-49", AnnotatedString("25%")),
+                PieChartItem(20f, "50-64", AnnotatedString("20%")),
+                PieChartItem(10f, "65+", AnnotatedString("10%")),
             ),
             defaultText = buildAnnotatedString {
                 append("Expenses:\n")

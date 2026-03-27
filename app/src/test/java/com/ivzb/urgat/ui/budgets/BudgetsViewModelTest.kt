@@ -5,6 +5,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -88,8 +89,14 @@ class BudgetsViewModelTest {
                 ),
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
-                totalInvestments = 1800.toBigDecimal(),
-                totalInvestmentsFormatted = "1,800 EUR",
+                totalInvestments = listOf(
+                    InvestmentTotal(
+                        currency = "EUR",
+                        costPrice = 1_800.toBigDecimal(),
+                        marketPrice = 1_800.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                ),
                 totalSavings = 1100.toBigDecimal(),
             ),
         )
@@ -107,8 +114,20 @@ class BudgetsViewModelTest {
                 ),
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
-                totalInvestments = 3800.toBigDecimal(),
-                totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
+                totalInvestments = listOf(
+                    InvestmentTotal(
+                        currency = "EUR",
+                        costPrice = 1_800.toBigDecimal(),
+                        marketPrice = 1_800.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = 2_000.toBigDecimal(),
+                        marketPrice = 2_000.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                ),
                 totalSavings = 1800.toBigDecimal(),
             ),
         )
@@ -122,8 +141,20 @@ class BudgetsViewModelTest {
             ),
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = 3800.toBigDecimal(),
-            totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "EUR",
+                    costPrice = 1_800.toBigDecimal(),
+                    marketPrice = 1_800.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = 2_000.toBigDecimal(),
+                    marketPrice = 2_000.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = 1500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(
@@ -203,8 +234,14 @@ class BudgetsViewModelTest {
                 ),
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
-                totalInvestments = 1800.toBigDecimal(),
-                totalInvestmentsFormatted = "1,800 EUR",
+                totalInvestments = listOf(
+                    InvestmentTotal(
+                        currency = "EUR",
+                        costPrice = 1_800.toBigDecimal(),
+                        marketPrice = 1_800.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                ),
                 totalSavings = 1100.toBigDecimal(),
             ),
         )
@@ -222,8 +259,20 @@ class BudgetsViewModelTest {
                 ),
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
-                totalInvestments = 3800.toBigDecimal(),
-                totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
+                totalInvestments = listOf(
+                    InvestmentTotal(
+                        currency = "EUR",
+                        costPrice = 1_800.toBigDecimal(),
+                        marketPrice = 1_800.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = 2_000.toBigDecimal(),
+                        marketPrice = 2_000.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                ),
                 totalSavings = 1800.toBigDecimal(),
             ),
         )
@@ -237,8 +286,20 @@ class BudgetsViewModelTest {
             ),
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = 3800.toBigDecimal(),
-            totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "EUR",
+                    costPrice = 1_800.toBigDecimal(),
+                    marketPrice = 1_800.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = 2_000.toBigDecimal(),
+                    marketPrice = 2_000.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = 1500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(

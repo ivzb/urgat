@@ -153,8 +153,20 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             ),
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = 3800.toBigDecimal(),
-            totalInvestmentsFormatted = "1,800 EUR | 2,000 USD",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "EUR",
+                    costPrice = 1_800.toBigDecimal(),
+                    marketPrice = 1_800.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = 2_000.toBigDecimal(),
+                    marketPrice = 2_000.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = 1500.toBigDecimal(),
         )
 

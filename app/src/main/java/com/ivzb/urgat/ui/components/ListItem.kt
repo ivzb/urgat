@@ -33,7 +33,7 @@ fun ListItem(
     textLeft: String,
     subTextLeft: String = "",
 
-    textRight: String,
+    textRight: String = "",
     subTextRight: AnnotatedString = AnnotatedString(""),
     subTextRightCanBeEmpty: Boolean = false,
 

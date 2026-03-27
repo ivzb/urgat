@@ -1,6 +1,8 @@
 package com.ivzb.urgat.domain.budget
 
+import androidx.compose.ui.text.AnnotatedString
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.investment.Investment.Companion.total
 import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
@@ -64,8 +66,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
                         category = category,
                         totalIncome = category.total,
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                        totalInvestments = investments?.items?.sumOf { it.totalCostPrice } ?: BigDecimal.ZERO,
-                        totalInvestmentsFormatted = investments?.total?.formatCostPrice() ?: "",
+                        totalInvestments = investments?.items?.let { total(it) } ?: listOf(),
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )
                 }

@@ -31,7 +31,7 @@ data class Investment(
 
         fun total(investments: List<Investment>): List<InvestmentTotal> =
             investments
-                .groupBy { it.currency }
+                .groupBy { it.currency.uppercase() }
                 .map { (currency, investments) ->
                     val costPrice = investments.sumOf { it.totalCostPrice }
                     val marketPrice = investments.sumOf { it.totalMarketPrice }

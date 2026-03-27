@@ -101,4 +101,7 @@
 - add currency to expense
 - add currency to saving
 - rename InvestmentEntity cost to costPrice
-- show unrealized P&L (profit & loss) on chart total and grouped list items
+- rename formatMarketPrice and formatCostPrice to annotateXPrice and move them to AnnotatedString.kt
+- show single currency for all investments in the group - same as budget currency in BudgetsScreen
+- convert investment currency to budget currency for correct calculation in GroupedBudget
+- create investment total cost single BigDecimal by converting all investments total currencies to budget currency and use it in GroupedBudget and BudgetsScreen

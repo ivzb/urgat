@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.budget
 
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -59,8 +60,14 @@ class GroupedBudgetTest {
             ),
             totalIncome = income.toBigDecimal(),
             totalExpenses = expenses.toBigDecimal(),
-            totalInvestments = investments.toBigDecimal(),
-            totalInvestmentsFormatted = "$investments EUR",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "EUR",
+                    costPrice = investments.toBigDecimal(),
+                    marketPrice = investments.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = savings.toBigDecimal(),
         )
 

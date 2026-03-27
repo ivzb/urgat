@@ -191,8 +191,14 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                 ),
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
-                totalInvestments = 1800.toBigDecimal(),
-                totalInvestmentsFormatted = "1,800 EUR",
+                totalInvestments = listOf(
+                    InvestmentTotal(
+                        currency = "EUR",
+                        costPrice = 1_800.toBigDecimal(),
+                        marketPrice = 1_800.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                ),
                 totalSavings = 1100.toBigDecimal(),
             ),
             GroupedBudget(
@@ -207,8 +213,14 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                 ),
                 totalIncome = 7000.toBigDecimal(),
                 totalExpenses = 1400.toBigDecimal(),
-                totalInvestments = 2000.toBigDecimal(),
-                totalInvestmentsFormatted = "2,000 USD",
+                totalInvestments = listOf(
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = 2_000.toBigDecimal(),
+                        marketPrice = 2_000.toBigDecimal(),
+                        pnl = 0.toBigDecimal(),
+                    ),
+                ),
                 totalSavings = 700.toBigDecimal(),
             ),
             GroupedBudget(
@@ -221,8 +233,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                 ),
                 totalIncome = 6600.toBigDecimal(),
                 totalExpenses = 0.toBigDecimal(),
-                totalInvestments = 0.toBigDecimal(),
-                totalInvestmentsFormatted = "",
+                totalInvestments = listOf(),
                 totalSavings = 0.toBigDecimal(),
             ),
         )

@@ -57,7 +57,7 @@ import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.annotateFinancePnL
-import com.ivzb.urgat.util.annotateInvestmentChart
+import com.ivzb.urgat.util.annotateInvestmentsChart
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
@@ -144,7 +144,7 @@ fun InvestmentsScreen(
 
                 InvestmentsPage.AllTime -> CategoriesPage(
                     group = stringResource(R.string.all_time),
-                    total = uiState.netWorth?.totals?.formatMarketPrice().orEmpty(),
+                    total = uiState.netWorth?.totals?.formatMarketPrice(),
                     categories = uiState.categories,
                     expandedCategoryIds = expandedCategoryIds,
 
@@ -160,7 +160,7 @@ fun InvestmentsScreen(
 
                 InvestmentsPage.Assets -> AssetsPage(
                     group = stringResource(R.string.assets),
-                    total = uiState.netWorth?.totals?.formatMarketPrice().orEmpty(),
+                    total = uiState.netWorth?.totals?.formatMarketPrice(),
 
                     assets = uiState.assets,
                     expandedAssetIds = expandedAssetIds,
@@ -323,7 +323,7 @@ private fun GroupedCategoriesPage(
 @Composable
 private fun CategoriesPage(
     group: String,
-    total: String,
+    total: AnnotatedString?,
 
     categories: List<InvestmentCategory>,
     expandedCategoryIds: List<String>,
@@ -372,10 +372,11 @@ private fun CategoriesPage(
                 data = categories.map {
                     PieChartItem(
                         value = it.investments.sumOf { it.totalMarketPrice }.toFloat(),
-                        selectedText = annotateInvestmentChart(it.name, it.totals.formatMarketPrice())
+                        title = it.name,
+                        total = it.totals.formatMarketPrice(),
                     )
                 }
-                defaultText = annotateInvestmentChart(group, total)
+                defaultText = annotateInvestmentsChart(group, total)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.investments
@@ -385,10 +386,11 @@ private fun CategoriesPage(
 
                         PieChartItem(
                             value = investments.sumOf { it.totalMarketPrice }.toFloat(),
-                            selectedText = annotateInvestmentChart(name, investmentTotal.formatMarketPrice())
+                            title = name,
+                            total = investmentTotal.formatMarketPrice(),
                         )
                     }
-                defaultText = annotateInvestmentChart(expandedCategory.name, expandedCategory.totals.formatMarketPrice())
+                defaultText = annotateInvestmentsChart(expandedCategory.name, expandedCategory.totals.formatMarketPrice())
             }
 
             PieChart(
@@ -426,7 +428,7 @@ private fun CategoriesPage(
 @Composable
 private fun AssetsPage(
     group: String,
-    total: String,
+    total: AnnotatedString?,
 
     assets: List<InvestmentAsset>,
     expandedAssetIds: List<String>,
@@ -476,10 +478,11 @@ private fun AssetsPage(
                 data = assets.map {
                     PieChartItem(
                         value = it.marketPrice.toFloat(),
-                        selectedText = annotateInvestmentChart(it.name, it.totals.formatMarketPrice())
+                        title = it.name,
+                        total = it.totals.formatMarketPrice(),
                     )
                 }
-                defaultText = annotateInvestmentChart(group, total)
+                defaultText = annotateInvestmentsChart(group, total)
             } else {
                 // expanded asset pie chart
                 data = expandedAsset.investments
@@ -489,10 +492,11 @@ private fun AssetsPage(
 
                         PieChartItem(
                             value = investments.sumOf { it.totalMarketPrice }.toFloat(),
-                            selectedText = annotateInvestmentChart(name, investmentTotal.formatMarketPrice())
+                            title = name,
+                            total = investmentTotal.formatMarketPrice(),
                         )
                     }
-                defaultText = annotateInvestmentChart(expandedAsset.name, expandedAsset.totals.formatMarketPrice())
+                defaultText = annotateInvestmentsChart(expandedAsset.name, expandedAsset.totals.formatMarketPrice())
             }
 
             PieChart(
@@ -609,7 +613,7 @@ private fun CategoryItem(
 ) {
     ListItem(
         textLeft = category.name,
-        textRight = category.totals.formatMarketPrice(),
+        subTextRight = category.totals.formatMarketPrice(),
         colorIndex = colorIndex,
         onClick = onClick,
     )

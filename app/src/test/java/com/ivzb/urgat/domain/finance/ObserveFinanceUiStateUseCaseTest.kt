@@ -655,8 +655,14 @@ class ObserveFinanceUiStateUseCaseTest {
             ),
             totalIncome = 6_500.toBigDecimal(),
             totalExpenses = 2_000.toBigDecimal(),
-            totalInvestments = 3_000.toBigDecimal(),
-            totalInvestmentsFormatted = "3,000 USD",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = 3_000.toBigDecimal(),
+                    marketPrice = 3_000.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = 500.toBigDecimal(),
         )
 

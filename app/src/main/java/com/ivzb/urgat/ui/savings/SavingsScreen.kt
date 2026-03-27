@@ -30,7 +30,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,9 +51,9 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.annotateBold
 import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.annotateSavingsChart
-import com.ivzb.urgat.util.financeColor
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
@@ -196,9 +196,7 @@ fun TransactionsPage(
             item {
                 ItemHeaderSmall(
                     text = group,
-                    total = total.format(),
-                    totalFontWeight = FontWeight.Bold,
-                    totalColor = financeColor(total),
+                    total = AnnotatedString(total.format()),
                     modifier = Modifier
                         .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                         .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -210,6 +208,7 @@ fun TransactionsPage(
                 items = savings,
                 key = { saving -> saving.id },
             ) { saving ->
+
                 SavingItem(
                     saving = saving,
                     onSavingClick = onSavingClick
@@ -339,7 +338,8 @@ private fun CategoriesPage(
             val data = categories.map {
                 PieChartItem(
                     value = it.value.toFloat(),
-                    selectedText = annotateSavingsChart(it.name, it.value)
+                    title = it.name,
+                    total = annotateBold(it.value.format()),
                 )
             }
             val total = categories.sumOf { it.value }
@@ -421,7 +421,7 @@ fun SavingItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = saving.name,
-        subTextRight = annotateFinance(saving.amount.format(), saving.amount),
+        subTextRight = AnnotatedString(saving.amount.format()),
 
         onClick = { onSavingClick(saving) }
     )
@@ -435,13 +435,8 @@ private fun CategoryItem(
 ) {
     ListItem(
         textLeft = category.name,
-        subTextLeft = "",
-
-        textRight = "",
-        subTextRight = annotateFinance(category.value.format(), category.value),
-
+        textRight = category.value.format(),
         colorIndex = colorIndex,
-
         onClick = onClick,
     )
 }

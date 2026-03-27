@@ -116,8 +116,14 @@ class FinanceViewModelTest {
             ),
             totalIncome = 5000.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = 1300.toBigDecimal(),
-            totalInvestmentsFormatted = "1,300 EUR",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "EUR",
+                    costPrice = 1_300.toBigDecimal(),
+                    marketPrice = 1_300.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = 100.toBigDecimal(),
         )
 

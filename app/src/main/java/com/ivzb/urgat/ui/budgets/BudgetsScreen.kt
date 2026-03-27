@@ -24,12 +24,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
@@ -42,11 +44,9 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateBudgetChart
-import com.ivzb.urgat.util.annotateExpenseChart
+import com.ivzb.urgat.util.annotateBudgetsChart
+import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateFinance
-import com.ivzb.urgat.util.annotateInvestmentChart
-import com.ivzb.urgat.util.annotateSavingsChart
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 import kotlinx.coroutines.launch
@@ -286,28 +286,33 @@ fun LazyListScope.budgetCategoryPage(
         val data = buildList {
             add(PieChartItem(
                 value = budget.totalExpenses.toFloat(),
-                selectedText = annotateExpenseChart(stringResource(R.string.expenses), budget.totalExpenses)
+                title = stringResource(R.string.expenses),
+                total = annotateExpenses(budget.totalExpenses),
             ))
 
             add(PieChartItem(
-                value = budget.totalInvestments.toFloat(),
-                selectedText = annotateInvestmentChart(stringResource(R.string.investments), budget.totalInvestmentsFormatted)
+                // todo: convert investment currency to budget currency for correct calculation
+                value = budget.totalInvestments.sumOf { it.costPrice }.toFloat(),
+                title = stringResource(R.string.investments),
+                total = budget.totalInvestments.formatCostPrice(),
             ))
 
             add(PieChartItem(
                 value = budget.totalSavings.toFloat(),
-                selectedText = annotateSavingsChart(stringResource(R.string.savings), budget.totalSavings)
+                title = stringResource(R.string.savings),
+                total = annotateFinance(budget.totalSavings),
             ))
 
             if (budget.remaining > BigDecimal.ZERO) {
                 add(PieChartItem(
                     value = budget.remaining.toFloat(),
-                    selectedText = annotateBudgetChart(stringResource(R.string.remaining), budget.remaining)
+                    title = stringResource(R.string.remaining),
+                    total = annotateFinance(budget.remaining)
                 ))
             }
         }
 
-        val defaultText = annotateBudgetChart(group ?: budget.category.group, budget.total)
+        val defaultText = annotateBudgetsChart(group ?: budget.category.group, budget.total)
 
         PieChart(
             data = data,
@@ -334,7 +339,8 @@ fun LazyListScope.budgetCategoryPage(
     item {
         CategoryItem(
             name = stringResource(R.string.investments),
-            value = budget.totalInvestments.format(),
+            // todo: show single currency for all investments in the group - same as budget currency
+            value = budget.totalInvestments.formatCostPrice(withPnL = false).toString(),
             colorIndex = 1,
         )
     }
@@ -369,7 +375,7 @@ fun BudgetItem(
         subTextLeft = date.year.toString(),
 
         textRight = budget.income.format(),
-        subTextRight = annotateFinance(budget.total?.format() ?: "", budget.total),
+        subTextRight = AnnotatedString(budget.total?.format() ?: ""),
 
         onClick = { onBudgetClick(budget) }
     )

@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -53,10 +52,8 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateExpense
-import com.ivzb.urgat.util.annotateExpenseChart
-import com.ivzb.urgat.util.expenseColor
-import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.annotateExpenses
+import com.ivzb.urgat.util.annotateExpensesChart
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -202,9 +199,7 @@ fun TransactionsPage(
             item {
                 ItemHeaderSmall(
                     text = group,
-                    total = (-total).format(),
-                    totalFontWeight = FontWeight.Bold,
-                    totalColor = expenseColor(total),
+                    total = annotateExpenses(total),
                     modifier = Modifier
                         .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                         .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -353,11 +348,12 @@ private fun CategoriesPage(
                 data = categories.map {
                     PieChartItem(
                         value = it.value.toFloat(),
-                        selectedText = annotateExpenseChart(it.name, it.value)
+                        title = it.name,
+                        total = annotateExpenses(it.value),
                     )
                 }
                 val total = categories.sumOf { it.value }
-                defaultText = annotateExpenseChart(group, total)
+                defaultText = annotateExpensesChart(group, total)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.expenses
@@ -367,10 +363,11 @@ private fun CategoriesPage(
 
                         PieChartItem(
                             value = total.toFloat(),
-                            selectedText = annotateExpenseChart(name, total)
+                            title = name,
+                            total = annotateExpenses(total),
                         )
                     }
-                defaultText = annotateExpenseChart(expandedCategory.name, expandedCategory.value)
+                defaultText = annotateExpensesChart(expandedCategory.name, expandedCategory.value)
             }
 
             PieChart(
@@ -449,7 +446,7 @@ fun ExpenseItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = expense.name,
-        subTextRight = annotateExpense(expense.amount),
+        subTextRight = annotateExpenses(expense.amount),
 
         onClick = { onExpenseClick(expense) }
     )
@@ -467,7 +464,7 @@ private fun CategoryItem(
         subTextLeft = "",
 
         textRight = "",
-        subTextRight = annotateExpense(category.value),
+        subTextRight = annotateExpenses(category.value),
 
         colorIndex = colorIndex,
 

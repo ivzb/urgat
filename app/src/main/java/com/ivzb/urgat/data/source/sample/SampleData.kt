@@ -1,10 +1,12 @@
 package com.ivzb.urgat.data.source.sample
 
+import androidx.compose.ui.text.AnnotatedString
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
@@ -284,10 +286,16 @@ object SampleData {
 
     val SAMPLE_REPORT_BUDGET = GroupedBudget(
         category = Group.groupBudgetCategoriesMonthly(SAMPLE_BUDGETS, ::randomUUID).first(),
-        totalIncome = 4021.34.toBigDecimal(),
+        totalIncome = 4_021.34.toBigDecimal(),
         totalExpenses = 571.34.toBigDecimal(),
-        totalInvestments = 2500.toBigDecimal(),
-        totalInvestmentsFormatted = "2,500 USD",
+        totalInvestments = listOf(
+            InvestmentTotal(
+                currency = "USD",
+                costPrice = 2_500.toBigDecimal(),
+                marketPrice = 2_500.toBigDecimal(),
+                pnl = 0.toBigDecimal(),
+            ),
+        ),
         totalSavings = 950.toBigDecimal(),
     )
 

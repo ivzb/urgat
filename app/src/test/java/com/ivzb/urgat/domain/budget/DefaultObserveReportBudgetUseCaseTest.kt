@@ -55,10 +55,7 @@ class DefaultObserveReportBudgetUseCaseTest {
 
     @Test
     fun `invoke should return Success with filtered items sorted`() = runTest(testDispatcher) {
-        val searchQueryFlow = flowOf("coffee")
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
-        val limit = 10
-        val limitFlow = flowOf(limit)
 
         val categories = listOf(
             GroupedBudgetCategories(
@@ -143,8 +140,14 @@ class DefaultObserveReportBudgetUseCaseTest {
             ),
             totalIncome = 6800.toBigDecimal(),
             totalExpenses = 1200.toBigDecimal(),
-            totalInvestments = 1800.toBigDecimal(),
-            totalInvestmentsFormatted = "1,800 EUR",
+            totalInvestments = listOf(
+                InvestmentTotal(
+                    currency = "EUR",
+                    costPrice = 1_800.toBigDecimal(),
+                    marketPrice = 1_800.toBigDecimal(),
+                    pnl = 0.toBigDecimal(),
+                ),
+            ),
             totalSavings = 1100.toBigDecimal(),
         )
 
@@ -157,10 +160,8 @@ class DefaultObserveReportBudgetUseCaseTest {
 
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
-        val searchQueryFlow = flowOf("coffee")
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
-        val limitFlow = flowOf(limit)
 
         every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
             searchQueryFlow = null,

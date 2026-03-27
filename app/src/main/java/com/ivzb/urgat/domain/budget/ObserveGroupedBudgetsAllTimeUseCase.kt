@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.investment.Investment.Companion.total
 import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesAllTimeUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
@@ -68,8 +69,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
                     ),
                     totalIncome = budget.value,
                     totalExpenses = expenses.total,
-                    totalInvestments = investments.items.sumOf { it.totalCostPrice },
-                    totalInvestmentsFormatted = investments.total.formatCostPrice(),
+                    totalInvestments = total(investments.items),
                     totalSavings = savings.total,
                 )
             } else {
