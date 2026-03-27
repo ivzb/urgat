@@ -1,3 +1,15 @@
+## Release notes 26.03.24
+
+Improved:
+- Unrealized P&L is now displayed on the chart total
+- Grouped list items now show individual unrealized P&L values
+
+## Release notes 26.03.24
+
+Improved:
+- Unrealized P&L is now displayed on the chart total
+- Grouped list items now show individual unrealized P&L values
+
 ## Release notes 26.03.23
 
 Fixed:
