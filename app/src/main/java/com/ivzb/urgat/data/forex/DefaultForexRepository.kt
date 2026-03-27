@@ -20,9 +20,9 @@ class DefaultForexRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : ForexRepository {
 
-    private val cache = ConcurrentHashMap<String, Deferred<BigDecimal>>()
+    private val cache = ConcurrentHashMap<String, Deferred<BigDecimal?>>()
 
-    override suspend fun getExchangeRate(fromCurrency: String, toCurrency: String): BigDecimal {
+    override suspend fun getExchangeRate(fromCurrency: String, toCurrency: String): BigDecimal? {
         val from = fromCurrency.uppercase()
         val to = toCurrency.uppercase()
 
@@ -37,7 +37,8 @@ class DefaultForexRepository @Inject constructor(
         // the already-inserted Deferred and simply .await() the same single network result.
         return cache.getOrPut(key) {
             scope.async {
-                val rate = marketPriceRepository.fetchPrice("${key}=X").price
+                val rate = marketPriceRepository.fetchPrice("${key}=X")?.price
+
                 logger.debug("forex rate fetched: $from -> $to = $rate")
 
                 val inverseKey = "${to}${from}"
@@ -54,8 +55,8 @@ class DefaultForexRepository @Inject constructor(
         amount: BigDecimal,
         fromCurrency: String,
         toCurrency: String,
-    ): BigDecimal {
-        val rate = getExchangeRate(fromCurrency, toCurrency)
+    ): BigDecimal? {
+        val rate = getExchangeRate(fromCurrency, toCurrency) ?: return null
         return amount * rate
     }
 

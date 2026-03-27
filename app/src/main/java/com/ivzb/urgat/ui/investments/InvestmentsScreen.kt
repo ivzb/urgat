@@ -56,16 +56,15 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateFinance
+import com.ivzb.urgat.util.annotateFinancePnL
 import com.ivzb.urgat.util.annotateInvestmentChart
 import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.formatPnL
+import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 @Composable
 fun InvestmentsScreen(
@@ -566,19 +565,14 @@ fun InvestmentItem(
     onInvestmentClick: (Investment) -> Unit
 ) {
 
-    val unrealisedPnL = investment.unrealisedPnL
-    val marketPriceText = "${investment.totalMarketPrice.format()} ${investment.currency}"
-
     ListItem(
         textLeft = investment.name,
         subTextLeft = investment.category,
 
         textRight = investment.shares.toString(),
-        subTextRight = annotateFinance(
-            text = unrealisedPnL.formatPnL(),
-            amount = unrealisedPnL ?: BigDecimal.ZERO,
-            prefix = "$marketPriceText (",
-            suffix = ")"
+        subTextRight = annotateFinancePnL(
+            text = "${investment.totalMarketPrice.format()} ${investment.currency.formatCurrency()}",
+            pnl = investment.unrealisedPnL,
         ),
 
         onClick = { onInvestmentClick(investment) }
@@ -591,19 +585,14 @@ private fun AssetItem(
     colorIndex: Int,
     onClick: () -> Unit,
 ) {
-    val unrealisedPnL = asset.unrealisedPnL
-    val marketPriceText = "${asset.marketPrice.format()} ${asset.currency}"
-
     ListItem(
         textLeft = asset.name,
         subTextLeft = asset.category,
 
         textRight = asset.shares.toString(),
-        subTextRight = annotateFinance(
-            text = unrealisedPnL.formatPnL(),
-            amount = unrealisedPnL ?: BigDecimal.ZERO,
-            prefix = "$marketPriceText (",
-            suffix = ")"
+        subTextRight = annotateFinancePnL(
+            text = "${asset.marketPrice.format()} ${asset.currency.formatCurrency()}",
+            pnl = asset.unrealisedPnL,
         ),
 
         colorIndex = colorIndex,

@@ -27,6 +27,22 @@ fun annotateFinance(text: String, amount: BigDecimal?, prefix: String = "", suff
         spanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = financeColor(amount)),
     )
 
+fun annotateFinancePnL(text: String, pnl: BigDecimal?): AnnotatedString {
+    if (pnl == null || pnl == BigDecimal.ZERO) {
+        return buildAnnotatedString {
+            append(text)
+        }
+    }
+
+    val formattedPnL = pnl.formatPnL()
+
+    return annotateFormattedString(
+        formattedString = "$text ($formattedPnL)",
+        part = formattedPnL,
+        spanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = financeColor(pnl)),
+    )
+}
+
 fun expenseColor(amount: BigDecimal): Color =
     financeColor(-amount)
 

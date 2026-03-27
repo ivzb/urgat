@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatCurrency
 import java.math.BigDecimal
 
 data class InvestmentTotal(
@@ -19,7 +20,7 @@ data class InvestmentTotal(
         fun List<InvestmentTotal>.formatMarketPrice(): String = format(InvestmentTotal::marketPrice)
 
         private fun List<InvestmentTotal>.format(total: (InvestmentTotal) -> BigDecimal): String =
-            joinToString(separator = SEPARATOR) { "${total(it).format()} ${it.currency}" }
+            joinToString(separator = SEPARATOR) { "${total(it).format()} ${it.currency.formatCurrency()}" }
 
     }
 

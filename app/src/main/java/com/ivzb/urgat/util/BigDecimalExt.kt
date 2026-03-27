@@ -19,8 +19,8 @@ fun BigDecimal?.formatPnL(): String = this?.let {
     "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format()}%"
 }.orEmpty()
 
-fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal): BigDecimal? {
-    if (costPrice == BigDecimal.ZERO) {
+fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal?): BigDecimal? {
+    if (costPrice == BigDecimal.ZERO || marketPrice == null) {
         return null
     }
 
@@ -30,8 +30,6 @@ fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal): BigDecimal? {
 
     return (marketPrice - costPrice) / costPrice * BigDecimal(100)
 }
-
-private val zero = "0.00".toBigDecimal()
 
 fun BigDecimal.round(): BigDecimal {
     return this.setScale(2, RoundingMode.HALF_UP)

@@ -10,10 +10,10 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class YahooFinanceMarketPriceRepositoryTest {
@@ -52,7 +52,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         coEvery { api.fetch("GOOGL") } returns response
 
-        val result = repository.fetchPrice("GOOGL")
+        val result = requireNotNull(repository.fetchPrice("GOOGL"))
 
         assertEquals("GOOGL", result.symbol)
         assertEquals(BigDecimal("180.5"), result.price)
@@ -78,7 +78,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         coEvery { api.fetch("BABA") } returns response
 
-        val result = repository.fetchPrice("BABA")
+        val result = requireNotNull(repository.fetchPrice("BABA"))
 
         assertEquals("BABA", result.symbol)
         assertEquals(BigDecimal("95.30"), result.price.round())
@@ -108,19 +108,19 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         coEvery { api.fetch("AAPL") } returns response
 
-        val result = repository.fetchPrice("AAPL")
+        val result = requireNotNull(repository.fetchPrice("AAPL"))
 
         assertEquals(BigDecimal("100"), result.price)
         assertEquals("USD", result.currency)
     }
 
     @Test
-    fun `fetchPrice propagates api exception`() = runTest(testDispatcher) {
+    fun `fetchPrice returns null on api exception`() = runTest(testDispatcher) {
         coEvery { api.fetch("INVALID") } throws RuntimeException("Network error")
 
-        assertFailsWith<RuntimeException> {
-            repository.fetchPrice("INVALID")
-        }
+        val result = repository.fetchPrice("INVALID")
+
+        assertNull(result)
     }
 
     @Test
@@ -140,7 +140,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         coEvery { api.fetch("DELISTED") } returns response
 
-        val result = repository.fetchPrice("DELISTED")
+        val result = requireNotNull(repository.fetchPrice("DELISTED"))
 
         assertEquals("DELISTED", result.symbol)
         assertEquals(BigDecimal("0"), result.price)
@@ -188,7 +188,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         coEvery { api.fetch("BTC-USD") } returns response
 
-        val result = repository.fetchPrice("BTC-USD")
+        val result = requireNotNull(repository.fetchPrice("BTC-USD"))
 
         assertEquals("BTC-USD", result.symbol)
         assertEquals(BigDecimal("91234.56"), result.price.round())

@@ -10,8 +10,8 @@ class DefaultInvestmentMarketMarketPriceRepository @Inject constructor(
     private val forexRepository: ForexRepository,
 ) : InvestmentMarketPriceRepository {
 
-    override suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal {
-        val marketPrice = marketPriceRepository.fetchPrice(symbol)
+    override suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal? {
+        val marketPrice = marketPriceRepository.fetchPrice(symbol.uppercase()) ?: return null
         val sameCurrency = currency.equals(marketPrice.currency, ignoreCase = true)
 
         return if (sameCurrency) {
@@ -25,8 +25,10 @@ class DefaultInvestmentMarketMarketPriceRepository @Inject constructor(
         }
     }
 
-    override suspend fun calculateMarketPrice(symbol: String, currency: String, shares: BigDecimal): BigDecimal {
-        return calculateMarketPrice(symbol, currency) * shares
+    override suspend fun calculateMarketPrice(symbol: String, currency: String, shares: BigDecimal): BigDecimal? {
+        val marketPrice = calculateMarketPrice(symbol, currency) ?: return null
+
+        return marketPrice * shares
     }
 
 }

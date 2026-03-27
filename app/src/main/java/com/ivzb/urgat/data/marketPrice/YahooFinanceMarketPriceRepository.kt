@@ -3,6 +3,7 @@ package com.ivzb.urgat.data.marketPrice
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.IoDispatcher
 import com.ivzb.urgat.util.Logger
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -19,20 +20,28 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : MarketPriceRepository {
 
-    private val cache = ConcurrentHashMap<String, Deferred<MarketPrice>>()
+    private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
 
-    override suspend fun fetchPrice(symbol: String): MarketPrice {
+    override suspend fun fetchPrice(symbol: String): MarketPrice? {
         return cache.getOrPut(symbol) {
             scope.async {
                 withContext(dispatcher) {
-                    val meta = api.fetch(yahooSymbolMapping[symbol] ?: symbol).chart.result.first().meta
+                    try {
+                        val meta = api.fetch(
+                            yahooSymbolMapping[symbol] ?: symbol
+                        ).chart.result.first().meta
 
-                    MarketPrice(
-                        symbol = symbol,
-                        price = BigDecimal(meta.regularMarketPrice),
-                        currency = meta.currency,
-                    ).also {
-                        logger.debug("market price fetched: $it")
+                        MarketPrice(
+                            symbol = symbol,
+                            price = BigDecimal(meta.regularMarketPrice),
+                            currency = meta.currency,
+                        ).also {
+                            logger.debug("market price fetched: $it")
+                        }
+                    } catch (e: Exception) {
+                        logger.debug("market price fetch failed: $symbol")
+                        Tracker.error(e)
+                        null
                     }
                 }
             }

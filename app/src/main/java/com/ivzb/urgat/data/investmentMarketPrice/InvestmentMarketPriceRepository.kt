@@ -4,8 +4,8 @@ import java.math.BigDecimal
 
 interface InvestmentMarketPriceRepository {
 
-    suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal
+    suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal?
 
-    suspend fun calculateMarketPrice(symbol: String, currency: String, shares: BigDecimal): BigDecimal
+    suspend fun calculateMarketPrice(symbol: String, currency: String, shares: BigDecimal): BigDecimal?
 
 }

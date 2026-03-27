@@ -5,7 +5,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import java.math.BigDecimal
 
-typealias CalculateMarketPrice = suspend (symbol: String, currency: String) -> BigDecimal
+typealias CalculateMarketPrice = suspend (symbol: String, currency: String) -> BigDecimal?
 
 fun Investment.toEntity() = InvestmentEntity(
     id = id,
@@ -26,7 +26,7 @@ suspend fun InvestmentEntity.toExternal(calculateMarketPrice: CalculateMarketPri
     name = name,
     shares = shares,
     costPrice = cost,
-    marketPrice = calculateMarketPrice(name, currency),
+    marketPrice = calculateMarketPrice(name, currency) ?: cost,
     category = category,
     currency = currency,
     date = date,
