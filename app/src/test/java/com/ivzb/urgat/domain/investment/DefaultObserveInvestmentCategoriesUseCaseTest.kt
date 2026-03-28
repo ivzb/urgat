@@ -74,8 +74,8 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
                 id = TEST_UUID,
                 name = "etfs",
                 totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("2320"), marketPrice = BigDecimal("2320"), pnl = BigDecimal.ZERO),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2320"), marketPrice = BigDecimal("2320"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("2320"), marketPrice = BigDecimal("2320"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2320"), marketPrice = BigDecimal("2320"), pnl = BigDecimal("0")),
                 ),
                 investments = listOf(investments[0], investments[1], investments[3], investments[4], investments[6], investments[7], investments[9], investments[10]),
             ),
@@ -83,8 +83,8 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
                 id = TEST_UUID,
                 name = "stocks",
                 totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1542.10"), marketPrice = BigDecimal("1542.10"), pnl = BigDecimal.ZERO),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1542.10"), marketPrice = BigDecimal("1542.10"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1542.10"), marketPrice = BigDecimal("1542.10"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1542.10"), marketPrice = BigDecimal("1542.10"), pnl = BigDecimal("0")),
                 ),
                 investments = listOf(investments[2], investments[5], investments[8], investments[11]),
             ),

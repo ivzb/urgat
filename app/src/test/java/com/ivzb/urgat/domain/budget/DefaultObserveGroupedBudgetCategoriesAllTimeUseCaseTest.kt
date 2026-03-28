@@ -65,6 +65,7 @@ class ObserveGroupedBudgetCategoriesAllTimeUseCaseTest {
         val expected = BudgetCategory(
             id = "mock_id",
             name = "mock_id",
+            currency = "EUR",
             value = "18800".toBigDecimal(),
         )
 

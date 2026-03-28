@@ -59,8 +59,8 @@ class ObserveInvestmentNetWorthUseCaseTest {
 
         val expected = InvestmentNetWorth(
             totals = listOf(
-                InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal.ZERO),
-                InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal.ZERO),
+                InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+                InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
             ),
         )
 

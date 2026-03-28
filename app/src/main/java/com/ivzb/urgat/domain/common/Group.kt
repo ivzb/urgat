@@ -250,6 +250,7 @@ object Group {
         BudgetCategory(
             id = random(),
             name = random(),
+            currency = budgets.first().currency,
             value = budgets.sumOf { it.income },
         )
 
@@ -260,6 +261,7 @@ object Group {
                 BudgetCategory(
                     id = random(),
                     name = id,
+                    currency = budgets.first().currency,
                     value = budgets.sumOf { it.income },
                 )
             }

@@ -461,7 +461,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
                 group = "December 2025",
                 total = 5000.toBigDecimal(),
                 items = listOf(
-                    BudgetCategory("1", "1", 5000.toBigDecimal()),
+                    BudgetCategory("1", "1", "EUR", 5000.toBigDecimal()),
                 ),
             ),
         )

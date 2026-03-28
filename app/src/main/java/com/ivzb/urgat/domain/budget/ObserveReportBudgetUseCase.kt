@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment.Companion.total
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
@@ -27,6 +28,7 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
     private val observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase,
     private val observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase,
     private val observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase,
+    private val forexRepository: ForexRepository,
 ): ObserveReportBudgetUseCase {
 
 
@@ -51,11 +53,13 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
                     val investments = investmentsMonthlyAsync.data.getOrNull(index)
                     val savings = savingsMonthlyAsync.data.getOrNull(index)
 
+                    val budgetCurrency = category.items.first().currency
+
                     GroupedBudget(
                         category = category,
                         totalIncome = category.total,
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                        totalInvestments = investments?.items?.let { total(it) } ?: listOf(),
+                        totalInvestments = total(investments?.items, budgetCurrency, forexRepository::convert),
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )
                 }

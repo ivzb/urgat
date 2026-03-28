@@ -291,10 +291,9 @@ fun LazyListScope.budgetCategoryPage(
             ))
 
             add(PieChartItem(
-                // todo: convert investment currency to budget currency for correct calculation
-                value = budget.totalInvestments.sumOf { it.costPrice }.toFloat(),
+                value = budget.totalInvestments.toFloat(),
                 title = stringResource(R.string.investments),
-                total = budget.totalInvestments.formatCostPrice(),
+                total = annotateFinance(budget.totalInvestments),
             ))
 
             add(PieChartItem(
@@ -339,8 +338,7 @@ fun LazyListScope.budgetCategoryPage(
     item {
         CategoryItem(
             name = stringResource(R.string.investments),
-            // todo: show single currency for all investments in the group - same as budget currency
-            value = budget.totalInvestments.formatCostPrice(withPnL = false).toString(),
+            value = budget.totalInvestments.format(),
             colorIndex = 1,
         )
     }

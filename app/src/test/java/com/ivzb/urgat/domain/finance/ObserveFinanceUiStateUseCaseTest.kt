@@ -651,18 +651,11 @@ class ObserveFinanceUiStateUseCaseTest {
             category = GroupedBudgetCategories(
                 group = "2025/12",
                 total = 6_500.toBigDecimal(),
-                items = listOf(BudgetCategory(id = "1", name = "1", value = 6_500.toBigDecimal())),
+                items = listOf(BudgetCategory(id = "1", name = "1", currency = "EUR", value = 6_500.toBigDecimal())),
             ),
             totalIncome = 6_500.toBigDecimal(),
             totalExpenses = 2_000.toBigDecimal(),
-            totalInvestments = listOf(
-                InvestmentTotal(
-                    currency = "USD",
-                    costPrice = 3_000.toBigDecimal(),
-                    marketPrice = 3_000.toBigDecimal(),
-                    pnl = 0.toBigDecimal(),
-                ),
-            ),
+            totalInvestments = 3_000.toBigDecimal(),
             totalSavings = 500.toBigDecimal(),
         )
 

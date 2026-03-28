@@ -111,19 +111,12 @@ class FinanceViewModelTest {
                 group = "",
                 total = 5000.toBigDecimal(),
                 items = listOf(
-                    BudgetCategory("", "", 5000.toBigDecimal()),
+                    BudgetCategory("", "", "EUR", 5000.toBigDecimal()),
                 ),
             ),
             totalIncome = 5000.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = listOf(
-                InvestmentTotal(
-                    currency = "EUR",
-                    costPrice = 1_300.toBigDecimal(),
-                    marketPrice = 1_300.toBigDecimal(),
-                    pnl = 0.toBigDecimal(),
-                ),
-            ),
+            totalInvestments = 1_300.toBigDecimal(),
             totalSavings = 100.toBigDecimal(),
         )
 
@@ -139,12 +132,12 @@ class FinanceViewModelTest {
                         InvestmentTotal(
                             currency = "USD",
                             costPrice = BigDecimal("150000"),
-                            marketPrice = BigDecimal.ZERO,
+                            marketPrice = BigDecimal("0"),
                             pnl = BigDecimal("-100"),
                         ),
                     ),
                     items = listOf(
-                        Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L),
+                        Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), 0.toBigDecimal(), "etfs", "USD", 1L, false, 1L),
                     ),
                 ),
             ),

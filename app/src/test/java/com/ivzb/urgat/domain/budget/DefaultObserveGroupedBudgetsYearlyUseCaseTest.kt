@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
@@ -15,6 +16,7 @@ import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +27,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,6 +37,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
     private lateinit var observeGroupedExpensesYearlyUseCase: ObserveGroupedExpensesYearlyUseCase
     private lateinit var observeGroupedInvestmentsYearlyUseCase: ObserveGroupedInvestmentsYearlyUseCase
     private lateinit var observeGroupedSavingsYearlyUseCase: ObserveGroupedSavingsYearlyUseCase
+    private lateinit var forexRepository: ForexRepository
 
     private lateinit var observeUseCase: ObserveGroupedBudgetsYearlyUseCase
 
@@ -45,12 +49,18 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
         observeGroupedExpensesYearlyUseCase = mockk()
         observeGroupedInvestmentsYearlyUseCase = mockk()
         observeGroupedSavingsYearlyUseCase = mockk()
+        forexRepository = mockk()
+
+        coEvery { forexRepository.convert(any(), any(), any()) } answers {
+            firstArg<java.math.BigDecimal>()
+        }
 
         observeUseCase = DefaultObserveGroupedBudgetsYearlyUseCase(
             observeGroupedBudgetCategoriesYearlyUseCase,
             observeGroupedExpensesYearlyUseCase,
             observeGroupedInvestmentsYearlyUseCase,
             observeGroupedSavingsYearlyUseCase,
+            forexRepository,
         )
     }
 
@@ -81,17 +91,17 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                 group = "2025",
                 total = 13800.toBigDecimal(),
                 items = listOf(
-                    BudgetCategory("1", "1", 6800.toBigDecimal()),
-                    BudgetCategory("2", "2", 2600.toBigDecimal()),
-                    BudgetCategory("3", "3", 1000.toBigDecimal()),
-                    BudgetCategory("4", "4", 3400.toBigDecimal()),
+                    BudgetCategory("1", "1", "EUR", 6800.toBigDecimal()),
+                    BudgetCategory("2", "2", "EUR", 2600.toBigDecimal()),
+                    BudgetCategory("3", "3", "EUR", 1000.toBigDecimal()),
+                    BudgetCategory("4", "4", "EUR", 3400.toBigDecimal()),
                 ),
             ),
             GroupedBudgetCategories(
                 group = "2026",
                 total = 6600.toBigDecimal(),
                 items = listOf(
-                    BudgetCategory("5", "5", 6600.toBigDecimal()),
+                    BudgetCategory("5", "5", "EUR", 6600.toBigDecimal()),
                 ),
             ),
         )
@@ -169,28 +179,15 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                     group = "2025",
                     total = 13800.toBigDecimal(),
                     items = listOf(
-                        BudgetCategory("1", "1", 6800.toBigDecimal()),
-                        BudgetCategory("2", "2", 2600.toBigDecimal()),
-                        BudgetCategory("3", "3", 1000.toBigDecimal()),
-                        BudgetCategory("4", "4", 3400.toBigDecimal()),
+                        BudgetCategory("1", "1", "EUR", 6800.toBigDecimal()),
+                        BudgetCategory("2", "2", "EUR", 2600.toBigDecimal()),
+                        BudgetCategory("3", "3", "EUR", 1000.toBigDecimal()),
+                        BudgetCategory("4", "4", "EUR", 3400.toBigDecimal()),
                     ),
                 ),
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
-                totalInvestments = listOf(
-                    InvestmentTotal(
-                        currency = "EUR",
-                        costPrice = 1_800.toBigDecimal(),
-                        marketPrice = 1_800.toBigDecimal(),
-                        pnl = 0.toBigDecimal(),
-                    ),
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = 2_000.toBigDecimal(),
-                        marketPrice = 2_000.toBigDecimal(),
-                        pnl = 0.toBigDecimal(),
-                    ),
-                ),
+                totalInvestments = 3_800.toBigDecimal(),
                 totalSavings = 1800.toBigDecimal(),
             ),
             GroupedBudget(
@@ -198,12 +195,12 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                     group = "2026",
                     total = 6600.toBigDecimal(),
                     items = listOf(
-                        BudgetCategory("5", "5", 6600.toBigDecimal()),
+                        BudgetCategory("5", "5", "EUR", 6600.toBigDecimal()),
                     ),
                 ),
                 totalIncome = 6600.toBigDecimal(),
                 totalExpenses = 0.toBigDecimal(),
-                totalInvestments = listOf(),
+                totalInvestments = 0.toBigDecimal(),
                 totalSavings = 0.toBigDecimal(),
             ),
         )

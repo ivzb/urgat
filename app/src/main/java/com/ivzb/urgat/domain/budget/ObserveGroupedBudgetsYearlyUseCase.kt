@@ -1,9 +1,8 @@
 package com.ivzb.urgat.domain.budget
 
-import androidx.compose.ui.text.AnnotatedString
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment.Companion.total
-import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
@@ -35,6 +34,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
     private val observeGroupedExpensesYearlyUseCase: ObserveGroupedExpensesYearlyUseCase,
     private val observeGroupedInvestmentsYearlyUseCase: ObserveGroupedInvestmentsYearlyUseCase,
     private val observeGroupedSavingsYearlyUseCase: ObserveGroupedSavingsYearlyUseCase,
+    private val forexRepository: ForexRepository,
 ): ObserveGroupedBudgetsYearlyUseCase {
 
     override fun invoke(
@@ -62,11 +62,13 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
                     val investments = investmentsYearlyAsync.data.getOrNull(index)
                     val savings = savingsYearlyAsync.data.getOrNull(index)
 
+                    val budgetCurrency = category.items.first().currency
+
                     GroupedBudget(
                         category = category,
                         totalIncome = category.total,
                         totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                        totalInvestments = investments?.items?.let { total(it) } ?: listOf(),
+                        totalInvestments = total(investments?.items, budgetCurrency, forexRepository::convert),
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )
                 }

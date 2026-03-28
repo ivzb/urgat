@@ -4,7 +4,6 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
-import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -138,19 +137,12 @@ class ObserveBudgetsUiStateUseCaseTest {
                 group = "All time",
                 total = 24_000.toBigDecimal(),
                 items = listOf(
-                    BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())
+                    BudgetCategory(id = "1", name = "1", currency = "EUR", value = 24_000.toBigDecimal())
                 ),
             ),
             totalIncome = 24_000.toBigDecimal(),
             totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = listOf(
-                InvestmentTotal(
-                    currency = "USD",
-                    costPrice = 11_200.toBigDecimal(),
-                    marketPrice = 11_200.toBigDecimal(),
-                    pnl = 0.toBigDecimal(),
-                ),
-            ),
+            totalInvestments = 11_200.toBigDecimal(),
             totalSavings = 500.toBigDecimal(),
         )))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
@@ -306,36 +298,22 @@ class ObserveBudgetsUiStateUseCaseTest {
                 category = GroupedBudgetCategories(
                     group = "2025/12",
                     total = 6_500.toBigDecimal(),
-                    items = listOf(BudgetCategory(id = "1", name = "1", value = 6_500.toBigDecimal())),
+                    items = listOf(BudgetCategory(id = "1", name = "1", currency = "EUR", value = 6_500.toBigDecimal())),
                 ),
                 totalIncome = 6_500.toBigDecimal(),
                 totalExpenses = 2_000.toBigDecimal(),
-                totalInvestments = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = 3_000.toBigDecimal(),
-                        marketPrice = 3_000.toBigDecimal(),
-                        pnl = 0.toBigDecimal(),
-                    ),
-                ),
+                totalInvestments = 3_000.toBigDecimal(),
                 totalSavings = 500.toBigDecimal(),
             ),
             GroupedBudget(
                 category = GroupedBudgetCategories(
                     group = "2025/11",
                     total = 5_500.toBigDecimal(),
-                    items = listOf(BudgetCategory(id = "1", name = "1", value = 5_500.toBigDecimal())),
+                    items = listOf(BudgetCategory(id = "1", name = "1", currency = "EUR", value = 5_500.toBigDecimal())),
                 ),
                 totalIncome = 5_500.toBigDecimal(),
                 totalExpenses = 1_800.toBigDecimal(),
-                totalInvestments = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = 2_600.toBigDecimal(),
-                        marketPrice = 2_600.toBigDecimal(),
-                        pnl = 0.toBigDecimal(),
-                    ),
-                ),
+                totalInvestments = 2_600.toBigDecimal(),
                 totalSavings = 500.toBigDecimal(),
             ),
         )
@@ -345,18 +323,11 @@ class ObserveBudgetsUiStateUseCaseTest {
                 category = GroupedBudgetCategories(
                     group = "2025",
                     total = 12_000.toBigDecimal(),
-                    items = listOf(BudgetCategory(id = "1", name = "1", value = 12_000.toBigDecimal())),
+                    items = listOf(BudgetCategory(id = "1", name = "1", currency = "EUR", value = 12_000.toBigDecimal())),
                 ),
                 totalIncome = 12_000.toBigDecimal(),
                 totalExpenses = 3_800.toBigDecimal(),
-                totalInvestments = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = 5_600.toBigDecimal(),
-                        marketPrice = 5_600.toBigDecimal(),
-                        pnl = 0.toBigDecimal(),
-                    ),
-                ),
+                totalInvestments = 5_600.toBigDecimal(),
                 totalSavings = 500.toBigDecimal(),
             ),
         )
@@ -365,18 +336,11 @@ class ObserveBudgetsUiStateUseCaseTest {
             category = GroupedBudgetCategories(
                 group = "All time",
                 total = 24_000.toBigDecimal(),
-                items = listOf(BudgetCategory(id = "1", name = "1", value = 24_000.toBigDecimal())),
+                items = listOf(BudgetCategory(id = "1", name = "1", currency = "EUR", value = 24_000.toBigDecimal())),
             ),
             totalIncome = 24_000.toBigDecimal(),
             totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = listOf(
-                InvestmentTotal(
-                    currency = "USD",
-                    costPrice = 11_200.toBigDecimal(),
-                    marketPrice = 11_200.toBigDecimal(),
-                    pnl = 0.toBigDecimal(),
-                ),
-            ),
+            totalInvestments = 11_200.toBigDecimal(),
             totalSavings = 500.toBigDecimal(),
         )
 

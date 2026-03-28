@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment.Companion.total
 import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesAllTimeUseCase
@@ -34,6 +35,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
     private val observeGroupedExpensesAllTimeUseCase: ObserveGroupedExpensesAllTimeUseCase,
     private val observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase,
     private val observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase,
+    private val forexRepository: ForexRepository,
 ): ObserveGroupedBudgetsAllTimeUseCase {
 
     override fun invoke(
@@ -61,6 +63,8 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
                 val investments = investmentsAllTimeAsync.data
                 val savings = savingsAllTimeAsync.data
 
+                val budgetCurrency = budget.currency
+
                 GroupedBudget(
                     category = GroupedItems(
                         group = "",
@@ -69,7 +73,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
                     ),
                     totalIncome = budget.value,
                     totalExpenses = expenses.total,
-                    totalInvestments = total(investments.items),
+                    totalInvestments = total(investments.items, budgetCurrency, forexRepository::convert),
                     totalSavings = savings.total,
                 )
             } else {

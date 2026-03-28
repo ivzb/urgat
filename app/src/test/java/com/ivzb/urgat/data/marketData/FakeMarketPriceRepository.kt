@@ -11,13 +11,13 @@ class FakeMarketPriceRepository : MarketPriceRepository {
     var fetchCount = 0
         private set
 
-    override suspend fun fetchPrice(symbol: String): MarketPrice {
+    override suspend fun fetchPrice(symbol: String): MarketPrice? {
         fetchCount++
 
         if (shouldThrow || symbol in failingSymbols) {
-            throw RuntimeException("Failed to fetch price for $symbol")
+            return null
         }
 
-        return prices[symbol] ?: throw RuntimeException("No price for $symbol")
+        return prices[symbol]
     }
 }

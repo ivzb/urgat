@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
@@ -15,6 +16,7 @@ import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +27,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -34,6 +37,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
     private lateinit var observeGroupedExpensesAllTimeUseCase: ObserveGroupedExpensesAllTimeUseCase
     private lateinit var observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase
     private lateinit var observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase
+    private lateinit var forexRepository: ForexRepository
 
     private lateinit var observeUseCase: ObserveGroupedBudgetsAllTimeUseCase
 
@@ -45,12 +49,18 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         observeGroupedExpensesAllTimeUseCase = mockk()
         observeGroupedInvestmentsAllTimeUseCase = mockk()
         observeGroupedSavingsAllTimeUseCase = mockk()
+        forexRepository = mockk()
+
+        coEvery { forexRepository.convert(any(), any(), any()) } answers {
+            firstArg<BigDecimal>()
+        }
 
         observeUseCase = DefaultObserveGroupedBudgetsAllTimeUseCase(
             observeGroupedBudgetCategoriesAllTimeUseCase,
             observeGroupedExpensesAllTimeUseCase,
             observeGroupedInvestmentsAllTimeUseCase,
             observeGroupedSavingsAllTimeUseCase,
+            forexRepository,
         )
     }
 
@@ -79,6 +89,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         val budget = BudgetCategory(
             id = "",
             name = "",
+            currency = "EUR",
             value = 20400.toBigDecimal(),
         )
 
@@ -148,25 +159,12 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
                 group = "",
                 total = 20400.toBigDecimal(),
                 items = listOf(
-                    BudgetCategory("", "", 20400.toBigDecimal()),
+                    BudgetCategory("", "", "EUR", 20400.toBigDecimal()),
                 ),
             ),
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = listOf(
-                InvestmentTotal(
-                    currency = "EUR",
-                    costPrice = 1_800.toBigDecimal(),
-                    marketPrice = 1_800.toBigDecimal(),
-                    pnl = 0.toBigDecimal(),
-                ),
-                InvestmentTotal(
-                    currency = "USD",
-                    costPrice = 2_000.toBigDecimal(),
-                    marketPrice = 2_000.toBigDecimal(),
-                    pnl = 0.toBigDecimal(),
-                ),
-            ),
+            totalInvestments = 3_800.toBigDecimal(),
             totalSavings = 1500.toBigDecimal(),
         )
 

@@ -45,6 +45,16 @@ data class Investment(
                 }
                 .sortedBy { it.currency }
 
+        suspend fun total(
+            investments: List<Investment>?,
+            toCurrency: String,
+            convert: suspend (amount: BigDecimal, fromCurrency: String, toCurrency: String) -> BigDecimal?,
+        ): BigDecimal =
+            investments
+                ?.mapNotNull { convert(it.totalCostPrice, it.currency, toCurrency) }
+                ?.sumOf { it }
+                ?: BigDecimal.ZERO
+
     }
 
 }

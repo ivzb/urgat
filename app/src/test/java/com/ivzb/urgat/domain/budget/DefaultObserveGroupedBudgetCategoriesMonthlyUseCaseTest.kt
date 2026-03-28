@@ -67,23 +67,23 @@ class ObserveGroupedBudgetCategoriesMonthlyUseCaseTest {
                 group = "January 2026",
                 total = "11200".toBigDecimal(),
                 items = listOf(
-                    BudgetCategory(id = TEST_UUID, "5", BigDecimal("4000")),
-                    BudgetCategory(id = TEST_UUID, "4", BigDecimal("3800")),
-                    BudgetCategory(id = TEST_UUID, "3", BigDecimal("3400")),
+                    BudgetCategory(id = TEST_UUID, name = "5", currency = "EUR", value = BigDecimal("4000")),
+                    BudgetCategory(id = TEST_UUID, name = "4", currency = "EUR", value = BigDecimal("3800")),
+                    BudgetCategory(id = TEST_UUID, name = "3", currency = "EUR", value = BigDecimal("3400")),
                 ),
             ),
             GroupedItems(
                 group = "December 2025",
                 total = "3200".toBigDecimal(),
                 items = listOf(
-                    BudgetCategory(id = TEST_UUID, "2", BigDecimal("3200")),
+                    BudgetCategory(id = TEST_UUID, name = "2", currency = "EUR", value = BigDecimal("3200")),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
                 total = "3000".toBigDecimal(),
                 items = listOf(
-                    BudgetCategory(id = TEST_UUID, "1", BigDecimal("3000")),
+                    BudgetCategory(id = TEST_UUID, name = "1", currency = "EUR", value = BigDecimal("3000")),
                 ),
             ),
         )

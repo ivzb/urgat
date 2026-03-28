@@ -5,5 +5,6 @@ import java.math.BigDecimal
 data class BudgetCategory(
     val id: String,
     val name: String,
+    val currency: String,
     val value: BigDecimal,
 )

@@ -292,14 +292,14 @@ class ObserveInvestmentsUiStateUseCaseTest {
     companion object {
 
         private val investments = listOf(
-            Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), BigDecimal.ZERO, "etfs", "USD", 1L, false, 1L)
+            Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), 0.toBigDecimal(), "etfs", "USD", 1L, false, 1L)
         )
 
         private val fakeInvestments = listOf(
             GroupedItems(
                 group = "2025/12",
                 total = listOf(
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal("0"), pnl = BigDecimal("-100")),
                 ),
                 items = investments,
             ),
@@ -309,14 +309,14 @@ class ObserveInvestmentsUiStateUseCaseTest {
             GroupedItems(
                 group = "2025/12",
                 total = listOf(
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal("0"), pnl = BigDecimal("-100")),
                 ),
                 items = listOf(
                     InvestmentCategory(
                         id = "1",
                         name = "etfs",
                         totals = listOf(
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal("0"), pnl = BigDecimal("-100")),
                         ),
                         investments = investments,
                     ),
@@ -326,7 +326,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
 
         private val fakeNetWorth = InvestmentNetWorth(
             totals = listOf(
-                InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal("0"), pnl = BigDecimal("-100")),
             ),
         )
 
@@ -335,7 +335,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
                 id = "1",
                 name = "etfs",
                 totals = listOf(
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal.ZERO, pnl = BigDecimal("-100")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("150000"), marketPrice = BigDecimal("0"), pnl = BigDecimal("-100")),
                 ),
                 investments = investments,
             ),
@@ -346,8 +346,8 @@ class ObserveInvestmentsUiStateUseCaseTest {
                 id = "1", name = "SNP 500", category = "etfs",
                 shares = 500.toBigDecimal(), costPrice = 500.toBigDecimal(), marketPrice = 600.toBigDecimal(), currency = "USD",
                 totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal.ZERO),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal("0")),
                 ),
                 investments = investments,
             ),

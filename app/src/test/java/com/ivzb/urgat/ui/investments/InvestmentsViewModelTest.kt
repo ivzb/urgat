@@ -82,7 +82,7 @@ class InvestmentsViewModelTest {
                 "SNP 500",
                 500.toBigDecimal(),
                 300.toBigDecimal(),
-                BigDecimal.ZERO,
+                0.toBigDecimal(),
                 "etfs",
                 "USD",
                 1L,
@@ -97,7 +97,7 @@ class InvestmentsViewModelTest {
                     InvestmentTotal(
                         currency = "USD",
                         costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal.ZERO,
+                        marketPrice = BigDecimal("0"),
                         pnl = BigDecimal("-100"),
                     ),
                 ),
@@ -111,7 +111,7 @@ class InvestmentsViewModelTest {
                     InvestmentTotal(
                         currency = "USD",
                         costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal.ZERO,
+                        marketPrice = BigDecimal("0"),
                         pnl = BigDecimal("-100"),
                     ),
                 ),
@@ -123,7 +123,7 @@ class InvestmentsViewModelTest {
                             InvestmentTotal(
                                 currency = "USD",
                                 costPrice = BigDecimal("150000"),
-                                marketPrice = BigDecimal.ZERO,
+                                marketPrice = BigDecimal("0"),
                                 pnl = BigDecimal("-100"),
                             ),
                         ),
@@ -137,7 +137,7 @@ class InvestmentsViewModelTest {
                 InvestmentTotal(
                     currency = "USD",
                     costPrice = BigDecimal("150000"),
-                    marketPrice = BigDecimal.ZERO,
+                    marketPrice = BigDecimal("0"),
                     pnl = BigDecimal("-100"),
                 ),
             ),
@@ -150,7 +150,7 @@ class InvestmentsViewModelTest {
                     InvestmentTotal(
                         currency = "USD",
                         costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal.ZERO,
+                        marketPrice = BigDecimal("0"),
                         pnl = BigDecimal("-100"),
                     ),
                 ),
@@ -167,8 +167,8 @@ class InvestmentsViewModelTest {
                 marketPrice = 600.toBigDecimal(),
                 currency = "USD",
                 totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal.ZERO),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal("0")),
                 ),
                 investments = investments,
             ),
@@ -240,7 +240,7 @@ class InvestmentsViewModelTest {
                 "SNP 500",
                 500.toBigDecimal(),
                 300.toBigDecimal(),
-                BigDecimal.ZERO,
+                0.toBigDecimal(),
                 "etfs",
                 "USD",
                 1L,
@@ -255,7 +255,7 @@ class InvestmentsViewModelTest {
                     InvestmentTotal(
                         currency = "USD",
                         costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal.ZERO,
+                        marketPrice = BigDecimal("0"),
                         pnl = BigDecimal("-100"),
                     ),
                 ),
@@ -269,7 +269,7 @@ class InvestmentsViewModelTest {
                     InvestmentTotal(
                         currency = "USD",
                         costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal.ZERO,
+                        marketPrice = BigDecimal("0"),
                         pnl = BigDecimal("-100"),
                     ),
                 ),
@@ -281,7 +281,7 @@ class InvestmentsViewModelTest {
                             InvestmentTotal(
                                 currency = "USD",
                                 costPrice = BigDecimal("150000"),
-                                marketPrice = BigDecimal.ZERO,
+                                marketPrice = BigDecimal("0"),
                                 pnl = BigDecimal("-100"),
                             ),
                         ),
@@ -295,7 +295,7 @@ class InvestmentsViewModelTest {
                 InvestmentTotal(
                     currency = "USD",
                     costPrice = BigDecimal("150000"),
-                    marketPrice = BigDecimal.ZERO,
+                    marketPrice = BigDecimal("0"),
                     pnl = BigDecimal("-100"),
                 ),
             ),
@@ -308,7 +308,7 @@ class InvestmentsViewModelTest {
                     InvestmentTotal(
                         currency = "USD",
                         costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal.ZERO,
+                        marketPrice = BigDecimal("0"),
                         pnl = BigDecimal("-100"),
                     ),
                 ),
@@ -325,8 +325,8 @@ class InvestmentsViewModelTest {
                 marketPrice = 600.toBigDecimal(),
                 currency = "USD",
                 totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal.ZERO),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal("0")),
                 ),
                 investments = investments,
             ),

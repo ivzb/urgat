@@ -66,7 +66,7 @@ class DefaultObserveGroupedInvestmentsYearlyUseCaseTest {
                         currency = "USD",
                         costPrice = BigDecimal("832685.00"),
                         marketPrice = BigDecimal("832685.00"),
-                        pnl = BigDecimal.ZERO,
+                        pnl = BigDecimal("0"),
                     ),
                 ),
                 items = listOf(
@@ -81,7 +81,7 @@ class DefaultObserveGroupedInvestmentsYearlyUseCaseTest {
                         currency = "USD",
                         costPrice = BigDecimal("2771900.00"),
                         marketPrice = BigDecimal("2771900.00"),
-                        pnl = BigDecimal.ZERO,
+                        pnl = BigDecimal("0"),
                     ),
                 ),
                 items = listOf(
@@ -132,7 +132,7 @@ class DefaultObserveGroupedInvestmentsYearlyUseCaseTest {
                         currency = "USD",
                         costPrice = BigDecimal("832685.00"),
                         marketPrice = BigDecimal("832685.00"),
-                        pnl = BigDecimal.ZERO,
+                        pnl = BigDecimal("0"),
                     ),
                 ),
                 items = listOf(
@@ -147,7 +147,7 @@ class DefaultObserveGroupedInvestmentsYearlyUseCaseTest {
                         currency = "USD",
                         costPrice = BigDecimal("2771900.00"),
                         marketPrice = BigDecimal("2771900.00"),
-                        pnl = BigDecimal.ZERO,
+                        pnl = BigDecimal("0"),
                     ),
                 ),
                 items = listOf(
