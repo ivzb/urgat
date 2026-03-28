@@ -1,3 +1,8 @@
+## Release notes 26.03.25
+
+Improved:
+- Budget and monthly reports now show total investment converted to the budget's currency
+
 ## Release notes 26.03.24
 
 Improved:
