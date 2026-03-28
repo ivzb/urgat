@@ -31,7 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
-import com.ivzb.urgat.data.investment.InvestmentTotal.Companion.formatCostPrice
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState

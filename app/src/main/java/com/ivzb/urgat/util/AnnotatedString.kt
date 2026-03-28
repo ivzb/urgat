@@ -6,6 +6,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import com.ivzb.urgat.data.investment.InvestmentTotal
 import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
@@ -47,6 +48,26 @@ fun annotateExpenses(amount: BigDecimal, prefix: String = ""): AnnotatedString =
 
 fun annotateExpensesChart(name: String, value: BigDecimal): AnnotatedString =
     annotateExpenses(value, "$name\n")
+
+fun annotateCostPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true): AnnotatedString = annotatePrice(totals, InvestmentTotal::costPrice, withPnL)
+
+fun annotateMarketPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true): AnnotatedString = annotatePrice(totals, InvestmentTotal::marketPrice, withPnL)
+
+private fun annotatePrice(totals: List<InvestmentTotal>, price: (InvestmentTotal) -> BigDecimal, withPnL: Boolean): AnnotatedString =
+    buildAnnotatedString {
+        totals.forEachIndexed { index, total ->
+            append(
+                annotateFinancePnL(
+                    text = "${price(total).format()} ${total.currency.formatCurrency()}",
+                    pnl = if (withPnL) total.pnl else null,
+                )
+            )
+
+            if (index < totals.lastIndex) {
+                appendLine()
+            }
+        }
+    }
 
 fun annotateInvestmentsChart(name: String, total: AnnotatedString?): AnnotatedString =
     buildAnnotatedString {

@@ -93,15 +93,9 @@
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
-- consider showing current market price for all investments - load all instruments from yahoo finance on app start
-- think how to properly calculate portfolio item diff since the currency might be different
 - add watch list to /investments to track any instruments user is interested in
-- when calculating sum of investments with different currencies use forex repository to convert to single currency so they can be summed correctly (also annotateInvestmentChart)
 - add currency to budget so investments can be converted to single currency for proper calculation
 - add currency to expense
 - add currency to saving
 - rename InvestmentEntity cost to costPrice
-- rename formatMarketPrice and formatCostPrice to annotateXPrice and move them to AnnotatedString.kt
-- show single currency for all investments in the group - same as budget currency in BudgetsScreen
-- convert investment currency to budget currency for correct calculation in GroupedBudget
-- create investment total cost single BigDecimal by converting all investments total currencies to budget currency and use it in GroupedBudget and BudgetsScreen
+- show currencies in inner budgets screens
