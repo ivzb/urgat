@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseBudgetCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseExpenseCsv
@@ -15,6 +16,7 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseInvestmentCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseNoteCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseSavingCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseTodoCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseWatchlistAssetCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseWeightCsv
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.importData.ImportDataRepository
@@ -22,6 +24,7 @@ import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -44,6 +47,8 @@ interface ImportDataUseCase {
 
     suspend fun importNotes(content: String)
 
+    suspend fun importWatchlistAssets(content: String)
+
     suspend fun importWeights(content: String)
 
 }
@@ -56,6 +61,7 @@ class DefaultImportDataUseCase @Inject constructor(
     private val investmentDao: InvestmentDao,
     private val savingDao: SavingDao,
     private val budgetDao: BudgetDao,
+    private val watchlistAssetDao: WatchlistAssetDao,
     private val weightDao: WeightDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ImportDataUseCase {
@@ -68,6 +74,7 @@ class DefaultImportDataUseCase @Inject constructor(
             importDataRepository.importCsv(uri, INVESTMENTS_CSV_FILE_NAME, ::parseInvestmentCsv, investmentDao::insertAll)
             importDataRepository.importCsv(uri, SAVINGS_CSV_FILE_NAME, ::parseSavingCsv, savingDao::insertAll)
             importDataRepository.importCsv(uri, BUDGETS_CSV_FILE_NAME, ::parseBudgetCsv, budgetDao::insertAll)
+            importDataRepository.importCsv(uri, WATCHLIST_ASSETS_CSV_FILE_NAME, ::parseWatchlistAssetCsv, watchlistAssetDao::insertAll)
             importDataRepository.importCsv(uri, WEIGHTS_CSV_FILE_NAME, ::parseWeightCsv, weightDao::insertAll)
         }
     }
@@ -94,6 +101,10 @@ class DefaultImportDataUseCase @Inject constructor(
 
     override suspend fun importNotes(content: String) {
         importDataRepository.importString(content, ::parseNoteCsv, noteDao::insertAll)
+    }
+
+    override suspend fun importWatchlistAssets(content: String) {
+        importDataRepository.importString(content, ::parseWatchlistAssetCsv, watchlistAssetDao::insertAll)
     }
 
     override suspend fun importWeights(content: String) {

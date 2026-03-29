@@ -13,6 +13,7 @@ sealed class ImportDataPage(
     data object Budgets: ImportDataPage(R.string.budgets)
     data object Todos: ImportDataPage(R.string.todo)
     data object Notes: ImportDataPage(R.string.notes)
+    data object WatchlistAssets: ImportDataPage(R.string.watchlist)
     data object Weights: ImportDataPage(R.string.weights)
 }
 
@@ -23,5 +24,6 @@ val IMPORT_DATA_PAGES = listOf(
     ImportDataPage.Budgets,
     ImportDataPage.Todos,
     ImportDataPage.Notes,
+    ImportDataPage.WatchlistAssets,
     ImportDataPage.Weights,
 )

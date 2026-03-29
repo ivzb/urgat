@@ -40,7 +40,7 @@
     <string name="category_hint">Category</string>
     <string name="date_hint" translatable="false">dd/MM/yyyy</string>
     <string name="note_hint">Enter your note here.</string>
-    <string name="investment_hint">Enter your investment here.</string>
+    <string name="investment_hint">Enter your investment instrument/ticker here.</string>
     <string name="currency_hint">Currency</string>
     <string name="save">Save</string>
     <string name="loading_library">Loading library</string>
@@ -198,4 +198,8 @@
     <string name="reset_filters">Reset filters</string>
     <string name="duplicate">Duplicate</string>
     <string name="watchlist">Watchlist</string>
+    <string name="add_watchlist_asset">Add Watchlist Asset</string>
+    <string name="edit_watchlist_asset">Edit Watchlist Asset</string>
+    <string name="watchlist_asset_name_hint">Enter asset name here.</string>
+    <string name="empty_watchlist_asset_message">Please enter a watchlist asset.</string>
 </resources>

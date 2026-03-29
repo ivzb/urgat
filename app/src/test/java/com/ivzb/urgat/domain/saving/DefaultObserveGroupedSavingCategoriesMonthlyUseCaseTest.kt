@@ -246,7 +246,6 @@ class ObserveGroupedSavingCategoriesMonthlyUseCaseTest {
         assertEquals(expected, actual)
     }
 
-
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val searchQueryFlow = flowOf("")

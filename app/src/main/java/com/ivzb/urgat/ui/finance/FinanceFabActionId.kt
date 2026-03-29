@@ -5,4 +5,5 @@ enum class FinanceFabActionId {
     Investment,
     Saving,
     Budget,
+    Watchlist,
 }

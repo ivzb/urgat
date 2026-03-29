@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.finance
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.ShoppingCart
 import com.ivzb.urgat.R
@@ -30,5 +31,10 @@ val FINANCE_FAB_ACTIONS = listOf(
         FinanceFabActionId.Expense,
         Icons.Filled.ShoppingCart,
         R.string.add_expense,
+    ),
+    FabAction(
+        FinanceFabActionId.Watchlist,
+        Icons.Filled.RemoveRedEye,
+        R.string.add_watchlist_asset,
     ),
 )

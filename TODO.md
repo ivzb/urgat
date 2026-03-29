@@ -24,7 +24,6 @@
 - adjust SAMPLE_DATA budgets, expenses, investments and savings data to make sense
 - rethink which screens to be published to playstore screenshots - maybe focus more on finance tab
 - refactor duplicated tests and extract shared common tests into each Test class (see DefaultObserveBudgetUseCaseTest.kt)
-- consider not showing multiple fab add button actions - but directly open the one for currently selected page
 - move filtering to room DB instead of data filtering after that
 
 ## Bugs
@@ -100,3 +99,5 @@
 - show currencies in inner budgets screens
 - when converting investment currency, use investment's data exchange rate via historical exchange rate
 - add watch list to /investments to track any instruments user is interested in
+- add watchlist asset to export/import
+- don't show multiple fab add button actions - but directly open the one for currently selected page

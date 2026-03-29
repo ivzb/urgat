@@ -5,4 +5,5 @@ sealed class FinanceUiEvent {
     object AddInvestment : FinanceUiEvent()
     object AddSaving : FinanceUiEvent()
     object AddBudget: FinanceUiEvent()
+    object AddWatchlistAsset: FinanceUiEvent()
 }

@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.util.randomUUID
@@ -233,6 +234,27 @@ object SampleData {
 
     val SAMPLE_SAVINGS_CATEGORIES_ALL_TIME =
         Group.groupSavingCategoriesAllTime(SAMPLE_SAVINGS, ::randomUUID)
+
+    val SAMPLE_WATCHLIST_ASSETS = listOf(
+        listOf("GOOGL"),
+        listOf("MSFT"),
+        listOf("AMZN"),
+        listOf("TSLA"),
+        listOf("NVDA"),
+        listOf("AAPL"),
+        listOf("META"),
+        listOf("BTC"),
+        listOf("ETH"),
+        listOf("VOO"),
+    )
+        .mapIndexed { index, (name) ->
+            WatchlistAsset(
+                id = "watchlist_asset_$index",
+                name = name,
+                isDeleted = false,
+                createdAt = System.currentTimeMillis(),
+            )
+        }
 
     val SAMPLE_WEIGHTS = listOf(
         listOf("70.5"),

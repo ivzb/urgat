@@ -15,6 +15,8 @@ import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.todo.TodoEntity
+import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
+import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.data.weight.WeightEntity
 
@@ -26,7 +28,8 @@ import com.ivzb.urgat.data.weight.WeightEntity
     InvestmentEntity::class,
     SavingEntity::class,
     BudgetEntity::class,
- ], version = 9)
+    WatchlistAssetEntity::class,
+ ], version = 10)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -43,5 +46,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun savingDao(): SavingDao
 
     abstract fun budgetDao(): BudgetDao
+
+    abstract fun watchlistAssetDao(): WatchlistAssetDao
 
 }

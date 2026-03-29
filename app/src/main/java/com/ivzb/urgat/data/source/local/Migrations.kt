@@ -115,6 +115,20 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
     }
 }
 
+val MIGRATION_9_10 = object : Migration(9, 10) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE `watchlist_assets` (
+                `id` TEXT NOT NULL, 
+                `name` TEXT NOT NULL, 
+                `isDeleted` INTEGER NOT NULL, 
+                `createdAt` INTEGER NOT NULL, 
+                PRIMARY KEY(`id`)
+            )
+        """)
+    }
+}
+
 val ALL_MIGRATIONS = arrayOf(
     MIGRATION_1_2,
     MIGRATION_2_3,
@@ -124,4 +138,5 @@ val ALL_MIGRATIONS = arrayOf(
     MIGRATION_6_7,
     MIGRATION_7_8,
     MIGRATION_8_9,
+    MIGRATION_9_10,
 )

@@ -42,7 +42,6 @@ fun AboutScreen(
     )
 }
 
-
 @VisibleForTesting
 @Composable
 fun AboutScreen(

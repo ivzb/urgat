@@ -237,7 +237,6 @@ class AddEditSavingViewModelTest {
         }
     }
 
-
     @Test
     fun `duplicateSaving creates new saving with current date`() = runTest {
         val savingId = "123"

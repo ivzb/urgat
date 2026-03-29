@@ -99,6 +99,7 @@ class ImportDataViewModel @Inject constructor(
                     ImportDataPage.Savings -> importDataUseCase.importSavings(content)
                     ImportDataPage.Budgets -> importDataUseCase.importBudgets(content)
                     ImportDataPage.Notes -> importDataUseCase.importNotes(content)
+                    ImportDataPage.WatchlistAssets -> importDataUseCase.importWatchlistAssets(content)
                     ImportDataPage.Todos -> importDataUseCase.importTodos(content)
                     ImportDataPage.Weights -> importDataUseCase.importWeights(content)
                 }

@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import dagger.Module
 import dagger.Provides
@@ -37,5 +38,8 @@ class DaoModule {
 
     @Provides
     fun provideBudgetsDao(appDatabase: AppDatabase): BudgetDao = appDatabase.budgetDao()
+
+    @Provides
+    fun provideWatchlistAssetDao(appDatabase: AppDatabase): WatchlistAssetDao = appDatabase.watchlistAssetDao()
 
 }

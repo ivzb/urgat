@@ -24,6 +24,8 @@ import com.ivzb.urgat.data.saving.DefaultSavingsRepository
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.data.todo.DefaultTodoRepository
 import com.ivzb.urgat.data.todo.TodoRepository
+import com.ivzb.urgat.data.watchlist.DefaultWatchlistAssetsRepository
+import com.ivzb.urgat.data.watchlist.WatchlistAssetsRepository
 import com.ivzb.urgat.data.weight.DefaultWeightsRepository
 import com.ivzb.urgat.data.weight.WeightsRepository
 import com.ivzb.urgat.data.forex.DefaultForexRepository
@@ -105,5 +107,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsInvestmentPriceRepository(investmentPriceRepository: DefaultInvestmentMarketMarketPriceRepository): InvestmentMarketPriceRepository
+
+    @Singleton
+    @Binds
+    fun bindsWatchlistAssetsRepository(watchlistAssetsRepository: DefaultWatchlistAssetsRepository): WatchlistAssetsRepository
 
 }

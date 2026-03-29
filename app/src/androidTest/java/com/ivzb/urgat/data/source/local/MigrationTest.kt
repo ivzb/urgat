@@ -10,6 +10,7 @@ import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.todo.TodoEntity
+import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightEntity
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -54,6 +55,7 @@ class MigrationTest {
                 MIGRATION_6_7,
                 MIGRATION_7_8,
                 MIGRATION_8_9,
+                MIGRATION_9_10,
             )
             .build()
             .apply {
@@ -94,6 +96,7 @@ class MigrationTest {
                 MIGRATION_6_7,
                 MIGRATION_7_8,
                 MIGRATION_8_9,
+                MIGRATION_9_10,
             )
             .build()
             .let { db ->
@@ -183,7 +186,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 9,
+            version = 10,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -194,6 +197,7 @@ class MigrationTest {
                 MIGRATION_6_7,
                 MIGRATION_7_8,
                 MIGRATION_8_9,
+                MIGRATION_9_10,
             ),
         ).close()
 
@@ -304,6 +308,15 @@ class MigrationTest {
                     )
 
                     db.weightDao().upsert(weight)
+
+                    val watchlistAsset = WatchlistAssetEntity(
+                        id = "1",
+                        name = "AAPL",
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.watchlistAssetDao().upsert(watchlistAsset)
                 }
 
                 // verify new fields are updated
@@ -358,6 +371,16 @@ class MigrationTest {
                     )
 
                     assertEquals(expectedWeight, actualWeight)
+
+                    val actualWatchlistAsset = db.watchlistAssetDao().getById("1")
+                    val expectedWatchlistAsset = WatchlistAssetEntity(
+                        id = "1",
+                        name = "AAPL",
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedWatchlistAsset, actualWatchlistAsset)
                 }
 
                 db.close()

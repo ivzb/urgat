@@ -56,7 +56,6 @@ fun SampleScreen(
     }
 }
 
-
 @VisibleForTesting
 @Composable
 fun SampleScreen(

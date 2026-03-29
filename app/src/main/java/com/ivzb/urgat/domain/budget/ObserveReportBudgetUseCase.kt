@@ -31,7 +31,6 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
     private val forexRepository: ForexRepository,
 ): ObserveReportBudgetUseCase {
 
-
     override fun invoke(
         dateRangeFlow: Flow<LongRange>?,
     ): Flow<Async<GroupedBudget?>> {

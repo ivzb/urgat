@@ -53,7 +53,6 @@ class DefaultFireRepository @Inject constructor(
 
         private val FIRE_TAX_RATE = stringPreferencesKey("fire_tax_rate")
 
-
     }
 
 }

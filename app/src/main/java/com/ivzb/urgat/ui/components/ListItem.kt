@@ -70,7 +70,6 @@ fun ListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-
                 Column(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center,

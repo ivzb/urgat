@@ -95,7 +95,6 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-
 fun dataColor(index: Int) = dataColors[index % dataColors.size]
 
 private val dataColors: List<Color> = listOf(

@@ -50,7 +50,6 @@ annotation class TabletLandscapePreview
 )
 annotation class TabletDarkModeLandscapePreview
 
-
 @Preview(
     name = "Foldable - Unfolded",
     widthDp = 1080,

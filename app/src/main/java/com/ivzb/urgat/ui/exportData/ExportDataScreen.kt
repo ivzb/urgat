@@ -60,7 +60,6 @@ fun ExportDataScreen(
     }
 }
 
-
 @VisibleForTesting
 @Composable
 fun ExportDataScreen(

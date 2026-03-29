@@ -292,7 +292,6 @@ class LibraryViewModelTest {
         advanceUntilIdle()
         assertEquals("coffee", fakeLibraryRepository.searchQueryFlow.value)
 
-
         viewModel.onIntent(LibraryIntent.ResetFilters)
         advanceUntilIdle()
 

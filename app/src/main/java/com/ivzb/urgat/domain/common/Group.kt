@@ -188,7 +188,6 @@ object Group {
             }
             .sortedBy { it.name }
 
-
     fun groupSavingCategoriesMonthly(savings: List<Saving>, random: () -> String): List<GroupedSavingCategories> =
         byDateMonthly(savings, Saving::date, Saving::total)
             .map { (group, total, items) ->

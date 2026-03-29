@@ -129,6 +129,7 @@ class FinanceViewModel @Inject constructor(
                     FinanceFabActionId.Investment -> FinanceUiEvent.AddInvestment
                     FinanceFabActionId.Saving -> FinanceUiEvent.AddSaving
                     FinanceFabActionId.Budget -> FinanceUiEvent.AddBudget
+                    FinanceFabActionId.Watchlist -> FinanceUiEvent.AddWatchlistAsset
                 }
             )
         }

@@ -50,5 +50,3 @@ class NetworkModule {
             .create(YahooFinanceApi::class.java)
     }
 }
-
-

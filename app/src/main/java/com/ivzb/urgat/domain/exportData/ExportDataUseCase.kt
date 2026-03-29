@@ -14,6 +14,8 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_MAPPING
 import com.ivzb.urgat.data.expense.ExpenseDao
@@ -22,6 +24,7 @@ import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,6 +45,7 @@ class DefaultExportDataUseCase @Inject constructor(
     private val investmentDao: InvestmentDao,
     private val savingDao: SavingDao,
     private val budgetDao: BudgetDao,
+    private val watchlistAssetDao: WatchlistAssetDao,
     private val weightDao: WeightDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ExportDataUseCase {
@@ -54,6 +58,7 @@ class DefaultExportDataUseCase @Inject constructor(
             exportDataRepository.exportCsv(uri, investmentDao.stream(), INVESTMENTS_CSV_FILE_NAME, INVESTMENTS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, savingDao.stream(), SAVINGS_CSV_FILE_NAME, SAVINGS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, budgetDao.stream(), BUDGETS_CSV_FILE_NAME, BUDGETS_CSV_MAPPING)
+            exportDataRepository.exportCsv(uri, watchlistAssetDao.stream(), WATCHLIST_ASSETS_CSV_FILE_NAME, WATCHLIST_ASSETS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, weightDao.stream(), WEIGHTS_CSV_FILE_NAME, WEIGHTS_CSV_MAPPING)
         }
     }

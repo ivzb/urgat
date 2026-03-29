@@ -64,6 +64,5 @@ class DefaultObserveWeightsUiStateUseCase @Inject constructor(
         )
     }
 
-
 }
 

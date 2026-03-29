@@ -7,6 +7,7 @@ import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
 import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
+import com.ivzb.urgat.ui.addEditWatchlistAsset.AddEditWatchlistAssetRoute
 import com.ivzb.urgat.ui.expenses.ExpensesRoute
 import com.ivzb.urgat.ui.investments.InvestmentsRoute
 import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
@@ -115,6 +116,20 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
+    fun navigateToAddWatchlistAsset() {
+        navigator.navigate(AddEditWatchlistAssetRoute(
+            id = null,
+            titleResId = R.string.add_watchlist_asset,
+        ))
+    }
+
+    fun navigateToEditWatchlistAsset(watchlistAssetId: String) {
+        navigator.navigate(AddEditWatchlistAssetRoute(
+            id = watchlistAssetId,
+            titleResId = R.string.edit_watchlist_asset,
+        ))
+    }
+
     fun navigateToAddWeight() {
         navigator.navigate(AddEditWeightRoute(
             id = null,
@@ -128,6 +143,5 @@ class UrgatNavActions(private val navigator: Navigator) {
             titleResId = R.string.edit_weight,
         ))
     }
-
 
 }

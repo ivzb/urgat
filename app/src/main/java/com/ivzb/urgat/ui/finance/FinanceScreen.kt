@@ -81,6 +81,8 @@ fun FinanceScreen(
     onMoreBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
 
+    onAddWatchlistAsset: () -> Unit,
+
     navigator: Navigator,
     modifier: Modifier = Modifier,
 ) {
@@ -114,6 +116,7 @@ fun FinanceScreen(
                 is FinanceUiEvent.AddInvestment -> onAddInvestment()
                 is FinanceUiEvent.AddSaving -> onAddSaving()
                 is FinanceUiEvent.AddBudget -> onAddBudget()
+                is FinanceUiEvent.AddWatchlistAsset -> onAddWatchlistAsset()
             }
 
             viewModel.onIntent(FinanceIntent.EventConsumed)
@@ -472,35 +475,35 @@ private fun ReportPage(
 
 @Composable
 private fun WatchlistPage(
-    uiState: WatchlistUiState,
+//    uiState: WatchlistUiState,
 
-    onAddWatchlistAsset: () -> Unit,
-    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
-    onResetFilters: () -> Unit,
+//    onAddWatchlistAsset: () -> Unit,
+//    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
+//    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
-        content = {
-            com.ivzb.urgat.ui.watchlist.WatchlistPage(
-                watchlistAssets = uiState.watchlistAssets,
-                onWatchlistAssetClick = onWatchlistAssetClick,
-
-                header = {
-                    ItemHeaderLarge(
-                        text = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                    )
-                },
-
-                listState = listState,
-                onListStateChanged = onListStateChanged,
-            )
-        }
-    )
+//    FinancePage(
+//        uiState = uiState,
+//        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
+//        content = {
+//            com.ivzb.urgat.ui.watchlist.WatchlistPage(
+//                watchlistAssets = uiState.watchlistAssets,
+//                onWatchlistAssetClick = onWatchlistAssetClick,
+//
+//                header = {
+//                    ItemHeaderLarge(
+//                        text = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+//                    )
+//                },
+//
+//                listState = listState,
+//                onListStateChanged = onListStateChanged,
+//            )
+//        }
+//    )
 }
 
 @Composable

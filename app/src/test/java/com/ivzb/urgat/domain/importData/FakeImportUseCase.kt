@@ -11,6 +11,7 @@ class FakeImportUseCase : ImportDataUseCase {
     var invokedBudgets: Boolean = false
     var invokedTodos: Boolean = false
     var invokedNotes: Boolean = false
+    var invokedWatchlistAssets: Boolean = false
     var invokedWeights: Boolean = false
 
     override suspend fun invoke(uri: Uri) {
@@ -39,6 +40,10 @@ class FakeImportUseCase : ImportDataUseCase {
 
     override suspend fun importNotes(content: String) {
         invokedNotes = true
+    }
+
+    override suspend fun importWatchlistAssets(content: String) {
+        invokedWatchlistAssets = true
     }
 
     override suspend fun importWeights(content: String) {

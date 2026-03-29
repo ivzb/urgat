@@ -36,5 +36,3 @@ class FakeFinanceRepository : FinanceRepository {
     override suspend fun updateBudgetsSortType(value: BudgetsSortType) { budgetsSortTypeFlow.value = value }
 
 }
-
-

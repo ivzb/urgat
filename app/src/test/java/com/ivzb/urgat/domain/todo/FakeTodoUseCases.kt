@@ -70,7 +70,6 @@ class FakeUpdateTodoUseCase : UpdateTodoUseCase {
     }
 }
 
-
 class FakeCompleteTodoUseCase : CompleteTodoUseCase {
 
     var completedId: String? = null
