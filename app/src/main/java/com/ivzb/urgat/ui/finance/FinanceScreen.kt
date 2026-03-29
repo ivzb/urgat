@@ -45,6 +45,7 @@ import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.FilteringUiInfo
+import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
@@ -272,6 +273,11 @@ fun FinanceScreen(
                     onListStateChanged = onListStateChanged,
                 )
 
+                FinancePage.Watchlist -> WatchlistPage(
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+
                 FinancePage.FIRE -> FiRePage(
                     fire = uiState.fire,
                     onWithdrawalRateChange = { onIntent(FinanceIntent.UpdateFireWithdrawalRate(it)) },
@@ -461,6 +467,39 @@ private fun ReportPage(
 
         listState = listState,
         onListStateChanged = onListStateChanged,
+    )
+}
+
+@Composable
+private fun WatchlistPage(
+    uiState: WatchlistUiState,
+
+    onAddWatchlistAsset: () -> Unit,
+    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
+    onResetFilters: () -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
+        content = {
+            com.ivzb.urgat.ui.watchlist.WatchlistPage(
+                watchlistAssets = uiState.watchlistAssets,
+                onWatchlistAssetClick = onWatchlistAssetClick,
+
+                header = {
+                    ItemHeaderLarge(
+                        text = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                    )
+                },
+
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
+        }
     )
 }
 

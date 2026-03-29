@@ -93,9 +93,10 @@
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
-- add watch list to /investments to track any instruments user is interested in
 - add currency to budget so investments can be converted to single currency for proper calculation
 - add currency to expense
 - add currency to saving
 - rename InvestmentEntity cost to costPrice
 - show currencies in inner budgets screens
+- when converting investment currency, use investment's data exchange rate via historical exchange rate
+- add watch list to /investments to track any instruments user is interested in
