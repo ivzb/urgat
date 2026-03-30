@@ -8,6 +8,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -113,6 +114,17 @@ class DefaultFinanceRepositoryTest {
     fun `updateBudgetsSortType updates flow value`() = runTest {
         repository.updateBudgetsSortType(BudgetsSortType.BY_MIN)
         assertEquals(BudgetsSortType.BY_MIN, repository.budgetsSortTypeFlow.first())
+    }
+
+    @Test
+    fun `watchlistAssetsSortTypeFlow emits default value when not set`() = runTest {
+        assertEquals(WatchlistAssetsSortType.BY_DATE, repository.watchlistAssetsSortTypeFlow.first())
+    }
+
+    @Test
+    fun `updateWatchlistAssetsSortType updates flow value`() = runTest {
+        repository.updateWatchlistAssetsSortType(WatchlistAssetsSortType.BY_NAME)
+        assertEquals(WatchlistAssetsSortType.BY_NAME, repository.watchlistAssetsSortTypeFlow.first())
     }
 
 }

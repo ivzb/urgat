@@ -35,6 +35,7 @@ import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
@@ -42,21 +43,18 @@ import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
-import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.FilteringUiInfo
-import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
-import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import com.ivzb.urgat.util.format
 
 private const val EMPTY_FIRE_CALCULATION = "∞"
@@ -82,6 +80,8 @@ fun FinanceScreen(
     onBudgetClick: (Budget) -> Unit,
 
     onAddWatchlistAsset: () -> Unit,
+    onMoreWatchlistAssets: () -> Unit,
+    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
 
     navigator: Navigator,
     modifier: Modifier = Modifier,
@@ -104,6 +104,9 @@ fun FinanceScreen(
 
         onMoreBudgets = onMoreBudgets,
         onBudgetClick = onBudgetClick,
+
+        onMoreWatchlistAssets = onMoreWatchlistAssets,
+        onWatchlistAssetClick = onWatchlistAssetClick,
 
         navigator = navigator,
         modifier = modifier
@@ -141,6 +144,9 @@ fun FinanceScreen(
 
     onMoreBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
+
+    onMoreWatchlistAssets: () -> Unit,
+    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
 
     navigator: Navigator,
     modifier: Modifier = Modifier
@@ -207,6 +213,14 @@ fun FinanceScreen(
                             items = uiState.budgetsUiState.filteringUiInfo.sortMenuItems,
                             showBadge = uiState.budgetsUiState.filteringUiInfo.showSortBadge,
                             onFilter = { onIntent(FinanceIntent.SetBudgetsSorting(it)) },
+                        )
+                    }
+
+                    FinancePage.Watchlist -> {
+                        SortMenu(
+                            items = uiState.watchlistAssetsUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.watchlistAssetsUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(FinanceIntent.SetWatchlistAssetsSorting(it)) },
                         )
                     }
                 }
@@ -277,6 +291,13 @@ fun FinanceScreen(
                 )
 
                 FinancePage.Watchlist -> WatchlistPage(
+                    uiState = uiState.watchlistAssetsUiState,
+
+                    onMoreWatchlistAssets = onMoreWatchlistAssets,
+                    onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Watchlist)) },
+                    onWatchlistAssetClick = onWatchlistAssetClick,
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
+
                     listState = listState,
                     onListStateChanged = onListStateChanged,
                 )
@@ -475,35 +496,37 @@ private fun ReportPage(
 
 @Composable
 private fun WatchlistPage(
-//    uiState: WatchlistUiState,
+    uiState: WatchlistAssetsUiState,
 
-//    onAddWatchlistAsset: () -> Unit,
-//    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
-//    onResetFilters: () -> Unit,
+    onMoreWatchlistAssets: () -> Unit,
+    onAddWatchlistAsset: () -> Unit,
+    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
+    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
 
-//    FinancePage(
-//        uiState = uiState,
-//        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
-//        content = {
-//            com.ivzb.urgat.ui.watchlist.WatchlistPage(
-//                watchlistAssets = uiState.watchlistAssets,
-//                onWatchlistAssetClick = onWatchlistAssetClick,
-//
-//                header = {
-//                    ItemHeaderLarge(
-//                        text = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-//                    )
-//                },
-//
-//                listState = listState,
-//                onListStateChanged = onListStateChanged,
-//            )
-//        }
-//    )
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
+        content = {
+            com.ivzb.urgat.ui.watchlist.TransactionsPage(
+                watchlistAssets = uiState.watchlistAssets,
+                onWatchlistAssetClick = onWatchlistAssetClick,
+
+                header = {
+                    ItemHeaderWithMore(
+                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                        onMoreClick = onMoreWatchlistAssets,
+                    )
+                },
+
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
+        }
+    )
 }
 
 @Composable
@@ -774,6 +797,9 @@ private fun FinanceScreenPreview(
                     filteringUiInfo = BudgetsFilteringUiInfo(),
                     initialPage = budgetsInitialPage,
                 ),
+                watchlistAssetsUiState = WatchlistAssetsUiState(
+                    watchlistAssets = SampleData.SAMPLE_WATCHLIST_ASSETS,
+                ),
                 reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
                 fire = SampleData.SAMPLE_FIRE,
                 isLoading = false,
@@ -794,6 +820,9 @@ private fun FinanceScreenPreview(
 
             onBudgetClick = {},
             onMoreBudgets = {},
+
+            onMoreWatchlistAssets = {},
+            onWatchlistAssetClick = {},
 
             navigator = FakeNavigator(),
             modifier = Modifier
@@ -931,6 +960,9 @@ fun FinanceScreenEmptyPreview() {
             onBudgetClick = {},
             onMoreBudgets = {},
 
+            onMoreWatchlistAssets = {},
+            onWatchlistAssetClick = {},
+
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -964,6 +996,9 @@ fun FinanceScreenLoadingPreview() {
             onBudgetClick = {},
             onMoreBudgets = {},
 
+            onMoreWatchlistAssets = {},
+            onWatchlistAssetClick = {},
+
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -996,6 +1031,9 @@ fun FinanceScreenErrorPreview() {
 
             onBudgetClick = {},
             onMoreBudgets = {},
+
+            onMoreWatchlistAssets = {},
+            onWatchlistAssetClick = {},
 
             navigator = FakeNavigator(),
             modifier = Modifier

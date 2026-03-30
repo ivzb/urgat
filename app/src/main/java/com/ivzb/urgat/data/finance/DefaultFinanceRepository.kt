@@ -11,6 +11,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreStringFlow
 import kotlinx.coroutines.flow.Flow
@@ -68,6 +69,12 @@ class DefaultFinanceRepository @Inject constructor(
         dataStore.edit { it[BUDGETS_SORT_TYPE] = value.name }
     }
 
+    override val watchlistAssetsSortTypeFlow: Flow<WatchlistAssetsSortType> = dataStoreEnumFlow(dataStore, WATCHLIST_ASSETS_SORT_TYPE, WatchlistAssetsSortType.BY_DATE)
+
+    override suspend fun updateWatchlistAssetsSortType(value: WatchlistAssetsSortType) {
+        dataStore.edit { it[WATCHLIST_ASSETS_SORT_TYPE] = value.name }
+    }
+
     companion object {
 
         private val SEARCH_QUERY = stringPreferencesKey("finance_search_query")
@@ -82,6 +89,8 @@ class DefaultFinanceRepository @Inject constructor(
 
         private val BUDGETS_FILTER_TYPE = stringPreferencesKey("finance_budgets_filter_type")
         private val BUDGETS_SORT_TYPE = stringPreferencesKey("finance_budgets_sort_type")
+
+        private val WATCHLIST_ASSETS_SORT_TYPE = stringPreferencesKey("finance_watchlist_assets_sort_type")
 
     }
 

@@ -23,6 +23,8 @@ import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsSortingUseCase
 import com.ivzb.urgat.domain.saving.FakeObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.FakeObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsUseCase
+import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsSortingUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -33,6 +35,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -59,6 +62,8 @@ class ObserveFinanceUiStateUseCaseTest {
     private lateinit var fakeObserveInvestmentsSortingUseCase: FakeObserveInvestmentsSortingUseCase
     private lateinit var fakeObserveGroupedSavingsMonthlyUseCase: FakeObserveGroupedSavingsMonthlyUseCase
     private lateinit var fakeObserveSavingsSortingUseCase: FakeObserveSavingsSortingUseCase
+    private lateinit var fakeObserveWatchlistAssetsUseCase: FakeObserveWatchlistAssetsUseCase
+    private lateinit var fakeObserveWatchlistAssetsSortingUseCase: FakeObserveWatchlistAssetsSortingUseCase
     private lateinit var fakeObserveBudgetsUseCase: FakeObserveBudgetsUseCase
     private lateinit var fakeObserveBudgetsFilteringUseCase: FakeObserveBudgetsFilteringUseCase
     private lateinit var fakeObserveBudgetsSortingUseCase: FakeObserveBudgetsSortingUseCase
@@ -77,6 +82,8 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveInvestmentsSortingUseCase = FakeObserveInvestmentsSortingUseCase()
         fakeObserveGroupedSavingsMonthlyUseCase = FakeObserveGroupedSavingsMonthlyUseCase()
         fakeObserveSavingsSortingUseCase = FakeObserveSavingsSortingUseCase()
+        fakeObserveWatchlistAssetsUseCase = FakeObserveWatchlistAssetsUseCase()
+        fakeObserveWatchlistAssetsSortingUseCase = FakeObserveWatchlistAssetsSortingUseCase()
         fakeObserveBudgetsUseCase = FakeObserveBudgetsUseCase()
         fakeObserveBudgetsFilteringUseCase = FakeObserveBudgetsFilteringUseCase()
         fakeObserveBudgetsSortingUseCase = FakeObserveBudgetsSortingUseCase()
@@ -92,6 +99,8 @@ class ObserveFinanceUiStateUseCaseTest {
             fakeObserveInvestmentsSortingUseCase,
             fakeObserveGroupedSavingsMonthlyUseCase,
             fakeObserveSavingsSortingUseCase,
+            fakeObserveWatchlistAssetsUseCase,
+            fakeObserveWatchlistAssetsSortingUseCase,
             fakeObserveBudgetsUseCase,
             fakeObserveBudgetsFilteringUseCase,
             fakeObserveBudgetsSortingUseCase,
@@ -519,6 +528,7 @@ class ObserveFinanceUiStateUseCaseTest {
         budgetsFilterTypeFlow = flowOf(budgetsFilterType),
         budgetsSortTypeFlow = flowOf(budgetsSortType),
         budgetDateRangeFlow = flowOf(0L..Long.MAX_VALUE),
+        watchlistAssetsSortTypeFlow = flowOf(WatchlistAssetsSortType.BY_DATE),
         withdrawalRateFlow = flowOf(null),
         returnOfInvestmentFlow = flowOf(null),
         taxRateFlow = flowOf(null),
@@ -534,6 +544,8 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveInvestmentsSortingUseCase.emit(Async.Loading)
         fakeObserveGroupedSavingsMonthlyUseCase.emit(Async.Loading)
         fakeObserveSavingsSortingUseCase.emit(Async.Loading)
+        fakeObserveWatchlistAssetsUseCase.emit(Async.Loading)
+        fakeObserveWatchlistAssetsSortingUseCase.emit(Async.Loading)
         fakeObserveBudgetsUseCase.emit(Async.Loading)
         fakeObserveBudgetsFilteringUseCase.emit(Async.Loading)
         fakeObserveBudgetsSortingUseCase.emit(Async.Loading)
@@ -550,6 +562,8 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveInvestmentsSortingUseCase.emit(Async.Error)
         fakeObserveGroupedSavingsMonthlyUseCase.emit(Async.Error)
         fakeObserveSavingsSortingUseCase.emit(Async.Error)
+        fakeObserveWatchlistAssetsUseCase.emit(Async.Error)
+        fakeObserveWatchlistAssetsSortingUseCase.emit(Async.Error)
         fakeObserveBudgetsUseCase.emit(Async.Error)
         fakeObserveBudgetsFilteringUseCase.emit(Async.Error)
         fakeObserveBudgetsSortingUseCase.emit(Async.Error)
@@ -569,6 +583,8 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
         fakeObserveGroupedSavingsMonthlyUseCase.emit(Async.Success(fakeSavings))
         fakeObserveSavingsSortingUseCase.emit(Async.Success(fakeSavingsSorting))
+        fakeObserveWatchlistAssetsUseCase.emit(Async.Success(listOf()))
+        fakeObserveWatchlistAssetsSortingUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsUseCase.emit(Async.Success(fakeBudgets))
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(fakeBudgetsFiltering))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(fakeBudgetsSorting))

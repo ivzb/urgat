@@ -116,6 +116,10 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
+    fun navigateToWatchlistAssets() {
+        // TODO
+    }
+
     fun navigateToAddWatchlistAsset() {
         navigator.navigate(AddEditWatchlistAssetRoute(
             id = null,

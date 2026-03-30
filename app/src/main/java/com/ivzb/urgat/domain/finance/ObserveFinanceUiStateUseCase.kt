@@ -13,6 +13,8 @@ import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsSortingUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
+import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsSortingUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
@@ -29,6 +31,9 @@ import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsFilteringUiInfo
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import kotlinx.coroutines.flow.Flow
@@ -54,6 +59,8 @@ interface ObserveFinanceUiStateUseCase {
         budgetsSortTypeFlow: Flow<BudgetsSortType>,
         budgetDateRangeFlow: Flow<LongRange>,
 
+        watchlistAssetsSortTypeFlow: Flow<WatchlistAssetsSortType>,
+
         withdrawalRateFlow: Flow<BigDecimal?>,
         returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
@@ -72,6 +79,8 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
     private val observeInvestmentsSortingUseCase: ObserveInvestmentsSortingUseCase,
     private val observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase,
     private val observeSavingsSortingUseCase: ObserveSavingsSortingUseCase,
+    private val observeWatchlistAssetsUseCase: ObserveWatchlistAssetsUseCase,
+    private val observeWatchlistAssetsSortingUseCase: ObserveWatchlistAssetsSortingUseCase,
     private val observeBudgetsUseCase: ObserveBudgetsUseCase,
     private val observeBudgetsFilteringUseCase: ObserveBudgetsFilteringUseCase,
     private val observeBudgetsSortingUseCase: ObserveBudgetsSortingUseCase,
@@ -94,6 +103,8 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         budgetsSortTypeFlow: Flow<BudgetsSortType>,
         budgetDateRangeFlow: Flow<LongRange>,
 
+        watchlistAssetsSortTypeFlow: Flow<WatchlistAssetsSortType>,
+
         withdrawalRateFlow: Flow<BigDecimal?>,
         returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
@@ -105,6 +116,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         val investmentsFlow = observeInvestmentsLightUiState(searchQueryFlow, investmentsFilterTypeFlow, investmentsSortTypeFlow)
         val savingsFlow = observeSavingsLightUiState(searchQueryFlow, savingsSortTypeFlow)
         val budgetsFlow = observeBudgetsLightUiState(searchQueryFlow, budgetsFilterTypeFlow, budgetsSortTypeFlow)
+        val watchlistAssetsFlow = observeWatchlistAssetsLightUiState(searchQueryFlow, watchlistAssetsSortTypeFlow)
         val reportBudgetFlow = observeReportBudgetUseCase(budgetDateRangeFlow)
         val fireFlow = observeFiReUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, fireDateRangeFlow)
 
@@ -113,6 +125,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
             investmentsFlow,
             savingsFlow,
             budgetsFlow,
+            watchlistAssetsFlow,
             reportBudgetFlow,
             fireFlow,
             searchQueryFlow.map { Async.Success(it) },
@@ -123,12 +136,13 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
             onError = {
                 FinanceUiState(hasError = true)
             },
-            onSuccess = { expensesUiState, investmentsUiState, savingsUiState, budgetsUiState, reportBudget, fire, searchQuery ->
+            onSuccess = { expensesUiState, investmentsUiState, savingsUiState, budgetsUiState, watchlistAssetsUiState, reportBudget, fire, searchQuery ->
                 FinanceUiState(
                     expensesUiState = expensesUiState,
                     investmentsUiState = investmentsUiState,
                     savingsUiState = savingsUiState,
                     budgetsUiState = budgetsUiState,
+                    watchlistAssetsUiState = watchlistAssetsUiState,
                     reportBudget = reportBudget,
                     fire = fire,
                     isLoading = false,
@@ -249,6 +263,32 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
                     searchQuery = searchQuery,
                     filterType = filterType,
                     filterMenuItems = filtering,
+                    sortType = sortType,
+                    sortMenuItems = sorting,
+                ),
+            )
+        }
+    ).map { Async.Success(it) }
+
+    private fun observeWatchlistAssetsLightUiState(
+        searchQueryFlow: Flow<String>,
+        sortTypeFlow: Flow<WatchlistAssetsSortType>,
+    ): Flow<Async<WatchlistAssetsUiState>> = combineUiState(
+        observeWatchlistAssetsUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeWatchlistAssetsSortingUseCase(),
+        combine(searchQueryFlow, sortTypeFlow, ::Pair).map { Async.Success(it) },
+
+        onLoading = {
+            WatchlistAssetsUiState(isLoading = true)
+        },
+        onError = {
+            WatchlistAssetsUiState(hasError = true)
+        },
+        onSuccess = { watchlistAssets, sorting, (searchQuery, sortType) ->
+            WatchlistAssetsUiState(
+                watchlistAssets = watchlistAssets,
+                filteringUiInfo = WatchlistAssetsFilteringUiInfo.from(
+                    searchQuery = searchQuery,
                     sortType = sortType,
                     sortMenuItems = sorting,
                 ),

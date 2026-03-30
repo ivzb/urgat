@@ -98,6 +98,6 @@
 - rename InvestmentEntity cost to costPrice
 - show currencies in inner budgets screens
 - when converting investment currency, use investment's data exchange rate via historical exchange rate
-- add watch list to /investments to track any instruments user is interested in
-- add watchlist asset to export/import
 - don't show multiple fab add button actions - but directly open the one for currently selected page
+- create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
+- show current instrument price for each watchlist asset

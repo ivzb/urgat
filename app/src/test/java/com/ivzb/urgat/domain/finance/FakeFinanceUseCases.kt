@@ -7,6 +7,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.finance.FinanceUiState
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,7 @@ class FakeObserveFinanceUiStateUseCase : ObserveFinanceUiStateUseCase {
         budgetsFilterTypeFlow: Flow<BudgetsFilterType>,
         budgetsSortTypeFlow: Flow<BudgetsSortType>,
         budgetDateRangeFlow: Flow<LongRange>,
+        watchlistAssetsSortTypeFlow: Flow<WatchlistAssetsSortType>,
         withdrawalRateFlow: Flow<BigDecimal?>,
         returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,

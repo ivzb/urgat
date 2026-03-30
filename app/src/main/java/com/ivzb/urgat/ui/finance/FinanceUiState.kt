@@ -8,6 +8,7 @@ import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 
 data class FinanceUiState(
     override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
@@ -16,6 +17,7 @@ data class FinanceUiState(
     val investmentsUiState: InvestmentsUiState = InvestmentsUiState(),
     val savingsUiState: SavingsUiState = SavingsUiState(),
     val budgetsUiState: BudgetsUiState = BudgetsUiState(),
+    val watchlistAssetsUiState: WatchlistAssetsUiState = WatchlistAssetsUiState(),
 
     val reportBudget: GroupedBudget? = null,
     val fire: FiRe? = null,
@@ -42,7 +44,8 @@ data class FinanceUiState(
         expensesUiState.filteringUiInfo.hasAppliedFilters ||
         investmentsUiState.filteringUiInfo.hasAppliedFilters ||
         savingsUiState.filteringUiInfo.hasAppliedFilters ||
-        budgetsUiState.filteringUiInfo.hasAppliedFilters
+        budgetsUiState.filteringUiInfo.hasAppliedFilters ||
+        watchlistAssetsUiState.filteringUiInfo.hasAppliedFilters
 
     fun withTopbarActions(page: Page): Boolean {
         val uiState = when (page) {
@@ -50,6 +53,7 @@ data class FinanceUiState(
             FinancePage.Investments -> investmentsUiState
             FinancePage.Savings -> savingsUiState
             FinancePage.Budgets -> budgetsUiState
+            FinancePage.Watchlist -> watchlistAssetsUiState
             else -> null
         }
 

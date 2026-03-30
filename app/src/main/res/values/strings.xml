@@ -202,4 +202,11 @@
     <string name="edit_watchlist_asset">Edit Watchlist Asset</string>
     <string name="watchlist_asset_name_hint">Enter asset name here.</string>
     <string name="empty_watchlist_asset_message">Please enter a watchlist asset.</string>
+    <string name="no_watchlist_assets">You have no watchlist assets</string>
+    <string name="no_watchlist_assets_message">Tap "Add Watchlist Asset" to track your first one.</string>
+    <string name="no_watchlist_assets_search">You have no watchlist assets with this search criteria!</string>
+    <string name="no_watchlist_assets_search_message">Tap "Reset filters" to reset to default.</string>
+    <string name="loading_watchlist_assets">Loading watchlist assets</string>
+    <string name="error_watchlist_assets">Error while loading watchlist assets</string>
+    <string name="sort_by_name">Sort by name</string>
 </resources>

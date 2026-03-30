@@ -13,6 +13,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import com.ivzb.urgat.util.currentMonthRange
@@ -56,6 +57,8 @@ class FinanceViewModel @Inject constructor(
     private val _savedBudgetsFilterType = financeRepository.budgetsFilterTypeFlow
     private val _savedBudgetsSortType = financeRepository.budgetsSortTypeFlow
 
+    private val _savedWatchlistAssetsSortType = financeRepository.watchlistAssetsSortTypeFlow
+
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeFinanceUiStateUseCase(
             searchQueryFlow = _searchQuery,
@@ -66,6 +69,7 @@ class FinanceViewModel @Inject constructor(
             savingsSortTypeFlow = _savedSavingsSortType,
             budgetsFilterTypeFlow = _savedBudgetsFilterType,
             budgetsSortTypeFlow = _savedBudgetsSortType,
+            watchlistAssetsSortTypeFlow = _savedWatchlistAssetsSortType,
             budgetDateRangeFlow = _budgetDateRange,
             withdrawalRateFlow = _withdrawalRate,
             returnOfInvestmentFlow = _returnOfInvestment,
@@ -108,6 +112,8 @@ class FinanceViewModel @Inject constructor(
 
             is FinanceIntent.SetBudgetsFiltering -> setBudgetsFiltering(intent.filterType)
             is FinanceIntent.SetBudgetsSorting -> setBudgetsSorting(intent.sortType)
+
+            is FinanceIntent.SetWatchlistAssetsSorting -> setWatchlistAssetsSorting(intent.sortType)
 
             is FinanceIntent.ResetFilters -> resetFilters()
 
@@ -201,6 +207,12 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
+    private fun setWatchlistAssetsSorting(sortType: WatchlistAssetsSortType) {
+        viewModelScope.launch {
+            financeRepository.updateWatchlistAssetsSortType(sortType)
+        }
+    }
+
     private fun resetFilters() {
         onSearchQueryChanged("")
         setExpensesFiltering(ExpensesFilterType.ALL_EXPENSES)
@@ -210,6 +222,7 @@ class FinanceViewModel @Inject constructor(
         setBudgetsFiltering(BudgetsFilterType.ALL_BUDGETS)
         setBudgetsSorting(BudgetsSortType.BY_DATE)
         setSavingsSorting(SavingsSortType.BY_DATE)
+        setWatchlistAssetsSorting(WatchlistAssetsSortType.BY_DATE)
     }
 
 }

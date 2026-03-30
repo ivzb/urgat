@@ -26,6 +26,7 @@ import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -509,6 +510,7 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetSavingsSorting(SavingsSortType.BY_MAX))
         viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(BudgetsFilterType.POSITIVE_BUDGETS))
         viewModel.onIntent(FinanceIntent.SetBudgetsSorting(BudgetsSortType.BY_MIN))
+        viewModel.onIntent(FinanceIntent.SetWatchlistAssetsSorting(WatchlistAssetsSortType.BY_NAME))
         advanceUntilIdle()
 
         // Verify non-default values are set
@@ -520,6 +522,7 @@ class FinanceViewModelTest {
         assertEquals(SavingsSortType.BY_MAX, fakeFinanceRepository.savingsSortTypeFlow.value)
         assertEquals(BudgetsFilterType.POSITIVE_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
         assertEquals(BudgetsSortType.BY_MIN, fakeFinanceRepository.budgetsSortTypeFlow.value)
+        assertEquals(WatchlistAssetsSortType.BY_NAME, fakeFinanceRepository.watchlistAssetsSortTypeFlow.value)
 
         // Reset all
         viewModel.onIntent(FinanceIntent.ResetFilters)
@@ -534,6 +537,7 @@ class FinanceViewModelTest {
         assertEquals(SavingsSortType.BY_DATE, fakeFinanceRepository.savingsSortTypeFlow.value)
         assertEquals(BudgetsFilterType.ALL_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
         assertEquals(BudgetsSortType.BY_DATE, fakeFinanceRepository.budgetsSortTypeFlow.value)
+        assertEquals(WatchlistAssetsSortType.BY_DATE, fakeFinanceRepository.watchlistAssetsSortTypeFlow.value)
     }
 
     private fun createViewModel() = FinanceViewModel(

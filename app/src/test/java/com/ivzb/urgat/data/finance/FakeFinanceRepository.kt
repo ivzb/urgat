@@ -7,6 +7,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeFinanceRepository : FinanceRepository {
@@ -34,5 +35,8 @@ class FakeFinanceRepository : FinanceRepository {
 
     override val budgetsSortTypeFlow = MutableStateFlow(BudgetsSortType.BY_DATE)
     override suspend fun updateBudgetsSortType(value: BudgetsSortType) { budgetsSortTypeFlow.value = value }
+
+    override val watchlistAssetsSortTypeFlow = MutableStateFlow(WatchlistAssetsSortType.BY_DATE)
+    override suspend fun updateWatchlistAssetsSortType(value: WatchlistAssetsSortType) { watchlistAssetsSortTypeFlow.value = value }
 
 }

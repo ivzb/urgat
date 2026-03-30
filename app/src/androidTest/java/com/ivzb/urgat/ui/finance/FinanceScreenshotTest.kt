@@ -1,19 +1,17 @@
 package com.ivzb.urgat.ui.finance
 
 import androidx.compose.ui.Modifier
-import com.ivzb.urgat.R
 import com.ivzb.urgat.annotations.Screenshot
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
-import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
-import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import org.junit.Test
 import org.junit.experimental.categories.Category
 
@@ -79,8 +77,12 @@ class FinanceScreenshotTest: ScreenshotTest() {
         screenshotTest_FinanceScreen_sampleData(initialPage = 4)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_fire() =
+    fun screenshotTest_FinanceScreen_sampleData_watchlist_assets() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 5)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_fire() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 6)
 
     private fun screenshotTest_FinanceScreen_sampleData(
         initialPage: Int,
@@ -115,6 +117,9 @@ class FinanceScreenshotTest: ScreenshotTest() {
             budgetsUiState = BudgetsUiState(
                 budgets = SampleData.SAMPLE_BUDGETS,
                 initialPage = budgetsInitialPage,
+            ),
+            watchlistAssetsUiState = WatchlistAssetsUiState(
+                watchlistAssets = SampleData.SAMPLE_WATCHLIST_ASSETS,
             ),
             reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
             fire = SampleData.SAMPLE_FIRE,
@@ -166,6 +171,9 @@ class FinanceScreenshotTest: ScreenshotTest() {
 
                     onBudgetClick = {},
                     onMoreBudgets = {},
+
+                    onMoreWatchlistAssets = {},
+                    onWatchlistAssetClick = {},
 
                     navigator = FakeNavigator(),
 
