@@ -1,3 +1,11 @@
+## Release notes 26.03.26
+
+New:
+- You can now see current prices directly on your watchlist.
+
+Fixed:
+- Resolved an issue that could occur when currency conversion rates were not found.
+
 ## Release notes 26.03.25
 
 Improved:
