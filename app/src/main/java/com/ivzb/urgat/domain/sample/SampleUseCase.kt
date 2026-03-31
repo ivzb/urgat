@@ -8,6 +8,7 @@ import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
+import com.ivzb.urgat.domain.watchlist.CreateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import javax.inject.Inject
 
@@ -24,6 +25,7 @@ class DefaultSampleUseCase @Inject constructor(
     private val createInvestmentUseCase: CreateInvestmentUseCase,
     private val createSavingUseCase: CreateSavingUseCase,
     private val createBudgetUseCase: CreateBudgetUseCase,
+    private val createWatchlistAssetUseCase: CreateWatchlistAssetUseCase,
     private val createWeightUseCase: CreateWeightUseCase,
 ): SampleUseCase {
 
@@ -86,7 +88,13 @@ class DefaultSampleUseCase @Inject constructor(
         SampleData.SAMPLE_WEIGHTS.forEach {
             createWeightUseCase(
                 it.value,
-                it.date
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_WATCHLIST_ASSETS.forEach {
+            createWatchlistAssetUseCase(
+                it.name,
             )
         }
     }

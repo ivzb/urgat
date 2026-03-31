@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.investmentMarketPrice
 
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
+import com.ivzb.urgat.util.normalizeInstrument
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -12,7 +13,7 @@ class DefaultInvestmentMarketMarketPriceRepository @Inject constructor(
 
     override suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal? {
         val marketPrice = marketPriceRepository.fetchPrice(symbol) ?: return null
-        val sameCurrency = currency.equals(marketPrice.currency, ignoreCase = true)
+        val sameCurrency = normalizeInstrument(currency).equals(marketPrice.currency, ignoreCase = true)
 
         return if (sameCurrency) {
             marketPrice.price

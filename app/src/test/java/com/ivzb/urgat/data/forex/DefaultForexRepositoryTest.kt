@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultForexRepositoryTest {
@@ -134,13 +135,15 @@ class DefaultForexRepositoryTest {
         assertEquals(2, fakeMarketPriceRepository.fetchCount)
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun `throws when market price fetch fails`() = runTest(testDispatcher) {
         fakeMarketPriceRepository.shouldThrow = true
 
-        repository.getExchangeRate("EUR", "USD")
+        val rate = repository.getExchangeRate("EUR", "USD")
 
         advanceUntilIdle()
+
+        assertNull(rate)
     }
 
     @Test

@@ -3,10 +3,12 @@ package com.ivzb.urgat.data.forex
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.util.Logger
+import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import org.junit.Assert
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.concurrent.ConcurrentHashMap
@@ -41,10 +43,14 @@ class DefaultForexRepository @Inject constructor(
 
                 logger.debug("forex rate fetched: $from -> $to = $rate")
 
-                val inverseKey = "${to}${from}"
-                val inverseRate = BigDecimal.ONE.divide(rate, 10, RoundingMode.HALF_UP)
-                cache.putIfAbsent(inverseKey, CompletableDeferred(inverseRate))
-                logger.debug("forex rate cached (inverse): $to -> $from = $inverseRate")
+                if (rate == null) {
+                    Tracker.error(Throwable("forex rate not found: $from -> $to"))
+                } else {
+                    val inverseKey = "${to}${from}"
+                    val inverseRate = BigDecimal.ONE.divide(rate, 10, RoundingMode.HALF_UP)
+                    cache.putIfAbsent(inverseKey, CompletableDeferred(inverseRate))
+                    logger.debug("forex rate cached (inverse): $to -> $from = $inverseRate")
+                }
 
                 rate
             }

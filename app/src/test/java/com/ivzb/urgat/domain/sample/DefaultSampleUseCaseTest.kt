@@ -7,6 +7,7 @@ import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
+import com.ivzb.urgat.domain.watchlist.CreateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -22,6 +23,7 @@ class DefaultSampleUseCaseTest {
     private lateinit var createInvestmentUseCase: CreateInvestmentUseCase
     private lateinit var createSavingUseCase: CreateSavingUseCase
     private lateinit var createBudgetUseCase: CreateBudgetUseCase
+    private lateinit var createWatchlistAssetsUseCase: CreateWatchlistAssetUseCase
     private lateinit var createWeightUseCase: CreateWeightUseCase
 
     private lateinit var sampleUseCase: SampleUseCase
@@ -34,6 +36,7 @@ class DefaultSampleUseCaseTest {
         createInvestmentUseCase = mockk(relaxed = true)
         createSavingUseCase = mockk(relaxed = true)
         createBudgetUseCase = mockk(relaxed = true)
+        createWatchlistAssetsUseCase = mockk(relaxed = true)
         createWeightUseCase = mockk(relaxed = true)
 
         sampleUseCase = DefaultSampleUseCase(
@@ -43,6 +46,7 @@ class DefaultSampleUseCaseTest {
             createInvestmentUseCase,
             createSavingUseCase,
             createBudgetUseCase,
+            createWatchlistAssetsUseCase,
             createWeightUseCase,
         )
     }
@@ -100,6 +104,12 @@ class DefaultSampleUseCaseTest {
                     it.bankEnd,
                     it.currency,
                     it.date,
+                )
+            }
+
+            SampleData.SAMPLE_WATCHLIST_ASSETS.forEach {
+                createWatchlistAssetsUseCase(
+                    it.name,
                 )
             }
 

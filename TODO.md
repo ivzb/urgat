@@ -103,3 +103,4 @@
 - add instrument suggestions when adding new watchlist asset
 - show if market is open and working hours to watchlist
 - improve DefaultWatchlistAssetsRepositoryTest and DefaultInvestmentsRepositoryTest by using market price repo and verifying the built objects
+- write unit tests for DefaultInvestmentMarketMarketPriceRepository (including symbol currency to test symbol normalization)

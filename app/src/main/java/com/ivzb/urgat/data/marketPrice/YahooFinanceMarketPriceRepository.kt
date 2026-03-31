@@ -4,6 +4,7 @@ import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.di.IoDispatcher
 import com.ivzb.urgat.util.Logger
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.normalizeInstrument
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -23,15 +24,13 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
     private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
 
     override suspend fun fetchPrice(symbol: String): MarketPrice? {
-        val symbol = symbol.uppercase()
+        val symbol = normalizeInstrument(symbol.uppercase())
 
         return cache.getOrPut(symbol) {
             scope.async {
                 withContext(dispatcher) {
                     try {
-                        val meta = api.fetch(
-                            yahooSymbolMapping[symbol] ?: symbol
-                        ).chart.result.first().meta
+                        val meta = api.fetch(symbol).chart.result.first().meta
 
                         MarketPrice(
                             symbol = symbol,
@@ -50,19 +49,6 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
                 }
             }
         }.await()
-    }
-
-    companion object {
-
-        // replace user symbol with yahoo finance symbol
-        private val yahooSymbolMapping = mapOf(
-            "BRK.B" to "BRK-B",
-            "SXR8" to "SXR8.DE",
-            "XAU" to "GC=F",
-            "BTC" to "BTC-USD",
-            "ETH" to "ETH-USD",
-        )
-
     }
 
 }

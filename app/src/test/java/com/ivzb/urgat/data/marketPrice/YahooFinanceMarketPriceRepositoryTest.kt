@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.marketPrice
 
 import com.ivzb.urgat.util.FakeLogger
+import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.round
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -61,6 +62,62 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("USD", result.currency)
 
         coVerify { api.fetch("GOOGL") }
+    }
+
+    @Test
+    fun `fetchPrice normalizes symbol and returns correct market price`() = runTest(testDispatcher) {
+        val response = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 4_581.70,
+                            currency = "USD",
+                            shortName = "Gold Jun 26 (GC=F)",
+                            chartPreviousClose = 4_557.50,
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("GC=F") } returns response
+
+        val result = requireNotNull(repository.fetchPrice("XAU"))
+
+        assertEquals("GC=F", result.symbol)
+        assertEquals(BigDecimal("4581.69").format(), result.price.format())
+        assertEquals("USD", result.currency)
+
+        coVerify { api.fetch("GC=F") }
+    }
+
+    @Test
+    fun `fetchPrice normalizes currency symbol and returns correct market price`() = runTest(testDispatcher) {
+        val response = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 1.1469,
+                            currency = "USD",
+                            shortName = "EUR/USD (EURUSD=X)",
+                            chartPreviousClose = 1.1466,
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("EURUSD=X") } returns response
+
+        val result = requireNotNull(repository.fetchPrice("€$=X"))
+
+        assertEquals("EURUSD=X", result.symbol)
+        assertEquals(BigDecimal("1.1469").format(), result.price.format())
+        assertEquals("USD", result.currency)
+
+        coVerify { api.fetch("EURUSD=X") }
     }
 
     @Test
