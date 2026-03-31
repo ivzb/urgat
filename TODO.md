@@ -100,4 +100,6 @@
 - when converting investment currency, use investment's data exchange rate via historical exchange rate
 - don't show multiple fab add button actions - but directly open the one for currently selected page
 - create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
-- show current instrument price for each watchlist asset
+- add instrument suggestions when adding new watchlist asset
+- show if market is open and working hours to watchlist
+- improve DefaultWatchlistAssetsRepositoryTest and DefaultInvestmentsRepositoryTest by using market price repo and verifying the built objects

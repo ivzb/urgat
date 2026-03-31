@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.watchlist
 
+import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -11,13 +12,14 @@ import javax.inject.Inject
 
 class DefaultWatchlistAssetsRepository @Inject constructor(
     private val localDataSource: WatchlistAssetDao,
+    private val marketPriceRepository: MarketPriceRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : WatchlistAssetsRepository {
 
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<WatchlistAsset>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { assets ->
             withContext(dispatcher) {
-                assets.toExternal()
+                assets.toExternal(marketPriceRepository::fetchPrice)
             }
         }
     }
@@ -25,7 +27,7 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<WatchlistAsset>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { assets ->
             withContext(dispatcher) {
-                assets.toExternal()
+                assets.toExternal(marketPriceRepository::fetchPrice)
             }
         }
     }
@@ -39,6 +41,10 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
         val watchlistAsset = WatchlistAsset(
             id = id,
             name = name,
+            description = null,
+            marketPrice = null,
+            currency = null,
+            previousClosePrice = null,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
         )
@@ -63,7 +69,7 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
     }
 
     override suspend fun get(id: String): WatchlistAsset? {
-        return localDataSource.getById(id)?.toExternal()
+        return localDataSource.getById(id)?.toExternal(marketPriceRepository::fetchPrice)
     }
 
     override suspend fun delete(id: String) {

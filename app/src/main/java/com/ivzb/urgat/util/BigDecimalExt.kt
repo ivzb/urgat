@@ -15,8 +15,8 @@ private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply 
 
 fun BigDecimal.format(): String = NUMBER_FORMAT.format(this)
 
-fun BigDecimal?.formatPnL(): String = this?.let {
-    "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format()}%"
+fun BigDecimal?.formatPnL(withPercentageSign: Boolean = true): String = this?.let {
+    "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format()}${if (withPercentageSign) "%" else ""}"
 }.orEmpty()
 
 fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal?): BigDecimal? {

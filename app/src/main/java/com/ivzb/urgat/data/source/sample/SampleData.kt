@@ -236,21 +236,28 @@ object SampleData {
         Group.groupSavingCategoriesAllTime(SAMPLE_SAVINGS, ::randomUUID)
 
     val SAMPLE_WATCHLIST_ASSETS = listOf(
-        listOf("GOOGL"),
-        listOf("MSFT"),
-        listOf("AMZN"),
-        listOf("TSLA"),
-        listOf("NVDA"),
-        listOf("AAPL"),
-        listOf("META"),
-        listOf("BTC"),
-        listOf("ETH"),
-        listOf("VOO"),
+        listOf("GOOGL", "323.44", "USD"),
+        listOf("MSFT", "485.5", "USD"),
+        listOf("AMZN", "229.16", "USD"),
+        listOf("TSLA", "419.40", "USD"),
+        listOf("NVDA", "180.26", "USD"),
+        listOf("AAPL", "276.97", "USD"),
+        listOf("META", "636.22", "USD"),
+        listOf("BTC", "90966", "USD"),
+        listOf("ETH", "3021", "USD"),
+        listOf("VOO", "580.03", "USD"),
     )
-        .mapIndexed { index, (name) ->
+        .mapIndexed { index, (name, cost, currency) ->
+            val marketPrice = cost.toBigDecimal() + (-100 .. 100).random().toBigDecimal()
+            val previousClosePrice = marketPrice + (-5 .. 5).random().toBigDecimal()
+
             WatchlistAsset(
                 id = "watchlist_asset_$index",
                 name = name,
+                description = null,
+                marketPrice = marketPrice,
+                previousClosePrice = previousClosePrice,
+                currency = currency,
                 isDeleted = false,
                 createdAt = System.currentTimeMillis(),
             )

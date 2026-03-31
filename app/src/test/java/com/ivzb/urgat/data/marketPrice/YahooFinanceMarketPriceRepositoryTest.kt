@@ -44,6 +44,8 @@ class YahooFinanceMarketPriceRepositoryTest {
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 180.50,
                             currency = "USD",
+                            shortName = "Alphabet Inc. (GOOGL)",
+                            chartPreviousClose = 179.80,
                         )
                     )
                 )
@@ -70,6 +72,8 @@ class YahooFinanceMarketPriceRepositoryTest {
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 95.30,
                             currency = "EUR",
+                            shortName = "Alibaba Group Holding Limited (BABA)",
+                            chartPreviousClose = 96.13,
                         )
                     )
                 )
@@ -94,12 +98,16 @@ class YahooFinanceMarketPriceRepositoryTest {
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 100.0,
                             currency = "USD",
+                            shortName = "Apple Inc. (AAPL)",
+                            chartPreviousClose = 99.50,
                         )
                     ),
                     YahooFinanceResponse.Result(
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 200.0,
                             currency = "EUR",
+                            shortName = "Apple Inc. (AAPL)",
+                            chartPreviousClose = 199.50,
                         )
                     ),
                 )
@@ -132,6 +140,8 @@ class YahooFinanceMarketPriceRepositoryTest {
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 0.0,
                             currency = "USD",
+                            shortName = "",
+                            chartPreviousClose = 0.0,
                         )
                     )
                 )
@@ -156,6 +166,8 @@ class YahooFinanceMarketPriceRepositoryTest {
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 150.0,
                             currency = "USD",
+                            shortName = "Microsoft Corporation (MSFT)",
+                            chartPreviousClose = 149.70,
                         )
                     )
                 )
@@ -178,8 +190,10 @@ class YahooFinanceMarketPriceRepositoryTest {
                 result = listOf(
                     YahooFinanceResponse.Result(
                         meta = YahooFinanceResponse.Meta(
-                            regularMarketPrice = 91234.56,
+                            regularMarketPrice = 91_234.56,
                             currency = "USD",
+                            shortName = "Bitcoin USD",
+                            chartPreviousClose = 92_100.33,
                         )
                     )
                 )

@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -35,9 +36,36 @@ class ObserveWatchlistAssetsUseCaseTest {
         `invoke should return Success with items sorted by`(
             sortType = WatchlistAssetsSortType.BY_DATE,
             expected = listOf(
-                WatchlistAsset("3", "NVDA", false, 125),
-                WatchlistAsset("2", "MSFT", false, 124),
-                WatchlistAsset("1", "AAPL", false, 123),
+                WatchlistAsset(
+                    id = "3",
+                    name = "NVDA",
+                    description = "NVIDIA Corporation (NVDA)",
+                    marketPrice = BigDecimal("165.17"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("162.82"),
+                    isDeleted = false,
+                    createdAt = 3L,
+                ),
+                WatchlistAsset(
+                    id = "2",
+                    name = "MSFT",
+                    description = "Microsoft Corporation (MSFT)",
+                    marketPrice = BigDecimal("358.96"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("361.15"),
+                    isDeleted = false,
+                    createdAt = 2L,
+                ),
+                WatchlistAsset(
+                    id = "1",
+                    name = "AAPL",
+                    description = "Apple Inc. (AAPL)",
+                    marketPrice = BigDecimal("246.63"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("244.46"),
+                    isDeleted = false,
+                    createdAt = 1L,
+                ),
             ),
         )
     }
@@ -47,9 +75,36 @@ class ObserveWatchlistAssetsUseCaseTest {
         `invoke should return Success with items sorted by`(
             sortType = WatchlistAssetsSortType.BY_NAME,
             expected = listOf(
-                WatchlistAsset("1", "AAPL", false, 123),
-                WatchlistAsset("2", "MSFT", false, 124),
-                WatchlistAsset("3", "NVDA", false, 125),
+                WatchlistAsset(
+                    id = "1",
+                    name = "AAPL",
+                    description = "Apple Inc. (AAPL)",
+                    marketPrice = BigDecimal("246.63"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("244.46"),
+                    isDeleted = false,
+                    createdAt = 1L,
+                ),
+                WatchlistAsset(
+                    id = "2",
+                    name = "MSFT",
+                    description = "Microsoft Corporation (MSFT)",
+                    marketPrice = BigDecimal("358.96"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("361.15"),
+                    isDeleted = false,
+                    createdAt = 2L,
+                ),
+                WatchlistAsset(
+                    id = "3",
+                    name = "NVDA",
+                    description = "NVIDIA Corporation (NVDA)",
+                    marketPrice = BigDecimal("165.17"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("162.82"),
+                    isDeleted = false,
+                    createdAt = 3L,
+                ),
             ),
         )
     }
@@ -63,9 +118,36 @@ class ObserveWatchlistAssetsUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                WatchlistAsset("1", "AAPL", false, 123),
-                WatchlistAsset("2", "MSFT", false, 124),
-                WatchlistAsset("3", "NVDA", false, 125),
+                WatchlistAsset(
+                    id = "2",
+                    name = "MSFT",
+                    description = "Microsoft Corporation (MSFT)",
+                    marketPrice = BigDecimal("358.96"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("361.15"),
+                    isDeleted = false,
+                    createdAt = 2L,
+                ),
+                WatchlistAsset(
+                    id = "1",
+                    name = "AAPL",
+                    description = "Apple Inc. (AAPL)",
+                    marketPrice = BigDecimal("246.63"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("244.46"),
+                    isDeleted = false,
+                    createdAt = 1L,
+                ),
+                WatchlistAsset(
+                    id = "3",
+                    name = "NVDA",
+                    description = "NVIDIA Corporation (NVDA)",
+                    marketPrice = BigDecimal("165.17"),
+                    currency = "USD",
+                    previousClosePrice = BigDecimal("162.82"),
+                    isDeleted = false,
+                    createdAt = 3L,
+                ),
             )
         )
 

@@ -21,6 +21,8 @@ data class YahooFinanceResponse(
     data class Meta(
         val regularMarketPrice: Double,
         val currency: String,
+        val shortName: String,
+        val chartPreviousClose: Double,
     )
 }
 

@@ -21,6 +21,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -67,6 +68,10 @@ class AddEditWatchlistAssetViewModelTest {
         val asset = WatchlistAsset(
             id = assetId,
             name = "AAPL",
+            description = "Apple Inc. (AAPL)",
+            marketPrice = BigDecimal("246.63"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("244.46"),
             isDeleted = false,
             createdAt = 1L,
         )
@@ -140,6 +145,10 @@ class AddEditWatchlistAssetViewModelTest {
         val asset = WatchlistAsset(
             id = assetId,
             name = "AAPL",
+            description = "Apple Inc. (AAPL)",
+            marketPrice = BigDecimal("246.63"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("244.46"),
             isDeleted = false,
             createdAt = 1L,
         )
@@ -170,6 +179,10 @@ class AddEditWatchlistAssetViewModelTest {
         val asset = WatchlistAsset(
             id = assetId,
             name = "AAPL",
+            description = "Apple Inc. (AAPL)",
+            marketPrice = BigDecimal("246.63"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("244.46"),
             isDeleted = false,
             createdAt = 1L,
         )

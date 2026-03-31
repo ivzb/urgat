@@ -4,7 +4,9 @@ import java.math.BigDecimal
 
 data class MarketPrice(
     val symbol: String,
+    val description: String,
     val price: BigDecimal,
     val currency: String,
+    val previousClosePrice: BigDecimal
 )
 

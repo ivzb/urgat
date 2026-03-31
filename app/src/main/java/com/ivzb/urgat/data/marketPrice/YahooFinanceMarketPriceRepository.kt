@@ -23,6 +23,8 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
     private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
 
     override suspend fun fetchPrice(symbol: String): MarketPrice? {
+        val symbol = symbol.uppercase()
+
         return cache.getOrPut(symbol) {
             scope.async {
                 withContext(dispatcher) {
@@ -33,8 +35,10 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
 
                         MarketPrice(
                             symbol = symbol,
+                            description = meta.shortName,
                             price = BigDecimal(meta.regularMarketPrice),
                             currency = meta.currency,
+                            previousClosePrice = BigDecimal(meta.chartPreviousClose),
                         ).also {
                             logger.debug("market price fetched: $it")
                         }

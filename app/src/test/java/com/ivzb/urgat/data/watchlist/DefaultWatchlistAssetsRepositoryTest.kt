@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.watchlist
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -18,12 +19,15 @@ class DefaultWatchlistAssetsRepositoryTest {
     private lateinit var dao: FakeWatchlistAssetDao
     private lateinit var repository: DefaultWatchlistAssetsRepository
 
+    private val fakeMarketPriceRepository = FakeMarketPriceRepository()
+
     @Before
     fun setup() {
         Dispatchers.setMain(dispatcher)
         dao = FakeWatchlistAssetDao()
         repository = DefaultWatchlistAssetsRepository(
             localDataSource = dao,
+            marketPriceRepository = fakeMarketPriceRepository,
             dispatcher = dispatcher,
         )
     }

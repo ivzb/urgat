@@ -8,6 +8,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -25,7 +26,16 @@ class DefaultGetWatchlistAssetUseCaseTest {
     @Test
     fun `invoke should return watchlist asset when repository returns asset`() = runTest {
         val id = "123"
-        val expectedAsset = WatchlistAsset(id, "AAPL", false, 1L)
+        val expectedAsset = WatchlistAsset(
+            id = id,
+            name = "AAPL",
+            description = "Apple Inc. (AAPL)",
+            marketPrice = BigDecimal("246.63"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("244.46"),
+            isDeleted = false,
+            createdAt = 1L,
+        )
         coEvery { repository.get(id) } returns expectedAsset
 
         val result = getUseCase(id)
