@@ -47,6 +47,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "USD",
                             shortName = "Alphabet Inc. (GOOGL)",
                             chartPreviousClose = 179.80,
+                            priceHint = 2,
                         )
                     )
                 )
@@ -60,6 +61,7 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("GOOGL", result.symbol)
         assertEquals(BigDecimal("180.5"), result.price)
         assertEquals("USD", result.currency)
+        assertEquals(2, result.pricePrecision)
 
         coVerify { api.fetch("GOOGL") }
     }
@@ -75,6 +77,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "USD",
                             shortName = "Gold Jun 26 (GC=F)",
                             chartPreviousClose = 4_557.50,
+                            priceHint = 2,
                         )
                     )
                 )
@@ -88,6 +91,7 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("GC=F", result.symbol)
         assertEquals(BigDecimal("4581.69").format(), result.price.format())
         assertEquals("USD", result.currency)
+        assertEquals(2, result.pricePrecision)
 
         coVerify { api.fetch("GC=F") }
     }
@@ -103,6 +107,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "USD",
                             shortName = "EUR/USD (EURUSD=X)",
                             chartPreviousClose = 1.1466,
+                            priceHint = 2,
                         )
                     )
                 )
@@ -116,6 +121,7 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("EURUSD=X", result.symbol)
         assertEquals(BigDecimal("1.1469").format(), result.price.format())
         assertEquals("USD", result.currency)
+        assertEquals(2, result.pricePrecision)
 
         coVerify { api.fetch("EURUSD=X") }
     }
@@ -131,6 +137,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "EUR",
                             shortName = "Alibaba Group Holding Limited (BABA)",
                             chartPreviousClose = 96.13,
+                            priceHint = 2,
                         )
                     )
                 )
@@ -144,6 +151,7 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("BABA", result.symbol)
         assertEquals(BigDecimal("95.30"), result.price.round())
         assertEquals("EUR", result.currency)
+        assertEquals(2, result.pricePrecision)
     }
 
     @Test
@@ -157,6 +165,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "USD",
                             shortName = "Apple Inc. (AAPL)",
                             chartPreviousClose = 99.50,
+                            priceHint = 2,
                         )
                     ),
                     YahooFinanceResponse.Result(
@@ -165,6 +174,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "EUR",
                             shortName = "Apple Inc. (AAPL)",
                             chartPreviousClose = 199.50,
+                            priceHint = 2,
                         )
                     ),
                 )
@@ -177,6 +187,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         assertEquals(BigDecimal("100"), result.price)
         assertEquals("USD", result.currency)
+        assertEquals(2, result.pricePrecision)
     }
 
     @Test
@@ -196,9 +207,10 @@ class YahooFinanceMarketPriceRepositoryTest {
                     YahooFinanceResponse.Result(
                         meta = YahooFinanceResponse.Meta(
                             regularMarketPrice = 0.0,
-                            currency = "USD",
+                            currency = "",
                             shortName = "",
                             chartPreviousClose = 0.0,
+                            priceHint = 0,
                         )
                     )
                 )
@@ -211,7 +223,8 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         assertEquals("DELISTED", result.symbol)
         assertEquals(BigDecimal("0"), result.price)
-        assertEquals("USD", result.currency)
+        assertEquals("", result.currency)
+        assertEquals(0, result.pricePrecision)
     }
 
     @Test
@@ -225,6 +238,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "USD",
                             shortName = "Microsoft Corporation (MSFT)",
                             chartPreviousClose = 149.70,
+                            priceHint = 2,
                         )
                     )
                 )
@@ -251,6 +265,7 @@ class YahooFinanceMarketPriceRepositoryTest {
                             currency = "USD",
                             shortName = "Bitcoin USD",
                             chartPreviousClose = 92_100.33,
+                            priceHint = 2,
                         )
                     )
                 )

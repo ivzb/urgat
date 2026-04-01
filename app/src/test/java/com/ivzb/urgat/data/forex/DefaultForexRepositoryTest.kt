@@ -53,7 +53,7 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `fetches exchange rate from market price repository`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
 
         val rate = repository.getExchangeRate("EUR", "USD")
 
@@ -64,7 +64,7 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `convert multiplies amount by exchange rate`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
 
         val result = repository.convert(BigDecimal("100"), "EUR", "USD")
 
@@ -75,7 +75,7 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `caches exchange rate after first fetch`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
 
         repository.getExchangeRate("EUR", "USD")
         advanceUntilIdle()
@@ -90,7 +90,7 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `caches inverse rate after fetch`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
 
         repository.getExchangeRate("EUR", "USD")
         advanceUntilIdle()
@@ -105,7 +105,7 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `parallel requests for same pair result in single fetch`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
 
         val results = (1..10).map {
             async { repository.getExchangeRate("EUR", "USD") }
@@ -122,8 +122,8 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `different currency pairs are fetched independently`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
-        fakeMarketPriceRepository.prices["GBPUSD=X"] = MarketPrice("GBPUSD=X", "GBP/USD", BigDecimal("1.27"), "USD", BigDecimal("1.26"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+        fakeMarketPriceRepository.prices["GBPUSD=X"] = MarketPrice("GBPUSD=X", "GBP/USD", BigDecimal("1.27"), "USD", BigDecimal("1.26"), 4)
 
         val eurUsd = repository.getExchangeRate("EUR", "USD")
         val gbpUsd = repository.getExchangeRate("GBP", "USD")
@@ -148,7 +148,7 @@ class DefaultForexRepositoryTest {
 
     @Test
     fun `handles lowercase currency codes`() = runTest(testDispatcher) {
-        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"))
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD",BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
 
         val rate = repository.getExchangeRate("eur", "usd")
 

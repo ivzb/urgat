@@ -19,6 +19,7 @@ fun List<Investment>.toEntity() = map(Investment::toEntity)
 fun InvestmentEntity.toExternal(
     description: String?,
     marketPrice: BigDecimal?,
+    pricePrecision: Int?,
 ): Investment {
     return Investment(
         id = id,
@@ -27,6 +28,7 @@ fun InvestmentEntity.toExternal(
         shares = shares,
         costPrice = cost,
         marketPrice = marketPrice ?: cost,
+        pricePrecision = pricePrecision,
         category = category,
         currency = currency,
         date = date,

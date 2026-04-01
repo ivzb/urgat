@@ -48,6 +48,7 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
             marketPrice = null,
             currency = null,
             previousClosePrice = null,
+            pricePrecision = null,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
         )

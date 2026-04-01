@@ -127,6 +127,7 @@ class DefaultWatchlistAssetsRepositoryTest {
             price = BigDecimal("150.00"),
             currency = "USD",
             previousClosePrice = BigDecimal("148.00"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.prices["AAPL"] = marketPrice
 
@@ -140,6 +141,7 @@ class DefaultWatchlistAssetsRepositoryTest {
         assertEquals(BigDecimal("150.00"), asset.marketPrice)
         assertEquals("USD", asset.currency)
         assertEquals(BigDecimal("148.00"), asset.previousClosePrice)
+        assertEquals(2, asset.pricePrecision)
     }
 
     @Test
@@ -162,10 +164,10 @@ class DefaultWatchlistAssetsRepositoryTest {
     @Test
     fun `observe calls fetchPrice for each asset`() = runTest {
         fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"),
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
         )
         fakeMarketPriceRepository.prices["GOOGL"] = MarketPrice(
-            symbol = "GOOGL", description = "Google", price = BigDecimal("2800"), currency = "USD", previousClosePrice = BigDecimal("2790"),
+            symbol = "GOOGL", description = "Google", price = BigDecimal("2800"), currency = "USD", previousClosePrice = BigDecimal("2790"), pricePrecision = 2,
         )
 
         repository.create("AAPL")
@@ -184,7 +186,7 @@ class DefaultWatchlistAssetsRepositoryTest {
     @Test
     fun `observe with searchQuery populates market price`() = runTest {
         fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL", description = "Apple Inc.", price = BigDecimal("150.00"), currency = "USD", previousClosePrice = BigDecimal("148.00"),
+            symbol = "AAPL", description = "Apple Inc.", price = BigDecimal("150.00"), currency = "USD", previousClosePrice = BigDecimal("148.00"), pricePrecision = 2,
         )
 
         repository.create("AAPL")
@@ -195,12 +197,13 @@ class DefaultWatchlistAssetsRepositoryTest {
         assertEquals(1, result.size)
         assertEquals("Apple Inc.", result.first().description)
         assertEquals(BigDecimal("150.00"), result.first().marketPrice)
+        assertEquals(2, result.first().pricePrecision)
     }
 
     @Test
     fun `observe handles partial market price availability`() = runTest {
         fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"),
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
         )
         fakeMarketPriceRepository.failingSymbols.add("GOOGL")
 
@@ -221,7 +224,7 @@ class DefaultWatchlistAssetsRepositoryTest {
     @Test
     fun `get populates market price from fetchPrice`() = runTest {
         fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL", description = "Apple Inc.", price = BigDecimal("150.00"), currency = "USD", previousClosePrice = BigDecimal("148.00"),
+            symbol = "AAPL", description = "Apple Inc.", price = BigDecimal("150.00"), currency = "USD", previousClosePrice = BigDecimal("148.00"), pricePrecision = 2,
         )
 
         val id = repository.create("AAPL")
@@ -252,7 +255,7 @@ class DefaultWatchlistAssetsRepositoryTest {
     @Test
     fun `get calls fetchPrice exactly once`() = runTest {
         fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"),
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
         )
 
         val id = repository.create("AAPL")

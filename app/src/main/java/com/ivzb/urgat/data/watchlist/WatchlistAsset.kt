@@ -10,6 +10,7 @@ data class WatchlistAsset(
     val marketPrice: BigDecimal?,
     val currency: String?,
     val previousClosePrice: BigDecimal?,
+    val pricePrecision: Int?,
     val isDeleted: Boolean,
     val createdAt: Long
 ) {

@@ -19,6 +19,7 @@ fun WatchlistAssetEntity.toExternal(marketPrice: MarketPrice?): WatchlistAsset {
         marketPrice = marketPrice?.price,
         currency = marketPrice?.currency,
         previousClosePrice = marketPrice?.previousClosePrice,
+        pricePrecision = marketPrice?.pricePrecision,
         isDeleted = isDeleted,
         createdAt = createdAt
     )

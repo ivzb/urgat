@@ -23,6 +23,7 @@ data class YahooFinanceResponse(
         val currency: String,
         val shortName: String,
         val chartPreviousClose: Double,
+        val priceHint: Int,
     )
 }
 

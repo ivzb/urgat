@@ -258,6 +258,7 @@ object SampleData {
                 description = null,
                 marketPrice = marketPrice,
                 previousClosePrice = previousClosePrice,
+                pricePrecision = null,
                 currency = currency,
                 isDeleted = false,
                 createdAt = System.currentTimeMillis(),

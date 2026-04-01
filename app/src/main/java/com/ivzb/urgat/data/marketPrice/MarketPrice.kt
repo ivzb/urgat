@@ -7,6 +7,7 @@ data class MarketPrice(
     val description: String,
     val price: BigDecimal,
     val currency: String,
-    val previousClosePrice: BigDecimal
+    val previousClosePrice: BigDecimal,
+    val pricePrecision: Int,
 )
 

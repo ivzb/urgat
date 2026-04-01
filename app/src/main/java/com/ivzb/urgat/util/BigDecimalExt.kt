@@ -13,10 +13,12 @@ private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply 
     roundingMode = RoundingMode.DOWN
 }
 
-fun BigDecimal.format(): String = NUMBER_FORMAT.format(this)
+fun BigDecimal.format(digits: Int? = null): String = NUMBER_FORMAT.apply {
+    maximumFractionDigits = digits ?: 2
+}.format(this)
 
-fun BigDecimal?.formatPnL(withPercentageSign: Boolean = true): String = this?.let {
-    "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format()}${if (withPercentageSign) "%" else ""}"
+fun BigDecimal?.formatPnL(digits: Int? = null, withPercentageSign: Boolean = true): String = this?.let {
+    "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format(digits)}${if (withPercentageSign) "%" else ""}"
 }.orEmpty()
 
 fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal?): BigDecimal? {

@@ -575,7 +575,7 @@ fun InvestmentItem(
 
         textRight = investment.shares.toString(),
         subTextRight = annotateFinancePnL(
-            text = "${investment.totalMarketPrice.format()} ${investment.currency.formatCurrency()}",
+            text = "${investment.totalMarketPrice.format(digits = investment.pricePrecision)} ${investment.currency.formatCurrency()}",
             pnl = investment.unrealisedPnL,
         ),
 

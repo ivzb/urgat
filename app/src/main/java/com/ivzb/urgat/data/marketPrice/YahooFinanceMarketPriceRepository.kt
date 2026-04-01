@@ -38,6 +38,7 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
                             price = BigDecimal(meta.regularMarketPrice),
                             currency = meta.currency,
                             previousClosePrice = BigDecimal(meta.chartPreviousClose),
+                            pricePrecision = meta.priceHint,
                         ).also {
                             logger.debug("market price fetched: $it")
                         }

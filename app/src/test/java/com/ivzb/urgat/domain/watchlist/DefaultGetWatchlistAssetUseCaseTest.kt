@@ -33,6 +33,7 @@ class DefaultGetWatchlistAssetUseCaseTest {
             marketPrice = BigDecimal("246.63"),
             currency = "USD",
             previousClosePrice = BigDecimal("244.46"),
+            pricePrecision = 2,
             isDeleted = false,
             createdAt = 1L,
         )

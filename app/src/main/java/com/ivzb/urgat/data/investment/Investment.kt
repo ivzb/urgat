@@ -15,6 +15,7 @@ data class Investment(
     val isDeleted: Boolean,
     val createdAt: Long,
     val description: String? = null,
+    val pricePrecision: Int? = null,
 ) {
 
     val totalCostPrice: BigDecimal

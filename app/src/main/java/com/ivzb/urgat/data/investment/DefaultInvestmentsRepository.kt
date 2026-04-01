@@ -107,9 +107,12 @@ class DefaultInvestmentsRepository @Inject constructor(
     }
 
     private suspend fun InvestmentEntity.toExternal(): Investment {
+        val marketPrice = marketPriceRepository.fetchPrice(name)
+
         return toExternal(
-            description = marketPriceRepository.fetchPrice(name)?.description,
+            description = marketPrice?.description,
             marketPrice = investmentMarketPriceRepository.calculateMarketPrice(name, currency),
+            pricePrecision = marketPrice?.pricePrecision,
         )
     }
 

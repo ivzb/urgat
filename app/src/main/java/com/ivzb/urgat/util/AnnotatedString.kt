@@ -43,8 +43,8 @@ fun annotateFinancePnL(text: String, pnl: BigDecimal?): AnnotatedString {
     )
 }
 
-fun annotateWatchlistAsset(priceChange: BigDecimal?, priceChangePercentage: BigDecimal?): AnnotatedString {
-    val text = "${priceChange?.formatPnL(withPercentageSign = false)} (${priceChangePercentage.formatPnL()})"
+fun annotateWatchlistAsset(priceChange: BigDecimal?, priceChangePercentage: BigDecimal?, digits: Int? = null): AnnotatedString {
+    val text = "${priceChange?.formatPnL(digits = digits, withPercentageSign = false)} (${priceChangePercentage.formatPnL()})"
 
     return annotateFormattedString(
         formattedString = text,
