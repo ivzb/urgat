@@ -1,3 +1,9 @@
+## Release notes 26.04.00
+
+Improved:
+- Refined decimal precision for investment and watchlist pricing.
+- Investment items now show the description on the second line when available, instead of the category.
+
 ## Release notes 26.03.26
 
 New:
