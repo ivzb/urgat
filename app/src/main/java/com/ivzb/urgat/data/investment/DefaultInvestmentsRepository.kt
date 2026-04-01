@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.data.investmentMarketPrice.InvestmentMarketPriceRepository
+import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class DefaultInvestmentsRepository @Inject constructor(
     private val localDataSource: InvestmentDao,
+    private val marketPriceRepository: MarketPriceRepository,
     private val investmentMarketPriceRepository: InvestmentMarketPriceRepository,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : InvestmentsRepository {
@@ -20,7 +22,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { investments ->
             withContext(dispatcher) {
-                investments.toExternal(investmentMarketPriceRepository::calculateMarketPrice)
+                investments.toExternal(marketPriceRepository::fetchPrice, investmentMarketPriceRepository::calculateMarketPrice)
             }
         }
     }
@@ -28,7 +30,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { investments ->
             withContext(dispatcher) {
-                investments.toExternal(investmentMarketPriceRepository::calculateMarketPrice)
+                investments.toExternal(marketPriceRepository::fetchPrice, investmentMarketPriceRepository::calculateMarketPrice)
             }
         }
     }
@@ -49,6 +51,7 @@ class DefaultInvestmentsRepository @Inject constructor(
         val investment = Investment(
             id = id,
             name = name,
+            description = null,
             shares = shares,
             costPrice = costPrice,
             marketPrice = BigDecimal.ZERO,
@@ -89,7 +92,10 @@ class DefaultInvestmentsRepository @Inject constructor(
     }
 
     override suspend fun get(id: String): Investment? {
-        return localDataSource.getById(id)?.toExternal(investmentMarketPriceRepository::calculateMarketPrice)
+        return localDataSource.getById(id)?.toExternal(
+            marketPriceRepository::fetchPrice,
+            investmentMarketPriceRepository::calculateMarketPrice,
+        )
     }
 
     override suspend fun delete(id: String) {

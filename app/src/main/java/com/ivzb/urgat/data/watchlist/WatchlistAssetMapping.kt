@@ -1,11 +1,9 @@
 package com.ivzb.urgat.data.watchlist
 
-import com.ivzb.urgat.data.marketPrice.MarketPrice
+import com.ivzb.urgat.data.marketPrice.FetchMarketPrice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-
-typealias FetchMarketPrice = suspend (symbol: String) -> MarketPrice?
 
 fun WatchlistAsset.toEntity() = WatchlistAssetEntity(
     id = id,

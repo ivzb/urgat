@@ -101,6 +101,5 @@
 - don't show multiple fab add button actions - but directly open the one for currently selected page
 - create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
 - add instrument suggestions when adding new watchlist asset
-- show if market is open and working hours to watchlist
-- improve DefaultWatchlistAssetsRepositoryTest and DefaultInvestmentsRepositoryTest by using market price repo and verifying the built objects
 - write unit tests for DefaultInvestmentMarketMarketPriceRepository (including symbol currency to test symbol normalization)
+- check if there is a better approach to creating Investment and WatchlistAsset instead of passing FetchMarketPrice and CalculateMarketPrice. Is it better to do that outside the model?

@@ -165,6 +165,7 @@ object SampleData {
             Investment(
                 id = "investment_$index",
                 name = name,
+                description = null,
                 shares = shares.toBigDecimal(),
                 costPrice = cost.toBigDecimal(),
                 marketPrice = cost.toBigDecimal() + (-100 .. 100).random().toBigDecimal(),

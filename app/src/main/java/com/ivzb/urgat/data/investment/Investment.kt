@@ -13,7 +13,8 @@ data class Investment(
     val currency: String,
     val date: Long,
     val isDeleted: Boolean,
-    val createdAt: Long
+    val createdAt: Long,
+    val description: String? = null,
 ) {
 
     val totalCostPrice: BigDecimal

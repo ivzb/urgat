@@ -571,7 +571,7 @@ fun InvestmentItem(
 
     ListItem(
         textLeft = investment.name,
-        subTextLeft = investment.category,
+        subTextLeft = investment.description ?: investment.category,
 
         textRight = investment.shares.toString(),
         subTextRight = annotateFinancePnL(
