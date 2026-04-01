@@ -1,9 +1,6 @@
 package com.ivzb.urgat.data.watchlist
 
-import com.ivzb.urgat.data.marketPrice.FetchMarketPrice
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import com.ivzb.urgat.data.marketPrice.MarketPrice
 
 fun WatchlistAsset.toEntity() = WatchlistAssetEntity(
     id = id,
@@ -14,9 +11,7 @@ fun WatchlistAsset.toEntity() = WatchlistAssetEntity(
 
 fun List<WatchlistAsset>.toEntity() = map(WatchlistAsset::toEntity)
 
-suspend fun WatchlistAssetEntity.toExternal(fetchMarketPrice: FetchMarketPrice): WatchlistAsset {
-    val marketPrice = fetchMarketPrice(name)
-
+fun WatchlistAssetEntity.toExternal(marketPrice: MarketPrice?): WatchlistAsset {
     return WatchlistAsset(
         id = id,
         name = name,
@@ -28,9 +23,3 @@ suspend fun WatchlistAssetEntity.toExternal(fetchMarketPrice: FetchMarketPrice):
         createdAt = createdAt
     )
 }
-
-@JvmName("entityToExternal")
-suspend fun List<WatchlistAssetEntity>.toExternal(fetchMarketPrice: FetchMarketPrice) =
-    coroutineScope {
-        map { async { it.toExternal(fetchMarketPrice) } }.awaitAll()
-    }

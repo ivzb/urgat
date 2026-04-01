@@ -1,10 +1,6 @@
 package com.ivzb.urgat.data.investment
 
-import com.ivzb.urgat.data.investmentMarketPrice.CalculateMarketPrice
-import com.ivzb.urgat.data.marketPrice.FetchMarketPrice
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import java.math.BigDecimal
 
 fun Investment.toEntity() = InvestmentEntity(
     id = id,
@@ -20,19 +16,17 @@ fun Investment.toEntity() = InvestmentEntity(
 
 fun List<Investment>.toEntity() = map(Investment::toEntity)
 
-suspend fun InvestmentEntity.toExternal(
-    fetchMarketPrice: FetchMarketPrice,
-    calculateMarketPrice: CalculateMarketPrice,
+fun InvestmentEntity.toExternal(
+    description: String?,
+    marketPrice: BigDecimal?,
 ): Investment {
-    val marketPrice = fetchMarketPrice(name)
-
     return Investment(
         id = id,
         name = name,
-        description = marketPrice?.description,
+        description = description,
         shares = shares,
         costPrice = cost,
-        marketPrice = calculateMarketPrice(name, currency) ?: cost,
+        marketPrice = marketPrice ?: cost,
         category = category,
         currency = currency,
         date = date,
@@ -40,12 +34,3 @@ suspend fun InvestmentEntity.toExternal(
         createdAt = createdAt
     )
 }
-
-@JvmName("entityToExternal")
-suspend fun List<InvestmentEntity>.toExternal(
-    fetchMarketPrice: FetchMarketPrice,
-    calculateMarketPrice: CalculateMarketPrice,
-) =
-    coroutineScope {
-        map { async { it.toExternal(fetchMarketPrice, calculateMarketPrice) } }.awaitAll()
-    }

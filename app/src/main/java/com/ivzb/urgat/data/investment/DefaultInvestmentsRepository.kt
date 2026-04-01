@@ -5,6 +5,9 @@ import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -22,7 +25,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { investments ->
             withContext(dispatcher) {
-                investments.toExternal(marketPriceRepository::fetchPrice, investmentMarketPriceRepository::calculateMarketPrice)
+                investments.toExternal()
             }
         }
     }
@@ -30,7 +33,7 @@ class DefaultInvestmentsRepository @Inject constructor(
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Investment>> {
         return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { investments ->
             withContext(dispatcher) {
-                investments.toExternal(marketPriceRepository::fetchPrice, investmentMarketPriceRepository::calculateMarketPrice)
+                investments.toExternal()
             }
         }
     }
@@ -92,13 +95,22 @@ class DefaultInvestmentsRepository @Inject constructor(
     }
 
     override suspend fun get(id: String): Investment? {
-        return localDataSource.getById(id)?.toExternal(
-            marketPriceRepository::fetchPrice,
-            investmentMarketPriceRepository::calculateMarketPrice,
-        )
+        return localDataSource.getById(id)?.toExternal()
     }
 
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
     }
+
+    private suspend fun List<InvestmentEntity>.toExternal(): List<Investment> {
+        return coroutineScope { map { async { it.toExternal() } }.awaitAll() }
+    }
+
+    private suspend fun InvestmentEntity.toExternal(): Investment {
+        return toExternal(
+            description = marketPriceRepository.fetchPrice(name)?.description,
+            marketPrice = investmentMarketPriceRepository.calculateMarketPrice(name, currency),
+        )
+    }
+
 }
