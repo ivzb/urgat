@@ -103,3 +103,4 @@
 - add instrument suggestions when adding new watchlist asset
 - write unit tests for DefaultInvestmentMarketMarketPriceRepository (including symbol currency to test symbol normalization)
 - add more comprehensive tests to DefaultInvestmentsRepository and DefaultWatchlistAssetRepository testing toExternal extension
+- add pull to refresh
