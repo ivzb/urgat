@@ -1,3 +1,13 @@
+## Release notes 26.04.01
+
+New:
+- Added pull-to-refresh functionality to the Watchlist screen, allowing to manually refresh watchlist content.
+
+## Release notes 26.04.01
+
+New:
+- Added pull-to-refresh functionality to the Watchlist screen, allowing to manually refresh watchlist content.
+
 ## Release notes 26.04.00
 
 Improved:
