@@ -8,6 +8,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import org.junit.Assert
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -21,6 +24,9 @@ class DefaultForexRepository @Inject constructor(
     private val logger: Logger,
     @ApplicationScope private val scope: CoroutineScope,
 ) : ForexRepository {
+
+    private val _refreshFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    override val refreshFlow: Flow<Unit> = _refreshFlow.asSharedFlow()
 
     private val cache = ConcurrentHashMap<String, Deferred<BigDecimal?>>()
 
@@ -64,6 +70,11 @@ class DefaultForexRepository @Inject constructor(
     ): BigDecimal? {
         val rate = getExchangeRate(fromCurrency, toCurrency) ?: return null
         return amount * rate
+    }
+
+    override suspend fun clearCache() {
+        cache.clear()
+        _refreshFlow.emit(Unit)
     }
 
 }

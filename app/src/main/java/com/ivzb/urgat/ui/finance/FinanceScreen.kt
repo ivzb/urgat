@@ -257,6 +257,7 @@ fun FinanceScreen(
                     onMoreInvestments = onMoreInvestments,
                     onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
                     onInvestmentClick = onInvestmentClick,
+                    onRefreshInvestments = { onIntent(FinanceIntent.RefreshInvestments) },
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
@@ -383,6 +384,7 @@ private fun InvestmentsPage(
     onMoreInvestments: () -> Unit,
     onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+    onRefreshInvestments: () -> Unit,
     onResetFilters: () -> Unit,
 
     listState: LazyListState,
@@ -394,20 +396,39 @@ private fun InvestmentsPage(
         onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddInvestment,
 
         content = {
-            com.ivzb.urgat.ui.investments.TransactionsPage(
-                investments = uiState.investments,
-                onInvestmentClick = onInvestmentClick,
+            val state = rememberPullToRefreshState()
 
-                header = {
-                    ItemHeaderWithMore(
-                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                        onMoreClick = onMoreInvestments,
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefreshInvestments,
+                modifier = Modifier,
+                state = state,
+                indicator = {
+                    Indicator(
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        isRefreshing = uiState.isRefreshing,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        state = state
                     )
                 },
+            ) {
 
-                listState = listState,
-                onListStateChanged = onListStateChanged,
-            )
+                com.ivzb.urgat.ui.investments.TransactionsPage(
+                    investments = uiState.investments,
+                    onInvestmentClick = onInvestmentClick,
+
+                    header = {
+                        ItemHeaderWithMore(
+                            title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                            onMoreClick = onMoreInvestments,
+                        )
+                    },
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+            }
         }
     )
 }

@@ -4,7 +4,6 @@ import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -32,7 +31,6 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
 
     private var refreshStartTime = 0L
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<WatchlistAsset>> {
         return marketPriceRepository.refreshFlow
             .onStart { emit(Unit) }
@@ -51,7 +49,6 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
             }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<WatchlistAsset>> {
         return marketPriceRepository.refreshFlow
             .onStart { emit(Unit) }

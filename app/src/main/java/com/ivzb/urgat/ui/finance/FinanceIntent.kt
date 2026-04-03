@@ -28,6 +28,7 @@ sealed class FinanceIntent {
 
     data class SetWatchlistAssetsSorting(val sortType: WatchlistAssetsSortType): FinanceIntent()
 
+    object RefreshInvestments: FinanceIntent()
     object RefreshWatchlist: FinanceIntent()
     object ResetFilters: FinanceIntent()
 

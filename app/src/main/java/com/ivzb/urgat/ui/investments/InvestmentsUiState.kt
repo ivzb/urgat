@@ -16,6 +16,7 @@ data class InvestmentsUiState(
     val netWorth: InvestmentNetWorth? = null,
 
     override val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     override val hasError: Boolean = false,
     override val isEmpty: Boolean = investments.isEmpty(),
 

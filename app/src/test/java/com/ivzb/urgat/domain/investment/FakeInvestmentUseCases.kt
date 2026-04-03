@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
@@ -46,10 +47,17 @@ class FakeObserveGroupedInvestmentsMonthlyUseCase : ObserveGroupedInvestmentsMon
 
     private val flow = MutableStateFlow<Async<List<GroupedInvestments>>>(Async.Loading)
 
+    private val _isRefreshingFlow = MutableStateFlow(false)
+    override val isRefreshingFlow: StateFlow<Boolean> = _isRefreshingFlow
+
     var lastQuery: String = ""
 
     fun emit(value: Async<List<GroupedInvestments>>) {
         flow.value = value
+    }
+
+    fun emitRefreshing(isRefreshing: Boolean) {
+        _isRefreshingFlow.value = isRefreshing
     }
 
     override operator fun invoke(

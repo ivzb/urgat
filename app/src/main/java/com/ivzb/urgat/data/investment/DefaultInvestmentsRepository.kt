@@ -8,8 +8,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.util.UUID
@@ -22,19 +29,52 @@ class DefaultInvestmentsRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : InvestmentsRepository {
 
+    private val _isRefreshingFlow = MutableStateFlow(false)
+    override val isRefreshingFlow: StateFlow<Boolean> = _isRefreshingFlow.asStateFlow()
+
+    private var refreshStartTime = 0L
+
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<Investment>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { investments ->
-            withContext(dispatcher) {
-                investments.toExternal()
+        return marketPriceRepository.refreshFlow
+            .onStart { emit(Unit) }
+            .flatMapLatest {
+                _isRefreshingFlow.value = true
+                refreshStartTime = System.currentTimeMillis()
+
+                localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { investments ->
+                    withContext(dispatcher) {
+                        investments.toExternal()
+                    }
+                }.onEach {
+                    ensureMinRefreshDuration()
+                    _isRefreshingFlow.value = false
+                }
             }
-        }
     }
 
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Investment>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { investments ->
-            withContext(dispatcher) {
-                investments.toExternal()
+        return marketPriceRepository.refreshFlow
+            .onStart { emit(Unit) }
+            .flatMapLatest {
+                _isRefreshingFlow.value = true
+                refreshStartTime = System.currentTimeMillis()
+
+                localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { investments ->
+                    withContext(dispatcher) {
+                        investments.toExternal()
+                    }
+                }.onEach {
+                    ensureMinRefreshDuration()
+                    _isRefreshingFlow.value = false
+                }
             }
+    }
+
+    private suspend fun ensureMinRefreshDuration() {
+        val elapsed = System.currentTimeMillis() - refreshStartTime
+
+        if (elapsed < MIN_REFRESH_DURATION_MS) {
+            delay(MIN_REFRESH_DURATION_MS - elapsed)
         }
     }
 
@@ -114,6 +154,12 @@ class DefaultInvestmentsRepository @Inject constructor(
             marketPrice = investmentMarketPriceRepository.calculateMarketPrice(name, currency),
             pricePrecision = marketPrice?.pricePrecision,
         )
+    }
+
+    companion object {
+
+        private const val MIN_REFRESH_DURATION_MS = 1_000L
+
     }
 
 }

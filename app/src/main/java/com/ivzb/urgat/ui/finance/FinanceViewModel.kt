@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.data.finance.FinanceRepository
 import com.ivzb.urgat.data.fire.FireRepository
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.domain.finance.ObserveFinanceUiStateUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
@@ -31,6 +32,7 @@ class FinanceViewModel @Inject constructor(
     observeFinanceUiStateUseCase: ObserveFinanceUiStateUseCase,
     private val fireRepository: FireRepository,
     private val financeRepository: FinanceRepository,
+    private val forexRepository: ForexRepository,
     private val marketPriceRepository: MarketPriceRepository,
 ) : ViewModel() {
 
@@ -117,6 +119,7 @@ class FinanceViewModel @Inject constructor(
 
             is FinanceIntent.SetWatchlistAssetsSorting -> setWatchlistAssetsSorting(intent.sortType)
 
+            is FinanceIntent.RefreshInvestments -> refreshInvestments()
             is FinanceIntent.RefreshWatchlist -> refreshWatchlist()
 
             is FinanceIntent.ResetFilters -> resetFilters()
@@ -214,6 +217,13 @@ class FinanceViewModel @Inject constructor(
     private fun setWatchlistAssetsSorting(sortType: WatchlistAssetsSortType) {
         viewModelScope.launch {
             financeRepository.updateWatchlistAssetsSortType(sortType)
+        }
+    }
+
+    private fun refreshInvestments() {
+        viewModelScope.launch {
+            forexRepository.clearCache()
+            marketPriceRepository.clearCache()
         }
     }
 

@@ -1,3 +1,36 @@
+### Configuration for release
+To publish app bundle to Google Play store, you need to configure gcloud CLI with the following command:
+
+1. Add release shortcut to .zshrc (optional)
+
+```shell
+release() {
+  pushd ~/android/urgat/scripts/ > /dev/null
+  ./play_store_release.sh $@
+  popd > /dev/null
+}
+```
+
+2. Copy `urgat.jks` file to the main project directory
+3. Create `keystore.properties` file in the main project directory with the following content:
+
+```
+storeFile=<path to urgat.jks>
+keyAlias=<alias>
+keyPassword=<password>
+storePassword=<password>
+```
+
+4. Install gcloud CLI and initialize it with the following command:
+
+```shell
+brew install gcloud-cli
+gcloud init
+```
+
+5. Authenticate via browser
+6. Pick cloud project to use: urgat
+
 ### Play Store release
 Use the following command to publish app bundle to Google Play store:
 

@@ -192,6 +192,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeInvestmentsFilteringUseCase(),
         observeInvestmentsSortingUseCase(),
+        observeGroupedInvestmentsMonthlyUseCase.isRefreshingFlow.map { Async.Success(it) },
         combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
 
         onLoading = {
@@ -200,9 +201,10 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         onError = {
             InvestmentsUiState(hasError = true)
         },
-        onSuccess = { investments, filtering, sorting, (searchQuery, filterType, sortType) ->
+        onSuccess = { investments, filtering, sorting, isRefreshing, (searchQuery, filterType, sortType) ->
             InvestmentsUiState(
                 investments = investments,
+                isRefreshing = isRefreshing,
                 filteringUiInfo = InvestmentsFilteringUiInfo.from(
                     searchQuery = searchQuery,
                     filterType = filterType,

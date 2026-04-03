@@ -6,11 +6,14 @@ import com.ivzb.urgat.util.FakeLogger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
@@ -155,6 +158,127 @@ class DefaultForexRepositoryTest {
         advanceUntilIdle()
 
         assertEquals(BigDecimal("1.08"), rate)
+    }
+
+    @Test
+    fun `clearCache emits on refreshFlow`() = runTest(testDispatcher) {
+        val refreshReceived = async {
+            repository.refreshFlow.first()
+        }
+
+        advanceUntilIdle()
+
+        repository.clearCache()
+
+        advanceUntilIdle()
+
+        refreshReceived.await()
+    }
+
+    @Test
+    fun `clearCache causes next getExchangeRate to call api again`() = runTest(testDispatcher) {
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+
+        repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        assertEquals(1, fakeMarketPriceRepository.fetchCount)
+
+        repository.clearCache()
+
+        repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        assertEquals(2, fakeMarketPriceRepository.fetchCount)
+    }
+
+    @Test
+    fun `clearCache clears all cached currency pairs`() = runTest(testDispatcher) {
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+        fakeMarketPriceRepository.prices["GBPUSD=X"] = MarketPrice("GBPUSD=X", "GBP/USD", BigDecimal("1.27"), "USD", BigDecimal("1.26"), 4)
+
+        repository.getExchangeRate("EUR", "USD")
+        repository.getExchangeRate("GBP", "USD")
+        advanceUntilIdle()
+
+        assertEquals(2, fakeMarketPriceRepository.fetchCount)
+
+        repository.clearCache()
+
+        repository.getExchangeRate("EUR", "USD")
+        repository.getExchangeRate("GBP", "USD")
+        advanceUntilIdle()
+
+        assertEquals(4, fakeMarketPriceRepository.fetchCount)
+    }
+
+    @Test
+    fun `clearCache allows fetching updated rate`() = runTest(testDispatcher) {
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+
+        val oldRate = repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        assertEquals(BigDecimal("1.08"), oldRate)
+
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.12"), "USD", BigDecimal("1.11"), 4)
+
+        repository.clearCache()
+
+        val newRate = repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        assertEquals(BigDecimal("1.12"), newRate)
+        assertNotEquals(oldRate, newRate)
+    }
+
+    @Test
+    fun `clearCache also clears cached inverse rates`() = runTest(testDispatcher) {
+        fakeMarketPriceRepository.prices["EURUSD=X"] = MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+
+        repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        repository.getExchangeRate("USD", "EUR")
+        advanceUntilIdle()
+
+        assertEquals(1, fakeMarketPriceRepository.fetchCount)
+
+        repository.clearCache()
+
+        fakeMarketPriceRepository.prices["USDEUR=X"] = MarketPrice("USDEUR=X", "USD/EUR", BigDecimal("0.90"), "EUR", BigDecimal("0.89"), 4)
+
+        repository.getExchangeRate("USD", "EUR")
+        advanceUntilIdle()
+
+        assertEquals(2, fakeMarketPriceRepository.fetchCount)
+    }
+
+    @Test
+    fun `refreshFlow emits each time clearCache is called`() = runTest(testDispatcher) {
+        var emissionCount = 0
+
+        val job = launch {
+            repository.refreshFlow.collect {
+                emissionCount++
+            }
+        }
+
+        advanceUntilIdle()
+
+        repository.clearCache()
+        advanceUntilIdle()
+        assertEquals(1, emissionCount)
+
+        repository.clearCache()
+        advanceUntilIdle()
+        assertEquals(2, emissionCount)
+
+        repository.clearCache()
+        advanceUntilIdle()
+        assertEquals(3, emissionCount)
+
+        job.cancel()
     }
 
 }

@@ -24,10 +24,10 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
     @ApplicationScope private val scope: CoroutineScope,
 ) : MarketPriceRepository {
 
-    private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
-
     private val _refreshFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     override val refreshFlow: Flow<Unit> = _refreshFlow.asSharedFlow()
+
+    private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
 
     override suspend fun fetchPrice(symbol: String): MarketPrice? {
         val symbol = normalizeInstrument(symbol.uppercase())

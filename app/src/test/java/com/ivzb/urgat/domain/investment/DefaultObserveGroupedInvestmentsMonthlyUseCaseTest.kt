@@ -11,6 +11,7 @@ import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -31,6 +32,7 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
+        every { repository.isRefreshingFlow } returns MutableStateFlow(false)
         observeUseCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository)
     }
 
@@ -175,4 +177,36 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
         val first = results.first()
         assert(first is Async.Error)
     }
+
+    @Test
+    fun `isRefreshingFlow starts as false`() = runTest(testDispatcher) {
+        assertEquals(false, observeUseCase.isRefreshingFlow.value)
+    }
+
+    @Test
+    fun `isRefreshingFlow delegates from repository`() = runTest(testDispatcher) {
+        val repositoryRefreshingFlow = MutableStateFlow(false)
+        every { repository.isRefreshingFlow } returns repositoryRefreshingFlow
+
+        val useCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository)
+
+        assertEquals(false, useCase.isRefreshingFlow.value)
+
+        repositoryRefreshingFlow.value = true
+        assertEquals(true, useCase.isRefreshingFlow.value)
+
+        repositoryRefreshingFlow.value = false
+        assertEquals(false, useCase.isRefreshingFlow.value)
+    }
+
+    @Test
+    fun `isRefreshingFlow reflects repository state when true`() = runTest(testDispatcher) {
+        val repositoryRefreshingFlow = MutableStateFlow(true)
+        every { repository.isRefreshingFlow } returns repositoryRefreshingFlow
+
+        val useCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository)
+
+        assertEquals(true, useCase.isRefreshingFlow.value)
+    }
+
 }

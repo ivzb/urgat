@@ -510,7 +510,88 @@ class ObserveFinanceUiStateUseCaseTest {
     }
 
     @Test
-    fun `isRefreshing is false by default`() = runTest {
+    fun `investmentsUiState isRefreshing is false by default`() = runTest {
+        emitAllSuccess()
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        assertFalse(result.data.investmentsUiState.isRefreshing)
+    }
+
+    @Test
+    fun `investmentsUiState isRefreshing is true when watchlist is refreshing`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedInvestmentsMonthlyUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        assertTrue(result.data.investmentsUiState.isRefreshing)
+    }
+
+    @Test
+    fun `investmentsUiState isRefreshing becomes false after refresh completes`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedInvestmentsMonthlyUseCase.emitRefreshing(true)
+
+        val resultRefreshing = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(resultRefreshing is Async.Success)
+        assertTrue(resultRefreshing.data.investmentsUiState.isRefreshing)
+
+        fakeObserveGroupedInvestmentsMonthlyUseCase.emitRefreshing(false)
+
+        val resultDone = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(resultDone is Async.Success)
+        assertFalse(resultDone.data.investmentsUiState.isRefreshing)
+    }
+
+    @Test
+    fun `investmentsUiState isRefreshing does not affect loading state`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedInvestmentsMonthlyUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val uiState = result.data
+        assertTrue(uiState.investmentsUiState.isRefreshing)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `investmentsUiState isRefreshing does not affect other ui states`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedInvestmentsMonthlyUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val uiState = result.data
+        assertTrue(uiState.investmentsUiState.isRefreshing)
+        assertFalse(uiState.expensesUiState.isLoading)
+        assertFalse(uiState.investmentsUiState.isLoading)
+        assertFalse(uiState.savingsUiState.isLoading)
+        assertFalse(uiState.budgetsUiState.isLoading)
+    }
+
+    @Test
+    fun `watchlistAssetsUiState isRefreshing is false by default`() = runTest {
         emitAllSuccess()
 
         val result = invokeUseCase().first()
@@ -522,7 +603,7 @@ class ObserveFinanceUiStateUseCaseTest {
     }
 
     @Test
-    fun `isRefreshing is true when watchlist is refreshing`() = runTest {
+    fun `watchlistAssetsUiState isRefreshing is true when watchlist is refreshing`() = runTest {
         emitAllSuccess()
         fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
 
@@ -535,7 +616,7 @@ class ObserveFinanceUiStateUseCaseTest {
     }
 
     @Test
-    fun `isRefreshing becomes false after refresh completes`() = runTest {
+    fun `watchlistAssetsUiState isRefreshing becomes false after refresh completes`() = runTest {
         emitAllSuccess()
         fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
 
@@ -557,7 +638,7 @@ class ObserveFinanceUiStateUseCaseTest {
     }
 
     @Test
-    fun `isRefreshing does not affect loading state`() = runTest {
+    fun `watchlistAssetsUiState isRefreshing does not affect loading state`() = runTest {
         emitAllSuccess()
         fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
 
@@ -573,7 +654,7 @@ class ObserveFinanceUiStateUseCaseTest {
     }
 
     @Test
-    fun `isRefreshing does not affect other ui states`() = runTest {
+    fun `watchlistAssetsUiState isRefreshing does not affect other ui states`() = runTest {
         emitAllSuccess()
         fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
 
