@@ -1,3 +1,8 @@
+## Release notes 26.04.02
+
+New:
+- Added pull-to-refresh functionality to the Investments screen, allowing to manually refresh investments content.
+
 ## Release notes 26.04.01
 
 New:
