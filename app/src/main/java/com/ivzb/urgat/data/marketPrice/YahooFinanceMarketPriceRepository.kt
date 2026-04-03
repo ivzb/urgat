@@ -9,6 +9,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.util.concurrent.ConcurrentHashMap
@@ -22,6 +25,9 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
 ) : MarketPriceRepository {
 
     private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
+
+    private val _refreshFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    override val refreshFlow: Flow<Unit> = _refreshFlow.asSharedFlow()
 
     override suspend fun fetchPrice(symbol: String): MarketPrice? {
         val symbol = normalizeInstrument(symbol.uppercase())
@@ -50,6 +56,11 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
                 }
             }
         }.await()
+    }
+
+    override suspend fun clearCache() {
+        cache.clear()
+        _refreshFlow.emit(Unit)
     }
 
 }

@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
@@ -60,6 +61,7 @@ class FinanceViewModelTest {
     private lateinit var fakeObserveFinanceUiStateUseCase: FakeObserveFinanceUiStateUseCase
     private lateinit var mockFireRepository: FireRepository
     private lateinit var fakeFinanceRepository: FakeFinanceRepository
+    private lateinit var fakeMarketPriceRepository: FakeMarketPriceRepository
 
     private lateinit var viewModel: FinanceViewModel
 
@@ -72,6 +74,7 @@ class FinanceViewModelTest {
         fakeObserveFinanceUiStateUseCase = FakeObserveFinanceUiStateUseCase()
         mockFireRepository = mockk()
         fakeFinanceRepository = FakeFinanceRepository()
+        fakeMarketPriceRepository = FakeMarketPriceRepository()
 
         every { mockFireRepository.withdrawalRateFlow } returns flowOf(4.toBigDecimal())
         every { mockFireRepository.returnOfInvestmentFlow } returns flowOf(7.toBigDecimal())
@@ -540,10 +543,49 @@ class FinanceViewModelTest {
         assertEquals(WatchlistAssetsSortType.BY_DATE, fakeFinanceRepository.watchlistAssetsSortTypeFlow.value)
     }
 
+    @Test
+    fun `RefreshWatchlist clears market price cache`() = runTest {
+        fakeMarketPriceRepository.prices["AAPL"] = com.ivzb.urgat.data.marketPrice.MarketPrice(
+            symbol = "AAPL",
+            description = "Apple Inc.",
+            price = BigDecimal("150.00"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("148.00"),
+            pricePrecision = 2,
+        )
+
+        viewModel = createViewModel()
+
+        assertEquals(1, fakeMarketPriceRepository.prices.size)
+
+        viewModel.onIntent(FinanceIntent.RefreshWatchlist)
+        advanceUntilIdle()
+
+        assertTrue(fakeMarketPriceRepository.prices.isEmpty())
+    }
+
+    @Test
+    fun `RefreshWatchlist emits on refreshFlow`() = runTest {
+        viewModel = createViewModel()
+
+        var refreshCount = 0
+        val job = launch(UnconfinedTestDispatcher()) {
+            fakeMarketPriceRepository.refreshFlow.collect { refreshCount++ }
+        }
+
+        viewModel.onIntent(FinanceIntent.RefreshWatchlist)
+        advanceUntilIdle()
+
+        assertEquals(1, refreshCount)
+
+        job.cancel()
+    }
+
     private fun createViewModel() = FinanceViewModel(
         fakeObserveFinanceUiStateUseCase,
         mockFireRepository,
         fakeFinanceRepository,
+        fakeMarketPriceRepository,
     )
 }
 

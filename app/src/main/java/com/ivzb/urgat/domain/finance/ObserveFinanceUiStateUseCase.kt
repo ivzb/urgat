@@ -276,6 +276,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
     ): Flow<Async<WatchlistAssetsUiState>> = combineUiState(
         observeWatchlistAssetsUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeWatchlistAssetsSortingUseCase(),
+        observeWatchlistAssetsUseCase.isRefreshingFlow.map { Async.Success(it) },
         combine(searchQueryFlow, sortTypeFlow, ::Pair).map { Async.Success(it) },
 
         onLoading = {
@@ -284,9 +285,10 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         onError = {
             WatchlistAssetsUiState(hasError = true)
         },
-        onSuccess = { watchlistAssets, sorting, (searchQuery, sortType) ->
+        onSuccess = { watchlistAssets, sorting, isRefreshing, (searchQuery, sortType) ->
             WatchlistAssetsUiState(
                 watchlistAssets = watchlistAssets,
+                isRefreshing = isRefreshing,
                 filteringUiInfo = WatchlistAssetsFilteringUiInfo.from(
                     searchQuery = searchQuery,
                     sortType = sortType,

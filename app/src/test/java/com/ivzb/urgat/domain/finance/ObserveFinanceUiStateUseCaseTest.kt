@@ -509,6 +509,87 @@ class ObserveFinanceUiStateUseCaseTest {
         assertNull(result.data.fire)
     }
 
+    @Test
+    fun `isRefreshing is false by default`() = runTest {
+        emitAllSuccess()
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        assertFalse(result.data.watchlistAssetsUiState.isRefreshing)
+    }
+
+    @Test
+    fun `isRefreshing is true when watchlist is refreshing`() = runTest {
+        emitAllSuccess()
+        fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        assertTrue(result.data.watchlistAssetsUiState.isRefreshing)
+    }
+
+    @Test
+    fun `isRefreshing becomes false after refresh completes`() = runTest {
+        emitAllSuccess()
+        fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
+
+        val resultRefreshing = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(resultRefreshing is Async.Success)
+        assertTrue(resultRefreshing.data.watchlistAssetsUiState.isRefreshing)
+
+        fakeObserveWatchlistAssetsUseCase.emitRefreshing(false)
+
+        val resultDone = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(resultDone is Async.Success)
+        assertFalse(resultDone.data.watchlistAssetsUiState.isRefreshing)
+    }
+
+    @Test
+    fun `isRefreshing does not affect loading state`() = runTest {
+        emitAllSuccess()
+        fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val uiState = result.data
+        assertTrue(uiState.watchlistAssetsUiState.isRefreshing)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `isRefreshing does not affect other ui states`() = runTest {
+        emitAllSuccess()
+        fakeObserveWatchlistAssetsUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val uiState = result.data
+        assertTrue(uiState.watchlistAssetsUiState.isRefreshing)
+        assertFalse(uiState.expensesUiState.isLoading)
+        assertFalse(uiState.investmentsUiState.isLoading)
+        assertFalse(uiState.savingsUiState.isLoading)
+        assertFalse(uiState.budgetsUiState.isLoading)
+    }
+
     private fun invokeUseCase(
         searchQuery: String = "",
         expensesFilterType: ExpensesFilterType = ExpensesFilterType.ALL_EXPENSES,

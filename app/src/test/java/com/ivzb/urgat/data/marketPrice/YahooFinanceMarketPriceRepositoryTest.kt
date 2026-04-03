@@ -7,10 +7,15 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -279,6 +284,177 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("BTC-USD", result.symbol)
         assertEquals(BigDecimal("91234.56"), result.price.round())
         assertEquals("USD", result.currency)
+    }
+
+    @Test
+    fun `clearCache emits on refreshFlow`() = runTest(testDispatcher) {
+        val refreshReceived = async {
+            repository.refreshFlow.first()
+        }
+
+        advanceUntilIdle()
+
+        repository.clearCache()
+
+        advanceUntilIdle()
+
+        refreshReceived.await() // completes successfully means emission was received
+    }
+
+    @Test
+    fun `clearCache causes next fetchPrice to call api again`() = runTest(testDispatcher) {
+        val response = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 150.0,
+                            currency = "USD",
+                            shortName = "Microsoft Corporation (MSFT)",
+                            chartPreviousClose = 149.70,
+                            priceHint = 2,
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("MSFT") } returns response
+
+        val first = repository.fetchPrice("MSFT")
+        coVerify(exactly = 1) { api.fetch("MSFT") }
+
+        repository.clearCache()
+
+        val second = repository.fetchPrice("MSFT")
+        coVerify(exactly = 2) { api.fetch("MSFT") }
+
+        assertEquals(first, second)
+    }
+
+    @Test
+    fun `clearCache clears all cached symbols`() = runTest(testDispatcher) {
+        val responseAAPL = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 100.0,
+                            currency = "USD",
+                            shortName = "Apple Inc. (AAPL)",
+                            chartPreviousClose = 99.50,
+                            priceHint = 2,
+                        )
+                    )
+                )
+            )
+        )
+
+        val responseMSFT = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 150.0,
+                            currency = "USD",
+                            shortName = "Microsoft Corporation (MSFT)",
+                            chartPreviousClose = 149.70,
+                            priceHint = 2,
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("AAPL") } returns responseAAPL
+        coEvery { api.fetch("MSFT") } returns responseMSFT
+
+        repository.fetchPrice("AAPL")
+        repository.fetchPrice("MSFT")
+        coVerify(exactly = 1) { api.fetch("AAPL") }
+        coVerify(exactly = 1) { api.fetch("MSFT") }
+
+        repository.clearCache()
+
+        repository.fetchPrice("AAPL")
+        repository.fetchPrice("MSFT")
+        coVerify(exactly = 2) { api.fetch("AAPL") }
+        coVerify(exactly = 2) { api.fetch("MSFT") }
+    }
+
+    @Test
+    fun `clearCache allows fetching updated price`() = runTest(testDispatcher) {
+        val oldResponse = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 100.0,
+                            currency = "USD",
+                            shortName = "Apple Inc. (AAPL)",
+                            chartPreviousClose = 99.50,
+                            priceHint = 2,
+                        )
+                    )
+                )
+            )
+        )
+
+        val newResponse = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 105.0,
+                            currency = "USD",
+                            shortName = "Apple Inc. (AAPL)",
+                            chartPreviousClose = 100.0,
+                            priceHint = 2,
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("AAPL") } returns oldResponse
+
+        val oldResult = requireNotNull(repository.fetchPrice("AAPL"))
+        assertEquals(BigDecimal("100"), oldResult.price)
+
+        coEvery { api.fetch("AAPL") } returns newResponse
+
+        repository.clearCache()
+
+        val newResult = requireNotNull(repository.fetchPrice("AAPL"))
+        assertEquals(BigDecimal("105"), newResult.price)
+        assertNotEquals(oldResult.price, newResult.price)
+    }
+
+    @Test
+    fun `refreshFlow emits each time clearCache is called`() = runTest(testDispatcher) {
+        var emissionCount = 0
+
+        val job = launch {
+            repository.refreshFlow.collect {
+                emissionCount++
+            }
+        }
+
+        advanceUntilIdle()
+
+        repository.clearCache()
+        advanceUntilIdle()
+        assertEquals(1, emissionCount)
+
+        repository.clearCache()
+        advanceUntilIdle()
+        assertEquals(2, emissionCount)
+
+        repository.clearCache()
+        advanceUntilIdle()
+        assertEquals(3, emissionCount)
+
+        job.cancel()
     }
 }
 

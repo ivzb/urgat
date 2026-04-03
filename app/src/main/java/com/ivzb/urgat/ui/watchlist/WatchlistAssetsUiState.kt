@@ -8,6 +8,7 @@ data class WatchlistAssetsUiState(
     val watchlistAssets: List<WatchlistAsset> = listOf(),
 
     override val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     override val hasError: Boolean = false,
     override val isEmpty: Boolean = watchlistAssets.isEmpty(),
 

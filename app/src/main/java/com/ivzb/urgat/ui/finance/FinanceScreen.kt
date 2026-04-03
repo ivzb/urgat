@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -296,6 +300,7 @@ fun FinanceScreen(
                     onMoreWatchlistAssets = onMoreWatchlistAssets,
                     onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Watchlist)) },
                     onWatchlistAssetClick = onWatchlistAssetClick,
+                    onRefreshWatchlist = { onIntent(FinanceIntent.RefreshWatchlist) },
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
@@ -501,6 +506,7 @@ private fun WatchlistPage(
     onMoreWatchlistAssets: () -> Unit,
     onAddWatchlistAsset: () -> Unit,
     onWatchlistAssetClick: (WatchlistAsset) -> Unit,
+    onRefreshWatchlist: () -> Unit,
     onResetFilters: () -> Unit,
 
     listState: LazyListState,
@@ -511,20 +517,39 @@ private fun WatchlistPage(
         uiState = uiState,
         onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
         content = {
-            com.ivzb.urgat.ui.watchlist.TransactionsPage(
-                watchlistAssets = uiState.watchlistAssets,
-                onWatchlistAssetClick = onWatchlistAssetClick,
+            val state = rememberPullToRefreshState()
 
-                header = {
-                    ItemHeaderWithMore(
-                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                        onMoreClick = onMoreWatchlistAssets,
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefreshWatchlist,
+                modifier = Modifier,
+                state = state,
+                indicator = {
+                    Indicator(
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        isRefreshing = uiState.isRefreshing,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        state = state
                     )
                 },
+            ) {
 
-                listState = listState,
-                onListStateChanged = onListStateChanged,
-            )
+                com.ivzb.urgat.ui.watchlist.TransactionsPage(
+                    watchlistAssets = uiState.watchlistAssets,
+                    onWatchlistAssetClick = onWatchlistAssetClick,
+
+                    header = {
+                        ItemHeaderWithMore(
+                            title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                            onMoreClick = onMoreWatchlistAssets,
+                        )
+                    },
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+            }
         }
     )
 }

@@ -265,5 +265,211 @@ class DefaultWatchlistAssetsRepositoryTest {
 
         assertEquals(1, fakeMarketPriceRepository.fetchCount - fetchCountBefore)
     }
+
+    @Test
+    fun `isRefreshingFlow starts as false`() = runTest {
+        assertEquals(false, repository.isRefreshingFlow.value)
+    }
+
+    @Test
+    fun `isRefreshingFlow becomes false after observe emits`() = runTest {
+        repository.create("AAPL")
+
+        repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
+
+        assertEquals(false, repository.isRefreshingFlow.value)
+    }
+
+    @Test
+    fun `isRefreshingFlow becomes false after observe with searchQuery emits`() = runTest {
+        repository.create("AAPL")
+
+        repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "AAPL").first()
+
+        assertEquals(false, repository.isRefreshingFlow.value)
+    }
+
+    @Test
+    fun `refresh triggers re-emission with updated market data`() = runTest {
+        repository.create("AAPL")
+
+        val emissions = mutableListOf<List<WatchlistAsset>>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            repository.observe(limit = 10, dateRange = NO_DATE_RANGE).collect {
+                emissions.add(it)
+            }
+        }
+
+        advanceUntilIdle()
+
+        // First emission: no market price set
+        assertTrue(emissions.isNotEmpty())
+        assertNull(emissions.first().first().marketPrice)
+
+        // Now set market price and trigger refresh
+        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
+        )
+        fakeMarketPriceRepository.emitRefresh()
+        advanceUntilIdle()
+
+        // Second emission should have market data
+        assertTrue(emissions.size >= 2)
+        val refreshedAsset = emissions.last().first()
+        assertEquals("Apple", refreshedAsset.description)
+        assertEquals(BigDecimal("150"), refreshedAsset.marketPrice)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `refresh triggers re-emission for observe with searchQuery`() = runTest {
+        repository.create("AAPL")
+
+        val emissions = mutableListOf<List<WatchlistAsset>>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "AAPL").collect {
+                emissions.add(it)
+            }
+        }
+
+        advanceUntilIdle()
+
+        assertTrue(emissions.isNotEmpty())
+        assertNull(emissions.first().first().marketPrice)
+
+        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
+            symbol = "AAPL", description = "Apple Inc.", price = BigDecimal("155"), currency = "USD", previousClosePrice = BigDecimal("150"), pricePrecision = 2,
+        )
+        fakeMarketPriceRepository.emitRefresh()
+        advanceUntilIdle()
+
+        assertTrue(emissions.size >= 2)
+        val refreshedAsset = emissions.last().first()
+        assertEquals("Apple Inc.", refreshedAsset.description)
+        assertEquals(BigDecimal("155"), refreshedAsset.marketPrice)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `refresh re-fetches prices for all observed assets`() = runTest {
+        repository.create("AAPL")
+        repository.create("GOOGL")
+
+        val emissions = mutableListOf<List<WatchlistAsset>>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            repository.observe(limit = 10, dateRange = NO_DATE_RANGE).collect {
+                emissions.add(it)
+            }
+        }
+
+        advanceUntilIdle()
+
+        val fetchCountBeforeRefresh = fakeMarketPriceRepository.fetchCount
+
+        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
+        )
+        fakeMarketPriceRepository.prices["GOOGL"] = MarketPrice(
+            symbol = "GOOGL", description = "Google", price = BigDecimal("2800"), currency = "USD", previousClosePrice = BigDecimal("2790"), pricePrecision = 2,
+        )
+        fakeMarketPriceRepository.emitRefresh()
+        advanceUntilIdle()
+
+        // Should have fetched price for each asset during refresh
+        assertEquals(2, fakeMarketPriceRepository.fetchCount - fetchCountBeforeRefresh)
+
+        val lastEmission = emissions.last()
+        assertEquals("Apple", lastEmission.find { it.name == "AAPL" }?.description)
+        assertEquals("Google", lastEmission.find { it.name == "GOOGL" }?.description)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `multiple refreshes each trigger new emissions`() = runTest {
+        repository.create("AAPL")
+
+        val emissions = mutableListOf<List<WatchlistAsset>>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            repository.observe(limit = 10, dateRange = NO_DATE_RANGE).collect {
+                emissions.add(it)
+            }
+        }
+
+        advanceUntilIdle()
+        val emissionsAfterInitial = emissions.size
+
+        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
+        )
+        fakeMarketPriceRepository.emitRefresh()
+        advanceUntilIdle()
+
+        assertTrue(emissions.size > emissionsAfterInitial)
+        val emissionsAfterFirstRefresh = emissions.size
+
+        // Update price and refresh again
+        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
+            symbol = "AAPL", description = "Apple", price = BigDecimal("160"), currency = "USD", previousClosePrice = BigDecimal("150"), pricePrecision = 2,
+        )
+        fakeMarketPriceRepository.emitRefresh()
+        advanceUntilIdle()
+
+        assertTrue(emissions.size > emissionsAfterFirstRefresh)
+        assertEquals(BigDecimal("160"), emissions.last().first().marketPrice)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `isRefreshingFlow resets to false after refresh completes`() = runTest {
+        repository.create("AAPL")
+
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            repository.observe(limit = 10, dateRange = NO_DATE_RANGE).collect {}
+        }
+
+        advanceUntilIdle()
+        assertEquals(false, repository.isRefreshingFlow.value)
+
+        fakeMarketPriceRepository.emitRefresh()
+        advanceUntilIdle()
+
+        assertEquals(false, repository.isRefreshingFlow.value)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `clearCache clears market data and triggers re-emission`() = runTest {
+        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
+            symbol = "AAPL", description = "Apple", price = BigDecimal("150"), currency = "USD", previousClosePrice = BigDecimal("148"), pricePrecision = 2,
+        )
+        repository.create("AAPL")
+
+        val emissions = mutableListOf<List<WatchlistAsset>>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            repository.observe(limit = 10, dateRange = NO_DATE_RANGE).collect {
+                emissions.add(it)
+            }
+        }
+
+        advanceUntilIdle()
+
+        // First emission has market data
+        assertTrue(emissions.isNotEmpty())
+        assertEquals(BigDecimal("150"), emissions.first().first().marketPrice)
+
+        // clearCache clears prices, so after refresh market data should be null
+        fakeMarketPriceRepository.clearCache()
+        advanceUntilIdle()
+
+        assertTrue(emissions.size >= 2)
+        assertNull(emissions.last().first().marketPrice)
+
+        job.cancel()
+    }
 }
 
