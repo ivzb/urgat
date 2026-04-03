@@ -91,7 +91,7 @@ fi
 
 # Install the emulator system image if it's not already
 sdk="system-images;android-36;google_apis;$ABI_ARCH"
-installedImage=$(sdkmanager --list_installed | grep -o $sdk)
+installedImage=$(sdkmanager --list_installed | grep -o "$sdk" || true)
 
 if [[ $installedImage = $sdk ]]; then
   echo "#############################"
