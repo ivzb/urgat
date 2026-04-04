@@ -98,9 +98,7 @@
 - rename InvestmentEntity cost to costPrice
 - show currencies in inner budgets screens
 - when converting investment currency, use investment's data exchange rate via historical exchange rate
-- don't show multiple fab add button actions - but directly open the one for currently selected page
 - create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
 - add instrument suggestions when adding new watchlist asset
+- don't show multiple fab add button actions - but directly open the one for currently selected page
 - write unit tests for DefaultInvestmentMarketMarketPriceRepository (including symbol currency to test symbol normalization)
-- add more comprehensive tests to DefaultInvestmentsRepository and DefaultWatchlistAssetRepository testing toExternal extension
-- add pull to refresh to investments tab - refresh forex repository too
