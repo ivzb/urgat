@@ -13,7 +13,8 @@ class DefaultInvestmentMarketMarketPriceRepository @Inject constructor(
 
     override suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal? {
         val marketPrice = marketPriceRepository.fetchPrice(symbol) ?: return null
-        val sameCurrency = normalizeInstrument(currency).equals(marketPrice.currency, ignoreCase = true)
+        val normalizedCurrency = normalizeInstrument(currency)
+        val sameCurrency = normalizedCurrency.equals(marketPrice.currency, ignoreCase = true)
 
         return if (sameCurrency) {
             marketPrice.price
@@ -21,7 +22,7 @@ class DefaultInvestmentMarketMarketPriceRepository @Inject constructor(
             forexRepository.convert(
                 amount = marketPrice.price,
                 fromCurrency = marketPrice.currency,
-                toCurrency = currency,
+                toCurrency = normalizedCurrency,
             )
         }
     }
