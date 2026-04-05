@@ -1,3 +1,8 @@
+## Release notes 26.04.03
+
+Improved:
+- The add button now intelligently opens the appropriate action for your current page, streamlining the add flow.
+
 ## Release notes 26.04.02
 
 New:
