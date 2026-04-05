@@ -143,7 +143,7 @@ echo "#############################"
 echo "## Urgat: Added release notes for version $VERSION_CODE in $LANGUAGE_CODE."
 echo "#############################"
 
-if [[ "$FLAG" != "-skip-screenshots" ]]; then
+if [[ "$FLAG" != "-skip-screenshots" && "$FLAG" != "--ss" ]]; then
   PLAY_STORE_SCREENSHOTS="play_store_screenshots"
   PLAY_STORE_SCREENSHOTS_PHONE="$PLAY_STORE_SCREENSHOTS/screenshots-phone"
   PLAY_STORE_SCREENSHOTS_TABLET_7="$PLAY_STORE_SCREENSHOTS/screenshots-tablet7"

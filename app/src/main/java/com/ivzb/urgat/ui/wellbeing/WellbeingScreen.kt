@@ -92,7 +92,7 @@ fun WellbeingScreen(
         route = WellbeingRoute,
         searchQuery = "",
         onSearchQueryChanged = { /* NOOP */ },
-        onFabActionClick = { id -> onIntent(WellbeingIntent.FabActionClick(id)) },
+        onFabActionClick = { onIntent(WellbeingIntent.FabActionClick) },
         navigator = navigator,
         withSearch = false,
 
@@ -108,7 +108,7 @@ fun WellbeingScreen(
             WellbeingContent(
                 weights = uiState.weightsUiState.weights,
                 weightsFilteringUiInfo = uiState.weightsUiState.filteringUiInfo,
-                onAddWeight = { onIntent(WellbeingIntent.FabActionClick(WellbeingFabActionId.Weight)) },
+                onAddWeight = { onIntent(WellbeingIntent.FabActionClick) },
                 onWeightClick = onWeightClick,
             )
         },

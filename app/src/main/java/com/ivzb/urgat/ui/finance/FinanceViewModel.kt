@@ -9,6 +9,7 @@ import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.domain.finance.ObserveFinanceUiStateUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
@@ -101,7 +102,7 @@ class FinanceViewModel @Inject constructor(
     fun onIntent(intent: FinanceIntent) {
         when (intent) {
             is FinanceIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is FinanceIntent.FabActionClick -> onFabActionClick(intent.itemId)
+            is FinanceIntent.FabActionClick -> { onFabActionClick(intent.page) }
             is FinanceIntent.UpdateFireWithdrawalRate -> onUpdateFireWithdrawalRate(intent.withdrawalRate)
             is FinanceIntent.UpdateFireReturnOfInvestment -> onUpdateFireReturnOfInvestment(intent.returnOfInvestment)
             is FinanceIntent.UpdateFireTaxRate -> onUpdateFireTaxRate(intent.taxRate)
@@ -134,18 +135,19 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    private fun onFabActionClick(id: FinanceFabActionId) {
-        viewModelScope.launch {
-            uiEventHolder.emit(
-                when (id) {
-                    FinanceFabActionId.Expense -> FinanceUiEvent.AddExpense
-                    FinanceFabActionId.Investment -> FinanceUiEvent.AddInvestment
-                    FinanceFabActionId.Saving -> FinanceUiEvent.AddSaving
-                    FinanceFabActionId.Budget -> FinanceUiEvent.AddBudget
-                    FinanceFabActionId.Watchlist -> FinanceUiEvent.AddWatchlistAsset
-                }
-            )
-        }
+    private fun onFabActionClick(page: Page) {
+            viewModelScope.launch {
+                uiEventHolder.emit(
+                    when (page) {
+                        is FinancePage.Expenses -> FinanceUiEvent.AddExpense
+                        is FinancePage.Investments -> FinanceUiEvent.AddInvestment
+                        is FinancePage.Savings -> FinanceUiEvent.AddSaving
+                        is FinancePage.Budgets -> FinanceUiEvent.AddBudget
+                        is FinancePage.Watchlist -> FinanceUiEvent.AddWatchlistAsset
+                        else -> null
+                    }
+                )
+            }
     }
 
     private fun onUpdateFireWithdrawalRate(withdrawalRate: String) {

@@ -20,6 +20,7 @@ import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
@@ -242,19 +243,34 @@ class FinanceViewModelTest {
 
     @Test
     fun `fab action click emits AddExpense event`() = runTest {
-        `fab action click emits event`(FinanceFabActionId.Expense, FinanceUiEvent.AddExpense)
+        `fab action click emits event`(FinancePage.Expenses, FinanceUiEvent.AddExpense)
     }
 
     @Test
     fun `fab action click emits AddInvestment event`() = runTest {
-        `fab action click emits event`(FinanceFabActionId.Investment, FinanceUiEvent.AddInvestment)
+        `fab action click emits event`(FinancePage.Investments, FinanceUiEvent.AddInvestment)
     }
 
-    private fun `fab action click emits event`(fabActionId: FinanceFabActionId, expectedEvent: FinanceUiEvent) = runTest {
+    @Test
+    fun `fab action click emits AddSaving event`() = runTest {
+        `fab action click emits event`(FinancePage.Savings, FinanceUiEvent.AddSaving)
+    }
+
+    @Test
+    fun `fab action click emits AddBudget event`() = runTest {
+        `fab action click emits event`(FinancePage.Budgets, FinanceUiEvent.AddBudget)
+    }
+
+    @Test
+    fun `fab action click emits AddWatchlist event`() = runTest {
+        `fab action click emits event`(FinancePage.Watchlist, FinanceUiEvent.AddWatchlistAsset)
+    }
+
+    private fun `fab action click emits event`(page: Page, expectedEvent: FinanceUiEvent) = runTest {
         fakeObserveFinanceUiStateUseCase.emit(Async.Success(FinanceUiState()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(FinanceIntent.FabActionClick(fabActionId))
+        viewModel.onIntent(FinanceIntent.FabActionClick(page))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()

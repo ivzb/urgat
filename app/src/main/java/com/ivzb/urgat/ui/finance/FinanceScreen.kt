@@ -162,7 +162,7 @@ fun FinanceScreen(
         route = FinanceRoute,
         searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(FinanceIntent.SearchQueryChanged(query)) },
-        onFabActionClick = { id -> onIntent(FinanceIntent.FabActionClick(id)) },
+        onFabActionClick = { page -> onIntent(FinanceIntent.FabActionClick(page)) },
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
@@ -243,7 +243,7 @@ fun FinanceScreen(
                     uiState = uiState.expensesUiState,
 
                     onMoreExpenses = onMoreExpenses,
-                    onAddExpense = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Expense)) },
+                    onAddExpense = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onExpenseClick = onExpenseClick,
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
@@ -255,7 +255,7 @@ fun FinanceScreen(
                     uiState = uiState.investmentsUiState,
 
                     onMoreInvestments = onMoreInvestments,
-                    onAddInvestment = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Investment)) },
+                    onAddInvestment = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onInvestmentClick = onInvestmentClick,
                     onRefreshInvestments = { onIntent(FinanceIntent.RefreshInvestments) },
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
@@ -268,7 +268,7 @@ fun FinanceScreen(
                     uiState = uiState.savingsUiState,
 
                     onMoreSavings = onMoreSavings,
-                    onAddSaving = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Saving)) },
+                    onAddSaving = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onSavingClick = onSavingClick,
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
@@ -280,7 +280,7 @@ fun FinanceScreen(
                     uiState = uiState.budgetsUiState,
 
                     onMoreBudgets = onMoreBudgets,
-                    onAddBudget = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Budget)) },
+                    onAddBudget = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onBudgetClick = onBudgetClick,
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
@@ -299,7 +299,7 @@ fun FinanceScreen(
                     uiState = uiState.watchlistAssetsUiState,
 
                     onMoreWatchlistAssets = onMoreWatchlistAssets,
-                    onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(FinanceFabActionId.Watchlist)) },
+                    onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onWatchlistAssetClick = onWatchlistAssetClick,
                     onRefreshWatchlist = { onIntent(FinanceIntent.RefreshWatchlist) },
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },

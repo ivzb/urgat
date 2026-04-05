@@ -9,6 +9,7 @@ import com.ivzb.urgat.domain.todo.ActivateTodoUseCase
 import com.ivzb.urgat.domain.todo.ClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.CompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.ObserveTodosUiStateUseCase
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.Async
@@ -74,7 +75,7 @@ class LibraryViewModel @Inject constructor(
             is LibraryIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is LibraryIntent.SetTodosFiltering -> setTodosFiltering(intent.filterType)
             is LibraryIntent.ResetFilters -> resetFilters()
-            is LibraryIntent.FabActionClick -> onFabActionClick(intent.itemId)
+            is LibraryIntent.FabActionClick -> onFabActionClick(intent.page)
             is LibraryIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -110,12 +111,13 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun onFabActionClick(id: LibraryFabActionId) {
+    private fun onFabActionClick(page: Page) {
         viewModelScope.launch {
             uiEventHolder.emit(
-                when (id) {
-                    LibraryFabActionId.Todo -> LibraryUiEvent.AddTodo
-                    LibraryFabActionId.Note -> LibraryUiEvent.AddNote
+                when (page) {
+                    LibraryPage.Todos -> LibraryUiEvent.AddTodo
+                    LibraryPage.Notes -> LibraryUiEvent.AddNote
+                    else -> null
                 }
             )
         }

@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.todo.FakeClearCompletedTodosUseCase
 import com.ivzb.urgat.domain.todo.FakeCompleteTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeObserveTodosUiStateUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
@@ -199,20 +200,20 @@ class LibraryViewModelTest {
 
     @Test
     fun `fab action click emits AddTodo event`() = runTest {
-        `fab action click emits event`(LibraryFabActionId.Todo, LibraryUiEvent.AddTodo)
+        `fab action click emits event`(LibraryPage.Todos, LibraryUiEvent.AddTodo)
     }
 
     @Test
     fun `fab action click emits AddNote event`() = runTest {
-        `fab action click emits event`(LibraryFabActionId.Note, LibraryUiEvent.AddNote)
+        `fab action click emits event`(LibraryPage.Notes, LibraryUiEvent.AddNote)
     }
 
-    private fun `fab action click emits event`(itemId: LibraryFabActionId, expectedEvent: LibraryUiEvent) = runTest {
+    private fun `fab action click emits event`(page: Page, expectedEvent: LibraryUiEvent) = runTest {
         fakeObserveTodosUiStateUseCase.emit(Async.Success(TodosUiState()))
         fakeObserveNotesUiStateUseCase.emit(Async.Success(NotesUiState()))
         viewModel = createViewModel()
 
-        viewModel.onIntent(LibraryIntent.FabActionClick(itemId))
+        viewModel.onIntent(LibraryIntent.FabActionClick(page))
 
         val job = launch(UnconfinedTestDispatcher()) {
             viewModel.uiState.collect()

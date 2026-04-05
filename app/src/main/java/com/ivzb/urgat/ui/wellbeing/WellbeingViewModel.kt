@@ -51,19 +51,15 @@ class WellbeingViewModel @Inject constructor(
 
     fun onIntent(intent: WellbeingIntent) {
         when (intent) {
-            is WellbeingIntent.FabActionClick -> onFabActionClick(intent.itemId)
+            is WellbeingIntent.FabActionClick -> onFabActionClick()
             is WellbeingIntent.SetWeightsSorting -> setWeightsSorting(intent.sortType)
             is WellbeingIntent.EventConsumed -> onEventConsumed()
         }
     }
 
-    private fun onFabActionClick(id: WellbeingFabActionId) {
+    private fun onFabActionClick() {
         viewModelScope.launch {
-            uiEventHolder.emit(
-                when (id) {
-                    WellbeingFabActionId.Weight -> WellbeingUiEvent.AddWeight
-                }
-            )
+            uiEventHolder.emit(WellbeingUiEvent.AddWeight)
         }
     }
 

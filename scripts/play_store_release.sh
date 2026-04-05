@@ -6,7 +6,7 @@ usage()
 {
 cat << EOF
 usage:
-    $0 <version> [-skip-screenshots]
+    $0 <version> [-skip-screenshots | --ss]
 
     Latest git tag: $(git describe --tags --abbrev=0)
 EOF
@@ -30,7 +30,7 @@ fi
 VERSION="$1"
 FLAG="$2"
 
-if [ "$FLAG" != "" ] && [ "$FLAG" != "-skip-screenshots" ]; then
+if [ "$FLAG" != "" ] && [ "$FLAG" != "-skip-screenshots" ] && [ "$FLAG" != "--ss" ]; then
     usage
     exit 1
 fi
@@ -48,7 +48,7 @@ fi
 ##
 # Generate play store screenshots
 ##
-if [[ "$FLAG" != "-skip-screenshots" ]]; then
+if [[ "$FLAG" != "-skip-screenshots" && "$FLAG" != "--ss" ]]; then
   ./play_store_screenshots.sh
 fi
 

@@ -1,13 +1,11 @@
 package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.ui.components.Page
-import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
+import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.ui.todos.TodosUiState
 
 data class LibraryUiState(
-    override val fabActions: List<LibraryFabAction> = LIBRARY_FAB_ACTIONS,
-
     val todosUiState: TodosUiState = TodosUiState(),
     val notesUiState: NotesUiState = NotesUiState(),
 
@@ -21,7 +19,7 @@ data class LibraryUiState(
     override val filteringUiInfo: LibraryFilteringUiInfo = LibraryFilteringUiInfo(),
 
     val uiEvent: LibraryUiEvent? = null,
-): NavigationPagerUiState<LibraryFabActionId> {
+): PagerUiState {
 
     val hasAppliedFilters: Boolean =
         todosUiState.filteringUiInfo.hasAppliedFilters ||

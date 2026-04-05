@@ -4,15 +4,13 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.components.Page
-import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
+import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 
 data class FinanceUiState(
-    override val fabActions: List<FinanceFabAction> = FINANCE_FAB_ACTIONS,
-
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
     val investmentsUiState: InvestmentsUiState = InvestmentsUiState(),
     val savingsUiState: SavingsUiState = SavingsUiState(),
@@ -38,7 +36,7 @@ data class FinanceUiState(
     override val filteringUiInfo: FinanceFilteringUiInfo = FinanceFilteringUiInfo(),
 
     val uiEvent: FinanceUiEvent? = null,
-): NavigationPagerUiState<FinanceFabActionId> {
+): PagerUiState {
 
     val hasAppliedFilters: Boolean =
         expensesUiState.filteringUiInfo.hasAppliedFilters ||

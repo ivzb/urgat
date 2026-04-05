@@ -23,7 +23,6 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.navigation.UrgatRootRoute
 import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.ui.components.Page
-import com.ivzb.urgat.ui.components.uiState.NavigationPagerUiState
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import kotlinx.coroutines.launch
 
@@ -34,13 +33,13 @@ typealias PagerContent = @Composable (
 ) -> Unit
 
 @Composable
-fun <T> NavigationPagerScreen(
-    uiState: NavigationPagerUiState<T>,
+fun NavigationPagerScreen(
+    uiState: PagerUiState,
 
     route: UrgatRootRoute,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onFabActionClick: ((T) -> Unit)? = null,
+    onFabActionClick: (Page) -> Unit,
     navigator: Navigator,
 
     withSearch: (Page) -> Boolean,
@@ -62,7 +61,7 @@ fun <T> NavigationPagerScreen(
         route = route,
         searchQuery = searchQuery,
         onSearchQueryChanged = onSearchQueryChanged,
-        onFabActionClick = onFabActionClick,
+        onFabActionClick = { onFabActionClick(page) },
         navigator = navigator,
 
         withSearch = withSearch(page),

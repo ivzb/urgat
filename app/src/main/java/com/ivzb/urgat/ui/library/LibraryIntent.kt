@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.library
 
 import com.ivzb.urgat.data.todo.Todo
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.todos.TodosFilterType
 
 sealed class LibraryIntent {
@@ -9,6 +10,6 @@ sealed class LibraryIntent {
     object ClearCompletedTodos: LibraryIntent()
     object ResetFilters: LibraryIntent()
     data class CompleteTodo(val todo: Todo, val completed: Boolean): LibraryIntent()
-    data class FabActionClick(val itemId: LibraryFabActionId): LibraryIntent()
+    data class FabActionClick(val page: Page): LibraryIntent()
     object EventConsumed: LibraryIntent()
 }

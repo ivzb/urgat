@@ -92,7 +92,7 @@ fun LibraryScreen(
         route = LibraryRoute,
         searchQuery = uiState.filteringUiInfo.searchQuery,
         onSearchQueryChanged = { query -> onIntent(LibraryIntent.SearchQueryChanged(query)) },
-        onFabActionClick = { id -> onIntent(LibraryIntent.FabActionClick(id)) },
+        onFabActionClick = { page -> onIntent(LibraryIntent.FabActionClick(page)) },
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
@@ -121,7 +121,7 @@ fun LibraryScreen(
             when (page) {
                 LibraryPage.Todos -> TodosPage(
                     uiState = uiState.todosUiState,
-                    onAddTodo = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Todo)) },
+                    onAddTodo = { onIntent(LibraryIntent.FabActionClick(page)) },
                     onTodoClick = onTodoClick,
                     onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
                     onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
@@ -132,7 +132,7 @@ fun LibraryScreen(
 
                 LibraryPage.Notes -> NotesPage(
                     uiState = uiState.notesUiState,
-                    onAddNote = { onIntent(LibraryIntent.FabActionClick(LibraryFabActionId.Note)) },
+                    onAddNote = { onIntent(LibraryIntent.FabActionClick(page)) },
                     onNoteClick = onNoteClick,
                     onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
 

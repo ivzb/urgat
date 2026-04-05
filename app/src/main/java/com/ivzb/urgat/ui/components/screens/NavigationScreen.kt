@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -44,9 +45,9 @@ import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.navigation.UrgatRootRoute
 import com.ivzb.urgat.navigation.drawer.URGAT_NAVIGATION_DRAWER
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.ExpandableFab
+import com.ivzb.urgat.ui.components.ScrollAwareFAB
 import com.ivzb.urgat.ui.components.scaffolds.UrgatScaffold
-import com.ivzb.urgat.ui.components.uiState.NavigationUiState
+import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.library.LibraryUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
@@ -54,13 +55,13 @@ import com.ivzb.urgat.util.isScrollingUp
 import kotlinx.coroutines.launch
 
 @Composable
-fun <T> NavigationScreen(
-    uiState: NavigationUiState<T>,
+fun NavigationScreen(
+    uiState: UiState,
 
     route: UrgatRootRoute,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onFabActionClick: ((T) -> Unit)? = null,
+    onFabActionClick: () -> Unit,
     navigator: Navigator,
     withSearch: Boolean,
     withFab: Boolean = true,
@@ -180,12 +181,11 @@ fun <T> NavigationScreen(
                 topAppBarActionsContent = topAppBarActionsContent,
                 floatingActionButtonContent = {
                     if (withFab) {
-                        ExpandableFab(
+                        ScrollAwareFAB(
                             visible = listState?.isScrollingUp() ?: true,
-                            fabActions = uiState.fabActions,
-                            onFabActionClick = { fabActionId ->
-                                onFabActionClick?.invoke(fabActionId)
-                            }
+                            icon = Icons.Filled.Add,
+                            labelResId = R.string.add,
+                            onClick = onFabActionClick,
                         )
                     }
                 },
