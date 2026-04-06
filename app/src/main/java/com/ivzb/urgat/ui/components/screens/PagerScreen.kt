@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -52,7 +51,9 @@ fun NavigationPagerScreen(
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
     val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
-    val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
+    val currentListState by remember(uiState.pages.size) {
+        derivedStateOf { listStates[pagerState.currentPage] }
+    }
     val page = uiState.pages[pagerState.currentPage]
 
     NavigationScreen(
@@ -67,14 +68,13 @@ fun NavigationPagerScreen(
         withSearch = withSearch(page),
         withFab = withFab(page),
         topAppBarActionsContent = { topAppBarActionsContent?.invoke(page) },
-        listState = currentListState.value,
+        listState = currentListState,
 
         content = {
             PagerContent(
                 pages = uiState.pages,
                 pagerState = pagerState,
                 listStates = listStates,
-                onListStateChanged = { currentListState.value = it },
                 content = content,
             )
         },
@@ -101,7 +101,9 @@ fun PagerScreen(
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
     val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
-    val currentListState = remember(uiState.pages.size) { mutableStateOf(listStates[0]) }
+    val currentListState by remember(uiState.pages.size) {
+        derivedStateOf { listStates[pagerState.currentPage] }
+    }
 
     ListDetailScreen(
         uiState = uiState,
@@ -113,14 +115,13 @@ fun PagerScreen(
 
         withSearch = withSearch,
         topAppBarActionsContent = topAppBarActionsContent,
-        listState = currentListState.value,
+        listState = currentListState,
 
         content = {
             PagerContent(
                 pages = uiState.pages,
                 pagerState = pagerState,
                 listStates = listStates,
-                onListStateChanged = { currentListState.value = it },
                 content = content,
             )
         },
@@ -134,7 +135,7 @@ fun PagerContent(
     pages: List<Page>,
     pagerState: PagerState,
     listStates: List<LazyListState>,
-    onListStateChanged: (LazyListState) -> Unit,
+    onListStateChanged: ((LazyListState) -> Unit)? = null,
     content: PagerContent,
     modifier: Modifier = Modifier,
 ) {
@@ -179,7 +180,7 @@ fun PagerContent(
             content(
                 pages[pageIndex],
                 listStates[pageIndex],
-                onListStateChanged,
+                onListStateChanged ?: {},
             )
         }
     }
