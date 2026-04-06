@@ -1,3 +1,8 @@
+## Release notes 26.04.04
+
+Fixed:
+- The floating action button now responds to scrolling consistently across all pages.
+
 ## Release notes 26.04.03
 
 Improved:
