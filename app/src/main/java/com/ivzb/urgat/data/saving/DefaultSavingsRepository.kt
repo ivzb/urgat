@@ -34,6 +34,7 @@ class DefaultSavingsRepository @Inject constructor(
     override suspend fun create(
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ): String {
         // ID creation might be a complex operation so it's executed using the supplied
@@ -45,6 +46,7 @@ class DefaultSavingsRepository @Inject constructor(
             id = id,
             name = name,
             amount = amount,
+            currency = currency,
             date = date,
             isDeleted = false,
             createdAt = System.currentTimeMillis()
@@ -57,11 +59,13 @@ class DefaultSavingsRepository @Inject constructor(
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ) {
         val saving = get(id)?.copy(
             name = name,
             amount = amount,
+            currency = currency,
             date = date,
         )
 

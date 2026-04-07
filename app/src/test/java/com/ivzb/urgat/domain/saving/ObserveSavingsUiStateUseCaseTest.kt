@@ -233,7 +233,7 @@ class ObserveSavingsUiStateUseCaseTest {
 
     companion object {
 
-        private val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, 1L, false, 1L))
+        private val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
 
         private val fakeSavings = listOf(
             GroupedItems(group = "2025/12", total = "10".toBigDecimal(), items = savings)

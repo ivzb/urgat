@@ -796,7 +796,7 @@ class ObserveFinanceUiStateUseCaseTest {
         )
 
         private val savings = listOf(
-            Saving("1", "Coffee fund", BigDecimal.TEN, 1L, false, 1L)
+            Saving("1", "Coffee fund", BigDecimal.TEN, "EUR", 1L, false, 1L)
         )
 
         private val fakeSavings = listOf(

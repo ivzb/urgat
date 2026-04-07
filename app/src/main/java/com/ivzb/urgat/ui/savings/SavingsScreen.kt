@@ -55,6 +55,7 @@ import com.ivzb.urgat.util.annotateBold
 import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.annotateSavingsChart
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -421,7 +422,7 @@ fun SavingItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = saving.name,
-        subTextRight = AnnotatedString(saving.amount.format()),
+        subTextRight = AnnotatedString("${saving.amount.format()} ${saving.currency.formatCurrency()}"),
 
         onClick = { onSavingClick(saving) }
     )
@@ -433,6 +434,7 @@ private fun CategoryItem(
     colorIndex: Int,
     onClick: () -> Unit,
 ) {
+
     ListItem(
         textLeft = category.name,
         textRight = category.value.format(),

@@ -9,6 +9,7 @@ data class SavingEntity(
     @PrimaryKey val id: String,
     val name: String,
     val amount: BigDecimal,
+    val currency: String,
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long

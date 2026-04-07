@@ -93,6 +93,7 @@ class DefaultSampleUseCaseTest {
                 createSavingUseCase(
                     it.name,
                     it.amount,
+                    it.currency,
                     it.date,
                 )
             }

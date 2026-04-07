@@ -67,6 +67,7 @@ class AddEditSavingViewModelTest {
             id = savingId,
             name = "Emergency fund",
             amount = BigDecimal("500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,
@@ -81,6 +82,7 @@ class AddEditSavingViewModelTest {
         val state = viewModel.uiState.value
         Assert.assertEquals("Emergency fund", state.name)
         Assert.assertEquals("500", state.amount)
+        Assert.assertEquals("EUR", state.currency)
         Assert.assertEquals(123L, state.date)
         Assert.assertEquals(false, state.isLoading)
         Assert.assertEquals(true, state.withDelete)
@@ -94,6 +96,12 @@ class AddEditSavingViewModelTest {
     }
 
     @Test
+    fun `updateCurrency updates uiState`() = runTest {
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency("USD"))
+        Assert.assertEquals("USD", viewModel.uiState.value.currency)
+    }
+
+    @Test
     fun `saveSaving with empty fields shows message`() = runTest {
         viewModel.onIntent(AddEditSavingIntent.SaveSaving)
         Assert.assertEquals(R.string.empty_saving_message, viewModel.uiState.value.userMessage)
@@ -103,6 +111,21 @@ class AddEditSavingViewModelTest {
     fun `saveSaving with spaces shows message`() = runTest {
         viewModel.onIntent(AddEditSavingIntent.UpdateName(" "))
         viewModel.onIntent(AddEditSavingIntent.UpdateAmount(" "))
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency(" "))
+        viewModel.onIntent(AddEditSavingIntent.SaveSaving)
+
+        advanceUntilIdle()
+
+        Assert.assertTrue(createUseCase.created.isEmpty())
+        val uiState = viewModel.uiState.value
+        Assert.assertEquals(R.string.empty_saving_message, uiState.userMessage)
+        Assert.assertFalse(uiState.shouldNavigateBack)
+    }
+
+    @Test
+    fun `saveSaving with empty currency shows message`() = runTest {
+        viewModel.onIntent(AddEditSavingIntent.UpdateName("Emergency fund"))
+        viewModel.onIntent(AddEditSavingIntent.UpdateAmount("500"))
         viewModel.onIntent(AddEditSavingIntent.SaveSaving)
 
         advanceUntilIdle()
@@ -117,13 +140,15 @@ class AddEditSavingViewModelTest {
     fun `saveSaving creates new saving`() = runTest {
         viewModel.onIntent(AddEditSavingIntent.UpdateName("Emergency fund"))
         viewModel.onIntent(AddEditSavingIntent.UpdateAmount("500"))
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditSavingIntent.SaveSaving)
 
         advanceUntilIdle()
 
-        val (name, amount) = createUseCase.created
+        val (name, amount, currency) = createUseCase.created
         Assert.assertEquals("Emergency fund", name)
         Assert.assertEquals(BigDecimal("500"), amount)
+        Assert.assertEquals("EUR", currency)
         Assert.assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -131,13 +156,15 @@ class AddEditSavingViewModelTest {
     fun `saveSaving creates new saving trimmed`() = runTest {
         viewModel.onIntent(AddEditSavingIntent.UpdateName(" Emergency fund "))
         viewModel.onIntent(AddEditSavingIntent.UpdateAmount(" 500 "))
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency(" EUR "))
         viewModel.onIntent(AddEditSavingIntent.SaveSaving)
 
         advanceUntilIdle()
 
-        val (name, amount) = createUseCase.created
+        val (name, amount, currency) = createUseCase.created
         Assert.assertEquals("Emergency fund", name)
         Assert.assertEquals(BigDecimal("500"), amount)
+        Assert.assertEquals("EUR", currency)
         Assert.assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -148,6 +175,7 @@ class AddEditSavingViewModelTest {
             id = savingId,
             name = "Emergency fund",
             amount = BigDecimal("500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,
@@ -161,19 +189,22 @@ class AddEditSavingViewModelTest {
         val uiState = viewModel.uiState.value
         Assert.assertEquals(saving.name, uiState.name)
         Assert.assertEquals(saving.amount.toString(), uiState.amount)
+        Assert.assertEquals(saving.currency, uiState.currency)
         Assert.assertEquals(saving.date, uiState.date)
         Assert.assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditSavingIntent.UpdateName("Edit"))
         viewModel.onIntent(AddEditSavingIntent.UpdateAmount("35"))
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency("USD"))
         viewModel.onIntent(AddEditSavingIntent.SaveSaving)
 
         advanceUntilIdle()
 
-        val (id, name, amount) = updateUseCase.updated
+        val (id, name, amount, currency) = updateUseCase.updated
         Assert.assertEquals(savingId, id)
         Assert.assertEquals("Edit", name)
         Assert.assertEquals(BigDecimal("35"), amount)
+        Assert.assertEquals("USD", currency)
         Assert.assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -184,6 +215,7 @@ class AddEditSavingViewModelTest {
             id = savingId,
             name = "Emergency fund",
             amount = BigDecimal("500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 1L,
@@ -197,19 +229,22 @@ class AddEditSavingViewModelTest {
         val uiState = viewModel.uiState.value
         Assert.assertEquals(saving.name, uiState.name)
         Assert.assertEquals(saving.amount.toString(), uiState.amount)
+        Assert.assertEquals(saving.currency, uiState.currency)
         Assert.assertEquals(saving.date, uiState.date)
         Assert.assertFalse(uiState.isLoading)
 
         viewModel.onIntent(AddEditSavingIntent.UpdateName(" Edit "))
         viewModel.onIntent(AddEditSavingIntent.UpdateAmount(" 350 "))
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency(" USD "))
         viewModel.onIntent(AddEditSavingIntent.SaveSaving)
 
         advanceUntilIdle()
 
-        val (id, name, amount) = updateUseCase.updated
+        val (id, name, amount, currency) = updateUseCase.updated
         Assert.assertEquals(savingId, id)
         Assert.assertEquals("Edit", name)
         Assert.assertEquals(BigDecimal("350"), amount)
+        Assert.assertEquals("USD", currency)
         Assert.assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
 
@@ -244,6 +279,7 @@ class AddEditSavingViewModelTest {
             id = savingId,
             name = "SNP 500",
             amount = BigDecimal("1500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -258,9 +294,10 @@ class AddEditSavingViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, date) = createUseCase.created
+        val (name, amount, currency, date) = createUseCase.created
         assertEquals("SNP 500", name)
         assertEquals(BigDecimal("1500"), amount)
+        assertEquals("EUR", currency)
         assertTrue((date as Long) > 123L)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -272,6 +309,7 @@ class AddEditSavingViewModelTest {
             id = savingId,
             name = "SNP 500",
             amount = BigDecimal("1500"),
+            currency = "EUR",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -284,13 +322,15 @@ class AddEditSavingViewModelTest {
 
         viewModel.onIntent(AddEditSavingIntent.UpdateName("NVDA"))
         viewModel.onIntent(AddEditSavingIntent.UpdateAmount("3000"))
+        viewModel.onIntent(AddEditSavingIntent.UpdateCurrency("USD"))
         viewModel.onIntent(AddEditSavingIntent.DuplicateSaving)
 
         advanceUntilIdle()
 
-        val (name, amount, date) = createUseCase.created
+        val (name, amount, currency, date) = createUseCase.created
         assertEquals("NVDA", name)
         assertEquals(BigDecimal("3000"), amount)
+        assertEquals("USD", currency)
         assertTrue((date as Long) > 123L)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }

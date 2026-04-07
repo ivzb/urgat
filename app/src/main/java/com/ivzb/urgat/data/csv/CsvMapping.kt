@@ -152,9 +152,10 @@ data class CsvMapping(
                 id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 name = split[1],
                 amount = split[2].toBigDecimal(),
-                date = split[3].toLong(),
+                currency = split[3],
+                date = split[4].toLong(),
                 isDeleted = false,
-                createdAt = split[4].toLong(),
+                createdAt = split[5].toLong(),
             )
         }
 

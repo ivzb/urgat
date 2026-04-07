@@ -36,9 +36,9 @@ class ObserveSavingsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = SavingsSortType.BY_DATE,
             expected = listOf(
-                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
-                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
-                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", 125, false, 1L),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", 124, false, 1L),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", 123, false, 1L),
             ),
         )
     }
@@ -48,9 +48,9 @@ class ObserveSavingsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = SavingsSortType.BY_MIN,
             expected = listOf(
-                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
-                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
-                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", 124, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", 125, false, 1L),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", 123, false, 1L),
             ),
         )
     }
@@ -60,9 +60,9 @@ class ObserveSavingsUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = SavingsSortType.BY_MAX,
             expected = listOf(
-                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
-                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
-                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", 123, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", 125, false, 1L),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", 124, false, 1L),
             ),
         )
     }
@@ -76,9 +76,9 @@ class ObserveSavingsUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Saving("1", "Emergency fund", BigDecimal("500"), 123, false, 1L),
-                Saving("2", "Kids fund", BigDecimal("200"), 124, false, 1L),
-                Saving("3", "Cash", BigDecimal("250"), 125, false, 1L),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", 123, false, 1L),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", 124, false, 1L),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", 125, false, 1L),
             )
         )
 

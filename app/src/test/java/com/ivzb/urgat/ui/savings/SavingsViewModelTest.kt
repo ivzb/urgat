@@ -70,7 +70,7 @@ class SavingsViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, 1L, false, 1L))
+        val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
         val fakeSavings = listOf(
             GroupedItems(
                 group = "2025/12",
@@ -171,7 +171,7 @@ class SavingsViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, 1L, false, 1L))
+        val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
         val fakeSavings = listOf(GroupedItems(
             group = "2025/12",
             total = "10".toBigDecimal(),

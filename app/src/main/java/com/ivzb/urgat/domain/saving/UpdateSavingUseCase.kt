@@ -10,6 +10,7 @@ interface UpdateSavingUseCase {
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     )
 
@@ -23,10 +24,11 @@ class DefaultUpdateSavingUseCase @Inject constructor(
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ) {
 
-        repository.update(id, name, amount, date)
+        repository.update(id, name, amount, currency, date)
     }
 
 }

@@ -152,7 +152,7 @@ class FinanceViewModelTest {
         )
 
         val fakeSavingsUiState = SavingsUiState(
-            savings = listOf(GroupedSavings("1", 500.toBigDecimal(), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), 1L, false, 1L))))
+            savings = listOf(GroupedSavings("1", 500.toBigDecimal(), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1L, false, 1L))))
         )
 
         val fakeBudgetsUiState = BudgetsUiState(

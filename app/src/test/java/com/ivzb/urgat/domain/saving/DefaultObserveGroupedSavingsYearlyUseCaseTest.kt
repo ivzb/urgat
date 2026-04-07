@@ -42,21 +42,21 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
 
-                Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("6", "Cash", BigDecimal("350"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
 
-                Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
 
-                Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("11", "Kids fund", BigDecimal("500"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("12", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
             ),
         )
 
@@ -71,26 +71,26 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
                 group = "2026",
                 total = "3300".toBigDecimal(),
                 items = listOf(
-                    Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
 
-                    Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("11", "Kids fund", BigDecimal("500"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("12", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                 ),
             ),
             GroupedItems(
                 group = "2025",
                 total = "2200".toBigDecimal(),
                 items = listOf(
-                    Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                    Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                    Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("6", "Cash", BigDecimal("350"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
 
-                    Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                    Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                    Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
                 ),
             ),
         )
@@ -111,21 +111,21 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
 
-                Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("6", "Cash", BigDecimal("350"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
 
-                Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
 
-                Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("11", "Kids fund", BigDecimal("500"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("12", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
             ),
         )
 
@@ -140,26 +140,26 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
                 group = "2026",
                 total = "3300".toBigDecimal(),
                 items = listOf(
-                    Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("12", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("11", "Kids fund", BigDecimal("500"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                 ),
             ),
             GroupedItems(
                 group = "2025",
                 total = "2200".toBigDecimal(),
                 items = listOf(
-                    Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                    Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
 
-                    Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                    Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("6", "Cash", BigDecimal("350"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
 
-                    Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                    Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
                 ),
             ),
         )
@@ -180,21 +180,21 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
 
-                Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                Saving("6", "Cash", BigDecimal("350"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
 
-                Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
 
-                Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("11", "Kids fund", BigDecimal("500"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                Saving("12", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
             ),
         )
 
@@ -209,26 +209,26 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
                 group = "2026",
                 total = "3300".toBigDecimal(),
                 items = listOf(
-                    Saving("10", "Emergency fund", BigDecimal("800"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("7", "Emergency fund", BigDecimal("700"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("11", "Kids fund", BigDecimal("500"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("9", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("12", "Cash", BigDecimal("450"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
-                    Saving("8", "Kids fund", BigDecimal("400"), timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("11", "Kids fund", BigDecimal("500"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("12", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
+                    Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                 ),
             ),
             GroupedItems(
                 group = "2025",
                 total = "2200".toBigDecimal(),
                 items = listOf(
-                    Saving("4", "Emergency fund", BigDecimal("600"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                    Saving("1", "Emergency fund", BigDecimal("500"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
 
-                    Saving("6", "Cash", BigDecimal("350"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
-                    Saving("5", "Kids fund", BigDecimal("300"), timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("6", "Cash", BigDecimal("350"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
+                    Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
 
-                    Saving("3", "Cash", BigDecimal("250"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
-                    Saving("2", "Kids fund", BigDecimal("200"), timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
+                    Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
                 ),
             ),
         )

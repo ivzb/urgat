@@ -48,6 +48,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
         when (intent) {
             is AddEditSavingIntent.UpdateName -> updateName(intent.value)
             is AddEditSavingIntent.UpdateAmount -> updateAmount(intent.value)
+            is AddEditSavingIntent.UpdateCurrency -> updateCurrency(intent.value)
             is AddEditSavingIntent.UpdateDate -> updateDate(intent.value)
             AddEditSavingIntent.SaveSaving -> saveSaving()
             AddEditSavingIntent.DeleteSaving -> deleteSaving()
@@ -68,6 +69,12 @@ class AddEditSavingViewModel @AssistedInject constructor(
         }
     }
 
+    private fun updateCurrency(currency: String) {
+        _uiState.update {
+            it.copy(currency = currency)
+        }
+    }
+
     private fun updateDate(date: Long) {
         _uiState.update {
             it.copy(date = date)
@@ -78,6 +85,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
         val fields = listOf(
             uiState.value.name,
             uiState.value.amount,
+            uiState.value.currency,
         )
 
         val emptyIndex = fields.indexOfFirst { it.sanitize().isEmpty() }
@@ -104,6 +112,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
         createSavingUseCase(
             name = uiState.value.name.sanitize(),
             amount = uiState.value.amount.sanitize().toBigDecimal(),
+            currency = uiState.value.currency.sanitize(),
             date = uiState.value.date,
         )
 
@@ -128,6 +137,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
                 savingId,
                 name = uiState.value.name.sanitize(),
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
+                currency = uiState.value.currency.sanitize(),
                 date = uiState.value.date,
             )
 
@@ -195,6 +205,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
                         it.copy(
                             name = saving.name,
                             amount = saving.amount.toString(),
+                            currency = saving.currency,
                             date = saving.date,
                             isLoading = false,
                             withDelete = true

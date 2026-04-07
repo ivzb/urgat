@@ -71,6 +71,7 @@ class DefaultSampleUseCase @Inject constructor(
             createSavingUseCase(
                 it.name,
                 it.amount,
+                it.currency,
                 it.date,
             )
         }

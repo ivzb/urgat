@@ -23,12 +23,13 @@ class DefaultCreateSavingUseCaseTest {
     fun `invoke should call repository create with correct parameters`() = runTest {
         val name = "Emergency fund"
         val amount = BigDecimal("500")
+        val currency = "EUR"
         val date = 1731268800000L
 
-        createUseCase(name, amount, date)
+        createUseCase(name, amount, currency, date)
 
         coVerify(exactly = 1) {
-            repository.create(name, amount, date)
+            repository.create(name, amount, currency, date)
         }
     }
 }

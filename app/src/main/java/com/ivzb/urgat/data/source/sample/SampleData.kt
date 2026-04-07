@@ -218,6 +218,7 @@ object SampleData {
                     id = "saving_$index",
                     name = name,
                     amount = amount.toBigDecimal(),
+                    currency = "EUR",
                     date = System.currentTimeMillis() - ((index / 3) * 86_400 * 31 * 1_000L),
                     isDeleted = false,
                     createdAt = System.currentTimeMillis() - ((index / 3) * 86_400 * 31 * 1_000L),

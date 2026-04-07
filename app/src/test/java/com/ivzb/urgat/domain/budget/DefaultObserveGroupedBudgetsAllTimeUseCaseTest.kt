@@ -113,9 +113,9 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         )
 
         val savings = GroupedSavings("2025", 1500.toBigDecimal(), listOf(
-            Saving("1", "Emergency fund", 500.toBigDecimal(), 1, false, 1),
-            Saving("2", "Emergency fund", 600.toBigDecimal(), 2, false, 2),
-            Saving("3", "Emergency fund", 700.toBigDecimal(), 3, false, 3),
+            Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
+            Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
+            Saving("3", "Emergency fund", 700.toBigDecimal(), "EUR", 3, false, 3),
         ))
 
         every { observeGroupedBudgetCategoriesAllTimeUseCase.invoke(

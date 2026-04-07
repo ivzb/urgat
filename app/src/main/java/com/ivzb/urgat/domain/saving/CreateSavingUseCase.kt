@@ -9,6 +9,7 @@ interface CreateSavingUseCase {
     suspend operator fun invoke(
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     )
 
@@ -21,10 +22,11 @@ class DefaultCreateSavingUseCase @Inject constructor(
     override suspend operator fun invoke(
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ) {
 
-        repository.create(name, amount, date)
+        repository.create(name, amount, currency, date)
     }
 
 }

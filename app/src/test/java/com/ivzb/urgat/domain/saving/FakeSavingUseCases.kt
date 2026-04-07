@@ -2,9 +2,6 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
-import com.ivzb.urgat.domain.investment.ObserveInvestmentsUiStateUseCase
-import com.ivzb.urgat.ui.investments.InvestmentsSortType
-import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
@@ -164,9 +161,10 @@ class FakeCreateSavingUseCase : CreateSavingUseCase {
     override suspend fun invoke(
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ) {
-        created = listOf(name, amount, date)
+        created = listOf(name, amount, currency, date)
     }
 }
 
@@ -178,9 +176,10 @@ class FakeUpdateSavingUseCase : UpdateSavingUseCase {
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ) {
-        updated = listOf(id, name, amount, date)
+        updated = listOf(id, name, amount, currency, date)
     }
 }
 

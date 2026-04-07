@@ -24,12 +24,13 @@ class DefaultUpdateSavingUseCaseTest {
         val id = "123"
         val name = "Emergency fund"
         val amount = BigDecimal("500")
+        val currency = "EUR"
         val date = 1731268800000L
 
-        updateUseCase(id, name, amount, date)
+        updateUseCase(id, name, amount, currency, date)
 
         coVerify(exactly = 1) {
-            repository.update(id, name, amount, date)
+            repository.update(id, name, amount, currency, date)
         }
     }
 }

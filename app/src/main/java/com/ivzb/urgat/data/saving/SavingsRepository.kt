@@ -8,6 +8,7 @@ interface SavingsRepository: BaseRepository<Saving> {
     suspend fun create(
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     ): String
 
@@ -15,6 +16,7 @@ interface SavingsRepository: BaseRepository<Saving> {
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         date: Long,
     )
 

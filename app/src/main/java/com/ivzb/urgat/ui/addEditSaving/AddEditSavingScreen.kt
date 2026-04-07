@@ -58,6 +58,7 @@ import kotlinx.coroutines.launch
 enum class FieldId {
     Name,
     Amount,
+    Currency,
     Date,
 }
 
@@ -179,13 +180,41 @@ fun AddEditSavingScreen(
                         placeholder = { Text(stringResource(id = R.string.amount_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
+                            imeAction = ImeAction.Next,
                         ),
                         maxLines = 1,
                         modifier = Modifier
                             .weight(1f)
                             .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
                     )
+
+                    TextField(
+                        value = uiState.currency,
+                        onValueChange = {
+                            onIntent(AddEditSavingIntent.UpdateCurrency(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done,
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+                ) {
 
                     DatePicker(
                         timestamp = uiState.date,

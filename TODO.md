@@ -92,11 +92,14 @@
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
-- add currency to budget so investments can be converted to single currency for proper calculation
-- add currency to expense
-- add currency to saving
 - rename InvestmentEntity cost to costPrice
 - show currencies in inner budgets screens
 - when converting investment currency, use investment's data exchange rate via historical exchange rate
 - create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
 - add instrument suggestions when adding new watchlist asset
+- add currency to budget so investments can be converted to single currency for proper calculation
+- add currency to expense
+- add currency to saving
+- show currency to savings category - see how InvestmentsScreen CategoryItem did it with total
+- check ui tests
+- add tests to addedit savings view model

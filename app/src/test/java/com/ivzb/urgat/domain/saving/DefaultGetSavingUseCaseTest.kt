@@ -26,7 +26,7 @@ class DefaultGetSavingUseCaseTest {
     @Test
     fun `invoke should return saving when repository returns saving`() = runTest {
         val id = "123"
-        val expectedSaving = Saving(id, "Emergency fund", BigDecimal("500"), 1731268800000L, false, 1731268800000L)
+        val expectedSaving = Saving(id, "Emergency fund", BigDecimal("500"), "EUR", 1731268800000L, false, 1731268800000L)
         coEvery { repository.get(id) } returns expectedSaving
 
         val result = getUseCase(id)
