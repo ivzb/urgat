@@ -1,3 +1,7 @@
+## Release notes 26.04.05
+
+No release notes.
+
 ## Release notes 26.04.04
 
 Fixed:
