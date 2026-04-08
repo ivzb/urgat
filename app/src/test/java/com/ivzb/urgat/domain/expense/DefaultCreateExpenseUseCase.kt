@@ -23,14 +23,15 @@ class DefaultCreateExpenseUseCaseTest {
     fun `invoke should call repository create with correct parameters`() = runTest {
         val name = "Groceries"
         val amount = BigDecimal("45.90")
+        val currency = "EUR"
         val category = "Food"
         val date = 1731268800000L
         val excludeFromAnalytics = false
 
-        createUseCase(name, amount, category, date, excludeFromAnalytics)
+        createUseCase(name, amount, currency, category, date, excludeFromAnalytics)
 
         coVerify(exactly = 1) {
-            repository.create(name, amount, category, date, excludeFromAnalytics)
+            repository.create(name, amount, currency, category, date, excludeFromAnalytics)
         }
     }
 }

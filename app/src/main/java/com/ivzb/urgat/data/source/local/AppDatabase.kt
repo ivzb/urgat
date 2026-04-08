@@ -29,7 +29,7 @@ import com.ivzb.urgat.data.weight.WeightEntity
     SavingEntity::class,
     BudgetEntity::class,
     WatchlistAssetEntity::class,
- ], version = 11)
+ ], version = 12)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

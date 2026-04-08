@@ -42,12 +42,12 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
         listOf(
-                Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-                Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-                Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-                Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-                Expense("5", "Electricity", BigDecimal("88.33"), "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
-                Expense("6", "Gas", BigDecimal("150.5"), "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
+                Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+                Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+                Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+                Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+                Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
+                Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
             ),
         )
 
@@ -62,18 +62,18 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
                 group = "2026",
                 total = "238.83".toBigDecimal(),
                 items = listOf(
-                    Expense("6", "Gas", BigDecimal("150.5"), "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
-                    Expense("5", "Electricity", BigDecimal("88.33"), "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
+                    Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
+                    Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
                 ),
             ),
             GroupedItems(
                 group = "2025",
                 total = "301.00".toBigDecimal(),
                 items = listOf(
-                    Expense("4", "Pet food", BigDecimal("25.5"), "Pets", 1765922400000, false, false, 1765922400000),
-                    Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", 1765231200000, false, false, 1765231200000),
-                    Expense("2", "Groceries", BigDecimal("75.50"), "Food", 1764194400000, false, false, 1764194400000),
-                    Expense("1", "Clothing", BigDecimal("120"), "Shopping", 1764021600000, false, false, 1764021600000),
+                    Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", 1765922400000, false, false, 1765922400000),
+                    Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", 1765231200000, false, false, 1765231200000),
+                    Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", 1764194400000, false, false, 1764194400000),
+                    Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", 1764021600000, false, false, 1764021600000),
                 ),
             ),
         )
@@ -94,12 +94,12 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-                Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-                Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-                Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-                Expense("5", "Electricity", BigDecimal("88.33"), "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
-                Expense("6", "Gas", BigDecimal("150.5"), "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
+                Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+                Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+                Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+                Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+                Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
+                Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
             ),
         )
 
@@ -114,18 +114,18 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
                 group = "2026",
                 total = "238.83".toBigDecimal(),
                 items = listOf(
-                    Expense("5", "Electricity", BigDecimal("88.33"), "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
-                    Expense("6", "Gas", BigDecimal("150.5"), "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
+                    Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
+                    Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
                 ),
             ),
             GroupedItems(
                 group = "2025",
                 total = "301.00".toBigDecimal(),
                 items = listOf(
-                    Expense("4", "Pet food", BigDecimal("25.5"), "Pets", 1765922400000, false, false, 1765922400000),
-                    Expense("2", "Groceries", BigDecimal("75.50"), "Food", 1764194400000, false, false, 1764194400000),
-                    Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", 1765231200000, false, false, 1765231200000),
-                    Expense("1", "Clothing", BigDecimal("120"), "Shopping", 1764021600000, false, false, 1764021600000),
+                    Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", 1765922400000, false, false, 1765922400000),
+                    Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", 1764194400000, false, false, 1764194400000),
+                    Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", 1765231200000, false, false, 1765231200000),
+                    Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", 1764021600000, false, false, 1764021600000),
                 ),
             ),
         )
@@ -146,12 +146,12 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-                Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-                Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-                Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-                Expense("5", "Electricity", BigDecimal("88.33"), "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
-                Expense("6", "Gas", BigDecimal("150.5"), "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
+                Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+                Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+                Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+                Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+                Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
+                Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
             ),
         )
 
@@ -166,18 +166,18 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
                 group = "2026",
                 total = "238.83".toBigDecimal(),
                 items = listOf(
-                    Expense("6", "Gas", BigDecimal("150.5"), "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
-                    Expense("5", "Electricity", BigDecimal("88.33"), "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
+                    Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
+                    Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
                 ),
             ),
             GroupedItems(
                 group = "2025",
                 total = "301.00".toBigDecimal(),
                 items = listOf(
-                    Expense("1", "Clothing", BigDecimal("120"), "Shopping", 1764021600000, false, false, 1764021600000),
-                    Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", 1765231200000, false, false, 1765231200000),
-                    Expense("2", "Groceries", BigDecimal("75.50"), "Food", 1764194400000, false, false, 1764194400000),
-                    Expense("4", "Pet food", BigDecimal("25.5"), "Pets", 1765922400000, false, false, 1765922400000),
+                    Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", 1764021600000, false, false, 1764021600000),
+                    Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", 1765231200000, false, false, 1765231200000),
+                    Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", 1764194400000, false, false, 1764194400000),
+                    Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", 1765922400000, false, false, 1765922400000),
                 ),
             ),
         )

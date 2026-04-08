@@ -757,7 +757,7 @@ class ObserveFinanceUiStateUseCaseTest {
     companion object {
 
         private val expenses = listOf(
-            Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L)
+            Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L)
         )
 
         private val fakeExpenses = listOf(

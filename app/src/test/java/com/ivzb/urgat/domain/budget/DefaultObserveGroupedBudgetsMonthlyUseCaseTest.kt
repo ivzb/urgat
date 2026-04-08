@@ -114,11 +114,11 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
 
         val expenses = listOf(
             GroupedExpenses("2025/11", 1200.toBigDecimal(), listOf(
-                Expense("1", "1", 600.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 600.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
             GroupedExpenses("2025/12", 1400.toBigDecimal(), listOf(
-                Expense("3", "3", 1400.toBigDecimal(), "3", 3, false, false, 3),
+                Expense("3", "3", 1400.toBigDecimal(), "EUR", "3", 3, false, false, 3),
             )),
         )
 

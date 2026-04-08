@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
 enum class FieldId {
     Name,
     Amount,
+    Currency,
     Category,
     Date,
 }
@@ -169,21 +170,43 @@ fun AddEditExpenseScreen(
                         .height(dimensionResource(R.dimen.vertical_margin))
                 )
 
-                TextField(
-                    value = uiState.amount,
-                    onValueChange = {
-                        onIntent(AddEditExpenseIntent.UpdateAmount(it))
-                    },
-                    placeholder = { Text(stringResource(id = R.string.amount_hint)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    maxLines = 1,
+                Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
-                )
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+                ) {
+                    TextField(
+                        value = uiState.amount,
+                        onValueChange = {
+                            onIntent(AddEditExpenseIntent.UpdateAmount(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
+                    )
+
+                    TextField(
+                        value = uiState.currency,
+                        onValueChange = {
+                            onIntent(AddEditExpenseIntent.UpdateCurrency(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next,
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+                    )
+                }
 
                 Spacer(
                     modifier = Modifier
@@ -203,7 +226,7 @@ fun AddEditExpenseScreen(
                         placeholder = { Text(stringResource(id = R.string.category_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Done,
                         ),
                         maxLines = 1,
                         modifier = Modifier

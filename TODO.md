@@ -98,8 +98,5 @@
 - create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
 - add instrument suggestions when adding new watchlist asset
 - add currency to budget so investments can be converted to single currency for proper calculation
-- add currency to expense
-- add currency to saving
 - show currency to savings category - see how InvestmentsScreen CategoryItem did it with total
-- check ui tests
-- add tests to addedit savings view model
+- show currency to expense category - see how InvestmentsScreen CategoryItem did it with total

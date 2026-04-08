@@ -326,27 +326,27 @@ class GroupTest {
     @Test
     fun groupExpenseCategoriesMonthly() {
         val expenses = listOf(
-            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
-            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
 
-            Expense("7", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-            Expense("8", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-            Expense("9", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-            Expense("10", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-            Expense("11", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
-            Expense("12", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("7", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("8", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("9", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("10", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+            Expense("11", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("12", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
 
             // excluded
-            Expense("13", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
-            Expense("14", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), true, false, timestamp(2025, 11, 27)),
-            Expense("15", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), true, false, timestamp(2025, 12, 9)),
-            Expense("16", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), true, false, timestamp(2025, 12, 17)),
-            Expense("17", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
-            Expense("18", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
+            Expense("13", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
+            Expense("14", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), true, false, timestamp(2025, 11, 27)),
+            Expense("15", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), true, false, timestamp(2025, 12, 9)),
+            Expense("16", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), true, false, timestamp(2025, 12, 17)),
+            Expense("17", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
+            Expense("18", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
         )
 
         val expected = listOf(
@@ -384,26 +384,26 @@ class GroupTest {
     @Test
     fun groupExpenseCategoriesYearly() {
         val expenses = listOf(
-            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
-            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
 
-            Expense("7", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-            Expense("8", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-            Expense("9", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-            Expense("10", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-            Expense("11", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
-            Expense("12", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("7", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("8", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("9", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("10", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+            Expense("11", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("12", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
 
-            Expense("13", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
-            Expense("14", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), true, false, timestamp(2025, 11, 27)),
-            Expense("15", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), true, false, timestamp(2025, 12, 9)),
-            Expense("16", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), true, false, timestamp(2025, 12, 17)),
-            Expense("17", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
-            Expense("18", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
+            Expense("13", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
+            Expense("14", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), true, false, timestamp(2025, 11, 27)),
+            Expense("15", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), true, false, timestamp(2025, 12, 9)),
+            Expense("16", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), true, false, timestamp(2025, 12, 17)),
+            Expense("17", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
+            Expense("18", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
         )
 
         val expected = listOf(
@@ -435,26 +435,26 @@ class GroupTest {
     @Test
     fun groupExpenseCategoriesAllTime() {
         val expenses = listOf(
-            Expense("1", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-            Expense("2", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-            Expense("3", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-            Expense("4", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-            Expense("5", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
-            Expense("6", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+            Expense("5", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("6", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
 
-            Expense("7", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
-            Expense("8", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
-            Expense("9", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
-            Expense("10", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
-            Expense("11", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
-            Expense("12", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("7", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("8", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("9", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("10", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), false, false, timestamp(2025, 12, 17)),
+            Expense("11", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+            Expense("12", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
 
-            Expense("13", "Clothing", BigDecimal("120"), "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
-            Expense("14", "Groceries", BigDecimal("75.50"), "Food", timestamp(2025, 11, 27), true, false, timestamp(2025, 11, 27)),
-            Expense("15", "Birthday gift", BigDecimal("80"), "Gifts", timestamp(2025, 12, 9), true, false, timestamp(2025, 12, 9)),
-            Expense("16", "Pet food", BigDecimal("25.5"), "Pets", timestamp(2025, 12, 17), true, false, timestamp(2025, 12, 17)),
-            Expense("17", "Gas", BigDecimal("304.27"), "Fuel", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
-            Expense("18", "Groceries", BigDecimal("150"), "Food", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
+            Expense("13", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
+            Expense("14", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), true, false, timestamp(2025, 11, 27)),
+            Expense("15", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), true, false, timestamp(2025, 12, 9)),
+            Expense("16", "Pet food", BigDecimal("25.5"), "EUR", "Pets", timestamp(2025, 12, 17), true, false, timestamp(2025, 12, 17)),
+            Expense("17", "Gas", BigDecimal("304.27"), "EUR", "Fuel", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
+            Expense("18", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2024, 12, 17), true, false, timestamp(2024, 12, 17)),
         )
 
         val expected = listOf(

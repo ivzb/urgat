@@ -163,11 +163,12 @@ class FakeCreateExpenseUseCase : CreateExpenseUseCase {
     override suspend fun invoke(
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
     ) {
-        created = listOf(name, amount, category, date, excludeFromAnalytics)
+        created = listOf(name, amount, currency, category, date, excludeFromAnalytics)
     }
 }
 
@@ -179,11 +180,12 @@ class FakeUpdateExpenseUseCase : UpdateExpenseUseCase {
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
     ) {
-        updated = listOf(id, name, amount, category, date, excludeFromAnalytics)
+        updated = listOf(id, name, amount, currency, category, date, excludeFromAnalytics)
     }
 }
 

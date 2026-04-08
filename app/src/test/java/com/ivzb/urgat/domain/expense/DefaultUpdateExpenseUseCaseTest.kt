@@ -24,14 +24,15 @@ class DefaultUpdateExpenseUseCaseTest {
         val id = "123"
         val name = "Lunch"
         val amount = BigDecimal("15.50")
+        val currency = "EUR"
         val category = "Food"
         val date = 1731268800000L
         val excludeFromAnalytics = false
 
-        updateUseCase(id, name, amount, category, date, excludeFromAnalytics)
+        updateUseCase(id, name, amount, currency, category, date, excludeFromAnalytics)
 
         coVerify(exactly = 1) {
-            repository.update(id, name, amount, category, date, excludeFromAnalytics)
+            repository.update(id, name, amount, currency, category, date, excludeFromAnalytics)
         }
     }
 }

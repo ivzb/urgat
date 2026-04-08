@@ -66,6 +66,7 @@ class DefaultSampleUseCaseTest {
                 createExpenseUseCase(
                     it.name,
                     it.amount,
+                    it.currency,
                     it.category,
                     it.date,
                     it.excludeFromAnalytics,

@@ -69,6 +69,7 @@ object SampleData {
                     id = "expense_$index",
                     name = name,
                     amount = amount.toBigDecimal(),
+                    currency = "EUR",
                     category = category,
                     date = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
                     excludeFromAnalytics = false,

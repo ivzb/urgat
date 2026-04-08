@@ -47,6 +47,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         when (intent) {
             is AddEditExpenseIntent.UpdateName -> updateName(intent.value)
             is AddEditExpenseIntent.UpdateAmount -> updateAmount(intent.value)
+            is AddEditExpenseIntent.UpdateCurrency -> updateCurrency(intent.value)
             is AddEditExpenseIntent.UpdateCategory -> updateCategory(intent.value)
             is AddEditExpenseIntent.UpdateDate -> updateDate(intent.value)
             is AddEditExpenseIntent.UpdateExcludeFromAnalytics -> updateExcludeFromAnalytics(intent.value)
@@ -66,6 +67,12 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     private fun updateAmount(amount: String) {
         _uiState.update {
             it.copy(amount = amount)
+        }
+    }
+
+    private fun updateCurrency(currency: String) {
+        _uiState.update {
+            it.copy(currency = currency)
         }
     }
 
@@ -91,6 +98,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         val fields = listOf(
             uiState.value.name,
             uiState.value.amount,
+            uiState.value.currency,
             uiState.value.category,
         )
 
@@ -118,6 +126,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         createExpenseUseCase(
             name = uiState.value.name.sanitize(),
             amount = uiState.value.amount.sanitize().toBigDecimal(),
+            currency = uiState.value.currency.sanitize(),
             category = uiState.value.category.sanitize(),
             date = uiState.value.date,
             excludeFromAnalytics = uiState.value.excludeFromAnalytics,
@@ -184,6 +193,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
                 expenseId,
                 name = uiState.value.name.sanitize(),
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
+                currency = uiState.value.currency.sanitize(),
                 category = uiState.value.category.sanitize(),
                 date = uiState.value.date,
                 excludeFromAnalytics = uiState.value.excludeFromAnalytics,
@@ -213,6 +223,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
                         it.copy(
                             name = expense.name,
                             amount = expense.amount.toString(),
+                            currency = expense.currency,
                             category = expense.category,
                             date = expense.date,
                             excludeFromAnalytics = expense.excludeFromAnalytics,

@@ -40,6 +40,7 @@ class DefaultExpensesRepositoryTest {
         val id = repository.create(
             name = "Coffee",
             amount = BigDecimal("3.50"),
+            currency = "EUR",
             category = "Food",
             excludeFromAnalytics = false,
             date = 1000L
@@ -59,6 +60,7 @@ class DefaultExpensesRepositoryTest {
         val id = repository.create(
             name = "Lunch",
             amount = BigDecimal("10.0"),
+            currency = "EUR",
             category = "Food",
             excludeFromAnalytics = false,
             date = 2000L
@@ -74,9 +76,9 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `update modifies existing expense`() = runTest {
-        val id = repository.create("Old", BigDecimal.ONE, "Misc", 3000L, false)
+        val id = repository.create("Old", BigDecimal.ONE, "EUR", "Misc", 3000L, false)
 
-        repository.update(id, "Updated", BigDecimal.TEN, "Travel", 4000L, true)
+        repository.update(id, "Updated", BigDecimal.TEN, "EUR", "Travel", 4000L, true)
 
         val updated = repository.get(id)
         assertNotNull(updated)
@@ -89,7 +91,7 @@ class DefaultExpensesRepositoryTest {
     @Test
     fun `update throws when expense does not exist`() = runTest {
         val exception = assertFailsWith<Exception> {
-            repository.update("missing", "A", BigDecimal.ONE, "Cat", 0L, false)
+            repository.update("missing", "A", BigDecimal.ONE, "EUR", "Cat", 0L, false)
         }
 
         assertTrue(exception.message?.contains("not found") == true)
@@ -97,7 +99,7 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `delete removes expense`() = runTest {
-        val id = repository.create("Temp", BigDecimal.ONE, "Misc", 0L, false)
+        val id = repository.create("Temp", BigDecimal.ONE, "EUR", "Misc", 0L, false)
         assertNotNull(dao.getById(id))
 
         repository.delete(id)
@@ -106,8 +108,8 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `observe emits mapped expenses`() = runTest {
-        repository.create("A", BigDecimal("1.0"), "Cat", 0L, false)
-        repository.create("B", BigDecimal("2.0"), "Cat", 0L, false)
+        repository.create("A", BigDecimal("1.0"), "EUR", "Cat", 0L, false)
+        repository.create("B", BigDecimal("2.0"), "EUR", "Cat", 0L, false)
 
         val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
@@ -117,9 +119,9 @@ class DefaultExpensesRepositoryTest {
 
     @Test
     fun `observe with searchQuery filters correctly`() = runTest {
-        repository.create("Taxi", BigDecimal("10.0"), "Transport", 0L, false)
-        repository.create("Lunch", BigDecimal("8.0"), "Food", 0L, false)
-        repository.create("Bus", BigDecimal("3.0"), "Transport", 0L, false)
+        repository.create("Taxi", BigDecimal("10.0"), "EUR", "Transport", 0L, false)
+        repository.create("Lunch", BigDecimal("8.0"), "EUR", "Food", 0L, false)
+        repository.create("Bus", BigDecimal("3.0"), "EUR", "Transport", 0L, false)
 
         val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE, searchQuery = "Lu").first()
 

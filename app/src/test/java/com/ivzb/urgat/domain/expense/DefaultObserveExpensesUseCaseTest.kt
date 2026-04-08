@@ -36,9 +36,9 @@ class ObserveExpensesUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = ExpensesSortType.BY_DATE,
             expected = listOf(
-                Expense("3", "Juice", BigDecimal("4"), "Food", 125, false, false, 1L),
-                Expense("2", "Tea", BigDecimal("2.0"), "Food", 124, false, false, 1L),
-                Expense("1", "Coffee", BigDecimal("3.5"), "Food", 123, false, false, 1L),
+                Expense("3", "Juice", BigDecimal("4"), "EUR", "Food", 125, false, false, 1L),
+                Expense("2", "Tea", BigDecimal("2.0"), "EUR", "Food", 124, false, false, 1L),
+                Expense("1", "Coffee", BigDecimal("3.5"), "EUR", "Food", 123, false, false, 1L),
             ),
         )
     }
@@ -48,9 +48,9 @@ class ObserveExpensesUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = ExpensesSortType.BY_MIN,
             expected = listOf(
-                Expense("2", "Tea", BigDecimal("2.0"), "Food", 124, false, false, 1L),
-                Expense("1", "Coffee", BigDecimal("3.5"), "Food", 123, false, false, 1L),
-                Expense("3", "Juice", BigDecimal("4"), "Food", 125, false, false, 1L),
+                Expense("2", "Tea", BigDecimal("2.0"), "EUR", "Food", 124, false, false, 1L),
+                Expense("1", "Coffee", BigDecimal("3.5"), "EUR", "Food", 123, false, false, 1L),
+                Expense("3", "Juice", BigDecimal("4"), "EUR", "Food", 125, false, false, 1L),
             ),
         )
     }
@@ -60,9 +60,9 @@ class ObserveExpensesUseCaseTest {
         `invoke should return Success with filtered items sorted by`(
             sortType = ExpensesSortType.BY_MAX,
             expected = listOf(
-                Expense("3", "Juice", BigDecimal("4"), "Food", 125, false, false, 1L),
-                Expense("1", "Coffee", BigDecimal("3.5"), "Food", 123, false, false, 1L),
-                Expense("2", "Tea", BigDecimal("2.0"), "Food", 124, false, false, 1L),
+                Expense("3", "Juice", BigDecimal("4"), "EUR", "Food", 125, false, false, 1L),
+                Expense("1", "Coffee", BigDecimal("3.5"), "EUR", "Food", 123, false, false, 1L),
+                Expense("2", "Tea", BigDecimal("2.0"), "EUR", "Food", 124, false, false, 1L),
             ),
         )
     }
@@ -76,9 +76,9 @@ class ObserveExpensesUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Expense("1", "Coffee", BigDecimal("3.5"), "Food", 123, false, false, 1L),
-                Expense("2", "Tea", BigDecimal("2.0"), "Food", 124, false, false, 1L),
-                Expense("3", "Juice", BigDecimal("4"), "Food", 125, false, false, 1L),
+                Expense("1", "Coffee", BigDecimal("3.5"), "EUR", "Food", 123, false, false, 1L),
+                Expense("2", "Tea", BigDecimal("2.0"), "EUR", "Food", 124, false, false, 1L),
+                Expense("3", "Juice", BigDecimal("4"), "EUR", "Food", 125, false, false, 1L),
             )
         )
 

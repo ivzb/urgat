@@ -71,7 +71,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
+        val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))
         val fakeExpenses = listOf(
             GroupedItems(
                 group = "2025/12",
@@ -180,7 +180,7 @@ class ExpensesViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))
+        val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))
         val fakeExpenses = listOf(GroupedItems(
             group = "2025/12",
             total = "10".toBigDecimal(),

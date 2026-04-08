@@ -10,6 +10,7 @@ interface UpdateExpenseUseCase {
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
@@ -25,12 +26,13 @@ class DefaultUpdateExpenseUseCase @Inject constructor(
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean
     ) {
 
-        repository.update(id, name, amount, category, date, excludeFromAnalytics)
+        repository.update(id, name, amount, currency, category, date, excludeFromAnalytics)
     }
 
 }

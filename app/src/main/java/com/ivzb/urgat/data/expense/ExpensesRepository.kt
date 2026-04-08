@@ -5,8 +5,8 @@ import java.math.BigDecimal
 
 interface ExpensesRepository: BaseRepository<Expense> {
 
-    suspend fun create(name: String, amount: BigDecimal, category: String, date: Long, excludeFromAnalytics: Boolean): String
+    suspend fun create(name: String, amount: BigDecimal, currency: String, category: String, date: Long, excludeFromAnalytics: Boolean): String
 
-    suspend fun update(id: String, name: String, amount: BigDecimal, category: String, date: Long, excludeFromAnalytics: Boolean)
+    suspend fun update(id: String, name: String, amount: BigDecimal, currency: String, category: String, date: Long, excludeFromAnalytics: Boolean)
 
 }

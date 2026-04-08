@@ -129,7 +129,7 @@ class FinanceViewModelTest {
         )
 
         val fakeExpensesUiState = ExpensesUiState(
-            expenses = listOf(GroupedExpenses("1", 10.toBigDecimal(), listOf(Expense("1", "Lunch", BigDecimal.TEN, "food", 1L, false, false, 1L))))
+            expenses = listOf(GroupedExpenses("1", 10.toBigDecimal(), listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))))
         )
 
         val fakeInvestmentsUiState = InvestmentsUiState(

@@ -45,11 +45,11 @@ class ObserveExpensesFilteringUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                Expense("1", "food", 50.toBigDecimal(), "category", 1L, false, false, 1L),
-                Expense("1", "transport", 65.toBigDecimal(), "category", 1L, true, false, 1L),
-                Expense("1", "housing", 800.toBigDecimal(), "category", 1L, false, false, 1L),
-                Expense("1", "income", -500.toBigDecimal(), "category", 1L, false, false, 1L),
-                Expense("1", "income", -40.toBigDecimal(), "category", 1L, false, false, 1L),
+                Expense("1", "food", 50.toBigDecimal(), "EUR", "category", 1L, false, false, 1L),
+                Expense("1", "transport", 65.toBigDecimal(), "EUR", "category", 1L, true, false, 1L),
+                Expense("1", "housing", 800.toBigDecimal(), "EUR", "category", 1L, false, false, 1L),
+                Expense("1", "income", -500.toBigDecimal(), "EUR", "category", 1L, false, false, 1L),
+                Expense("1", "income", -40.toBigDecimal(), "EUR", "category", 1L, false, false, 1L),
             )
         )
 

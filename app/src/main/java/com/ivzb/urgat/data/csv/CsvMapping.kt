@@ -43,6 +43,7 @@ data class CsvMapping(
             CsvMapping("id", "string"),
             CsvMapping("name", "string"),
             CsvMapping("amount", "big_decimal"),
+            CsvMapping("currency", "string"),
             CsvMapping("category", "string"),
             CsvMapping("date", "long"),
             CsvMapping("excludeFromAnalytics", "boolean"),
@@ -64,6 +65,7 @@ data class CsvMapping(
             CsvMapping("id", "string"),
             CsvMapping("name", "string"),
             CsvMapping("amount", "big_decimal"),
+            CsvMapping("currency", "string"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -121,11 +123,12 @@ data class CsvMapping(
                 id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 name = split[1],
                 amount = split[2].toBigDecimal(),
-                category = split[3],
-                date = split[4].toLong(),
-                excludeFromAnalytics = split[5].toBoolean(),
+                currency = split[3],
+                category = split[4],
+                date = split[5].toLong(),
+                excludeFromAnalytics = split[6].toBoolean(),
                 isDeleted = false,
-                createdAt = split[6].toLong(),
+                createdAt = split[7].toLong(),
             )
         }
 

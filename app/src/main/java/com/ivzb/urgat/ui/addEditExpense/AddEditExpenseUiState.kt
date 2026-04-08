@@ -7,6 +7,7 @@ data class AddEditExpenseUiState(
     val screenTitleResId: Int? = null,
     val name: String = "",
     val amount: String = "",
+    val currency: String = "",
     val category: String = "",
     val date: Long = System.currentTimeMillis(),
     val excludeFromAnalytics: Boolean = false,

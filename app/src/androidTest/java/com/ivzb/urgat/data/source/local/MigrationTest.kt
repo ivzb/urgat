@@ -57,6 +57,7 @@ class MigrationTest {
                 MIGRATION_8_9,
                 MIGRATION_9_10,
                 MIGRATION_10_11,
+                MIGRATION_11_12,
             )
             .build()
             .apply {
@@ -99,6 +100,7 @@ class MigrationTest {
                 MIGRATION_8_9,
                 MIGRATION_9_10,
                 MIGRATION_10_11,
+                MIGRATION_11_12,
             )
             .build()
             .let { db ->
@@ -120,6 +122,7 @@ class MigrationTest {
                         id = "1",
                         name = "Groceries",
                         amount = 75.5.toBigDecimal(),
+                        currency = "EUR",
                         category = "Food",
                         date = 1764362076,
                         excludeFromAnalytics = false,
@@ -188,7 +191,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 11,
+            version = 12,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -201,6 +204,7 @@ class MigrationTest {
                 MIGRATION_8_9,
                 MIGRATION_9_10,
                 MIGRATION_10_11,
+                MIGRATION_11_12,
             ),
         ).close()
 
@@ -227,6 +231,7 @@ class MigrationTest {
                         id = "1",
                         name = "Groceries",
                         amount = 75.5.toBigDecimal(),
+                        currency = "EUR",
                         category = "Food",
                         date = 1764362076,
                         excludeFromAnalytics = false,
@@ -279,6 +284,7 @@ class MigrationTest {
                         id = "1",
                         name = "Groceries",
                         amount = 75.5.toBigDecimal(),
+                        currency = "EUR",
                         category = "Food",
                         date = 1764362076,
                         excludeFromAnalytics = true,
@@ -340,6 +346,7 @@ class MigrationTest {
                         id = "1",
                         name = "Groceries",
                         amount = 75.5.toBigDecimal(),
+                        currency = "EUR",
                         category = "Food",
                         date = 1764362076,
                         excludeFromAnalytics = true,

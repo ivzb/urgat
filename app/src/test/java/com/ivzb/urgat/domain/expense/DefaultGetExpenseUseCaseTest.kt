@@ -26,7 +26,7 @@ class DefaultGetExpenseUseCaseTest {
     @Test
     fun `invoke should return expense when repository returns expense`() = runTest {
         val id = "123"
-        val expectedExpense = Expense(id, "Coffee", BigDecimal("3.50"), "Food", 1731268800000L, false, false, 1L)
+        val expectedExpense = Expense(id, "Coffee", BigDecimal("3.50"), "EUR", "Food", 1731268800000L, false, false, 1L)
         coEvery { repository.get(id) } returns expectedExpense
 
         val result = getUseCase(id)

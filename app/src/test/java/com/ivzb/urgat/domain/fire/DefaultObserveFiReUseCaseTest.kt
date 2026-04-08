@@ -60,8 +60,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     fun `invoke should return Success 40 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
             GroupedExpenses("December 2025", 3000.toBigDecimal(), listOf(
-                Expense("1", "1", 1500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         ),
         expected = EXPECTED_FIRE.copy(
@@ -79,8 +79,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     fun `invoke should return Success 40 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
             GroupedExpenses("December 2025", 3000.toBigDecimal(), listOf(
-                Expense("1", "1", 1500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         ),
         investments = NO_INVESTMENTS,
@@ -115,8 +115,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     fun `invoke should return Success 60 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
             GroupedExpenses("December 2025", 2000.toBigDecimal(), listOf(
-                Expense("1", "1", 500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         ),
         expected = EXPECTED_FIRE.copy(
@@ -134,8 +134,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     fun `invoke should return Success 60 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
             GroupedExpenses("December 2025", 2000.toBigDecimal(), listOf(
-                Expense("1", "1", 500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         ),
         investments = NO_INVESTMENTS,
@@ -192,8 +192,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     fun `invoke should return Success 0 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
             GroupedExpenses("December 2025", 5000.toBigDecimal(), listOf(
-                Expense("1", "1", 3500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         ),
         expected = EXPECTED_FIRE.copy(
@@ -211,8 +211,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     fun `invoke should return Success 0 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
             GroupedExpenses("December 2025", 5000.toBigDecimal(), listOf(
-                Expense("1", "1", 3500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         ),
         investments = NO_INVESTMENTS,
@@ -468,8 +468,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
         private val EXPENSES = listOf(
             GroupedExpenses("December 2025", 2500.toBigDecimal(), listOf(
-                Expense("1", "1", 1500.toBigDecimal(), "1", 1, false, false, 1),
-                Expense("2", "2", 1000.toBigDecimal(), "2", 2, false, false, 2),
+                Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                Expense("2", "2", 1000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
         )
         

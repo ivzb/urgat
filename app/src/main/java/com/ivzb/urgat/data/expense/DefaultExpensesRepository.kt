@@ -34,6 +34,7 @@ class DefaultExpensesRepository @Inject constructor(
     override suspend fun create(
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
@@ -47,6 +48,7 @@ class DefaultExpensesRepository @Inject constructor(
             id = id,
             name = name,
             amount = amount,
+            currency = currency,
             category = category,
             date = date,
             excludeFromAnalytics = excludeFromAnalytics,
@@ -61,6 +63,7 @@ class DefaultExpensesRepository @Inject constructor(
         id: String,
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
@@ -68,6 +71,7 @@ class DefaultExpensesRepository @Inject constructor(
         val expense = get(id)?.copy(
             name = name,
             amount = amount,
+            currency = currency,
             category = category,
             date = date,
             excludeFromAnalytics = excludeFromAnalytics,

@@ -9,6 +9,7 @@ interface CreateExpenseUseCase {
     suspend operator fun invoke(
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
@@ -23,12 +24,13 @@ class DefaultCreateExpenseUseCase @Inject constructor(
     override suspend operator fun invoke(
         name: String,
         amount: BigDecimal,
+        currency: String,
         category: String,
         date: Long,
         excludeFromAnalytics: Boolean,
     ) {
 
-        repository.create(name, amount, category, date, excludeFromAnalytics)
+        repository.create(name, amount, currency, category, date, excludeFromAnalytics)
     }
 
 }

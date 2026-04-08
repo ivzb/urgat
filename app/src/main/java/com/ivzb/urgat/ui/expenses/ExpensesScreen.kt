@@ -54,6 +54,8 @@ import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateExpensesChart
+import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -446,7 +448,7 @@ fun ExpenseItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = expense.name,
-        subTextRight = annotateExpenses(expense.amount),
+        subTextRight = AnnotatedString("${expense.amount.format()} ${expense.currency.formatCurrency()}"),
 
         onClick = { onExpenseClick(expense) }
     )

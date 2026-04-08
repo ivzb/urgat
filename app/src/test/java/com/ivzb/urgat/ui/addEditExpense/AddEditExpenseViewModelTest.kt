@@ -69,6 +69,7 @@ class AddEditExpenseViewModelTest {
             id = expenseId,
             name = "Taxi",
             amount = BigDecimal("15"),
+            currency = "EUR",
             category = "Transport",
             date = 123L,
             excludeFromAnalytics = false,
@@ -124,14 +125,16 @@ class AddEditExpenseViewModelTest {
     fun `saveExpense creates new expense`() = runTest {
         viewModel.onIntent(AddEditExpenseIntent.UpdateName("Dinner"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateAmount("25"))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateCategory("Food"))
         viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
         
         advanceUntilIdle()
 
-        val (name, amount, category) = createUseCase.created
+        val (name, amount, currency, category) = createUseCase.created
         assertEquals("Dinner", name)
         assertEquals(BigDecimal("25"), amount)
+        assertEquals("EUR", currency)
         assertEquals("Food", category)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -140,14 +143,16 @@ class AddEditExpenseViewModelTest {
     fun `saveExpense creates new expense trimmed`() = runTest {
         viewModel.onIntent(AddEditExpenseIntent.UpdateName(" Dinner "))
         viewModel.onIntent(AddEditExpenseIntent.UpdateAmount(" 25 "))
+        viewModel.onIntent(AddEditExpenseIntent.UpdateCurrency(" EUR "))
         viewModel.onIntent(AddEditExpenseIntent.UpdateCategory(" Food "))
         viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
 
         advanceUntilIdle()
 
-        val (name, amount, category) = createUseCase.created
+        val (name, amount, currency, category) = createUseCase.created
         assertEquals("Dinner", name)
         assertEquals(BigDecimal("25"), amount)
+        assertEquals("EUR", currency)
         assertEquals("Food", category)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -159,6 +164,7 @@ class AddEditExpenseViewModelTest {
             id = expenseId,
             name = "Taxi",
             amount = BigDecimal("15"),
+            currency = "EUR",
             category = "Transport",
             date = 123L,
             excludeFromAnalytics = false,
@@ -186,10 +192,11 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (id, name, amount, category) = updateUseCase.updated
+        val (id, name, amount, currency, category) = updateUseCase.updated
         assertEquals(expenseId, id)
         assertEquals("Edit", name)
         assertEquals(BigDecimal("35"), amount)
+        assertEquals("EUR", currency)
         assertEquals("Math", category)
         assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
@@ -201,6 +208,7 @@ class AddEditExpenseViewModelTest {
             id = expenseId,
             name = "Taxi",
             amount = BigDecimal("15"),
+            currency = "EUR",
             category = "Transport",
             date = 123L,
             excludeFromAnalytics = false,
@@ -228,10 +236,11 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (id, name, amount, category) = updateUseCase.updated
+        val (id, name, amount, currency, category) = updateUseCase.updated
         assertEquals(expenseId, id)
         assertEquals("Edit", name)
         assertEquals(BigDecimal("35"), amount)
+        assertEquals("EUR", currency)
         assertEquals("Math", category)
         assertEquals(true, viewModel.uiState.value.shouldNavigateBack)
     }
@@ -267,6 +276,7 @@ class AddEditExpenseViewModelTest {
             id = expenseId,
             name = "Taxi",
             amount = BigDecimal("15"),
+            currency = "EUR",
             category = "Transport",
             date = 123L,
             excludeFromAnalytics = false,
@@ -283,9 +293,10 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, category, date, excludeFromAnalytics) = createUseCase.created
+        val (name, amount, currency, category, date, excludeFromAnalytics) = createUseCase.created
         assertEquals("Taxi", name)
         assertEquals(BigDecimal("15"), amount)
+        assertEquals("EUR", currency)
         assertEquals("Transport", category)
         assertTrue((date as Long) > 123L)
         assertEquals(false, excludeFromAnalytics)
@@ -299,6 +310,7 @@ class AddEditExpenseViewModelTest {
             id = expenseId,
             name = "Coffee",
             amount = BigDecimal("5"),
+            currency = "EUR",
             category = "Food",
             date = 100L,
             excludeFromAnalytics = true,
@@ -317,9 +329,10 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, category, _, excludeFromAnalytics) = createUseCase.created
+        val (name, amount, currency, category, _, excludeFromAnalytics) = createUseCase.created
         assertEquals("Tea", name)
         assertEquals(BigDecimal("3"), amount)
+        assertEquals("EUR", currency)
         assertEquals("Food", category)
         assertEquals(true, excludeFromAnalytics)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
@@ -355,4 +368,9 @@ class AddEditExpenseViewModelTest {
             deleteUseCase,
         )
     }
+
+    private operator fun <T> List<T>.component6(): T = this[5]
+
+    private operator fun <T> List<T>.component7(): T = this[6]
+
 }
