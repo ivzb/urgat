@@ -1,3 +1,8 @@
+## Release notes 26.04.06
+
+New:
+- Expenses now can track currency.
+
 ## Release notes 26.04.05
 
 No release notes.
