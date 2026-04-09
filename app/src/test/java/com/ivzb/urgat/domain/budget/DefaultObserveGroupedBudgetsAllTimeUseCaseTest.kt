@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -93,7 +94,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             value = 20400.toBigDecimal(),
         )
 
-        val expenses = GroupedExpenses("2025", 2600.toBigDecimal(), listOf(
+        val expenses = GroupedExpenses("2025", listOf(ExpenseTotal(2600.toBigDecimal(), "EUR")), listOf(
             Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
             Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             Expense("3", "3", 1400.toBigDecimal(), "EUR", "3", 3, false, false, 3),
@@ -162,6 +163,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
                     BudgetCategory("", "", "EUR", 20400.toBigDecimal()),
                 ),
             ),
+            currency = "EUR",
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3_800.toBigDecimal(),
@@ -199,7 +201,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(GroupedExpenses(
             group = "",
-            total = 0.toBigDecimal(),
+            total = listOf(),
             items = listOf(),
         )))
 

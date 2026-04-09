@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
 
-typealias GroupedExpenses = GroupedItems<String, BigDecimal, Expense>
+typealias GroupedExpenses = GroupedItems<String, List<ExpenseTotal>, Expense>
 
 interface ObserveGroupedExpensesMonthlyUseCase {
 

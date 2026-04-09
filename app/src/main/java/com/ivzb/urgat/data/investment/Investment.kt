@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.util.calculatePnL
+import com.ivzb.urgat.util.formatCurrency
 import java.math.BigDecimal
 
 data class Investment(
@@ -33,7 +34,7 @@ data class Investment(
 
         fun total(investments: List<Investment>): List<InvestmentTotal> =
             investments
-                .groupBy { it.currency.uppercase() }
+                .groupBy { it.currency.formatCurrency() }
                 .map { (currency, investments) ->
                     val costPrice = investments.sumOf { it.totalCostPrice }
                     val marketPrice = investments.sumOf { it.totalMarketPrice }

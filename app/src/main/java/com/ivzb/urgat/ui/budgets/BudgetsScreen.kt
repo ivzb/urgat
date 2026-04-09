@@ -286,7 +286,7 @@ fun LazyListScope.budgetCategoryPage(
             add(PieChartItem(
                 value = budget.totalExpenses.toFloat(),
                 title = stringResource(R.string.expenses),
-                total = annotateExpenses(budget.totalExpenses),
+                total = annotateExpenses(budget.totalExpenses, budget.currency),
             ))
 
             add(PieChartItem(

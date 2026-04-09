@@ -57,6 +57,7 @@ class GroupedBudgetTest {
                 total = income.toBigDecimal(),
                 items = listOf(),
             ),
+            currency = "EUR",
             totalIncome = income.toBigDecimal(),
             totalExpenses = expenses.toBigDecimal(),
             totalInvestments = investments.toBigDecimal(),

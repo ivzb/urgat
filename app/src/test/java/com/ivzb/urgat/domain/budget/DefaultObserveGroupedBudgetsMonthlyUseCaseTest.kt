@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -113,11 +114,11 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
         )
 
         val expenses = listOf(
-            GroupedExpenses("2025/11", 1200.toBigDecimal(), listOf(
+            GroupedExpenses("2025/11", listOf(ExpenseTotal(1200.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
-            GroupedExpenses("2025/12", 1400.toBigDecimal(), listOf(
+            GroupedExpenses("2025/12", listOf(ExpenseTotal(1400.toBigDecimal(), "EUR")), listOf(
                 Expense("3", "3", 1400.toBigDecimal(), "EUR", "3", 3, false, false, 3),
             )),
         )
@@ -199,6 +200,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                         BudgetCategory("1", "1", "EUR", 6800.toBigDecimal()),
                     ),
                 ),
+                currency = "EUR",
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
                 totalInvestments = 1_800.toBigDecimal(),
@@ -214,6 +216,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                         BudgetCategory("4", "4", "EUR", 3400.toBigDecimal()),
                     ),
                 ),
+                currency = "EUR",
                 totalIncome = 7000.toBigDecimal(),
                 totalExpenses = 1400.toBigDecimal(),
                 totalInvestments = 2_000.toBigDecimal(),
@@ -227,6 +230,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                         BudgetCategory("5", "5", "EUR", 6600.toBigDecimal()),
                     ),
                 ),
+                currency = "EUR",
                 totalIncome = 6600.toBigDecimal(),
                 totalExpenses = 0.toBigDecimal(),
                 totalInvestments = 0.toBigDecimal(),

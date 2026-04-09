@@ -101,4 +101,6 @@
 - show currency to savings category - see how InvestmentsScreen CategoryItem did it with total
 - show currency to expense category - see how InvestmentsScreen CategoryItem did it with total
 - show expenses currency inside charts screen
-- fix expenses annotated st ring which has to be red
+- fix ObserveFiReUseCase currencies calculation - it should convert all expenses to main currency and then calculate fi/re based on that
+- chart amounts are not correct when multiple currencies are involved - `value = expenses.sumOf { it.amount }.toFloat(), ` - `it.expenses.sumOf { it.amount }.toFloat(),`
+- order grouped expenses by amount DESC in charts screen

@@ -317,6 +317,7 @@ object SampleData {
 
     val SAMPLE_REPORT_BUDGET = GroupedBudget(
         category = Group.groupBudgetCategoriesMonthly(SAMPLE_BUDGETS, ::randomUUID).first(),
+        currency = "EUR",
         totalIncome = 4_021.34.toBigDecimal(),
         totalExpenses = 571.34.toBigDecimal(),
         totalInvestments = 2_500.toBigDecimal(),

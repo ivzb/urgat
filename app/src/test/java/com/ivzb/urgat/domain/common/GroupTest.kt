@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
@@ -352,26 +353,26 @@ class GroupTest {
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
-                total = "211.0".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("211.0"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("160"), expenses = listOf(expenses[2], expenses[8])),
-                    ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("51.0"), expenses = listOf(expenses[3], expenses[9])),
+                    ExpenseCategory(id = TEST_UUID, "Gifts", totals = listOf(ExpenseTotal(BigDecimal("160"), "EUR")), expenses = listOf(expenses[2], expenses[8])),
+                    ExpenseCategory(id = TEST_UUID, "Pets", totals = listOf(ExpenseTotal(BigDecimal("51.0"), "EUR")), expenses = listOf(expenses[3], expenses[9])),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "391.00".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("391.00"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("240"), expenses = listOf(expenses[0], expenses[6])),
-                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("151.00"), expenses = listOf(expenses[1], expenses[7])),
+                    ExpenseCategory(id = TEST_UUID, "Shopping", totals = listOf(ExpenseTotal(BigDecimal("240"), "EUR")), expenses = listOf(expenses[0], expenses[6])),
+                    ExpenseCategory(id = TEST_UUID, "Food", totals = listOf(ExpenseTotal(BigDecimal("151.00"), "EUR")), expenses = listOf(expenses[1], expenses[7])),
                 ),
             ),
             GroupedItems(
                 group = "December 2024",
-                total = "908.54".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("908.54"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("608.54"), expenses = listOf(expenses[4], expenses[10])),
-                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("300"), expenses = listOf(expenses[5], expenses[11])),
+                    ExpenseCategory(id = TEST_UUID, "Fuel", totals = listOf(ExpenseTotal(BigDecimal("608.54"), "EUR")), expenses = listOf(expenses[4], expenses[10])),
+                    ExpenseCategory(id = TEST_UUID, "Food", totals = listOf(ExpenseTotal(BigDecimal("300"), "EUR")), expenses = listOf(expenses[5], expenses[11])),
                 ),
             ),
         )
@@ -409,20 +410,20 @@ class GroupTest {
         val expected = listOf(
             GroupedItems(
                 group = "2025",
-                total = "602.00".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("602.00"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("240"), listOf(expenses[0], expenses[6])),
-                    ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("160"), listOf(expenses[2], expenses[8])),
-                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("151.00"), listOf(expenses[1], expenses[7])),
-                    ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("51.0"), listOf(expenses[3], expenses[9])),
+                    ExpenseCategory(id = TEST_UUID, "Shopping", totals = listOf(ExpenseTotal(BigDecimal("240"), "EUR")), expenses = listOf(expenses[0], expenses[6])),
+                    ExpenseCategory(id = TEST_UUID, "Gifts", totals = listOf(ExpenseTotal(BigDecimal("160"), "EUR")), expenses = listOf(expenses[2], expenses[8])),
+                    ExpenseCategory(id = TEST_UUID, "Food", totals = listOf(ExpenseTotal(BigDecimal("151.00"), "EUR")), expenses = listOf(expenses[1], expenses[7])),
+                    ExpenseCategory(id = TEST_UUID, "Pets", totals = listOf(ExpenseTotal(BigDecimal("51.0"), "EUR")), expenses = listOf(expenses[3], expenses[9])),
                 ),
             ),
             GroupedItems(
                 group = "2024",
-                total = "908.54".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("908.54"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("608.54"), listOf(expenses[4], expenses[10])),
-                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("300"), listOf(expenses[5], expenses[11])),
+                    ExpenseCategory(id = TEST_UUID, "Fuel", totals = listOf(ExpenseTotal(BigDecimal("608.54"), "EUR")), expenses = listOf(expenses[4], expenses[10])),
+                    ExpenseCategory(id = TEST_UUID, "Food", totals = listOf(ExpenseTotal(BigDecimal("300"), "EUR")), expenses = listOf(expenses[5], expenses[11])),
                 ),
             ),
         )
@@ -458,11 +459,11 @@ class GroupTest {
         )
 
         val expected = listOf(
-            ExpenseCategory(id = TEST_UUID, "Fuel", BigDecimal("608.54"), listOf(expenses[4], expenses[10])),
-            ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("451.00"), listOf(expenses[1], expenses[5], expenses[7], expenses[11])),
-            ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("240"), listOf(expenses[0], expenses[6])),
-            ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("160"), listOf(expenses[2], expenses[8])),
-            ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("51.0"), listOf(expenses[3], expenses[9])),
+            ExpenseCategory(id = TEST_UUID, "Fuel", totals = listOf(ExpenseTotal(BigDecimal("608.54"), "EUR")), expenses = listOf(expenses[4], expenses[10])),
+            ExpenseCategory(id = TEST_UUID, "Food", totals = listOf(ExpenseTotal(BigDecimal("451.00"), "EUR")), expenses = listOf(expenses[1], expenses[5], expenses[7], expenses[11])),
+            ExpenseCategory(id = TEST_UUID, "Shopping", totals = listOf(ExpenseTotal(BigDecimal("240"), "EUR")), expenses = listOf(expenses[0], expenses[6])),
+            ExpenseCategory(id = TEST_UUID, "Gifts", totals = listOf(ExpenseTotal(BigDecimal("160"), "EUR")), expenses = listOf(expenses[2], expenses[8])),
+            ExpenseCategory(id = TEST_UUID, "Pets", totals = listOf(ExpenseTotal(BigDecimal("51.0"), "EUR")), expenses = listOf(expenses[3], expenses[9])),
         )
 
         val actual = Group.groupExpenseCategoriesAllTime(expenses, randomTestUUID)

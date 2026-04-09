@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.util.Logger
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.formatCurrency
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -31,8 +32,8 @@ class DefaultForexRepository @Inject constructor(
     private val cache = ConcurrentHashMap<String, Deferred<BigDecimal?>>()
 
     override suspend fun getExchangeRate(fromCurrency: String, toCurrency: String): BigDecimal? {
-        val from = fromCurrency.uppercase()
-        val to = toCurrency.uppercase()
+        val from = fromCurrency.formatCurrency()
+        val to = toCurrency.formatCurrency()
 
         if (from == to) {
             return BigDecimal.ONE

@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUiStateUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -75,19 +76,19 @@ class ExpensesViewModelTest {
         val fakeExpenses = listOf(
             GroupedItems(
                 group = "2025/12",
-                total = "10".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = expenses,
             )
         )
         val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",
-                total = "10".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = listOf(
                     ExpenseCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                         expenses = expenses,
                     )
                 )
@@ -96,12 +97,12 @@ class ExpensesViewModelTest {
         val fakeCategoriesYearly = listOf(
             GroupedItems(
                 group = "2025",
-                total = "10".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = listOf(
                     ExpenseCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                         expenses = expenses,
                     )
                 )
@@ -111,7 +112,7 @@ class ExpensesViewModelTest {
             ExpenseCategory(
                 id = "1",
                 name = "food",
-                value = "10".toBigDecimal(),
+                totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 expenses = expenses,
             )
         )
@@ -183,18 +184,18 @@ class ExpensesViewModelTest {
         val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))
         val fakeExpenses = listOf(GroupedItems(
             group = "2025/12",
-            total = "10".toBigDecimal(),
+            total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
             items = expenses,
         ))
         val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",
-                total = "10".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = listOf(
                     ExpenseCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                         expenses = expenses,
                     )
                 )
@@ -203,12 +204,12 @@ class ExpensesViewModelTest {
         val fakeCategoriesYearly = listOf(
             GroupedItems(
                 group = "2025",
-                total = "10".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = listOf(
                     ExpenseCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                         expenses = expenses,
                     )
                 )
@@ -218,7 +219,7 @@ class ExpensesViewModelTest {
             ExpenseCategory(
                 id = "1",
                 name = "food",
-                value = "10".toBigDecimal(),
+                totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 expenses = expenses,
             )
         )

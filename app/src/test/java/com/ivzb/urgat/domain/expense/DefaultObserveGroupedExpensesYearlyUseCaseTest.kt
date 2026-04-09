@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -60,7 +61,7 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2026",
-                total = "238.83".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("238.83"), "EUR")),
                 items = listOf(
                     Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
                     Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
@@ -68,7 +69,7 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2025",
-                total = "301.00".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("301.00"), "EUR")),
                 items = listOf(
                     Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", 1765922400000, false, false, 1765922400000),
                     Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", 1765231200000, false, false, 1765231200000),
@@ -112,7 +113,7 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2026",
-                total = "238.83".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("238.83"), "EUR")),
                 items = listOf(
                     Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
                     Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
@@ -120,7 +121,7 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2025",
-                total = "301.00".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("301.00"), "EUR")),
                 items = listOf(
                     Expense("4", "Pet food", BigDecimal("25.5"), "EUR", "Pets", 1765922400000, false, false, 1765922400000),
                     Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", 1764194400000, false, false, 1764194400000),
@@ -164,7 +165,7 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2026",
-                total = "238.83".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("238.83"), "EUR")),
                 items = listOf(
                     Expense("6", "Gas", BigDecimal("150.5"), "EUR", "Transport", timestamp(2026, 1, 17), false, false, timestamp(2026, 1, 17)),
                     Expense("5", "Electricity", BigDecimal("88.33"), "EUR", "Bills", timestamp(2026, 1, 10), false, false, timestamp(2026, 1, 10)),
@@ -172,7 +173,7 @@ class DefaultObserveGroupedExpensesYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2025",
-                total = "301.00".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("301.00"), "EUR")),
                 items = listOf(
                     Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", 1764021600000, false, false, 1764021600000),
                     Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", 1765231200000, false, false, 1765231200000),

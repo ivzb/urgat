@@ -1,8 +1,9 @@
 package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.forex.ForexRepository
-import com.ivzb.urgat.data.investment.Investment.Companion.total
+import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
@@ -66,9 +67,10 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
 
                     GroupedBudget(
                         category = category,
+                        currency = budgetCurrency,
                         totalIncome = category.total,
-                        totalExpenses = expenses?.total ?: BigDecimal.ZERO,
-                        totalInvestments = total(investments?.items, budgetCurrency, forexRepository::convert),
+                        totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
+                        totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
                         totalSavings = savings?.total ?: BigDecimal.ZERO,
                     )
                 }

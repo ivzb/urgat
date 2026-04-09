@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.forex
 
+import com.ivzb.urgat.util.formatCurrency
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -16,8 +17,8 @@ class FakeForexRepository : ForexRepository {
     override suspend fun getExchangeRate(fromCurrency: String, toCurrency: String): BigDecimal {
         if (shouldThrow) throw RuntimeException("Failed to fetch exchange rate")
 
-        val from = fromCurrency.uppercase()
-        val to = toCurrency.uppercase()
+        val from = fromCurrency.formatCurrency()
+        val to = toCurrency.formatCurrency()
 
         if (from == to) return BigDecimal.ONE
 

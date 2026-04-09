@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal.Companion.sumByCurrency
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
@@ -53,9 +54,9 @@ import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.annotateExpenses
-import com.ivzb.urgat.util.annotateExpensesChart
-import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.formatCurrency
+import com.ivzb.urgat.util.annotateChart
+import com.ivzb.urgat.util.annotateExpensesTotals
+import com.ivzb.urgat.util.annotateMarketPrice
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -152,6 +153,11 @@ fun ExpensesScreen(
 
                 ExpensesPage.AllTime -> CategoriesPage(
                     group = stringResource(R.string.all_time),
+                    total = annotateExpensesTotals(
+                        uiState.categoriesAllTime
+                            .flatMap { it.totals }
+                            .sumByCurrency()
+                    ),
                     categories = uiState.categoriesAllTime,
                     expandedCategoryIds = expandedAllTimeIds,
                     listState = listState,
@@ -201,7 +207,7 @@ fun TransactionsPage(
             item {
                 ItemHeaderSmall(
                     text = group,
-                    total = annotateExpenses(total),
+                    total = annotateExpensesTotals(total),
                     modifier = Modifier
                         .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                         .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -284,6 +290,8 @@ private fun GroupedCategoriesPage(
 
             CategoriesPage(
                 group = category.group,
+                total = annotateExpensesTotals(category.total),
+
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
@@ -303,6 +311,8 @@ private fun GroupedCategoriesPage(
 @Composable
 private fun CategoriesPage(
     group: String,
+    total: AnnotatedString?,
+
     categories: List<ExpenseCategory>,
     expandedCategoryIds: List<String>,
 
@@ -349,27 +359,26 @@ private fun CategoriesPage(
                 // all categories pie chart
                 data = categories.map {
                     PieChartItem(
-                        value = it.value.toFloat(),
+                        value = it.expenses.sumOf { it.amount }.toFloat(),
                         title = it.name,
-                        total = annotateExpenses(it.value),
+                        total = annotateExpensesTotals(it.totals),
                     )
                 }
-                val total = categories.sumOf { it.value }
-                defaultText = annotateExpensesChart(group, total)
+                defaultText = annotateChart(group, total)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.expenses
                     .groupBy { it.name }
                     .map { (name, expenses) ->
-                        val total = expenses.sumOf { it.amount }
+                        val expenseTotal = Expense.total(expenses)
 
                         PieChartItem(
-                            value = total.toFloat(),
+                            value = expenses.sumOf { it.amount }.toFloat(),
                             title = name,
-                            total = annotateExpenses(total),
+                            total = annotateExpensesTotals(expenseTotal),
                         )
                     }
-                defaultText = annotateExpensesChart(expandedCategory.name, expandedCategory.value)
+                defaultText = annotateChart(expandedCategory.name, annotateExpensesTotals(expandedCategory.totals))
             }
 
             PieChart(
@@ -448,7 +457,7 @@ fun ExpenseItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = expense.name,
-        subTextRight = AnnotatedString("${expense.amount.format()} ${expense.currency.formatCurrency()}"),
+        subTextRight = annotateExpenses(expense.amount, expense.currency),
 
         onClick = { onExpenseClick(expense) }
     )
@@ -466,7 +475,7 @@ private fun CategoryItem(
         subTextLeft = "",
 
         textRight = "",
-        subTextRight = annotateExpenses(category.value),
+        subTextRight = annotateExpensesTotals(category.totals),
 
         colorIndex = colorIndex,
 

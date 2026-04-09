@@ -6,6 +6,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import java.math.BigDecimal
 
@@ -53,11 +54,24 @@ fun annotateWatchlistAsset(priceChange: BigDecimal?, priceChangePercentage: BigD
     )
 }
 
-fun annotateExpenses(amount: BigDecimal, prefix: String = ""): AnnotatedString =
-    annotateFinance((-amount).format(), -amount, prefix = prefix)
+fun annotateExpenses(amount: BigDecimal, currency: String, prefix: String = ""): AnnotatedString =
+    annotateFinance("${(-amount).format()} ${currency.formatCurrency()}", -amount, prefix = prefix)
 
-fun annotateExpensesChart(name: String, value: BigDecimal): AnnotatedString =
-    annotateExpenses(value, "$name\n")
+fun annotateExpensesTotals(totals: List<ExpenseTotal>): AnnotatedString =
+    buildAnnotatedString {
+        totals.forEachIndexed { index, total ->
+            append(
+                annotateExpenses(
+                    amount = total.amount,
+                    currency = total.currency,
+                )
+            )
+
+            if (index < totals.lastIndex) {
+                appendLine()
+            }
+        }
+    }
 
 fun annotateCostPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true): AnnotatedString = annotatePrice(totals, InvestmentTotal::costPrice, withPnL)
 
@@ -79,7 +93,7 @@ private fun annotatePrice(totals: List<InvestmentTotal>, price: (InvestmentTotal
         }
     }
 
-fun annotateInvestmentsChart(name: String, total: AnnotatedString?): AnnotatedString =
+fun annotateChart(name: String, total: AnnotatedString?): AnnotatedString =
     buildAnnotatedString {
         append(name)
 

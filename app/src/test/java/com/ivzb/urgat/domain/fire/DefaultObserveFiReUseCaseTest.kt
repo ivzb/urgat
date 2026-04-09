@@ -3,7 +3,9 @@ package com.ivzb.urgat.domain.fire
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
@@ -37,6 +39,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     private lateinit var observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase
     private lateinit var observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase
 
+    private lateinit var fakeForexRepository: FakeForexRepository
+
     private lateinit var observeUseCase: ObserveFiReUseCase
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -47,19 +51,21 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         observeGroupedExpensesMonthlyUseCase = mockk()
         observeGroupedInvestmentsAllTimeUseCase = mockk()
         observeGroupedSavingsAllTimeUseCase = mockk()
+        fakeForexRepository = FakeForexRepository()
 
         observeUseCase = DefaultObserveFiReUseCase(
             observeGroupedBudgetCategoriesMonthlyUseCase,
             observeGroupedExpensesMonthlyUseCase,
             observeGroupedInvestmentsAllTimeUseCase,
             observeGroupedSavingsAllTimeUseCase,
+            fakeForexRepository,
         )
     }
 
     @Test
     fun `invoke should return Success 40 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 3000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
@@ -78,7 +84,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 40 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 3000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
@@ -114,7 +120,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 60 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 2000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
@@ -133,7 +139,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 60 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 2000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
@@ -155,7 +161,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 100 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", listOf(), listOf()),
         ),
         expected = null,
     )
@@ -163,7 +169,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 100 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", listOf(), listOf()),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -173,7 +179,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 income with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", listOf(), listOf()),
         ),
         expected = null,
     )
@@ -181,7 +187,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 income without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 0.toBigDecimal(), listOf()),
+            GroupedExpenses("December 2025", listOf(), listOf()),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -191,7 +197,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 5000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(5000.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
@@ -210,7 +216,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", 5000.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(5000.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),
@@ -467,7 +473,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         )
 
         private val EXPENSES = listOf(
-            GroupedExpenses("December 2025", 2500.toBigDecimal(), listOf(
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(2500.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 1000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
             )),

@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -107,7 +108,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
         )
 
         val expenses = listOf(
-            GroupedExpenses("2025", 2600.toBigDecimal(), listOf(
+            GroupedExpenses("2025", listOf(ExpenseTotal(2600.toBigDecimal(), "EUR")), listOf(
                 Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
                 Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
                 Expense("3", "3", 1400.toBigDecimal(), "EUR", "3", 3, false, false, 3),
@@ -185,6 +186,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                         BudgetCategory("4", "4", "EUR", 3400.toBigDecimal()),
                     ),
                 ),
+                currency = "EUR",
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
                 totalInvestments = 3_800.toBigDecimal(),
@@ -198,6 +200,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
                         BudgetCategory("5", "5", "EUR", 6600.toBigDecimal()),
                     ),
                 ),
+                currency = "EUR",
                 totalIncome = 6600.toBigDecimal(),
                 totalExpenses = 0.toBigDecimal(),
                 totalInvestments = 0.toBigDecimal(),

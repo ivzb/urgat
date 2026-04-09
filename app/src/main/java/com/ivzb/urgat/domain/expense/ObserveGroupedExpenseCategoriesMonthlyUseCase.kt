@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesMonthly
@@ -10,10 +11,9 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
-import java.math.BigDecimal
 import javax.inject.Inject
 
-typealias GroupedExpenseCategories = GroupedItems<String, BigDecimal, ExpenseCategory>
+typealias GroupedExpenseCategories = GroupedItems<String, List<ExpenseTotal>, ExpenseCategory>
 
 interface ObserveGroupedExpenseCategoriesMonthlyUseCase {
 

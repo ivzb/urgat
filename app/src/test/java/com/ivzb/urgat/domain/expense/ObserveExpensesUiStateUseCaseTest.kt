@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.expense
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
@@ -285,25 +286,25 @@ class ObserveExpensesUiStateUseCaseTest {
         )
 
         private val fakeExpenses = listOf(
-            GroupedItems(group = "2025/12", total = "10".toBigDecimal(), items = expenses)
+            GroupedItems(group = "2025/12", total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")), items = expenses)
         )
 
         private val fakeCategoriesMonthly = listOf(
             GroupedItems(
-                group = "2025/12", total = "10".toBigDecimal(),
-                items = listOf(ExpenseCategory(id = "1", name = "food", value = "10".toBigDecimal(), expenses = expenses))
+                group = "2025/12", total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                items = listOf(ExpenseCategory(id = "1", name = "food", totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")), expenses = expenses))
             )
         )
 
         private val fakeCategoriesYearly = listOf(
             GroupedItems(
-                group = "2025", total = "10".toBigDecimal(),
-                items = listOf(ExpenseCategory(id = "1", name = "food", value = "10".toBigDecimal(), expenses = expenses))
+                group = "2025", total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                items = listOf(ExpenseCategory(id = "1", name = "food", totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")), expenses = expenses))
             )
         )
 
         private val fakeCategoriesAllTime = listOf(
-            ExpenseCategory(id = "1", name = "food", value = "10".toBigDecimal(), expenses = expenses)
+            ExpenseCategory(id = "1", name = "food", totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")), expenses = expenses)
         )
 
         private val fakeExpensesFiltering = listOf(

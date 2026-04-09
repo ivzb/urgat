@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.expense
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.util.Async
@@ -61,18 +62,18 @@ class ObserveGroupedExpenseCategoriesMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "December 2025",
-                total = "105.5".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("105.5"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Gifts", BigDecimal("80"), expenses = listOf(expenses[2])),
-                    ExpenseCategory(id = TEST_UUID, "Pets", BigDecimal("25.5"), expenses = listOf(expenses[3])),
+                    ExpenseCategory(id = TEST_UUID, "Gifts", totals = listOf(ExpenseTotal(BigDecimal("80"), "EUR")), expenses = listOf(expenses[2])),
+                    ExpenseCategory(id = TEST_UUID, "Pets", totals = listOf(ExpenseTotal(BigDecimal("25.5"), "EUR")), expenses = listOf(expenses[3])),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "195.50".toBigDecimal(),
+                total = listOf(ExpenseTotal(BigDecimal("195.50"), "EUR")),
                 items = listOf(
-                    ExpenseCategory(id = TEST_UUID, "Shopping", BigDecimal("120"), expenses = listOf(expenses[0])),
-                    ExpenseCategory(id = TEST_UUID, "Food", BigDecimal("75.50"), expenses = listOf(expenses[1])),
+                    ExpenseCategory(id = TEST_UUID, "Shopping", totals = listOf(ExpenseTotal(BigDecimal("120"), "EUR")), expenses = listOf(expenses[0])),
+                    ExpenseCategory(id = TEST_UUID, "Food", totals = listOf(ExpenseTotal(BigDecimal("75.50"), "EUR")), expenses = listOf(expenses[1])),
                 ),
             ),
         )

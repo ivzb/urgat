@@ -55,7 +55,7 @@ import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.annotateFinancePnL
-import com.ivzb.urgat.util.annotateInvestmentsChart
+import com.ivzb.urgat.util.annotateChart
 import com.ivzb.urgat.util.annotateCostPrice
 import com.ivzb.urgat.util.annotateMarketPrice
 import com.ivzb.urgat.util.format
@@ -304,6 +304,7 @@ private fun GroupedCategoriesPage(
             CategoriesPage(
                 group = category.group,
                 total = annotateMarketPrice(category.total),
+
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
@@ -376,7 +377,7 @@ private fun CategoriesPage(
                         total = annotateMarketPrice(it.totals),
                     )
                 }
-                defaultText = annotateInvestmentsChart(group, total)
+                defaultText = annotateChart(group, total)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.investments
@@ -390,7 +391,7 @@ private fun CategoriesPage(
                             total = annotateMarketPrice(investmentTotal),
                         )
                     }
-                defaultText = annotateInvestmentsChart(expandedCategory.name, annotateMarketPrice(expandedCategory.totals))
+                defaultText = annotateChart(expandedCategory.name, annotateMarketPrice(expandedCategory.totals))
             }
 
             PieChart(
@@ -482,7 +483,7 @@ private fun AssetsPage(
                         total = annotateMarketPrice(it.totals),
                     )
                 }
-                defaultText = annotateInvestmentsChart(group, total)
+                defaultText = annotateChart(group, total)
             } else {
                 // expanded asset pie chart
                 data = expandedAsset.investments
@@ -496,7 +497,7 @@ private fun AssetsPage(
                             total = annotateMarketPrice(investmentTotal),
                         )
                     }
-                defaultText = annotateInvestmentsChart(expandedAsset.name, annotateMarketPrice(expandedAsset.totals))
+                defaultText = annotateChart(expandedAsset.name, annotateMarketPrice(expandedAsset.totals))
             }
 
             PieChart(

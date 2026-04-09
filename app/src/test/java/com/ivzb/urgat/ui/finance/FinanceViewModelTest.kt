@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.FireRepository
@@ -122,6 +123,7 @@ class FinanceViewModelTest {
                     BudgetCategory("", "", "EUR", 5000.toBigDecimal()),
                 ),
             ),
+            currency = "EUR",
             totalIncome = 5000.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 1_300.toBigDecimal(),
@@ -129,7 +131,7 @@ class FinanceViewModelTest {
         )
 
         val fakeExpensesUiState = ExpensesUiState(
-            expenses = listOf(GroupedExpenses("1", 10.toBigDecimal(), listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))))
+            expenses = listOf(GroupedExpenses("1", listOf(ExpenseTotal(10.toBigDecimal(), "EUR")), listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))))
         )
 
         val fakeInvestmentsUiState = InvestmentsUiState(

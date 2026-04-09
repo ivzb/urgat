@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.Expense.Companion.format
 import com.ivzb.urgat.data.expense.ExpenseCategory
+import com.ivzb.urgat.data.expense.ExpenseTotal.Companion.sumByCurrency
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
@@ -167,12 +168,12 @@ object Group {
                 ExpenseCategory(
                     id = random(),
                     name = category,
-                    value = expenses.format(),
+                    totals = Expense.total(expenses),
 
                     expenses = expenses,
                 )
             }
-            .sortedByDescending { it.value }
+            .sortedByDescending { it.totals.sumOf { it.amount } }
 
     private fun groupInvestments(investments: List<Investment>, random: () -> String): List<InvestmentCategory> =
         investments

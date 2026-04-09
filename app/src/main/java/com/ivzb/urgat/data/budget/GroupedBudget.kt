@@ -5,6 +5,7 @@ import java.math.BigDecimal
 
 data class GroupedBudget(
     val category: GroupedBudgetCategories,
+    val currency: String,
     val totalIncome: BigDecimal,
     val totalExpenses: BigDecimal,
     val totalInvestments: BigDecimal,

@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -761,7 +762,7 @@ class ObserveFinanceUiStateUseCaseTest {
         )
 
         private val fakeExpenses = listOf(
-            GroupedItems(group = "2025/12", total = BigDecimal.TEN, items = expenses)
+            GroupedItems(group = "2025/12", total = listOf(ExpenseTotal(BigDecimal.TEN, "EUR")), items = expenses)
         )
 
         private val fakeExpensesFiltering = listOf(
@@ -831,6 +832,7 @@ class ObserveFinanceUiStateUseCaseTest {
                 total = 6_500.toBigDecimal(),
                 items = listOf(BudgetCategory(id = "1", name = "1", currency = "EUR", value = 6_500.toBigDecimal())),
             ),
+            currency = "EUR",
             totalIncome = 6_500.toBigDecimal(),
             totalExpenses = 2_000.toBigDecimal(),
             totalInvestments = 3_000.toBigDecimal(),

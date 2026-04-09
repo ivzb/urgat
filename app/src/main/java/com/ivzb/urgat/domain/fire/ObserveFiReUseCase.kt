@@ -1,6 +1,8 @@
 package com.ivzb.urgat.domain.fire
 
+import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
@@ -33,6 +35,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
     private val observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase,
     private val observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase,
     private val observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase,
+    private val forexRepository: ForexRepository,
 ): ObserveFiReUseCase {
 
     override fun invoke(
@@ -81,8 +84,10 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
                 val (selectionGroup, budget, expenses) = selection
 
+                val budgetCurrency = budget.items.first().currency
+
                 val monthlyIncome = budget.total
-                val monthlyExpenses = expenses.total
+                val monthlyExpenses = Expense.total(expenses.items, budgetCurrency, forexRepository::convert)
                 val monthlyInvestments = monthlyIncome - monthlyExpenses
 
                 val annualIncome = monthlyIncome * 12.toBigDecimal()
