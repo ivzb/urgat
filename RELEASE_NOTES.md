@@ -1,3 +1,8 @@
+## Release notes 26.04.07
+
+Improved:
+- Charts now display expense currency
+
 ## Release notes 26.04.06
 
 New:
