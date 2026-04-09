@@ -33,9 +33,6 @@ android {
             useSupportLibrary = true
         }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
 
         // screenshot tests
         testInstrumentationRunnerArguments["useTestStorageService"] = "true"
@@ -79,7 +76,6 @@ android {
         compose = true
         aidl = false
         buildConfig = true
-        renderScript = false
         shaders = false
     }
 
@@ -90,11 +86,13 @@ android {
     }
 
     sourceSets {
-        sourceSets {
-            // Adds exported schema location as test app assets.
-            getByName("androidTest").assets.srcDir("$projectDir/schemas")
-        }
+        // Adds exported schema location as test app assets.
+        getByName("androidTest").assets.directories.add("$projectDir/schemas")
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {

@@ -100,3 +100,5 @@
 - add currency to budget so investments can be converted to single currency for proper calculation
 - show currency to savings category - see how InvestmentsScreen CategoryItem did it with total
 - show currency to expense category - see how InvestmentsScreen CategoryItem did it with total
+- show expenses currency inside charts screen
+- fix expenses annotated st ring which has to be red
