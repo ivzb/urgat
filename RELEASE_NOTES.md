@@ -1,3 +1,8 @@
+## Release notes 26.04.09
+
+Improved:
+- Budgets now display currency.
+
 ## Release notes 26.04.08
 
 Improved:
