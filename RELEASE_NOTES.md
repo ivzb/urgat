@@ -1,3 +1,8 @@
+## Release notes 26.04.10
+
+New:
+- Support for in-app updates is now available, allowing users to install app updates directly without leaving the app.
+
 ## Release notes 26.04.09
 
 Improved:
