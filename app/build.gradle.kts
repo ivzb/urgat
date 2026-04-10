@@ -149,6 +149,11 @@ dependencies {
     // Json Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // In-App Updates
+    implementation(libs.play.app.update)
+    implementation(libs.play.app.update.ktx)
+    implementation(libs.kotlinx.coroutines.play.services)
+
     // Networking
     implementation(libs.okhttp)
     implementation(libs.retrofit)

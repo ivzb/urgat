@@ -209,4 +209,9 @@
     <string name="loading_watchlist_assets">Loading watchlist assets</string>
     <string name="error_watchlist_assets">Error while loading watchlist assets</string>
     <string name="sort_by_name">Sort by name</string>
+    <string name="in_app_update_available">An update is available.</string>
+    <string name="in_app_update_action">Update</string>
+    <string name="in_app_update_downloaded">Update downloaded. Restart to apply.</string>
+    <string name="in_app_update_restart">Restart</string>
+    <string name="in_app_update_downloading">Downloading update…</string>
 </resources>
