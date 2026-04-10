@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesAllTimeUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
@@ -75,7 +76,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
                     totalIncome = budget.value,
                     totalExpenses = Expense.total(expenses.items, budgetCurrency, forexRepository::convert),
                     totalInvestments = Investment.total(investments.items, budgetCurrency, forexRepository::convert),
-                    totalSavings = savings.total,
+                    totalSavings = Saving.total(savings.items, budgetCurrency, forexRepository::convert),
                 )
             } else {
                 throw Exception("Async.Error")

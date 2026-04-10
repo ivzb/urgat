@@ -10,6 +10,7 @@ import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.FakeObserveBudgetsUseCase
@@ -801,7 +802,7 @@ class ObserveFinanceUiStateUseCaseTest {
         )
 
         private val fakeSavings = listOf(
-            GroupedItems(group = "2025/12", total = BigDecimal.TEN, items = savings)
+            GroupedItems(group = "2025/12", total = listOf(SavingTotal(BigDecimal.TEN, "EUR")), items = savings)
         )
 
         private val fakeSavingsSorting = listOf(

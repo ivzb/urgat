@@ -18,6 +18,7 @@ import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.finance.FakeObserveFinanceUiStateUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.saving.GroupedSavings
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
@@ -154,7 +155,7 @@ class FinanceViewModelTest {
         )
 
         val fakeSavingsUiState = SavingsUiState(
-            savings = listOf(GroupedSavings("1", 500.toBigDecimal(), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1L, false, 1L))))
+            savings = listOf(GroupedSavings("1", listOf(SavingTotal(500.toBigDecimal(), "EUR")), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1L, false, 1L))))
         )
 
         val fakeBudgetsUiState = BudgetsUiState(

@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
+import com.ivzb.urgat.data.saving.SavingTotal.Companion.sumByCurrency
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.saving.GroupedSavingCategories
 import com.ivzb.urgat.domain.saving.GroupedSavings
@@ -51,11 +52,10 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateBold
-import com.ivzb.urgat.util.annotateFinance
-import com.ivzb.urgat.util.annotateSavingsChart
+import com.ivzb.urgat.util.annotateChart
+import com.ivzb.urgat.util.annotateSavings
+import com.ivzb.urgat.util.annotateSavingsTotals
 import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -146,6 +146,11 @@ fun SavingsScreen(
 
                 SavingsPage.AllTime -> CategoriesPage(
                     group = stringResource(R.string.all_time),
+                    total = annotateSavingsTotals(
+                        uiState.categoriesAllTime
+                            .flatMap { it.totals }
+                            .sumByCurrency()
+                    ),
                     categories = uiState.categoriesAllTime,
                     expandedCategoryIds = expandedAllTimeIds,
 
@@ -197,7 +202,7 @@ fun TransactionsPage(
             item {
                 ItemHeaderSmall(
                     text = group,
-                    total = AnnotatedString(total.format()),
+                    total = annotateSavingsTotals(total),
                     modifier = Modifier
                         .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
                         .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
@@ -281,6 +286,8 @@ private fun GroupedCategoriesPage(
 
             CategoriesPage(
                 group = category.group,
+                total = annotateSavingsTotals(category.total),
+
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
@@ -300,6 +307,8 @@ private fun GroupedCategoriesPage(
 @Composable
 private fun CategoriesPage(
     group: String,
+    total: AnnotatedString?,
+
     categories: List<SavingCategory>,
     expandedCategoryIds: Set<String>,
 
@@ -338,13 +347,12 @@ private fun CategoriesPage(
         item {
             val data = categories.map {
                 PieChartItem(
-                    value = it.value.toFloat(),
+                    value = it.savings.sumOf { it.amount }.toFloat(),
                     title = it.name,
-                    total = annotateBold(it.value.format()),
+                    total = annotateSavingsTotals(it.totals),
                 )
             }
-            val total = categories.sumOf { it.value }
-            val defaultText = annotateSavingsChart(group, total)
+            val defaultText = annotateChart(group, total)
 
             PieChart(
                 data = data,
@@ -422,7 +430,7 @@ fun SavingItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = saving.name,
-        subTextRight = AnnotatedString("${saving.amount.format()} ${saving.currency.formatCurrency()}"),
+        subTextRight = annotateSavings(saving.amount, saving.currency),
 
         onClick = { onSavingClick(saving) }
     )
@@ -437,7 +445,7 @@ private fun CategoryItem(
 
     ListItem(
         textLeft = category.name,
-        textRight = category.value.format(),
+        subTextRight = annotateSavingsTotals(category.totals),
         colorIndex = colorIndex,
         onClick = onClick,
     )

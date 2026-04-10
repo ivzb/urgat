@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.fire
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.forex.ForexRepository
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
@@ -95,7 +96,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val annualInvestments = monthlyInvestments * 12.toBigDecimal()
 
                 val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.totalMarketPrice }
-                val allTimeSavings = savingsAllTimeAsync.data.total
+                val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forexRepository::convert)
                 val accumulatedStash = allTimeInvestments + allTimeSavings
 
                 val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()

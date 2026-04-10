@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.saving
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.util.Async
@@ -74,29 +75,29 @@ class ObserveGroupedSavingCategoriesMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "January 2026",
-                total = "3300".toBigDecimal(),
+                total = listOf(SavingTotal("3300".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("1500"), savings = listOf(savings[6], savings[9])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("900"), savings = listOf(savings[7], savings[10])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("900"), savings = listOf(savings[8], savings[11])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("1500"), "EUR")), savings = listOf(savings[6], savings[9])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("900"), "EUR")), savings = listOf(savings[7], savings[10])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("900"), "EUR")), savings = listOf(savings[8], savings[11])),
                 ),
             ),
             GroupedItems(
                 group = "December 2025",
-                total = "1250".toBigDecimal(),
+                total = listOf(SavingTotal("1250".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("600"), savings = listOf(savings[3])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("350"), savings = listOf(savings[5])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("300"), savings = listOf(savings[4])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("600"), "EUR")), savings = listOf(savings[3])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("350"), "EUR")), savings = listOf(savings[5])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("300"), "EUR")), savings = listOf(savings[4])),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "950".toBigDecimal(),
+                total = listOf(SavingTotal("950".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("500"), savings = listOf(savings[0])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("250"), savings = listOf(savings[2])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("200"), savings = listOf(savings[1])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("500"), "EUR")), savings = listOf(savings[0])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("250"), "EUR")), savings = listOf(savings[2])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("200"), "EUR")), savings = listOf(savings[1])),
                 ),
             ),
         )
@@ -143,29 +144,29 @@ class ObserveGroupedSavingCategoriesMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "January 2026",
-                total = "3300".toBigDecimal(),
+                total = listOf(SavingTotal("3300".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("1500"), savings = listOf(savings[6], savings[9])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("900"), savings = listOf(savings[7], savings[10])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("900"), savings = listOf(savings[8], savings[11])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("1500"), "EUR")), savings = listOf(savings[6], savings[9])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("900"), "EUR")), savings = listOf(savings[7], savings[10])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("900"), "EUR")), savings = listOf(savings[8], savings[11])),
                 ),
             ),
             GroupedItems(
                 group = "December 2025",
-                total = "1250".toBigDecimal(),
+                total = listOf(SavingTotal("1250".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("600"), savings = listOf(savings[3])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("350"), savings = listOf(savings[5])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("300"), savings = listOf(savings[4])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("600"), "EUR")), savings = listOf(savings[3])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("350"), "EUR")), savings = listOf(savings[5])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("300"), "EUR")), savings = listOf(savings[4])),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "950".toBigDecimal(),
+                total = listOf(SavingTotal("950".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("500"), savings = listOf(savings[0])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("250"), savings = listOf(savings[2])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("200"), savings = listOf(savings[1])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("500"), "EUR")), savings = listOf(savings[0])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("250"), "EUR")), savings = listOf(savings[2])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("200"), "EUR")), savings = listOf(savings[1])),
                 ),
             ),
         )
@@ -212,29 +213,29 @@ class ObserveGroupedSavingCategoriesMonthlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "January 2026",
-                total = "3300".toBigDecimal(),
+                total = listOf(SavingTotal("3300".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("1500"), savings = listOf(savings[9], savings[6])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("900"), savings = listOf(savings[10], savings[7])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("900"), savings = listOf(savings[8], savings[11])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("1500"), "EUR")), savings = listOf(savings[9], savings[6])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("900"), "EUR")), savings = listOf(savings[10], savings[7])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("900"), "EUR")), savings = listOf(savings[8], savings[11])),
                 ),
             ),
             GroupedItems(
                 group = "December 2025",
-                total = "1250".toBigDecimal(),
+                total = listOf(SavingTotal("1250".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("600"), savings = listOf(savings[3])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("350"), savings = listOf(savings[5])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("300"), savings = listOf(savings[4])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("600"), "EUR")), savings = listOf(savings[3])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("350"), "EUR")), savings = listOf(savings[5])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("300"), "EUR")), savings = listOf(savings[4])),
                 ),
             ),
             GroupedItems(
                 group = "November 2025",
-                total = "950".toBigDecimal(),
+                total = listOf(SavingTotal("950".toBigDecimal(), "EUR")),
                 items = listOf(
-                    SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("500"), savings = listOf(savings[0])),
-                    SavingCategory(id = TEST_UUID, "Cash", BigDecimal("250"), savings = listOf(savings[2])),
-                    SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("200"), savings = listOf(savings[1])),
+                    SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("500"), "EUR")), savings = listOf(savings[0])),
+                    SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("250"), "EUR")), savings = listOf(savings[2])),
+                    SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("200"), "EUR")), savings = listOf(savings[1])),
                 ),
             ),
         )

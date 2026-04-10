@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
+import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
@@ -13,7 +14,6 @@ import com.ivzb.urgat.util.Tracker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import java.math.BigDecimal
 import javax.inject.Inject
 
 interface ObserveReportBudgetUseCase {
@@ -61,7 +61,7 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
                         totalIncome = category.total,
                         totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
                         totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
-                        totalSavings = savings?.total ?: BigDecimal.ZERO,
+                        totalSavings = Saving.total(savings?.items, budgetCurrency, forexRepository::convert),
                     )
                 }
 

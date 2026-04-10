@@ -16,6 +16,7 @@ import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.util.Async
 import io.mockk.every
@@ -96,7 +97,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             monthlyInvestments = "2000".toBigDecimal(),
             annualExpenses = "36000".toBigDecimal(),
             annualInvestments = "24000".toBigDecimal(),
-            accumulatedStash = "0.00".toBigDecimal(),
+            accumulatedStash = "0".toBigDecimal(),
             savingsRate = "40.00".toBigDecimal(),
             target = "990000.00".toBigDecimal(),
             yearsUntilFiRe = "19.69".toBigDecimal(),
@@ -111,7 +112,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
         expected = EXPECTED_FIRE.copy(
-            accumulatedStash = "0.00".toBigDecimal(),
+            accumulatedStash = "0".toBigDecimal(),
             target = "825000.00".toBigDecimal(),
             yearsUntilFiRe = "15.53".toBigDecimal(),
         ),
@@ -151,7 +152,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             monthlyInvestments = "3000".toBigDecimal(),
             annualExpenses = "24000".toBigDecimal(),
             annualInvestments = "36000".toBigDecimal(),
-            accumulatedStash = "0.00".toBigDecimal(),
+            accumulatedStash = "0".toBigDecimal(),
             savingsRate = "60.00".toBigDecimal(),
             target = "660000.00".toBigDecimal(),
             yearsUntilFiRe = "11.92".toBigDecimal(),
@@ -228,7 +229,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             monthlyInvestments = "0".toBigDecimal(),
             annualExpenses = "60000".toBigDecimal(),
             annualInvestments = "0".toBigDecimal(),
-            accumulatedStash = "0.00".toBigDecimal(),
+            accumulatedStash = "0".toBigDecimal(),
             savingsRate = "0.00".toBigDecimal(),
             target = "1650000.00".toBigDecimal(),
             yearsUntilFiRe = "99.99".toBigDecimal(),
@@ -502,9 +503,9 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             ),
         )
 
-        private val NO_SAVINGS = GroupedSavings("December 2025", "0.00".toBigDecimal(), listOf())
+        private val NO_SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal("0.00".toBigDecimal(), "EUR")), listOf())
 
-        private val SAVINGS = GroupedSavings("December 2025", 10_000.toBigDecimal(), listOf(
+        private val SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal(10_000.toBigDecimal(), "EUR")), listOf(
             Saving("1", "Emergency fund", 7_000.toBigDecimal(), "EUR", 1, false, 1),
             Saving("2", "Emergency fund", 3_000.toBigDecimal(), "EUR", 2, false, 2),
         ))

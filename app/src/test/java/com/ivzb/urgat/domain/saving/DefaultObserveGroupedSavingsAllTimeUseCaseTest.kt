@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -68,7 +69,7 @@ class DefaultObserveGroupedSavingsAllTimeUseCaseTest {
 
         val expected = GroupedItems(
             group = "",
-            total = "5500".toBigDecimal(),
+            total = listOf(SavingTotal("5500".toBigDecimal(), "EUR")),
             items = listOf(
                 Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                 Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
@@ -130,7 +131,7 @@ class DefaultObserveGroupedSavingsAllTimeUseCaseTest {
 
         val expected = GroupedItems(
             group = "",
-            total = "5500".toBigDecimal(),
+            total = listOf(SavingTotal("5500".toBigDecimal(), "EUR")),
             items = listOf(
                 Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
                 Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
@@ -189,7 +190,7 @@ class DefaultObserveGroupedSavingsAllTimeUseCaseTest {
 
         val expected = GroupedItems(
             group = "",
-            total = "5500".toBigDecimal(),
+            total = listOf(SavingTotal("5500".toBigDecimal(), "EUR")),
             items = listOf(
                 Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                 Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),

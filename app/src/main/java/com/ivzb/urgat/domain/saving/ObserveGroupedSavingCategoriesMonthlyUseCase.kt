@@ -5,14 +5,14 @@ import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.domain.common.Group.groupSavingCategoriesMonthly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
-import java.math.BigDecimal
 import javax.inject.Inject
 
-typealias GroupedSavingCategories = GroupedItems<String, BigDecimal, SavingCategory>
+typealias GroupedSavingCategories = GroupedItems<String, List<SavingTotal>, SavingCategory>
 
 interface ObserveGroupedSavingCategoriesMonthlyUseCase {
 

@@ -14,6 +14,7 @@ import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesAllTimeUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
@@ -112,8 +113,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
                 Investment("3", "3", 1.toBigDecimal(), 2000.toBigDecimal(), 2000.toBigDecimal(), "3", "USD", 3, false, 3),
             )
         )
-
-        val savings = GroupedSavings("2025", 1500.toBigDecimal(), listOf(
+        val savings = GroupedSavings("2025", listOf(SavingTotal(1800.toBigDecimal(), "EUR")), listOf(
             Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
             Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
             Saving("3", "Emergency fund", 700.toBigDecimal(), "EUR", 3, false, 3),
@@ -167,7 +167,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3_800.toBigDecimal(),
-            totalSavings = 1500.toBigDecimal(),
+            totalSavings = 1800.toBigDecimal(),
         )
 
         assertEquals(1, results.size)
@@ -225,7 +225,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(GroupedSavings(
             group = "",
-            total = 0.toBigDecimal(),
+            total = listOf(),
             items = listOf(),
         )))
 

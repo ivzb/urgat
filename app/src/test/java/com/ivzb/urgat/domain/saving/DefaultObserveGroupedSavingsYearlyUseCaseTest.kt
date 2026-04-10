@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -69,7 +70,7 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2026",
-                total = "3300".toBigDecimal(),
+                total = listOf(SavingTotal("3300".toBigDecimal(), "EUR")),
                 items = listOf(
                     Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                     Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
@@ -82,7 +83,7 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2025",
-                total = "2200".toBigDecimal(),
+                total = listOf(SavingTotal("2200".toBigDecimal(), "EUR")),
                 items = listOf(
                     Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
                     Saving("5", "Kids fund", BigDecimal("300"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
@@ -138,7 +139,7 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2026",
-                total = "3300".toBigDecimal(),
+                total = listOf(SavingTotal("3300".toBigDecimal(), "EUR")),
                 items = listOf(
                     Saving("8", "Kids fund", BigDecimal("400"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                     Saving("9", "Cash", BigDecimal("450"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
@@ -150,7 +151,7 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2025",
-                total = "2200".toBigDecimal(),
+                total = listOf(SavingTotal("2200".toBigDecimal(), "EUR")),
                 items = listOf(
                     Saving("2", "Kids fund", BigDecimal("200"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
                     Saving("3", "Cash", BigDecimal("250"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),
@@ -207,7 +208,7 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
         val expected = listOf(
             GroupedItems(
                 group = "2026",
-                total = "3300".toBigDecimal(),
+                total = listOf(SavingTotal("3300".toBigDecimal(), "EUR")),
                 items = listOf(
                     Saving("10", "Emergency fund", BigDecimal("800"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
                     Saving("7", "Emergency fund", BigDecimal("700"), "EUR", timestamp(2026, 1, 25), false, timestamp(2025, 1, 25),),
@@ -219,7 +220,7 @@ class DefaultObserveGroupedSavingsYearlyUseCaseTest {
             ),
             GroupedItems(
                 group = "2025",
-                total = "2200".toBigDecimal(),
+                total = listOf(SavingTotal("2200".toBigDecimal(), "EUR")),
                 items = listOf(
                     Saving("4", "Emergency fund", BigDecimal("600"), "EUR", timestamp(2025, 12, 25), false, timestamp(2025, 12, 25),),
                     Saving("1", "Emergency fund", BigDecimal("500"), "EUR", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25),),

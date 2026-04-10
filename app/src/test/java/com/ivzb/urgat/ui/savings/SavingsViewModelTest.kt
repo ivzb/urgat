@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.FakeObserveSavingsUiStateUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
@@ -74,19 +75,19 @@ class SavingsViewModelTest {
         val fakeSavings = listOf(
             GroupedItems(
                 group = "2025/12",
-                total = "10".toBigDecimal(),
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = savings,
             )
         )
         val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",
-                total = "10".toBigDecimal(),
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = listOf(
                     SavingCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                         savings = savings,
                     )
                 )
@@ -95,12 +96,12 @@ class SavingsViewModelTest {
         val fakeCategoriesYearly = listOf(
             GroupedItems(
                 group = "2025",
-                total = "10".toBigDecimal(),
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = listOf(
                     SavingCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                         savings = savings,
                     )
                 )
@@ -110,7 +111,7 @@ class SavingsViewModelTest {
             SavingCategory(
                 id = "1",
                 name = "food",
-                value = "10".toBigDecimal(),
+                totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 savings = savings,
             )
         )
@@ -174,18 +175,18 @@ class SavingsViewModelTest {
         val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
         val fakeSavings = listOf(GroupedItems(
             group = "2025/12",
-            total = "10".toBigDecimal(),
+            total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
             items = savings,
         ))
         val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",
-                total = "10".toBigDecimal(),
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = listOf(
                     SavingCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                         savings = savings,
                     )
                 )
@@ -194,12 +195,12 @@ class SavingsViewModelTest {
         val fakeCategoriesYearly = listOf(
             GroupedItems(
                 group = "2025",
-                total = "10".toBigDecimal(),
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = listOf(
                     SavingCategory(
                         id = "1",
                         name = "food",
-                        value = "10".toBigDecimal(),
+                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                         savings = savings,
                     )
                 )
@@ -209,7 +210,7 @@ class SavingsViewModelTest {
             SavingCategory(
                 id = "1",
                 name = "food",
-                value = "10".toBigDecimal(),
+                totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 savings = savings,
             )
         )

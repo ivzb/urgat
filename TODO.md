@@ -96,11 +96,9 @@
 - show currencies in inner budgets screens
 - when converting investment currency, use investment's data exchange rate via historical exchange rate
 - create finance inner screen for watchlist - show each watchlist asset item as tab item, then for each page show chart
-- add instrument suggestions when adding new watchlist asset
 - add currency to budget so investments can be converted to single currency for proper calculation
-- show currency to savings category - see how InvestmentsScreen CategoryItem did it with total
-- show currency to expense category - see how InvestmentsScreen CategoryItem did it with total
-- show expenses currency inside charts screen
 - fix ObserveFiReUseCase currencies calculation - it should convert all expenses to main currency and then calculate fi/re based on that
-- chart amounts are not correct when multiple currencies are involved - `value = expenses.sumOf { it.amount }.toFloat(), ` - `it.expenses.sumOf { it.amount }.toFloat(),`
-- order grouped expenses by amount DESC in charts screen
+- chart amounts fractions are not correct when multiple currencies are involved - `value = expenses.sumOf { it.amount }.toFloat(), ` - `it.expenses.sumOf { it.amount }.toFloat(),`
+- autofill last used currency when adding new expense, investment or budget
+- add instrument suggestions when adding new watchlist asset
+- check if symbol exists when adding watchlist item - add confirmation screen

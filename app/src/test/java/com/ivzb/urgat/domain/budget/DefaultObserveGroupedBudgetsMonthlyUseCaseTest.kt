@@ -13,6 +13,7 @@ import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
@@ -146,11 +147,11 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
         )
 
         val savings = listOf(
-            GroupedSavings("2025/11", 1100.toBigDecimal(), listOf(
+            GroupedSavings("2025/11", listOf(SavingTotal(1100.toBigDecimal(), "EUR")), listOf(
                 Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
                 Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
             )),
-            GroupedSavings("2025/12", 700.toBigDecimal(), listOf(
+            GroupedSavings("2025/12", listOf(SavingTotal(700.toBigDecimal(), "EUR")), listOf(
                 Saving("3", "Emergency fund", 700.toBigDecimal(), "EUR", 3, false, 3),
             )),
         )

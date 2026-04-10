@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.saving
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
@@ -236,25 +237,25 @@ class ObserveSavingsUiStateUseCaseTest {
         private val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
 
         private val fakeSavings = listOf(
-            GroupedItems(group = "2025/12", total = "10".toBigDecimal(), items = savings)
+            GroupedItems(group = "2025/12", total = listOf(SavingTotal("10".toBigDecimal(), "EUR")), items = savings)
         )
 
         private val fakeCategoriesMonthly = listOf(
             GroupedItems(
-                group = "2025/12", total = "10".toBigDecimal(),
-                items = listOf(SavingCategory(id = "1", name = "food", value = "10".toBigDecimal(), savings = savings))
+                group = "2025/12", total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+                items = listOf(SavingCategory(id = "1", name = "food", totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")), savings = savings))
             )
         )
 
         private val fakeCategoriesYearly = listOf(
             GroupedItems(
-                group = "2025", total = "10".toBigDecimal(),
-                items = listOf(SavingCategory(id = "1", name = "food", value = "10".toBigDecimal(), savings = savings))
+                group = "2025", total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+                items = listOf(SavingCategory(id = "1", name = "food", totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")), savings = savings))
             )
         )
 
         private val fakeCategoriesAllTime = listOf(
-            SavingCategory(id = "1", name = "food", value = "10".toBigDecimal(), savings = savings)
+            SavingCategory(id = "1", name = "food", totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")), savings = savings)
         )
 
         private val fakeSavingsSorting = listOf(

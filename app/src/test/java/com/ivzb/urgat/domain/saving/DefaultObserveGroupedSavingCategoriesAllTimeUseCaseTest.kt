@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.saving
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.ui.savings.SavingsSortType
@@ -71,9 +72,9 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("2600"), savings = listOf(savings[6], savings[9], savings[3], savings[0])),
-            SavingCategory(id = TEST_UUID, "Cash", BigDecimal("1500"), savings = listOf(savings[8], savings[11], savings[5], savings[2])),
-            SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("1400"), savings = listOf(savings[7], savings[10], savings[4], savings[1])),
+            SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("2600"), "EUR")), savings = listOf(savings[6], savings[9], savings[3], savings[0])),
+            SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("1500"), "EUR")), savings = listOf(savings[8], savings[11], savings[5], savings[2])),
+            SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("1400"), "EUR")), savings = listOf(savings[7], savings[10], savings[4], savings[1])),
         )
 
         assertEquals(1, results.size)
@@ -116,9 +117,9 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("2600"), savings = listOf(savings[0], savings[3], savings[6], savings[9])),
-            SavingCategory(id = TEST_UUID, "Cash", BigDecimal("1500"), savings = listOf(savings[2], savings[5], savings[8], savings[11])),
-            SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("1400"), savings = listOf(savings[1], savings[4], savings[7], savings[10])),
+            SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("2600"), "EUR")), savings = listOf(savings[0], savings[3], savings[6], savings[9])),
+            SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("1500"), "EUR")), savings = listOf(savings[2], savings[5], savings[8], savings[11])),
+            SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("1400"), "EUR")), savings = listOf(savings[1], savings[4], savings[7], savings[10])),
         )
 
         assertEquals(1, results.size)
@@ -161,9 +162,9 @@ class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            SavingCategory(id = TEST_UUID, "Emergency fund", BigDecimal("2600"), savings = listOf(savings[9], savings[6], savings[3], savings[0])),
-            SavingCategory(id = TEST_UUID, "Cash", BigDecimal("1500"), savings = listOf(savings[8], savings[11], savings[5], savings[2])),
-            SavingCategory(id = TEST_UUID, "Kids fund", BigDecimal("1400"), savings = listOf(savings[10], savings[7], savings[4], savings[1])),
+            SavingCategory(id = TEST_UUID, "Emergency fund", totals = listOf(SavingTotal(BigDecimal("2600"), "EUR")), savings = listOf(savings[9], savings[6], savings[3], savings[0])),
+            SavingCategory(id = TEST_UUID, "Cash", totals = listOf(SavingTotal(BigDecimal("1500"), "EUR")), savings = listOf(savings[8], savings[11], savings[5], savings[2])),
+            SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("1400"), "EUR")), savings = listOf(savings[10], savings[7], savings[4], savings[1])),
         )
 
         assertEquals(1, results.size)

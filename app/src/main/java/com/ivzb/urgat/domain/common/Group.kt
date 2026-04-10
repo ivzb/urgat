@@ -11,7 +11,6 @@ import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.saving.Saving
-import com.ivzb.urgat.data.saving.Saving.Companion.format
 import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
@@ -219,12 +218,12 @@ object Group {
                 SavingCategory(
                     id = random(),
                     name = category,
-                    value = savings.format(),
+                    totals = Saving.total(savings),
 
                     savings = savings,
                 )
             }
-            .sortedByDescending { it.value }
+            .sortedByDescending { it.totals.sumOf { it.amount } }
 
     fun groupBudgetCategoriesMonthly(budgets: List<Budget>, random: () -> String): List<GroupedBudgetCategories> =
         byDateMonthly(budgets, Budget::date, Budget::total)
