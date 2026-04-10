@@ -102,3 +102,5 @@
 - autofill last used currency when adding new expense, investment or budget
 - add instrument suggestions when adding new watchlist asset
 - check if symbol exists when adding watchlist item - add confirmation screen
+- add fire calculation based on average of past year
+- allow user to pick which month to use as reference for fire calculation

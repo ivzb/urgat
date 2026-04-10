@@ -437,6 +437,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
         private val EXPECTED_FIRE = FiRe(
             selection = "December 2025",
+            currency = "EUR",
             monthlyIncome = "5000".toBigDecimal(),
             monthlyExpenses = "2500".toBigDecimal(),
             monthlyInvestments = "2500".toBigDecimal(),

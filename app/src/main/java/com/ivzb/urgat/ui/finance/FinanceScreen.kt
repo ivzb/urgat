@@ -613,20 +613,25 @@ private fun FiRePage(
                 appendLine(
                     stringResource(
                         R.string.fire_accumulated_stash,
-                        fire.accumulatedStash.format()
+                        "${fire.accumulatedStash.format()} ${fire.currency}",
                     )
                 )
-                appendLine(stringResource(R.string.fire_annual_income, fire.annualIncome.format()))
+                appendLine(
+                    stringResource(
+                        R.string.fire_annual_income,
+                        "${fire.annualIncome.format()} ${fire.currency}",
+                    )
+                )
                 appendLine(
                     stringResource(
                         R.string.fire_annual_expenses,
-                        fire.annualExpenses.format()
+                        "${fire.annualExpenses.format()} ${fire.currency}",
                     )
                 )
                 appendLine(
                     stringResource(
                         R.string.fire_annual_investments,
-                        fire.annualInvestments.format()
+                        "${fire.annualInvestments.format()} ${fire.currency}",
                     )
                 )
 
@@ -641,7 +646,7 @@ private fun FiRePage(
                 appendLine(
                     stringResource(
                         R.string.fire_target,
-                        fire.target?.format() ?: EMPTY_FIRE_CALCULATION
+                        fire.target?.let { target -> "${target.format()} ${fire.currency}" } ?: EMPTY_FIRE_CALCULATION
                     )
                 )
 

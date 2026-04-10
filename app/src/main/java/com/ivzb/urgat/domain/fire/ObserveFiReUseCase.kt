@@ -111,6 +111,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     return@combine Async.Success(
                         FiRe(
                             selection = selectionGroup,
+                            currency = budgetCurrency,
 
                             monthlyIncome = monthlyIncome,
                             monthlyExpenses = monthlyExpenses,
@@ -150,6 +151,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
                 val fire = FiRe(
                     selection = selectionGroup,
+                    currency = budgetCurrency,
 
                     monthlyIncome = monthlyIncome,
                     monthlyExpenses = monthlyExpenses,

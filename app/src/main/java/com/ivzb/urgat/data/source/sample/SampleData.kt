@@ -326,6 +326,7 @@ object SampleData {
 
     val SAMPLE_FIRE = FiRe(
         selection = "Feb 2025",
+        currency = "EUR",
         monthlyIncome = 5_000.toBigDecimal(),
         monthlyExpenses = 2_500.toBigDecimal(),
         monthlyInvestments = 1_500.toBigDecimal(),

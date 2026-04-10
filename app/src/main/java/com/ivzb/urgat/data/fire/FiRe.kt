@@ -7,6 +7,7 @@ import java.math.BigDecimal
 
 data class FiRe(
     val selection: String,
+    val currency: String,
 
     val monthlyIncome: BigDecimal,
     val monthlyExpenses: BigDecimal,

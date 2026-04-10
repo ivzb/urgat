@@ -842,6 +842,7 @@ class ObserveFinanceUiStateUseCaseTest {
 
         private val fakeFiRe = FiRe(
             selection = "2025/12",
+            currency = "EUR",
             monthlyIncome = 6_500.toBigDecimal(),
             monthlyExpenses = 2_000.toBigDecimal(),
             monthlyInvestments = 3_000.toBigDecimal(),

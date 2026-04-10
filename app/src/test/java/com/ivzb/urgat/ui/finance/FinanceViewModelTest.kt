@@ -164,6 +164,7 @@ class FinanceViewModelTest {
 
         val fakeFiRe = FiRe(
             selection = "December 2025",
+            currency = "EUR",
 
             monthlyIncome = 5000.toBigDecimal(),
             monthlyExpenses = 3000.toBigDecimal(),
