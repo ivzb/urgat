@@ -16,8 +16,8 @@ private val NEGATIVE_AMOUNT_COLOR = Color(0xFFF44336)
 
 fun financeColor(amount: BigDecimal?): Color =
     when {
-        amount == null -> Color.Unspecified
-        amount >= BigDecimal.ZERO -> POSITIVE_AMOUNT_COLOR
+        amount == null || amount == BigDecimal.ZERO -> Color.Unspecified
+        amount > BigDecimal.ZERO -> POSITIVE_AMOUNT_COLOR
         amount < BigDecimal.ZERO -> NEGATIVE_AMOUNT_COLOR
         else -> Color.Unspecified
     }
@@ -28,6 +28,9 @@ fun annotateFinance(text: String, amount: BigDecimal?, prefix: String = "", suff
         part = text,
         spanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = financeColor(amount)),
     )
+
+fun annotateFinance(amount: BigDecimal, currency: String, prefix: String = ""): AnnotatedString =
+    annotateFinance("${amount.format()} ${currency.formatCurrency()}", amount, prefix = prefix)
 
 fun annotateFinancePnL(text: String, pnl: BigDecimal?): AnnotatedString {
     if (pnl == null || pnl == BigDecimal.ZERO) {
@@ -56,7 +59,7 @@ fun annotateWatchlistAsset(priceChange: BigDecimal?, priceChangePercentage: BigD
 }
 
 fun annotateExpenses(amount: BigDecimal, currency: String, prefix: String = ""): AnnotatedString =
-    annotateFinance("${(-amount).format()} ${currency.formatCurrency()}", -amount, prefix = prefix)
+    annotateFinance(-amount, currency, prefix = prefix)
 
 fun annotateExpensesTotals(totals: List<ExpenseTotal>): AnnotatedString =
     buildAnnotatedString {
@@ -106,21 +109,6 @@ fun annotateChart(name: String, total: AnnotatedString?): AnnotatedString =
             }
         }
     }
-
-fun annotateFinance(amount: BigDecimal, prefix: String = ""): AnnotatedString =
-    annotateFinance(amount.format(), amount, prefix = prefix)
-
-fun annotateBudgetsChart(name: String, total: BigDecimal): AnnotatedString {
-    val totalFormatted = total.format()
-    return annotateFormattedString(
-        formattedString = "$name\n$totalFormatted",
-        part = totalFormatted,
-        spanStyle = SpanStyle(fontWeight = FontWeight.Bold),
-    )
-}
-
-fun annotateSavingsChart(name: String, total: BigDecimal): AnnotatedString =
-    annotateBudgetsChart(name, total)
 
 fun annotateSavings(amount: BigDecimal, currency: String, prefix: String = ""): AnnotatedString =
     annotateFinance("${amount.format()} ${currency.formatCurrency()}", amount, prefix = prefix)

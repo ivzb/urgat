@@ -1,7 +1,5 @@
 package com.ivzb.urgat.data.budget
 
-import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.expense.Expense.Companion.format
 import java.math.BigDecimal
 
 data class Budget(

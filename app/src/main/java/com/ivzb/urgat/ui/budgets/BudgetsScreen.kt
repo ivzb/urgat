@@ -43,10 +43,11 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateBudgetsChart
+import com.ivzb.urgat.util.annotateChart
 import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.toLocalDate
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -292,25 +293,26 @@ fun LazyListScope.budgetCategoryPage(
             add(PieChartItem(
                 value = budget.totalInvestments.toFloat(),
                 title = stringResource(R.string.investments),
-                total = annotateFinance(budget.totalInvestments),
+                total = annotateFinance(budget.totalInvestments, budget.currency),
             ))
 
             add(PieChartItem(
                 value = budget.totalSavings.toFloat(),
                 title = stringResource(R.string.savings),
-                total = annotateFinance(budget.totalSavings),
+                total = annotateFinance(budget.totalSavings, budget.currency),
             ))
 
             if (budget.remaining > BigDecimal.ZERO) {
                 add(PieChartItem(
                     value = budget.remaining.toFloat(),
                     title = stringResource(R.string.remaining),
-                    total = annotateFinance(budget.remaining)
+                    total = annotateFinance(budget.remaining, budget.currency)
                 ))
             }
         }
 
-        val defaultText = annotateBudgetsChart(group ?: budget.category.group, budget.total)
+        val total = annotateFinance(budget.total, budget.currency)
+        val defaultText = annotateChart(group ?: budget.category.group, total)
 
         PieChart(
             data = data,
@@ -329,7 +331,7 @@ fun LazyListScope.budgetCategoryPage(
     item {
         CategoryItem(
             name = stringResource(R.string.expenses),
-            value = budget.totalExpenses.format(),
+            value = annotateExpenses(budget.totalExpenses, budget.currency),
             colorIndex = 0,
         )
     }
@@ -337,7 +339,7 @@ fun LazyListScope.budgetCategoryPage(
     item {
         CategoryItem(
             name = stringResource(R.string.investments),
-            value = budget.totalInvestments.format(),
+            value = annotateFinance(budget.totalInvestments, budget.currency),
             colorIndex = 1,
         )
     }
@@ -345,7 +347,7 @@ fun LazyListScope.budgetCategoryPage(
     item {
         CategoryItem(
             name = stringResource(R.string.savings),
-            value = budget.totalSavings.format(),
+            value = annotateFinance(budget.totalSavings, budget.currency),
             colorIndex = 2,
         )
     }
@@ -353,7 +355,7 @@ fun LazyListScope.budgetCategoryPage(
     item {
         CategoryItem(
             name = stringResource(R.string.remaining),
-            value = budget.remaining.format(),
+            value = annotateFinance(budget.remaining, budget.currency),
             colorIndex = 3,
         )
     }
@@ -371,8 +373,8 @@ fun BudgetItem(
         textLeft = "${date.dayOfMonth} ${date.month.name.take(3)}",
         subTextLeft = date.year.toString(),
 
-        textRight = budget.income.format(),
-        subTextRight = AnnotatedString(budget.total?.format() ?: ""),
+        textRight = "${budget.income.format()} ${budget.currency.formatCurrency()}",
+        subTextRight = budget.total?.let { total -> annotateFinance(total, budget.currency) } ?: AnnotatedString(""),
 
         onClick = { onBudgetClick(budget) }
     )
@@ -381,12 +383,12 @@ fun BudgetItem(
 @Composable
 private fun CategoryItem(
     name: String,
-    value: String,
+    value: AnnotatedString,
     colorIndex: Int,
 ) {
     ListItem(
         textLeft = name,
-        textRight = value,
+        subTextRight = value,
         colorIndex = colorIndex,
     )
 }
