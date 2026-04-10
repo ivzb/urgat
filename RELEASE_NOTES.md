@@ -1,3 +1,8 @@
+## Release notes 26.04.08
+
+Improved:
+- Charts now display saving currency.
+
 ## Release notes 26.04.07
 
 Improved:
