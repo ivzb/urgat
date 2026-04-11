@@ -154,6 +154,11 @@ dependencies {
     implementation(libs.play.app.update.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
 
+    // WorkManager
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
+
     // Networking
     implementation(libs.okhttp)
     implementation(libs.retrofit)

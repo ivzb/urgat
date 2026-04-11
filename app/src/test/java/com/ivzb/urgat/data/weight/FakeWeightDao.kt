@@ -37,4 +37,7 @@ class FakeWeightDao: WeightDao {
         _flow.value = items.toList()
     }
 
+    override suspend fun getLatestDate(): Long? =
+        items.filter { !it.isDeleted }.maxOfOrNull { it.date }
+
 }

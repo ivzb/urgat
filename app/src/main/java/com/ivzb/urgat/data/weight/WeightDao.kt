@@ -32,4 +32,7 @@ interface WeightDao {
     @Query("DELETE FROM weights WHERE id = :id")
     suspend fun deleteById(id: String): Int
 
+    @Query("SELECT date FROM weights WHERE isDeleted = 0 ORDER BY date DESC LIMIT 1")
+    suspend fun getLatestDate(): Long?
+
 }

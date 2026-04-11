@@ -104,5 +104,4 @@
 - car fuel
 - car maintenance
 - car reminders
-- remind user via notification to weight themselves if they haven't in the past 2 weeks
-- add few seconds timeout to http requests
+- car fuel consumption tracking - calculate fuel consumption based on refuelings and distance driven

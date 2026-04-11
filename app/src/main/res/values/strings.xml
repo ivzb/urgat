@@ -212,4 +212,8 @@
     <string name="in_app_update_downloaded">Update downloaded. Restart to apply.</string>
     <string name="in_app_update_restart">Restart</string>
     <string name="in_app_update_downloading">Downloading update…</string>
+    <string name="weight_reminder_title">Time to weigh yourself!</string>
+    <string name="weight_reminder_message">You haven\'t tracked your weight in over 2 weeks. Tap to log it now.</string>
+    <string name="weight_reminder_channel_name">Weight Reminders</string>
+    <string name="weight_reminder_channel_description">Reminds you to weigh yourself if you haven\'t in 2 weeks.</string>
 </resources>
