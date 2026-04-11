@@ -4,6 +4,7 @@ import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultCreateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultDeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.DefaultGetBudgetUseCase
+import com.ivzb.urgat.domain.budget.DefaultGetLastUsedBudgetCurrencyUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.DefaultObserveBudgetsUiStateUseCase
@@ -18,6 +19,7 @@ import com.ivzb.urgat.domain.budget.DefaultObserveGroupedBudgetsYearlyUseCase
 import com.ivzb.urgat.domain.budget.DefaultUpdateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.GetBudgetUseCase
+import com.ivzb.urgat.domain.budget.GetLastUsedBudgetCurrencyUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
@@ -42,6 +44,9 @@ interface BudgetsUseCaseModule {
 
     @Binds
     fun bindsGetBudgetUseCase(useCase: DefaultGetBudgetUseCase): GetBudgetUseCase
+
+    @Binds
+    fun bindsGetLastUsedBudgetCurrencyUseCase(useCase: DefaultGetLastUsedBudgetCurrencyUseCase): GetLastUsedBudgetCurrencyUseCase
 
     @Singleton
     @Binds

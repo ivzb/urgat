@@ -66,10 +66,10 @@ class InvestmentDaoTest {
 
         // collect flow
         val actual = investmentDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
-        assertEquals(investments.sortedByDescending { it.date }, actual)
+        assertEquals(investments.sortedWith(compareByDescending<InvestmentEntity> { it.date }.thenBy { it.id }), actual)
 
         val actualLimit = investmentDao.observeAll(3, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
-        assertEquals(investments.sortedByDescending { it.date }.take(3), actualLimit)
+        assertEquals(investments.sortedWith(compareByDescending<InvestmentEntity> { it.date }.thenBy { it.id }).take(3), actualLimit)
     }
 
 }

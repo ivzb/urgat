@@ -9,4 +9,6 @@ interface BudgetsRepository: BaseRepository<Budget> {
 
     suspend fun update(id: String, income: BigDecimal, bankStart: BigDecimal, bankEnd: BigDecimal?, currency: String, date: Long)
 
+    suspend fun getLastUsedCurrency(): String?
+
 }

@@ -6,6 +6,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
 import com.ivzb.urgat.domain.budget.DeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.GetBudgetUseCase
+import com.ivzb.urgat.domain.budget.GetLastUsedBudgetCurrencyUseCase
 import com.ivzb.urgat.domain.budget.UpdateBudgetUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 class AddEditBudgetViewModel @AssistedInject constructor(
     @Assisted val route: AddEditBudgetRoute,
     private val getBudgetUseCase: GetBudgetUseCase,
+    private val getLastUsedBudgetCurrencyUseCase: GetLastUsedBudgetCurrencyUseCase,
     private val createBudgetUseCase: CreateBudgetUseCase,
     private val updateBudgetUseCase: UpdateBudgetUseCase,
     private val deleteBudgetUseCase: DeleteBudgetUseCase,
@@ -40,6 +42,8 @@ class AddEditBudgetViewModel @AssistedInject constructor(
     init {
         if (budgetId != null) {
             loadBudget(budgetId)
+        } else {
+            loadLastUsedCurrency()
         }
     }
 
@@ -198,6 +202,18 @@ class AddEditBudgetViewModel @AssistedInject constructor(
     private fun userMessageShown() {
         _uiState.update {
             it.copy(userMessage = null)
+        }
+    }
+
+    private fun loadLastUsedCurrency() {
+        viewModelScope.launch {
+            val currency = getLastUsedBudgetCurrencyUseCase()
+
+            if (currency != null) {
+                _uiState.update {
+                    it.copy(currency = currency)
+                }
+            }
         }
     }
 

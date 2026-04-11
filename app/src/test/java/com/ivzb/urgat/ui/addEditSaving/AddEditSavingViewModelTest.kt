@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.saving.FakeCreateSavingUseCase
 import com.ivzb.urgat.domain.saving.FakeDeleteSavingUseCase
 import com.ivzb.urgat.domain.saving.FakeGetSavingUseCase
+import com.ivzb.urgat.domain.saving.FakeGetLastUsedSavingCurrencyUseCase
 import com.ivzb.urgat.domain.saving.FakeUpdateSavingUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,6 +30,8 @@ class AddEditSavingViewModelTest {
 
     private lateinit var getUseCase: FakeGetSavingUseCase
 
+    private lateinit var getLastUsedCurrencyUseCase: FakeGetLastUsedSavingCurrencyUseCase
+
     private lateinit var createUseCase: FakeCreateSavingUseCase
 
     private lateinit var updateUseCase: FakeUpdateSavingUseCase
@@ -42,6 +45,7 @@ class AddEditSavingViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         getUseCase = FakeGetSavingUseCase()
+        getLastUsedCurrencyUseCase = FakeGetLastUsedSavingCurrencyUseCase()
         createUseCase = FakeCreateSavingUseCase()
         updateUseCase = FakeUpdateSavingUseCase()
         deleteUseCase = FakeDeleteSavingUseCase()
@@ -354,12 +358,57 @@ class AddEditSavingViewModelTest {
         Assert.assertNull(viewModel.uiState.value.userMessage)
     }
 
+    @Test
+    fun `init without id autofills last used currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = "EUR"
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("EUR", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init without id and no last currency keeps empty currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = null
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init with id does not autofill last used currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = "USD"
+        val savingId = "123"
+        val saving = Saving(
+            id = savingId,
+            name = "Emergency fund",
+            amount = BigDecimal("500"),
+            currency = "EUR",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = saving
+
+        viewModel = createViewModel(id = savingId)
+
+        advanceUntilIdle()
+
+        assertEquals("EUR", viewModel.uiState.value.currency)
+    }
+
     private fun createViewModel(id: String?): AddEditSavingViewModel {
         val route = AddEditSavingRoute(id, if (id == null) R.string.add_saving else R.string.edit_saving)
 
         return AddEditSavingViewModel(
             route,
             getUseCase,
+            getLastUsedCurrencyUseCase,
             createUseCase,
             updateUseCase,
             deleteUseCase,

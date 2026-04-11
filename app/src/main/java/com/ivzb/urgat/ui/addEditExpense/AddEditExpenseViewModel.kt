@@ -6,6 +6,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
+import com.ivzb.urgat.domain.expense.GetLastUsedCurrencyUseCase
 import com.ivzb.urgat.domain.expense.UpdateExpenseUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 class AddEditExpenseViewModel @AssistedInject constructor(
     @Assisted val route: AddEditExpenseRoute,
     private val getExpenseUseCase: GetExpenseUseCase,
+    private val getLastUsedCurrencyUseCase: GetLastUsedCurrencyUseCase,
     private val createExpenseUseCase: CreateExpenseUseCase,
     private val updateExpenseUseCase: UpdateExpenseUseCase,
     private val deleteExpenseUseCase: DeleteExpenseUseCase,
@@ -40,6 +42,8 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     init {
         if (expenseId != null) {
             loadExpense(expenseId)
+        } else {
+            loadLastUsedCurrency()
         }
     }
 
@@ -208,6 +212,18 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     private fun userMessageShown() {
         _uiState.update {
             it.copy(userMessage = null)
+        }
+    }
+
+    private fun loadLastUsedCurrency() {
+        viewModelScope.launch {
+            val currency = getLastUsedCurrencyUseCase()
+
+            if (currency != null) {
+                _uiState.update {
+                    it.copy(currency = currency)
+                }
+            }
         }
     }
 

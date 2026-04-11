@@ -141,6 +141,23 @@ val MIGRATION_11_12 = object : Migration(11, 12) {
     }
 }
 
+val MIGRATION_12_13 = object : Migration(12, 13) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // savings
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_savings_isDeleted_createdAt` ON `savings` (`isDeleted`, `createdAt`);")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_savings_isDeleted_date` ON `savings` (`isDeleted`, `date`);")
+        // expenses
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_expenses_isDeleted_createdAt` ON `expenses` (`isDeleted`, `createdAt`);")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_expenses_isDeleted_date` ON `expenses` (`isDeleted`, `date`);")
+        // investments
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_investments_isDeleted_createdAt` ON `investments` (`isDeleted`, `createdAt`);")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_investments_isDeleted_date` ON `investments` (`isDeleted`, `date`);")
+        // budgets
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_budgets_isDeleted_createdAt` ON `budgets` (`isDeleted`, `createdAt`);")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_budgets_isDeleted_date` ON `budgets` (`isDeleted`, `date`);")
+    }
+}
+
 val ALL_MIGRATIONS = arrayOf(
     MIGRATION_1_2,
     MIGRATION_2_3,
@@ -153,4 +170,5 @@ val ALL_MIGRATIONS = arrayOf(
     MIGRATION_9_10,
     MIGRATION_10_11,
     MIGRATION_11_12,
+    MIGRATION_12_13,
 )

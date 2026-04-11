@@ -145,6 +145,15 @@ class FakeObserveGroupedExpenseCategoriesAllTimeUseCase: ObserveGroupedExpenseCa
 
 }
 
+class FakeGetLastUsedCurrencyUseCase : GetLastUsedCurrencyUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
 class FakeGetExpenseUseCase : GetExpenseUseCase {
 
     var toReturn: Expense? = null

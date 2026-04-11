@@ -20,4 +20,6 @@ interface SavingsRepository: BaseRepository<Saving> {
         date: Long,
     )
 
+    suspend fun getLastUsedCurrency(): String?
+
 }

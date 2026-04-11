@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultCreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultDeleteSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultGetSavingUseCase
+import com.ivzb.urgat.domain.saving.DefaultGetLastUsedSavingCurrencyUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsYearlyUseCase
@@ -19,6 +20,7 @@ import com.ivzb.urgat.domain.saving.DefaultObserveSavingsUseCase
 import com.ivzb.urgat.domain.saving.DefaultUpdateSavingUseCase
 import com.ivzb.urgat.domain.saving.DeleteSavingUseCase
 import com.ivzb.urgat.domain.saving.GetSavingUseCase
+import com.ivzb.urgat.domain.saving.GetLastUsedSavingCurrencyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
@@ -38,6 +40,9 @@ interface SavingsUseCaseModule {
 
     @Binds
     fun bindsGetSavingUseCase(useCase: DefaultGetSavingUseCase): GetSavingUseCase
+
+    @Binds
+    fun bindsGetLastUsedSavingCurrencyUseCase(useCase: DefaultGetLastUsedSavingCurrencyUseCase): GetLastUsedSavingCurrencyUseCase
 
     @Singleton
     @Binds

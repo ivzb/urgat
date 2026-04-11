@@ -27,4 +27,6 @@ interface InvestmentsRepository: BaseRepository<Investment> {
         date: Long,
     )
 
+    suspend fun getLastUsedCurrency(): String?
+
 }

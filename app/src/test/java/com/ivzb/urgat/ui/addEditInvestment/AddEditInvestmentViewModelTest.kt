@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.domain.investment.FakeCreateInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeDeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeGetInvestmentUseCase
+import com.ivzb.urgat.domain.investment.FakeGetLastUsedInvestmentCurrencyUseCase
 import com.ivzb.urgat.domain.investment.FakeUpdateInvestmentUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +32,8 @@ class AddEditInvestmentViewModelTest {
 
     private lateinit var getUseCase: FakeGetInvestmentUseCase
 
+    private lateinit var getLastUsedCurrencyUseCase: FakeGetLastUsedInvestmentCurrencyUseCase
+
     private lateinit var createUseCase: FakeCreateInvestmentUseCase
 
     private lateinit var updateUseCase: FakeUpdateInvestmentUseCase
@@ -44,6 +47,7 @@ class AddEditInvestmentViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         getUseCase = FakeGetInvestmentUseCase()
+        getLastUsedCurrencyUseCase = FakeGetLastUsedInvestmentCurrencyUseCase()
         createUseCase = FakeCreateInvestmentUseCase()
         updateUseCase = FakeUpdateInvestmentUseCase()
         deleteUseCase = FakeDeleteInvestmentUseCase()
@@ -385,12 +389,60 @@ class AddEditInvestmentViewModelTest {
         assertNull(viewModel.uiState.value.userMessage)
     }
 
+    @Test
+    fun `init without id autofills last used currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = "USD"
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("USD", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init without id and no last currency keeps empty currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = null
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init with id does not autofill last used currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = "GBP"
+        val investmentId = "123"
+        val investment = Investment(
+            id = investmentId,
+            name = "SNP 500",
+            shares = BigDecimal("150"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal("0"),
+            category = "etfs",
+            currency = "USD",
+            date = 1L,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = investment
+
+        viewModel = createViewModel(id = investmentId)
+
+        advanceUntilIdle()
+
+        assertEquals("USD", viewModel.uiState.value.currency)
+    }
+
     private fun createViewModel(id: String?): AddEditInvestmentViewModel {
         val route = AddEditInvestmentRoute(id, if (id == null) R.string.add_investment else R.string.edit_investment)
 
         return AddEditInvestmentViewModel(
             route,
             getUseCase,
+            getLastUsedCurrencyUseCase,
             createUseCase,
             updateUseCase,
             deleteUseCase,

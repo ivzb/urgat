@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.domain.budget.FakeCreateBudgetUseCase
 import com.ivzb.urgat.domain.budget.FakeDeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.FakeGetBudgetUseCase
+import com.ivzb.urgat.domain.budget.FakeGetLastUsedBudgetCurrencyUseCase
 import com.ivzb.urgat.domain.budget.FakeUpdateBudgetUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,6 +32,8 @@ class AddEditBudgetViewModelTest {
 
     private lateinit var getUseCase: FakeGetBudgetUseCase
 
+    private lateinit var getLastUsedCurrencyUseCase: FakeGetLastUsedBudgetCurrencyUseCase
+
     private lateinit var createUseCase: FakeCreateBudgetUseCase
 
     private lateinit var updateUseCase: FakeUpdateBudgetUseCase
@@ -44,6 +47,7 @@ class AddEditBudgetViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         getUseCase = FakeGetBudgetUseCase()
+        getLastUsedCurrencyUseCase = FakeGetLastUsedBudgetCurrencyUseCase()
         createUseCase = FakeCreateBudgetUseCase()
         updateUseCase = FakeUpdateBudgetUseCase()
         deleteUseCase = FakeDeleteBudgetUseCase()
@@ -362,12 +366,58 @@ class AddEditBudgetViewModelTest {
         assertNull(viewModel.uiState.value.userMessage)
     }
 
+    @Test
+    fun `init without id autofills last used currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = "EUR"
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("EUR", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init without id and no last currency keeps empty currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = null
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init with id does not autofill last used currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = "USD"
+        val budgetId = "123"
+        val budget = Budget(
+            id = budgetId,
+            income = BigDecimal("6500"),
+            bankStart = BigDecimal("11000"),
+            bankEnd = BigDecimal("8400"),
+            currency = "EUR",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = budget
+
+        viewModel = createViewModel(id = budgetId)
+
+        advanceUntilIdle()
+
+        assertEquals("EUR", viewModel.uiState.value.currency)
+    }
+
     private fun createViewModel(id: String?): AddEditBudgetViewModel {
         val route = AddEditBudgetRoute(id, if (id == null) R.string.add_budget else R.string.edit_budget)
 
         return AddEditBudgetViewModel(
             route,
             getUseCase,
+            getLastUsedCurrencyUseCase,
             createUseCase,
             updateUseCase,
             deleteUseCase,

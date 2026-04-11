@@ -4,6 +4,7 @@ import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultCreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultGetExpenseUseCase
+import com.ivzb.urgat.domain.expense.DefaultGetLastUsedCurrencyUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesSortingUseCase
@@ -17,6 +18,7 @@ import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultUpdateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.GetExpenseUseCase
+import com.ivzb.urgat.domain.expense.GetLastUsedCurrencyUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
@@ -40,6 +42,9 @@ interface ExpensesUseCaseModule {
 
     @Binds
     fun bindsGetExpenseUseCase(useCase: DefaultGetExpenseUseCase): GetExpenseUseCase
+
+    @Binds
+    fun bindsGetLastUsedCurrencyUseCase(useCase: DefaultGetLastUsedCurrencyUseCase): GetLastUsedCurrencyUseCase
 
     @Singleton
     @Binds

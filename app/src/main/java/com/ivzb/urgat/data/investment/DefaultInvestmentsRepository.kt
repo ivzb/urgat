@@ -142,6 +142,10 @@ class DefaultInvestmentsRepository @Inject constructor(
         localDataSource.deleteById(id)
     }
 
+    override suspend fun getLastUsedCurrency(): String? {
+        return localDataSource.getLastUsedCurrency()
+    }
+
     private suspend fun List<InvestmentEntity>.toExternal(): List<Investment> {
         return coroutineScope { map { async { it.toExternal() } }.awaitAll() }
     }

@@ -180,6 +180,15 @@ class FakeObserveGroupedInvestmentCategoriesYearlyUseCase: ObserveGroupedInvestm
 
 }
 
+class FakeGetLastUsedInvestmentCurrencyUseCase : GetLastUsedInvestmentCurrencyUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
 class FakeGetInvestmentUseCase : GetInvestmentUseCase {
 
     var toReturn: Investment? = null

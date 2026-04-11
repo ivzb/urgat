@@ -1,10 +1,17 @@
 package com.ivzb.urgat.data.saving
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
-@Entity(tableName = "savings")
+@Entity(
+    tableName = "savings",
+    indices = [
+        Index(value = ["isDeleted", "createdAt"]),
+        Index(value = ["isDeleted", "date"]),
+    ]
+)
 data class SavingEntity(
     @PrimaryKey val id: String,
     val name: String,

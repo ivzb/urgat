@@ -58,6 +58,7 @@ class MigrationTest {
                 MIGRATION_9_10,
                 MIGRATION_10_11,
                 MIGRATION_11_12,
+                MIGRATION_12_13,
             )
             .build()
             .apply {
@@ -101,6 +102,7 @@ class MigrationTest {
                 MIGRATION_9_10,
                 MIGRATION_10_11,
                 MIGRATION_11_12,
+                MIGRATION_12_13,
             )
             .build()
             .let { db ->
@@ -191,7 +193,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 12,
+            version = 13,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -205,6 +207,7 @@ class MigrationTest {
                 MIGRATION_9_10,
                 MIGRATION_10_11,
                 MIGRATION_11_12,
+                MIGRATION_12_13,
             ),
         ).close()
 

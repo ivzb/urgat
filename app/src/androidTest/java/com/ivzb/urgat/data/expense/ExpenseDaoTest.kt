@@ -64,10 +64,10 @@ class ExpenseDaoTest {
 
         // collect flow
         val actual = expenseDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
-        assertEquals(expenses.sortedByDescending { it.date }, actual)
+        assertEquals(expenses.sortedWith(compareByDescending<ExpenseEntity> { it.date }.thenBy { it.id }), actual)
 
         val actualLimit = expenseDao.observeAll(3, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
-        assertEquals(expenses.sortedByDescending { it.date }.take(3), actualLimit)
+        assertEquals(expenses.sortedWith(compareByDescending<ExpenseEntity> { it.date }.thenBy { it.id }).take(3), actualLimit)
     }
 
 }

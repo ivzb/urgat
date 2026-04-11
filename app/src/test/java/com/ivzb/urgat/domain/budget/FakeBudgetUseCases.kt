@@ -41,6 +41,15 @@ class FakeObserveBudgetsUseCase : ObserveBudgetsUseCase {
 
 }
 
+class FakeGetLastUsedBudgetCurrencyUseCase : GetLastUsedBudgetCurrencyUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
 class FakeGetBudgetUseCase : GetBudgetUseCase {
 
     var toReturn: Budget? = null

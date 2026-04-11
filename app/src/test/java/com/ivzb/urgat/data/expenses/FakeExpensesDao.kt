@@ -44,4 +44,7 @@ class FakeExpenseDao : ExpenseDao {
         _flow.value = items.toList()
     }
 
+    override suspend fun getLastUsedCurrency(): String? =
+        items.filter { !it.isDeleted }.maxByOrNull { it.createdAt }?.currency
+
 }

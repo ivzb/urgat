@@ -92,4 +92,8 @@ class DefaultExpensesRepository @Inject constructor(
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
     }
+
+    override suspend fun getLastUsedCurrency(): String? {
+        return localDataSource.getLastUsedCurrency()
+    }
 }

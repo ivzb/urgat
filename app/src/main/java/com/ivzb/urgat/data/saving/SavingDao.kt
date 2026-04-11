@@ -14,7 +14,7 @@ interface SavingDao {
     @Query("" +
             "SELECT * FROM savings " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
-            "ORDER BY date DESC " +
+            "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<SavingEntity>>
@@ -25,12 +25,12 @@ interface SavingDao {
                 "name LIKE '%' || :searchQuery || '%' OR " +
                 "amount LIKE '%' || :searchQuery || '%'" +
             ")" +
-            "ORDER BY date DESC " +
+            "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<SavingEntity>>
 
-    @Query("SELECT * FROM savings WHERE isDeleted = 0 ORDER BY date DESC")
+    @Query("SELECT * FROM savings WHERE isDeleted = 0 ORDER BY date DESC, id ASC")
     fun stream(): Cursor
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -44,5 +44,8 @@ interface SavingDao {
 
     @Query("DELETE FROM savings WHERE id = :id")
     suspend fun deleteById(id: String): Int
+
+    @Query("SELECT currency FROM savings WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedCurrency(): String?
 
 }

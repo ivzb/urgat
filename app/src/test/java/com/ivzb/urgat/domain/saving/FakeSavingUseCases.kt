@@ -143,6 +143,15 @@ class FakeObserveGroupedSavingCategoriesAllTimeUseCase: ObserveGroupedSavingCate
 
 }
 
+class FakeGetLastUsedSavingCurrencyUseCase : GetLastUsedSavingCurrencyUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
 class FakeGetSavingUseCase : GetSavingUseCase {
 
     var toReturn: Saving? = null

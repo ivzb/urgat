@@ -7,6 +7,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DeleteSavingUseCase
 import com.ivzb.urgat.domain.saving.GetSavingUseCase
+import com.ivzb.urgat.domain.saving.GetLastUsedSavingCurrencyUseCase
 import com.ivzb.urgat.domain.saving.UpdateSavingUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 class AddEditSavingViewModel @AssistedInject constructor(
     @Assisted val route: AddEditSavingRoute,
     private val getSavingUseCase: GetSavingUseCase,
+    private val getLastUsedSavingCurrencyUseCase: GetLastUsedSavingCurrencyUseCase,
     private val createSavingUseCase: CreateSavingUseCase,
     private val updateSavingUseCase: UpdateSavingUseCase,
     private val deleteSavingUseCase: DeleteSavingUseCase,
@@ -41,6 +43,8 @@ class AddEditSavingViewModel @AssistedInject constructor(
     init {
         if (savingId != null) {
             loadSaving(savingId)
+        } else {
+            loadLastUsedCurrency()
         }
     }
 
@@ -190,6 +194,18 @@ class AddEditSavingViewModel @AssistedInject constructor(
     private fun userMessageShown() {
         _uiState.update {
             it.copy(userMessage = null)
+        }
+    }
+
+    private fun loadLastUsedCurrency() {
+        viewModelScope.launch {
+            val currency = getLastUsedSavingCurrencyUseCase()
+
+            if (currency != null) {
+                _uiState.update {
+                    it.copy(currency = currency)
+                }
+            }
         }
     }
 

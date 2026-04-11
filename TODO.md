@@ -86,9 +86,6 @@
 - calculate fi/re based on last month, last year and all time?
 - show Fi/Re chart for each year
 - maybe average last year monthly expenses to calculate annual average - depending on the most recent month will break the calculations
-- car fuel
-- car maintenance
-- car reminders
 - add one more playstore screenshot
 - show labels for each textfield because its not clear which field is which when editing or duplicating
 - move weights chart to inner screen along with other visualizations
@@ -99,8 +96,13 @@
 - add currency to budget so investments can be converted to single currency for proper calculation
 - fix ObserveFiReUseCase currencies calculation - it should convert all expenses to main currency and then calculate fi/re based on that
 - chart amounts fractions are not correct when multiple currencies are involved - `value = expenses.sumOf { it.amount }.toFloat(), ` - `it.expenses.sumOf { it.amount }.toFloat(),`
-- autofill last used currency when adding new expense, investment or budget
 - add instrument suggestions when adding new watchlist asset
 - check if symbol exists when adding watchlist item - add confirmation screen
 - add fire calculation based on average of past year
 - allow user to pick which month to use as reference for fire calculation
+- allow user to pick since when to calculate fire
+- car fuel
+- car maintenance
+- car reminders
+- remind user via notification to weight themselves if they haven't in the past 2 weeks
+- add few seconds timeout to http requests

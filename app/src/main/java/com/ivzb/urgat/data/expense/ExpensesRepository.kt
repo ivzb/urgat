@@ -9,4 +9,6 @@ interface ExpensesRepository: BaseRepository<Expense> {
 
     suspend fun update(id: String, name: String, amount: BigDecimal, currency: String, category: String, date: Long, excludeFromAnalytics: Boolean)
 
+    suspend fun getLastUsedCurrency(): String?
+
 }

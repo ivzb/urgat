@@ -14,7 +14,7 @@ interface InvestmentDao {
     @Query("" +
             "SELECT * FROM investments " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
-            "ORDER BY date DESC " +
+            "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<InvestmentEntity>>
@@ -27,12 +27,12 @@ interface InvestmentDao {
                 "category LIKE '%' || :searchQuery || '%' OR " +
                 "currency LIKE '%' || :searchQuery || '%'" +
             ")" +
-            "ORDER BY date DESC " +
+            "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"
     )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<InvestmentEntity>>
 
-    @Query("SELECT * FROM investments WHERE isDeleted = 0 ORDER BY date DESC")
+    @Query("SELECT * FROM investments WHERE isDeleted = 0 ORDER BY date DESC, id ASC")
     fun stream(): Cursor
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -46,5 +46,8 @@ interface InvestmentDao {
 
     @Query("DELETE FROM investments WHERE id = :id")
     suspend fun deleteById(id: String): Int
+
+    @Query("SELECT currency FROM investments WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedCurrency(): String?
 
 }
