@@ -1,3 +1,8 @@
+## Release notes 26.04.11
+
+Improved:
+- Currency field now auto-populates with your last selection
+
 ## Release notes 26.04.10
 
 New:
