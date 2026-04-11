@@ -1,3 +1,11 @@
+## Release notes 26.04.12
+
+New:
+- Reminder notifications prompt you to log weight after 2 weeks of inactivity.
+
+Improved:
+- In-app updates now displayed immediately when a new version is available.
+
 ## Release notes 26.04.11
 
 Improved:
