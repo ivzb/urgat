@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 
@@ -27,29 +29,18 @@ fun InAppUpdateSnackbarHost(
     val context = LocalContext.current
     val activity = context as? Activity
 
-    val updateAvailableMessage = stringResource(R.string.in_app_update_available)
-    val updateAction = stringResource(R.string.in_app_update_action)
     val downloadedMessage = stringResource(R.string.in_app_update_downloaded)
     val restartAction = stringResource(R.string.in_app_update_restart)
     val downloadingMessage = stringResource(R.string.in_app_update_downloading)
 
-    LaunchedEffect(uiState.isUpdateAvailable, uiState.isDismissed) {
-        if (uiState.isUpdateAvailable && !uiState.isDismissed) {
-            val result = snackbarHostState.showSnackbar(
-                message = updateAvailableMessage,
-                actionLabel = updateAction,
-                duration = SnackbarDuration.Long,
-            )
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.onIntent(InAppUpdateIntent.CheckForUpdate)
+    }
 
-            when (result) {
-                SnackbarResult.ActionPerformed -> {
-                    activity?.let { viewModel.startUpdate(it) }
-                }
-
-                SnackbarResult.Dismissed -> {
-                    viewModel.onIntent(InAppUpdateIntent.DismissUpdate)
-                }
-            }
+    LaunchedEffect(uiState.shouldStartUpdate) {
+        if (uiState.shouldStartUpdate) {
+            activity?.let { viewModel.startUpdate(it) }
+            viewModel.onIntent(InAppUpdateIntent.UpdateStarted)
         }
     }
 

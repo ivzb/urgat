@@ -62,17 +62,16 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isUpdateAvailable)
+        assertFalse(state.shouldStartUpdate)
         assertFalse(state.isDownloading)
         assertFalse(state.isDownloaded)
-        assertFalse(state.isDismissed)
         assertEquals(0f, state.downloadProgress)
 
         job.cancel()
     }
 
     @Test
-    fun `check for update sets isUpdateAvailable when update available`() = runTest {
+    fun `check for update sets shouldStartUpdate when update available`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.UpdateAvailable
         viewModel = createViewModel()
 
@@ -83,7 +82,7 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.isUpdateAvailable)
+        assertTrue(state.shouldStartUpdate)
         assertFalse(state.isDownloading)
         assertFalse(state.isDownloaded)
 
@@ -104,7 +103,7 @@ class InAppUpdateViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.isDownloaded)
         assertFalse(state.isDownloading)
-        assertFalse(state.isUpdateAvailable)
+        assertFalse(state.shouldStartUpdate)
 
         job.cancel()
     }
@@ -123,13 +122,13 @@ class InAppUpdateViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.isDownloading)
         assertFalse(state.isDownloaded)
-        assertFalse(state.isUpdateAvailable)
+        assertFalse(state.shouldStartUpdate)
 
         job.cancel()
     }
 
     @Test
-    fun `dismiss update sets isDismissed`() = runTest {
+    fun `update started consumes shouldStartUpdate`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.UpdateAvailable
         viewModel = createViewModel()
 
@@ -138,12 +137,12 @@ class InAppUpdateViewModelTest {
         }
 
         advanceUntilIdle()
-        assertTrue(viewModel.uiState.value.isUpdateAvailable)
+        assertTrue(viewModel.uiState.value.shouldStartUpdate)
 
-        viewModel.onIntent(InAppUpdateIntent.DismissUpdate)
+        viewModel.onIntent(InAppUpdateIntent.UpdateStarted)
         advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.isDismissed)
+        assertFalse(viewModel.uiState.value.shouldStartUpdate)
 
         job.cancel()
     }
@@ -186,7 +185,7 @@ class InAppUpdateViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.isDownloading)
         assertEquals(0.5f, state.downloadProgress)
-        assertFalse(state.isUpdateAvailable)
+        assertFalse(state.shouldStartUpdate)
 
         job.cancel()
     }
@@ -208,7 +207,6 @@ class InAppUpdateViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.isDownloaded)
         assertFalse(state.isDownloading)
-        assertFalse(state.isDismissed)
 
         job.cancel()
     }
@@ -235,7 +233,7 @@ class InAppUpdateViewModelTest {
     }
 
     @Test
-    fun `observe install state failed re-enables update available`() = runTest {
+    fun `observe install state failed re-enables shouldStartUpdate`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.NoUpdate
         viewModel = createViewModel()
 
@@ -249,14 +247,14 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.isUpdateAvailable)
+        assertTrue(state.shouldStartUpdate)
         assertFalse(state.isDownloading)
 
         job.cancel()
     }
 
     @Test
-    fun `observe install state canceled re-enables update available`() = runTest {
+    fun `observe install state canceled re-enables shouldStartUpdate`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.NoUpdate
         viewModel = createViewModel()
 
@@ -270,7 +268,7 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.isUpdateAvailable)
+        assertTrue(state.shouldStartUpdate)
         assertFalse(state.isDownloading)
 
         job.cancel()
@@ -309,13 +307,13 @@ class InAppUpdateViewModelTest {
         }
 
         advanceUntilIdle()
-        assertFalse(viewModel.uiState.value.isUpdateAvailable)
+        assertFalse(viewModel.uiState.value.shouldStartUpdate)
 
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.UpdateAvailable
         viewModel.onIntent(InAppUpdateIntent.CheckForUpdate)
         advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.isUpdateAvailable)
+        assertTrue(viewModel.uiState.value.shouldStartUpdate)
 
         job.cancel()
     }

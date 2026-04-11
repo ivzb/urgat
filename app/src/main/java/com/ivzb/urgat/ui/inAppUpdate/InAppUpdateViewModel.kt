@@ -36,9 +36,8 @@ class InAppUpdateViewModel @Inject constructor(
     fun onIntent(intent: InAppUpdateIntent) {
         when (intent) {
             InAppUpdateIntent.CheckForUpdate -> checkForUpdate()
-            InAppUpdateIntent.StartUpdate -> { /* handled by startUpdate(activity) */ }
             InAppUpdateIntent.CompleteUpdate -> completeUpdate()
-            InAppUpdateIntent.DismissUpdate -> dismissUpdate()
+            InAppUpdateIntent.UpdateStarted -> consumeStartUpdate()
         }
     }
 
@@ -50,19 +49,19 @@ class InAppUpdateViewModel @Inject constructor(
         viewModelScope.launch {
             when (checkForUpdateUseCase()) {
                 InAppUpdateStatus.UpdateAvailable -> {
-                    _uiState.update { it.copy(isUpdateAvailable = true, isDismissed = false) }
+                    _uiState.update { it.copy(shouldStartUpdate = true) }
                 }
 
                 InAppUpdateStatus.Downloaded -> {
-                    _uiState.update { it.copy(isDownloaded = true, isDownloading = false, isDismissed = false) }
+                    _uiState.update { it.copy(isDownloaded = true, isDownloading = false) }
                 }
 
                 InAppUpdateStatus.InProgress -> {
-                    _uiState.update { it.copy(isDownloading = true, isDismissed = false) }
+                    _uiState.update { it.copy(isDownloading = true) }
                 }
 
                 InAppUpdateStatus.NoUpdate -> {
-                    _uiState.update { it.copy(isUpdateAvailable = false) }
+                    _uiState.update { it.copy(shouldStartUpdate = false) }
                 }
             }
         }
@@ -82,7 +81,7 @@ class InAppUpdateViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isDownloading = true,
-                                isUpdateAvailable = false,
+                                shouldStartUpdate = false,
                                 downloadProgress = progress,
                             )
                         }
@@ -93,8 +92,7 @@ class InAppUpdateViewModel @Inject constructor(
                             it.copy(
                                 isDownloaded = true,
                                 isDownloading = false,
-                                isUpdateAvailable = false,
-                                isDismissed = false,
+                                shouldStartUpdate = false,
                             )
                         }
                     }
@@ -107,7 +105,7 @@ class InAppUpdateViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isDownloading = false,
-                                isUpdateAvailable = true,
+                                shouldStartUpdate = true,
                             )
                         }
                     }
@@ -124,7 +122,7 @@ class InAppUpdateViewModel @Inject constructor(
         completeUpdateUseCase()
     }
 
-    private fun dismissUpdate() {
-        _uiState.update { it.copy(isDismissed = true) }
+    private fun consumeStartUpdate() {
+        _uiState.update { it.copy(shouldStartUpdate = false) }
     }
 }
