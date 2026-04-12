@@ -216,4 +216,22 @@
     <string name="weight_reminder_message">You haven\'t tracked your weight in over 2 weeks. Tap to log it now.</string>
     <string name="weight_reminder_channel_name">Weight Reminders</string>
     <string name="weight_reminder_channel_description">Reminds you to weigh yourself if you haven\'t in 2 weeks.</string>
+    <string name="car">Car</string>
+    <string name="fuel_consumption">Fuel consumption</string>
+    <string name="no_fuel_consumption">You have no fuel consumption</string>
+    <string name="no_fuel_consumption_label">Track your fuel consumption.</string>
+    <string name="no_fuel_consumption_message">Tap "Add Fuel Consumption" to track your first one.</string>
+    <string name="no_fuel_consumption_search">You have no fuel consumption with this search criteria!</string>
+    <string name="no_fuel_consumption_search_message">Tap "Reset filters" to reset to default.</string>
+    <string name="add_fuel_consumption">Add Fuel Consumption</string>
+    <string name="edit_fuel_consumption">Edit Fuel Consumption</string>
+    <string name="loading_fuel_consumption">Loading fuel consumption</string>
+    <string name="error_fuel_consumption">Error while loading fuel consumption</string>
+    <string name="loading_car">Loading car</string>
+    <string name="error_car">Error while loading car</string>
+    <string name="fuel_consumption_amount_hint">Amount (liters)</string>
+    <string name="fuel_consumption_price_hint">Price per liter</string>
+    <string name="fuel_consumption_car_name_hint">Car name</string>
+    <string name="fuel_consumption_odometer_hint">Odometer (km)</string>
+    <string name="empty_fuel_consumption_message">Please fill in all fuel consumption fields.</string>
 </resources>

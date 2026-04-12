@@ -5,6 +5,7 @@ import android.net.Uri
 import com.ivzb.urgat.data.budget.BudgetDao
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
@@ -13,6 +14,7 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_MAPPING
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.exportData.ExportDataRepository
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionDao
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
@@ -40,6 +42,7 @@ class DefaultExportDataUseCaseTest {
     private lateinit var budgetDao: BudgetDao
     private lateinit var watchlistAssetDao: WatchlistAssetDao
     private lateinit var weightDao: WeightDao
+    private lateinit var fuelConsumptionDao: FuelConsumptionDao
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var exportDataUseCase: ExportDataUseCase
@@ -57,6 +60,7 @@ class DefaultExportDataUseCaseTest {
         budgetDao = mockk(relaxed = true)
         watchlistAssetDao = mockk(relaxed = true)
         weightDao = mockk(relaxed = true)
+        fuelConsumptionDao = mockk(relaxed = true)
 
         exportDataUseCase = DefaultExportDataUseCase(
             exportDataRepository,
@@ -68,6 +72,7 @@ class DefaultExportDataUseCaseTest {
             budgetDao,
             watchlistAssetDao,
             weightDao,
+            fuelConsumptionDao,
             dispatcher,
         )
     }
@@ -100,6 +105,9 @@ class DefaultExportDataUseCaseTest {
         val weightsCursor = mockk<Cursor>()
         every { weightDao.stream() } returns weightsCursor
 
+        val fuelConsumptionCursor = mockk<Cursor>()
+        every { fuelConsumptionDao.stream() } returns fuelConsumptionCursor
+
         exportDataUseCase(uri)
 
         coVerify(exactly = 1) {
@@ -111,6 +119,7 @@ class DefaultExportDataUseCaseTest {
             exportDataRepository.exportCsv(eq(uri), eq(budgetsCursor), eq("budgets.csv"), eq(BUDGETS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(watchlistAssetsCursor), eq("watchlist_assets.csv"), eq(WATCHLIST_ASSETS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(weightsCursor), eq("weights.csv"), eq(WEIGHTS_CSV_MAPPING))
+            exportDataRepository.exportCsv(eq(uri), eq(fuelConsumptionCursor), eq("fuel_consumption.csv"), eq(FUEL_CONSUMPTION_CSV_MAPPING))
         }
     }
 }

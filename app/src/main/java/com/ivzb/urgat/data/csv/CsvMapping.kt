@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.csv
 
 import com.ivzb.urgat.data.budget.BudgetEntity
 import com.ivzb.urgat.data.expense.ExpenseEntity
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.saving.SavingEntity
@@ -25,6 +26,7 @@ data class CsvMapping(
         const val BUDGETS_CSV_FILE_NAME = "budgets.csv"
         const val WATCHLIST_ASSETS_CSV_FILE_NAME = "watchlist_assets.csv"
         const val WEIGHTS_CSV_FILE_NAME = "weights.csv"
+        const val FUEL_CONSUMPTION_CSV_FILE_NAME = "fuel_consumption.csv"
 
         val TODOS_CSV_MAPPING = listOf(
             CsvMapping("id", "string"),
@@ -89,6 +91,17 @@ data class CsvMapping(
         val WEIGHTS_CSV_MAPPING = listOf(
             CsvMapping("id", "string"),
             CsvMapping("value", "big_decimal"),
+            CsvMapping("date", "long"),
+            CsvMapping("createdAt", "long"),
+        )
+
+        val FUEL_CONSUMPTION_CSV_MAPPING = listOf(
+            CsvMapping("id", "string"),
+            CsvMapping("amount", "big_decimal"),
+            CsvMapping("price", "big_decimal"),
+            CsvMapping("currency", "string"),
+            CsvMapping("carName", "string"),
+            CsvMapping("odometer", "int"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -197,6 +210,22 @@ data class CsvMapping(
                 date = split[2].toLong(),
                 isDeleted = false,
                 createdAt = split[3].toLong(),
+            )
+        }
+
+        fun parseFuelConsumptionCsv(line: String): FuelConsumptionEntity {
+            val split = splitCsvLine(line)
+
+            return FuelConsumptionEntity(
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
+                amount = split[1].toBigDecimal(),
+                price = split[2].toBigDecimal(),
+                currency = split[3],
+                carName = split[4],
+                odometer = split[5].toInt(),
+                date = split[6].toLong(),
+                isDeleted = false,
+                createdAt = split[7].toLong(),
             )
         }
 

@@ -101,7 +101,8 @@
 - add fire calculation based on average of past year
 - allow user to pick which month to use as reference for fire calculation
 - allow user to pick since when to calculate fire
-- car fuel
+- show chart when tap on watchlist asset
 - car maintenance
 - car reminders
-- car fuel consumption tracking - calculate fuel consumption based on refuelings and distance driven
+- show km driven as total of fuel consumption
+- add/edit fuel consumption

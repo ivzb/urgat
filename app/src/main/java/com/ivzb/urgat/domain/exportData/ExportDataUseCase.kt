@@ -6,6 +6,8 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_FILE_NAME
@@ -20,6 +22,7 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_MAPPING
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.exportData.ExportDataRepository
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionDao
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
@@ -47,6 +50,7 @@ class DefaultExportDataUseCase @Inject constructor(
     private val budgetDao: BudgetDao,
     private val watchlistAssetDao: WatchlistAssetDao,
     private val weightDao: WeightDao,
+    private val fuelConsumptionDao: FuelConsumptionDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ExportDataUseCase {
 
@@ -60,6 +64,7 @@ class DefaultExportDataUseCase @Inject constructor(
             exportDataRepository.exportCsv(uri, budgetDao.stream(), BUDGETS_CSV_FILE_NAME, BUDGETS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, watchlistAssetDao.stream(), WATCHLIST_ASSETS_CSV_FILE_NAME, WATCHLIST_ASSETS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, weightDao.stream(), WEIGHTS_CSV_FILE_NAME, WEIGHTS_CSV_MAPPING)
+            exportDataRepository.exportCsv(uri, fuelConsumptionDao.stream(), FUEL_CONSUMPTION_CSV_FILE_NAME, FUEL_CONSUMPTION_CSV_MAPPING)
         }
     }
 

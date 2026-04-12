@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.sample
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
+import com.ivzb.urgat.domain.fuelConsumption.CreateFuelConsumptionUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
@@ -25,6 +26,7 @@ class DefaultSampleUseCaseTest {
     private lateinit var createBudgetUseCase: CreateBudgetUseCase
     private lateinit var createWatchlistAssetsUseCase: CreateWatchlistAssetUseCase
     private lateinit var createWeightUseCase: CreateWeightUseCase
+    private lateinit var createFuelConsumptionUseCase: CreateFuelConsumptionUseCase
 
     private lateinit var sampleUseCase: SampleUseCase
 
@@ -38,6 +40,7 @@ class DefaultSampleUseCaseTest {
         createBudgetUseCase = mockk(relaxed = true)
         createWatchlistAssetsUseCase = mockk(relaxed = true)
         createWeightUseCase = mockk(relaxed = true)
+        createFuelConsumptionUseCase = mockk(relaxed = true)
 
         sampleUseCase = DefaultSampleUseCase(
             createTodoUseCase,
@@ -48,6 +51,7 @@ class DefaultSampleUseCaseTest {
             createBudgetUseCase,
             createWatchlistAssetsUseCase,
             createWeightUseCase,
+            createFuelConsumptionUseCase,
         )
     }
 
@@ -119,6 +123,17 @@ class DefaultSampleUseCaseTest {
                 createWeightUseCase(
                     it.value,
                     it.date
+                )
+            }
+
+            SampleData.SAMPLE_FUEL_CONSUMPTION.forEach {
+                createFuelConsumptionUseCase(
+                    it.amount,
+                    it.price,
+                    it.currency,
+                    it.carName,
+                    it.odometer,
+                    it.date,
                 )
             }
         }

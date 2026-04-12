@@ -2,6 +2,7 @@ package com.ivzb.urgat.di
 
 import com.ivzb.urgat.data.budget.BudgetDao
 import com.ivzb.urgat.data.expense.ExpenseDao
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionDao
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
@@ -41,5 +42,8 @@ class DaoModule {
 
     @Provides
     fun provideWatchlistAssetDao(appDatabase: AppDatabase): WatchlistAssetDao = appDatabase.watchlistAssetDao()
+
+    @Provides
+    fun provideFuelConsumptionDao(appDatabase: AppDatabase): FuelConsumptionDao = appDatabase.fuelConsumptionDao()
 
 }

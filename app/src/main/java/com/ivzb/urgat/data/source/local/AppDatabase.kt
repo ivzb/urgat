@@ -7,6 +7,8 @@ import com.ivzb.urgat.data.budget.BudgetDao
 import com.ivzb.urgat.data.budget.BudgetEntity
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.expense.ExpenseEntity
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionDao
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteDao
@@ -29,7 +31,8 @@ import com.ivzb.urgat.data.weight.WeightEntity
     SavingEntity::class,
     BudgetEntity::class,
     WatchlistAssetEntity::class,
- ], version = 14)
+    FuelConsumptionEntity::class,
+ ], version = 15)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -48,5 +51,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun budgetDao(): BudgetDao
 
     abstract fun watchlistAssetDao(): WatchlistAssetDao
+
+    abstract fun fuelConsumptionDao(): FuelConsumptionDao
 
 }

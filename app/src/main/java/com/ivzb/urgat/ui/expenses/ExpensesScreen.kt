@@ -219,6 +219,7 @@ fun TransactionsPage(
                 items = expenses,
                 key = { expense -> expense.id },
             ) { expense ->
+
                 ExpenseItem(
                     expense = expense,
                     onExpenseClick = onExpenseClick

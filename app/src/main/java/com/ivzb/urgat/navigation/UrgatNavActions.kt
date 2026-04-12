@@ -148,4 +148,16 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
+    fun navigateToAddFuelConsumption() {
+        // TODO: navigate to AddEditFuelConsumptionRoute
+    }
+
+    fun navigateToEditFuelConsumption(fuelConsumptionId: String) {
+        // TODO: navigate to AddEditFuelConsumptionRoute
+    }
+
+    fun navigateToFuelConsumption() {
+        // TODO
+    }
+
 }

@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
@@ -323,6 +324,32 @@ object SampleData {
         totalInvestments = 2_500.toBigDecimal(),
         totalSavings = 950.toBigDecimal(),
     )
+
+    val SAMPLE_FUEL_CONSUMPTION = listOf(
+        listOf("45.5", "2.35", "EUR", "Mercedes w140", "150000"),
+        listOf("40.0", "2.40", "EUR", "Mercedes w140", "149500"),
+        listOf("50.0", "2.30", "EUR", "Mercedes w140", "149000"),
+        listOf("42.0", "2.38", "EUR", "Mercedes w140", "148500"),
+        listOf("48.0", "2.32", "EUR", "Mercedes w140", "148000"),
+        listOf("38.5", "2.42", "EUR", "Mercedes w140", "147500"),
+        listOf("46.0", "2.36", "EUR", "Mercedes w140", "147000"),
+        listOf("41.0", "2.39", "EUR", "Mercedes w140", "146500"),
+        listOf("49.0", "2.31", "EUR", "Mercedes w140", "146000"),
+        listOf("43.5", "2.37", "EUR", "Mercedes w140", "145500"),
+    )
+        .mapIndexed { index, (amount, price, currency, carName, odometer) ->
+            FuelConsumption(
+                id = "fuel_consumption_$index",
+                amount = amount.toBigDecimal(),
+                price = price.toBigDecimal(),
+                currency = currency,
+                carName = carName,
+                odometer = odometer.toInt(),
+                date = System.currentTimeMillis() - (index * 86_400 * 7 * 1_000L),
+                isDeleted = false,
+                createdAt = System.currentTimeMillis() - (index * 86_400 * 7 * 1_000L),
+            )
+        }
 
     val SAMPLE_FIRE = FiRe(
         selection = "Feb 2025",

@@ -2,6 +2,8 @@ package com.ivzb.urgat.di
 
 import com.ivzb.urgat.data.budget.BudgetsRepository
 import com.ivzb.urgat.data.budget.DefaultBudgetsRepository
+import com.ivzb.urgat.data.car.CarRepository
+import com.ivzb.urgat.data.car.DefaultCarRepository
 import com.ivzb.urgat.data.expense.DefaultExpensesRepository
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.exportData.DefaultExportDataRepository
@@ -10,6 +12,8 @@ import com.ivzb.urgat.data.finance.DefaultFinanceRepository
 import com.ivzb.urgat.data.finance.FinanceRepository
 import com.ivzb.urgat.data.fire.DefaultFireRepository
 import com.ivzb.urgat.data.fire.FireRepository
+import com.ivzb.urgat.data.fuelConsumption.DefaultFuelConsumptionRepository
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.data.importData.DefaultImportDataRepository
 import com.ivzb.urgat.data.importData.ImportDataRepository
 import com.ivzb.urgat.data.investment.DefaultInvestmentsRepository
@@ -98,6 +102,10 @@ interface RepositoryModule {
 
     @Singleton
     @Binds
+    fun bindsCarRepository(carRepository: DefaultCarRepository): CarRepository
+
+    @Singleton
+    @Binds
     fun bindsMarketPriceRepository(marketPriceRepository: YahooFinanceMarketPriceRepository): MarketPriceRepository
 
     @Singleton
@@ -111,5 +119,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsWatchlistAssetsRepository(watchlistAssetsRepository: DefaultWatchlistAssetsRepository): WatchlistAssetsRepository
+
+    @Singleton
+    @Binds
+    fun bindsFuelConsumptionRepository(fuelConsumptionRepository: DefaultFuelConsumptionRepository): FuelConsumptionRepository
 
 }

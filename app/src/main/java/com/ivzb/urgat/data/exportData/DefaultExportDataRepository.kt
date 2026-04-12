@@ -62,6 +62,7 @@ class DefaultExportDataRepository @Inject constructor(
                                 }
                             }
                             "boolean" -> "${cursor.getInt(columnIndex)}"
+                            "int" -> "${cursor.getInt(columnIndex)}"
                             "long" -> "${cursor.getLong(columnIndex)}"
                             else -> throw Exception("unsupported type ${types[index]}")
                         }

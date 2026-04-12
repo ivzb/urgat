@@ -7,6 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import com.ivzb.urgat.data.expense.ExpenseTotal
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.SavingTotal
 import java.math.BigDecimal
@@ -118,6 +119,22 @@ fun annotateSavingsTotals(totals: List<SavingTotal>): AnnotatedString =
         totals.forEachIndexed { index, total ->
             append(
                 annotateSavings(
+                    amount = total.amount,
+                    currency = total.currency,
+                )
+            )
+
+            if (index < totals.lastIndex) {
+                appendLine()
+            }
+        }
+    }
+
+fun annotateFuelConsumptionTotals(totals: List<FuelConsumptionTotal>): AnnotatedString =
+    buildAnnotatedString {
+        totals.forEachIndexed { index, total ->
+            append(
+                annotateExpenses(
                     amount = total.amount,
                     currency = total.currency,
                 )
