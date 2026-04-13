@@ -1,3 +1,8 @@
+## Release notes 26.04.13
+
+New:
+- Introduced Car tab with built-in fuel consumption tracking.
+
 ## Release notes 26.04.12
 
 New:
