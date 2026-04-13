@@ -43,8 +43,16 @@ class ImportDataScreenshotTest: ScreenshotTest() {
         screenshotTest_ImportDataScreen_manualMode(initialPage = 5)
 
     @Test
-    fun screenshotTest_ImportDataScreen_manualMode_weights() =
+    fun screenshotTest_ImportDataScreen_manualMode_watchlist() =
         screenshotTest_ImportDataScreen_manualMode(initialPage = 6)
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_fuelConsumption() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 7)
+
+    @Test
+    fun screenshotTest_ImportDataScreen_manualMode_weights() =
+        screenshotTest_ImportDataScreen_manualMode(initialPage = 8)
 
     private fun screenshotTest_ImportDataScreen_manualMode(initialPage: Int) = screenshotTest(
         uiState = ImportDataUiState(

@@ -100,6 +100,7 @@ data class CsvMapping(
             CsvMapping("amount", "big_decimal"),
             CsvMapping("price", "big_decimal"),
             CsvMapping("currency", "string"),
+            CsvMapping("type", "string"),
             CsvMapping("carName", "string"),
             CsvMapping("odometer", "int"),
             CsvMapping("date", "long"),
@@ -221,11 +222,12 @@ data class CsvMapping(
                 amount = split[1].toBigDecimal(),
                 price = split[2].toBigDecimal(),
                 currency = split[3],
-                carName = split[4],
-                odometer = split[5].toInt(),
-                date = split[6].toLong(),
+                type = split[4],
+                carName = split[5],
+                odometer = split[6].toInt(),
+                date = split[7].toLong(),
                 isDeleted = false,
-                createdAt = split[7].toLong(),
+                createdAt = split[8].toLong(),
             )
         }
 
@@ -246,7 +248,7 @@ data class CsvMapping(
                     char == '"' -> inQuotes = !inQuotes
 
                     char == ',' && !inQuotes -> {
-                        result.add(current.toString())
+                        result.add(current.trim().toString())
                         current.clear()
                     }
 
@@ -254,7 +256,7 @@ data class CsvMapping(
                 }
             }
 
-            result.add(current.toString())
+            result.add(current.trim().toString())
             return result
         }
 

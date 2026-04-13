@@ -24,14 +24,15 @@ class DefaultCreateFuelConsumptionUseCaseTest {
         val amount = BigDecimal("45.5")
         val price = BigDecimal("2.35")
         val currency = "EUR"
+        val type = "Diesel"
         val carName = "Mercedes w140"
         val odometer = 150000
         val date = 1000L
 
-        createUseCase(amount, price, currency, carName, odometer, date)
+        createUseCase(amount, price, currency, type, carName, odometer, date)
 
         coVerify(exactly = 1) {
-            repository.create(amount, price, currency, carName, odometer, date)
+            repository.create(amount, price, currency, type, carName, odometer, date)
         }
     }
 
@@ -40,14 +41,15 @@ class DefaultCreateFuelConsumptionUseCaseTest {
         val amount = BigDecimal("60.0")
         val price = BigDecimal("1.95")
         val currency = "USD"
+        val type = "Gasoline"
         val carName = "BMW E39"
         val odometer = 200000
         val date = 2000L
 
-        createUseCase(amount, price, currency, carName, odometer, date)
+        createUseCase(amount, price, currency, type, carName, odometer, date)
 
         coVerify(exactly = 1) {
-            repository.create(amount, price, currency, carName, odometer, date)
+            repository.create(amount, price, currency, type, carName, odometer, date)
         }
     }
 }

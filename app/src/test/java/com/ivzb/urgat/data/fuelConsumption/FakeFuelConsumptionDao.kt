@@ -41,8 +41,16 @@ class FakeFuelConsumptionDao : FuelConsumptionDao {
         return 1
     }
 
-    override suspend fun getLatestDate(): Long? =
-        items.filter { !it.isDeleted }.maxByOrNull { it.date }?.date
+    override suspend fun getLatestDate(): Long? = getLastUsed()?.date
+
+    override suspend fun getLastUsedCurrency(): String? = getLastUsed()?.currency
+
+    override suspend fun getLastUsedType(): String? = getLastUsed()?.type
+
+    override suspend fun getLastUsedCarName(): String? = getLastUsed()?.carName
+
+    private fun getLastUsed(): FuelConsumptionEntity? =
+        items.filter { !it.isDeleted }.maxByOrNull { it.date }
 
 }
 

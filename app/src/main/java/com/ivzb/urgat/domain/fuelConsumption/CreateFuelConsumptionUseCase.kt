@@ -10,6 +10,7 @@ interface CreateFuelConsumptionUseCase {
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
@@ -25,11 +26,12 @@ class DefaultCreateFuelConsumptionUseCase @Inject constructor(
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
     ) {
-        repository.create(amount, price, currency, carName, odometer, date)
+        repository.create(amount, price, currency, type, carName, odometer, date)
     }
 
 }

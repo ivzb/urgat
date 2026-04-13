@@ -178,8 +178,9 @@ class MigrationTest {
                     val fuelConsumption = FuelConsumptionEntity(
                         id = "1",
                         amount = 45.0.toBigDecimal(),
-                        price = 1.85.toBigDecimal(),
+                        price = 85.toBigDecimal(),
                         currency = "EUR",
+                        type = "Petrol",
                         carName = "Honda Civic",
                         odometer = 50000,
                         date = 1764362076,
@@ -357,8 +358,9 @@ class MigrationTest {
                     val fuelConsumption = FuelConsumptionEntity(
                         id = "1",
                         amount = 45.0.toBigDecimal(),
-                        price = 1.85.toBigDecimal(),
+                        price = 85.toBigDecimal(),
                         currency = "EUR",
+                        type = "Petrol",
                         carName = "Honda Civic",
                         odometer = 50000,
                         date = 1764362076,
@@ -437,8 +439,9 @@ class MigrationTest {
                     val expectedFuelConsumption = FuelConsumptionEntity(
                         id = "1",
                         amount = 45.0.toBigDecimal(),
-                        price = 1.85.toBigDecimal(),
+                        price = 85.toBigDecimal(),
                         currency = "EUR",
+                        type = "Petrol",
                         carName = "Honda Civic",
                         odometer = 50000,
                         date = 1764362076,

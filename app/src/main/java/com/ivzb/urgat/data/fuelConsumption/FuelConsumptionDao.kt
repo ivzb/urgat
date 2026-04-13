@@ -22,6 +22,7 @@ interface FuelConsumptionDao {
                 "amount LIKE '%' || :searchQuery || '%' OR " +
                 "price LIKE '%' || :searchQuery || '%' OR " +
                 "currency LIKE '%' || :searchQuery || '%' OR " +
+                "type LIKE '%' || :searchQuery || '%' OR " +
                 "carName LIKE '%' || :searchQuery || '%' OR " +
                 "odometer LIKE '%' || :searchQuery || '%'" +
             ")" +
@@ -46,6 +47,15 @@ interface FuelConsumptionDao {
 
     @Query("SELECT date FROM fuel_consumptions WHERE isDeleted = 0 ORDER BY date DESC LIMIT 1")
     suspend fun getLatestDate(): Long?
+
+    @Query("SELECT currency FROM fuel_consumptions WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedCurrency(): String?
+
+    @Query("SELECT type FROM fuel_consumptions WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedType(): String?
+
+    @Query("SELECT carName FROM fuel_consumptions WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedCarName(): String?
 
 }
 

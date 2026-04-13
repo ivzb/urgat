@@ -81,11 +81,10 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
         assertEquals("January 1970", group.group)
         assertEquals(2, group.items.size)
 
-        // Verify totals are computed correctly
-        val expectedTotal = fc1.total + fc2.total
+        val expectedTotal = fc1.amount + fc2.amount
         assertEquals(1, group.total.size)
         assertEquals(expectedTotal, group.total[0].amount)
-        assertEquals("EUR", group.total[0].currency)
+        assertEquals("Diesel", group.total[0].type)
     }
 
     @Test
@@ -186,7 +185,7 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
 
         // Same month, different currencies
         val fc1 = makeFuelConsumption("fc_1", amount = "45.5", price = "2.35", currency = "EUR", date = 86_400_000L)
-        val fc2 = makeFuelConsumption("fc_2", amount = "40.0", price = "2.40", currency = "USD", date = 172_800_000L)
+        val fc2 = makeFuelConsumption("fc_2", amount = "40.0", price = "2.40", currency = "USD", type = "Petrol", date = 172_800_000L)
 
         every { repository.observe(limit, NO_DATE_RANGE) } returns flowOf(listOf(fc1, fc2))
 
@@ -210,10 +209,10 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
         // Should have 2 totals, one per currency
         assertEquals(2, group.total.size)
 
-        val eurTotal = group.total.find { it.currency == "EUR" }
-        val usdTotal = group.total.find { it.currency == "USD" }
-        assertEquals(fc1.total, eurTotal?.amount)
-        assertEquals(fc2.total, usdTotal?.amount)
+        val dieselTotal = group.total.find { it.type == "Diesel" }
+        val petrolTotal = group.total.find { it.type == "Petrol" }
+        assertEquals(fc1.amount, dieselTotal?.amount)
+        assertEquals(fc2.amount, petrolTotal?.amount)
     }
 
     companion object {
@@ -222,6 +221,7 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
             amount: String = "45.5",
             price: String = "2.35",
             currency: String = "EUR",
+            type: String = "Diesel",
             carName: String = "Mercedes w140",
             odometer: Int = 150000,
             date: Long = 1000L,
@@ -230,6 +230,7 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
             amount = BigDecimal(amount),
             price = BigDecimal(price),
             currency = currency,
+            type = type,
             carName = carName,
             odometer = odometer,
             date = date,

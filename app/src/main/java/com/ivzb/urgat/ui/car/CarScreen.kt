@@ -10,8 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
-import com.ivzb.urgat.domain.common.Group
-import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumption
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
@@ -179,15 +178,12 @@ private fun FuelConsumptionPage(
 }
 
 private val SAMPLE_FUEL_CONSUMPTION = listOf(
-    FuelConsumption("fc_0", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Mercedes w140", 150000, System.currentTimeMillis(), false, System.currentTimeMillis()),
-    FuelConsumption("fc_1", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Mercedes w140", 149500, System.currentTimeMillis() - 86_400_000, false, System.currentTimeMillis()),
-    FuelConsumption("fc_2", BigDecimal("50.0"), BigDecimal("2.30"), "EUR", "Mercedes w140", 149000, System.currentTimeMillis() - 2 * 86_400_000, false, System.currentTimeMillis()),
-    FuelConsumption("fc_3", BigDecimal("42.0"), BigDecimal("2.38"), "EUR", "Mercedes w140", 148500, System.currentTimeMillis() - 3 * 86_400_000, false, System.currentTimeMillis()),
-    FuelConsumption("fc_4", BigDecimal("48.0"), BigDecimal("2.32"), "EUR", "Mercedes w140", 148000, System.currentTimeMillis() - 4 * 86_400_000, false, System.currentTimeMillis()),
+    FuelConsumption("fc_0", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Mercedes w140", 150000, System.currentTimeMillis(), false, System.currentTimeMillis()),
+    FuelConsumption("fc_1", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Diesel", "Mercedes w140", 149500, System.currentTimeMillis() - 86_400_000, false, System.currentTimeMillis()),
+    FuelConsumption("fc_2", BigDecimal("50.0"), BigDecimal("2.30"), "EUR", "Diesel", "Mercedes w140", 149000, System.currentTimeMillis() - 2 * 86_400_000, false, System.currentTimeMillis()),
+    FuelConsumption("fc_3", BigDecimal("42.0"), BigDecimal("2.38"), "EUR", "Diesel", "Mercedes w140", 148500, System.currentTimeMillis() - 3 * 86_400_000, false, System.currentTimeMillis()),
+    FuelConsumption("fc_4", BigDecimal("48.0"), BigDecimal("2.32"), "EUR", "Diesel", "Mercedes w140", 148000, System.currentTimeMillis() - 4 * 86_400_000, false, System.currentTimeMillis()),
 )
-
-private val SAMPLE_GROUPED_FUEL_CONSUMPTION: List<GroupedFuelConsumption> =
-    Group.byDateMonthly(SAMPLE_FUEL_CONSUMPTION, FuelConsumption::date, FuelConsumption.Companion::total)
 
 @AllDevicesPreview
 @Composable
@@ -196,7 +192,7 @@ private fun CarScreenPreview() {
         CarScreen(
             uiState = CarUiState(
                 fuelConsumptionUiState = FuelConsumptionUiState(
-                    fuelConsumption = SAMPLE_GROUPED_FUEL_CONSUMPTION,
+                    fuelConsumption = SampleData.SAMPLE_FUEL_CONSUMPTION_GROUPED,
                     filteringUiInfo = FuelConsumptionFilteringUiInfo(),
                 ),
                 isLoading = false,

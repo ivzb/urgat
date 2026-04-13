@@ -78,7 +78,8 @@ files=(
   "ExpensesScreenshotTest_screenshotTest_ExpensesScreen_sampleData_monthly.png:04_expenses_monthly_screen.png"
   "FinanceScreenshotTest_screenshotTest_FinanceScreen_sampleData_investments_transactions.png:05_finance_investments_transactions_screen.png"
   "InvestmentsScreenshotTest_screenshotTest_InvestmentsScreen_sampleData_allTime.png:06_investments_all_time_screen.png"
-  "WellbeingScreenshotTest_screenshotTest_WellbeingScreen_sampleData.png:07_wellbeing_screen.png"
+  "CarScreenshotTest_screenshotTest_CarScreen_sampleData_fuelConsumption_transactions.png:07_car_screen.png"
+  "WellbeingScreenshotTest_screenshotTest_WellbeingScreen_sampleData.png:08_wellbeing_screen.png"
 )
 
 echo "#############################"

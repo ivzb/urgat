@@ -101,8 +101,9 @@
 - add fire calculation based on average of past year
 - allow user to pick which month to use as reference for fire calculation
 - allow user to pick since when to calculate fire
-- show chart when tap on watchlist asset
+- when adding new weight, add checkbox to ask the user if they want to be notified bi-weekly to add new weight when they miss 2 weeks without adding new weight
+- add checkmark option for daily backup when doing backup
+- make watchlist more button show charts
 - car maintenance
 - car reminders
-- show km driven as total of fuel consumption
-- add/edit fuel consumption
+- calculate car fuel consumption based on refuels and show it in a chart

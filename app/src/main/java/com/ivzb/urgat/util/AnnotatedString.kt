@@ -133,12 +133,7 @@ fun annotateSavingsTotals(totals: List<SavingTotal>): AnnotatedString =
 fun annotateFuelConsumptionTotals(totals: List<FuelConsumptionTotal>): AnnotatedString =
     buildAnnotatedString {
         totals.forEachIndexed { index, total ->
-            append(
-                annotateExpenses(
-                    amount = total.amount,
-                    currency = total.currency,
-                )
-            )
+            append(AnnotatedString("${total.amount.format()}L ${total.type}"))
 
             if (index < totals.lastIndex) {
                 appendLine()

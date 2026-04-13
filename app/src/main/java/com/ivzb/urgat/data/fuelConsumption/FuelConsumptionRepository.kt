@@ -9,6 +9,7 @@ interface FuelConsumptionRepository: BaseRepository<FuelConsumption> {
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
@@ -19,10 +20,17 @@ interface FuelConsumptionRepository: BaseRepository<FuelConsumption> {
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
     )
+
+    suspend fun getLastUsedCurrency(): String?
+
+    suspend fun getLastUsedType(): String?
+
+    suspend fun getLastUsedCarName(): String?
 
 }
 

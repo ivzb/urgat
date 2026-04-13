@@ -3,6 +3,7 @@ package com.ivzb.urgat.navigation
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.addEditBudget.AddEditBudgetRoute
 import com.ivzb.urgat.ui.addEditExpense.AddEditExpenseRoute
+import com.ivzb.urgat.ui.addEditFuelConsumption.AddEditFuelConsumptionRoute
 import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
 import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
@@ -149,11 +150,17 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddFuelConsumption() {
-        // TODO: navigate to AddEditFuelConsumptionRoute
+        navigator.navigate(AddEditFuelConsumptionRoute(
+            id = null,
+            titleResId = R.string.add_fuel_consumption,
+        ))
     }
 
     fun navigateToEditFuelConsumption(fuelConsumptionId: String) {
-        // TODO: navigate to AddEditFuelConsumptionRoute
+        navigator.navigate(AddEditFuelConsumptionRoute(
+            id = fuelConsumptionId,
+            titleResId = R.string.edit_fuel_consumption,
+        ))
     }
 
     fun navigateToFuelConsumption() {

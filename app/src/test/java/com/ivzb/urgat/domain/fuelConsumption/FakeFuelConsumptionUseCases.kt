@@ -89,6 +89,44 @@ class FakeObserveFuelConsumptionSortingUseCase : ObserveFuelConsumptionSortingUs
 
 }
 
+class FakeGetFuelConsumptionUseCase : GetFuelConsumptionUseCase {
+
+    var toReturn: FuelConsumption? = null
+    var calledWithId: String? = null
+
+    override suspend fun invoke(id: String): FuelConsumption? {
+        calledWithId = id
+        return toReturn
+    }
+}
+
+class FakeGetLastUsedFuelConsumptionCurrencyUseCase : GetLastUsedFuelConsumptionCurrencyUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
+class FakeGetLastUsedFuelConsumptionTypeUseCase : GetLastUsedFuelConsumptionTypeUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
+class FakeGetLastUsedFuelConsumptionCarNameUseCase : GetLastUsedFuelConsumptionCarNameUseCase {
+
+    var toReturn: String? = null
+
+    override suspend fun invoke(): String? {
+        return toReturn
+    }
+}
+
 class FakeCreateFuelConsumptionUseCase : CreateFuelConsumptionUseCase {
 
     var created: List<Any> = listOf()
@@ -97,12 +135,38 @@ class FakeCreateFuelConsumptionUseCase : CreateFuelConsumptionUseCase {
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
     ) {
-        created = listOf(amount, price, currency, carName, odometer, date)
+        created = listOf(amount, price, currency, type, carName, odometer, date)
     }
 }
 
+class FakeUpdateFuelConsumptionUseCase : UpdateFuelConsumptionUseCase {
 
+    var updated: List<Any> = listOf()
+
+    override suspend fun invoke(
+        id: String,
+        amount: BigDecimal,
+        price: BigDecimal,
+        currency: String,
+        type: String,
+        carName: String,
+        odometer: Int,
+        date: Long,
+    ) {
+        updated = listOf(id, amount, price, currency, type, carName, odometer, date)
+    }
+}
+
+class FakeDeleteFuelConsumptionUseCase : DeleteFuelConsumptionUseCase {
+
+    var deleted: List<Any> = listOf()
+
+    override suspend fun invoke(id: String) {
+        deleted = listOf(id)
+    }
+}

@@ -161,14 +161,14 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     companion object {
 
         private val fakeFuelConsumption = listOf(
-            FuelConsumption("fc_1", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Mercedes w140", 150000, 1000L, false, 1000L),
-            FuelConsumption("fc_2", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Mercedes w140", 149500, 2000L, false, 2000L),
+            FuelConsumption("fc_1", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Mercedes w140", 150000, 1000L, false, 1000L),
+            FuelConsumption("fc_2", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Diesel", "Mercedes w140", 149500, 2000L, false, 2000L),
         )
 
         private val fakeGroupedFuelConsumption = listOf(
             GroupedItems(
                 group = "January 1970",
-                total = listOf(FuelConsumptionTotal(BigDecimal("202.925"), "EUR")),
+                total = listOf(FuelConsumptionTotal("Diesel", BigDecimal("202.925"))),
                 items = fakeFuelConsumption,
             )
         )

@@ -16,6 +16,7 @@ data class FuelConsumptionEntity(
     val amount: BigDecimal,
     val price: BigDecimal,
     val currency: String,
+    val type: String,
     val carName: String,
     val odometer: Int,
     val date: Long,

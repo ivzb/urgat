@@ -197,6 +197,7 @@
     <string name="format_default">Default %s</string>
     <string name="reset_filters">Reset filters</string>
     <string name="duplicate">Duplicate</string>
+    <string name="clear_defaults">Clear defaults</string>
     <string name="watchlist">Watchlist</string>
     <string name="add_watchlist_asset">Add Watchlist Asset</string>
     <string name="edit_watchlist_asset">Edit Watchlist Asset</string>
@@ -230,8 +231,9 @@
     <string name="loading_car">Loading car</string>
     <string name="error_car">Error while loading car</string>
     <string name="fuel_consumption_amount_hint">Amount (liters)</string>
-    <string name="fuel_consumption_price_hint">Price per liter</string>
+    <string name="fuel_consumption_price_hint">Price (total)</string>
     <string name="fuel_consumption_car_name_hint">Car name</string>
+    <string name="fuel_consumption_type_hint">Fuel Type</string>
     <string name="fuel_consumption_odometer_hint">Odometer (km)</string>
     <string name="empty_fuel_consumption_message">Please fill in all fuel consumption fields.</string>
 </resources>

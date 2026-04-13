@@ -35,6 +35,7 @@ class DefaultFuelConsumptionRepository @Inject constructor(
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
@@ -48,6 +49,7 @@ class DefaultFuelConsumptionRepository @Inject constructor(
             amount = amount,
             price = price,
             currency = currency,
+            type = type,
             carName = carName,
             odometer = odometer,
             date = date,
@@ -65,6 +67,7 @@ class DefaultFuelConsumptionRepository @Inject constructor(
         amount: BigDecimal,
         price: BigDecimal,
         currency: String,
+        type: String,
         carName: String,
         odometer: Int,
         date: Long,
@@ -73,6 +76,7 @@ class DefaultFuelConsumptionRepository @Inject constructor(
             amount = amount,
             price = price,
             currency = currency,
+            type = type,
             carName = carName,
             odometer = odometer,
             date = date,
@@ -92,6 +96,18 @@ class DefaultFuelConsumptionRepository @Inject constructor(
 
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
+    }
+
+    override suspend fun getLastUsedCurrency(): String? {
+        return localDataSource.getLastUsedCurrency()
+    }
+
+    override suspend fun getLastUsedType(): String? {
+        return localDataSource.getLastUsedType()
+    }
+
+    override suspend fun getLastUsedCarName(): String? {
+        return localDataSource.getLastUsedCarName()
     }
 }
 

@@ -101,6 +101,7 @@ class ImportDataViewModel @Inject constructor(
                     ImportDataPage.Notes -> importDataUseCase.importNotes(content)
                     ImportDataPage.WatchlistAssets -> importDataUseCase.importWatchlistAssets(content)
                     ImportDataPage.Todos -> importDataUseCase.importTodos(content)
+                    ImportDataPage.FuelConsumption -> importDataUseCase.importFuelConsumption(content)
                     ImportDataPage.Weights -> importDataUseCase.importWeights(content)
                 }
 

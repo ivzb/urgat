@@ -131,6 +131,7 @@ class DefaultSampleUseCaseTest {
                     it.amount,
                     it.price,
                     it.currency,
+                    it.type,
                     it.carName,
                     it.odometer,
                     it.date,

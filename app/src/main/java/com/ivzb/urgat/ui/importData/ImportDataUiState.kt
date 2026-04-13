@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.importData
 import com.ivzb.urgat.data.csv.CsvMapping
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
@@ -24,6 +25,7 @@ data class ImportDataUiState(
         ImportDataPage.Todos to TODOS_CSV_MAPPING,
         ImportDataPage.Notes to NOTES_CSV_MAPPING,
         ImportDataPage.WatchlistAssets to WATCHLIST_ASSETS_CSV_MAPPING,
+        ImportDataPage.FuelConsumption to FUEL_CONSUMPTION_CSV_MAPPING,
         ImportDataPage.Weights to WEIGHTS_CSV_MAPPING,
     ),
 
@@ -35,6 +37,7 @@ data class ImportDataUiState(
         ImportDataPage.Todos to SampleData.SAMPLE_TODOS[0].formatCsv(),
         ImportDataPage.Notes to SampleData.SAMPLE_NOTES[0].formatCsv(),
         ImportDataPage.WatchlistAssets to SampleData.SAMPLE_WATCHLIST_ASSETS[0].formatCsv(),
+        ImportDataPage.FuelConsumption to SampleData.SAMPLE_FUEL_CONSUMPTION[0].formatCsv(),
         ImportDataPage.Weights to SampleData.SAMPLE_WEIGHTS[0].formatCsv(),
     ),
 

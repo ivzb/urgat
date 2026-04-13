@@ -166,7 +166,7 @@ val MIGRATION_13_14 = object : Migration(13, 14) {
 
 val MIGRATION_14_15 = object : Migration(14, 15) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS `fuel_consumptions` (`id` TEXT NOT NULL, `amount` TEXT NOT NULL, `price` TEXT NOT NULL, `currency` TEXT NOT NULL, `carName` TEXT NOT NULL, `odometer` INTEGER NOT NULL, `date` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `fuel_consumptions` (`id` TEXT NOT NULL, `amount` TEXT NOT NULL, `price` TEXT NOT NULL, `currency` TEXT NOT NULL, `type` TEXT NOT NULL, `carName` TEXT NOT NULL, `odometer` INTEGER NOT NULL, `date` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`id`))")
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_fuel_consumptions_isDeleted_date` ON `fuel_consumptions` (`isDeleted`, `date`);")
     }
 }
