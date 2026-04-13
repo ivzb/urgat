@@ -89,9 +89,8 @@ fun FuelConsumptionItem(
         subTextLeft = date.month.name.take(3),
 
         textRight = fuelConsumption.carName,
-        subTextRight = AnnotatedString("${fuelConsumption.amount.format()}L | ${fuelConsumption.price.format()} ${fuelConsumption.currency}"),
+        subTextRight = AnnotatedString("${fuelConsumption.amount.format()}L ${fuelConsumption.type} | ${fuelConsumption.price.format()} ${fuelConsumption.currency}"),
 
         onClick = { onFuelConsumptionClick(fuelConsumption) }
     )
 }
-

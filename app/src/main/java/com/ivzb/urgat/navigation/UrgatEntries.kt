@@ -22,6 +22,7 @@ import com.ivzb.urgat.ui.addEditFuelConsumption.addEditFuelConsumptionEntry
 import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
 import com.ivzb.urgat.ui.budgets.budgetsEntry
 import com.ivzb.urgat.ui.car.carEntry
+import com.ivzb.urgat.ui.fuelConsumption.fuelConsumptionEntry
 import com.ivzb.urgat.ui.savings.savingsEntry
 import com.ivzb.urgat.ui.wellbeing.wellbeingEntry
 
@@ -58,6 +59,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
 
         addEditWatchlistAssetEntry(navigator)
 
+        fuelConsumptionEntry(navigator, navActions)
         addEditFuelConsumptionEntry(navigator)
     }
 }
