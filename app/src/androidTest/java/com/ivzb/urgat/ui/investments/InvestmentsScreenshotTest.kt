@@ -13,21 +13,17 @@ import org.junit.experimental.categories.Category
 class InvestmentsScreenshotTest: ScreenshotTest() {
 
     @Test
-    fun screenshotTest_InvestmentsScreen_sampleData_transactions() =
-        screenshotTest_InvestmentsScreen_sampleData(initialPage = 0)
-
-    @Test
     fun screenshotTest_InvestmentsScreen_sampleData_yearly() =
-        screenshotTest_InvestmentsScreen_sampleData(initialPage = 1)
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 0)
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
     fun screenshotTest_InvestmentsScreen_sampleData_allTime() =
-        screenshotTest_InvestmentsScreen_sampleData(initialPage = 2)
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 1)
 
     @Test
     fun screenshotTest_InvestmentsScreen_sampleData_assets() =
-        screenshotTest_InvestmentsScreen_sampleData(initialPage = 3)
+        screenshotTest_InvestmentsScreen_sampleData(initialPage = 2)
 
     private fun screenshotTest_InvestmentsScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = InvestmentsUiState(

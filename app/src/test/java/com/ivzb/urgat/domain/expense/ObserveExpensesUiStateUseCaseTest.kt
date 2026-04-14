@@ -7,8 +7,10 @@ import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
+import com.ivzb.urgat.ui.expenses.EXPENSE_PAGES
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_PAGES
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -78,6 +80,8 @@ class ObserveExpensesUiStateUseCaseTest {
         assertTrue(uiState.categoriesMonthly.isEmpty())
         assertTrue(uiState.categoriesYearly.isEmpty())
         assertTrue(uiState.categoriesAllTime.isEmpty())
+        assertEquals(EXPENSE_PAGES, uiState.pages)
+        assertEquals(0, uiState.initialPage)
     }
 
     @Test

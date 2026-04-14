@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.car
 
 import com.ivzb.urgat.data.dataStore.FakePreferencesDataStore
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -30,6 +31,17 @@ class DefaultCarRepositoryTest {
     fun `updateSearchQuery updates flow value`() = runTest {
         repository.updateSearchQuery("coffee")
         assertEquals("coffee", repository.searchQueryFlow.first())
+    }
+
+    @Test
+    fun `fuelConsumptionFilterTypeFlow emits default value when not set`() = runTest {
+        assertEquals(FuelConsumptionFilterType_All, repository.fuelConsumptionFilterTypeFlow.first())
+    }
+
+    @Test
+    fun `updateFuelConsumptionFilterType updates flow value`() = runTest {
+        repository.updateFuelConsumptionFilterType("Diesel")
+        assertEquals("Diesel", repository.fuelConsumptionFilterTypeFlow.first())
     }
 
     @Test

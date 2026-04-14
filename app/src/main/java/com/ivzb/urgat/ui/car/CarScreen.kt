@@ -15,6 +15,7 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
+import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
@@ -88,6 +89,12 @@ fun CarScreen(
             if (uiState.withTopbarActions(page)) {
                 when (page) {
                     CarPage.FuelConsumption -> {
+                        FilterMenu(
+                            items = uiState.fuelConsumptionUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(CarIntent.SetFuelConsumptionFiltering(it)) },
+                        )
+
                         SortMenu(
                             items = uiState.fuelConsumptionUiState.filteringUiInfo.sortMenuItems,
                             showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showSortBadge,

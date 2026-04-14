@@ -6,6 +6,9 @@ import com.ivzb.urgat.data.car.CarRepository
 import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionUiStateUseCase
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.UiEventHolder
+import com.ivzb.urgat.ui.expenses.ExpensesFilterType
+import com.ivzb.urgat.ui.finance.FinanceIntent
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -27,10 +30,11 @@ class CarViewModel @Inject constructor(
 
     private val _searchQuery = carRepository.searchQueryFlow
 
+    private val _savedFuelConsumptionFilterType = carRepository.fuelConsumptionFilterTypeFlow
     private val _savedFuelConsumptionSortType = carRepository.fuelConsumptionSortTypeFlow
 
     val uiState: StateFlow<CarUiState> = combineUiState(
-        observeFuelConsumptionUiStateUseCase(_searchQuery, _savedFuelConsumptionSortType),
+        observeFuelConsumptionUiStateUseCase(_searchQuery, _savedFuelConsumptionFilterType, _savedFuelConsumptionSortType),
         _searchQuery.map { Async.Success(it) },
         uiEventHolder(),
 
@@ -62,7 +66,10 @@ class CarViewModel @Inject constructor(
             is CarIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is CarIntent.ResetFilters -> resetFilters()
             is CarIntent.FabActionClick -> onFabActionClick(intent.page)
+
+            is CarIntent.SetFuelConsumptionFiltering -> setFuelConsumptionFiltering(intent.filterType)
             is CarIntent.SetFuelConsumptionSorting -> setFuelConsumptionSorting(intent.sortType)
+
             is CarIntent.EventConsumed -> onEventConsumed()
         }
     }
@@ -84,6 +91,12 @@ class CarViewModel @Inject constructor(
         }
     }
 
+    private fun setFuelConsumptionFiltering(filterType: String) {
+        viewModelScope.launch {
+            carRepository.updateFuelConsumptionFilterType(filterType)
+        }
+    }
+
     private fun setFuelConsumptionSorting(sortType: FuelConsumptionSortType) {
         viewModelScope.launch {
             carRepository.updateFuelConsumptionSortType(sortType)
@@ -98,6 +111,7 @@ class CarViewModel @Inject constructor(
 
     private fun resetFilters() {
         onSearchQueryChanged("")
+        setFuelConsumptionFiltering(FuelConsumptionFilterType_All)
         setFuelConsumptionSorting(FuelConsumptionSortType.BY_DATE)
     }
 

@@ -4,6 +4,7 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.ui.budgets.BUDGET_PAGES
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -73,6 +74,8 @@ class ObserveBudgetsUiStateUseCaseTest {
         assertTrue(uiState.isLoading)
         assertFalse(uiState.hasError)
         assertTrue(uiState.budgets.isEmpty())
+        assertEquals(BUDGET_PAGES, uiState.pages)
+        assertEquals(0, uiState.initialPage)
     }
 
     @Test

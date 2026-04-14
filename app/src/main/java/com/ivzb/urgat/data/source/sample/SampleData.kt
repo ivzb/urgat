@@ -365,6 +365,15 @@ object SampleData {
     val SAMPLE_FUEL_CONSUMPTION_GROUPED =
         Group.byDateMonthly(SAMPLE_FUEL_CONSUMPTION, FuelConsumption::date, FuelConsumption::total)
 
+    val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_MONTHLY =
+        Group.groupFuelConsumptionCategoriesMonthly(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+
+    val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_YEARLY =
+        Group.groupFuelConsumptionCategoriesYearly(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+
+    val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_ALL_TIME =
+        Group.groupFuelConsumptionCategoriesAllTime(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+
     val SAMPLE_FIRE = FiRe(
         selection = "Feb 2025",
         currency = "EUR",

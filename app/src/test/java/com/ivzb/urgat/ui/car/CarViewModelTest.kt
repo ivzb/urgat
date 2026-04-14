@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.domain.fuelConsumption.FakeObserveFuelConsumptionUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumption
 import com.ivzb.urgat.ui.components.SortMenuItem
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
@@ -205,7 +206,7 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `SetFuelConsumptionSorting updates saved state handle`() = runTest {
+    fun `SetFuelConsumptionSorting updates repository`() = runTest {
         viewModel = createViewModel()
 
         val expected = FuelConsumptionSortType.BY_MAX
@@ -214,6 +215,18 @@ class CarViewModelTest {
         advanceUntilIdle()
 
         assertEquals(expected, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
+    }
+
+    @Test
+    fun `SetFuelConsumptionFiltering updates repository`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = "Diesel"
+
+        viewModel.onIntent(CarIntent.SetFuelConsumptionFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
     }
 
     private fun createViewModel() = CarViewModel(
@@ -246,7 +259,7 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `resetFilters resets todos filter type to default`() = runTest {
+    fun `resetFilters resets fuel consumption sort type to default`() = runTest {
         viewModel = createViewModel()
 
         viewModel.onIntent(CarIntent.SetFuelConsumptionSorting(FuelConsumptionSortType.BY_MAX))
@@ -260,20 +273,23 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `resetFilters resets search query and todos filter type at once`() = runTest {
+    fun `resetFilters resets search query filter type and sort type at once`() = runTest {
         viewModel = createViewModel()
 
         viewModel.onIntent(CarIntent.SearchQueryChanged("coffee"))
+        viewModel.onIntent(CarIntent.SetFuelConsumptionFiltering("Diesel"))
         viewModel.onIntent(CarIntent.SetFuelConsumptionSorting(FuelConsumptionSortType.BY_MAX))
         advanceUntilIdle()
 
         assertEquals("coffee", fakeCarRepository.searchQueryFlow.value)
+        assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
         assertEquals(FuelConsumptionSortType.BY_MAX, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
 
         viewModel.onIntent(CarIntent.ResetFilters)
         advanceUntilIdle()
 
         assertEquals("", fakeCarRepository.searchQueryFlow.value)
+        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
         assertEquals(FuelConsumptionSortType.BY_DATE, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
     }
 

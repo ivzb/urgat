@@ -18,7 +18,7 @@ interface ObserveGroupedFuelConsumptionMonthlyUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>? = null,
         dateRangeFlow: Flow<LongRange>? = null,
-        filterTypeFlow: Flow<Unit>? = null,
+        filterTypeFlow: Flow<String>? = null,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumption>>>
@@ -29,8 +29,9 @@ class DefaultObserveGroupedFuelConsumptionMonthlyUseCase @Inject constructor(
     repository: FuelConsumptionRepository
 ): ObserveGroupedFuelConsumptionMonthlyUseCase {
 
-    private val observeGroupedUseCase = ObserveGroupedUseCase<FuelConsumption, Unit, FuelConsumptionSortType, List<GroupedFuelConsumption>>(
+    private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
+        filter = ::filterFuelConsumption,
         sort = ::sortFuelConsumption,
         group = { items -> Group.byDateMonthly(items, FuelConsumption::date, FuelConsumption.Companion::total) },
     )
@@ -38,7 +39,7 @@ class DefaultObserveGroupedFuelConsumptionMonthlyUseCase @Inject constructor(
     override fun invoke(
         searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<Unit>?,
+        filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumption>>> = observeGroupedUseCase(

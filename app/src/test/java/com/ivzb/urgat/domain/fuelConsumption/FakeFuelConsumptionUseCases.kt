@@ -1,6 +1,9 @@
 package com.ivzb.urgat.domain.fuelConsumption
 
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
+import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionCategory
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterMenuItem
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
@@ -17,6 +20,7 @@ class FakeObserveFuelConsumptionUiStateUseCase : ObserveFuelConsumptionUiStateUs
     private val flow = MutableStateFlow<Async<FuelConsumptionUiState>>(Async.Loading)
 
     var lastQuery: String = ""
+    var lastFilterType: String = FuelConsumptionFilterType_All
 
     fun emit(value: Async<FuelConsumptionUiState>) {
         flow.value = value
@@ -24,11 +28,14 @@ class FakeObserveFuelConsumptionUiStateUseCase : ObserveFuelConsumptionUiStateUs
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<String>,
         sortTypeFlow: Flow<FuelConsumptionSortType>,
     ): Flow<Async<FuelConsumptionUiState>> {
-        // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow?.collect { lastQuery = it }
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            filterTypeFlow.collect { lastFilterType = it }
         }
         return flow
     }
@@ -59,6 +66,8 @@ class FakeObserveGroupedFuelConsumptionMonthlyUseCase : ObserveGroupedFuelConsum
 
     private val flow = MutableStateFlow<Async<List<GroupedFuelConsumption>>>(Async.Loading)
 
+    var lastQuery: String = ""
+
     fun emit(value: Async<List<GroupedFuelConsumption>>) {
         flow.value = value
     }
@@ -66,10 +75,102 @@ class FakeObserveGroupedFuelConsumptionMonthlyUseCase : ObserveGroupedFuelConsum
     override fun invoke(
         searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<Unit>?,
+        filterTypeFlow: Flow<String>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumption>>> {
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow?.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase : ObserveGroupedFuelConsumptionCategoriesMonthlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedFuelConsumptionCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedFuelConsumptionCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
+        filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<FuelConsumptionSortType>?,
+        limitFlow: Flow<Int>?,
+    ): Flow<Async<List<GroupedFuelConsumptionCategories>>> {
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase : ObserveGroupedFuelConsumptionCategoriesYearlyUseCase {
+
+    private val flow = MutableStateFlow<Async<List<GroupedFuelConsumptionCategories>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<GroupedFuelConsumptionCategories>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
+        filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<FuelConsumptionSortType>?,
+        limitFlow: Flow<Int>?,
+    ): Flow<Async<List<GroupedFuelConsumptionCategories>>> {
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase : ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase {
+
+    private val flow = MutableStateFlow<Async<List<FuelConsumptionCategory>>>(Async.Loading)
+
+    var lastQuery: String = ""
+
+    fun emit(value: Async<List<FuelConsumptionCategory>>) {
+        flow.value = value
+    }
+
+    override fun invoke(
+        searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>?,
+        filterTypeFlow: Flow<String>?,
+        sortTypeFlow: Flow<FuelConsumptionSortType>?,
+        limitFlow: Flow<Int>?,
+    ): Flow<Async<List<FuelConsumptionCategory>>> {
+        CoroutineScope(Dispatchers.Unconfined).launch {
+            searchQueryFlow.collect { lastQuery = it }
+        }
+        return flow
+    }
+
+}
+
+class FakeObserveFuelConsumptionFilteringUseCase : ObserveFuelConsumptionFilteringUseCase {
+
+    private val flow = MutableStateFlow<Async<List<FuelConsumptionFilterMenuItem>>>(Async.Loading)
+
+    fun emit(value: Async<List<FuelConsumptionFilterMenuItem>>) {
+        flow.value = value
+    }
+
+    override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> {
         return flow
     }
 

@@ -68,6 +68,20 @@ class ObserveInvestmentsFilteringUseCaseTest {
     }
 
     @Test
+    fun `invoke should return empty menu when repository has no items`() = runTest(testDispatcher) {
+        every { repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flowOf(emptyList())
+
+        val results = observeUseCase().toList()
+
+        advanceUntilIdle()
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        assertEquals(emptyList(), (first as Async.Success).data)
+    }
+
+    @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         every { repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flow {
             throw RuntimeException("Test error")

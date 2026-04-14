@@ -7,9 +7,13 @@ import com.ivzb.urgat.domain.fuelConsumption.DefaultGetFuelConsumptionUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultGetLastUsedFuelConsumptionCarNameUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultGetLastUsedFuelConsumptionCurrencyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultGetLastUsedFuelConsumptionTypeUseCase
+import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveFuelConsumptionFilteringUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveFuelConsumptionUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveFuelConsumptionSortingUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveFuelConsumptionUseCase
+import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveGroupedFuelConsumptionCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveGroupedFuelConsumptionCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveGroupedFuelConsumptionCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultObserveGroupedFuelConsumptionMonthlyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DefaultUpdateFuelConsumptionUseCase
 import com.ivzb.urgat.domain.fuelConsumption.DeleteFuelConsumptionUseCase
@@ -17,9 +21,13 @@ import com.ivzb.urgat.domain.fuelConsumption.GetFuelConsumptionUseCase
 import com.ivzb.urgat.domain.fuelConsumption.GetLastUsedFuelConsumptionCarNameUseCase
 import com.ivzb.urgat.domain.fuelConsumption.GetLastUsedFuelConsumptionCurrencyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.GetLastUsedFuelConsumptionTypeUseCase
+import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionFilteringUseCase
 import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionSortingUseCase
 import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionUseCase
+import com.ivzb.urgat.domain.fuelConsumption.ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.fuelConsumption.ObserveGroupedFuelConsumptionCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.fuelConsumption.ObserveGroupedFuelConsumptionCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.ObserveGroupedFuelConsumptionMonthlyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.UpdateFuelConsumptionUseCase
 import dagger.Binds
@@ -66,6 +74,10 @@ interface FuelConsumptionUseCaseModule {
 
     @Singleton
     @Binds
+    fun bindsObserveFuelConsumptionFilteringUseCase(useCase: DefaultObserveFuelConsumptionFilteringUseCase): ObserveFuelConsumptionFilteringUseCase
+
+    @Singleton
+    @Binds
     fun bindsObserveFuelConsumptionSortingUseCase(useCase: DefaultObserveFuelConsumptionSortingUseCase): ObserveFuelConsumptionSortingUseCase
 
     @Singleton
@@ -76,5 +88,16 @@ interface FuelConsumptionUseCaseModule {
     @Binds
     fun bindsObserveFuelConsumptionUiStateUseCase(useCase: DefaultObserveFuelConsumptionUiStateUseCase): ObserveFuelConsumptionUiStateUseCase
 
-}
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedFuelConsumptionCategoriesMonthlyUseCase(useCase: DefaultObserveGroupedFuelConsumptionCategoriesMonthlyUseCase): ObserveGroupedFuelConsumptionCategoriesMonthlyUseCase
 
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedFuelConsumptionCategoriesYearlyUseCase(useCase: DefaultObserveGroupedFuelConsumptionCategoriesYearlyUseCase): ObserveGroupedFuelConsumptionCategoriesYearlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedFuelConsumptionCategoriesAllTimeUseCase(useCase: DefaultObserveGroupedFuelConsumptionCategoriesAllTimeUseCase): ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase
+
+}

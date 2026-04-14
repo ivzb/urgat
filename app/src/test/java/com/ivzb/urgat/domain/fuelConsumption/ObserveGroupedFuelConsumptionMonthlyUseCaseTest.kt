@@ -215,6 +215,38 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
         assertEquals(fc2.amount, petrolTotal?.amount)
     }
 
+    @Test
+    fun `invoke should filter items by fuel type before grouping`() = runTest(testDispatcher) {
+        val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
+        val filterTypeFlow = flowOf("Diesel")
+        val limitFlow = flowOf(10)
+
+        val diesel = makeFuelConsumption("fc_1", amount = "45.5", type = "Diesel", date = 86_400_000L)
+        val petrol = makeFuelConsumption("fc_2", amount = "40.0", type = "Petrol", date = 172_800_000L)
+
+        every { repository.observe(10, NO_DATE_RANGE) } returns flowOf(listOf(diesel, petrol))
+
+        val results = observeUseCase(
+            searchQueryFlow = flowOf(NO_SEARCH_QUERY),
+            dateRangeFlow = dateRangeFlow,
+            filterTypeFlow = filterTypeFlow,
+            sortTypeFlow = sortTypeFlow,
+            limitFlow = limitFlow,
+        ).toList()
+
+        advanceUntilIdle()
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        val actual = (first as Async.Success).data
+
+        assertEquals(1, actual.size)
+        assertEquals(listOf(diesel), actual.first().items)
+        assertEquals(listOf(com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal("Diesel", diesel.amount)), actual.first().total)
+    }
+
     companion object {
         private fun makeFuelConsumption(
             id: String,

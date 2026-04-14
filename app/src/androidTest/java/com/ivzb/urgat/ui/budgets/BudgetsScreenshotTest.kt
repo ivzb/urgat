@@ -11,20 +11,16 @@ import org.junit.Test
 class BudgetsScreenshotTest: ScreenshotTest() {
 
     @Test
-    fun screenshotTest_BudgetsScreen_sampleData_transactions() =
+    fun screenshotTest_BudgetsScreen_sampleData_monthly() =
         screenshotTest_BudgetsScreen_sampleData(initialPage = 0)
 
     @Test
-    fun screenshotTest_BudgetsScreen_sampleData_monthly() =
+    fun screenshotTest_BudgetsScreen_sampleData_yearly() =
         screenshotTest_BudgetsScreen_sampleData(initialPage = 1)
 
     @Test
-    fun screenshotTest_BudgetsScreen_sampleData_yearly() =
-        screenshotTest_BudgetsScreen_sampleData(initialPage = 2)
-
-    @Test
     fun screenshotTest_BudgetsScreen_sampleData_allTime() =
-        screenshotTest_BudgetsScreen_sampleData(initialPage = 3)
+        screenshotTest_BudgetsScreen_sampleData(initialPage = 2)
 
     private fun screenshotTest_BudgetsScreen_sampleData(initialPage: Int) = screenshotTest(
         uiState = BudgetsUiState(
