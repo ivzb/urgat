@@ -106,6 +106,5 @@
 - make watchlist more button show charts
 - car maintenance
 - car reminders
-- calculate car fuel consumption based on refuels and show it in a chart
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
-- add fuel consumption filter type as string based on recorded types
+- calculate car fuel consumption based on refuels and show it in a chart or for each list item

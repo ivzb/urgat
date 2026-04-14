@@ -1,3 +1,8 @@
+## Release notes 26.04.14
+
+New:
+- Fuel Consumption Charts have been added, providing users visual analytics to track and analyze fuel usage patterns in real-time.
+
 ## Release notes 26.04.13
 
 New:
