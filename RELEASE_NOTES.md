@@ -1,3 +1,8 @@
+## Release notes 26.04.15
+
+New:
+- Fuel consumption is now calculated from fuel transactions.
+
 ## Release notes 26.04.14
 
 New:
