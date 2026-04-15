@@ -265,6 +265,7 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
             type = type,
             carName = carName,
             odometer = odometer,
+            distance = 500,
             date = date,
             isDeleted = false,
             createdAt = date,

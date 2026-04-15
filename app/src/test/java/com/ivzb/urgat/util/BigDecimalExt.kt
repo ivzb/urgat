@@ -1,7 +1,9 @@
 package com.ivzb.urgat.util
 
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class BigDecimalExt {
 
@@ -77,6 +79,23 @@ class BigDecimalExt {
         ).forEach { (expected, value) ->
             assertEquals(expected, value.toBigDecimal().format())
         }
+    }
+
+    @Test
+    fun calculateFuelConsumptionTest() {
+        assertEquals(BigDecimal("9.10"), calculateFuelConsumption(BigDecimal("45.5"), 500))
+        assertEquals(BigDecimal("5.00"), calculateFuelConsumption(BigDecimal("40.0"), 800))
+        assertEquals(BigDecimal("6.25"), calculateFuelConsumption(BigDecimal("12.5"), 200))
+        assertEquals(BigDecimal("15.31"), calculateFuelConsumption(BigDecimal("50.99"), 333))
+        assertEquals(BigDecimal("1.23"), calculateFuelConsumption(BigDecimal("1.23"), 100))
+        assertEquals(BigDecimal("0.00"), calculateFuelConsumption(BigDecimal.ZERO, 100))
+    }
+
+    @Test
+    fun calculateFuelConsumptionReturnsNullForInvalidDistance() {
+        assertNull(calculateFuelConsumption(BigDecimal("45.5"), null))
+        assertNull(calculateFuelConsumption(BigDecimal("45.5"), 0))
+        assertNull(calculateFuelConsumption(BigDecimal("45.5"), -1))
     }
 
 }

@@ -9,9 +9,9 @@ import java.math.BigDecimal
 class SortFuelConsumptionTest {
 
     private val fuelConsumption = listOf(
-        FuelConsumption("fc_1", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Car A", 150000, 3000L, false, 1000L),
-        FuelConsumption("fc_2", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Diesel", "Car A", 149500, 1000L, false, 2000L),
-        FuelConsumption("fc_3", BigDecimal("50.0"), BigDecimal("2.30"), "EUR", "Diesel", "Car A", 149000, 2000L, false, 3000L),
+        FuelConsumption("fc_1", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Car A", 150000, 500, 3000L, false, 1000L),
+        FuelConsumption("fc_2", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Diesel", "Car A", 149500, 600, 1000L, false, 2000L),
+        FuelConsumption("fc_3", BigDecimal("50.0"), BigDecimal("2.30"), "EUR", "Diesel", "Car A", 149000, 550, 2000L, false, 3000L),
     )
 
     @Test
@@ -57,8 +57,8 @@ class SortFuelConsumptionTest {
     @Test
     fun `BY_MIN with equal prices preserves relative order`() {
         val samePrice = listOf(
-            FuelConsumption("a", BigDecimal("10"), BigDecimal("2.00"), "EUR", "Diesel", "Car", 100, 1L, false, 1L),
-            FuelConsumption("b", BigDecimal("20"), BigDecimal("2.00"), "EUR", "Diesel", "Car", 200, 2L, false, 2L),
+            FuelConsumption("a", BigDecimal("10"), BigDecimal("2.00"), "EUR", "Diesel", "Car", 100, 500, 1L, false, 1L),
+            FuelConsumption("b", BigDecimal("20"), BigDecimal("2.00"), "EUR", "Diesel", "Car", 200, 600, 2L, false, 2L),
         )
         val sorted = sortFuelConsumption(samePrice, FuelConsumptionSortType.BY_MIN)
         assertEquals("a", sorted[0].id)

@@ -33,6 +33,14 @@ fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal?): BigDecimal? {
     return (marketPrice - costPrice) / costPrice * BigDecimal(100)
 }
 
+fun calculateFuelConsumption(fuelAmount: BigDecimal, distance: Int?): BigDecimal? {
+    if (distance == null || distance <= 0) {
+        return null
+    }
+
+    return fuelAmount * 100.toBigDecimal() / distance.toBigDecimal()
+}
+
 fun BigDecimal.round(): BigDecimal {
     return this.setScale(2, RoundingMode.HALF_UP)
 }

@@ -105,6 +105,7 @@ class ObserveGroupedFuelConsumptionCategoriesAllTimeUseCaseTest {
         type = type,
         carName = "Mercedes w140",
         odometer = 150000,
+        distance = 500,
         date = date,
         isDeleted = false,
         createdAt = date,

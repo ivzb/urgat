@@ -104,6 +104,7 @@ class ObserveFuelConsumptionFilteringUseCaseTest {
         type = type,
         carName = "Mercedes w140",
         odometer = 150000,
+        distance = 500,
         date = 1000L,
         isDeleted = false,
         createdAt = 1000L,

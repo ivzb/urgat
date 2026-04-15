@@ -15,7 +15,7 @@ fun FuelConsumption.toEntity() = FuelConsumptionEntity(
 
 fun List<FuelConsumption>.toEntity() = map(FuelConsumption::toEntity)
 
-fun FuelConsumptionEntity.toExternal() = FuelConsumption(
+fun FuelConsumptionEntity.toExternal(distance: Int?) = FuelConsumption(
     id = id,
     amount = amount,
     price = price,
@@ -23,11 +23,8 @@ fun FuelConsumptionEntity.toExternal() = FuelConsumption(
     type = type,
     carName = carName,
     odometer = odometer,
+    distance = distance,
     date = date,
     isDeleted = isDeleted,
     createdAt = createdAt
 )
-
-@JvmName("entityToExternal")
-fun List<FuelConsumptionEntity>.toExternal() = map(FuelConsumptionEntity::toExternal)
-

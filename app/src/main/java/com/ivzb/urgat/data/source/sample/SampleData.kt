@@ -326,28 +326,28 @@ object SampleData {
     )
 
     val SAMPLE_FUEL_CONSUMPTION = listOf(
-        listOf("45.5", "106.93", "EUR", "Petrol", "Mercedes w140", "150000", "0"),
-        listOf("42.0", "77.70", "EUR", "Diesel", "BMW e39", "220000", "3"),
-        listOf("40.0", "96.00", "EUR", "Petrol", "Mercedes w140", "149500", "7"),
-        listOf("38.5", "73.15", "EUR", "Diesel", "BMW e39", "219500", "10"),
-        listOf("50.0", "115.00", "EUR", "Petrol", "Mercedes w140", "149000", "14"),
-        listOf("44.0", "80.08", "EUR", "Diesel", "BMW e39", "219000", "17"),
-        listOf("42.0", "99.96", "EUR", "Petrol", "Mercedes w140", "148500", "21"),
-        listOf("40.5", "76.14", "EUR", "Diesel", "BMW e39", "218500", "24"),
-        listOf("48.0", "111.36", "EUR", "Petrol", "Mercedes w140", "148000", "28"),
-        listOf("46.0", "82.80", "EUR", "Diesel", "BMW e39", "218000", "31"),
-        listOf("38.5", "93.17", "EUR", "Petrol", "Mercedes w140", "147500", "35"),
-        listOf("37.0", "71.04", "EUR", "Diesel", "BMW e39", "217500", "38"),
-        listOf("46.0", "108.56", "EUR", "Petrol", "Mercedes w140", "147000", "42"),
-        listOf("43.0", "79.98", "EUR", "Diesel", "BMW e39", "217000", "45"),
-        listOf("41.0", "97.99", "EUR", "Petrol", "Mercedes w140", "146500", "49"),
-        listOf("39.5", "74.66", "EUR", "Diesel", "BMW e39", "216500", "52"),
-        listOf("49.0", "113.19", "EUR", "Petrol", "Mercedes w140", "146000", "56"),
-        listOf("47.0", "85.07", "EUR", "Diesel", "BMW e39", "216000", "59"),
-        listOf("43.5", "103.10", "EUR", "Petrol", "Mercedes w140", "145500", "63"),
-        listOf("41.5", "77.61", "EUR", "Diesel", "BMW e39", "215500", "66"),
+        listOf("45.5", "106.93", "EUR", "Petrol", "Mercedes w140", "150000", "125", "0"),
+        listOf("42.0", "77.70", "EUR", "Diesel", "BMW e39", "220000", "158", "3"),
+        listOf("40.0", "96.00", "EUR", "Petrol", "Mercedes w140", "149875", "657", "7"),
+        listOf("38.5", "73.15", "EUR", "Diesel", "BMW e39", "219842", "675", "10"),
+        listOf("50.0", "115.00", "EUR", "Petrol", "Mercedes w140", "149218", "575", "14"),
+        listOf("44.0", "80.08", "EUR", "Diesel", "BMW e39", "219167", "606", "17"),
+        listOf("42.0", "99.96", "EUR", "Petrol", "Mercedes w140", "148643", "657", "21"),
+        listOf("40.5", "76.14", "EUR", "Diesel", "BMW e39", "218561", "627", "24"),
+        listOf("48.0", "111.36", "EUR", "Petrol", "Mercedes w140", "147986", "632", "28"),
+        listOf("46.0", "82.80", "EUR", "Diesel", "BMW e39", "217934", "506", "31"),
+        listOf("38.5", "93.17", "EUR", "Petrol", "Mercedes w140", "147354", "475", "35"),
+        listOf("37.0", "71.04", "EUR", "Diesel", "BMW e39", "217428", "647", "38"),
+        listOf("46.0", "108.56", "EUR", "Petrol", "Mercedes w140", "146879", "686", "42"),
+        listOf("43.0", "79.98", "EUR", "Diesel", "BMW e39", "216781", "635", "45"),
+        listOf("41.0", "97.99", "EUR", "Petrol", "Mercedes w140", "146193", "572", "49"),
+        listOf("39.5", "74.66", "EUR", "Diesel", "BMW e39", "216146", "612", "52"),
+        listOf("49.0", "113.19", "EUR", "Petrol", "Mercedes w140", "145621", "673", "56"),
+        listOf("47.0", "85.07", "EUR", "Diesel", "BMW e39", "215534", "617", "59"),
+        listOf("43.5", "103.10", "EUR", "Petrol", "Mercedes w140", "144948", "", "63"),
+        listOf("41.5", "77.61", "EUR", "Diesel", "BMW e39", "214917", "", "66"),
     )
-        .mapIndexed { index, (amount, price, currency, type, carName, odometer, dateOffset) ->
+        .mapIndexed { index, (amount, price, currency, type, carName, odometer, distance, dateOffset) ->
             FuelConsumption(
                 id = "fuel_consumption_$index",
                 amount = amount.toBigDecimal(),
@@ -356,6 +356,7 @@ object SampleData {
                 type = type,
                 carName = carName,
                 odometer = odometer.toInt(),
+                distance = distance.toIntOrNull(),
                 date = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),
                 isDeleted = false,
                 createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),
@@ -394,5 +395,6 @@ object SampleData {
 
     private operator fun <T> List<T>.component6(): T = this[5]
     private operator fun <T> List<T>.component7(): T = this[6]
+    private operator fun <T> List<T>.component8(): T = this[7]
 
 }

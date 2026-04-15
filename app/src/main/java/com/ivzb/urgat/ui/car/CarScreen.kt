@@ -184,14 +184,6 @@ private fun FuelConsumptionPage(
     )
 }
 
-private val SAMPLE_FUEL_CONSUMPTION = listOf(
-    FuelConsumption("fc_0", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Mercedes w140", 150000, System.currentTimeMillis(), false, System.currentTimeMillis()),
-    FuelConsumption("fc_1", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Diesel", "Mercedes w140", 149500, System.currentTimeMillis() - 86_400_000, false, System.currentTimeMillis()),
-    FuelConsumption("fc_2", BigDecimal("50.0"), BigDecimal("2.30"), "EUR", "Diesel", "Mercedes w140", 149000, System.currentTimeMillis() - 2 * 86_400_000, false, System.currentTimeMillis()),
-    FuelConsumption("fc_3", BigDecimal("42.0"), BigDecimal("2.38"), "EUR", "Diesel", "Mercedes w140", 148500, System.currentTimeMillis() - 3 * 86_400_000, false, System.currentTimeMillis()),
-    FuelConsumption("fc_4", BigDecimal("48.0"), BigDecimal("2.32"), "EUR", "Diesel", "Mercedes w140", 148000, System.currentTimeMillis() - 4 * 86_400_000, false, System.currentTimeMillis()),
-)
-
 @AllDevicesPreview
 @Composable
 private fun CarScreenPreview() {
