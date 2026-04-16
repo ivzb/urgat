@@ -1,3 +1,8 @@
+## Release notes 26.04.16
+
+Fixed:
+- Adjust fuel consumption calculation to account for vehicles using varied fuel types.
+
 ## Release notes 26.04.15
 
 New:
