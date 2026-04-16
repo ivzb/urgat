@@ -1,3 +1,8 @@
+## Release notes 26.04.17
+
+Improved:
+- Search multiple terms at once - each word is matched independently for better results.
+
 ## Release notes 26.04.16
 
 Fixed:
