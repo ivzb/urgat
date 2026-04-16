@@ -46,6 +46,12 @@ class InAppUpdateViewModel @Inject constructor(
     }
 
     private fun checkForUpdate() {
+        val state = _uiState.value
+        
+        if (state.shouldStartUpdate || state.isDownloading || state.isDownloaded) {
+            return
+        }
+
         viewModelScope.launch {
             when (checkForUpdateUseCase()) {
                 InAppUpdateStatus.UpdateAvailable -> {
