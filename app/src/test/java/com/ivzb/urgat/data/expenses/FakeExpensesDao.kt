@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.expenses
 
 import android.database.Cursor
 import android.database.MatrixCursor
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.ivzb.urgat.data.expense.ExpenseDao
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,9 @@ class FakeExpenseDao : ExpenseDao {
         _flow.map { list ->
             list.filter { it.date in dateStart..dateEnd && it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
+
+    override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<ExpenseEntity>> =
+        _flow
 
     override fun stream(): Cursor = _cursor
 

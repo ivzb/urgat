@@ -5,7 +5,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Upsert
+import androidx.sqlite.db.SupportSQLiteQuery
+import com.ivzb.urgat.data.base.SearchQueryBuilder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,18 +20,23 @@ interface FuelConsumptionDao {
             "LIMIT :limit")
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<FuelConsumptionEntity>>
 
-    @Query("SELECT * FROM fuel_consumptions " +
-            "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd AND (" +
-                "amount LIKE '%' || :searchQuery || '%' OR " +
-                "price LIKE '%' || :searchQuery || '%' OR " +
-                "currency LIKE '%' || :searchQuery || '%' OR " +
-                "type LIKE '%' || :searchQuery || '%' OR " +
-                "carName LIKE '%' || :searchQuery || '%' OR " +
-                "odometer LIKE '%' || :searchQuery || '%'" +
-            ")" +
-            "ORDER BY date DESC " +
-            "LIMIT :limit")
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>>
+    @RawQuery(observedEntities = [FuelConsumptionEntity::class])
+    fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<FuelConsumptionEntity>>
+
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>> {
+        return observeAllRaw(
+            SearchQueryBuilder.build(
+                tableName = "fuel_consumptions",
+                searchColumns = listOf("amount", "price", "currency", "type", "carName", "odometer"),
+                dateColumn = "date",
+                orderBy = "date DESC",
+                limit = limit,
+                dateStart = dateStart,
+                dateEnd = dateEnd,
+                searchQuery = searchQuery,
+            )
+        )
+    }
 
     @Query("SELECT * FROM fuel_consumptions WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor

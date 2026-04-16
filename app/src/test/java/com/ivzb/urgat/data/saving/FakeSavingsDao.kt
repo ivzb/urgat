@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.saving
 
 import android.database.Cursor
 import android.database.MatrixCursor
+import androidx.sqlite.db.SupportSQLiteQuery
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -19,6 +20,9 @@ class FakeSavingDao : SavingDao {
         _flow.map { list ->
             list.filter { it.date in dateStart..dateEnd && it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
+
+    override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<SavingEntity>> =
+        _flow
 
     override fun stream(): Cursor = _cursor
 

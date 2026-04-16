@@ -99,6 +99,7 @@
 - add instrument suggestions when adding new watchlist asset
 - check if symbol exists when adding watchlist item - add confirmation screen
 - add fire calculation based on average of past year
+- add growth tab to investments screen showing growth each month calculated based on historic prices
 - allow user to pick which month to use as reference for fire calculation
 - allow user to pick since when to calculate fire
 - when adding new weight, add checkbox to ask the user if they want to be notified bi-weekly to add new weight when they miss 2 weeks without adding new weight
@@ -107,4 +108,3 @@
 - car maintenance
 - car reminders
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
-- add fuel consumption tests

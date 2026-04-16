@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.fuelConsumption
 
 import android.database.Cursor
 import android.database.MatrixCursor
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,9 @@ class FakeFuelConsumptionDao : FuelConsumptionDao {
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>> =
         _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd && e.carName.contains(searchQuery, ignoreCase = true) }.sortedByDescending { it.date }.take(limit) }
+
+    override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<FuelConsumptionEntity>> =
+        _flow
 
     override fun stream(): Cursor = _cursor
 

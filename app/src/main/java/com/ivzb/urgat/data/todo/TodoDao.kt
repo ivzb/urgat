@@ -5,7 +5,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Upsert
+import androidx.sqlite.db.SupportSQLiteQuery
+import com.ivzb.urgat.data.base.SearchQueryBuilder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,13 +22,23 @@ interface TodoDao {
     )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<TodoEntity>>
 
-    @Query("" +
-            "SELECT * FROM todo " +
-            "WHERE isDeleted = 0 AND createdAt BETWEEN :dateStart AND :dateEnd AND content LIKE '%' || :searchQuery || '%'" +
-            "ORDER BY createdAt DESC " +
-            "LIMIT :limit"
-    )
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>>
+    @RawQuery(observedEntities = [TodoEntity::class])
+    fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<TodoEntity>>
+
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>> {
+        return observeAllRaw(
+            SearchQueryBuilder.build(
+                tableName = "todo",
+                searchColumns = listOf("content"),
+                dateColumn = "createdAt",
+                orderBy = "createdAt DESC",
+                limit = limit,
+                dateStart = dateStart,
+                dateEnd = dateEnd,
+                searchQuery = searchQuery,
+            )
+        )
+    }
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun stream(): Cursor
