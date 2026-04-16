@@ -120,7 +120,7 @@ class DefaultFuelConsumptionRepository @Inject constructor(
 
     private fun List<FuelConsumptionEntity>.toExternal(): List<FuelConsumption> {
         return map { entity ->
-            val previous = firstOrNull { it.carName == entity.carName && it.odometer < entity.odometer }
+            val previous = firstOrNull { it.carName == entity.carName && it.type == entity.type && it.odometer < entity.odometer }
             entity.toExternal(previous)
         }
     }

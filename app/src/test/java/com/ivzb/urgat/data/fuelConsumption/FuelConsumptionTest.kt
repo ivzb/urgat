@@ -14,21 +14,22 @@ class FuelConsumptionTest {
                 "45.5L Diesel | 2.35 EUR",
                 "45.5L Diesel | 2.35 EUR",
                 "45.5L Diesel | 2.35 EUR",
-                "40L Diesel | 2.4 USD | 5L/100km",
+                "40L Diesel | 2.4 USD | 5.0L/100km",
                 "12.5L Premium | 3.99 GBP | 6.2L/100km",
                 "50.99L LPG | 1.99 BGN | 15.3L/100km",
                 "1.23L Gasoline | 0.99 CHF | 1.2L/100km",
             ),
             listOf(
-                fuelConsumption(id = "fc_1", currency = "eur", distance = 500).summary.text,
-                fuelConsumption(id = "fc_2", distance = null).summary.text,
-                fuelConsumption(id = "fc_3", distance = 0).summary.text,
-                fuelConsumption(id = "fc_4", distance = -1).summary.text,
+                fuelConsumption(currency = "eur", distance = 500, date = 1L).summary.text,
+                fuelConsumption(distance = null, date = 2L).summary.text,
+                fuelConsumption(distance = 0, date = 3L).summary.text,
+                fuelConsumption(distance = -1, date = 4L).summary.text,
                 fuelConsumption(
                     amount = "40.0",
                     price = "2.4",
                     currency = "usd",
                     distance = 800,
+                    date = 5L,
                 ).summary.text,
                 fuelConsumption(
                     amount = "12.5",
@@ -36,6 +37,7 @@ class FuelConsumptionTest {
                     currency = "gbp",
                     type = "Premium",
                     distance = 200,
+                    date = 6L,
                 ).summary.text,
                 fuelConsumption(
                     amount = "50.99",
@@ -43,6 +45,7 @@ class FuelConsumptionTest {
                     currency = "bgn",
                     type = "LPG",
                     distance = 333,
+                    date = 7L,
                 ).summary.text,
                 fuelConsumption(
                     amount = "1.23",
@@ -50,6 +53,7 @@ class FuelConsumptionTest {
                     currency = "chf",
                     type = "Gasoline",
                     distance = 100,
+                    date = 8L,
                 ).summary.text,
             ),
         )
@@ -64,7 +68,7 @@ class FuelConsumptionTest {
         carName: String = "Mercedes w140",
         odometer: Int = 150000,
         distance: Int?,
-        date: Long = 1000L,
+        date: Long,
     ) = FuelConsumption(
         id = id,
         amount = BigDecimal(amount),

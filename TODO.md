@@ -107,4 +107,4 @@
 - car maintenance
 - car reminders
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
-- calculate car fuel consumption based on refuels and show it in a chart or for each list item
+- add fuel consumption tests

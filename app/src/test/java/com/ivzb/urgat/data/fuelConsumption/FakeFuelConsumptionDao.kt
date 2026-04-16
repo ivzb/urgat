@@ -14,10 +14,10 @@ class FakeFuelConsumptionDao : FuelConsumptionDao {
     private var _cursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<FuelConsumptionEntity>> =
-        _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd }.take(limit) }
+        _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd }.sortedByDescending { it.date }.take(limit) }
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>> =
-        _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd && e.carName.contains(searchQuery, ignoreCase = true) }.take(limit) }
+        _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd && e.carName.contains(searchQuery, ignoreCase = true) }.sortedByDescending { it.date }.take(limit) }
 
     override fun stream(): Cursor = _cursor
 

@@ -14,6 +14,7 @@ private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply 
 }
 
 fun BigDecimal.format(digits: Int? = null): String = NUMBER_FORMAT.apply {
+    minimumFractionDigits = digits ?: 0
     maximumFractionDigits = digits ?: 2
 }.format(this)
 
