@@ -1,3 +1,8 @@
+## Release notes 26.04.18
+
+Improved:
+- The Add button is now hidden while the search bar is active.
+
 ## Release notes 26.04.17
 
 Improved:
