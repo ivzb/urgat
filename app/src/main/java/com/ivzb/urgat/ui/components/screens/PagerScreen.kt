@@ -43,6 +43,7 @@ fun NavigationPagerScreen(
 
     withSearch: (Page) -> Boolean,
     withFab: (Page) -> Boolean = { true },
+    onSearchFocusChanged: ((Boolean) -> Unit)? = null,
     topAppBarActionsContent: (@Composable (Page) -> Unit)? = null,
 
     content: PagerContent,
@@ -69,6 +70,7 @@ fun NavigationPagerScreen(
         withFab = withFab(page),
         topAppBarActionsContent = { topAppBarActionsContent?.invoke(page) },
         listState = currentListState,
+        onSearchFocusChanged = onSearchFocusChanged,
 
         content = {
             PagerContent(

@@ -61,13 +61,17 @@ fun TopAppBarContent(
     onSearchQueryChanged: (String) -> Unit,
     withSearch: Boolean,
     navigationIcon: (@Composable () -> Unit)? = null,
-    actionsContent: (@Composable () -> Unit)? = null
+    actionsContent: (@Composable () -> Unit)? = null,
+    onSearchFocusChanged: ((Boolean) -> Unit)? = null,
 ) {
     var isSearching by rememberSaveable { mutableStateOf(false) }
 
     SearchableTopBar(
         isSearching = isSearching,
-        onIsSearchingChanged = { isSearching = it },
+        onIsSearchingChanged = {
+            isSearching = it
+            onSearchFocusChanged?.invoke(it)
+        },
         searchQuery = searchQuery,
         onSearchQueryChanged = onSearchQueryChanged,
         titleResId = selectedRoute.titleResId,

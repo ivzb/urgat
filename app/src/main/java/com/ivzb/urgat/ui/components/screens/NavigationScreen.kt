@@ -67,6 +67,7 @@ fun NavigationScreen(
     withFab: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     listState: LazyListState? = null,
+    onSearchFocusChanged: ((Boolean) -> Unit)? = null,
 
     content: @Composable () -> Unit,
 
@@ -162,6 +163,7 @@ fun NavigationScreen(
                 searchQuery = searchQuery,
                 onSearchQueryChanged = onSearchQueryChanged,
                 withSearch = withSearch,
+                onSearchFocusChanged = onSearchFocusChanged,
                 navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {

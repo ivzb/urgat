@@ -156,6 +156,8 @@ fun FinanceScreen(
     modifier: Modifier = Modifier
 ) {
 
+    var isSearchFocused by remember { mutableStateOf(false) }
+
     NavigationPagerScreen(
         uiState = uiState,
 
@@ -166,7 +168,8 @@ fun FinanceScreen(
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
-        withFab = { page -> page != FinancePage.Report && page != FinancePage.FIRE },
+        withFab = { page -> page != FinancePage.Report && page != FinancePage.FIRE && !isSearchFocused },
+        onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
             if (uiState.withTopbarActions(page)) {
                 when (page) {

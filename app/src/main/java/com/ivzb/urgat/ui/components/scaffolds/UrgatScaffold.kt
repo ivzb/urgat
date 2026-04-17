@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -31,6 +33,7 @@ fun UrgatScaffold(
     navigationIcon: (@Composable () -> Unit)? = null,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     floatingActionButtonContent: (@Composable () -> Unit)? = null,
+    onSearchFocusChanged: ((Boolean) -> Unit)? = null,
 
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -44,12 +47,13 @@ fun UrgatScaffold(
                 withSearch = withSearch,
                 navigationIcon = navigationIcon,
                 actionsContent = topAppBarActionsContent,
+                onSearchFocusChanged = onSearchFocusChanged,
             )
         },
         floatingActionButton = {
             floatingActionButtonContent?.invoke()
         },
-        contentWindowInsets = WindowInsets.safeDrawing,
+        contentWindowInsets = WindowInsets.safeDrawing.exclude(WindowInsets.ime),
         modifier = modifier
     ) { innerPadding ->
 

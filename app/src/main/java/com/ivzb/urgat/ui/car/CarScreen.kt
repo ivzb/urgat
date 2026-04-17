@@ -5,6 +5,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -75,6 +78,8 @@ fun CarScreen(
     modifier: Modifier = Modifier,
 ) {
 
+    var isSearchFocused by remember { mutableStateOf(false) }
+
     NavigationPagerScreen(
         uiState = uiState,
 
@@ -85,6 +90,8 @@ fun CarScreen(
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
+        withFab = { page -> !isSearchFocused },
+        onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
             if (uiState.withTopbarActions(page)) {
                 when (page) {
