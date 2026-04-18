@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.sample
 
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
+import com.ivzb.urgat.domain.carMaintenance.CreateCarMaintenanceUseCase
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.fuelConsumption.CreateFuelConsumptionUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
@@ -27,6 +28,7 @@ class DefaultSampleUseCaseTest {
     private lateinit var createWatchlistAssetsUseCase: CreateWatchlistAssetUseCase
     private lateinit var createWeightUseCase: CreateWeightUseCase
     private lateinit var createFuelConsumptionUseCase: CreateFuelConsumptionUseCase
+    private lateinit var createCarMaintenanceUseCase: CreateCarMaintenanceUseCase
 
     private lateinit var sampleUseCase: SampleUseCase
 
@@ -41,6 +43,7 @@ class DefaultSampleUseCaseTest {
         createWatchlistAssetsUseCase = mockk(relaxed = true)
         createWeightUseCase = mockk(relaxed = true)
         createFuelConsumptionUseCase = mockk(relaxed = true)
+        createCarMaintenanceUseCase = mockk(relaxed = true)
 
         sampleUseCase = DefaultSampleUseCase(
             createTodoUseCase,
@@ -52,6 +55,7 @@ class DefaultSampleUseCaseTest {
             createWatchlistAssetsUseCase,
             createWeightUseCase,
             createFuelConsumptionUseCase,
+            createCarMaintenanceUseCase,
         )
     }
 
@@ -132,6 +136,17 @@ class DefaultSampleUseCaseTest {
                     it.price,
                     it.currency,
                     it.type,
+                    it.carName,
+                    it.odometer,
+                    it.date,
+                )
+            }
+
+            SampleData.SAMPLE_CAR_MAINTENANCE.forEach {
+                createCarMaintenanceUseCase(
+                    it.description,
+                    it.partNumber,
+                    it.url,
                     it.carName,
                     it.odometer,
                     it.date,

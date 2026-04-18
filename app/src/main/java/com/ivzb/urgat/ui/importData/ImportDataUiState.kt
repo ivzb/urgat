@@ -9,6 +9,7 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_MAPPING
 import com.ivzb.urgat.data.source.sample.SampleData
 
@@ -26,6 +27,7 @@ data class ImportDataUiState(
         ImportDataPage.Notes to NOTES_CSV_MAPPING,
         ImportDataPage.WatchlistAssets to WATCHLIST_ASSETS_CSV_MAPPING,
         ImportDataPage.FuelConsumption to FUEL_CONSUMPTION_CSV_MAPPING,
+        ImportDataPage.CarMaintenance to CAR_MAINTENANCE_CSV_MAPPING,
         ImportDataPage.Weights to WEIGHTS_CSV_MAPPING,
     ),
 
@@ -38,6 +40,7 @@ data class ImportDataUiState(
         ImportDataPage.Notes to SampleData.SAMPLE_NOTES[0].formatCsv(),
         ImportDataPage.WatchlistAssets to SampleData.SAMPLE_WATCHLIST_ASSETS[0].formatCsv(),
         ImportDataPage.FuelConsumption to SampleData.SAMPLE_FUEL_CONSUMPTION[0].formatCsv(),
+        ImportDataPage.CarMaintenance to SampleData.SAMPLE_CAR_MAINTENANCE[0].formatCsv(),
         ImportDataPage.Weights to SampleData.SAMPLE_WEIGHTS[0].formatCsv(),
     ),
 

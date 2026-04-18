@@ -1,7 +1,11 @@
 package com.ivzb.urgat.ui.car
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,16 +13,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.text.AnnotatedString
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilteringUiInfo
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceItem
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceUiState
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.SortMenu
@@ -27,7 +38,7 @@ import com.ivzb.urgat.ui.components.uiState.UiState
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import java.math.BigDecimal
+import com.ivzb.urgat.util.paddingIf
 
 @Composable
 fun CarScreen(
@@ -36,6 +47,10 @@ fun CarScreen(
     onAddFuelConsumption: () -> Unit,
     onMoreFuelConsumption: () -> Unit,
     onFuelConsumptionClick: (FuelConsumption) -> Unit,
+
+    onAddCarMaintenance: () -> Unit,
+    onMoreCarMaintenance: () -> Unit,
+    onCarMaintenanceClick: (CarMaintenance) -> Unit,
 
     navigator: Navigator,
     modifier: Modifier = Modifier,
@@ -50,6 +65,9 @@ fun CarScreen(
         onMoreFuelConsumption = onMoreFuelConsumption,
         onFuelConsumptionClick = onFuelConsumptionClick,
 
+        onMoreCarMaintenance = onMoreCarMaintenance,
+        onCarMaintenanceClick = onCarMaintenanceClick,
+
         navigator = navigator,
         modifier = modifier
     )
@@ -58,6 +76,7 @@ fun CarScreen(
         uiState.uiEvent?.let { event ->
             when (event) {
                 is CarUiEvent.AddFuelConsumption -> onAddFuelConsumption()
+                is CarUiEvent.AddCarMaintenance -> onAddCarMaintenance()
             }
 
             viewModel.onIntent(CarIntent.EventConsumed)
@@ -73,6 +92,9 @@ fun CarScreen(
 
     onMoreFuelConsumption: () -> Unit,
     onFuelConsumptionClick: (FuelConsumption) -> Unit,
+
+    onMoreCarMaintenance: () -> Unit,
+    onCarMaintenanceClick: (CarMaintenance) -> Unit,
 
     navigator: Navigator,
     modifier: Modifier = Modifier,
@@ -108,6 +130,20 @@ fun CarScreen(
                             onFilter = { onIntent(CarIntent.SetFuelConsumptionSorting(it)) },
                         )
                     }
+
+                    CarPage.Maintenance -> {
+                        FilterMenu(
+                            items = uiState.carMaintenanceUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.carMaintenanceUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(CarIntent.SetCarMaintenanceFiltering(it)) },
+                        )
+
+                        SortMenu(
+                            items = uiState.carMaintenanceUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.carMaintenanceUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(CarIntent.SetCarMaintenanceSorting(it)) },
+                        )
+                    }
                 }
 
                 MoreMenu(
@@ -126,6 +162,18 @@ fun CarScreen(
                     onMoreFuelConsumption = onMoreFuelConsumption,
                     onAddFuelConsumption = { onIntent(CarIntent.FabActionClick(page)) },
                     onFuelConsumptionClick = onFuelConsumptionClick,
+                    onResetFilters = { onIntent(CarIntent.ResetFilters) },
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+
+                CarPage.Maintenance -> CarMaintenancePage(
+                    uiState = uiState.carMaintenanceUiState,
+
+                    onMoreCarMaintenance = onMoreCarMaintenance,
+                    onAddCarMaintenance = { onIntent(CarIntent.FabActionClick(page)) },
+                    onCarMaintenanceClick = onCarMaintenanceClick,
                     onResetFilters = { onIntent(CarIntent.ResetFilters) },
 
                     listState = listState,
@@ -191,6 +239,72 @@ private fun FuelConsumptionPage(
     )
 }
 
+@Composable
+private fun CarMaintenancePage(
+    uiState: CarMaintenanceUiState,
+
+    onMoreCarMaintenance: () -> Unit,
+    onAddCarMaintenance: () -> Unit,
+    onCarMaintenanceClick: (CarMaintenance) -> Unit,
+    onResetFilters: () -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+
+    CarPage(
+        uiState = uiState,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddCarMaintenance,
+
+        content = {
+            LaunchedEffect(Unit) {
+                onListStateChanged(listState)
+            }
+
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+                    vertical = dimensionResource(R.dimen.content_padding_vertical),
+                ),
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
+
+                item {
+                    ItemHeaderWithMore(
+                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                        onMoreClick = onMoreCarMaintenance,
+                    )
+                }
+
+                uiState.carMaintenance.forEachIndexed { index, (group, count, items) ->
+                    item {
+                        ItemHeaderSmall(
+                            text = group,
+                            total = AnnotatedString(""),
+                            modifier = Modifier
+                                .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
+                                .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
+                        )
+                    }
+
+                    items(
+                        items = items,
+                        key = { it.id },
+                    ) { carMaintenance ->
+
+                        CarMaintenanceItem(
+                            carMaintenance = carMaintenance,
+                            onCarMaintenanceClick = onCarMaintenanceClick,
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
 @AllDevicesPreview
 @Composable
 private fun CarScreenPreview() {
@@ -201,6 +315,10 @@ private fun CarScreenPreview() {
                     fuelConsumption = SampleData.SAMPLE_FUEL_CONSUMPTION_GROUPED,
                     filteringUiInfo = FuelConsumptionFilteringUiInfo(),
                 ),
+                carMaintenanceUiState = CarMaintenanceUiState(
+                    carMaintenance = SampleData.SAMPLE_CAR_MAINTENANCE_GROUPED,
+                    filteringUiInfo = CarMaintenanceFilteringUiInfo(),
+                ),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = CarFilteringUiInfo(),
@@ -208,6 +326,8 @@ private fun CarScreenPreview() {
             onIntent = {},
             onMoreFuelConsumption = {},
             onFuelConsumptionClick = {},
+            onMoreCarMaintenance = {},
+            onCarMaintenanceClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -224,6 +344,7 @@ private fun CarScreenEmptyPreview() {
                     fuelConsumption = listOf(),
                     filteringUiInfo = FuelConsumptionFilteringUiInfo(),
                 ),
+                carMaintenanceUiState = CarMaintenanceUiState(),
                 isLoading = false,
                 hasError = false,
                 filteringUiInfo = CarFilteringUiInfo(),
@@ -231,6 +352,8 @@ private fun CarScreenEmptyPreview() {
             onIntent = {},
             onMoreFuelConsumption = {},
             onFuelConsumptionClick = {},
+            onMoreCarMaintenance = {},
+            onCarMaintenanceClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -247,6 +370,7 @@ private fun CarScreenLoadingPreview() {
                     fuelConsumption = listOf(),
                     filteringUiInfo = FuelConsumptionFilteringUiInfo(),
                 ),
+                carMaintenanceUiState = CarMaintenanceUiState(),
                 isLoading = true,
                 hasError = false,
                 filteringUiInfo = CarFilteringUiInfo(),
@@ -254,6 +378,8 @@ private fun CarScreenLoadingPreview() {
             onIntent = {},
             onMoreFuelConsumption = {},
             onFuelConsumptionClick = {},
+            onMoreCarMaintenance = {},
+            onCarMaintenanceClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )
@@ -270,6 +396,7 @@ private fun CarScreenErrorPreview() {
                     fuelConsumption = listOf(),
                     filteringUiInfo = FuelConsumptionFilteringUiInfo(),
                 ),
+                carMaintenanceUiState = CarMaintenanceUiState(),
                 isLoading = false,
                 hasError = true,
                 filteringUiInfo = CarFilteringUiInfo(),
@@ -277,6 +404,8 @@ private fun CarScreenErrorPreview() {
             onIntent = {},
             onMoreFuelConsumption = {},
             onFuelConsumptionClick = {},
+            onMoreCarMaintenance = {},
+            onCarMaintenanceClick = {},
             navigator = FakeNavigator(),
             modifier = Modifier
         )

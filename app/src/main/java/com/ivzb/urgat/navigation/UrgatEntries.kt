@@ -18,6 +18,7 @@ import com.ivzb.urgat.ui.importData.importDataEntry
 import com.ivzb.urgat.ui.investments.investmentsEntry
 import com.ivzb.urgat.ui.library.libraryEntry
 import com.ivzb.urgat.ui.sample.sampleEntry
+import com.ivzb.urgat.ui.addEditCarMaintenance.addEditCarMaintenanceEntry
 import com.ivzb.urgat.ui.addEditFuelConsumption.addEditFuelConsumptionEntry
 import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
 import com.ivzb.urgat.ui.budgets.budgetsEntry
@@ -61,5 +62,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
 
         fuelConsumptionEntry(navigator, navActions)
         addEditFuelConsumptionEntry(navigator)
+
+        addEditCarMaintenanceEntry(navigator)
     }
 }

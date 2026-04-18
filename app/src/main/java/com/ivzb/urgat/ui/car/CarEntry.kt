@@ -15,6 +15,10 @@ fun EntryProviderScope<NavKey>.carEntry(navigator: Navigator, navActions: UrgatN
             onMoreFuelConsumption = { navActions.navigateToFuelConsumption() },
             onFuelConsumptionClick = { navActions.navigateToEditFuelConsumption(it.id) },
 
+            onAddCarMaintenance = { navActions.navigateToAddCarMaintenance() },
+            onMoreCarMaintenance = { navActions.navigateToCarMaintenance() },
+            onCarMaintenanceClick = { navActions.navigateToEditCarMaintenance(it.id) },
+
             navigator = navigator,
         )
     }

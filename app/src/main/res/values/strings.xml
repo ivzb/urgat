@@ -236,4 +236,22 @@
     <string name="fuel_consumption_type_hint">Fuel Type</string>
     <string name="fuel_consumption_odometer_hint">Odometer (km)</string>
     <string name="empty_fuel_consumption_message">Please fill in all fuel consumption fields.</string>
+    <string name="car_maintenance">Car maintenance</string>
+    <string name="no_car_maintenance">You have no car maintenance</string>
+    <string name="no_car_maintenance_label">Track your car maintenance.</string>
+    <string name="no_car_maintenance_message">Tap "Add Car Maintenance" to track your first one.</string>
+    <string name="no_car_maintenance_search">You have no car maintenance with this search criteria!</string>
+    <string name="no_car_maintenance_search_message">Tap "Reset filters" to reset to default.</string>
+    <string name="add_car_maintenance">Add Car Maintenance</string>
+    <string name="edit_car_maintenance">Edit Car Maintenance</string>
+    <string name="loading_car_maintenance">Loading car maintenance</string>
+    <string name="error_car_maintenance">Error while loading car maintenance</string>
+    <string name="car_maintenance_description_hint">Description</string>
+    <string name="car_maintenance_part_number_hint">Part number (optional)</string>
+    <string name="car_maintenance_url_hint">URL (optional)</string>
+    <string name="car_maintenance_car_name_hint">Car name</string>
+    <string name="car_maintenance_odometer_hint">Odometer (km)</string>
+    <string name="empty_car_maintenance_message">Please fill in the required car maintenance fields.</string>
+    <string name="sort_by_odometer_min">Odometer (min)</string>
+    <string name="sort_by_odometer_max">Odometer (max)</string>
 </resources>

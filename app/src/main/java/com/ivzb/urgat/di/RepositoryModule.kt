@@ -4,6 +4,8 @@ import com.ivzb.urgat.data.budget.BudgetsRepository
 import com.ivzb.urgat.data.budget.DefaultBudgetsRepository
 import com.ivzb.urgat.data.car.CarRepository
 import com.ivzb.urgat.data.car.DefaultCarRepository
+import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
+import com.ivzb.urgat.data.carMaintenance.DefaultCarMaintenanceRepository
 import com.ivzb.urgat.data.expense.DefaultExpensesRepository
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.exportData.DefaultExportDataRepository
@@ -123,5 +125,9 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindsFuelConsumptionRepository(fuelConsumptionRepository: DefaultFuelConsumptionRepository): FuelConsumptionRepository
+
+    @Singleton
+    @Binds
+    fun bindsCarMaintenanceRepository(carMaintenanceRepository: DefaultCarMaintenanceRepository): CarMaintenanceRepository
 
 }

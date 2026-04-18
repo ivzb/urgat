@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.source.sample
 
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.GroupedBudget
+import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
@@ -374,6 +375,35 @@ object SampleData {
 
     val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_ALL_TIME =
         Group.groupFuelConsumptionCategoriesAllTime(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+
+    val SAMPLE_CAR_MAINTENANCE = listOf(
+        listOf("Oil change", "5W-30 Full Synthetic", "https://example.com/oil", "Mercedes w140", "150000", "0"),
+        listOf("Brake pads replacement", "", "", "BMW e39", "220000", "7"),
+        listOf("Air filter", "Mann C 30 153", "", "Mercedes w140", "149500", "14"),
+        listOf("Spark plugs", "NGK BKR6E", "https://example.com/spark", "BMW e39", "219500", "21"),
+        listOf("Coolant flush", "G12+ Antifreeze", "", "Mercedes w140", "149000", "28"),
+        listOf("Timing belt", "", "https://example.com/belt", "BMW e39", "219000", "35"),
+        listOf("Transmission fluid", "ATF Dexron VI", "", "Mercedes w140", "148500", "42"),
+        listOf("Battery replacement", "Varta E11 74Ah", "", "BMW e39", "218500", "49"),
+        listOf("Cabin filter", "Bosch 1987432071", "", "Mercedes w140", "148000", "56"),
+        listOf("Wheel alignment", "", "", "BMW e39", "218000", "63"),
+    )
+        .mapIndexed { index, (description, partNumber, url, carName, odometer, dateOffset) ->
+            CarMaintenance(
+                id = "car_maintenance_$index",
+                description = description,
+                partNumber = partNumber.ifEmpty { null },
+                url = url.ifEmpty { null },
+                carName = carName,
+                odometer = odometer.toInt(),
+                date = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),
+                isDeleted = false,
+                createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),
+            )
+        }
+
+    val SAMPLE_CAR_MAINTENANCE_GROUPED =
+        Group.byDateMonthly(SAMPLE_CAR_MAINTENANCE, CarMaintenance::date) { it.size }
 
     val SAMPLE_FIRE = FiRe(
         selection = "Feb 2025",

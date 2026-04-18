@@ -10,9 +10,11 @@ sealed class CarPage(
     override val isHorizontalScrollEnabled: Boolean,
 ): Page {
     data object FuelConsumption: CarPage(R.string.fuel_consumption, true)
+    data object Maintenance: CarPage(R.string.car_maintenance, true)
 }
 
 val CAR_PAGES = listOf(
     CarPage.FuelConsumption,
+    CarPage.Maintenance,
 )
 

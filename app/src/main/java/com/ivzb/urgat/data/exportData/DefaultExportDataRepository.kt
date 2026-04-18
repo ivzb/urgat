@@ -51,6 +51,15 @@ class DefaultExportDataRepository @Inject constructor(
                     val data = indexes.mapIndexed { index, columnIndex ->
                         when (types[index]) {
                             "string" -> "\"${cursor.getString(columnIndex).replace('"', '\'')}\""
+                            "string?" -> {
+                                val column = cursor.getStringOrNull(columnIndex)
+
+                                if (column != null) {
+                                    "\"$column\""
+                                } else {
+                                    ""
+                                }
+                            }
                             "big_decimal" -> "\"${cursor.getString(columnIndex)}\""
                             "big_decimal?" -> {
                                 val column = cursor.getStringOrNull(columnIndex)

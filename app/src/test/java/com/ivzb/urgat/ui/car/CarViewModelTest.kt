@@ -4,8 +4,12 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.car.FakeCarRepository
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
+import com.ivzb.urgat.domain.carMaintenance.FakeObserveCarMaintenanceUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.FakeObserveFuelConsumptionUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumption
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceUiState
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
@@ -35,6 +39,7 @@ import kotlin.test.assertTrue
 class CarViewModelTest {
 
     private lateinit var fakeObserveFuelConsumptionUiStateUseCase: FakeObserveFuelConsumptionUiStateUseCase
+    private lateinit var fakeObserveCarMaintenanceUiStateUseCase: FakeObserveCarMaintenanceUiStateUseCase
     private lateinit var fakeCarRepository: FakeCarRepository
 
     private lateinit var viewModel: CarViewModel
@@ -45,6 +50,7 @@ class CarViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         fakeObserveFuelConsumptionUiStateUseCase = FakeObserveFuelConsumptionUiStateUseCase()
+        fakeObserveCarMaintenanceUiStateUseCase = FakeObserveCarMaintenanceUiStateUseCase()
         fakeCarRepository = FakeCarRepository()
     }
 
@@ -56,6 +62,7 @@ class CarViewModelTest {
     @Test
     fun `initial state is loading`() = runTest {
         fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Loading)
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Loading)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -66,6 +73,7 @@ class CarViewModelTest {
         assertTrue(initial.isLoading)
         assertFalse(initial.hasError)
         assertTrue(initial.fuelConsumptionUiState.fuelConsumption.isEmpty())
+        assertTrue(initial.carMaintenanceUiState.carMaintenance.isEmpty())
         assertNull(initial.uiEvent)
 
         job.cancel()
@@ -116,6 +124,7 @@ class CarViewModelTest {
     @Test
     fun `emits error state when use case returns error`() = runTest {
         fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Error)
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Error)
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -138,6 +147,11 @@ class CarViewModelTest {
                 fuelConsumption = listOf(),
             ))
         )
+        fakeObserveCarMaintenanceUiStateUseCase.emit(
+            Async.Success(CarMaintenanceUiState(
+                carMaintenance = listOf(),
+            ))
+        )
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -148,6 +162,7 @@ class CarViewModelTest {
 
         val state = viewModel.uiState.value
         assertTrue(state.fuelConsumptionUiState.fuelConsumption.isEmpty())
+        assertTrue(state.carMaintenanceUiState.carMaintenance.isEmpty())
         assertFalse(state.isLoading)
         assertFalse(state.hasError)
 
@@ -157,6 +172,7 @@ class CarViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState()))
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Success(CarMaintenanceUiState()))
         viewModel = createViewModel()
 
         viewModel.onIntent(CarIntent.SearchQueryChanged("coffee"))
@@ -164,11 +180,13 @@ class CarViewModelTest {
         advanceUntilIdle()
 
         assertEquals("coffee", fakeObserveFuelConsumptionUiStateUseCase.lastQuery)
+        assertEquals("coffee", fakeObserveCarMaintenanceUiStateUseCase.lastQuery)
     }
 
     @Test
     fun `fab action click emits AddFuelConsumption event`() = runTest {
         fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState()))
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Success(CarMaintenanceUiState()))
         viewModel = createViewModel()
 
         viewModel.onIntent(CarIntent.FabActionClick(CarPage.FuelConsumption))
@@ -186,8 +204,29 @@ class CarViewModelTest {
     }
 
     @Test
+    fun `fab action click emits AddCarMaintenance event`() = runTest {
+        fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState()))
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Success(CarMaintenanceUiState()))
+        viewModel = createViewModel()
+
+        viewModel.onIntent(CarIntent.FabActionClick(CarPage.Maintenance))
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+
+        val event = viewModel.uiState.value.uiEvent
+        assertEquals(CarUiEvent.AddCarMaintenance, event)
+
+        job.cancel()
+    }
+
+    @Test
     fun `event consumed clears uiEvent`() = runTest {
         fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState()))
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Success(CarMaintenanceUiState()))
         viewModel = createViewModel()
 
         val job = launch(UnconfinedTestDispatcher()) {
@@ -229,8 +268,33 @@ class CarViewModelTest {
         assertEquals(expected, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
     }
 
+    @Test
+    fun `SetCarMaintenanceSorting updates repository`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = CarMaintenanceSortType.BY_ODOMETER_MAX
+
+        viewModel.onIntent(CarIntent.SetCarMaintenanceSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, fakeCarRepository.carMaintenanceSortTypeFlow.value)
+    }
+
+    @Test
+    fun `SetCarMaintenanceFiltering updates repository`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = "Car A"
+
+        viewModel.onIntent(CarIntent.SetCarMaintenanceFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, fakeCarRepository.carMaintenanceFilterTypeFlow.value)
+    }
+
     private fun createViewModel() = CarViewModel(
         fakeObserveFuelConsumptionUiStateUseCase,
+        fakeObserveCarMaintenanceUiStateUseCase,
         fakeCarRepository,
     )
 
@@ -242,6 +306,7 @@ class CarViewModelTest {
                 showSortBadge = showSortBadge,
             ),
         )))
+        fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Success(CarMaintenanceUiState()))
     }
 
     @Test
@@ -273,17 +338,35 @@ class CarViewModelTest {
     }
 
     @Test
-    fun `resetFilters resets search query filter type and sort type at once`() = runTest {
+    fun `resetFilters resets car maintenance sort type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(CarIntent.SetCarMaintenanceSorting(CarMaintenanceSortType.BY_ODOMETER_MAX))
+        advanceUntilIdle()
+        assertEquals(CarMaintenanceSortType.BY_ODOMETER_MAX, fakeCarRepository.carMaintenanceSortTypeFlow.value)
+
+        viewModel.onIntent(CarIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(CarMaintenanceSortType.BY_DATE, fakeCarRepository.carMaintenanceSortTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets all filters at once`() = runTest {
         viewModel = createViewModel()
 
         viewModel.onIntent(CarIntent.SearchQueryChanged("coffee"))
         viewModel.onIntent(CarIntent.SetFuelConsumptionFiltering("Diesel"))
         viewModel.onIntent(CarIntent.SetFuelConsumptionSorting(FuelConsumptionSortType.BY_MAX))
+        viewModel.onIntent(CarIntent.SetCarMaintenanceFiltering("Car A"))
+        viewModel.onIntent(CarIntent.SetCarMaintenanceSorting(CarMaintenanceSortType.BY_ODOMETER_MIN))
         advanceUntilIdle()
 
         assertEquals("coffee", fakeCarRepository.searchQueryFlow.value)
         assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
         assertEquals(FuelConsumptionSortType.BY_MAX, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
+        assertEquals("Car A", fakeCarRepository.carMaintenanceFilterTypeFlow.value)
+        assertEquals(CarMaintenanceSortType.BY_ODOMETER_MIN, fakeCarRepository.carMaintenanceSortTypeFlow.value)
 
         viewModel.onIntent(CarIntent.ResetFilters)
         advanceUntilIdle()
@@ -291,6 +374,8 @@ class CarViewModelTest {
         assertEquals("", fakeCarRepository.searchQueryFlow.value)
         assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
         assertEquals(FuelConsumptionSortType.BY_DATE, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
+        assertEquals(CarMaintenanceFilterType_All, fakeCarRepository.carMaintenanceFilterTypeFlow.value)
+        assertEquals(CarMaintenanceSortType.BY_DATE, fakeCarRepository.carMaintenanceSortTypeFlow.value)
     }
 
     @Test
@@ -329,5 +414,4 @@ class CarViewModelTest {
         )
     }
 }
-
 

@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.sample
 import com.ivzb.urgat.BuildConfig
 import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.domain.budget.CreateBudgetUseCase
+import com.ivzb.urgat.domain.carMaintenance.CreateCarMaintenanceUseCase
 import com.ivzb.urgat.domain.expense.CreateExpenseUseCase
 import com.ivzb.urgat.domain.fuelConsumption.CreateFuelConsumptionUseCase
 import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
@@ -29,6 +30,7 @@ class DefaultSampleUseCase @Inject constructor(
     private val createWatchlistAssetUseCase: CreateWatchlistAssetUseCase,
     private val createWeightUseCase: CreateWeightUseCase,
     private val createFuelConsumptionUseCase: CreateFuelConsumptionUseCase,
+    private val createCarMaintenanceUseCase: CreateCarMaintenanceUseCase,
 ): SampleUseCase {
 
     override suspend operator fun invoke() {
@@ -108,6 +110,17 @@ class DefaultSampleUseCase @Inject constructor(
                 it.price,
                 it.currency,
                 it.type,
+                it.carName,
+                it.odometer,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_CAR_MAINTENANCE.forEach {
+            createCarMaintenanceUseCase(
+                it.description,
+                it.partNumber,
+                it.url,
                 it.carName,
                 it.odometer,
                 it.date,

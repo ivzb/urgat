@@ -3,7 +3,9 @@ package com.ivzb.urgat.domain.exportData
 import android.database.Cursor
 import android.net.Uri
 import com.ivzb.urgat.data.budget.BudgetDao
+import com.ivzb.urgat.data.carMaintenance.CarMaintenanceDao
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
@@ -43,6 +45,7 @@ class DefaultExportDataUseCaseTest {
     private lateinit var watchlistAssetDao: WatchlistAssetDao
     private lateinit var weightDao: WeightDao
     private lateinit var fuelConsumptionDao: FuelConsumptionDao
+    private lateinit var carMaintenanceDao: CarMaintenanceDao
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var exportDataUseCase: ExportDataUseCase
@@ -61,6 +64,7 @@ class DefaultExportDataUseCaseTest {
         watchlistAssetDao = mockk(relaxed = true)
         weightDao = mockk(relaxed = true)
         fuelConsumptionDao = mockk(relaxed = true)
+        carMaintenanceDao = mockk(relaxed = true)
 
         exportDataUseCase = DefaultExportDataUseCase(
             exportDataRepository,
@@ -73,6 +77,7 @@ class DefaultExportDataUseCaseTest {
             watchlistAssetDao,
             weightDao,
             fuelConsumptionDao,
+            carMaintenanceDao,
             dispatcher,
         )
     }
@@ -108,6 +113,9 @@ class DefaultExportDataUseCaseTest {
         val fuelConsumptionCursor = mockk<Cursor>()
         every { fuelConsumptionDao.stream() } returns fuelConsumptionCursor
 
+        val carMaintenanceCursor = mockk<Cursor>()
+        every { carMaintenanceDao.stream() } returns carMaintenanceCursor
+
         exportDataUseCase(uri)
 
         coVerify(exactly = 1) {
@@ -120,6 +128,7 @@ class DefaultExportDataUseCaseTest {
             exportDataRepository.exportCsv(eq(uri), eq(watchlistAssetsCursor), eq("watchlist_assets.csv"), eq(WATCHLIST_ASSETS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(weightsCursor), eq("weights.csv"), eq(WEIGHTS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(fuelConsumptionCursor), eq("fuel_consumption.csv"), eq(FUEL_CONSUMPTION_CSV_MAPPING))
+            exportDataRepository.exportCsv(eq(uri), eq(carMaintenanceCursor), eq("car_maintenance.csv"), eq(CAR_MAINTENANCE_CSV_MAPPING))
         }
     }
 }

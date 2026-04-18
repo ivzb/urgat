@@ -2,9 +2,11 @@ package com.ivzb.urgat.domain.importData
 
 import android.net.Uri
 import com.ivzb.urgat.data.budget.BudgetDao
+import com.ivzb.urgat.data.carMaintenance.CarMaintenanceDao
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_FILE_NAME
@@ -14,6 +16,7 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseBudgetCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseExpenseCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseFuelConsumptionCsv
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseCarMaintenanceCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseInvestmentCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseNoteCsv
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.parseSavingCsv
@@ -56,6 +59,8 @@ interface ImportDataUseCase {
 
     suspend fun importFuelConsumption(content: String)
 
+    suspend fun importCarMaintenance(content: String)
+
 }
 
 class DefaultImportDataUseCase @Inject constructor(
@@ -69,6 +74,7 @@ class DefaultImportDataUseCase @Inject constructor(
     private val watchlistAssetDao: WatchlistAssetDao,
     private val weightDao: WeightDao,
     private val fuelConsumptionDao: FuelConsumptionDao,
+    private val carMaintenanceDao: CarMaintenanceDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ImportDataUseCase {
 
@@ -83,6 +89,7 @@ class DefaultImportDataUseCase @Inject constructor(
             importDataRepository.importCsv(uri, WATCHLIST_ASSETS_CSV_FILE_NAME, ::parseWatchlistAssetCsv, watchlistAssetDao::insertAll)
             importDataRepository.importCsv(uri, WEIGHTS_CSV_FILE_NAME, ::parseWeightCsv, weightDao::insertAll)
             importDataRepository.importCsv(uri, FUEL_CONSUMPTION_CSV_FILE_NAME, ::parseFuelConsumptionCsv, fuelConsumptionDao::insertAll)
+            importDataRepository.importCsv(uri, CAR_MAINTENANCE_CSV_FILE_NAME, ::parseCarMaintenanceCsv, carMaintenanceDao::insertAll)
         }
     }
 
@@ -120,6 +127,10 @@ class DefaultImportDataUseCase @Inject constructor(
 
     override suspend fun importFuelConsumption(content: String) {
         importDataRepository.importString(content, ::parseFuelConsumptionCsv, fuelConsumptionDao::insertAll)
+    }
+
+    override suspend fun importCarMaintenance(content: String) {
+        importDataRepository.importString(content, ::parseCarMaintenanceCsv, carMaintenanceDao::insertAll)
     }
 
 }

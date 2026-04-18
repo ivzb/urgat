@@ -6,6 +6,7 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.ivzb.urgat.data.carMaintenance.CarMaintenanceEntity
 import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
@@ -62,6 +63,7 @@ class MigrationTest {
                 MIGRATION_12_13,
                 MIGRATION_13_14,
                 MIGRATION_14_15,
+                MIGRATION_15_16,
             )
             .build()
             .apply {
@@ -108,6 +110,7 @@ class MigrationTest {
                 MIGRATION_12_13,
                 MIGRATION_13_14,
                 MIGRATION_14_15,
+                MIGRATION_15_16,
             )
             .build()
             .let { db ->
@@ -192,6 +195,23 @@ class MigrationTest {
 
                     val actualFuelConsumption = db.fuelConsumptionDao().getById("1")
                     assertEquals(fuelConsumption, actualFuelConsumption)
+
+                    val carMaintenance = CarMaintenanceEntity(
+                        id = "1",
+                        description = "Oil change",
+                        partNumber = "OIL-5W30",
+                        url = null,
+                        carName = "Honda Civic",
+                        odometer = 50000,
+                        date = 1764362076,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.carMaintenanceDao().upsert(carMaintenance)
+
+                    val actualCarMaintenance = db.carMaintenanceDao().getById("1")
+                    assertEquals(carMaintenance, actualCarMaintenance)
                 }
 
                 db.openHelper.writableDatabase.close()
@@ -216,7 +236,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 15,
+            version = 16,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -233,6 +253,7 @@ class MigrationTest {
                 MIGRATION_12_13,
                 MIGRATION_13_14,
                 MIGRATION_14_15,
+                MIGRATION_15_16,
             ),
         ).close()
 
@@ -369,6 +390,20 @@ class MigrationTest {
                     )
 
                     db.fuelConsumptionDao().upsert(fuelConsumption)
+
+                    val carMaintenance = CarMaintenanceEntity(
+                        id = "1",
+                        description = "Oil change",
+                        partNumber = "OIL-5W30",
+                        url = null,
+                        carName = "Honda Civic",
+                        odometer = 50000,
+                        date = 1764362076,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.carMaintenanceDao().upsert(carMaintenance)
                 }
 
                 // verify new fields are updated
@@ -450,6 +485,21 @@ class MigrationTest {
                     )
 
                     assertEquals(expectedFuelConsumption, actualFuelConsumption)
+
+                    val actualCarMaintenance = db.carMaintenanceDao().getById("1")
+                    val expectedCarMaintenance = CarMaintenanceEntity(
+                        id = "1",
+                        description = "Oil change",
+                        partNumber = "OIL-5W30",
+                        url = null,
+                        carName = "Honda Civic",
+                        odometer = 50000,
+                        date = 1764362076,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedCarMaintenance, actualCarMaintenance)
                 }
 
                 db.close()

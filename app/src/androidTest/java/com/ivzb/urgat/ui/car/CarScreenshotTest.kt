@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.suites.PlayStoreScreenshotTest
 import com.ivzb.urgat.ui.base.ScreenshotTest
+import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceUiState
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import org.junit.Test
@@ -19,12 +20,20 @@ class CarScreenshotTest: ScreenshotTest() {
     fun screenshotTest_CarScreen_sampleData_fuelConsumption_transactions() =
         screenshotTest_CarScreen_sampleData(initialPage = 0)
 
+    @Test
+    @Category(PlayStoreScreenshotTest::class)
+    fun screenshotTest_CarScreen_sampleData_carMaintenance_transactions() =
+        screenshotTest_CarScreen_sampleData(initialPage = 1)
+
     private fun screenshotTest_CarScreen_sampleData(
         initialPage: Int,
     ) = screenshotTest(
         uiState = CarUiState(
             fuelConsumptionUiState = FuelConsumptionUiState(
                 fuelConsumption = SampleData.SAMPLE_FUEL_CONSUMPTION_GROUPED,
+            ),
+            carMaintenanceUiState = CarMaintenanceUiState(
+                carMaintenance = SampleData.SAMPLE_CAR_MAINTENANCE_GROUPED,
             ),
             isLoading = false,
             initialPage = initialPage,
@@ -65,6 +74,9 @@ class CarScreenshotTest: ScreenshotTest() {
                     
                     onMoreFuelConsumption = {},
                     onFuelConsumptionClick = {},
+
+                    onMoreCarMaintenance = {},
+                    onCarMaintenanceClick = {},
 
                     navigator = FakeNavigator(),
 

@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.csv
 
 import com.ivzb.urgat.data.budget.BudgetEntity
 import com.ivzb.urgat.data.expense.ExpenseEntity
+import com.ivzb.urgat.data.carMaintenance.CarMaintenanceEntity
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
@@ -27,6 +28,7 @@ data class CsvMapping(
         const val WATCHLIST_ASSETS_CSV_FILE_NAME = "watchlist_assets.csv"
         const val WEIGHTS_CSV_FILE_NAME = "weights.csv"
         const val FUEL_CONSUMPTION_CSV_FILE_NAME = "fuel_consumption.csv"
+        const val CAR_MAINTENANCE_CSV_FILE_NAME = "car_maintenance.csv"
 
         val TODOS_CSV_MAPPING = listOf(
             CsvMapping("id", "string"),
@@ -101,6 +103,17 @@ data class CsvMapping(
             CsvMapping("price", "big_decimal"),
             CsvMapping("currency", "string"),
             CsvMapping("type", "string"),
+            CsvMapping("carName", "string"),
+            CsvMapping("odometer", "int"),
+            CsvMapping("date", "long"),
+            CsvMapping("createdAt", "long"),
+        )
+
+        val CAR_MAINTENANCE_CSV_MAPPING = listOf(
+            CsvMapping("id", "string"),
+            CsvMapping("description", "string"),
+            CsvMapping("partNumber", "string?"),
+            CsvMapping("url", "string?"),
             CsvMapping("carName", "string"),
             CsvMapping("odometer", "int"),
             CsvMapping("date", "long"),
@@ -228,6 +241,22 @@ data class CsvMapping(
                 date = split[7].toLong(),
                 isDeleted = false,
                 createdAt = split[8].toLong(),
+            )
+        }
+
+        fun parseCarMaintenanceCsv(line: String): CarMaintenanceEntity {
+            val split = splitCsvLine(line)
+
+            return CarMaintenanceEntity(
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
+                description = split[1],
+                partNumber = split[2],
+                url = split[3].ifEmpty { null },
+                carName = split[4],
+                odometer = split[5].toInt(),
+                date = split[6].toLong(),
+                isDeleted = false,
+                createdAt = split[7].toLong(),
             )
         }
 
