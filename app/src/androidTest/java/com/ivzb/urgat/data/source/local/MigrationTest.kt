@@ -12,6 +12,7 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.todo.TodoEntity
+import com.ivzb.urgat.data.trading.TradingEntity
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightEntity
 import kotlinx.coroutines.runBlocking
@@ -64,6 +65,7 @@ class MigrationTest {
                 MIGRATION_13_14,
                 MIGRATION_14_15,
                 MIGRATION_15_16,
+                MIGRATION_16_17,
             )
             .build()
             .apply {
@@ -111,6 +113,7 @@ class MigrationTest {
                 MIGRATION_13_14,
                 MIGRATION_14_15,
                 MIGRATION_15_16,
+                MIGRATION_16_17,
             )
             .build()
             .let { db ->
@@ -212,6 +215,24 @@ class MigrationTest {
 
                     val actualCarMaintenance = db.carMaintenanceDao().getById("1")
                     assertEquals(carMaintenance, actualCarMaintenance)
+
+                    val trading = TradingEntity(
+                        id = "1",
+                        name = "AAPL",
+                        shares = 10.toBigDecimal(),
+                        marketPrice = 150.toBigDecimal(),
+                        fee = 1.5.toBigDecimal(),
+                        currency = "USD",
+                        orderType = "Buy",
+                        date = 1764362076,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.tradingDao().upsert(trading)
+
+                    val actualTrading = db.tradingDao().getById("1")
+                    assertEquals(trading, actualTrading)
                 }
 
                 db.openHelper.writableDatabase.close()
@@ -236,7 +257,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 16,
+            version = 17,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -254,6 +275,7 @@ class MigrationTest {
                 MIGRATION_13_14,
                 MIGRATION_14_15,
                 MIGRATION_15_16,
+                MIGRATION_16_17,
             ),
         ).close()
 
@@ -404,6 +426,21 @@ class MigrationTest {
                     )
 
                     db.carMaintenanceDao().upsert(carMaintenance)
+
+                    val trading = TradingEntity(
+                        id = "1",
+                        name = "AAPL",
+                        shares = 10.toBigDecimal(),
+                        marketPrice = 150.toBigDecimal(),
+                        fee = 1.5.toBigDecimal(),
+                        currency = "USD",
+                        orderType = "Buy",
+                        date = 1764362076,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    db.tradingDao().upsert(trading)
                 }
 
                 // verify new fields are updated
@@ -500,6 +537,22 @@ class MigrationTest {
                     )
 
                     assertEquals(expectedCarMaintenance, actualCarMaintenance)
+
+                    val actualTrading = db.tradingDao().getById("1")
+                    val expectedTrading = TradingEntity(
+                        id = "1",
+                        name = "AAPL",
+                        shares = 10.toBigDecimal(),
+                        marketPrice = 150.toBigDecimal(),
+                        fee = 1.5.toBigDecimal(),
+                        currency = "USD",
+                        orderType = "Buy",
+                        date = 1764362076,
+                        isDeleted = false,
+                        createdAt = 1764362076,
+                    )
+
+                    assertEquals(expectedTrading, actualTrading)
                 }
 
                 db.close()

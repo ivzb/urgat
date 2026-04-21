@@ -9,6 +9,7 @@ import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.trading.TradingDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import dagger.Module
@@ -49,5 +50,8 @@ class DaoModule {
 
     @Provides
     fun provideCarMaintenanceDao(appDatabase: AppDatabase): CarMaintenanceDao = appDatabase.carMaintenanceDao()
+
+    @Provides
+    fun provideTradingDao(appDatabase: AppDatabase): TradingDao = appDatabase.tradingDao()
 
 }
