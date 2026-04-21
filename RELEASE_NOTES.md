@@ -1,3 +1,7 @@
+## Release notes 26.04.20
+
+No release notes.
+
 ## Release notes 26.04.19
 
 No release notes.
