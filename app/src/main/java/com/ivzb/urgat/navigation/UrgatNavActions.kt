@@ -40,9 +40,9 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
-    fun navigateToEditNote(expenseId: String) {
+    fun navigateToEditNote(noteId: String) {
         navigator.navigate(AddEditNoteRoute(
-            id = expenseId,
+            id = noteId,
             titleResId = R.string.edit_note
         ))
     }
@@ -76,11 +76,32 @@ class UrgatNavActions(private val navigator: Navigator) {
         ))
     }
 
-    fun navigateToEditInvestment(expenseId: String) {
+    fun navigateToEditInvestment(investmentId: String) {
         navigator.navigate(AddEditInvestmentRoute(
-            id = expenseId,
+            id = investmentId,
             titleResId = R.string.edit_investment
         ))
+    }
+
+    fun navigateToTrades() {
+        // todo:
+//        navigator.navigate(TradesRoute)
+    }
+
+    fun navigateToAddTrade() {
+        // todo:
+//        navigator.navigate(AddEditTradeRoute(
+//            id = null,
+//            titleResId = R.string.add_trade
+//        ))
+    }
+
+    fun navigateToEditTrade(tradeId: String) {
+        // todo:
+//        navigator.navigate(AddEditTradeRoute(
+//            id = tradeId,
+//            titleResId = R.string.edit_trade
+//        ))
     }
 
     fun navigateToSavings() {

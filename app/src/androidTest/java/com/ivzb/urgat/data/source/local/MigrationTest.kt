@@ -12,7 +12,7 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.todo.TodoEntity
-import com.ivzb.urgat.data.trading.TradingEntity
+import com.ivzb.urgat.data.trade.TradeEntity
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightEntity
 import kotlinx.coroutines.runBlocking
@@ -66,6 +66,7 @@ class MigrationTest {
                 MIGRATION_14_15,
                 MIGRATION_15_16,
                 MIGRATION_16_17,
+                MIGRATION_17_18,
             )
             .build()
             .apply {
@@ -114,6 +115,7 @@ class MigrationTest {
                 MIGRATION_14_15,
                 MIGRATION_15_16,
                 MIGRATION_16_17,
+                MIGRATION_17_18,
             )
             .build()
             .let { db ->
@@ -216,7 +218,7 @@ class MigrationTest {
                     val actualCarMaintenance = db.carMaintenanceDao().getById("1")
                     assertEquals(carMaintenance, actualCarMaintenance)
 
-                    val trading = TradingEntity(
+                    val trading = TradeEntity(
                         id = "1",
                         name = "AAPL",
                         shares = 10.toBigDecimal(),
@@ -257,7 +259,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 17,
+            version = 18,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -276,6 +278,7 @@ class MigrationTest {
                 MIGRATION_14_15,
                 MIGRATION_15_16,
                 MIGRATION_16_17,
+                MIGRATION_17_18,
             ),
         ).close()
 
@@ -427,7 +430,7 @@ class MigrationTest {
 
                     db.carMaintenanceDao().upsert(carMaintenance)
 
-                    val trading = TradingEntity(
+                    val trading = TradeEntity(
                         id = "1",
                         name = "AAPL",
                         shares = 10.toBigDecimal(),
@@ -539,7 +542,7 @@ class MigrationTest {
                     assertEquals(expectedCarMaintenance, actualCarMaintenance)
 
                     val actualTrading = db.tradingDao().getById("1")
-                    val expectedTrading = TradingEntity(
+                    val expectedTrading = TradeEntity(
                         id = "1",
                         name = "AAPL",
                         shares = 10.toBigDecimal(),

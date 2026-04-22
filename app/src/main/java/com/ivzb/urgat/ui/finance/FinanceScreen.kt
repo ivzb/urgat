@@ -39,6 +39,7 @@ import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
@@ -58,6 +59,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import com.ivzb.urgat.util.format
 
@@ -74,6 +76,10 @@ fun FinanceScreen(
     onAddInvestment: () -> Unit,
     onMoreInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    onAddTrade: () -> Unit,
+    onMoreTrades: () -> Unit,
+    onTradeClick: (Trade) -> Unit,
 
     onAddSaving: () -> Unit,
     onMoreSavings: () -> Unit,
@@ -103,6 +109,9 @@ fun FinanceScreen(
         onMoreInvestments = onMoreInvestments,
         onInvestmentClick = onInvestmentClick,
 
+        onMoreTrades = onMoreTrades,
+        onTradeClick = onTradeClick,
+
         onMoreSavings = onMoreSavings,
         onSavingClick = onSavingClick,
 
@@ -121,6 +130,7 @@ fun FinanceScreen(
             when (event) {
                 is FinanceUiEvent.AddExpense -> onAddExpense()
                 is FinanceUiEvent.AddInvestment -> onAddInvestment()
+                is FinanceUiEvent.AddTrade -> onAddTrade()
                 is FinanceUiEvent.AddSaving -> onAddSaving()
                 is FinanceUiEvent.AddBudget -> onAddBudget()
                 is FinanceUiEvent.AddWatchlistAsset -> onAddWatchlistAsset()
@@ -142,6 +152,9 @@ fun FinanceScreen(
 
     onMoreInvestments: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    onMoreTrades: () -> Unit,
+    onTradeClick: (Trade) -> Unit,
 
     onMoreSavings: () -> Unit,
     onSavingClick: (Saving) -> Unit,
@@ -198,6 +211,20 @@ fun FinanceScreen(
                             items = uiState.investmentsUiState.filteringUiInfo.sortMenuItems,
                             showBadge = uiState.investmentsUiState.filteringUiInfo.showSortBadge,
                             onFilter = { onIntent(FinanceIntent.SetInvestmentsSorting(it)) },
+                        )
+                    }
+
+                    FinancePage.Trades -> {
+                        FilterMenu(
+                            items = uiState.tradesUiState.filteringUiInfo.filterMenuItems,
+                            showBadge = uiState.tradesUiState.filteringUiInfo.showFilterBadge,
+                            onFilter = { onIntent(FinanceIntent.SetTradesFiltering(it)) },
+                        )
+
+                        SortMenu(
+                            items = uiState.tradesUiState.filteringUiInfo.sortMenuItems,
+                            showBadge = uiState.tradesUiState.filteringUiInfo.showSortBadge,
+                            onFilter = { onIntent(FinanceIntent.SetTradesSorting(it)) },
                         )
                     }
 
@@ -261,6 +288,19 @@ fun FinanceScreen(
                     onAddInvestment = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onInvestmentClick = onInvestmentClick,
                     onRefreshInvestments = { onIntent(FinanceIntent.RefreshInvestments) },
+                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+
+                FinancePage.Trades -> TradesPage(
+                    uiState = uiState.tradesUiState,
+
+                    onMoreTrades = onMoreTrades,
+                    onAddTrade = { onIntent(FinanceIntent.FabActionClick(page)) },
+                    onTradeClick = onTradeClick,
+                    onRefreshTrades = { onIntent(FinanceIntent.RefreshTrades) },
                     onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
                     listState = listState,
@@ -425,6 +465,62 @@ private fun InvestmentsPage(
                         ItemHeaderWithMore(
                             title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
                             onMoreClick = onMoreInvestments,
+                        )
+                    },
+
+                    listState = listState,
+                    onListStateChanged = onListStateChanged,
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun TradesPage(
+    uiState: TradesUiState,
+
+    onMoreTrades: () -> Unit,
+    onAddTrade: () -> Unit,
+    onTradeClick: (Trade) -> Unit,
+    onRefreshTrades: () -> Unit,
+    onResetFilters: () -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+
+    FinancePage(
+        uiState = uiState,
+        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddTrade,
+
+        content = {
+            val state = rememberPullToRefreshState()
+
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = onRefreshTrades,
+                modifier = Modifier,
+                state = state,
+                indicator = {
+                    Indicator(
+                        modifier = Modifier.align(Alignment.TopCenter),
+                        isRefreshing = uiState.isRefreshing,
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        state = state
+                    )
+                },
+            ) {
+
+                com.ivzb.urgat.ui.trades.TransactionsPage(
+                    trades = uiState.trades,
+                    onTradeClick = onTradeClick,
+
+                    header = {
+                        ItemHeaderWithMore(
+                            title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
+                            onMoreClick = onMoreTrades,
                         )
                     },
 
@@ -851,6 +947,9 @@ private fun FinanceScreenPreview(
                     filteringUiInfo = BudgetsFilteringUiInfo(),
                     initialPage = budgetsInitialPage,
                 ),
+                tradesUiState = TradesUiState(
+                    trades = SampleData.SAMPLE_TRADES_GROUPED,
+                ),
                 watchlistAssetsUiState = WatchlistAssetsUiState(
                     watchlistAssets = SampleData.SAMPLE_WATCHLIST_ASSETS,
                 ),
@@ -868,6 +967,9 @@ private fun FinanceScreenPreview(
 
             onInvestmentClick = {},
             onMoreInvestments = {},
+
+            onTradeClick = {},
+            onMoreTrades = {},
 
             onSavingClick = {},
             onMoreSavings = {},
@@ -943,48 +1045,68 @@ private fun FinanceScreenInvestmentsAssetsPreview() {
 @AllDevicesPreview
 @Preview
 @Composable
+private fun FinanceScreenTradeTransactionsPreview() {
+    FinanceScreenPreview(initialPage = 2, investmentsInitialPage = 0)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
+private fun FinanceScreenTradeAllTimePreview() {
+    FinanceScreenPreview(initialPage = 2, investmentsInitialPage = 2)
+}
+
+@AllDevicesPreview
+@Preview
+@Composable
 private fun FinanceScreenSavingsTransactionsPreview() {
-    FinanceScreenPreview(initialPage = 2, expensesInitialPage = 0)
+    FinanceScreenPreview(initialPage = 3, expensesInitialPage = 0)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenSavingsMonthlyPreview() {
-    FinanceScreenPreview(initialPage = 2, expensesInitialPage = 1)
+    FinanceScreenPreview(initialPage = 3, expensesInitialPage = 1)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenSavingsYearlyPreview() {
-    FinanceScreenPreview(initialPage = 2, expensesInitialPage = 2)
+    FinanceScreenPreview(initialPage = 3, expensesInitialPage = 2)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenSavingsAllTimePreview() {
-    FinanceScreenPreview(initialPage = 2, expensesInitialPage = 3)
+    FinanceScreenPreview(initialPage = 3, expensesInitialPage = 3)
 }
 
 @AllDevicesPreview
 @Preview
 @Composable
 private fun FinanceScreenBudgetsTransactionsPreview() {
-    FinanceScreenPreview(initialPage = 3, expensesInitialPage = 0)
+    FinanceScreenPreview(initialPage = 4, expensesInitialPage = 0)
 }
 
 @AllDevicesPreview
 @Composable
 private fun FinanceScreenReportPreview() {
-    FinanceScreenPreview(initialPage = 4)
+    FinanceScreenPreview(initialPage = 5)
+}
+
+@AllDevicesPreview
+@Composable
+private fun FinanceScreenWatchlistPreview() {
+    FinanceScreenPreview(initialPage = 6)
 }
 
 @AllDevicesPreview
 @Composable
 private fun FinanceScreenFiRePreview() {
-    FinanceScreenPreview(initialPage = 5)
+    FinanceScreenPreview(initialPage = 7)
 }
 
 @AllDevicesPreview
@@ -1007,6 +1129,9 @@ fun FinanceScreenEmptyPreview() {
 
             onInvestmentClick = {},
             onMoreInvestments = {},
+
+            onTradeClick = {},
+            onMoreTrades = {},
 
             onSavingClick = {},
             onMoreSavings = {},
@@ -1044,6 +1169,9 @@ fun FinanceScreenLoadingPreview() {
             onInvestmentClick = {},
             onMoreInvestments = {},
 
+            onTradeClick = {},
+            onMoreTrades = {},
+
             onSavingClick = {},
             onMoreSavings = {},
 
@@ -1079,6 +1207,9 @@ fun FinanceScreenErrorPreview() {
 
             onInvestmentClick = {},
             onMoreInvestments = {},
+
+            onTradeClick = {},
+            onMoreTrades = {},
 
             onSavingClick = {},
             onMoreSavings = {},

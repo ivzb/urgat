@@ -166,6 +166,9 @@ class FinanceScreenshotTest: ScreenshotTest() {
                     onInvestmentClick = {},
                     onMoreInvestments = {},
 
+                    onTradeClick = {},
+                    onMoreTrades = {},
+
                     onSavingClick = {},
                     onMoreSavings = {},
 

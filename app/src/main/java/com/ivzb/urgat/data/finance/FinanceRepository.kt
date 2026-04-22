@@ -6,6 +6,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import kotlinx.coroutines.flow.Flow
 
@@ -25,6 +26,12 @@ interface FinanceRepository {
 
     val investmentsSortTypeFlow: Flow<InvestmentsSortType>
     suspend fun updateInvestmentsSortType(value: InvestmentsSortType)
+
+    val tradesFilterTypeFlow: Flow<String>
+    suspend fun updateTradesFilterType(value: String)
+
+    val tradesSortTypeFlow: Flow<TradesSortType>
+    suspend fun updateTradesSortType(value: TradesSortType)
 
     val savingsSortTypeFlow: Flow<SavingsSortType>
     suspend fun updateSavingsSortType(value: SavingsSortType)

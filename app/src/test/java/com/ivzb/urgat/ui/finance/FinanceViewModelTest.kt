@@ -31,6 +31,8 @@ import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
+import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.Runs
@@ -376,6 +378,30 @@ class FinanceViewModelTest {
     }
 
     @Test
+    fun `SetTradesFiltering updates finance repository`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = "etfs"
+
+        viewModel.onIntent(FinanceIntent.SetTradesFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, fakeFinanceRepository.tradesFilterTypeFlow.value)
+    }
+
+    @Test
+    fun `SetTradesSorting updates finance repository`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = TradesSortType.BY_COST
+
+        viewModel.onIntent(FinanceIntent.SetTradesSorting(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, fakeFinanceRepository.tradesSortTypeFlow.value)
+    }
+
+    @Test
     fun `SetSavingsSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
@@ -652,6 +678,56 @@ class FinanceViewModelTest {
 
         job.cancel()
     }
+
+    @Test
+    fun `RefreshTrades clears market price and forex cache`() = runTest {
+        fakeMarketPriceRepository.prices["AAPL"] = com.ivzb.urgat.data.marketPrice.MarketPrice(
+            symbol = "AAPL",
+            description = "Apple Inc.",
+            price = BigDecimal("150.00"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("148.00"),
+            pricePrecision = 2,
+        )
+        fakeForexRepository.rates["USDEUR=X"] = BigDecimal("1.15")
+
+        viewModel = createViewModel()
+
+        assertEquals(1, fakeMarketPriceRepository.prices.size)
+        assertEquals(1, fakeForexRepository.rates.size)
+
+        viewModel.onIntent(FinanceIntent.RefreshTrades)
+        advanceUntilIdle()
+
+        assertTrue(fakeMarketPriceRepository.prices.isEmpty())
+        assertTrue(fakeForexRepository.rates.isEmpty())
+    }
+
+    @Test
+    fun `RefreshTrades emits on refreshFlow`() = runTest {
+        viewModel = createViewModel()
+
+        var refreshMarketPriceCount = 0
+        var refreshForexCount = 0
+
+        val marketPriceJob = launch(UnconfinedTestDispatcher()) {
+            fakeMarketPriceRepository.refreshFlow.collect { refreshMarketPriceCount++ }
+        }
+
+        val forexJob = launch(UnconfinedTestDispatcher()) {
+            fakeForexRepository.refreshFlow.collect { refreshForexCount++ }
+        }
+
+        viewModel.onIntent(FinanceIntent.RefreshTrades)
+        advanceUntilIdle()
+
+        assertEquals(1, refreshMarketPriceCount)
+        assertEquals(1, refreshForexCount)
+
+        marketPriceJob.cancel()
+        forexJob.cancel()
+    }
+
 
     private fun createViewModel() = FinanceViewModel(
         fakeObserveFinanceUiStateUseCase,

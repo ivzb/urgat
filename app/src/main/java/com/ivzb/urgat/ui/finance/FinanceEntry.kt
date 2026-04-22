@@ -19,6 +19,10 @@ fun EntryProviderScope<NavKey>.financeEntry(navigator: Navigator, navActions: Ur
             onMoreInvestments = { navActions.navigateToInvestments() },
             onInvestmentClick = { navActions.navigateToEditInvestment(it.id) },
 
+            onAddTrade = { navActions.navigateToAddTrade() },
+            onMoreTrades = { navActions.navigateToTrades() },
+            onTradeClick = { navActions.navigateToEditTrade(it.id) },
+
             onAddSaving = { navActions.navigateToAddSaving() },
             onMoreSavings = { navActions.navigateToSavings() },
             onSavingClick = { navActions.navigateToEditSaving(it.id) },

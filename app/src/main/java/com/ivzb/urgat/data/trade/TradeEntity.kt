@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.trading
+package com.ivzb.urgat.data.trade
 
 import androidx.room.Entity
 import androidx.room.Index
@@ -6,13 +6,13 @@ import androidx.room.PrimaryKey
 import java.math.BigDecimal
 
 @Entity(
-    tableName = "trading",
+    tableName = "trade",
     indices = [
         Index(value = ["isDeleted", "createdAt"]),
         Index(value = ["isDeleted", "date"]),
     ]
 )
-data class TradingEntity(
+data class TradeEntity(
     @PrimaryKey val id: String,
     val name: String,
     val shares: BigDecimal,

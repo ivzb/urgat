@@ -16,6 +16,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
@@ -113,6 +114,9 @@ class FinanceViewModel @Inject constructor(
             is FinanceIntent.SetInvestmentsFiltering -> setInvestmentsFiltering(intent.filterType)
             is FinanceIntent.SetInvestmentsSorting -> setInvestmentsSorting(intent.sortType)
 
+            is FinanceIntent.SetTradesFiltering -> setTradesFiltering(intent.filterType)
+            is FinanceIntent.SetTradesSorting -> setTradesSorting(intent.sortType)
+
             is FinanceIntent.SetSavingsSorting -> setSavingsSorting(intent.sortType)
 
             is FinanceIntent.SetBudgetsFiltering -> setBudgetsFiltering(intent.filterType)
@@ -121,6 +125,7 @@ class FinanceViewModel @Inject constructor(
             is FinanceIntent.SetWatchlistAssetsSorting -> setWatchlistAssetsSorting(intent.sortType)
 
             is FinanceIntent.RefreshInvestments -> refreshInvestments()
+            is FinanceIntent.RefreshTrades -> refreshTrades()
             is FinanceIntent.RefreshWatchlist -> refreshWatchlist()
 
             is FinanceIntent.ResetFilters -> resetFilters()
@@ -198,6 +203,18 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
+    private fun setTradesFiltering(filterType: String) {
+        viewModelScope.launch {
+            financeRepository.updateTradesFilterType(filterType)
+        }
+    }
+
+    private fun setTradesSorting(sortType: TradesSortType) {
+        viewModelScope.launch {
+            financeRepository.updateTradesSortType(sortType)
+        }
+    }
+
     private fun setSavingsSorting(sortType: SavingsSortType) {
         viewModelScope.launch {
             financeRepository.updateSavingsSortType(sortType)
@@ -223,6 +240,13 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun refreshInvestments() {
+        viewModelScope.launch {
+            forexRepository.clearCache()
+            marketPriceRepository.clearCache()
+        }
+    }
+
+    private fun refreshTrades() {
         viewModelScope.launch {
             forexRepository.clearCache()
             marketPriceRepository.clearCache()

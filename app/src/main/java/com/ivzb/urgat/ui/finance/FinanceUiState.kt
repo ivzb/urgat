@@ -8,11 +8,13 @@ import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
+import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 
 data class FinanceUiState(
     val expensesUiState: ExpensesUiState = ExpensesUiState(),
     val investmentsUiState: InvestmentsUiState = InvestmentsUiState(),
+    val tradesUiState: TradesUiState = TradesUiState(),
     val savingsUiState: SavingsUiState = SavingsUiState(),
     val budgetsUiState: BudgetsUiState = BudgetsUiState(),
     val watchlistAssetsUiState: WatchlistAssetsUiState = WatchlistAssetsUiState(),

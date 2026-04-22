@@ -8,6 +8,8 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -127,5 +129,26 @@ class DefaultFinanceRepositoryTest {
         assertEquals(WatchlistAssetsSortType.BY_NAME, repository.watchlistAssetsSortTypeFlow.first())
     }
 
-}
+    @Test
+    fun `tradesFilterTypeFlow emits default value when not set`() = runTest {
+        assertEquals(TradesFilterType_All, repository.tradesFilterTypeFlow.first())
+    }
 
+    @Test
+    fun `updateTradesFilterType updates flow value`() = runTest {
+        repository.updateTradesFilterType("etfs")
+        assertEquals("etfs", repository.tradesFilterTypeFlow.first())
+    }
+
+    @Test
+    fun `tradesSortTypeFlow emits default value when not set`() = runTest {
+        assertEquals(TradesSortType.BY_DATE, repository.tradesSortTypeFlow.first())
+    }
+
+    @Test
+    fun `updateTradesSortType updates flow value`() = runTest {
+        repository.updateTradesSortType(TradesSortType.BY_COST)
+        assertEquals(TradesSortType.BY_COST, repository.tradesSortTypeFlow.first())
+    }
+
+}

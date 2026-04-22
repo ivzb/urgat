@@ -19,8 +19,8 @@ import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.todo.TodoEntity
-import com.ivzb.urgat.data.trading.TradingDao
-import com.ivzb.urgat.data.trading.TradingEntity
+import com.ivzb.urgat.data.trade.TradeDao
+import com.ivzb.urgat.data.trade.TradeEntity
 import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightDao
@@ -37,8 +37,8 @@ import com.ivzb.urgat.data.weight.WeightEntity
     WatchlistAssetEntity::class,
     FuelConsumptionEntity::class,
     CarMaintenanceEntity::class,
-    TradingEntity::class,
- ], version = 17)
+    TradeEntity::class,
+ ], version = 18)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -62,6 +62,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun carMaintenanceDao(): CarMaintenanceDao
 
-    abstract fun tradingDao(): TradingDao
+    abstract fun tradingDao(): TradeDao
 
 }

@@ -30,8 +30,8 @@ fun annotateFinance(text: String, amount: BigDecimal?, prefix: String = "", suff
         spanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = financeColor(amount)),
     )
 
-fun annotateFinance(amount: BigDecimal, currency: String, prefix: String = ""): AnnotatedString =
-    annotateFinance("${amount.format()} ${currency.formatCurrency()}", amount, prefix = prefix)
+fun annotateFinance(amount: BigDecimal, currency: String, prefix: String = "", pricePrecision: Int? = null): AnnotatedString =
+    annotateFinance("${amount.format(digits = pricePrecision)} ${currency.formatCurrency()}", amount, prefix = prefix)
 
 fun annotateFinancePnL(text: String, pnl: BigDecimal?): AnnotatedString {
     if (pnl == null || pnl == BigDecimal.ZERO) {

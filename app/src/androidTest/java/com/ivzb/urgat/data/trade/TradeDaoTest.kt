@@ -1,4 +1,4 @@
-package com.ivzb.urgat.data.trading
+package com.ivzb.urgat.data.trade
 
 import android.content.Context
 import androidx.room.Room
@@ -18,17 +18,17 @@ import org.junit.runner.RunWith
 import java.math.BigDecimal
 
 @RunWith(AndroidJUnit4::class)
-class TradingDaoTest {
+class TradeDaoTest {
 
     private lateinit var db: AppDatabase
 
-    private lateinit var tradingDao: TradingDao
+    private lateinit var tradeDao: TradeDao
 
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
-        tradingDao = db.tradingDao()
+        tradeDao = db.tradingDao()
     }
 
     @After
@@ -38,11 +38,11 @@ class TradingDaoTest {
 
     @Test
     fun sampleData() = runTest {
-        val tradings = SampleData.SAMPLE_TRADING.map { it.toEntity() }
+        val tradings = SampleData.SAMPLE_TRADES.map { it.toEntity() }
 
         tradings.forEach { trading ->
-            tradingDao.upsert(trading)
-            assertEquals(trading, tradingDao.getById(trading.id))
+            tradeDao.upsert(trading)
+            assertEquals(trading, tradeDao.getById(trading.id))
 
             val updated = trading.copy(
                 name = trading.name + " updated",
@@ -54,23 +54,23 @@ class TradingDaoTest {
                 date = trading.date + 1,
             )
 
-            tradingDao.upsert(updated)
-            assertEquals(updated, tradingDao.getById(trading.id))
+            tradeDao.upsert(updated)
+            assertEquals(updated, tradeDao.getById(trading.id))
 
-            tradingDao.deleteById(trading.id)
-            assertNull(tradingDao.getById(trading.id))
+            tradeDao.deleteById(trading.id)
+            assertNull(tradeDao.getById(trading.id))
         }
 
         tradings.forEach { trading ->
-            tradingDao.upsert(trading)
+            tradeDao.upsert(trading)
         }
 
         // collect flow
-        val actual = tradingDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
-        assertEquals(tradings.sortedWith(compareByDescending<TradingEntity> { it.date }.thenBy { it.id }), actual)
+        val actual = tradeDao.observeAll(-1, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
+        assertEquals(tradings.sortedWith(compareByDescending<TradeEntity> { it.date }.thenBy { it.id }), actual)
 
-        val actualLimit = tradingDao.observeAll(3, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
-        assertEquals(tradings.sortedWith(compareByDescending<TradingEntity> { it.date }.thenBy { it.id }).take(3), actualLimit)
+        val actualLimit = tradeDao.observeAll(3, NO_DATE_RANGE.first, NO_DATE_RANGE.last).first()
+        assertEquals(tradings.sortedWith(compareByDescending<TradeEntity> { it.date }.thenBy { it.id }).take(3), actualLimit)
     }
 
 }

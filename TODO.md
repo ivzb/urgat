@@ -110,4 +110,6 @@
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
 - make car fuel consumption filtering by car like in maintenance
 - make maintenance more button work
-- add trading to finance tab
+- add trades to observeFinanceUiStateUseCase
+- add ui tests / screenshot tests when trades tab is enabled
+- debounce showing in app update for 30 minutes - it should fix issue where in-app update is shown twice and also can't be skipped

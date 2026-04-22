@@ -1,6 +1,6 @@
-package com.ivzb.urgat.data.trading
+package com.ivzb.urgat.data.trade
 
-fun Trading.toEntity() = TradingEntity(
+fun Trade.toEntity() = TradeEntity(
     id = id,
     name = name,
     shares = shares,
@@ -13,10 +13,12 @@ fun Trading.toEntity() = TradingEntity(
     createdAt = createdAt
 )
 
-fun List<Trading>.toEntity() = map(Trading::toEntity)
+fun List<Trade>.toEntity() = map(Trade::toEntity)
 
-fun TradingEntity.toExternal(): Trading {
-    return Trading(
+fun TradeEntity.toExternal(
+    pricePrecision: Int?,
+): Trade {
+    return Trade(
         id = id,
         name = name,
         shares = shares,
@@ -24,11 +26,9 @@ fun TradingEntity.toExternal(): Trading {
         fee = fee,
         currency = currency,
         orderType = orderType,
+        pricePrecision = pricePrecision,
         date = date,
         isDeleted = isDeleted,
         createdAt = createdAt
     )
 }
-
-fun List<TradingEntity>.toExternal() = map(TradingEntity::toExternal)
-

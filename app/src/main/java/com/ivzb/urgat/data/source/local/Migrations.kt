@@ -186,6 +186,15 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
     }
 }
 
+val MIGRATION_17_18 = object : Migration(17, 18) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP TABLE IF EXISTS `trading`")
+        db.execSQL("CREATE TABLE IF NOT EXISTS `trade` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `shares` TEXT NOT NULL, `marketPrice` TEXT NOT NULL, `fee` TEXT NOT NULL, `currency` TEXT NOT NULL, `orderType` TEXT NOT NULL, `date` INTEGER NOT NULL, `isDeleted` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_trade_isDeleted_createdAt` ON `trade` (`isDeleted`, `createdAt`);")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_trade_isDeleted_date` ON `trade` (`isDeleted`, `date`);")
+    }
+}
+
 val ALL_MIGRATIONS = arrayOf(
     MIGRATION_1_2,
     MIGRATION_2_3,
@@ -203,4 +212,5 @@ val ALL_MIGRATIONS = arrayOf(
     MIGRATION_14_15,
     MIGRATION_15_16,
     MIGRATION_16_17,
+    MIGRATION_17_18,
 )

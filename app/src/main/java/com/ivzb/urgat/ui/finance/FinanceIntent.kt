@@ -7,6 +7,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 
 sealed class FinanceIntent {
@@ -22,6 +23,9 @@ sealed class FinanceIntent {
     data class SetInvestmentsFiltering(val filterType: String): FinanceIntent()
     data class SetInvestmentsSorting(val sortType: InvestmentsSortType): FinanceIntent()
 
+    data class SetTradesFiltering(val filterType: String): FinanceIntent()
+    data class SetTradesSorting(val sortType: TradesSortType): FinanceIntent()
+
     data class SetSavingsSorting(val sortType: SavingsSortType): FinanceIntent()
 
     data class SetBudgetsFiltering(val filterType: BudgetsFilterType): FinanceIntent()
@@ -30,6 +34,7 @@ sealed class FinanceIntent {
     data class SetWatchlistAssetsSorting(val sortType: WatchlistAssetsSortType): FinanceIntent()
 
     object RefreshInvestments: FinanceIntent()
+    object RefreshTrades: FinanceIntent()
     object RefreshWatchlist: FinanceIntent()
     object ResetFilters: FinanceIntent()
 

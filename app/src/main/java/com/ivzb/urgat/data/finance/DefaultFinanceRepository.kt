@@ -11,6 +11,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreStringFlow
@@ -51,6 +52,18 @@ class DefaultFinanceRepository @Inject constructor(
         dataStore.edit { it[INVESTMENTS_SORT_TYPE] = value.name }
     }
 
+    override val tradesFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, TRADES_FILTER_TYPE, InvestmentsFilterType_All)
+
+    override suspend fun updateTradesFilterType(value: String) {
+        dataStore.edit { it[TRADES_FILTER_TYPE] = value }
+    }
+
+    override val tradesSortTypeFlow: Flow<TradesSortType> = dataStoreEnumFlow(dataStore, TRADES_SORT_TYPE, TradesSortType.BY_DATE)
+
+    override suspend fun updateTradesSortType(value: TradesSortType) {
+        dataStore.edit { it[TRADES_SORT_TYPE] = value.name }
+    }
+
     override val savingsSortTypeFlow: Flow<SavingsSortType> = dataStoreEnumFlow(dataStore, SAVINGS_SORT_TYPE, SavingsSortType.BY_DATE)
 
     override suspend fun updateSavingsSortType(value: SavingsSortType) {
@@ -84,6 +97,9 @@ class DefaultFinanceRepository @Inject constructor(
 
         private val INVESTMENTS_FILTER_TYPE = stringPreferencesKey("finance_investments_filter_type")
         private val INVESTMENTS_SORT_TYPE = stringPreferencesKey("finance_investments_sort_type")
+
+        private val TRADES_FILTER_TYPE = stringPreferencesKey("finance_trades_filter_type")
+        private val TRADES_SORT_TYPE = stringPreferencesKey("finance_trades_sort_type")
 
         private val SAVINGS_SORT_TYPE = stringPreferencesKey("finance_savings_sort_type")
 

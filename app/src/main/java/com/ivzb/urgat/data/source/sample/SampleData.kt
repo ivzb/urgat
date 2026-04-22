@@ -10,7 +10,7 @@ import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.todo.Todo
-import com.ivzb.urgat.data.trading.Trading
+import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
@@ -424,7 +424,7 @@ object SampleData {
         yearsUntilFiRe = 12.5.toBigDecimal(),
     )
 
-    val SAMPLE_TRADING = listOf(
+    val SAMPLE_TRADES = listOf(
         listOf("BTC", "0.5", "27500", "12.50", "USD", "Buy", "180"),
         listOf("BTC", "0.3", "31000", "8.40", "USD", "Buy", "150"),
         listOf("BTC", "0.2", "29000", "5.80", "USD", "Sell", "120"),
@@ -439,8 +439,8 @@ object SampleData {
         listOf("BTC", "0.2", "61000", "10.98", "USD", "Buy", "0"),
     )
         .mapIndexed { index, (name, shares, marketPrice, fee, currency, orderType, dateOffset) ->
-            Trading(
-                id = "trading_$index",
+            Trade(
+                id = "trade_$index",
                 name = name,
                 shares = shares.toBigDecimal(),
                 marketPrice = marketPrice.toBigDecimal(),
@@ -452,6 +452,9 @@ object SampleData {
                 createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),
             )
         }
+
+    val SAMPLE_TRADES_GROUPED =
+        Group.byDateMonthly(SAMPLE_TRADES, Trade::date, Trade::total)
 
     private operator fun <T> List<T>.component6(): T = this[5]
     private operator fun <T> List<T>.component7(): T = this[6]

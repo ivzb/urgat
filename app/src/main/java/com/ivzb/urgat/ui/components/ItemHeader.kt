@@ -66,7 +66,7 @@ fun ItemHeaderSmall(
 @Composable
 fun ItemHeaderSmall(
     text: String,
-    total: AnnotatedString,
+    total: AnnotatedString = AnnotatedString(""),
     modifier: Modifier = Modifier
 ) {
     Row(

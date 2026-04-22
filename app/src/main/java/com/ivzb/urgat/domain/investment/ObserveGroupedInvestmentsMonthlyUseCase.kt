@@ -1,18 +1,14 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
-import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
-
-typealias GroupedInvestments = GroupedItems<String, List<InvestmentTotal>, Investment>
 
 interface ObserveGroupedInvestmentsMonthlyUseCase {
 
