@@ -112,4 +112,3 @@
 - make maintenance more button work
 - add trades to observeFinanceUiStateUseCase
 - add ui tests / screenshot tests when trades tab is enabled
-- debounce showing in app update for 30 minutes - it should fix issue where in-app update is shown twice and also can't be skipped

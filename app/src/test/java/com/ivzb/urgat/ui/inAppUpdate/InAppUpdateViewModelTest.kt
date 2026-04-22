@@ -6,6 +6,7 @@ import com.ivzb.urgat.domain.inAppUpdate.FakeCheckForUpdateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.FakeCompleteUpdateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.FakeObserveInstallStateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.FakeStartFlexibleUpdateUseCase
+import com.ivzb.urgat.util.FakeTimeProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -30,6 +31,7 @@ class InAppUpdateViewModelTest {
     private lateinit var fakeObserveInstallStateUseCase: FakeObserveInstallStateUseCase
     private lateinit var fakeStartFlexibleUpdateUseCase: FakeStartFlexibleUpdateUseCase
     private lateinit var fakeCompleteUpdateUseCase: FakeCompleteUpdateUseCase
+    private lateinit var fakeTimeProvider: FakeTimeProvider
 
     private lateinit var viewModel: InAppUpdateViewModel
 
@@ -43,6 +45,7 @@ class InAppUpdateViewModelTest {
         fakeObserveInstallStateUseCase = FakeObserveInstallStateUseCase()
         fakeStartFlexibleUpdateUseCase = FakeStartFlexibleUpdateUseCase()
         fakeCompleteUpdateUseCase = FakeCompleteUpdateUseCase()
+        fakeTimeProvider = FakeTimeProvider(currentTime = 0L)
     }
 
     @After
@@ -233,7 +236,7 @@ class InAppUpdateViewModelTest {
     }
 
     @Test
-    fun `observe install state failed re-enables shouldStartUpdate`() = runTest {
+    fun `observe install state failed does not immediately re-enable shouldStartUpdate`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.NoUpdate
         viewModel = createViewModel()
 
@@ -247,14 +250,14 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.shouldStartUpdate)
+        assertFalse(state.shouldStartUpdate)
         assertFalse(state.isDownloading)
 
         job.cancel()
     }
 
     @Test
-    fun `observe install state canceled re-enables shouldStartUpdate`() = runTest {
+    fun `observe install state canceled does not immediately re-enable shouldStartUpdate`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.NoUpdate
         viewModel = createViewModel()
 
@@ -268,7 +271,7 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertTrue(state.shouldStartUpdate)
+        assertFalse(state.shouldStartUpdate)
         assertFalse(state.isDownloading)
 
         job.cancel()
@@ -298,7 +301,7 @@ class InAppUpdateViewModelTest {
     }
 
     @Test
-    fun `check for update intent triggers re-check`() = runTest {
+    fun `check for update intent triggers re-check after debounce period`() = runTest {
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.NoUpdate
         viewModel = createViewModel()
 
@@ -309,7 +312,62 @@ class InAppUpdateViewModelTest {
         advanceUntilIdle()
         assertFalse(viewModel.uiState.value.shouldStartUpdate)
 
+        // Advance time past debounce
+        fakeTimeProvider.currentTime = 31 * 60 * 1000L
         fakeCheckForUpdateUseCase.result = InAppUpdateStatus.UpdateAvailable
+        viewModel.onIntent(InAppUpdateIntent.CheckForUpdate)
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.shouldStartUpdate)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `check for update is debounced within 30 minutes`() = runTest {
+        fakeCheckForUpdateUseCase.result = InAppUpdateStatus.UpdateAvailable
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.shouldStartUpdate)
+
+        // Consume the update
+        viewModel.onIntent(InAppUpdateIntent.UpdateStarted)
+        advanceUntilIdle()
+        assertFalse(viewModel.uiState.value.shouldStartUpdate)
+
+        // Try again within debounce window — should be ignored
+        fakeTimeProvider.currentTime = 10 * 60 * 1000L
+        viewModel.onIntent(InAppUpdateIntent.CheckForUpdate)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.uiState.value.shouldStartUpdate)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `check for update works again after 30 minutes`() = runTest {
+        fakeCheckForUpdateUseCase.result = InAppUpdateStatus.UpdateAvailable
+        viewModel = createViewModel()
+
+        val job = launch(UnconfinedTestDispatcher()) {
+            viewModel.uiState.collect()
+        }
+
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.shouldStartUpdate)
+
+        // Consume the update
+        viewModel.onIntent(InAppUpdateIntent.UpdateStarted)
+        advanceUntilIdle()
+
+        // Advance past debounce
+        fakeTimeProvider.currentTime = 31 * 60 * 1000L
         viewModel.onIntent(InAppUpdateIntent.CheckForUpdate)
         advanceUntilIdle()
 
@@ -323,6 +381,7 @@ class InAppUpdateViewModelTest {
         observeInstallStateUseCase = fakeObserveInstallStateUseCase,
         startFlexibleUpdateUseCase = fakeStartFlexibleUpdateUseCase,
         completeUpdateUseCase = fakeCompleteUpdateUseCase,
+        timeProvider = fakeTimeProvider,
     )
 }
 

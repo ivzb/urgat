@@ -9,6 +9,7 @@ import com.ivzb.urgat.domain.inAppUpdate.CheckForUpdateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.CompleteUpdateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.ObserveInstallStateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.StartFlexibleUpdateUseCase
+import com.ivzb.urgat.util.TimeProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,16 +18,21 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val UPDATE_DEBOUNCE_MS = 30 * 60 * 1000L // 30 minutes
+
 @HiltViewModel
 class InAppUpdateViewModel @Inject constructor(
     private val checkForUpdateUseCase: CheckForUpdateUseCase,
     private val observeInstallStateUseCase: ObserveInstallStateUseCase,
     private val startFlexibleUpdateUseCase: StartFlexibleUpdateUseCase,
     private val completeUpdateUseCase: CompleteUpdateUseCase,
+    private val timeProvider: TimeProvider,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(InAppUpdateUiState())
     val uiState: StateFlow<InAppUpdateUiState> = _uiState.asStateFlow()
+
+    private var lastUpdatePromptTime: Long? = null
 
     init {
         observeInstallState()
@@ -52,9 +58,17 @@ class InAppUpdateViewModel @Inject constructor(
             return
         }
 
+        val lastPrompt = lastUpdatePromptTime
+        val now = timeProvider.currentTimeMillis()
+
+        if (lastPrompt != null && now - lastPrompt < UPDATE_DEBOUNCE_MS) {
+            return
+        }
+
         viewModelScope.launch {
             when (checkForUpdateUseCase()) {
                 InAppUpdateStatus.UpdateAvailable -> {
+                    lastUpdatePromptTime = now
                     _uiState.update { it.copy(shouldStartUpdate = true) }
                 }
 
@@ -108,10 +122,11 @@ class InAppUpdateViewModel @Inject constructor(
                     }
 
                     InAppInstallState.Failed, InAppInstallState.Canceled -> {
+                        lastUpdatePromptTime = timeProvider.currentTimeMillis()
                         _uiState.update {
                             it.copy(
                                 isDownloading = false,
-                                shouldStartUpdate = true,
+                                shouldStartUpdate = false,
                             )
                         }
                     }
