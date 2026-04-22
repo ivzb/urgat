@@ -1,3 +1,8 @@
+## Release notes 26.04.21
+
+Improved:
+- In-app updates are now less intrusive.
+
 ## Release notes 26.04.20
 
 No release notes.
