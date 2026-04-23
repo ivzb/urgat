@@ -264,4 +264,9 @@
     <string name="edit_trade">Edit Trade</string>
     <string name="loading_trades">Loading trades</string>
     <string name="error_trades">Error while loading trades</string>
+    <string name="trade_hint">Name</string>
+    <string name="market_price_hint">Market Price</string>
+    <string name="fee_hint">Fee</string>
+    <string name="order_type_hint">Order Type</string>
+    <string name="empty_trade_message">Please fill in all fields</string>
 </resources>

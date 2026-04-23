@@ -112,3 +112,5 @@
 - make maintenance more button work
 - add trades to observeFinanceUiStateUseCase
 - add ui tests / screenshot tests when trades tab is enabled
+- add trades ui unit tests
+- make add trade button work

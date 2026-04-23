@@ -22,8 +22,7 @@ sealed class FinancePage(
 val FINANCE_PAGES = listOf(
     FinancePage.Expenses,
     FinancePage.Investments,
-    // todo:
-//    FinancePage.Trades,
+    FinancePage.Trades,
     FinancePage.Savings,
     FinancePage.Budgets,
     FinancePage.Report,
