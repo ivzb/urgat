@@ -1,3 +1,7 @@
+## Release notes 26.04.22
+
+No release notes.
+
 ## Release notes 26.04.21
 
 Improved:
