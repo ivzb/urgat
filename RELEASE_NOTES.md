@@ -1,3 +1,8 @@
+## Release notes 26.04.23
+
+New:
+- Added a new Trades feature to the Finance screen, allowing you to record and track your trades directly within the application.
+
 ## Release notes 26.04.22
 
 No release notes.
