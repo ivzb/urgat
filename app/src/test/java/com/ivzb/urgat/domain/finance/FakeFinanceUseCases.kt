@@ -7,6 +7,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.finance.FinanceUiState
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +33,8 @@ class FakeObserveFinanceUiStateUseCase : ObserveFinanceUiStateUseCase {
         expensesSortTypeFlow: Flow<ExpensesSortType>,
         investmentsFilterTypeFlow: Flow<String>,
         investmentsSortTypeFlow: Flow<InvestmentsSortType>,
+        tradesFilterTypeFlow: Flow<String>,
+        tradesSortTypeFlow: Flow<TradesSortType>,
         savingsSortTypeFlow: Flow<SavingsSortType>,
         budgetsFilterTypeFlow: Flow<BudgetsFilterType>,
         budgetsSortTypeFlow: Flow<BudgetsSortType>,

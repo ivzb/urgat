@@ -25,6 +25,9 @@ import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsSortingUseCase
 import com.ivzb.urgat.domain.saving.FakeObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.FakeObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.trades.FakeObserveGroupedTradesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.FakeObserveTradesFilteringUseCase
+import com.ivzb.urgat.domain.trades.FakeObserveTradesSortingUseCase
 import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsSortingUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
@@ -37,6 +40,8 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,6 +67,9 @@ class ObserveFinanceUiStateUseCaseTest {
     private lateinit var fakeObserveGroupedInvestmentsMonthlyUseCase: FakeObserveGroupedInvestmentsMonthlyUseCase
     private lateinit var fakeObserveInvestmentsFilteringUseCase: FakeObserveInvestmentsFilteringUseCase
     private lateinit var fakeObserveInvestmentsSortingUseCase: FakeObserveInvestmentsSortingUseCase
+    private lateinit var fakeObserveGroupedTradesMonthlyUseCase: FakeObserveGroupedTradesMonthlyUseCase
+    private lateinit var fakeObserveTradesFilteringUseCase: FakeObserveTradesFilteringUseCase
+    private lateinit var fakeObserveTradesSortingUseCase: FakeObserveTradesSortingUseCase
     private lateinit var fakeObserveGroupedSavingsMonthlyUseCase: FakeObserveGroupedSavingsMonthlyUseCase
     private lateinit var fakeObserveSavingsSortingUseCase: FakeObserveSavingsSortingUseCase
     private lateinit var fakeObserveWatchlistAssetsUseCase: FakeObserveWatchlistAssetsUseCase
@@ -82,6 +90,9 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveGroupedInvestmentsMonthlyUseCase = FakeObserveGroupedInvestmentsMonthlyUseCase()
         fakeObserveInvestmentsFilteringUseCase = FakeObserveInvestmentsFilteringUseCase()
         fakeObserveInvestmentsSortingUseCase = FakeObserveInvestmentsSortingUseCase()
+        fakeObserveGroupedTradesMonthlyUseCase = FakeObserveGroupedTradesMonthlyUseCase()
+        fakeObserveTradesFilteringUseCase = FakeObserveTradesFilteringUseCase()
+        fakeObserveTradesSortingUseCase = FakeObserveTradesSortingUseCase()
         fakeObserveGroupedSavingsMonthlyUseCase = FakeObserveGroupedSavingsMonthlyUseCase()
         fakeObserveSavingsSortingUseCase = FakeObserveSavingsSortingUseCase()
         fakeObserveWatchlistAssetsUseCase = FakeObserveWatchlistAssetsUseCase()
@@ -99,6 +110,9 @@ class ObserveFinanceUiStateUseCaseTest {
             fakeObserveGroupedInvestmentsMonthlyUseCase,
             fakeObserveInvestmentsFilteringUseCase,
             fakeObserveInvestmentsSortingUseCase,
+            fakeObserveGroupedTradesMonthlyUseCase,
+            fakeObserveTradesFilteringUseCase,
+            fakeObserveTradesSortingUseCase,
             fakeObserveGroupedSavingsMonthlyUseCase,
             fakeObserveSavingsSortingUseCase,
             fakeObserveWatchlistAssetsUseCase,
@@ -286,6 +300,45 @@ class ObserveFinanceUiStateUseCaseTest {
     }
 
     @Test
+    fun `trades filtering ui info reflects applied filter and sort`() = runTest {
+        emitAllSuccess()
+
+        val result = invokeUseCase(
+            tradesFilterType = "buy",
+            tradesSortType = TradesSortType.BY_COST,
+        ).first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val tradesUiInfo = result.data.tradesUiState.filteringUiInfo
+        assertTrue(tradesUiInfo.hasAppliedFilters)
+        assertTrue(tradesUiInfo.showFilterBadge)
+        assertTrue(tradesUiInfo.showSortBadge)
+        assertEquals(R.string.no_trades_search, tradesUiInfo.emptyLabel)
+        assertEquals(R.string.no_trades_search_message, tradesUiInfo.emptyMessage)
+        assertEquals(R.string.reset_filters, tradesUiInfo.emptyButtonLabel)
+    }
+
+    @Test
+    fun `trades filtering ui info has no filters when defaults are used`() = runTest {
+        emitAllSuccess()
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val tradesUiInfo = result.data.tradesUiState.filteringUiInfo
+        assertFalse(tradesUiInfo.hasAppliedFilters)
+        assertFalse(tradesUiInfo.showFilterBadge)
+        assertFalse(tradesUiInfo.showSortBadge)
+        assertEquals(R.string.no_trades, tradesUiInfo.emptyLabel)
+        assertEquals(R.string.no_trades_message, tradesUiInfo.emptyMessage)
+        assertEquals(R.string.add_trade, tradesUiInfo.emptyButtonLabel)
+    }
+
+    @Test
     fun `savings filtering ui info reflects applied sort`() = runTest {
         emitAllSuccess()
 
@@ -372,6 +425,7 @@ class ObserveFinanceUiStateUseCaseTest {
         val uiState = result.data
         assertTrue(uiState.expensesUiState.filteringUiInfo.hasAppliedFilters)
         assertTrue(uiState.investmentsUiState.filteringUiInfo.hasAppliedFilters)
+        assertTrue(uiState.tradesUiState.filteringUiInfo.hasAppliedFilters)
         assertTrue(uiState.savingsUiState.filteringUiInfo.hasAppliedFilters)
         assertTrue(uiState.budgetsUiState.filteringUiInfo.hasAppliedFilters)
     }
@@ -588,6 +642,89 @@ class ObserveFinanceUiStateUseCaseTest {
         assertTrue(uiState.investmentsUiState.isRefreshing)
         assertFalse(uiState.expensesUiState.isLoading)
         assertFalse(uiState.investmentsUiState.isLoading)
+        assertFalse(uiState.tradesUiState.isLoading)
+        assertFalse(uiState.savingsUiState.isLoading)
+        assertFalse(uiState.budgetsUiState.isLoading)
+    }
+
+    @Test
+    fun `tradesUiState isRefreshing is false by default`() = runTest {
+        emitAllSuccess()
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        assertFalse(result.data.tradesUiState.isRefreshing)
+    }
+
+    @Test
+    fun `tradesUiState isRefreshing is true when trades is refreshing`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedTradesMonthlyUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        assertTrue(result.data.tradesUiState.isRefreshing)
+    }
+
+    @Test
+    fun `tradesUiState isRefreshing becomes false after refresh completes`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedTradesMonthlyUseCase.emitRefreshing(true)
+
+        val resultRefreshing = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(resultRefreshing is Async.Success)
+        assertTrue(resultRefreshing.data.tradesUiState.isRefreshing)
+
+        fakeObserveGroupedTradesMonthlyUseCase.emitRefreshing(false)
+
+        val resultDone = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(resultDone is Async.Success)
+        assertFalse(resultDone.data.tradesUiState.isRefreshing)
+    }
+
+    @Test
+    fun `tradesUiState isRefreshing does not affect loading state`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedTradesMonthlyUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val uiState = result.data
+        assertTrue(uiState.tradesUiState.isRefreshing)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `tradesUiState isRefreshing does not affect other ui states`() = runTest {
+        emitAllSuccess()
+        fakeObserveGroupedTradesMonthlyUseCase.emitRefreshing(true)
+
+        val result = invokeUseCase().first()
+
+        advanceUntilIdle()
+
+        assertTrue(result is Async.Success)
+        val uiState = result.data
+        assertTrue(uiState.tradesUiState.isRefreshing)
+        assertFalse(uiState.expensesUiState.isLoading)
+        assertFalse(uiState.investmentsUiState.isLoading)
+        assertFalse(uiState.tradesUiState.isLoading)
         assertFalse(uiState.savingsUiState.isLoading)
         assertFalse(uiState.budgetsUiState.isLoading)
     }
@@ -669,6 +806,7 @@ class ObserveFinanceUiStateUseCaseTest {
         assertTrue(uiState.watchlistAssetsUiState.isRefreshing)
         assertFalse(uiState.expensesUiState.isLoading)
         assertFalse(uiState.investmentsUiState.isLoading)
+        assertFalse(uiState.tradesUiState.isLoading)
         assertFalse(uiState.savingsUiState.isLoading)
         assertFalse(uiState.budgetsUiState.isLoading)
     }
@@ -679,6 +817,8 @@ class ObserveFinanceUiStateUseCaseTest {
         expensesSortType: ExpensesSortType = ExpensesSortType.BY_DATE,
         investmentsFilterType: String = InvestmentsFilterType_All,
         investmentsSortType: InvestmentsSortType = InvestmentsSortType.BY_DATE,
+        tradesFilterType: String = TradesFilterType_All,
+        tradesSortType: TradesSortType = TradesSortType.BY_DATE,
         savingsSortType: SavingsSortType = SavingsSortType.BY_DATE,
         budgetsFilterType: BudgetsFilterType = BudgetsFilterType.ALL_BUDGETS,
         budgetsSortType: BudgetsSortType = BudgetsSortType.BY_DATE,
@@ -688,6 +828,8 @@ class ObserveFinanceUiStateUseCaseTest {
         expensesSortTypeFlow = flowOf(expensesSortType),
         investmentsFilterTypeFlow = flowOf(investmentsFilterType),
         investmentsSortTypeFlow = flowOf(investmentsSortType),
+        tradesFilterTypeFlow = flowOf(tradesFilterType),
+        tradesSortTypeFlow = flowOf(tradesSortType),
         savingsSortTypeFlow = flowOf(savingsSortType),
         budgetsFilterTypeFlow = flowOf(budgetsFilterType),
         budgetsSortTypeFlow = flowOf(budgetsSortType),
@@ -706,6 +848,9 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveGroupedInvestmentsMonthlyUseCase.emit(Async.Loading)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Loading)
         fakeObserveInvestmentsSortingUseCase.emit(Async.Loading)
+        fakeObserveGroupedTradesMonthlyUseCase.emit(Async.Loading)
+        fakeObserveTradesFilteringUseCase.emit(Async.Loading)
+        fakeObserveTradesSortingUseCase.emit(Async.Loading)
         fakeObserveGroupedSavingsMonthlyUseCase.emit(Async.Loading)
         fakeObserveSavingsSortingUseCase.emit(Async.Loading)
         fakeObserveWatchlistAssetsUseCase.emit(Async.Loading)
@@ -724,6 +869,9 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveGroupedInvestmentsMonthlyUseCase.emit(Async.Error)
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Error)
         fakeObserveInvestmentsSortingUseCase.emit(Async.Error)
+        fakeObserveGroupedTradesMonthlyUseCase.emit(Async.Error)
+        fakeObserveTradesFilteringUseCase.emit(Async.Error)
+        fakeObserveTradesSortingUseCase.emit(Async.Error)
         fakeObserveGroupedSavingsMonthlyUseCase.emit(Async.Error)
         fakeObserveSavingsSortingUseCase.emit(Async.Error)
         fakeObserveWatchlistAssetsUseCase.emit(Async.Error)
@@ -745,6 +893,9 @@ class ObserveFinanceUiStateUseCaseTest {
         fakeObserveGroupedInvestmentsMonthlyUseCase.emit(Async.Success(fakeInvestments))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
         fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
+        fakeObserveGroupedTradesMonthlyUseCase.emit(Async.Success(listOf()))
+        fakeObserveTradesFilteringUseCase.emit(Async.Success(listOf()))
+        fakeObserveTradesSortingUseCase.emit(Async.Success(listOf()))
         fakeObserveGroupedSavingsMonthlyUseCase.emit(Async.Success(fakeSavings))
         fakeObserveSavingsSortingUseCase.emit(Async.Success(fakeSavingsSorting))
         fakeObserveWatchlistAssetsUseCase.emit(Async.Success(listOf()))

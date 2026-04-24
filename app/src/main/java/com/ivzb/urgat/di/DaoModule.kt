@@ -52,6 +52,6 @@ class DaoModule {
     fun provideCarMaintenanceDao(appDatabase: AppDatabase): CarMaintenanceDao = appDatabase.carMaintenanceDao()
 
     @Provides
-    fun provideTradingDao(appDatabase: AppDatabase): TradeDao = appDatabase.tradingDao()
+    fun provideTradeDao(appDatabase: AppDatabase): TradeDao = appDatabase.tradeDao()
 
 }

@@ -62,6 +62,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun carMaintenanceDao(): CarMaintenanceDao
 
-    abstract fun tradingDao(): TradeDao
+    abstract fun tradeDao(): TradeDao
 
 }

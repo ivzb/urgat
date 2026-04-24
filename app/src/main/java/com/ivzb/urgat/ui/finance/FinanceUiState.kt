@@ -43,6 +43,7 @@ data class FinanceUiState(
     val hasAppliedFilters: Boolean =
         expensesUiState.filteringUiInfo.hasAppliedFilters ||
         investmentsUiState.filteringUiInfo.hasAppliedFilters ||
+        tradesUiState.filteringUiInfo.hasAppliedFilters ||
         savingsUiState.filteringUiInfo.hasAppliedFilters ||
         budgetsUiState.filteringUiInfo.hasAppliedFilters ||
         watchlistAssetsUiState.filteringUiInfo.hasAppliedFilters
@@ -51,6 +52,7 @@ data class FinanceUiState(
         val uiState = when (page) {
             FinancePage.Expenses -> expensesUiState
             FinancePage.Investments -> investmentsUiState
+            FinancePage.Trades -> tradesUiState
             FinancePage.Savings -> savingsUiState
             FinancePage.Budgets -> budgetsUiState
             FinancePage.Watchlist -> watchlistAssetsUiState

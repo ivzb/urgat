@@ -258,6 +258,11 @@ class FinanceViewModelTest {
     }
 
     @Test
+    fun `fab action click emits AddTrade event`() = runTest {
+        `fab action click emits event`(FinancePage.Trades, FinanceUiEvent.AddTrade)
+    }
+
+    @Test
     fun `fab action click emits AddSaving event`() = runTest {
         `fab action click emits event`(FinancePage.Savings, FinanceUiEvent.AddSaving)
     }
@@ -508,6 +513,34 @@ class FinanceViewModelTest {
     }
 
     @Test
+    fun `resetFilters resets trades filter type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetTradesFiltering("buy"))
+        advanceUntilIdle()
+        assertEquals("buy", fakeFinanceRepository.tradesFilterTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(TradesFilterType_All, fakeFinanceRepository.tradesFilterTypeFlow.value)
+    }
+
+    @Test
+    fun `resetFilters resets trades sort type to default`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.SetTradesSorting(TradesSortType.BY_COST))
+        advanceUntilIdle()
+        assertEquals(TradesSortType.BY_COST, fakeFinanceRepository.tradesSortTypeFlow.value)
+
+        viewModel.onIntent(FinanceIntent.ResetFilters)
+        advanceUntilIdle()
+
+        assertEquals(TradesSortType.BY_DATE, fakeFinanceRepository.tradesSortTypeFlow.value)
+    }
+
+    @Test
     fun `resetFilters resets savings sort type to default`() = runTest {
         viewModel = createViewModel()
 
@@ -559,6 +592,8 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetExpensesSorting(ExpensesSortType.BY_MIN))
         viewModel.onIntent(FinanceIntent.SetInvestmentsFiltering("etfs"))
         viewModel.onIntent(FinanceIntent.SetInvestmentsSorting(InvestmentsSortType.BY_MARKET_VALUE))
+        viewModel.onIntent(FinanceIntent.SetTradesFiltering("buy"))
+        viewModel.onIntent(FinanceIntent.SetTradesSorting(TradesSortType.BY_COST))
         viewModel.onIntent(FinanceIntent.SetSavingsSorting(SavingsSortType.BY_MAX))
         viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(BudgetsFilterType.POSITIVE_BUDGETS))
         viewModel.onIntent(FinanceIntent.SetBudgetsSorting(BudgetsSortType.BY_MIN))
@@ -571,6 +606,8 @@ class FinanceViewModelTest {
         assertEquals(ExpensesSortType.BY_MIN, fakeFinanceRepository.expensesSortTypeFlow.value)
         assertEquals("etfs", fakeFinanceRepository.investmentsFilterTypeFlow.value)
         assertEquals(InvestmentsSortType.BY_MARKET_VALUE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+        assertEquals("buy", fakeFinanceRepository.tradesFilterTypeFlow.value)
+        assertEquals(TradesSortType.BY_COST, fakeFinanceRepository.tradesSortTypeFlow.value)
         assertEquals(SavingsSortType.BY_MAX, fakeFinanceRepository.savingsSortTypeFlow.value)
         assertEquals(BudgetsFilterType.POSITIVE_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
         assertEquals(BudgetsSortType.BY_MIN, fakeFinanceRepository.budgetsSortTypeFlow.value)
@@ -586,6 +623,8 @@ class FinanceViewModelTest {
         assertEquals(ExpensesSortType.BY_DATE, fakeFinanceRepository.expensesSortTypeFlow.value)
         assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
         assertEquals(InvestmentsSortType.BY_DATE, fakeFinanceRepository.investmentsSortTypeFlow.value)
+        assertEquals(TradesFilterType_All, fakeFinanceRepository.tradesFilterTypeFlow.value)
+        assertEquals(TradesSortType.BY_DATE, fakeFinanceRepository.tradesSortTypeFlow.value)
         assertEquals(SavingsSortType.BY_DATE, fakeFinanceRepository.savingsSortTypeFlow.value)
         assertEquals(BudgetsFilterType.ALL_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
         assertEquals(BudgetsSortType.BY_DATE, fakeFinanceRepository.budgetsSortTypeFlow.value)

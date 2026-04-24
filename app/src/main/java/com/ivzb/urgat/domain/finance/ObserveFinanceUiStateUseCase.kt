@@ -13,6 +13,9 @@ import com.ivzb.urgat.domain.investment.ObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.ObserveInvestmentsSortingUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveSavingsSortingUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.ObserveTradesFilteringUseCase
+import com.ivzb.urgat.domain.trades.ObserveTradesSortingUseCase
 import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsSortingUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
@@ -31,6 +34,9 @@ import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
+import com.ivzb.urgat.ui.trades.TradesFilteringUiInfo
+import com.ivzb.urgat.ui.trades.TradesSortType
+import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsFilteringUiInfo
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
@@ -52,6 +58,9 @@ interface ObserveFinanceUiStateUseCase {
 
         investmentsFilterTypeFlow: Flow<String>,
         investmentsSortTypeFlow: Flow<InvestmentsSortType>,
+
+        tradesFilterTypeFlow: Flow<String>,
+        tradesSortTypeFlow: Flow<TradesSortType>,
 
         savingsSortTypeFlow: Flow<SavingsSortType>,
 
@@ -77,6 +86,9 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
     private val observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase,
     private val observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     private val observeInvestmentsSortingUseCase: ObserveInvestmentsSortingUseCase,
+    private val observeGroupedTradesMonthlyUseCase: ObserveGroupedTradesMonthlyUseCase,
+    private val observeTradesFilteringUseCase: ObserveTradesFilteringUseCase,
+    private val observeTradesSortingUseCase: ObserveTradesSortingUseCase,
     private val observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase,
     private val observeSavingsSortingUseCase: ObserveSavingsSortingUseCase,
     private val observeWatchlistAssetsUseCase: ObserveWatchlistAssetsUseCase,
@@ -97,6 +109,9 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         investmentsFilterTypeFlow: Flow<String>,
         investmentsSortTypeFlow: Flow<InvestmentsSortType>,
 
+        tradesFilterTypeFlow: Flow<String>,
+        tradesSortTypeFlow: Flow<TradesSortType>,
+
         savingsSortTypeFlow: Flow<SavingsSortType>,
 
         budgetsFilterTypeFlow: Flow<BudgetsFilterType>,
@@ -114,6 +129,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
 
         val expensesFlow = observeExpensesLightUiState(searchQueryFlow, expensesFilterTypeFlow, expensesSortTypeFlow)
         val investmentsFlow = observeInvestmentsLightUiState(searchQueryFlow, investmentsFilterTypeFlow, investmentsSortTypeFlow)
+        val tradesFlow = observeTradesLightUiState(searchQueryFlow, tradesFilterTypeFlow, tradesSortTypeFlow)
         val savingsFlow = observeSavingsLightUiState(searchQueryFlow, savingsSortTypeFlow)
         val budgetsFlow = observeBudgetsLightUiState(searchQueryFlow, budgetsFilterTypeFlow, budgetsSortTypeFlow)
         val watchlistAssetsFlow = observeWatchlistAssetsLightUiState(searchQueryFlow, watchlistAssetsSortTypeFlow)
@@ -123,6 +139,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         return combineUiState(
             expensesFlow,
             investmentsFlow,
+            tradesFlow,
             savingsFlow,
             budgetsFlow,
             watchlistAssetsFlow,
@@ -136,10 +153,11 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
             onError = {
                 FinanceUiState(hasError = true)
             },
-            onSuccess = { expensesUiState, investmentsUiState, savingsUiState, budgetsUiState, watchlistAssetsUiState, reportBudget, fire, searchQuery ->
+            onSuccess = { expensesUiState, investmentsUiState, tradesUiState, savingsUiState, budgetsUiState, watchlistAssetsUiState, reportBudget, fire, searchQuery ->
                 FinanceUiState(
                     expensesUiState = expensesUiState,
                     investmentsUiState = investmentsUiState,
+                    tradesUiState = tradesUiState,
                     savingsUiState = savingsUiState,
                     budgetsUiState = budgetsUiState,
                     watchlistAssetsUiState = watchlistAssetsUiState,
@@ -206,6 +224,38 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
                 investments = investments,
                 isRefreshing = isRefreshing,
                 filteringUiInfo = InvestmentsFilteringUiInfo.from(
+                    searchQuery = searchQuery,
+                    filterType = filterType,
+                    filterMenuItems = filtering,
+                    sortType = sortType,
+                    sortMenuItems = sorting,
+                ),
+            )
+        }
+    ).map { Async.Success(it) }
+
+    private fun observeTradesLightUiState(
+        searchQueryFlow: Flow<String>,
+        filterTypeFlow: Flow<String>,
+        sortTypeFlow: Flow<TradesSortType>,
+    ): Flow<Async<TradesUiState>> = combineUiState(
+        observeGroupedTradesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeTradesFilteringUseCase(),
+        observeTradesSortingUseCase(),
+        observeGroupedTradesMonthlyUseCase.isRefreshingFlow.map { Async.Success(it) },
+        combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
+
+        onLoading = {
+            TradesUiState(isLoading = true)
+        },
+        onError = {
+            TradesUiState(hasError = true)
+        },
+        onSuccess = { trades, filtering, sorting, isRefreshing, (searchQuery, filterType, sortType) ->
+            TradesUiState(
+                trades = trades,
+                isRefreshing = isRefreshing,
+                filteringUiInfo = TradesFilteringUiInfo.from(
                     searchQuery = searchQuery,
                     filterType = filterType,
                     filterMenuItems = filtering,
@@ -301,4 +351,3 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
     ).map { Async.Success(it) }
 
 }
-

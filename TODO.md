@@ -110,8 +110,7 @@
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
 - make car fuel consumption filtering by car like in maintenance
 - make maintenance more button work
-- add trades to observeFinanceUiStateUseCase
 - add ui tests / screenshot tests when trades tab is enabled
-- add trades ui unit tests
-- make add trade button work
 - make order type selection via switch for buy/sell instead of typing text
+- autofill last trade name and fee
+- remove transaction amount color

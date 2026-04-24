@@ -10,6 +10,12 @@ import com.ivzb.urgat.domain.trade.DeleteTradeUseCase
 import com.ivzb.urgat.domain.trade.GetLastUsedTradeCurrencyUseCase
 import com.ivzb.urgat.domain.trade.GetTradeUseCase
 import com.ivzb.urgat.domain.trade.UpdateTradeUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveTradesFilteringUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveTradesSortingUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.ObserveTradesFilteringUseCase
+import com.ivzb.urgat.domain.trades.ObserveTradesSortingUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -37,6 +43,18 @@ interface TradesUseCaseModule {
     @Singleton
     @Binds
     fun bindsDeleteTradeUseCase(useCase: DefaultDeleteTradeUseCase): DeleteTradeUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedTradesMonthlyUseCase(useCase: DefaultObserveGroupedTradesMonthlyUseCase): ObserveGroupedTradesMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveTradesFilteringUseCase(useCase: DefaultObserveTradesFilteringUseCase): ObserveTradesFilteringUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveTradesSortingUseCase(useCase: DefaultObserveTradesSortingUseCase): ObserveTradesSortingUseCase
 
 }
 

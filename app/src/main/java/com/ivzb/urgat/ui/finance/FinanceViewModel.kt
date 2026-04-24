@@ -16,6 +16,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
+import com.ivzb.urgat.ui.trades.TradesFilterType_All
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -58,6 +59,9 @@ class FinanceViewModel @Inject constructor(
     private val _savedInvestmentsFilterType = financeRepository.investmentsFilterTypeFlow
     private val _savedInvestmentsSortType = financeRepository.investmentsSortTypeFlow
 
+    private val _savedTradesFilterType = financeRepository.tradesFilterTypeFlow
+    private val _savedTradesSortType = financeRepository.tradesSortTypeFlow
+
     private val _savedSavingsSortType = financeRepository.savingsSortTypeFlow
 
     private val _savedBudgetsFilterType = financeRepository.budgetsFilterTypeFlow
@@ -72,6 +76,8 @@ class FinanceViewModel @Inject constructor(
             expensesSortTypeFlow = _savedExpensesSortType,
             investmentsFilterTypeFlow = _savedInvestmentsFilterType,
             investmentsSortTypeFlow = _savedInvestmentsSortType,
+            tradesFilterTypeFlow = _savedTradesFilterType,
+            tradesSortTypeFlow = _savedTradesSortType,
             savingsSortTypeFlow = _savedSavingsSortType,
             budgetsFilterTypeFlow = _savedBudgetsFilterType,
             budgetsSortTypeFlow = _savedBudgetsSortType,
@@ -266,6 +272,8 @@ class FinanceViewModel @Inject constructor(
         setExpensesSorting(ExpensesSortType.BY_DATE)
         setInvestmentsFiltering(InvestmentsFilterType_All)
         setInvestmentsSorting(InvestmentsSortType.BY_DATE)
+        setTradesFiltering(TradesFilterType_All)
+        setTradesSorting(TradesSortType.BY_DATE)
         setBudgetsFiltering(BudgetsFilterType.ALL_BUDGETS)
         setBudgetsSorting(BudgetsSortType.BY_DATE)
         setSavingsSorting(SavingsSortType.BY_DATE)

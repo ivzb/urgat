@@ -28,7 +28,7 @@ interface TradeDao {
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TradeEntity>> {
         return observeAllRaw(
             SearchQueryBuilder.build(
-                tableName = "trading",
+                tableName = "trade",
                 searchColumns = listOf("name", "shares", "marketPrice", "fee", "orderType", "currency"),
                 dateColumn = "date",
                 orderBy = "date DESC, id ASC",

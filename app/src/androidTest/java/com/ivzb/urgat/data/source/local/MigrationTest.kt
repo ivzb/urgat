@@ -218,7 +218,7 @@ class MigrationTest {
                     val actualCarMaintenance = db.carMaintenanceDao().getById("1")
                     assertEquals(carMaintenance, actualCarMaintenance)
 
-                    val trading = TradeEntity(
+                    val trade = TradeEntity(
                         id = "1",
                         name = "AAPL",
                         shares = 10.toBigDecimal(),
@@ -231,10 +231,10 @@ class MigrationTest {
                         createdAt = 1764362076,
                     )
 
-                    db.tradingDao().upsert(trading)
+                    db.tradeDao().upsert(trade)
 
-                    val actualTrading = db.tradingDao().getById("1")
-                    assertEquals(trading, actualTrading)
+                    val actualTrade = db.tradeDao().getById("1")
+                    assertEquals(trade, actualTrade)
                 }
 
                 db.openHelper.writableDatabase.close()
@@ -430,7 +430,7 @@ class MigrationTest {
 
                     db.carMaintenanceDao().upsert(carMaintenance)
 
-                    val trading = TradeEntity(
+                    val trade = TradeEntity(
                         id = "1",
                         name = "AAPL",
                         shares = 10.toBigDecimal(),
@@ -443,7 +443,7 @@ class MigrationTest {
                         createdAt = 1764362076,
                     )
 
-                    db.tradingDao().upsert(trading)
+                    db.tradeDao().upsert(trade)
                 }
 
                 // verify new fields are updated
@@ -541,8 +541,8 @@ class MigrationTest {
 
                     assertEquals(expectedCarMaintenance, actualCarMaintenance)
 
-                    val actualTrading = db.tradingDao().getById("1")
-                    val expectedTrading = TradeEntity(
+                    val actualTrade = db.tradeDao().getById("1")
+                    val expectedTrade = TradeEntity(
                         id = "1",
                         name = "AAPL",
                         shares = 10.toBigDecimal(),
@@ -555,7 +555,7 @@ class MigrationTest {
                         createdAt = 1764362076,
                     )
 
-                    assertEquals(expectedTrading, actualTrading)
+                    assertEquals(expectedTrade, actualTrade)
                 }
 
                 db.close()

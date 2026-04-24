@@ -71,6 +71,7 @@
     <string name="sort_by_min">Sort by min</string>
     <string name="sort_by_max">Sort by max</string>
     <string name="sort_by_market_value">Sort by market value</string>
+    <string name="sort_by_cost">Sort by cost</string>
     <string name="no_expenses">You have no expenses!</string>
     <string name="no_expenses_label">See where your money goes.</string>
     <string name="no_expenses_message">Tap "Add Expense" to track your first one.</string>
