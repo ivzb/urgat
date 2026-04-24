@@ -9,6 +9,7 @@ import com.ivzb.urgat.ui.addEditInvestment.AddEditInvestmentRoute
 import com.ivzb.urgat.ui.addEditNote.AddEditNoteRoute
 import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
+import com.ivzb.urgat.ui.addEditTrade.AddEditTradeRoute
 import com.ivzb.urgat.ui.addEditWatchlistAsset.AddEditWatchlistAssetRoute
 import com.ivzb.urgat.ui.expenses.ExpensesRoute
 import com.ivzb.urgat.ui.investments.InvestmentsRoute
@@ -89,19 +90,17 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddTrade() {
-        // todo:
-//        navigator.navigate(AddEditTradeRoute(
-//            id = null,
-//            titleResId = R.string.add_trade
-//        ))
+        navigator.navigate(AddEditTradeRoute(
+            id = null,
+            titleResId = R.string.add_trade
+        ))
     }
 
     fun navigateToEditTrade(tradeId: String) {
-        // todo:
-//        navigator.navigate(AddEditTradeRoute(
-//            id = tradeId,
-//            titleResId = R.string.edit_trade
-//        ))
+        navigator.navigate(AddEditTradeRoute(
+            id = tradeId,
+            titleResId = R.string.edit_trade
+        ))
     }
 
     fun navigateToSavings() {

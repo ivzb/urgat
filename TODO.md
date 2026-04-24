@@ -114,3 +114,4 @@
 - add ui tests / screenshot tests when trades tab is enabled
 - add trades ui unit tests
 - make add trade button work
+- make order type selection via switch for buy/sell instead of typing text

@@ -52,8 +52,8 @@ class AddEditTradeViewModel @AssistedInject constructor(
         when (intent) {
             is AddEditTradeIntent.UpdateName -> updateName(intent.value)
             is AddEditTradeIntent.UpdateShares -> updateShares(intent.value)
-            is AddEditTradeIntent.UpdateMarketPrice -> updateMarketPrice(intent.value)
             is AddEditTradeIntent.UpdateFee -> updateFee(intent.value)
+            is AddEditTradeIntent.UpdateMarketPrice -> updateMarketPrice(intent.value)
             is AddEditTradeIntent.UpdateCurrency -> updateCurrency(intent.value)
             is AddEditTradeIntent.UpdateOrderType -> updateOrderType(intent.value)
             is AddEditTradeIntent.UpdateDate -> updateDate(intent.value)
@@ -72,12 +72,12 @@ class AddEditTradeViewModel @AssistedInject constructor(
         _uiState.update { it.copy(shares = shares) }
     }
 
-    private fun updateMarketPrice(marketPrice: String) {
-        _uiState.update { it.copy(marketPrice = marketPrice) }
-    }
-
     private fun updateFee(fee: String) {
         _uiState.update { it.copy(fee = fee) }
+    }
+
+    private fun updateMarketPrice(marketPrice: String) {
+        _uiState.update { it.copy(marketPrice = marketPrice) }
     }
 
     private fun updateCurrency(currency: String) {
@@ -96,8 +96,8 @@ class AddEditTradeViewModel @AssistedInject constructor(
         val fields = listOf(
             uiState.value.name,
             uiState.value.shares,
-            uiState.value.marketPrice,
             uiState.value.fee,
+            uiState.value.marketPrice,
             uiState.value.currency,
             uiState.value.orderType,
         )
@@ -126,8 +126,8 @@ class AddEditTradeViewModel @AssistedInject constructor(
         createTradeUseCase(
             name = uiState.value.name.sanitize(),
             shares = uiState.value.shares.sanitize().toBigDecimal(),
-            marketPrice = uiState.value.marketPrice.sanitize().toBigDecimal(),
             fee = uiState.value.fee.sanitize().toBigDecimal(),
+            marketPrice = uiState.value.marketPrice.sanitize().toBigDecimal(),
             currency = uiState.value.currency.sanitize(),
             orderType = uiState.value.orderType.sanitize(),
             date = uiState.value.date,
@@ -154,8 +154,8 @@ class AddEditTradeViewModel @AssistedInject constructor(
                 tradeId,
                 name = uiState.value.name.sanitize(),
                 shares = uiState.value.shares.sanitize().toBigDecimal(),
-                marketPrice = uiState.value.marketPrice.sanitize().toBigDecimal(),
                 fee = uiState.value.fee.sanitize().toBigDecimal(),
+                marketPrice = uiState.value.marketPrice.sanitize().toBigDecimal(),
                 currency = uiState.value.currency.sanitize(),
                 orderType = uiState.value.orderType.sanitize(),
                 date = uiState.value.date,

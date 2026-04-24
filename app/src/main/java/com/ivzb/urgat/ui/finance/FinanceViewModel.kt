@@ -146,6 +146,7 @@ class FinanceViewModel @Inject constructor(
                     when (page) {
                         is FinancePage.Expenses -> FinanceUiEvent.AddExpense
                         is FinancePage.Investments -> FinanceUiEvent.AddInvestment
+                        is FinancePage.Trades -> FinanceUiEvent.AddTrade
                         is FinancePage.Savings -> FinanceUiEvent.AddSaving
                         is FinancePage.Budgets -> FinanceUiEvent.AddBudget
                         is FinancePage.Watchlist -> FinanceUiEvent.AddWatchlistAsset

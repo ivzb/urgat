@@ -58,8 +58,8 @@ import kotlinx.coroutines.launch
 enum class TradeFieldId {
     Name,
     Shares,
-    MarketPrice,
     Fee,
+    MarketPrice,
     Currency,
     OrderType,
     Date,
@@ -189,6 +189,34 @@ fun AddEditTradeScreen(
                     )
 
                     TextField(
+                        value = uiState.fee,
+                        onValueChange = {
+                            onIntent(AddEditTradeIntent.UpdateFee(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.fee_percent_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[TradeFieldId.Fee.ordinal]),
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.vertical_margin))
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+                ) {
+
+                    TextField(
                         value = uiState.marketPrice,
                         onValueChange = {
                             onIntent(AddEditTradeIntent.UpdateMarketPrice(it))
@@ -203,6 +231,22 @@ fun AddEditTradeScreen(
                             .weight(1f)
                             .focusRequester(focusRequesters[TradeFieldId.MarketPrice.ordinal]),
                     )
+
+                    TextField(
+                        value = uiState.currency,
+                        onValueChange = {
+                            onIntent(AddEditTradeIntent.UpdateCurrency(it))
+                        },
+                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequesters[TradeFieldId.Currency.ordinal]),
+                    )
                 }
 
                 Spacer(
@@ -215,21 +259,6 @@ fun AddEditTradeScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
                 ) {
-                    TextField(
-                        value = uiState.fee,
-                        onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateFee(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fee_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.Fee.ordinal]),
-                    )
 
                     TextField(
                         value = uiState.orderType,
@@ -245,33 +274,6 @@ fun AddEditTradeScreen(
                         modifier = Modifier
                             .weight(1f)
                             .focusRequester(focusRequesters[TradeFieldId.OrderType.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.Currency.ordinal]),
                     )
 
                     DatePicker(
