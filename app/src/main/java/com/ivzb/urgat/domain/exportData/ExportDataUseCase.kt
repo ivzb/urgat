@@ -7,6 +7,8 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_FILE_NAME
@@ -30,6 +32,7 @@ import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.trade.TradeDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.di.IoDispatcher
@@ -55,6 +58,7 @@ class DefaultExportDataUseCase @Inject constructor(
     private val weightDao: WeightDao,
     private val fuelConsumptionDao: FuelConsumptionDao,
     private val carMaintenanceDao: CarMaintenanceDao,
+    private val tradeDao: TradeDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ExportDataUseCase {
 
@@ -70,6 +74,7 @@ class DefaultExportDataUseCase @Inject constructor(
             exportDataRepository.exportCsv(uri, weightDao.stream(), WEIGHTS_CSV_FILE_NAME, WEIGHTS_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, fuelConsumptionDao.stream(), FUEL_CONSUMPTION_CSV_FILE_NAME, FUEL_CONSUMPTION_CSV_MAPPING)
             exportDataRepository.exportCsv(uri, carMaintenanceDao.stream(), CAR_MAINTENANCE_CSV_FILE_NAME, CAR_MAINTENANCE_CSV_MAPPING)
+            exportDataRepository.exportCsv(uri, tradeDao.stream(), TRADES_CSV_FILE_NAME, TRADES_CSV_MAPPING)
         }
     }
 

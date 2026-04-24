@@ -9,6 +9,7 @@ sealed class ImportDataPage(
 ) {
     data object Expenses: ImportDataPage(R.string.expenses)
     data object Investments: ImportDataPage(R.string.investments)
+    data object Trades: ImportDataPage(R.string.trades)
     data object Savings: ImportDataPage(R.string.savings)
     data object Budgets: ImportDataPage(R.string.budgets)
     data object Todos: ImportDataPage(R.string.todo)
@@ -22,6 +23,7 @@ sealed class ImportDataPage(
 val IMPORT_DATA_PAGES = listOf(
     ImportDataPage.Expenses,
     ImportDataPage.Investments,
+    ImportDataPage.Trades,
     ImportDataPage.Savings,
     ImportDataPage.Budgets,
     ImportDataPage.Todos,

@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
 import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoEntity
+import com.ivzb.urgat.data.trade.TradeEntity
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightEntity
 import java.util.UUID
@@ -29,6 +30,7 @@ data class CsvMapping(
         const val WEIGHTS_CSV_FILE_NAME = "weights.csv"
         const val FUEL_CONSUMPTION_CSV_FILE_NAME = "fuel_consumption.csv"
         const val CAR_MAINTENANCE_CSV_FILE_NAME = "car_maintenance.csv"
+        const val TRADES_CSV_FILE_NAME = "trades.csv"
 
         val TODOS_CSV_MAPPING = listOf(
             CsvMapping("id", "string"),
@@ -116,6 +118,18 @@ data class CsvMapping(
             CsvMapping("url", "string?"),
             CsvMapping("carName", "string"),
             CsvMapping("odometer", "int"),
+            CsvMapping("date", "long"),
+            CsvMapping("createdAt", "long"),
+        )
+
+        val TRADES_CSV_MAPPING = listOf(
+            CsvMapping("id", "string"),
+            CsvMapping("name", "string"),
+            CsvMapping("shares", "big_decimal"),
+            CsvMapping("fee", "big_decimal"),
+            CsvMapping("marketPrice", "big_decimal"),
+            CsvMapping("currency", "string"),
+            CsvMapping("orderType", "string"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -257,6 +271,23 @@ data class CsvMapping(
                 date = split[6].toLong(),
                 isDeleted = false,
                 createdAt = split[7].toLong(),
+            )
+        }
+
+        fun parseTradeCsv(line: String): TradeEntity {
+            val split = splitCsvLine(line)
+
+            return TradeEntity(
+                id = split[0].ifEmpty { UUID.randomUUID().toString() },
+                name = split[1],
+                shares = split[2].toBigDecimal(),
+                fee = split[3].toBigDecimal(),
+                marketPrice = split[4].toBigDecimal(),
+                currency = split[5],
+                orderType = split[6],
+                date = split[7].toLong(),
+                isDeleted = false,
+                createdAt = split[8].toLong(),
             )
         }
 

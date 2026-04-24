@@ -18,6 +18,8 @@ import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.saving.SavingEntity
 import com.ivzb.urgat.data.todo.TodoDao
 import com.ivzb.urgat.data.todo.TodoEntity
+import com.ivzb.urgat.data.trade.TradeDao
+import com.ivzb.urgat.data.trade.TradeEntity
 import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightDao
@@ -44,6 +46,7 @@ class DefaultImportDataUseCaseTest {
     private lateinit var weightDao: WeightDao
     private lateinit var fuelConsumptionDao: FuelConsumptionDao
     private lateinit var carMaintenanceDao: CarMaintenanceDao
+    private lateinit var tradeDao: TradeDao
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var importDataUseCase: ImportDataUseCase
@@ -63,6 +66,7 @@ class DefaultImportDataUseCaseTest {
         weightDao = mockk(relaxed = true)
         fuelConsumptionDao = mockk(relaxed = true)
         carMaintenanceDao = mockk(relaxed = true)
+        tradeDao = mockk(relaxed = true)
 
         importDataUseCase = DefaultImportDataUseCase(
             importDataRepository,
@@ -76,6 +80,7 @@ class DefaultImportDataUseCaseTest {
             weightDao,
             fuelConsumptionDao,
             carMaintenanceDao,
+            tradeDao,
             dispatcher,
         )
     }
@@ -97,6 +102,7 @@ class DefaultImportDataUseCaseTest {
             importDataRepository.importCsv<WeightEntity>(eq(uri), eq("weights.csv"), any(), any())
             importDataRepository.importCsv<FuelConsumptionEntity>(eq(uri), eq("fuel_consumption.csv"), any(), any())
             importDataRepository.importCsv<CarMaintenanceEntity>(eq(uri), eq("car_maintenance.csv"), any(), any())
+            importDataRepository.importCsv<TradeEntity>(eq(uri), eq("trades.csv"), any(), any())
         }
     }
 }

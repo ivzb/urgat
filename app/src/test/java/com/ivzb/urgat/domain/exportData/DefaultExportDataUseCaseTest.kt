@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.budget.BudgetDao
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceDao
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
@@ -21,6 +22,7 @@ import com.ivzb.urgat.data.investment.InvestmentDao
 import com.ivzb.urgat.data.note.NoteDao
 import com.ivzb.urgat.data.saving.SavingDao
 import com.ivzb.urgat.data.todo.TodoDao
+import com.ivzb.urgat.data.trade.TradeDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import io.mockk.coVerify
@@ -46,6 +48,7 @@ class DefaultExportDataUseCaseTest {
     private lateinit var weightDao: WeightDao
     private lateinit var fuelConsumptionDao: FuelConsumptionDao
     private lateinit var carMaintenanceDao: CarMaintenanceDao
+    private lateinit var tradeDao: TradeDao
     private val dispatcher = StandardTestDispatcher()
 
     private lateinit var exportDataUseCase: ExportDataUseCase
@@ -65,6 +68,7 @@ class DefaultExportDataUseCaseTest {
         weightDao = mockk(relaxed = true)
         fuelConsumptionDao = mockk(relaxed = true)
         carMaintenanceDao = mockk(relaxed = true)
+        tradeDao = mockk(relaxed = true)
 
         exportDataUseCase = DefaultExportDataUseCase(
             exportDataRepository,
@@ -78,6 +82,7 @@ class DefaultExportDataUseCaseTest {
             weightDao,
             fuelConsumptionDao,
             carMaintenanceDao,
+            tradeDao,
             dispatcher,
         )
     }
@@ -116,6 +121,9 @@ class DefaultExportDataUseCaseTest {
         val carMaintenanceCursor = mockk<Cursor>()
         every { carMaintenanceDao.stream() } returns carMaintenanceCursor
 
+        val tradesCursor = mockk<Cursor>()
+        every { tradeDao.stream() } returns tradesCursor
+
         exportDataUseCase(uri)
 
         coVerify(exactly = 1) {
@@ -129,6 +137,7 @@ class DefaultExportDataUseCaseTest {
             exportDataRepository.exportCsv(eq(uri), eq(weightsCursor), eq("weights.csv"), eq(WEIGHTS_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(fuelConsumptionCursor), eq("fuel_consumption.csv"), eq(FUEL_CONSUMPTION_CSV_MAPPING))
             exportDataRepository.exportCsv(eq(uri), eq(carMaintenanceCursor), eq("car_maintenance.csv"), eq(CAR_MAINTENANCE_CSV_MAPPING))
+            exportDataRepository.exportCsv(eq(uri), eq(tradesCursor), eq("trades.csv"), eq(TRADES_CSV_MAPPING))
         }
     }
 }

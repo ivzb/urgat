@@ -8,6 +8,8 @@ import com.ivzb.urgat.domain.trade.CreateTradeUseCase
 import com.ivzb.urgat.domain.trade.DeleteTradeUseCase
 import com.ivzb.urgat.domain.trade.GetTradeUseCase
 import com.ivzb.urgat.domain.trade.GetLastUsedTradeCurrencyUseCase
+import com.ivzb.urgat.domain.trade.GetLastUsedTradeFeeUseCase
+import com.ivzb.urgat.domain.trade.GetLastUsedTradeNameUseCase
 import com.ivzb.urgat.domain.trade.UpdateTradeUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
@@ -26,6 +28,8 @@ class AddEditTradeViewModel @AssistedInject constructor(
     @Assisted val route: AddEditTradeRoute,
     private val getTradeUseCase: GetTradeUseCase,
     private val getLastUsedTradeCurrencyUseCase: GetLastUsedTradeCurrencyUseCase,
+    private val getLastUsedTradeNameUseCase: GetLastUsedTradeNameUseCase,
+    private val getLastUsedTradeFeeUseCase: GetLastUsedTradeFeeUseCase,
     private val createTradeUseCase: CreateTradeUseCase,
     private val updateTradeUseCase: UpdateTradeUseCase,
     private val deleteTradeUseCase: DeleteTradeUseCase,
@@ -44,7 +48,7 @@ class AddEditTradeViewModel @AssistedInject constructor(
         if (tradeId != null) {
             loadTrade(tradeId)
         } else {
-            loadLastUsedCurrency()
+            loadLastUsedData()
         }
     }
 
@@ -213,14 +217,18 @@ class AddEditTradeViewModel @AssistedInject constructor(
         }
     }
 
-    private fun loadLastUsedCurrency() {
+    private fun loadLastUsedData() {
         viewModelScope.launch {
+            val name = getLastUsedTradeNameUseCase()
+            val fee = getLastUsedTradeFeeUseCase()
             val currency = getLastUsedTradeCurrencyUseCase()
 
-            if (currency != null) {
-                _uiState.update {
-                    it.copy(currency = currency)
-                }
+            _uiState.update {
+                it.copy(
+                    name = name ?: it.name,
+                    fee = fee ?: it.fee,
+                    currency = currency ?: it.currency,
+                )
             }
         }
     }

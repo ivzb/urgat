@@ -27,6 +27,9 @@ data class Trade(
 
     companion object {
 
+        const val ORDER_TYPE_BUY = "buy"
+        const val ORDER_TYPE_SELL = "sell"
+
         fun total(trades: List<Trade>): List<TradeTotal> =
             trades
                 .groupBy { it.currency.formatCurrency() }

@@ -58,4 +58,10 @@ interface TradeDao {
     @Query("SELECT currency FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
     suspend fun getLastUsedCurrency(): String?
 
+    @Query("SELECT name FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedName(): String?
+
+    @Query("SELECT fee FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedFee(): String?
+
 }

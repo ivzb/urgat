@@ -11,6 +11,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import org.junit.Test
 import org.junit.experimental.categories.Category
@@ -20,76 +21,40 @@ class FinanceScreenshotTest: ScreenshotTest() {
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_FinanceScreen_sampleData_expenses_transactions() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 0)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_expenses_monthly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 1)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_expenses_yearly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 2)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_expenses_all_time() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 0, expensesInitialPage = 3)
+    fun screenshotTest_FinanceScreen_sampleData_expenses() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 0)
 
     @Test
     @Category(PlayStoreScreenshotTest::class)
-    fun screenshotTest_FinanceScreen_sampleData_investments_transactions() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 0)
+    fun screenshotTest_FinanceScreen_sampleData_investments() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 1)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_investments_yearly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 1)
+    fun screenshotTest_FinanceScreen_sampleData_trades() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 2)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_investments_all_time() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 2)
+    fun screenshotTest_FinanceScreen_sampleData_savings() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 3)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_investments_assets() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 1, investmentsInitialPage = 3)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_savings_transactions() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 0)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_savings_monthly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 1)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_savings_yearly() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 2)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_savings_all_time() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 2, savingsInitialPage = 3)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_budgets_transactions() =
-        screenshotTest_FinanceScreen_sampleData(initialPage = 3, budgetsInitialPage = 0)
-
-    @Test
-    fun screenshotTest_FinanceScreen_sampleData_report() =
+    fun screenshotTest_FinanceScreen_sampleData_budgets() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 4)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_watchlist_assets() =
+    fun screenshotTest_FinanceScreen_sampleData_report() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 5)
 
     @Test
-    fun screenshotTest_FinanceScreen_sampleData_fire() =
+    fun screenshotTest_FinanceScreen_sampleData_watchlist_assets() =
         screenshotTest_FinanceScreen_sampleData(initialPage = 6)
+
+    @Test
+    fun screenshotTest_FinanceScreen_sampleData_fire() =
+        screenshotTest_FinanceScreen_sampleData(initialPage = 7)
 
     private fun screenshotTest_FinanceScreen_sampleData(
         initialPage: Int,
-        expensesInitialPage: Int = 0,
-        investmentsInitialPage: Int = 0,
-        savingsInitialPage: Int = 0,
-        budgetsInitialPage: Int = 0,
     ) = screenshotTest(
         uiState = FinanceUiState(
             expensesUiState = ExpensesUiState(
@@ -97,7 +62,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
                 categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
                 categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
-                initialPage = expensesInitialPage,
             ),
             investmentsUiState = InvestmentsUiState(
                 investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
@@ -105,18 +69,18 @@ class FinanceScreenshotTest: ScreenshotTest() {
                 assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
                 categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
                 netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
-                initialPage = investmentsInitialPage,
+            ),
+            tradesUiState = TradesUiState(
+                trades = SampleData.SAMPLE_TRADES_GROUPED,
             ),
             savingsUiState = SavingsUiState(
                 savings = SampleData.SAMPLE_SAVINGS_GROUPED,
                 categoriesMonthly = SampleData.SAMPLE_SAVINGS_CATEGORIES_MONTHLY,
                 categoriesYearly = SampleData.SAMPLE_SAVINGS_CATEGORIES_YEARLY,
                 categoriesAllTime = SampleData.SAMPLE_SAVINGS_CATEGORIES_ALL_TIME,
-                initialPage = savingsInitialPage,
             ),
             budgetsUiState = BudgetsUiState(
                 budgets = SampleData.SAMPLE_BUDGETS,
-                initialPage = budgetsInitialPage,
             ),
             watchlistAssetsUiState = WatchlistAssetsUiState(
                 watchlistAssets = SampleData.SAMPLE_WATCHLIST_ASSETS,

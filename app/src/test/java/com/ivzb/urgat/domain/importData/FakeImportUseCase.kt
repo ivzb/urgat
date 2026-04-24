@@ -15,6 +15,7 @@ class FakeImportUseCase : ImportDataUseCase {
     var invokedWeights: Boolean = false
     var invokedFuelConsumption: Boolean = false
     var invokedCarMaintenance: Boolean = false
+    var invokedTrades: Boolean = false
 
     override suspend fun invoke(uri: Uri) {
         invoked = true
@@ -58,6 +59,10 @@ class FakeImportUseCase : ImportDataUseCase {
 
     override suspend fun importCarMaintenance(content: String) {
         invokedCarMaintenance = true
+    }
+
+    override suspend fun importTrades(content: String) {
+        invokedTrades = true
     }
 
 }

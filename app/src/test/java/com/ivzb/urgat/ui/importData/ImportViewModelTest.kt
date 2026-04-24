@@ -155,6 +155,22 @@ class ImportViewModelTest {
     }
 
     @Test
+    fun `importDataManually trades invokes importUseCase and updates ui state`() = runTest {
+        viewModel.onIntent(ImportDataIntent.UpdateContent(ImportDataPage.Trades, "test"))
+        viewModel.onIntent(ImportDataIntent.ImportDataManually(ImportDataPage.Trades))
+
+        advanceUntilIdle()
+
+        assertFalse(importUseCase.invoked)
+        assertTrue(importUseCase.invokedTrades)
+
+        val uiState = viewModel.uiState.value
+        assertTrue(uiState.manualDataContent.isEmpty())
+        assertFalse(uiState.isLoading)
+        assertEquals(R.string.import_data_done, uiState.userMessage)
+    }
+
+    @Test
     fun `userMessageShown invokes updates ui state`() = runTest {
         viewModel.onIntent(ImportDataIntent.UserMessageShown)
 
