@@ -20,7 +20,7 @@ data class Trade(
 ) {
 
     val totalPrice: BigDecimal
-        get() = (marketPrice * shares) + fee
+        get() = (marketPrice * shares)// - fee
 
     fun formatCsv(): String =
         "\"$id\", \"$name\", \"$shares\", \"$marketPrice\", \"$fee\", \"$currency\", \"$orderType\", $date, $createdAt"
