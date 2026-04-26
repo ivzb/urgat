@@ -1,3 +1,8 @@
+## Release notes 26.04.24
+
+Improved:
+- Fee excluded from trade total calculation.
+
 ## Release notes 26.04.23
 
 New:
