@@ -1,3 +1,7 @@
+## Release notes 26.05.01
+
+No release notes.
+
 ## Release notes 26.05.00
 
 New:
