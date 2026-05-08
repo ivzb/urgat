@@ -1,3 +1,8 @@
+## Release notes 26.05.00
+
+New:
+- Modified Bitcoin price feed to display in EUR currency.
+
 ## Release notes 26.04.25
 
 No release notes.
