@@ -183,12 +183,12 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
     }
 
     @Test
-    fun `normalizes currency before comparison with BTC-USD mapping`() = runTest {
+    fun `normalizes currency before comparison with BTC-EUR mapping`() = runTest {
         marketPriceRepository.prices["COIN"] = MarketPrice(
             symbol = "COIN",
             description = "Coinbase",
             price = BigDecimal("250.00"),
-            currency = "BTC-USD",
+            currency = "BTC-EUR",
             previousClosePrice = BigDecimal("248.00"),
             pricePrecision = 2,
         )
@@ -199,12 +199,12 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
     }
 
     @Test
-    fun `normalizes currency before comparison with ETH-USD mapping`() = runTest {
+    fun `normalizes currency before comparison with ETH-EUR mapping`() = runTest {
         marketPriceRepository.prices["TOKEN"] = MarketPrice(
             symbol = "TOKEN",
             description = "Token",
             price = BigDecimal("3500.00"),
-            currency = "ETH-USD",
+            currency = "ETH-EUR",
             previousClosePrice = BigDecimal("3480.00"),
             pricePrecision = 2,
         )
