@@ -32,7 +32,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
 ): ViewModel() {
 
     private val screenTitleResId: Int = route.titleResId
-    private val investmentId: String? = route.id
+    private var investmentId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditInvestmentUiState(
         screenTitleResId = screenTitleResId,
@@ -41,8 +41,10 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     val uiState: StateFlow<AddEditInvestmentUiState> = _uiState.asStateFlow()
 
     init {
-        if (investmentId != null) {
-            loadInvestment(investmentId)
+        val id = investmentId
+
+        if (id != null) {
+            loadInvestment(id)
         } else {
             loadLastUsedCurrency()
         }
@@ -144,7 +146,9 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     }
 
     private fun updateInvestment() {
-        if (investmentId == null) {
+        val id = investmentId
+
+        if (id == null) {
             Assert.fail("updateInvestment() was called but id is null.")
 
             _uiState.update {
@@ -156,7 +160,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             updateInvestmentUseCase(
-                investmentId,
+                id,
                 name = uiState.value.name.sanitize(),
                 shares = uiState.value.shares.sanitize().toBigDecimal(),
                 costPrice = uiState.value.costPrice.sanitize().toBigDecimal(),
@@ -172,7 +176,9 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     }
 
     private fun deleteInvestment() {
-        if (investmentId == null) {
+        val id = investmentId
+
+        if (id == null) {
             Assert.fail("deleteInvestment() was called but id is null.")
 
             _uiState.update {
@@ -183,7 +189,7 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            deleteInvestmentUseCase(investmentId)
+            deleteInvestmentUseCase(id)
 
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
@@ -202,12 +208,15 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
             return
         }
 
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(date = System.currentTimeMillis())
-            }
+        investmentId = null
 
-            createNewInvestment()
+        _uiState.update {
+            it.copy(
+                screenTitleResId = R.string.add_investment,
+                date = System.currentTimeMillis(),
+                withDelete = false,
+                withDuplicate = false,
+            )
         }
     }
 

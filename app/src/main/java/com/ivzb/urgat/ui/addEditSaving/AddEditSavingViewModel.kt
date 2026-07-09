@@ -32,7 +32,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
 ): ViewModel() {
 
     private val screenTitleResId: Int = route.titleResId
-    private val savingId: String? = route.id
+    private var savingId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditSavingUiState(
         screenTitleResId = screenTitleResId,
@@ -41,8 +41,10 @@ class AddEditSavingViewModel @AssistedInject constructor(
     val uiState: StateFlow<AddEditSavingUiState> = _uiState.asStateFlow()
 
     init {
-        if (savingId != null) {
-            loadSaving(savingId)
+        val id = savingId
+
+        if (id != null) {
+            loadSaving(id)
         } else {
             loadLastUsedCurrency()
         }
@@ -126,7 +128,9 @@ class AddEditSavingViewModel @AssistedInject constructor(
     }
 
     private fun updateSaving() {
-        if (savingId == null) {
+        val id = savingId
+
+        if (id == null) {
             Assert.fail("updateSaving() was called but id is null.")
 
             _uiState.update {
@@ -138,7 +142,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             updateSavingUseCase(
-                savingId,
+                id,
                 name = uiState.value.name.sanitize(),
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
                 currency = uiState.value.currency.sanitize(),
@@ -152,7 +156,9 @@ class AddEditSavingViewModel @AssistedInject constructor(
     }
 
     private fun deleteSaving() {
-        if (savingId == null) {
+        val id = savingId
+
+        if (id == null) {
             Assert.fail("deleteSaving() was called but id is null.")
 
             _uiState.update {
@@ -163,7 +169,7 @@ class AddEditSavingViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            deleteSavingUseCase(savingId)
+            deleteSavingUseCase(id)
 
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
@@ -182,12 +188,15 @@ class AddEditSavingViewModel @AssistedInject constructor(
             return
         }
 
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(date = System.currentTimeMillis())
-            }
+        savingId = null
 
-            createNewSaving()
+        _uiState.update {
+            it.copy(
+                screenTitleResId = R.string.add_saving,
+                date = System.currentTimeMillis(),
+                withDelete = false,
+                withDuplicate = false,
+            )
         }
     }
 

@@ -274,7 +274,7 @@ class AddEditExpenseViewModelTest {
     }
 
     @Test
-    fun `duplicateExpense creates new expense with current date`() = runTest {
+   fun `duplicateExpense resets state to create mode with current data`() = runTest {
         val expenseId = "123"
         val expense = Expense(
             id = expenseId,
@@ -297,18 +297,54 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, currency, category, date, excludeFromAnalytics) = createUseCase.created
-        assertEquals("Taxi", name)
-        assertEquals(BigDecimal("15"), amount)
-        assertEquals("EUR", currency)
-        assertEquals("Transport", category)
-        assertTrue((date as Long) > 123L)
-        assertEquals(false, excludeFromAnalytics)
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_expense, state.screenTitleResId)
+        assertEquals("Taxi", state.name)
+        assertEquals("15", state.amount)
+        assertEquals("EUR", state.currency)
+        assertEquals("Transport", state.category)
+        assertTrue(state.date > 123L)
+        assertEquals(false, state.excludeFromAnalytics)
+        assertFalse(state.withDelete)
+        assertFalse(state.withDuplicate)
+        assertFalse(state.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateExpense then save creates new expense`() = runTest {
+        val expenseId = "123"
+        val expense = Expense(
+            id = expenseId,
+            name = "Taxi",
+            amount = BigDecimal("15"),
+            currency = "EUR",
+            category = "Transport",
+            date = 123L,
+            excludeFromAnalytics = false,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = expense
+
+        viewModel = createViewModel(expenseId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditExpenseIntent.DuplicateExpense)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
-    fun `duplicateExpense with modified fields creates new expense`() = runTest {
+    fun `duplicateExpense with modified fields then save creates new expense`() = runTest {
         val expenseId = "456"
         val expense = Expense(
             id = expenseId,
@@ -333,13 +369,15 @@ class AddEditExpenseViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, currency, category, _, excludeFromAnalytics) = createUseCase.created
-        assertEquals("Tea", name)
-        assertEquals(BigDecimal("3"), amount)
-        assertEquals("EUR", currency)
-        assertEquals("Food", category)
-        assertEquals(true, excludeFromAnalytics)
-        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_expense, state.screenTitleResId)
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
+        assertTrue(state.shouldNavigateBack)
     }
 
     @Test
@@ -420,8 +458,5 @@ class AddEditExpenseViewModelTest {
         )
     }
 
-    private operator fun <T> List<T>.component6(): T = this[5]
-
-    private operator fun <T> List<T>.component7(): T = this[6]
 
 }

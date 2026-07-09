@@ -281,7 +281,7 @@ class AddEditBudgetViewModelTest {
     }
 
     @Test
-    fun `duplicateBudget creates new budget with current date`() = runTest {
+    fun `duplicateBudget resets state to create mode with current data`() = runTest {
         val budgetId = "123"
         val budget = Budget(
             id = budgetId,
@@ -303,17 +303,52 @@ class AddEditBudgetViewModelTest {
 
         advanceUntilIdle()
 
-        val (income, bankStart, bankEnd, currency, date) = createUseCase.created
-        assertEquals(BigDecimal("5000"), income)
-        assertEquals(BigDecimal("3500"), bankStart)
-        assertEquals(BigDecimal("7500"), bankEnd)
-        assertEquals("EUR", currency)
-        assertTrue((date as Long) > 123L)
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_budget, state.screenTitleResId)
+        assertEquals("5000", state.income)
+        assertEquals("3500", state.bankStart)
+        assertEquals("7500", state.bankEnd)
+        assertEquals("EUR", state.currency)
+        assertTrue(state.date > 123L)
+        assertFalse(state.withDelete)
+        assertFalse(state.withDuplicate)
+        assertFalse(state.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateBudget then save creates new budget`() = runTest {
+        val budgetId = "123"
+        val budget = Budget(
+            id = budgetId,
+            income = BigDecimal("5000"),
+            bankStart = BigDecimal("3500"),
+            bankEnd = BigDecimal("7500"),
+            currency = "EUR",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = budget
+
+        viewModel = createViewModel(budgetId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditBudgetIntent.DuplicateBudget)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
-    fun `duplicateBudget with modified fields creates new budget`() = runTest {
+    fun `duplicateBudget with modified fields then save creates new budget`() = runTest {
         val budgetId = "456"
         val budget = Budget(
             id = budgetId,
@@ -338,13 +373,15 @@ class AddEditBudgetViewModelTest {
 
         advanceUntilIdle()
 
-        val (income, bankStart, bankEnd, currency, date) = createUseCase.created
-        assertEquals(BigDecimal("6000"), income)
-        assertEquals(BigDecimal("4500"), bankStart)
-        assertEquals(BigDecimal("8500"), bankEnd)
-        assertEquals("EUR", currency)
-        assertTrue((date as Long) > 123L)
-        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_budget, state.screenTitleResId)
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
+        assertTrue(state.shouldNavigateBack)
     }
 
     @Test

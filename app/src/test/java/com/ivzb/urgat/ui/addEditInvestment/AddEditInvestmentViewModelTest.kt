@@ -296,7 +296,7 @@ class AddEditInvestmentViewModelTest {
     }
     
     @Test
-    fun `duplicateInvestment creates new investment with current date`() = runTest {
+    fun `duplicateInvestment resets state to create mode with current data`() = runTest {
         val investmentId = "123"
         val investment = Investment(
             id = investmentId,
@@ -320,18 +320,55 @@ class AddEditInvestmentViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, shares, cost, category, currency, date) = createUseCase.created
-        assertEquals("SNP 500", name)
-        assertEquals(BigDecimal("150"), shares)
-        assertEquals(BigDecimal("250"), cost)
-        assertEquals("etfs", category)
-        assertEquals("USD", currency)
-        assertTrue((date as Long) > 123L)
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_investment, state.screenTitleResId)
+        assertEquals("SNP 500", state.name)
+        assertEquals("150", state.shares)
+        assertEquals("250", state.costPrice)
+        assertEquals("etfs", state.category)
+        assertEquals("USD", state.currency)
+        assertTrue(state.date > 123L)
+        assertFalse(state.withDelete)
+        assertFalse(state.withDuplicate)
+        assertFalse(state.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateInvestment then save creates new investment`() = runTest {
+        val investmentId = "123"
+        val investment = Investment(
+            id = investmentId,
+            name = "SNP 500",
+            shares = BigDecimal("150"),
+            costPrice = BigDecimal("250"),
+            marketPrice = BigDecimal("0"),
+            category = "etfs",
+            currency = "USD",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = investment
+
+        viewModel = createViewModel(investmentId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditInvestmentIntent.DuplicateInvestment)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
-    fun `duplicateInvestment with modified fields creates new investment`() = runTest {
+    fun `duplicateInvestment with modified fields then save creates new investment`() = runTest {
         val investmentId = "456"
         val investment = Investment(
             id = investmentId,
@@ -360,14 +397,15 @@ class AddEditInvestmentViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, shares, cost, category, currency, date) = createUseCase.created
-        assertEquals("NVDA", name)
-        assertEquals(BigDecimal("300"), shares)
-        assertEquals(BigDecimal("500"), cost)
-        assertEquals("stocks", category)
-        assertEquals("EUR", currency)
-        assertTrue((date as Long) > 123L)
-        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_investment, state.screenTitleResId)
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
+        assertTrue(state.shouldNavigateBack)
     }
 
     @Test
@@ -449,6 +487,5 @@ class AddEditInvestmentViewModelTest {
         )
     }
 
-    private operator fun <T> List<T>.component6(): T = this[5]
 
 }

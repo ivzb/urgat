@@ -110,5 +110,9 @@
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
 - make car fuel consumption filtering by car like in maintenance
 - make maintenance more button work
-- fix spcx symbol
 - add option to FIRE tab for YTD (year to date) and custom date range
+- make the investment duplicate button to open the add investment screen with prefilled data instead of duplicating the investment and adding it to the list
+- add trades when filling sample data, check if import/export is implemented for trades, also check if unit and ui tests are covering it
+- trades duplicate button
+- savings duplicate button
+- budgets duplicate button

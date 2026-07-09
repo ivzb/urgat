@@ -31,7 +31,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
 ): ViewModel() {
 
     private val screenTitleResId: Int = route.titleResId
-    private val expenseId: String? = route.id
+    private var expenseId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditExpenseUiState(
         screenTitleResId = screenTitleResId,
@@ -40,8 +40,10 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     val uiState: StateFlow<AddEditExpenseUiState> = _uiState.asStateFlow()
 
     init {
-        if (expenseId != null) {
-            loadExpense(expenseId)
+        val id = expenseId
+
+        if (id != null) {
+            loadExpense(id)
         } else {
             loadLastUsedCurrency()
         }
@@ -142,7 +144,9 @@ class AddEditExpenseViewModel @AssistedInject constructor(
     }
 
     private fun deleteExpense() {
-        if (expenseId == null) {
+        val id = expenseId
+
+        if (id == null) {
             Assert.fail("deleteExpense() was called but id is null.")
 
             _uiState.update {
@@ -153,7 +157,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            deleteExpenseUseCase(expenseId)
+            deleteExpenseUseCase(id)
 
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
@@ -172,17 +176,22 @@ class AddEditExpenseViewModel @AssistedInject constructor(
             return
         }
 
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(date = System.currentTimeMillis())
-            }
+        expenseId = null
 
-            createNewExpense()
+        _uiState.update {
+            it.copy(
+                screenTitleResId = R.string.add_expense,
+                date = System.currentTimeMillis(),
+                withDelete = false,
+                withDuplicate = false,
+            )
         }
     }
 
     private fun updateExpense() {
-        if (expenseId == null) {
+        val id = expenseId
+
+        if (id == null) {
             Assert.fail("updateExpense() was called but id is null.")
 
             _uiState.update {
@@ -194,7 +203,7 @@ class AddEditExpenseViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             updateExpenseUseCase(
-                expenseId,
+                id,
                 name = uiState.value.name.sanitize(),
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
                 currency = uiState.value.currency.sanitize(),

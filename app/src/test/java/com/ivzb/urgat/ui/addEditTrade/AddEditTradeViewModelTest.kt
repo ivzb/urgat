@@ -292,7 +292,7 @@ class AddEditTradeViewModelTest {
     }
 
     @Test
-    fun `duplicateTrade creates new trade with current date`() = runTest {
+    fun `duplicateTrade resets state to create mode with current data`() = runTest {
         val tradeId = "123"
         val trade = Trade(
             id = tradeId,
@@ -316,19 +316,56 @@ class AddEditTradeViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, shares, fee, marketPrice, currency, orderType, date) = createUseCase.created
-        assertEquals("AAPL", name)
-        assertEquals(BigDecimal("10"), shares)
-        assertEquals(BigDecimal("1.50"), fee)
-        assertEquals(BigDecimal("150"), marketPrice)
-        assertEquals("USD", currency)
-        assertEquals("Buy", orderType)
-        assertTrue((date as Long) > 123L)
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_trade, state.screenTitleResId)
+        assertEquals("AAPL", state.name)
+        assertEquals("10", state.shares)
+        assertEquals("1.50", state.fee)
+        assertEquals("150", state.marketPrice)
+        assertEquals("USD", state.currency)
+        assertEquals("Buy", state.orderType)
+        assertTrue(state.date > 123L)
+        assertFalse(state.withDelete)
+        assertFalse(state.withDuplicate)
+        assertFalse(state.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateTrade then save creates new trade`() = runTest {
+        val tradeId = "123"
+        val trade = Trade(
+            id = tradeId,
+            name = "AAPL",
+            shares = BigDecimal("10"),
+            marketPrice = BigDecimal("150"),
+            fee = BigDecimal("1.50"),
+            currency = "USD",
+            orderType = "Buy",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = trade
+
+        viewModel = createViewModel(tradeId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditTradeIntent.DuplicateTrade)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditTradeIntent.SaveTrade)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
-    fun `duplicateTrade with modified fields creates new trade`() = runTest {
+    fun `duplicateTrade with modified fields then save creates new trade`() = runTest {
         val tradeId = "456"
         val trade = Trade(
             id = tradeId,
@@ -358,15 +395,15 @@ class AddEditTradeViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, shares, fee, marketPrice, currency, orderType, date) = createUseCase.created
-        assertEquals("NVDA", name)
-        assertEquals(BigDecimal("20"), shares)
-        assertEquals(BigDecimal("2.00"), fee)
-        assertEquals(BigDecimal("200"), marketPrice)
-        assertEquals("EUR", currency)
-        assertEquals("Sell", orderType)
-        assertTrue((date as Long) > 123L)
-        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        viewModel.onIntent(AddEditTradeIntent.SaveTrade)
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_trade, state.screenTitleResId)
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
+        assertTrue(state.shouldNavigateBack)
     }
 
     @Test
@@ -514,9 +551,5 @@ class AddEditTradeViewModelTest {
             deleteUseCase,
         )
     }
-
-    private operator fun <T> List<T>.component6(): T = this[5]
-    private operator fun <T> List<T>.component7(): T = this[6]
-    private operator fun <T> List<T>.component8(): T = this[7]
 }
 

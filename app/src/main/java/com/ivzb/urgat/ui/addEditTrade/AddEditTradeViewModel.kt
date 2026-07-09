@@ -36,7 +36,7 @@ class AddEditTradeViewModel @AssistedInject constructor(
 ): ViewModel() {
 
     private val screenTitleResId: Int = route.titleResId
-    private val tradeId: String? = route.id
+    private var tradeId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditTradeUiState(
         screenTitleResId = screenTitleResId,
@@ -45,8 +45,10 @@ class AddEditTradeViewModel @AssistedInject constructor(
     val uiState: StateFlow<AddEditTradeUiState> = _uiState.asStateFlow()
 
     init {
-        if (tradeId != null) {
-            loadTrade(tradeId)
+        val id = tradeId
+
+        if (id != null) {
+            loadTrade(id)
         } else {
             loadLastUsedData()
         }
@@ -143,7 +145,9 @@ class AddEditTradeViewModel @AssistedInject constructor(
     }
 
     private fun updateTrade() {
-        if (tradeId == null) {
+        val id = tradeId
+
+        if (id == null) {
             Assert.fail("updateTrade() was called but id is null.")
 
             _uiState.update {
@@ -155,7 +159,7 @@ class AddEditTradeViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             updateTradeUseCase(
-                tradeId,
+                id,
                 name = uiState.value.name.sanitize(),
                 shares = uiState.value.shares.sanitize().toBigDecimal(),
                 fee = uiState.value.fee.sanitize().toBigDecimal(),
@@ -172,7 +176,9 @@ class AddEditTradeViewModel @AssistedInject constructor(
     }
 
     private fun deleteTrade() {
-        if (tradeId == null) {
+        val id = tradeId
+
+        if (id == null) {
             Assert.fail("deleteTrade() was called but id is null.")
 
             _uiState.update {
@@ -183,7 +189,7 @@ class AddEditTradeViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            deleteTradeUseCase(tradeId)
+            deleteTradeUseCase(id)
 
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
@@ -202,12 +208,15 @@ class AddEditTradeViewModel @AssistedInject constructor(
             return
         }
 
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(date = System.currentTimeMillis())
-            }
+        tradeId = null
 
-            createNewTrade()
+        _uiState.update {
+            it.copy(
+                screenTitleResId = R.string.add_trade,
+                date = System.currentTimeMillis(),
+                withDelete = false,
+                withDuplicate = false,
+            )
         }
     }
 

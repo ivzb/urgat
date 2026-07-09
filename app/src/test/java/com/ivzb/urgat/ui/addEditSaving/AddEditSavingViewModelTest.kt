@@ -277,7 +277,7 @@ class AddEditSavingViewModelTest {
     }
 
     @Test
-    fun `duplicateSaving creates new saving with current date`() = runTest {
+    fun `duplicateSaving resets state to create mode with current data`() = runTest {
         val savingId = "123"
         val saving = Saving(
             id = savingId,
@@ -298,16 +298,50 @@ class AddEditSavingViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, currency, date) = createUseCase.created
-        assertEquals("SNP 500", name)
-        assertEquals(BigDecimal("1500"), amount)
-        assertEquals("EUR", currency)
-        assertTrue((date as Long) > 123L)
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_saving, state.screenTitleResId)
+        assertEquals("SNP 500", state.name)
+        assertEquals("1500", state.amount)
+        assertEquals("EUR", state.currency)
+        assertTrue(state.date > 123L)
+        Assert.assertFalse(state.withDelete)
+        Assert.assertFalse(state.withDuplicate)
+        Assert.assertFalse(state.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateSaving then save creates new saving`() = runTest {
+        val savingId = "123"
+        val saving = Saving(
+            id = savingId,
+            name = "SNP 500",
+            amount = BigDecimal("1500"),
+            currency = "EUR",
+            date = 123L,
+            isDeleted = false,
+            createdAt = 123L,
+        )
+        getUseCase.toReturn = saving
+
+        viewModel = createViewModel(savingId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditSavingIntent.DuplicateSaving)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditSavingIntent.SaveSaving)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
-    fun `duplicateSaving with modified fields creates new saving`() = runTest {
+    fun `duplicateSaving with modified fields then save creates new saving`() = runTest {
         val savingId = "456"
         val saving = Saving(
             id = savingId,
@@ -331,12 +365,15 @@ class AddEditSavingViewModelTest {
 
         advanceUntilIdle()
 
-        val (name, amount, currency, date) = createUseCase.created
-        assertEquals("NVDA", name)
-        assertEquals(BigDecimal("3000"), amount)
-        assertEquals("USD", currency)
-        assertTrue((date as Long) > 123L)
-        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        viewModel.onIntent(AddEditSavingIntent.SaveSaving)
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_saving, state.screenTitleResId)
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
+        assertTrue(state.shouldNavigateBack)
     }
 
     @Test
