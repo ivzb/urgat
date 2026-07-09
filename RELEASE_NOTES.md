@@ -1,3 +1,8 @@
+## Release notes 26.07.00
+
+Improved:
+- Duplicate button now navigates you to new item with prefilled data.
+
 ## Release notes 26.05.01
 
 No release notes.
