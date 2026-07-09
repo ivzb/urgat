@@ -19,12 +19,12 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.ivzb.urgat"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.ivzb.urgat"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 26_07_00
         versionName = "26.07.00"
 
