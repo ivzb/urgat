@@ -14,7 +14,7 @@ EOF
 
 handle_error() {
     echo "#############################"
-    echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "## Urgat - $0 - An error occurred on line $1"
     echo "#############################"
     usage
     exit 1
@@ -77,8 +77,8 @@ VERSION_NAME=$VERSION
 VERSION_CODE=$(echo "$VERSION" | tr '.' '_')
 APP_GRADLE=app/build.gradle.kts
 
-sed -i '' "s/versionCode = .*/versionCode = ${VERSION_CODE}/" "$APP_GRADLE"
-sed -i '' "s/versionName = .*/versionName = \"${VERSION_NAME}\"/" "$APP_GRADLE"
+sed -i "s/versionCode = .*/versionCode = ${VERSION_CODE}/" "$APP_GRADLE"
+sed -i "s/versionName = .*/versionName = \"${VERSION_NAME}\"/" "$APP_GRADLE"
 
 APP_BUNDLE=/tmp/app-release.aab
 

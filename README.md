@@ -1,7 +1,32 @@
+### Prerequisites
+
+- JDK 17
+- Android SDK (via Android Studio)
+- Android SDK Command-line Tools — install from Android Studio → SDK Manager → SDK Tools → "Android SDK Command-line Tools (latest)"
+- ImageMagick — `brew install imagemagick` / `sudo apt install imagemagick` / `winget install ImageMagick.ImageMagick`
+- jq — `brew install jq` / `sudo apt install jq` / `winget install jqlang.jq`
+- gcloud CLI — `brew install google-cloud-sdk` / `sudo apt install google-cloud-cli` / `winget install Google.CloudSDK`
+
+### Environment setup (Linux / Git Bash on Windows)
+
+The scripts require `JAVA_HOME` and `ANDROID_HOME` to be exported in your shell.
+Add the following to `~/.bashrc`:
+
+```bash
+export JAVA_HOME="/c/Program Files/Java/jdk-17"
+export ANDROID_HOME="/c/Users/<your-username>/AppData/Local/Android/Sdk"
+```
+
+Then reload your shell:
+
+```bash
+source ~/.bashrc
+```
+
 ### Configuration for release
 To publish app bundle to Google Play store, you need to configure gcloud CLI with the following command:
 
-1. Add release shortcut to .zshrc (optional)
+1. Add release shortcut to .bashrc (optional)
 
 ```shell
 release() {
@@ -21,10 +46,17 @@ keyPassword=<password>
 storePassword=<password>
 ```
 
-4. Install gcloud CLI and initialize it with the following command:
+4. Install gcloud CLI and initialize it:
 
 ```shell
-brew install gcloud-cli
+# macOS
+brew install google-cloud-sdk
+
+# Linux
+sudo apt install google-cloud-cli
+
+# Windows: download from https://cloud.google.com/sdk/docs/install
+
 gcloud init
 ```
 

@@ -4,7 +4,7 @@ set -e
 
 handle_error() {
     echo "#############################"
-    echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "## Urgat - $0 - An error occurred on line $1"
     echo "#############################"
     usage
     exit 1
@@ -88,7 +88,7 @@ fi
 
 mkdir $SCREENSHOTS_DIR
 
-adb pull "/storage/emulated/0/googletest/test_outputfiles" $SCREENSHOTS_DIR/
+MSYS_NO_PATHCONV=1 adb pull "/storage/emulated/0/googletest/test_outputfiles" $SCREENSHOTS_DIR/
 
 mv $SCREENSHOTS_DIR/test_outputfiles/* $SCREENSHOTS_DIR/
 rm -r $SCREENSHOTS_DIR/test_outputfiles

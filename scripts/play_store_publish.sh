@@ -4,7 +4,7 @@ set -e
 
 handle_error() {
     echo "#############################"
-    echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "## Urgat - $0 - An error occurred on line $1"
     echo "#############################"
     exit 1
 }
@@ -17,7 +17,7 @@ trap 'handle_error $LINENO' ERR
 if ! command -v jq >/dev/null 2>&1; then
     echo "#############################"
     echo "## Urgat: Error: jq is not installed. Please install it before running this script."
-    echo "## brew install jq"
+    echo "## macOS: brew install jq | Linux: sudo apt install jq | Windows: winget install jqlang.jq"
     echo "#############################"
     exit 1
 fi
@@ -40,10 +40,15 @@ RELEASE_NOTES=$(./scripts/play_store_release_notes.sh)
 ##
 # Get access token
 ##
-gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_JSON
-ACCESS_TOKEN=$(gcloud auth print-access-token \
-    --credential-file-override=$SERVICE_ACCOUNT_JSON \
-    --scopes=https://www.googleapis.com/auth/androidpublisher)
+if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
+  cmd //c "gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_JSON"
+  ACCESS_TOKEN=$(cmd //c "gcloud auth print-access-token --credential-file-override=$SERVICE_ACCOUNT_JSON --scopes=https://www.googleapis.com/auth/androidpublisher" | tr -d '\r')
+else
+  gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_JSON
+  ACCESS_TOKEN=$(gcloud auth print-access-token \
+      --credential-file-override=$SERVICE_ACCOUNT_JSON \
+      --scopes=https://www.googleapis.com/auth/androidpublisher)
+fi
 
 if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" == "null" ]; then
   echo "#############################"
@@ -62,7 +67,8 @@ echo "#############################"
 EDIT=$(curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits")
+  -d '' \
+  "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits" | tr -d '\r')
 
 EDIT_ID=$(echo "$EDIT" | jq -r '.id')
 
@@ -81,8 +87,10 @@ echo "#############################"
 # Upload app bundle
 ##
 
-# clear extended attributes
-xattr -c "$AAB_FILE"
+# clear extended attributes (macOS only)
+if [[ "$(uname)" == "Darwin" ]]; then
+  xattr -c "$AAB_FILE"
+fi
 
 UPLOAD=$(curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
@@ -237,6 +245,7 @@ fi
 
 VALIDATE=$(curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '' \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID:validate")
 
 VALIDATE_ID=$(echo "$VALIDATE" | jq -r '.id')
@@ -257,6 +266,7 @@ echo "#############################"
 ##
 curl -s -X POST \
   -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -d '' \
   "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/$PACKAGE_NAME/edits/$EDIT_ID:commit"
 
 echo "#############################"

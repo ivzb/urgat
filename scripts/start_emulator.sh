@@ -1,17 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-if [[ -z "${JAVA_HOME}" || -z "${ANDROID_HOME}" ]]; then
-  echo "#############################"
-  echo "## Urgat: JAVA_HOME or ANDROID_HOME is undefined"
-  echo "#############################"
-  exit 1
-fi
+# Validate environment variables
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/env.sh"
 
 handle_error() {
     echo "#############################"
-    echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "## Urgat - $0 - An error occurred on line $1"
     echo "#############################"
     usage
     exit 1
@@ -73,13 +70,22 @@ export PATH=$ANDROID_HOME/emulator/:$PATH
 export PATH=$ANDROID_HOME/platform-tools/:$PATH
 export PATH=$ANDROID_HOME/cmdline-tools/latest/bin/:$PATH
 
+# On Windows (Git Bash/MINGW), SDK tools are .bat files
+if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
+  SDKMANAGER="sdkmanager.bat"
+  AVDMANAGER="avdmanager.bat"
+else
+  SDKMANAGER="sdkmanager"
+  AVDMANAGER="avdmanager"
+fi
+
 # Kill all running emulators
 adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
 
 if [[ $(uname -m) == 'x86_64' ]]; then
   ABI_ARCH=x86_64
   CPU_ARCH=x86_64
-elif [[ $(uname -m) == 'arm64' ]]; then
+elif [[ $(uname -m) == 'arm64' || $(uname -m) == 'aarch64' ]]; then
   ABI_ARCH=arm64-v8a
   CPU_ARCH=arm64
 else
@@ -91,28 +97,25 @@ fi
 
 # Install the emulator system image if it's not already
 sdk="system-images;android-36;google_apis;$ABI_ARCH"
-installedImage=$(sdkmanager --list_installed | grep -o "$sdk" || true)
+installedImage=$($SDKMANAGER --list_installed | grep -o "$sdk" || true)
 
 if [[ $installedImage = $sdk ]]; then
   echo "#############################"
   echo "## Urgat: The required SDK is already installed";
   echo "#############################"
 else
-  yes | sdkmanager --licenses
-  yes | sdkmanager --install $sdk
-  yes | sdkmanager --licenses
+  yes | $SDKMANAGER --licenses
+  yes | $SDKMANAGER --install $sdk
+  yes | $SDKMANAGER --licenses
 fi
 
 name=Pixel_Urgat
-echo no | avdmanager create avd --force --name $name --abi $ABI_ARCH --package $sdk
+echo no | $AVDMANAGER create avd --force --name $name --abi $ABI_ARCH --package $sdk
 
 if [[ $IS_PHONE -eq 1 ]]; then
-  lcd=$(cat << 'EOF'
-  hw.lcd.density=480
-  hw.lcd.width=1280
-  hw.lcd.height=2856
-  EOF
-  )
+  lcd="hw.lcd.density=480
+hw.lcd.width=1280
+hw.lcd.height=2856"
 
   if [[ $ORIENTATION == "portrait" ]]; then
     screenSize="1280x2856"
@@ -120,12 +123,9 @@ if [[ $IS_PHONE -eq 1 ]]; then
     screenSize="2856x1280"
   fi
 elif [[ $IS_TABLET7 -eq 1 ]]; then
-  lcd=$(cat << 'EOF'
-  hw.lcd.density=320
-  hw.lcd.width=1200
-  hw.lcd.height=1920
-  EOF
-  )
+  lcd="hw.lcd.density=320
+hw.lcd.width=1200
+hw.lcd.height=1920"
 
   if [[ $ORIENTATION == "portrait" ]]; then
     screenSize="1200x1920"
@@ -133,12 +133,9 @@ elif [[ $IS_TABLET7 -eq 1 ]]; then
     screenSize="1920x1200"
   fi
 elif [[ $IS_TABLET10 -eq 1 ]]; then
-  lcd=$(cat << 'EOF'
-  hw.lcd.density=320
-  hw.lcd.width=1600
-  hw.lcd.height=2560
-  EOF
-  )
+  lcd="hw.lcd.density=320
+hw.lcd.width=1600
+hw.lcd.height=2560"
 
   if [[ $ORIENTATION == "portrait" ]]; then
     screenSize="1600x2560"
@@ -155,7 +152,7 @@ PlayStore.enabled=true
 abi.type=$ABI_ARCH
 avd.ini.displayname=$name
 avd.ini.encoding=UTF-8
-disk.dataPartition.size=30G
+disk.dataPartition.size=10G
 fastboot.chosenSnapshotFile=
 fastboot.forceChosenSnapshotBoot=no
 fastboot.forceColdBoot=yes
@@ -206,7 +203,11 @@ echo "$cfg" > $HOME/.android/avd/$name.avd/config.ini
 
 # Start the emulator
 # -gpu swiftshader_indirect is recommended for deterministic screenshots
-nohup emulator -avd $name -no-snapshot -no-boot-anim -wipe-data -gpu swiftshader_indirect &
+if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
+  cmd //c "start /b emulator -avd $name -no-snapshot -no-boot-anim -wipe-data -gpu swiftshader_indirect" &
+else
+  nohup emulator -avd $name -no-snapshot -no-boot-anim -wipe-data -gpu swiftshader_indirect &
+fi
 
 # Wait for device to boot
 adb wait-for-device

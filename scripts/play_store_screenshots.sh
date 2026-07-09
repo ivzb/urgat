@@ -4,18 +4,17 @@ set -e
 
 handle_error() {
     echo "#############################"
-    echo "## Urgat - $0 - An error occurred on line $1\n"
+    echo "## Urgat - $0 - An error occurred on line $1"
     echo "#############################"
-    usage
     exit 1
 }
 
 trap 'handle_error $LINENO' ERR
 
-# Check for ImageMagick (magick or convert)
-if ! command -v magick >/dev/null 2>&1 && ! command -v convert >/dev/null 2>&1; then
+# Check for ImageMagick
+if ! command -v magick >/dev/null 2>&1; then
     echo "❌ ImageMagick is not installed."
-    echo "Install with: brew install imagemagick"
+    echo "macOS: brew install imagemagick | Linux: sudo apt install imagemagick | Windows: winget install ImageMagick.ImageMagick"
     exit 1
 fi
 
