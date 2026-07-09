@@ -9,6 +9,7 @@ import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
+import com.ivzb.urgat.domain.trade.CreateTradeUseCase
 import com.ivzb.urgat.domain.watchlist.CreateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import io.mockk.coVerify
@@ -29,6 +30,7 @@ class DefaultSampleUseCaseTest {
     private lateinit var createWeightUseCase: CreateWeightUseCase
     private lateinit var createFuelConsumptionUseCase: CreateFuelConsumptionUseCase
     private lateinit var createCarMaintenanceUseCase: CreateCarMaintenanceUseCase
+    private lateinit var createTradeUseCase: CreateTradeUseCase
 
     private lateinit var sampleUseCase: SampleUseCase
 
@@ -44,6 +46,7 @@ class DefaultSampleUseCaseTest {
         createWeightUseCase = mockk(relaxed = true)
         createFuelConsumptionUseCase = mockk(relaxed = true)
         createCarMaintenanceUseCase = mockk(relaxed = true)
+        createTradeUseCase = mockk(relaxed = true)
 
         sampleUseCase = DefaultSampleUseCase(
             createTodoUseCase,
@@ -56,6 +59,7 @@ class DefaultSampleUseCaseTest {
             createWeightUseCase,
             createFuelConsumptionUseCase,
             createCarMaintenanceUseCase,
+            createTradeUseCase,
         )
     }
 
@@ -149,6 +153,18 @@ class DefaultSampleUseCaseTest {
                     it.url,
                     it.carName,
                     it.odometer,
+                    it.date,
+                )
+            }
+
+            SampleData.SAMPLE_TRADES.forEach {
+                createTradeUseCase(
+                    it.name,
+                    it.shares,
+                    it.fee,
+                    it.marketPrice,
+                    it.currency,
+                    it.orderType,
                     it.date,
                 )
             }

@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.investment.CreateInvestmentUseCase
 import com.ivzb.urgat.domain.note.CreateNoteUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
+import com.ivzb.urgat.domain.trade.CreateTradeUseCase
 import com.ivzb.urgat.domain.watchlist.CreateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.weight.CreateWeightUseCase
 import javax.inject.Inject
@@ -31,6 +32,7 @@ class DefaultSampleUseCase @Inject constructor(
     private val createWeightUseCase: CreateWeightUseCase,
     private val createFuelConsumptionUseCase: CreateFuelConsumptionUseCase,
     private val createCarMaintenanceUseCase: CreateCarMaintenanceUseCase,
+    private val createTradeUseCase: CreateTradeUseCase,
 ): SampleUseCase {
 
     override suspend operator fun invoke() {
@@ -123,6 +125,18 @@ class DefaultSampleUseCase @Inject constructor(
                 it.url,
                 it.carName,
                 it.odometer,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_TRADES.forEach {
+            createTradeUseCase(
+                it.name,
+                it.shares,
+                it.fee,
+                it.marketPrice,
+                it.currency,
+                it.orderType,
                 it.date,
             )
         }
