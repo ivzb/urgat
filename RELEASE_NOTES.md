@@ -1,3 +1,8 @@
+## Release notes 26.07.01
+
+New:
+- Added option for custom date selection to Fi/Re tab
+
 ## Release notes 26.07.00
 
 Improved:
