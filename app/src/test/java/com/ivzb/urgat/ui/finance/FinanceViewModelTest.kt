@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.FireRepository
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_DATE_RANGE_TYPE
 import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
@@ -26,6 +27,7 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
@@ -87,6 +89,9 @@ class FinanceViewModelTest {
         every { mockFireRepository.withdrawalRateFlow } returns flowOf(4.toBigDecimal())
         every { mockFireRepository.returnOfInvestmentFlow } returns flowOf(7.toBigDecimal())
         every { mockFireRepository.taxRateFlow } returns flowOf(10.toBigDecimal())
+        every { mockFireRepository.fireDateRangeTypeFlow } returns flowOf(DEFAULT_FIRE_DATE_RANGE_TYPE)
+        every { mockFireRepository.fireCustomStartFlow } returns flowOf(0L)
+        every { mockFireRepository.fireCustomEndFlow } returns flowOf(0L)
     }
 
     @After
@@ -332,6 +337,78 @@ class FinanceViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 1) { mockFireRepository.updateTaxRate(eq("7")) }
+    }
+
+    @Test
+    fun `UpdateFireDateRangeType updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateFireDateRangeType(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireDateRangeType(FireDateRangeType.YTD))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateFireDateRangeType(eq(FireDateRangeType.YTD)) }
+    }
+
+    @Test
+    fun `UpdateFireDateRangeType to CUSTOM updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateFireDateRangeType(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireDateRangeType(FireDateRangeType.CUSTOM))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateFireDateRangeType(eq(FireDateRangeType.CUSTOM)) }
+    }
+
+    @Test
+    fun `UpdateFireCustomDateRange updates fire repository with start end and type`() = runTest {
+        coEvery { mockFireRepository.updateFireCustomStart(any()) } just Runs
+        coEvery { mockFireRepository.updateFireCustomEnd(any()) } just Runs
+        coEvery { mockFireRepository.updateFireDateRangeType(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        val start = 1704067200000L // 2024-01-01
+        val end = 1735689600000L   // 2024-12-31
+
+        viewModel.onIntent(FinanceIntent.UpdateFireCustomDateRange(start, end))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateFireCustomStart(eq(start)) }
+        coVerify(exactly = 1) { mockFireRepository.updateFireCustomEnd(eq(end)) }
+        coVerify(exactly = 1) { mockFireRepository.updateFireDateRangeType(eq(FireDateRangeType.CUSTOM)) }
+    }
+
+    @Test
+    fun `SetFireDateRangeType to LAST_MONTH updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateFireDateRangeType(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireDateRangeType(FireDateRangeType.LAST_MONTH))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateFireDateRangeType(eq(FireDateRangeType.LAST_MONTH)) }
+    }
+
+    @Test
+    fun `SetFireDateRangeType to LAST_YEAR updates fire repository`() = runTest {
+        coEvery { mockFireRepository.updateFireDateRangeType(any()) } just Runs
+
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FinanceIntent.UpdateFireDateRangeType(FireDateRangeType.LAST_YEAR))
+
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { mockFireRepository.updateFireDateRangeType(eq(FireDateRangeType.LAST_YEAR)) }
     }
 
     @Test

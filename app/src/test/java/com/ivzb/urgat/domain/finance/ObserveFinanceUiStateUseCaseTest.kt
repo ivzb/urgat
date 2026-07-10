@@ -20,6 +20,7 @@ import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.fire.FakeObserveFiReUseCase
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsSortingUseCase
@@ -839,6 +840,9 @@ class ObserveFinanceUiStateUseCaseTest {
         returnOfInvestmentFlow = flowOf(null),
         taxRateFlow = flowOf(null),
         fireDateRangeFlow = flowOf(0L..Long.MAX_VALUE),
+        fireDateRangeTypeFlow = flowOf(FireDateRangeType.LAST_MONTH),
+        fireCustomStartFlow = flowOf(0L),
+        fireCustomEndFlow = flowOf(0L),
     )
 
     private fun emitAllLoading() {

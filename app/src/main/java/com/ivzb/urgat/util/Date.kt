@@ -59,4 +59,73 @@ fun untilCurrentMonthRange(): LongRange {
     return 0 until endOfPreviousMonth.toEpochMilli()
 }
 
+fun lastMonthRange(): LongRange {
+    val zoneId = ZoneId.systemDefault()
+    val now = ZonedDateTime.ofInstant(Instant.now(), zoneId)
+
+    val previousMonth = now.minusMonths(1)
+
+    val startOfPreviousMonth = previousMonth
+        .withDayOfMonth(1)
+        .toLocalDate()
+        .atStartOfDay(zoneId)
+        .toInstant()
+
+    val endOfPreviousMonth = previousMonth
+        .withDayOfMonth(previousMonth.toLocalDate().lengthOfMonth())
+        .toLocalDate()
+        .atTime(23, 59, 59, 999_000_000)
+        .atZone(zoneId)
+        .toInstant()
+
+    return startOfPreviousMonth.toEpochMilli() until endOfPreviousMonth.toEpochMilli()
+}
+
+fun yearToDateRange(): LongRange {
+    val zoneId = ZoneId.systemDefault()
+    val now = ZonedDateTime.ofInstant(Instant.now(), zoneId)
+
+    val startOfYear = now
+        .withMonth(1)
+        .withDayOfMonth(1)
+        .toLocalDate()
+        .atStartOfDay(zoneId)
+        .toInstant()
+
+    val previousMonth = now.minusMonths(1)
+
+    val endOfPreviousMonth = previousMonth
+        .withDayOfMonth(previousMonth.toLocalDate().lengthOfMonth())
+        .toLocalDate()
+        .atTime(23, 59, 59, 999_000_000)
+        .atZone(zoneId)
+        .toInstant()
+
+    return startOfYear.toEpochMilli() until endOfPreviousMonth.toEpochMilli()
+}
+
+fun lastYearRange(): LongRange {
+    val zoneId = ZoneId.systemDefault()
+    val now = ZonedDateTime.ofInstant(Instant.now(), zoneId)
+
+    val lastYear = now.minusYears(1)
+
+    val startOfLastYear = lastYear
+        .withMonth(1)
+        .withDayOfMonth(1)
+        .toLocalDate()
+        .atStartOfDay(zoneId)
+        .toInstant()
+
+    val endOfLastYear = lastYear
+        .withMonth(12)
+        .withDayOfMonth(31)
+        .toLocalDate()
+        .atTime(23, 59, 59, 999_000_000)
+        .atZone(zoneId)
+        .toInstant()
+
+    return startOfLastYear.toEpochMilli() until endOfLastYear.toEpochMilli()
+}
+
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")

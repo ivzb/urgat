@@ -28,6 +28,7 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.finance.FinanceFilteringUiInfo
 import com.ivzb.urgat.ui.finance.FinanceUiState
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
@@ -75,6 +76,9 @@ interface ObserveFinanceUiStateUseCase {
         taxRateFlow: Flow<BigDecimal?>,
 
         fireDateRangeFlow: Flow<LongRange>,
+        fireDateRangeTypeFlow: Flow<FireDateRangeType>,
+        fireCustomStartFlow: Flow<Long>,
+        fireCustomEndFlow: Flow<Long>,
     ): Flow<Async<FinanceUiState>>
 
 }
@@ -125,6 +129,9 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
         taxRateFlow: Flow<BigDecimal?>,
 
         fireDateRangeFlow: Flow<LongRange>,
+        fireDateRangeTypeFlow: Flow<FireDateRangeType>,
+        fireCustomStartFlow: Flow<Long>,
+        fireCustomEndFlow: Flow<Long>,
     ): Flow<Async<FinanceUiState>> {
 
         val expensesFlow = observeExpensesLightUiState(searchQueryFlow, expensesFilterTypeFlow, expensesSortTypeFlow)
@@ -145,6 +152,9 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
             watchlistAssetsFlow,
             reportBudgetFlow,
             fireFlow,
+            fireDateRangeTypeFlow.map { Async.Success(it) },
+            fireCustomStartFlow.map { Async.Success(it) },
+            fireCustomEndFlow.map { Async.Success(it) },
             searchQueryFlow.map { Async.Success(it) },
 
             onLoading = {
@@ -153,7 +163,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
             onError = {
                 FinanceUiState(hasError = true)
             },
-            onSuccess = { expensesUiState, investmentsUiState, tradesUiState, savingsUiState, budgetsUiState, watchlistAssetsUiState, reportBudget, fire, searchQuery ->
+            onSuccess = { expensesUiState, investmentsUiState, tradesUiState, savingsUiState, budgetsUiState, watchlistAssetsUiState, reportBudget, fire, fireDateRangeType, fireCustomStart, fireCustomEnd, searchQuery ->
                 FinanceUiState(
                     expensesUiState = expensesUiState,
                     investmentsUiState = investmentsUiState,
@@ -163,6 +173,9 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
                     watchlistAssetsUiState = watchlistAssetsUiState,
                     reportBudget = reportBudget,
                     fire = fire,
+                    fireDateRangeType = fireDateRangeType,
+                    fireCustomStart = fireCustomStart,
+                    fireCustomEnd = fireCustomEnd,
                     isLoading = false,
                     filteringUiInfo = FinanceFilteringUiInfo(
                         searchQuery = searchQuery,

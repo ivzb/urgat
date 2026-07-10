@@ -6,6 +6,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.trades.TradesUiState
@@ -21,6 +22,9 @@ data class FinanceUiState(
 
     val reportBudget: GroupedBudget? = null,
     val fire: FiRe? = null,
+    val fireDateRangeType: FireDateRangeType = FireDateRangeType.LAST_MONTH,
+    val fireCustomStart: Long = 0L,
+    val fireCustomEnd: Long = 0L,
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,
@@ -29,7 +33,6 @@ data class FinanceUiState(
     override val pages: List<Page> = FINANCE_PAGES.filter {
         when (it) {
             FinancePage.Report -> reportBudget != null
-            FinancePage.FIRE -> fire != null
             else -> true
         }
     },

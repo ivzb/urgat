@@ -1,9 +1,11 @@
 package com.ivzb.urgat.data.fire
 
 import com.ivzb.urgat.data.dataStore.FakePreferencesDataStore
+import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_DATE_RANGE_TYPE
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_RETURN_OF_INVESTMENT
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_TAX_RATE
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_WITHDRAWAL_RATE
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -79,5 +81,75 @@ class DefaultFireRepositoryTest {
         val value = repository.withdrawalRateFlow.first()
 
         assertEquals(null, value)
+    }
+
+    @Test
+    fun `fireDateRangeTypeFlow emits default value when not set`() = runTest {
+        val value = repository.fireDateRangeTypeFlow.first()
+
+        assertEquals(DEFAULT_FIRE_DATE_RANGE_TYPE, value)
+    }
+
+    @Test
+    fun `updateFireDateRangeType updates flow value to YTD`() = runTest {
+        repository.updateFireDateRangeType(FireDateRangeType.YTD)
+
+        val value = repository.fireDateRangeTypeFlow.first()
+
+        assertEquals(FireDateRangeType.YTD, value)
+    }
+
+    @Test
+    fun `updateFireDateRangeType updates flow value to CUSTOM`() = runTest {
+        repository.updateFireDateRangeType(FireDateRangeType.CUSTOM)
+
+        val value = repository.fireDateRangeTypeFlow.first()
+
+        assertEquals(FireDateRangeType.CUSTOM, value)
+    }
+
+    @Test
+    fun `updateFireDateRangeType updates flow value to LAST_YEAR`() = runTest {
+        repository.updateFireDateRangeType(FireDateRangeType.LAST_YEAR)
+
+        val value = repository.fireDateRangeTypeFlow.first()
+
+        assertEquals(FireDateRangeType.LAST_YEAR, value)
+    }
+
+    @Test
+    fun `fireCustomStartFlow emits default value when not set`() = runTest {
+        val value = repository.fireCustomStartFlow.first()
+
+        assertEquals(0L, value)
+    }
+
+    @Test
+    fun `updateFireCustomStart updates flow value`() = runTest {
+        val expected = 1704067200000L
+
+        repository.updateFireCustomStart(expected)
+
+        val value = repository.fireCustomStartFlow.first()
+
+        assertEquals(expected, value)
+    }
+
+    @Test
+    fun `fireCustomEndFlow emits default value when not set`() = runTest {
+        val value = repository.fireCustomEndFlow.first()
+
+        assertEquals(0L, value)
+    }
+
+    @Test
+    fun `updateFireCustomEnd updates flow value`() = runTest {
+        val expected = 1735689600000L
+
+        repository.updateFireCustomEnd(expected)
+
+        val value = repository.fireCustomEndFlow.first()
+
+        assertEquals(expected, value)
     }
 }

@@ -142,6 +142,69 @@ fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combineUiState(
     onError
 ) { data -> onSuccess(data[0] as T1, data[1] as T2, data[2] as T3, data[3] as T4, data[4] as T5, data[5] as T6, data[6] as T7, data[7] as T8, data[8] as T9) }
 
+fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> combineUiState(
+    flow1: Flow<Async<T1>>,
+    flow2: Flow<Async<T2>>,
+    flow3: Flow<Async<T3>>,
+    flow4: Flow<Async<T4>>,
+    flow5: Flow<Async<T5>>,
+    flow6: Flow<Async<T6>>,
+    flow7: Flow<Async<T7>>,
+    flow8: Flow<Async<T8>>,
+    flow9: Flow<Async<T9>>,
+    flow10: Flow<Async<T10>>,
+    onLoading: () -> R,
+    onError: () -> R,
+    onSuccess: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) -> R,
+): Flow<R> = combineUiState(
+    arrayOf(flow1, flow2, flow3, flow4, flow5, flow6, flow7, flow8, flow9, flow10),
+    onLoading,
+    onError
+) { data -> onSuccess(data[0] as T1, data[1] as T2, data[2] as T3, data[3] as T4, data[4] as T5, data[5] as T6, data[6] as T7, data[7] as T8, data[8] as T9, data[9] as T10) }
+
+fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> combineUiState(
+    flow1: Flow<Async<T1>>,
+    flow2: Flow<Async<T2>>,
+    flow3: Flow<Async<T3>>,
+    flow4: Flow<Async<T4>>,
+    flow5: Flow<Async<T5>>,
+    flow6: Flow<Async<T6>>,
+    flow7: Flow<Async<T7>>,
+    flow8: Flow<Async<T8>>,
+    flow9: Flow<Async<T9>>,
+    flow10: Flow<Async<T10>>,
+    flow11: Flow<Async<T11>>,
+    onLoading: () -> R,
+    onError: () -> R,
+    onSuccess: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) -> R,
+): Flow<R> = combineUiState(
+    arrayOf(flow1, flow2, flow3, flow4, flow5, flow6, flow7, flow8, flow9, flow10, flow11),
+    onLoading,
+    onError
+) { data -> onSuccess(data[0] as T1, data[1] as T2, data[2] as T3, data[3] as T4, data[4] as T5, data[5] as T6, data[6] as T7, data[7] as T8, data[8] as T9, data[9] as T10, data[10] as T11) }
+
+fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> combineUiState(
+    flow1: Flow<Async<T1>>,
+    flow2: Flow<Async<T2>>,
+    flow3: Flow<Async<T3>>,
+    flow4: Flow<Async<T4>>,
+    flow5: Flow<Async<T5>>,
+    flow6: Flow<Async<T6>>,
+    flow7: Flow<Async<T7>>,
+    flow8: Flow<Async<T8>>,
+    flow9: Flow<Async<T9>>,
+    flow10: Flow<Async<T10>>,
+    flow11: Flow<Async<T11>>,
+    flow12: Flow<Async<T12>>,
+    onLoading: () -> R,
+    onError: () -> R,
+    onSuccess: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) -> R,
+): Flow<R> = combineUiState(
+    arrayOf(flow1, flow2, flow3, flow4, flow5, flow6, flow7, flow8, flow9, flow10, flow11, flow12),
+    onLoading,
+    onError
+) { data -> onSuccess(data[0] as T1, data[1] as T2, data[2] as T3, data[3] as T4, data[4] as T5, data[5] as T6, data[6] as T7, data[7] as T8, data[8] as T9, data[9] as T10, data[10] as T11, data[11] as T12) }
+
 @Suppress("UNCHECKED_CAST")
 private fun <R> combineUiState(
     flows: Array<Flow<*>>,

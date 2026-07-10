@@ -5,6 +5,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.finance.FinanceUiState
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.trades.TradesSortType
@@ -44,6 +45,9 @@ class FakeObserveFinanceUiStateUseCase : ObserveFinanceUiStateUseCase {
         returnOfInvestmentFlow: Flow<BigDecimal?>,
         taxRateFlow: Flow<BigDecimal?>,
         fireDateRangeFlow: Flow<LongRange>,
+        fireDateRangeTypeFlow: Flow<FireDateRangeType>,
+        fireCustomStartFlow: Flow<Long>,
+        fireCustomEndFlow: Flow<Long>,
     ): Flow<Async<FinanceUiState>> {
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }

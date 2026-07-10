@@ -66,9 +66,10 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val budgetCategoriesMonthly = budgetCategoriesMonthlyAsync.data
                 val expensesMonthly = expensesMonthlyAsync.data
 
-                val selection = (budgetCategoriesMonthly.map { it.group } + expensesMonthly.map { it.group })
+                // Find all months where both budget and expenses exist
+                val completeMonths = (budgetCategoriesMonthly.map { it.group } + expensesMonthly.map { it.group })
                     .distinct()
-                    .firstNotNullOfOrNull { group ->
+                    .mapNotNull { group ->
                         val budget = budgetCategoriesMonthly.find { budget -> budget.group == group }
                         val expense = expensesMonthly.find { expense -> expense.group == group }
 
@@ -79,17 +80,31 @@ class DefaultObserveFiReUseCase @Inject constructor(
                         }
                     }
 
-                if (selection == null) {
+                if (completeMonths.isEmpty()) {
                     return@combine Async.Success(null)
                 }
 
-                val (selectionGroup, budget, expenses) = selection
+                val firstMonth = completeMonths.first()
+                val budgetCurrency = firstMonth.second.items.first().currency
 
-                val budgetCurrency = budget.items.first().currency
+                // Sum income and expenses across all complete months, then average
+                var totalIncome = BigDecimal.ZERO
+                var totalExpenses = BigDecimal.ZERO
 
-                val monthlyIncome = budget.total
-                val monthlyExpenses = Expense.total(expenses.items, budgetCurrency, forexRepository::convert)
+                for ((_, budget, expenses) in completeMonths) {
+                    totalIncome += budget.total
+                    totalExpenses += Expense.total(expenses.items, budgetCurrency, forexRepository::convert)
+                }
+
+                val monthlyIncome = if (completeMonths.size == 1) totalIncome else totalIncome / completeMonths.size.toBigDecimal()
+                val monthlyExpenses = if (completeMonths.size == 1) totalExpenses else totalExpenses / completeMonths.size.toBigDecimal()
                 val monthlyInvestments = monthlyIncome - monthlyExpenses
+
+                val selectionGroup = if (completeMonths.size == 1) {
+                    completeMonths.first().first
+                } else {
+                    "${completeMonths.last().first} - ${completeMonths.first().first}"
+                }
 
                 val annualIncome = monthlyIncome * 12.toBigDecimal()
                 val annualExpenses = monthlyExpenses * 12.toBigDecimal()

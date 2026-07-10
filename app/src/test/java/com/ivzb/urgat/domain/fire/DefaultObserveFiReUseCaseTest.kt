@@ -385,6 +385,46 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     }
 
     @Test
+    fun `invoke with multiple months should average income and expenses`() = `invoke should return Success with filtered items`(
+        budget = listOf(
+            GroupedBudgetCategories(
+                group = "November 2025",
+                total = 6000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory("1", "1", "EUR", 6000.toBigDecimal()),
+                ),
+            ),
+            GroupedBudgetCategories(
+                group = "December 2025",
+                total = 4000.toBigDecimal(),
+                items = listOf(
+                    BudgetCategory("2", "2", "EUR", 4000.toBigDecimal()),
+                ),
+            ),
+        ),
+        expenses = listOf(
+            GroupedExpenses("November 2025", listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")), listOf(
+                Expense("1", "1", 3000.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+            )),
+            GroupedExpenses("December 2025", listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")), listOf(
+                Expense("2", "2", 2000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+            )),
+        ),
+        expected = EXPECTED_FIRE.copy(
+            selection = "December 2025 - November 2025",
+            monthlyIncome = "5000.00".toBigDecimal(),
+            monthlyExpenses = "2500.00".toBigDecimal(),
+            monthlyInvestments = "2500.00".toBigDecimal(),
+            annualIncome = "60000.00".toBigDecimal(),
+            annualExpenses = "30000.00".toBigDecimal(),
+            annualInvestments = "30000.00".toBigDecimal(),
+            savingsRate = "50.00".toBigDecimal(),
+            target = "825000.00".toBigDecimal(),
+            yearsUntilFiRe = "13.96".toBigDecimal(),
+        ),
+    )
+
+    @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val withdrawalRateFlow = flowOf(4.toBigDecimal())
         val returnOfInvestmentFlow = flowOf(7.toBigDecimal())

@@ -5,15 +5,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,12 +66,14 @@ import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.toLocalDate
 
 private const val EMPTY_FIRE_CALCULATION = "∞"
 
@@ -353,6 +365,11 @@ fun FinanceScreen(
 
                 FinancePage.FIRE -> FiRePage(
                     fire = uiState.fire,
+                    fireDateRangeType = uiState.fireDateRangeType,
+                    fireCustomStart = uiState.fireCustomStart,
+                    fireCustomEnd = uiState.fireCustomEnd,
+                    onDateRangeTypeChange = { onIntent(FinanceIntent.UpdateFireDateRangeType(it)) },
+                    onCustomDateRangeChange = { start, end -> onIntent(FinanceIntent.UpdateFireCustomDateRange(start, end)) },
                     onWithdrawalRateChange = { onIntent(FinanceIntent.UpdateFireWithdrawalRate(it)) },
                     onReturnOfInvestmentChange = { onIntent(FinanceIntent.UpdateFireReturnOfInvestment(it)) },
                     onTaxRateChange = { onIntent(FinanceIntent.UpdateFireTaxRate(it)) },
@@ -677,6 +694,11 @@ private fun WatchlistPage(
 @Composable
 private fun FiRePage(
     fire: FiRe?,
+    fireDateRangeType: FireDateRangeType,
+    fireCustomStart: Long,
+    fireCustomEnd: Long,
+    onDateRangeTypeChange: (FireDateRangeType) -> Unit,
+    onCustomDateRangeChange: (Long, Long) -> Unit,
     onWithdrawalRateChange: (String) -> Unit,
     onReturnOfInvestmentChange: (String) -> Unit,
     onTaxRateChange: (String) -> Unit,
@@ -684,10 +706,6 @@ private fun FiRePage(
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
-
-    if (fire == null) {
-        return
-    }
 
     LaunchedEffect(Unit) {
         onListStateChanged(listState)
@@ -701,6 +719,55 @@ private fun FiRePage(
                 vertical = dimensionResource(R.dimen.content_padding_vertical),
             )
     ) {
+
+        Text(
+            text = stringResource(R.string.fire_date_range),
+        )
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
+
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            FireDateRangeType.entries.forEachIndexed { index, type ->
+                SegmentedButton(
+                    selected = fireDateRangeType == type,
+                    onClick = { onDateRangeTypeChange(type) },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = FireDateRangeType.entries.size,
+                    ),
+                    icon = {},
+                    border = SegmentedButtonDefaults.borderStroke(
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    ),
+                ) {
+                    Text(stringResource(type.labelResId))
+                }
+            }
+        }
+
+        if (fireDateRangeType == FireDateRangeType.CUSTOM) {
+            Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
+
+            FireCustomDateRangePicker(
+                customStart = fireCustomStart,
+                customEnd = fireCustomEnd,
+                onCustomDateRangeChange = onCustomDateRangeChange,
+            )
+        }
+
+        if (fire == null) {
+            Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
+
+            Text(
+                text = stringResource(R.string.fire_not_enough_data),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            return
+        }
+
+        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
 
         ScreenTitleWithInfo(
             title = stringResource(R.string.fire_title, fire.selection),
@@ -903,6 +970,112 @@ private fun FiRePage(
                 fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION
             ),
             fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FireCustomDateRangePicker(
+    customStart: Long,
+    customEnd: Long,
+    onCustomDateRangeChange: (Long, Long) -> Unit,
+) {
+    var showStartPicker by remember { mutableStateOf(false) }
+    var showEndPicker by remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        OutlinedButton(
+            onClick = { showStartPicker = true },
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(
+                text = if (customStart > 0L) {
+                    customStart.toLocalDate().format()
+                } else {
+                    stringResource(R.string.fire_select_start_date)
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+
+        OutlinedButton(
+            onClick = { showEndPicker = true },
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(
+                text = if (customEnd > 0L) {
+                    customEnd.toLocalDate().format()
+                } else {
+                    stringResource(R.string.fire_select_end_date)
+                }
+            )
+        }
+    }
+
+    if (showStartPicker) {
+        FireDatePickerDialog(
+            title = stringResource(R.string.fire_custom_start_date),
+            initialSelectedDateMillis = customStart.takeIf { it > 0L },
+            onDateSelected = { selectedDate ->
+                selectedDate?.let { start ->
+                    onCustomDateRangeChange(start, if (customEnd > 0L) customEnd else start)
+                }
+            },
+            onDismiss = { showStartPicker = false },
+        )
+    }
+
+    if (showEndPicker) {
+        FireDatePickerDialog(
+            title = stringResource(R.string.fire_custom_end_date),
+            initialSelectedDateMillis = customEnd.takeIf { it > 0L },
+            onDateSelected = { selectedDate ->
+                selectedDate?.let { end ->
+                    onCustomDateRangeChange(if (customStart > 0L) customStart else end, end)
+                }
+            },
+            onDismiss = { showEndPicker = false },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FireDatePickerDialog(
+    title: String,
+    initialSelectedDateMillis: Long?,
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialSelectedDateMillis,
+    )
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDateSelected(datePickerState.selectedDateMillis)
+                    onDismiss()
+                },
+            ) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
+    ) {
+        DatePicker(
+            state = datePickerState,
+            title = { Text(text = title, modifier = Modifier.padding(start = dimensionResource(R.dimen.content_padding_horizontal), top = dimensionResource(R.dimen.content_padding_vertical))) },
         )
     }
 }

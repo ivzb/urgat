@@ -13,6 +13,7 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
@@ -22,10 +23,13 @@ import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import com.ivzb.urgat.util.currentMonthRange
-import com.ivzb.urgat.util.untilCurrentMonthRange
+import com.ivzb.urgat.util.lastMonthRange
+import com.ivzb.urgat.util.lastYearRange
+import com.ivzb.urgat.util.yearToDateRange
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,7 +55,28 @@ class FinanceViewModel @Inject constructor(
 
     private val _taxRate = fireRepository.taxRateFlow
 
-    private val _fireDateRange = MutableStateFlow(untilCurrentMonthRange())
+    private val _fireDateRangeType = fireRepository.fireDateRangeTypeFlow
+
+    private val _fireCustomStart = fireRepository.fireCustomStartFlow
+
+    private val _fireCustomEnd = fireRepository.fireCustomEndFlow
+
+    private val _fireDateRange = combine(
+        _fireDateRangeType,
+        _fireCustomStart,
+        _fireCustomEnd,
+    ) { type, customStart, customEnd ->
+        when (type) {
+            FireDateRangeType.LAST_MONTH -> lastMonthRange()
+            FireDateRangeType.LAST_YEAR -> lastYearRange()
+            FireDateRangeType.YTD -> yearToDateRange()
+            FireDateRangeType.CUSTOM -> if (customStart > 0 && customEnd > 0) {
+                customStart .. customEnd
+            } else {
+                lastMonthRange()
+            }
+        }
+    }
 
     private val _savedExpensesFilterType = financeRepository.expensesFilterTypeFlow
     private val _savedExpensesSortType = financeRepository.expensesSortTypeFlow
@@ -87,6 +112,9 @@ class FinanceViewModel @Inject constructor(
             returnOfInvestmentFlow = _returnOfInvestment,
             taxRateFlow = _taxRate,
             fireDateRangeFlow = _fireDateRange,
+            fireDateRangeTypeFlow = _fireDateRangeType,
+            fireCustomStartFlow = _fireCustomStart,
+            fireCustomEndFlow = _fireCustomEnd,
         ),
         uiEventHolder(),
 
@@ -113,6 +141,8 @@ class FinanceViewModel @Inject constructor(
             is FinanceIntent.UpdateFireWithdrawalRate -> onUpdateFireWithdrawalRate(intent.withdrawalRate)
             is FinanceIntent.UpdateFireReturnOfInvestment -> onUpdateFireReturnOfInvestment(intent.returnOfInvestment)
             is FinanceIntent.UpdateFireTaxRate -> onUpdateFireTaxRate(intent.taxRate)
+            is FinanceIntent.UpdateFireDateRangeType -> onUpdateFireDateRangeType(intent.type)
+            is FinanceIntent.UpdateFireCustomDateRange -> onUpdateFireCustomDateRange(intent.start, intent.end)
 
             is FinanceIntent.SetExpensesFiltering -> setExpensesFiltering(intent.filterType)
             is FinanceIntent.SetExpensesSorting -> setExpensesSorting(intent.sortType)
@@ -243,6 +273,20 @@ class FinanceViewModel @Inject constructor(
     private fun setWatchlistAssetsSorting(sortType: WatchlistAssetsSortType) {
         viewModelScope.launch {
             financeRepository.updateWatchlistAssetsSortType(sortType)
+        }
+    }
+
+    private fun onUpdateFireDateRangeType(type: FireDateRangeType) {
+        viewModelScope.launch {
+            fireRepository.updateFireDateRangeType(type)
+        }
+    }
+
+    private fun onUpdateFireCustomDateRange(start: Long, end: Long) {
+        viewModelScope.launch {
+            fireRepository.updateFireCustomStart(start)
+            fireRepository.updateFireCustomEnd(end)
+            fireRepository.updateFireDateRangeType(FireDateRangeType.CUSTOM)
         }
     }
 

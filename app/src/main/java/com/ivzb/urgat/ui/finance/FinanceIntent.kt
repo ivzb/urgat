@@ -5,6 +5,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.trades.TradesSortType
@@ -16,6 +17,8 @@ sealed class FinanceIntent {
     data class UpdateFireWithdrawalRate(val withdrawalRate: String): FinanceIntent()
     data class UpdateFireReturnOfInvestment(val returnOfInvestment: String): FinanceIntent()
     data class UpdateFireTaxRate(val taxRate: String): FinanceIntent()
+    data class UpdateFireDateRangeType(val type: FireDateRangeType): FinanceIntent()
+    data class UpdateFireCustomDateRange(val start: Long, val end: Long): FinanceIntent()
 
     data class SetExpensesFiltering(val filterType: ExpensesFilterType): FinanceIntent()
     data class SetExpensesSorting(val sortType: ExpensesSortType): FinanceIntent()

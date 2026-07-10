@@ -8,6 +8,14 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 
+fun dataStoreLongFlow(
+    dataStore: DataStore<Preferences>,
+    key: Preferences.Key<Long>,
+    defaultValue: Long,
+): Flow<Long> = dataStoreFlow(dataStore, key, defaultValue) { value ->
+    value ?: defaultValue
+}
+
 fun dataStoreStringFlow(
     dataStore: DataStore<Preferences>,
     key: Preferences.Key<String>,
