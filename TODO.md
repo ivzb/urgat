@@ -110,3 +110,8 @@
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
 - make car fuel consumption filtering by car like in maintenance
 - make maintenance more button work
+- add trading tab based on DCA - BTC Trading sheet - fill each deposit that was done for trading - the final goal is to make the finance tab calculate that amount into the fire accumulated stash
+- show accumulated stash breakdown - each asset and it's amount to see where the money is
+- correctly update date when duplicating. the ui shows today but when i open the calendar i see the old day selected
+- create new react native app to show the robot dashboard - integrate it with baba_vanga by restoring the backup
+- remove the trading tab and create new one for entering money deposit
