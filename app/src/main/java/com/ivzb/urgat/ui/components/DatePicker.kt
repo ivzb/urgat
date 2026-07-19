@@ -32,7 +32,7 @@ fun DatePicker(
         })
     }
 
-    val datePickerDialog = remember {
+    val datePickerDialog = remember(selectedDate) {
         DatePickerDialog(
             themedContext,
             { _, year, month, dayOfMonth ->

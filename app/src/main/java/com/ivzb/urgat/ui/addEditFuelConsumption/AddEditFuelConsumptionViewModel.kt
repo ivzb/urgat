@@ -35,7 +35,7 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
 ): ViewModel() {
 
     private val screenTitleResId: Int = route.titleResId
-    private val fuelConsumptionId: String? = route.id
+    private var fuelConsumptionId: String? = route.id
 
     private val _uiState = MutableStateFlow(AddEditFuelConsumptionUiState(
         screenTitleResId = screenTitleResId,
@@ -45,8 +45,10 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
     val uiState: StateFlow<AddEditFuelConsumptionUiState> = _uiState.asStateFlow()
 
     init {
-        if (fuelConsumptionId != null) {
-            loadFuelConsumption(fuelConsumptionId)
+        val id = fuelConsumptionId
+
+        if (id != null) {
+            loadFuelConsumption(id)
         } else {
             loadLastUsedDefaults()
         }
@@ -158,7 +160,9 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
     }
 
     private fun deleteFuelConsumption() {
-        if (fuelConsumptionId == null) {
+        val id = fuelConsumptionId
+
+        if (id == null) {
             Assert.fail("deleteFuelConsumption() was called but id is null.")
 
             _uiState.update {
@@ -169,7 +173,7 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch {
-            deleteFuelConsumptionUseCase(fuelConsumptionId)
+            deleteFuelConsumptionUseCase(id)
 
             _uiState.update {
                 it.copy(shouldNavigateBack = true)
@@ -188,17 +192,22 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
             return
         }
 
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(date = System.currentTimeMillis())
-            }
+        fuelConsumptionId = null
 
-            createNewFuelConsumption()
+        _uiState.update {
+            it.copy(
+                screenTitleResId = R.string.add_fuel_consumption,
+                date = System.currentTimeMillis(),
+                withDelete = false,
+                withDuplicate = false,
+            )
         }
     }
 
     private fun updateFuelConsumption() {
-        if (fuelConsumptionId == null) {
+        val id = fuelConsumptionId
+
+        if (id == null) {
             Assert.fail("updateFuelConsumption() was called but id is null.")
 
             _uiState.update {
@@ -210,7 +219,7 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
 
         viewModelScope.launch {
             updateFuelConsumptionUseCase(
-                fuelConsumptionId,
+                id,
                 amount = uiState.value.amount.sanitize().toBigDecimal(),
                 price = uiState.value.price.sanitize().toBigDecimal(),
                 currency = uiState.value.currency.sanitize(),

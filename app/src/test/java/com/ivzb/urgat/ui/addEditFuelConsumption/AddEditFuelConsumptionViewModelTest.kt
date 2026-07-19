@@ -331,7 +331,7 @@ class AddEditFuelConsumptionViewModelTest {
     }
 
     @Test
-    fun `duplicateFuelConsumption creates new fuel consumption with current date`() = runTest {
+    fun `duplicateFuelConsumption resets state to create mode with current data`() = runTest {
         val fuelConsumptionId = "123"
         val fuelConsumption = FuelConsumption(
             id = fuelConsumptionId,
@@ -356,19 +356,57 @@ class AddEditFuelConsumptionViewModelTest {
 
         advanceUntilIdle()
 
-        val (amount, price, currency, type, carName, odometer, date) = createUseCase.created
-        assertEquals(BigDecimal("40"), amount)
-        assertEquals(BigDecimal("75"), price)
-        assertEquals("EUR", currency)
-        assertEquals("Diesel", type)
-        assertEquals("Toyota", carName)
-        assertEquals(50000, odometer)
-        assertTrue((date as Long) > 123L)
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_fuel_consumption, state.screenTitleResId)
+        assertEquals("40", state.amount)
+        assertEquals("75", state.price)
+        assertEquals("EUR", state.currency)
+        assertEquals("Diesel", state.type)
+        assertEquals("Toyota", state.carName)
+        assertEquals("50000", state.odometer)
+        assertTrue(state.date > 123L)
+        assertFalse(state.withDelete)
+        assertFalse(state.withDuplicate)
+        assertFalse(state.shouldNavigateBack)
+    }
+
+    @Test
+    fun `duplicateFuelConsumption then save creates new fuel consumption`() = runTest {
+        val fuelConsumptionId = "123"
+        val fuelConsumption = FuelConsumption(
+            id = fuelConsumptionId,
+            amount = BigDecimal("40"),
+            price = BigDecimal("75"),
+            currency = "EUR",
+            type = "Diesel",
+            carName = "Toyota",
+            odometer = 50000,
+            distance = 500,
+            date = 123L,
+            isDeleted = false,
+            createdAt = 1L,
+        )
+        getUseCase.toReturn = fuelConsumption
+
+        viewModel = createViewModel(fuelConsumptionId)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditFuelConsumptionIntent.DuplicateFuelConsumption)
+
+        advanceUntilIdle()
+
+        viewModel.onIntent(AddEditFuelConsumptionIntent.SaveFuelConsumption)
+
+        advanceUntilIdle()
+
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
 
     @Test
-    fun `duplicateFuelConsumption with modified fields creates new fuel consumption`() = runTest {
+    fun `duplicateFuelConsumption with modified fields then save creates new fuel consumption`() = runTest {
         val fuelConsumptionId = "456"
         val fuelConsumption = FuelConsumption(
             id = fuelConsumptionId,
@@ -395,14 +433,15 @@ class AddEditFuelConsumptionViewModelTest {
 
         advanceUntilIdle()
 
-        val (amount, price, currency, type, carName, odometer) = createUseCase.created
-        assertEquals(BigDecimal("60"), amount)
-        assertEquals(BigDecimal("80"), price)
-        assertEquals("EUR", currency)
-        assertEquals("Diesel", type)
-        assertEquals("Toyota", carName)
-        assertEquals(50000, odometer)
-        assertTrue(viewModel.uiState.value.shouldNavigateBack)
+        viewModel.onIntent(AddEditFuelConsumptionIntent.SaveFuelConsumption)
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(R.string.add_fuel_consumption, state.screenTitleResId)
+        assertTrue(createUseCase.created.isNotEmpty())
+        assertTrue(updateUseCase.updated.isEmpty())
+        assertTrue(state.shouldNavigateBack)
     }
 
     @Test
