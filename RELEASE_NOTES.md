@@ -1,3 +1,8 @@
+## Release notes 26.07.02
+
+Fixed:
+- Resolve issue with date picker when duplicating.
+
 ## Release notes 26.07.01
 
 New:
