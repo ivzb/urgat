@@ -1,3 +1,8 @@
+## Release notes 26.07.03
+
+New:
+- View the full breakdown of your accumulated stash.
+
 ## Release notes 26.07.02
 
 Fixed:
