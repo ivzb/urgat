@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -98,6 +99,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "36000".toBigDecimal(),
             annualInvestments = "24000".toBigDecimal(),
             accumulatedStash = "0".toBigDecimal(),
+            stashBreakdown = emptyList(),
             savingsRate = "40.00".toBigDecimal(),
             target = "990000.00".toBigDecimal(),
             yearsUntilFiRe = "19.69".toBigDecimal(),
@@ -113,6 +115,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         savings = NO_SAVINGS,
         expected = EXPECTED_FIRE.copy(
             accumulatedStash = "0".toBigDecimal(),
+            stashBreakdown = emptyList(),
             target = "825000.00".toBigDecimal(),
             yearsUntilFiRe = "15.53".toBigDecimal(),
         ),
@@ -153,6 +156,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "24000".toBigDecimal(),
             annualInvestments = "36000".toBigDecimal(),
             accumulatedStash = "0".toBigDecimal(),
+            stashBreakdown = emptyList(),
             savingsRate = "60.00".toBigDecimal(),
             target = "660000.00".toBigDecimal(),
             yearsUntilFiRe = "11.92".toBigDecimal(),
@@ -230,6 +234,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "60000".toBigDecimal(),
             annualInvestments = "0".toBigDecimal(),
             accumulatedStash = "0".toBigDecimal(),
+            stashBreakdown = emptyList(),
             savingsRate = "0.00".toBigDecimal(),
             target = "1650000.00".toBigDecimal(),
             yearsUntilFiRe = "99.99".toBigDecimal(),
@@ -485,6 +490,11 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "30000".toBigDecimal(),
             annualInvestments = "30000".toBigDecimal(),
             accumulatedStash = "50000".toBigDecimal(),
+            stashBreakdown = listOf(
+                StashBreakdownItem("1", 20_000.toBigDecimal()),
+                StashBreakdownItem("2", 20_000.toBigDecimal()),
+                StashBreakdownItem("Emergency fund", 10_000.toBigDecimal()),
+            ),
             savingsRate = "50.00".toBigDecimal(),
             target = "825000.00".toBigDecimal(),
             withdrawalRate = "4".toBigDecimal(),

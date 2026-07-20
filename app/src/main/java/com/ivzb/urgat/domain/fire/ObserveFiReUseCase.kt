@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.fire
 
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
@@ -114,6 +115,26 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forexRepository::convert)
                 val accumulatedStash = allTimeInvestments + allTimeSavings
 
+                // Calculate stash breakdown per asset
+                val investmentBreakdown = investmentsAllTimeAsync.data.items
+                    .groupBy { it.category }
+                    .map { (category, investments) -> StashBreakdownItem(category, investments.sumOf { it.totalMarketPrice }) }
+
+                val savingsBreakdown = savingsAllTimeAsync.data.items
+                    .groupBy { it.name }
+                    .map { (name, savings) ->
+                        var total = BigDecimal.ZERO
+
+                        for (saving in savings) {
+                            total += forexRepository.convert(saving.amount, saving.currency, budgetCurrency) ?: BigDecimal.ZERO
+                        }
+
+                        StashBreakdownItem(name, total)
+                    }
+
+                val stashBreakdown = (investmentBreakdown + savingsBreakdown)
+                    .sortedByDescending { it.amount }
+
                 val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
 
                 if (isIncomplete) {
@@ -137,6 +158,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                             annualInvestments = annualInvestments,
 
                             accumulatedStash = accumulatedStash,
+                            stashBreakdown = stashBreakdown,
                             savingsRate = null,
                             target = null,
 
@@ -177,6 +199,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     annualInvestments = annualInvestments,
 
                     accumulatedStash = accumulatedStash,
+                    stashBreakdown = stashBreakdown,
                     savingsRate = savingsRate,
                     target = target,
 

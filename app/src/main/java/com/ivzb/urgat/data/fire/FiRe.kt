@@ -18,6 +18,7 @@ data class FiRe(
     val annualInvestments: BigDecimal,
 
     val accumulatedStash: BigDecimal,
+    val stashBreakdown: List<StashBreakdownItem> = emptyList(),
     val savingsRate: BigDecimal?,
     val target: BigDecimal?,
 

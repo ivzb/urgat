@@ -782,6 +782,13 @@ private fun FiRePage(
                         "${fire.accumulatedStash.format()} ${fire.currency}",
                     )
                 )
+
+                fire.stashBreakdown.forEach { item ->
+                    appendLine("    ${item.name}: ${item.amount.format()} ${fire.currency}")
+                }
+
+                appendLine()
+
                 appendLine(
                     stringResource(
                         R.string.fire_annual_income,
