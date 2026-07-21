@@ -1,3 +1,8 @@
+## Release notes 26.07.04
+
+New:
+- Trade tab is changed from tracking transactions to deposits.
+
 ## Release notes 26.07.03
 
 New:
