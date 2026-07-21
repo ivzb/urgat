@@ -28,7 +28,6 @@ class DefaultObserveTradesSortingUseCaseTest {
     fun `invoke should return Success with sort menu items`() = runTest(testDispatcher) {
         val expected = listOf(
             SortMenuItem(type = TradesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = TradesSortType.BY_COST, labelResId = R.string.sort_by_cost),
         )
 
         val results = observeUseCase().toList()

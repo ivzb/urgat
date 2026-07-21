@@ -10,7 +10,6 @@ import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.SavingTotal
-import com.ivzb.urgat.data.trade.Trade
 import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
@@ -142,19 +141,6 @@ fun annotateFuelConsumptionTotals(totals: List<FuelConsumptionTotal>): Annotated
         }
     }
 
-fun annotateOrderType(orderType: String): AnnotatedString {
-    val color = when (orderType.lowercase()) {
-        Trade.ORDER_TYPE_BUY -> POSITIVE_AMOUNT_COLOR
-        Trade.ORDER_TYPE_SELL -> NEGATIVE_AMOUNT_COLOR
-        else -> Color.Gray
-    }
-
-    return buildAnnotatedString {
-        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = color)) {
-            append(orderType)
-        }
-    }
-}
 
 fun annotateBold(text: String): AnnotatedString =
     buildAnnotatedString {

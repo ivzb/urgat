@@ -20,7 +20,6 @@ class DefaultObserveTradesSortingUseCase @Inject constructor() : ObserveTradesSo
     override fun invoke(): Flow<Async<List<TradesSortMenuItem>>> {
         return flowOf(Async.Success(listOf(
             SortMenuItem(type = TradesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = TradesSortType.BY_COST, labelResId = R.string.sort_by_cost),
         )))
     }
 

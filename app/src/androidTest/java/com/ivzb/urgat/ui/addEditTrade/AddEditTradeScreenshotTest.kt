@@ -25,11 +25,8 @@ class AddEditTradeScreenshotTest: ScreenshotTest() {
             AddEditTradeUiState(
                 screenTitleResId = R.string.edit_trade,
                 name = trade.name,
-                shares = trade.shares.toString(),
-                fee = trade.fee.toString(),
-                marketPrice = trade.marketPrice.toString(),
+                amount = trade.amount.toString(),
                 currency = trade.currency,
-                orderType = trade.orderType,
                 date = trade.date,
                 focusIndex = -1,
             )

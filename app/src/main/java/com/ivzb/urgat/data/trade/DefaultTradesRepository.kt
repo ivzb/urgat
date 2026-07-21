@@ -3,9 +3,6 @@ package com.ivzb.urgat.data.trade
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,7 +42,7 @@ class DefaultTradesRepository @Inject constructor(
 
                 localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { trades ->
                     withContext(dispatcher) {
-                        trades.toExternal()
+                        trades.map { it.toExternal() }
                     }
                 }.onEach {
                     if (_isRefreshingFlow.value) {
@@ -71,7 +68,7 @@ class DefaultTradesRepository @Inject constructor(
 
                 localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { trades ->
                     withContext(dispatcher) {
-                        trades.toExternal()
+                        trades.map { it.toExternal() }
                     }
                 }.onEach {
                     if (_isRefreshingFlow.value) {
@@ -91,23 +88,11 @@ class DefaultTradesRepository @Inject constructor(
     }
 
     override suspend fun get(id: String): Trade? {
-        return localDataSource.getById(id)?.toExternal(pricePrecision = null)
+        return localDataSource.getById(id)?.toExternal()
     }
 
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
-    }
-
-    private suspend fun List<TradeEntity>.toExternal(): List<Trade> {
-        return coroutineScope { map { async { it.toExternal() } }.awaitAll() }
-    }
-
-    private suspend fun TradeEntity.toExternal(): Trade {
-        val marketPriceData = marketPriceRepository.fetchPrice(name)
-
-        return toExternal(
-            pricePrecision = marketPriceData?.pricePrecision,
-        )
     }
 
     companion object {

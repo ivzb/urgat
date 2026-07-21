@@ -14,15 +14,6 @@ class FakeGetTradeUseCase : GetTradeUseCase {
     }
 }
 
-class FakeGetLastUsedTradeCurrencyUseCase : GetLastUsedTradeCurrencyUseCase {
-
-    var toReturn: String? = null
-
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
-}
-
 class FakeGetLastUsedTradeNameUseCase : GetLastUsedTradeNameUseCase {
 
     var toReturn: String? = null
@@ -32,7 +23,7 @@ class FakeGetLastUsedTradeNameUseCase : GetLastUsedTradeNameUseCase {
     }
 }
 
-class FakeGetLastUsedTradeFeeUseCase : GetLastUsedTradeFeeUseCase {
+class FakeGetLastUsedTradeCurrencyUseCase : GetLastUsedTradeCurrencyUseCase {
 
     var toReturn: String? = null
 
@@ -47,14 +38,11 @@ class FakeCreateTradeUseCase : CreateTradeUseCase {
 
     override suspend fun invoke(
         name: String,
-        shares: BigDecimal,
-        fee: BigDecimal,
-        marketPrice: BigDecimal,
+        amount: BigDecimal,
         currency: String,
-        orderType: String,
         date: Long,
     ) {
-        created = listOf(name, shares, fee, marketPrice, currency, orderType, date)
+        created = listOf(name, amount, currency, date)
     }
 }
 
@@ -65,14 +53,11 @@ class FakeUpdateTradeUseCase : UpdateTradeUseCase {
     override suspend fun invoke(
         id: String,
         name: String,
-        shares: BigDecimal,
-        fee: BigDecimal,
-        marketPrice: BigDecimal,
+        amount: BigDecimal,
         currency: String,
-        orderType: String,
         date: Long,
     ) {
-        updated = listOf(id, name, shares, fee, marketPrice, currency, orderType, date)
+        updated = listOf(id, name, amount, currency, date)
     }
 }
 

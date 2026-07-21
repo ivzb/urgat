@@ -43,10 +43,10 @@ class DefaultObserveGroupedTradesMonthlyUseCaseTest {
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
             listOf(
-                Trade("1", "AAPL", BigDecimal("10"), BigDecimal("150"), BigDecimal("1.5"), "USD", "buy", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
-                Trade("2", "AAPL", BigDecimal("5"), BigDecimal("155"), BigDecimal("1.5"), "USD", "buy", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
-                Trade("3", "AAPL", BigDecimal("8"), BigDecimal("160"), BigDecimal("2.0"), "USD", "sell", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
-                Trade("4", "AAPL", BigDecimal("3"), BigDecimal("170"), BigDecimal("1.0"), "USD", "buy", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+                Trade("1", "AAPL", BigDecimal("150"), "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+                Trade("2", "AAPL", BigDecimal("155"), "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
+                Trade("3", "AAPL", BigDecimal("160"), "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+                Trade("4", "AAPL", BigDecimal("170"), "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
             ),
         )
 
@@ -73,37 +73,6 @@ class DefaultObserveGroupedTradesMonthlyUseCaseTest {
         assertEquals("1", actual[1].items[1].id)
     }
 
-    @Test
-    fun `invoke should return Success with items sorted by cost`() = runTest(testDispatcher) {
-        val searchQueryFlow = flowOf("")
-        val dateRangeFlow = flowOf(NO_DATE_RANGE)
-        val limit = 10
-        val sortTypeFlow = flowOf(TradesSortType.BY_COST)
-        val limitFlow = flowOf(limit)
-        val repositoryStream = flowOf(
-            listOf(
-                Trade("1", "AAPL", BigDecimal("10"), BigDecimal("150"), BigDecimal("0"), "USD", "buy", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
-                Trade("2", "GOOG", BigDecimal("5"), BigDecimal("200"), BigDecimal("0"), "USD", "buy", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
-            ),
-        )
-
-        every { repository.observe(limit, NO_DATE_RANGE) } returns repositoryStream
-
-        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
-
-        advanceUntilIdle()
-
-        assertEquals(1, results.size)
-        val first = results.first()
-        assert(first is Async.Success)
-        val actual = (first as Async.Success).data
-
-        assertEquals(1, actual.size)
-        // AAPL totalPrice = 10*150+0 = 1500, GOOG totalPrice = 5*200+0 = 1000
-        // Sorted by cost desc: AAPL first
-        assertEquals("1", actual[0].items[0].id)
-        assertEquals("2", actual[0].items[1].id)
-    }
 
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
@@ -144,39 +113,6 @@ class DefaultObserveGroupedTradesMonthlyUseCaseTest {
         assertEquals(false, useCase.isRefreshingFlow.value)
     }
 
-    @Test
-    fun `invoke with filter type filters by orderType`() = runTest(testDispatcher) {
-        val searchQueryFlow = flowOf("")
-        val dateRangeFlow = flowOf(NO_DATE_RANGE)
-        val limit = 10
-        val filterTypeFlow = flowOf("buy")
-        val sortTypeFlow = flowOf(TradesSortType.BY_DATE)
-        val limitFlow = flowOf(limit)
-        val repositoryStream = flowOf(
-            listOf(
-                Trade("1", "AAPL", BigDecimal("10"), BigDecimal("150"), BigDecimal("0"), "USD", "buy", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
-                Trade("2", "AAPL", BigDecimal("5"), BigDecimal("155"), BigDecimal("0"), "USD", "sell", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
-                Trade("3", "GOOG", BigDecimal("8"), BigDecimal("160"), BigDecimal("0"), "USD", "buy", timestamp(2025, 11, 28), false, timestamp(2025, 11, 28)),
-            ),
-        )
-
-        every { repository.observe(limit, NO_DATE_RANGE) } returns repositoryStream
-
-        val results = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow).toList()
-
-        advanceUntilIdle()
-
-        assertEquals(1, results.size)
-        val first = results.first()
-        assert(first is Async.Success)
-        val actual = (first as Async.Success).data
-
-        assertEquals(1, actual.size)
-        assertEquals(2, actual[0].items.size)
-        // Only buy trades
-        assertEquals("buy", actual[0].items[0].orderType)
-        assertEquals("buy", actual[0].items[1].orderType)
-    }
 
 }
 

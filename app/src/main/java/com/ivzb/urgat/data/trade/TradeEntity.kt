@@ -15,11 +15,8 @@ import java.math.BigDecimal
 data class TradeEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val shares: BigDecimal,
-    val fee: BigDecimal,
-    val marketPrice: BigDecimal,
+    val amount: BigDecimal,
     val currency: String,
-    val orderType: String,
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long

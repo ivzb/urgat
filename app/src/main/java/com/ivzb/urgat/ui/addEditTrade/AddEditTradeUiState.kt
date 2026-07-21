@@ -6,11 +6,8 @@ data class AddEditTradeUiState(
     @StringRes
     val screenTitleResId: Int? = null,
     val name: String = "",
-    val shares: String = "",
-    val fee: String = "",
-    val marketPrice: String = "",
+    val amount: String = "",
     val currency: String = "",
-    val orderType: String = "",
     val date: Long = System.currentTimeMillis(),
     val focusIndex: Int = 0,
     val isLoading: Boolean = false,

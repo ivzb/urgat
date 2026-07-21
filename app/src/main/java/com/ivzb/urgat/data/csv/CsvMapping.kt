@@ -125,11 +125,8 @@ data class CsvMapping(
         val TRADES_CSV_MAPPING = listOf(
             CsvMapping("id", "string"),
             CsvMapping("name", "string"),
-            CsvMapping("shares", "big_decimal"),
-            CsvMapping("fee", "big_decimal"),
-            CsvMapping("marketPrice", "big_decimal"),
+            CsvMapping("amount", "big_decimal"),
             CsvMapping("currency", "string"),
-            CsvMapping("orderType", "string"),
             CsvMapping("date", "long"),
             CsvMapping("createdAt", "long"),
         )
@@ -280,14 +277,11 @@ data class CsvMapping(
             return TradeEntity(
                 id = split[0].ifEmpty { UUID.randomUUID().toString() },
                 name = split[1],
-                shares = split[2].toBigDecimal(),
-                fee = split[3].toBigDecimal(),
-                marketPrice = split[4].toBigDecimal(),
-                currency = split[5],
-                orderType = split[6],
-                date = split[7].toLong(),
+                amount = split[2].toBigDecimal(),
+                currency = split[3],
+                date = split[4].toLong(),
                 isDeleted = false,
-                createdAt = split[8].toLong(),
+                createdAt = split[5].toLong(),
             )
         }
 

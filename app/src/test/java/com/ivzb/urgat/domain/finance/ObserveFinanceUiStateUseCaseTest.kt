@@ -306,7 +306,7 @@ class ObserveFinanceUiStateUseCaseTest {
 
         val result = invokeUseCase(
             tradesFilterType = "buy",
-            tradesSortType = TradesSortType.BY_COST,
+            tradesSortType = TradesSortType.BY_DATE,
         ).first()
 
         advanceUntilIdle()
@@ -315,7 +315,7 @@ class ObserveFinanceUiStateUseCaseTest {
         val tradesUiInfo = result.data.tradesUiState.filteringUiInfo
         assertTrue(tradesUiInfo.hasAppliedFilters)
         assertTrue(tradesUiInfo.showFilterBadge)
-        assertTrue(tradesUiInfo.showSortBadge)
+        assertFalse(tradesUiInfo.showSortBadge)
         assertEquals(R.string.no_trades_search, tradesUiInfo.emptyLabel)
         assertEquals(R.string.no_trades_search_message, tradesUiInfo.emptyMessage)
         assertEquals(R.string.reset_filters, tradesUiInfo.emptyButtonLabel)

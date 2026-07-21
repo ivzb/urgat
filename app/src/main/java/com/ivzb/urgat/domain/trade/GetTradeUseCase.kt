@@ -16,7 +16,7 @@ class DefaultGetTradeUseCase @Inject constructor(
 ): GetTradeUseCase {
 
     override suspend fun invoke(id: String): Trade? {
-        return tradeDao.getById(id)?.toExternal(pricePrecision = null)
+        return tradeDao.getById(id)?.toExternal()
     }
 
 }

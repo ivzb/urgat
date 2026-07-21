@@ -147,8 +147,8 @@ class DefaultFinanceRepositoryTest {
 
     @Test
     fun `updateTradesSortType updates flow value`() = runTest {
-        repository.updateTradesSortType(TradesSortType.BY_COST)
-        assertEquals(TradesSortType.BY_COST, repository.tradesSortTypeFlow.first())
+        repository.updateTradesSortType(TradesSortType.BY_DATE)
+        assertEquals(TradesSortType.BY_DATE, repository.tradesSortTypeFlow.first())
     }
 
 }

@@ -38,7 +38,7 @@ import com.ivzb.urgat.data.weight.WeightEntity
     FuelConsumptionEntity::class,
     CarMaintenanceEntity::class,
     TradeEntity::class,
- ], version = 18)
+ ], version = 19)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

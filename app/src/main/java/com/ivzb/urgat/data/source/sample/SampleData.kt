@@ -425,28 +425,25 @@ object SampleData {
     )
 
     val SAMPLE_TRADES = listOf(
-        listOf("BTC", "0.5", "27500", "12.50", "USD", "Buy", "180"),
-        listOf("BTC", "0.3", "31000", "8.40", "USD", "Buy", "150"),
-        listOf("BTC", "0.2", "29000", "5.80", "USD", "Sell", "120"),
-        listOf("BTC", "0.8", "35000", "25.00", "USD", "Buy", "90"),
-        listOf("BTC", "0.4", "42000", "15.20", "USD", "Sell", "75"),
-        listOf("BTC", "1.0", "38000", "34.00", "USD", "Buy", "60"),
-        listOf("BTC", "0.6", "45000", "24.30", "USD", "Sell", "45"),
-        listOf("BTC", "0.25", "52000", "11.70", "USD", "Buy", "30"),
-        listOf("BTC", "0.35", "60000", "18.90", "USD", "Sell", "14"),
-        listOf("BTC", "0.15", "57000", "7.70", "USD", "Buy", "7"),
-        listOf("BTC", "0.5", "63000", "28.35", "USD", "Sell", "3"),
-        listOf("BTC", "0.2", "61000", "10.98", "USD", "Buy", "0"),
+        listOf("BTC", "27500", "USD", "180"),
+        listOf("BTC", "31000", "USD", "150"),
+        listOf("BTC", "29000", "USD", "120"),
+        listOf("BTC", "35000", "USD", "90"),
+        listOf("BTC", "42000", "USD", "75"),
+        listOf("BTC", "38000", "USD", "60"),
+        listOf("BTC", "45000", "USD", "45"),
+        listOf("BTC", "52000", "USD", "30"),
+        listOf("BTC", "60000", "USD", "14"),
+        listOf("BTC", "57000", "USD", "7"),
+        listOf("BTC", "63000", "USD", "3"),
+        listOf("BTC", "61000", "USD", "0"),
     )
-        .mapIndexed { index, (name, shares, marketPrice, fee, currency, orderType, dateOffset) ->
+        .mapIndexed { index, (name, amount, currency, dateOffset) ->
             Trade(
                 id = "trade_$index",
                 name = name,
-                shares = shares.toBigDecimal(),
-                marketPrice = marketPrice.toBigDecimal(),
-                fee = fee.toBigDecimal(),
+                amount = amount.toBigDecimal(),
                 currency = currency,
-                orderType = orderType,
                 date = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),
                 isDeleted = false,
                 createdAt = System.currentTimeMillis() - (dateOffset.toLong() * 86_400 * 1_000L),

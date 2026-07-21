@@ -36,20 +36,18 @@ class DefaultObserveTradesFilteringUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with grouped items by orderType`() = runTest(testDispatcher) {
+    fun `invoke should return Success with all filter item`() = runTest(testDispatcher) {
         val expected = listOf(
             FilterMenuItem(type = TradesFilterType_All, labelResId = R.string.filter_all, size = 5),
-            FilterMenuItem(type = "buy", label = "buy", size = 3),
-            FilterMenuItem(type = "sell", label = "sell", size = 2),
         )
 
         val repositoryStream = flowOf(
             listOf(
-                Trade("1", "AAPL", BigDecimal("10"), BigDecimal("150"), BigDecimal("0"), "USD", "buy", 1L, false, 1L),
-                Trade("2", "GOOG", BigDecimal("5"), BigDecimal("200"), BigDecimal("0"), "USD", "buy", 1L, false, 1L),
-                Trade("3", "TSLA", BigDecimal("8"), BigDecimal("300"), BigDecimal("0"), "USD", "sell", 1L, false, 1L),
-                Trade("4", "MSFT", BigDecimal("3"), BigDecimal("400"), BigDecimal("0"), "USD", "buy", 1L, false, 1L),
-                Trade("5", "AMZN", BigDecimal("2"), BigDecimal("180"), BigDecimal("0"), "USD", "sell", 1L, false, 1L),
+                Trade("1", "AAPL", BigDecimal("100"), "USD", 1L, false, 1L),
+                Trade("2", "GOOG", BigDecimal("100"), "USD", 1L, false, 1L),
+                Trade("3", "TSLA", BigDecimal("100"), "USD", 1L, false, 1L),
+                Trade("4", "MSFT", BigDecimal("100"), "USD", 1L, false, 1L),
+                Trade("5", "AMZN", BigDecimal("100"), "USD", 1L, false, 1L),
             )
         )
 

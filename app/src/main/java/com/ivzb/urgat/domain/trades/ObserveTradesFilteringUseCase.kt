@@ -31,11 +31,7 @@ class DefaultObserveTradesFilteringUseCase @Inject constructor(
                     return@map listOf()
                 }
 
-                listOf(FilterMenuItem(type = TradesFilterType_All, labelResId = R.string.filter_all, size = it.size)) +
-                    it.groupBy { it.orderType }
-                        .entries
-                        .sortedByDescending { it.value.size }
-                        .map { FilterMenuItem(type = it.key, label = it.key, size = it.value.size) }
+                listOf(FilterMenuItem(type = TradesFilterType_All, labelResId = R.string.filter_all, size = it.size))
             }
             .map<List<TradesFilterMenuItem>, Async<List<TradesFilterMenuItem>>> { Async.Success(it) }
             .catch { e ->

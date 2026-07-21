@@ -8,33 +8,23 @@ import kotlin.collections.component2
 data class Trade(
     val id: String,
     val name: String,
-    val shares: BigDecimal,
-    val marketPrice: BigDecimal,
-    val fee: BigDecimal,
+    val amount: BigDecimal,
     val currency: String,
-    val orderType: String,
     val date: Long,
     val isDeleted: Boolean,
     val createdAt: Long,
-    val pricePrecision: Int? = null,
 ) {
 
-    val totalPrice: BigDecimal
-        get() = (marketPrice * shares)// - fee
-
     fun formatCsv(): String =
-        "\"$id\", \"$name\", \"$shares\", \"$marketPrice\", \"$fee\", \"$currency\", \"$orderType\", $date, $createdAt"
+        "\"$id\", \"$name\", \"$amount\", \"$currency\", $date, $createdAt"
 
     companion object {
-
-        const val ORDER_TYPE_BUY = "buy"
-        const val ORDER_TYPE_SELL = "sell"
 
         fun total(trades: List<Trade>): List<TradeTotal> =
             trades
                 .groupBy { it.currency.formatCurrency() }
                 .map { (currency, trades) ->
-                    val price = trades.sumOf { it.totalPrice }
+                    val price = trades.sumOf { it.amount }
 
                     TradeTotal(
                         currency = currency,
@@ -49,7 +39,7 @@ data class Trade(
             convert: suspend (amount: BigDecimal, fromCurrency: String, toCurrency: String) -> BigDecimal?,
         ): BigDecimal =
             trades
-                ?.mapNotNull { convert(it.totalPrice, it.currency, toCurrency) }
+                ?.mapNotNull { convert(it.amount, it.currency, toCurrency) }
                 ?.sumOf { it }
                 ?: BigDecimal.ZERO
 

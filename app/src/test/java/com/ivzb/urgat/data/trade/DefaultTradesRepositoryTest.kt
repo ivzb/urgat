@@ -2,7 +2,6 @@ package com.ivzb.urgat.data.trade
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
-import com.ivzb.urgat.data.marketPrice.MarketPrice
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
@@ -41,22 +40,16 @@ class DefaultTradesRepositoryTest {
     private suspend fun insertTrade(
         id: String = "1",
         name: String = "AAPL",
-        shares: BigDecimal = BigDecimal("10"),
-        fee: BigDecimal = BigDecimal("1.5"),
-        marketPrice: BigDecimal = BigDecimal("150"),
+        amount: BigDecimal = BigDecimal("150"),
         currency: String = "USD",
-        orderType: String = "buy",
         date: Long = 1L,
     ) {
         dao.upsert(
             TradeEntity(
                 id = id,
                 name = name,
-                shares = shares,
-                fee = fee,
-                marketPrice = marketPrice,
+                amount = amount,
                 currency = currency,
-                orderType = orderType,
                 date = date,
                 isDeleted = false,
                 createdAt = System.currentTimeMillis(),
@@ -66,16 +59,13 @@ class DefaultTradesRepositoryTest {
 
     @Test
     fun `get retrieves correct trade`() = runTest {
-        insertTrade(id = "1", name = "AAPL", shares = BigDecimal("10"), fee = BigDecimal("1.5"), marketPrice = BigDecimal("150"), currency = "USD", orderType = "buy", date = 1L)
+        insertTrade(id = "1", name = "AAPL", amount = BigDecimal("150"), currency = "USD", date = 1L)
 
         val trade = repository.get("1")
         assertNotNull(trade)
         assertEquals("AAPL", trade?.name)
-        assertEquals(BigDecimal("10"), trade?.shares)
-        assertEquals(BigDecimal("1.5"), trade?.fee)
-        assertEquals(BigDecimal("150"), trade?.marketPrice)
+        assertEquals(BigDecimal("150"), trade?.amount)
         assertEquals("USD", trade?.currency)
-        assertEquals("buy", trade?.orderType)
         assertEquals(1L, trade?.date)
         assertEquals(false, trade?.isDeleted)
     }
@@ -117,45 +107,6 @@ class DefaultTradesRepositoryTest {
         assertEquals("AAPL", result.first().name)
     }
 
-    @Test
-    fun `observe populates pricePrecision from fetchPrice`() = runTest {
-        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL",
-            description = "Apple Inc.",
-            price = BigDecimal("190.50"),
-            currency = "USD",
-            previousClosePrice = BigDecimal("189.00"),
-            pricePrecision = 4,
-        )
-
-        insertTrade(id = "1", name = "AAPL")
-
-        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
-
-        assertEquals(1, result.size)
-        assertEquals(4, result.first().pricePrecision)
-    }
-
-    @Test
-    fun `observe sets pricePrecision to null when no market data`() = runTest {
-        fakeMarketPriceRepository.shouldThrow = true
-
-        insertTrade(id = "1", name = "UNKNOWN")
-
-        val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
-
-        assertEquals(1, result.size)
-        assertNull(result.first().pricePrecision)
-    }
-
-    @Test
-    fun `get sets pricePrecision to null always`() = runTest {
-        insertTrade(id = "1", name = "AAPL")
-
-        val trade = repository.get("1")
-        assertNotNull(trade)
-        assertNull(trade?.pricePrecision)
-    }
 
     @Test
     fun `isRefreshingFlow starts as false`() = runTest {
@@ -250,7 +201,7 @@ class DefaultTradesRepositoryTest {
 
     @Test
     fun `observe preserves trade fields`() = runTest {
-        insertTrade(id = "1", name = "TSLA", shares = BigDecimal("5"), fee = BigDecimal("2.0"), marketPrice = BigDecimal("300"), currency = "EUR", orderType = "sell", date = 100L)
+        insertTrade(id = "1", name = "TSLA", amount = BigDecimal("300"), currency = "EUR", date = 100L)
 
         val result = repository.observe(limit = 10, dateRange = NO_DATE_RANGE).first()
 
@@ -258,17 +209,14 @@ class DefaultTradesRepositoryTest {
         val trade = result.first()
         assertEquals("1", trade.id)
         assertEquals("TSLA", trade.name)
-        assertEquals(BigDecimal("5"), trade.shares)
-        assertEquals(BigDecimal("2.0"), trade.fee)
-        assertEquals(BigDecimal("300"), trade.marketPrice)
+        assertEquals(BigDecimal("300"), trade.amount)
         assertEquals("EUR", trade.currency)
-        assertEquals("sell", trade.orderType)
         assertEquals(100L, trade.date)
         assertEquals(false, trade.isDeleted)
     }
 
     @Test
-    fun `refresh triggers re-emission with updated market data`() = runTest {
+    fun `refresh triggers re-emission`() = runTest {
         insertTrade(id = "1", name = "AAPL")
 
         val emissions = mutableListOf<List<Trade>>()
@@ -281,18 +229,13 @@ class DefaultTradesRepositoryTest {
         advanceUntilIdle()
 
         assertTrue(emissions.isNotEmpty())
-        assertNull(emissions.first().first().pricePrecision)
         // Initial load should not have triggered refreshing
         assertEquals(false, repository.isRefreshingFlow.value)
 
-        fakeMarketPriceRepository.prices["AAPL"] = MarketPrice(
-            symbol = "AAPL", description = "Apple", price = BigDecimal("190"), currency = "USD", previousClosePrice = BigDecimal("189"), pricePrecision = 2,
-        )
         fakeMarketPriceRepository.emitRefresh()
         advanceUntilIdle()
 
         assertTrue(emissions.size >= 2)
-        assertEquals(2, emissions.last().first().pricePrecision)
         // After refresh completes, isRefreshing should be false
         assertEquals(false, repository.isRefreshingFlow.value)
 

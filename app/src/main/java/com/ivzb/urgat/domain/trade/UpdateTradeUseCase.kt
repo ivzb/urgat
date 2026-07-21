@@ -10,11 +10,8 @@ interface UpdateTradeUseCase {
     suspend operator fun invoke(
         id: String,
         name: String,
-        shares: BigDecimal,
-        fee: BigDecimal,
-        marketPrice: BigDecimal,
+        amount: BigDecimal,
         currency: String,
-        orderType: String,
         date: Long,
     )
 
@@ -27,11 +24,8 @@ class DefaultUpdateTradeUseCase @Inject constructor(
     override suspend operator fun invoke(
         id: String,
         name: String,
-        shares: BigDecimal,
-        fee: BigDecimal,
-        marketPrice: BigDecimal,
+        amount: BigDecimal,
         currency: String,
-        orderType: String,
         date: Long,
     ) {
         val existing = tradeDao.getById(id) ?: return
@@ -39,11 +33,8 @@ class DefaultUpdateTradeUseCase @Inject constructor(
         val entity = TradeEntity(
             id = id,
             name = name,
-            shares = shares,
-            fee = fee,
-            marketPrice = marketPrice,
+            amount = amount,
             currency = currency,
-            orderType = orderType,
             date = date,
             isDeleted = existing.isDeleted,
             createdAt = existing.createdAt,

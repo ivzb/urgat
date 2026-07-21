@@ -67,6 +67,7 @@ class MigrationTest {
                 MIGRATION_15_16,
                 MIGRATION_16_17,
                 MIGRATION_17_18,
+                MIGRATION_18_19,
             )
             .build()
             .apply {
@@ -116,6 +117,7 @@ class MigrationTest {
                 MIGRATION_15_16,
                 MIGRATION_16_17,
                 MIGRATION_17_18,
+                MIGRATION_18_19,
             )
             .build()
             .let { db ->
@@ -221,11 +223,8 @@ class MigrationTest {
                     val trade = TradeEntity(
                         id = "1",
                         name = "AAPL",
-                        shares = 10.toBigDecimal(),
-                        marketPrice = 150.toBigDecimal(),
-                        fee = 1.5.toBigDecimal(),
+                        amount = 150.toBigDecimal(),
                         currency = "USD",
-                        orderType = "Buy",
                         date = 1764362076,
                         isDeleted = false,
                         createdAt = 1764362076,
@@ -259,7 +258,7 @@ class MigrationTest {
         // all migrations as the migration process.
         helper.runMigrationsAndValidate(
             name = TEST_DB,
-            version = 18,
+            version = 19,
             validateDroppedTables = true,
             migrations = arrayOf(
                 MIGRATION_1_2,
@@ -279,6 +278,7 @@ class MigrationTest {
                 MIGRATION_15_16,
                 MIGRATION_16_17,
                 MIGRATION_17_18,
+                MIGRATION_18_19,
             ),
         ).close()
 
@@ -433,11 +433,8 @@ class MigrationTest {
                     val trade = TradeEntity(
                         id = "1",
                         name = "AAPL",
-                        shares = 10.toBigDecimal(),
-                        marketPrice = 150.toBigDecimal(),
-                        fee = 1.5.toBigDecimal(),
+                        amount = 150.toBigDecimal(),
                         currency = "USD",
-                        orderType = "Buy",
                         date = 1764362076,
                         isDeleted = false,
                         createdAt = 1764362076,
@@ -545,11 +542,8 @@ class MigrationTest {
                     val expectedTrade = TradeEntity(
                         id = "1",
                         name = "AAPL",
-                        shares = 10.toBigDecimal(),
-                        marketPrice = 150.toBigDecimal(),
-                        fee = 1.5.toBigDecimal(),
+                        amount = 150.toBigDecimal(),
                         currency = "USD",
-                        orderType = "Buy",
                         date = 1764362076,
                         isDeleted = false,
                         createdAt = 1764362076,

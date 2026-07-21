@@ -10,11 +10,8 @@ interface CreateTradeUseCase {
 
     suspend operator fun invoke(
         name: String,
-        shares: BigDecimal,
-        fee: BigDecimal,
-        marketPrice: BigDecimal,
+        amount: BigDecimal,
         currency: String,
-        orderType: String,
         date: Long,
     )
 
@@ -26,21 +23,15 @@ class DefaultCreateTradeUseCase @Inject constructor(
 
     override suspend operator fun invoke(
         name: String,
-        shares: BigDecimal,
-        fee: BigDecimal,
-        marketPrice: BigDecimal,
+        amount: BigDecimal,
         currency: String,
-        orderType: String,
         date: Long,
     ) {
         val entity = TradeEntity(
             id = UUID.randomUUID().toString(),
             name = name,
-            shares = shares,
-            fee = fee,
-            marketPrice = marketPrice,
+            amount = amount,
             currency = currency,
-            orderType = orderType,
             date = date,
             isDeleted = false,
             createdAt = System.currentTimeMillis(),

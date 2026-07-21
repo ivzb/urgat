@@ -29,7 +29,7 @@ interface TradeDao {
         return observeAllRaw(
             SearchQueryBuilder.build(
                 tableName = "trade",
-                searchColumns = listOf("name", "shares", "marketPrice", "fee", "orderType", "currency"),
+                searchColumns = listOf("name", "amount", "currency"),
                 dateColumn = "date",
                 orderBy = "date DESC, id ASC",
                 limit = limit,
@@ -55,13 +55,10 @@ interface TradeDao {
     @Query("DELETE FROM trade WHERE id = :id")
     suspend fun deleteById(id: String): Int
 
-    @Query("SELECT currency FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
-    suspend fun getLastUsedCurrency(): String?
-
     @Query("SELECT name FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
     suspend fun getLastUsedName(): String?
 
-    @Query("SELECT fee FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
-    suspend fun getLastUsedFee(): String?
+    @Query("SELECT currency FROM trade WHERE isDeleted = 0 ORDER BY createdAt DESC LIMIT 1")
+    suspend fun getLastUsedCurrency(): String?
 
 }

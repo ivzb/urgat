@@ -110,5 +110,3 @@
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
 - make car fuel consumption filtering by car like in maintenance
 - make maintenance more button work
-- add trading tab based on DCA - BTC Trading sheet - fill each deposit that was done for trading - the final goal is to make the finance tab calculate that amount into the fire accumulated stash
-- remove the trading tab and create new one for entering money deposit

@@ -46,11 +46,8 @@ class TradeDaoTest {
 
             val updated = trade.copy(
                 name = trade.name + " updated",
-                shares = trade.shares + BigDecimal.ONE,
-                marketPrice = trade.marketPrice + BigDecimal.ONE,
-                fee = trade.fee + BigDecimal.ONE,
+                amount = trade.amount + BigDecimal.ONE,
                 currency = trade.currency + " updated",
-                orderType = trade.orderType + " updated",
                 date = trade.date + 1,
             )
 

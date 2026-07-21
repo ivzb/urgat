@@ -47,14 +47,11 @@ class FakeTradeDao : TradeDao {
         _flow.value = items.toList()
     }
 
-    override suspend fun getLastUsedCurrency(): String? =
-        items.filter { !it.isDeleted }.maxByOrNull { it.createdAt }?.currency
-
     override suspend fun getLastUsedName(): String? =
         items.filter { !it.isDeleted }.maxByOrNull { it.createdAt }?.name
 
-    override suspend fun getLastUsedFee(): String? =
-        items.filter { !it.isDeleted }.maxByOrNull { it.createdAt }?.fee?.toString()
+    override suspend fun getLastUsedCurrency(): String? =
+        items.filter { !it.isDeleted }.maxByOrNull { it.createdAt }?.currency
 
 }
 

@@ -17,9 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -46,7 +44,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
-import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.DatePicker
 import com.ivzb.urgat.ui.components.DeleteButton
@@ -60,11 +57,8 @@ import kotlinx.coroutines.launch
 
 enum class TradeFieldId {
     Name,
-    Shares,
-    Fee,
-    MarketPrice,
+    Amount,
     Currency,
-    OrderType,
     Date,
 }
 
@@ -175,12 +169,13 @@ fun AddEditTradeScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
                 ) {
+
                     TextField(
-                        value = uiState.shares,
+                        value = uiState.amount,
                         onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateShares(it))
+                            onIntent(AddEditTradeIntent.UpdateAmount(it))
                         },
-                        placeholder = { Text(stringResource(id = R.string.shares_hint)) },
+                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next
@@ -188,51 +183,7 @@ fun AddEditTradeScreen(
                         maxLines = 1,
                         modifier = Modifier
                             .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.Shares.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.fee,
-                        onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateFee(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fee_percent_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.Fee.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-
-                    TextField(
-                        value = uiState.marketPrice,
-                        onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateMarketPrice(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.market_price_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.MarketPrice.ordinal]),
+                            .focusRequester(focusRequesters[TradeFieldId.Amount.ordinal]),
                     )
 
                     TextField(
@@ -243,7 +194,7 @@ fun AddEditTradeScreen(
                         placeholder = { Text(stringResource(id = R.string.currency_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         maxLines = 1,
                         modifier = Modifier
@@ -257,67 +208,36 @@ fun AddEditTradeScreen(
                         .height(dimensionResource(R.dimen.vertical_margin))
                 )
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.buy_label),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-
-                        Switch(
-                            checked = uiState.orderType.equals(Trade.ORDER_TYPE_SELL, ignoreCase = true),
-                            onCheckedChange = { isChecked ->
-                                onIntent(AddEditTradeIntent.UpdateOrderType(if (isChecked) Trade.ORDER_TYPE_SELL else Trade.ORDER_TYPE_BUY))
-                            },
-                            modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.horizontal_margin)),
-                        )
-
-                        Text(
-                            text = stringResource(id = R.string.sell_label),
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
+                DatePicker(
+                    timestamp = uiState.date,
+                    onTimestampSelected = {
+                        onIntent(AddEditTradeIntent.UpdateDate(it))
                     }
+                ) { selectedDate, dialog ->
 
-                    DatePicker(
-                        timestamp = uiState.date,
-                        onTimestampSelected = {
-                            onIntent(AddEditTradeIntent.UpdateDate(it))
-                        }
-                    ) { selectedDate, dialog ->
-
-                        TextField(
-                            value = selectedDate,
-                            onValueChange = {},
-                            placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                            label = { Text(stringResource(id = R.string.date_hint)) },
-                            readOnly = true,
-                            maxLines = 1,
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.date_hint)
-                                )
+                    TextField(
+                        value = selectedDate,
+                        onValueChange = {},
+                        placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                        label = { Text(stringResource(id = R.string.date_hint)) },
+                        readOnly = true,
+                        maxLines = 1,
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = stringResource(id = R.string.date_hint)
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequesters[TradeFieldId.Date.ordinal])
+                            .onFocusChanged {
+                                if (it.isFocused) {
+                                    dialog.show()
+                                    focusManager.clearFocus()
+                                }
                             },
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequesters[TradeFieldId.Date.ordinal])
-                                .onFocusChanged {
-                                    if (it.isFocused) {
-                                        dialog.show()
-                                        focusManager.clearFocus()
-                                    }
-                                },
-                        )
-                    }
+                    )
                 }
 
                 Spacer(
@@ -389,11 +309,8 @@ private fun EditTradeContentPreview() {
                 uiState = AddEditTradeUiState(
                     screenTitleResId = R.string.edit_trade,
                     name = "AAPL",
+                    amount = "150.00",
                     currency = "USD",
-                    shares = "10",
-                    marketPrice = "150.00",
-                    fee = "1.50",
-                    orderType = "Buy",
                 ),
                 onIntent = {},
                 onBack = {},

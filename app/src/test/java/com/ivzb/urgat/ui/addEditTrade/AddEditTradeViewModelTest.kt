@@ -5,7 +5,6 @@ import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.domain.trade.FakeCreateTradeUseCase
 import com.ivzb.urgat.domain.trade.FakeDeleteTradeUseCase
 import com.ivzb.urgat.domain.trade.FakeGetLastUsedTradeCurrencyUseCase
-import com.ivzb.urgat.domain.trade.FakeGetLastUsedTradeFeeUseCase
 import com.ivzb.urgat.domain.trade.FakeGetLastUsedTradeNameUseCase
 import com.ivzb.urgat.domain.trade.FakeGetTradeUseCase
 import com.ivzb.urgat.domain.trade.FakeUpdateTradeUseCase
@@ -33,9 +32,8 @@ class AddEditTradeViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var getUseCase: FakeGetTradeUseCase
-    private lateinit var getLastUsedCurrencyUseCase: FakeGetLastUsedTradeCurrencyUseCase
     private lateinit var getLastUsedNameUseCase: FakeGetLastUsedTradeNameUseCase
-    private lateinit var getLastUsedFeeUseCase: FakeGetLastUsedTradeFeeUseCase
+    private lateinit var getLastUsedCurrencyUseCase: FakeGetLastUsedTradeCurrencyUseCase
     private lateinit var createUseCase: FakeCreateTradeUseCase
     private lateinit var updateUseCase: FakeUpdateTradeUseCase
     private lateinit var deleteUseCase: FakeDeleteTradeUseCase
@@ -47,9 +45,8 @@ class AddEditTradeViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         getUseCase = FakeGetTradeUseCase()
-        getLastUsedCurrencyUseCase = FakeGetLastUsedTradeCurrencyUseCase()
         getLastUsedNameUseCase = FakeGetLastUsedTradeNameUseCase()
-        getLastUsedFeeUseCase = FakeGetLastUsedTradeFeeUseCase()
+        getLastUsedCurrencyUseCase = FakeGetLastUsedTradeCurrencyUseCase()
         createUseCase = FakeCreateTradeUseCase()
         updateUseCase = FakeUpdateTradeUseCase()
         deleteUseCase = FakeDeleteTradeUseCase()
@@ -74,11 +71,8 @@ class AddEditTradeViewModelTest {
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 1L,
             isDeleted = false,
             createdAt = 1L,
@@ -92,11 +86,8 @@ class AddEditTradeViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals("AAPL", state.name)
-        assertEquals("10", state.shares)
-        assertEquals("150", state.marketPrice)
-        assertEquals("1.50", state.fee)
+        assertEquals("150", state.amount)
         assertEquals("USD", state.currency)
-        assertEquals("Buy", state.orderType)
         assertEquals(1L, state.date)
         assertEquals(true, state.withDelete)
         assertEquals(false, state.shouldNavigateBack)
@@ -109,33 +100,15 @@ class AddEditTradeViewModelTest {
     }
 
     @Test
-    fun `updateShares updates uiState`() = runTest {
-        viewModel.onIntent(AddEditTradeIntent.UpdateShares("10"))
-        assertEquals("10", viewModel.uiState.value.shares)
-    }
-
-    @Test
-    fun `updateFee updates uiState`() = runTest {
-        viewModel.onIntent(AddEditTradeIntent.UpdateFee("1.50"))
-        assertEquals("1.50", viewModel.uiState.value.fee)
-    }
-
-    @Test
-    fun `updateMarketPrice updates uiState`() = runTest {
-        viewModel.onIntent(AddEditTradeIntent.UpdateMarketPrice("150"))
-        assertEquals("150", viewModel.uiState.value.marketPrice)
+    fun `updateAmount updates uiState`() = runTest {
+        viewModel.onIntent(AddEditTradeIntent.UpdateAmount("150"))
+        assertEquals("150", viewModel.uiState.value.amount)
     }
 
     @Test
     fun `updateCurrency updates uiState`() = runTest {
         viewModel.onIntent(AddEditTradeIntent.UpdateCurrency("USD"))
         assertEquals("USD", viewModel.uiState.value.currency)
-    }
-
-    @Test
-    fun `updateOrderType updates uiState`() = runTest {
-        viewModel.onIntent(AddEditTradeIntent.UpdateOrderType("Buy"))
-        assertEquals("Buy", viewModel.uiState.value.orderType)
     }
 
     @Test
@@ -147,11 +120,8 @@ class AddEditTradeViewModelTest {
     @Test
     fun `saveTrade with spaces shows message`() = runTest {
         viewModel.onIntent(AddEditTradeIntent.UpdateName(" "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateShares(" "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateFee(" "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateMarketPrice(" "))
+        viewModel.onIntent(AddEditTradeIntent.UpdateAmount(" "))
         viewModel.onIntent(AddEditTradeIntent.UpdateCurrency(" "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateOrderType(" "))
         viewModel.onIntent(AddEditTradeIntent.SaveTrade)
 
         advanceUntilIdle()
@@ -165,17 +135,14 @@ class AddEditTradeViewModelTest {
     @Test
     fun `saveTrade creates new trade`() = runTest {
         viewModel.onIntent(AddEditTradeIntent.UpdateName("AAPL"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateShares("10"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateFee("1.50"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateMarketPrice("150"))
+        viewModel.onIntent(AddEditTradeIntent.UpdateAmount("150"))
         viewModel.onIntent(AddEditTradeIntent.UpdateCurrency("USD"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateOrderType("Buy"))
         viewModel.onIntent(AddEditTradeIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditTradeIntent.SaveTrade)
 
         advanceUntilIdle()
 
-        val expected = listOf("AAPL", BigDecimal("10"), BigDecimal("1.50"), BigDecimal("150"), "USD", "Buy", 1L)
+        val expected = listOf("AAPL", BigDecimal("150"), "USD", 1L)
         assertEquals(expected, createUseCase.created)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -183,17 +150,14 @@ class AddEditTradeViewModelTest {
     @Test
     fun `saveTrade creates new trade trimmed`() = runTest {
         viewModel.onIntent(AddEditTradeIntent.UpdateName(" AAPL "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateShares(" 10 "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateFee(" 1.50 "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateMarketPrice(" 150 "))
+        viewModel.onIntent(AddEditTradeIntent.UpdateAmount(" 150 "))
         viewModel.onIntent(AddEditTradeIntent.UpdateCurrency(" USD "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateOrderType(" Buy "))
         viewModel.onIntent(AddEditTradeIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditTradeIntent.SaveTrade)
 
         advanceUntilIdle()
 
-        val expected = listOf("AAPL", BigDecimal("10"), BigDecimal("1.50"), BigDecimal("150"), "USD", "Buy", 1L)
+        val expected = listOf("AAPL", BigDecimal("150"), "USD", 1L)
         assertEquals(expected, createUseCase.created)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -204,11 +168,8 @@ class AddEditTradeViewModelTest {
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 1L,
             isDeleted = false,
             createdAt = 1L,
@@ -220,12 +181,11 @@ class AddEditTradeViewModelTest {
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditTradeIntent.UpdateName("NVDA"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditTradeIntent.SaveTrade)
 
         advanceUntilIdle()
 
-        val expected = listOf(tradeId, "NVDA", BigDecimal("10"), BigDecimal("1.50"), BigDecimal("150"), "EUR", "Buy", 1L)
+        val expected = listOf(tradeId, "NVDA", BigDecimal("150"), "USD", 1L)
         assertEquals(expected, updateUseCase.updated)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -236,11 +196,8 @@ class AddEditTradeViewModelTest {
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 1L,
             isDeleted = false,
             createdAt = 1L,
@@ -252,17 +209,14 @@ class AddEditTradeViewModelTest {
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditTradeIntent.UpdateName(" NVDA "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateShares(" 20 "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateFee(" 2.00 "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateMarketPrice(" 200 "))
+        viewModel.onIntent(AddEditTradeIntent.UpdateAmount(" 200 "))
         viewModel.onIntent(AddEditTradeIntent.UpdateCurrency(" EUR "))
-        viewModel.onIntent(AddEditTradeIntent.UpdateOrderType(" Sell "))
         viewModel.onIntent(AddEditTradeIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditTradeIntent.SaveTrade)
 
         advanceUntilIdle()
 
-        val expected = listOf(tradeId, "NVDA", BigDecimal("20"), BigDecimal("2.00"), BigDecimal("200"), "EUR", "Sell", 1L)
+        val expected = listOf(tradeId, "NVDA", BigDecimal("200"), "EUR", 1L)
         assertEquals(expected, updateUseCase.updated)
         assertTrue(viewModel.uiState.value.shouldNavigateBack)
     }
@@ -297,11 +251,8 @@ class AddEditTradeViewModelTest {
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -319,11 +270,8 @@ class AddEditTradeViewModelTest {
         val state = viewModel.uiState.value
         assertEquals(R.string.add_trade, state.screenTitleResId)
         assertEquals("AAPL", state.name)
-        assertEquals("10", state.shares)
-        assertEquals("1.50", state.fee)
-        assertEquals("150", state.marketPrice)
+        assertEquals("150", state.amount)
         assertEquals("USD", state.currency)
-        assertEquals("Buy", state.orderType)
         assertTrue(state.date > 123L)
         assertFalse(state.withDelete)
         assertFalse(state.withDuplicate)
@@ -336,11 +284,8 @@ class AddEditTradeViewModelTest {
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -370,11 +315,8 @@ class AddEditTradeViewModelTest {
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 123L,
             isDeleted = false,
             createdAt = 123L,
@@ -386,11 +328,8 @@ class AddEditTradeViewModelTest {
         advanceUntilIdle()
 
         viewModel.onIntent(AddEditTradeIntent.UpdateName("NVDA"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateShares("20"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateFee("2.00"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateMarketPrice("200"))
+        viewModel.onIntent(AddEditTradeIntent.UpdateAmount("200"))
         viewModel.onIntent(AddEditTradeIntent.UpdateCurrency("EUR"))
-        viewModel.onIntent(AddEditTradeIntent.UpdateOrderType("Sell"))
         viewModel.onIntent(AddEditTradeIntent.DuplicateTrade)
 
         advanceUntilIdle()
@@ -426,28 +365,6 @@ class AddEditTradeViewModelTest {
     }
 
     @Test
-    fun `init without id autofills last used currency`() = runTest {
-        getLastUsedCurrencyUseCase.toReturn = "USD"
-
-        viewModel = createViewModel(id = null)
-
-        advanceUntilIdle()
-
-        assertEquals("USD", viewModel.uiState.value.currency)
-    }
-
-    @Test
-    fun `init without id and no last currency keeps empty currency`() = runTest {
-        getLastUsedCurrencyUseCase.toReturn = null
-
-        viewModel = createViewModel(id = null)
-
-        advanceUntilIdle()
-
-        assertEquals("", viewModel.uiState.value.currency)
-    }
-
-    @Test
     fun `init without id autofills last used name`() = runTest {
         getLastUsedNameUseCase.toReturn = "AAPL"
 
@@ -470,57 +387,37 @@ class AddEditTradeViewModelTest {
     }
 
     @Test
-    fun `init without id autofills last used fee`() = runTest {
-        getLastUsedFeeUseCase.toReturn = "1.50"
-
-        viewModel = createViewModel(id = null)
-
-        advanceUntilIdle()
-
-        assertEquals("1.50", viewModel.uiState.value.fee)
-    }
-
-    @Test
-    fun `init without id and no last fee keeps empty fee`() = runTest {
-        getLastUsedFeeUseCase.toReturn = null
-
-        viewModel = createViewModel(id = null)
-
-        advanceUntilIdle()
-
-        assertEquals("", viewModel.uiState.value.fee)
-    }
-
-    @Test
-    fun `init without id autofills all last used values`() = runTest {
-        getLastUsedNameUseCase.toReturn = "AAPL"
-        getLastUsedFeeUseCase.toReturn = "1.50"
+    fun `init without id autofills last used currency`() = runTest {
         getLastUsedCurrencyUseCase.toReturn = "USD"
 
         viewModel = createViewModel(id = null)
 
         advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertEquals("AAPL", state.name)
-        assertEquals("1.50", state.fee)
-        assertEquals("USD", state.currency)
+        assertEquals("USD", viewModel.uiState.value.currency)
+    }
+
+    @Test
+    fun `init without id and no last currency keeps empty currency`() = runTest {
+        getLastUsedCurrencyUseCase.toReturn = null
+
+        viewModel = createViewModel(id = null)
+
+        advanceUntilIdle()
+
+        assertEquals("", viewModel.uiState.value.currency)
     }
 
     @Test
     fun `init with id does not autofill last used values`() = runTest {
         getLastUsedNameUseCase.toReturn = "NVDA"
-        getLastUsedFeeUseCase.toReturn = "2.00"
         getLastUsedCurrencyUseCase.toReturn = "GBP"
         val tradeId = "123"
         val trade = Trade(
             id = tradeId,
             name = "AAPL",
-            shares = BigDecimal("10"),
-            marketPrice = BigDecimal("150"),
-            fee = BigDecimal("1.50"),
+            amount = BigDecimal("150"),
             currency = "USD",
-            orderType = "Buy",
             date = 1L,
             isDeleted = false,
             createdAt = 1L,
@@ -533,7 +430,6 @@ class AddEditTradeViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals("AAPL", state.name)
-        assertEquals("1.50", state.fee)
         assertEquals("USD", state.currency)
     }
 
@@ -543,9 +439,8 @@ class AddEditTradeViewModelTest {
         return AddEditTradeViewModel(
             route,
             getUseCase,
-            getLastUsedCurrencyUseCase,
             getLastUsedNameUseCase,
-            getLastUsedFeeUseCase,
+            getLastUsedCurrencyUseCase,
             createUseCase,
             updateUseCase,
             deleteUseCase,

@@ -475,7 +475,7 @@ class FinanceViewModelTest {
     fun `SetTradesSorting updates finance repository`() = runTest {
         viewModel = createViewModel()
 
-        val expected = TradesSortType.BY_COST
+        val expected = TradesSortType.BY_DATE
 
         viewModel.onIntent(FinanceIntent.SetTradesSorting(expected))
         advanceUntilIdle()
@@ -607,9 +607,9 @@ class FinanceViewModelTest {
     fun `resetFilters resets trades sort type to default`() = runTest {
         viewModel = createViewModel()
 
-        viewModel.onIntent(FinanceIntent.SetTradesSorting(TradesSortType.BY_COST))
+        viewModel.onIntent(FinanceIntent.SetTradesSorting(TradesSortType.BY_DATE))
         advanceUntilIdle()
-        assertEquals(TradesSortType.BY_COST, fakeFinanceRepository.tradesSortTypeFlow.value)
+        assertEquals(TradesSortType.BY_DATE, fakeFinanceRepository.tradesSortTypeFlow.value)
 
         viewModel.onIntent(FinanceIntent.ResetFilters)
         advanceUntilIdle()
@@ -670,7 +670,7 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.SetInvestmentsFiltering("etfs"))
         viewModel.onIntent(FinanceIntent.SetInvestmentsSorting(InvestmentsSortType.BY_MARKET_VALUE))
         viewModel.onIntent(FinanceIntent.SetTradesFiltering("buy"))
-        viewModel.onIntent(FinanceIntent.SetTradesSorting(TradesSortType.BY_COST))
+        viewModel.onIntent(FinanceIntent.SetTradesSorting(TradesSortType.BY_DATE))
         viewModel.onIntent(FinanceIntent.SetSavingsSorting(SavingsSortType.BY_MAX))
         viewModel.onIntent(FinanceIntent.SetBudgetsFiltering(BudgetsFilterType.POSITIVE_BUDGETS))
         viewModel.onIntent(FinanceIntent.SetBudgetsSorting(BudgetsSortType.BY_MIN))
@@ -684,7 +684,7 @@ class FinanceViewModelTest {
         assertEquals("etfs", fakeFinanceRepository.investmentsFilterTypeFlow.value)
         assertEquals(InvestmentsSortType.BY_MARKET_VALUE, fakeFinanceRepository.investmentsSortTypeFlow.value)
         assertEquals("buy", fakeFinanceRepository.tradesFilterTypeFlow.value)
-        assertEquals(TradesSortType.BY_COST, fakeFinanceRepository.tradesSortTypeFlow.value)
+        assertEquals(TradesSortType.BY_DATE, fakeFinanceRepository.tradesSortTypeFlow.value)
         assertEquals(SavingsSortType.BY_MAX, fakeFinanceRepository.savingsSortTypeFlow.value)
         assertEquals(BudgetsFilterType.POSITIVE_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)
         assertEquals(BudgetsSortType.BY_MIN, fakeFinanceRepository.budgetsSortTypeFlow.value)

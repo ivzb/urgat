@@ -6,3 +6,4 @@ data class TradeTotal(
     val currency: String,
     val price: BigDecimal,
 )
+

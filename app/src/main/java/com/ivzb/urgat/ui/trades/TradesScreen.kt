@@ -15,8 +15,6 @@ import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.domain.trades.GroupedTrades
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
-import androidx.compose.ui.text.AnnotatedString
-import com.ivzb.urgat.util.annotateOrderType
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
@@ -90,10 +88,8 @@ fun TradeItem(
 
     ListItem(
         textLeft = trade.name,
-        subTextLeft = trade.shares.toString(),
 
-        textRight = "${trade.totalPrice.format()} ${trade.currency.formatCurrency()}",
-        subTextRight = annotateOrderType(trade.orderType.uppercase()),
+        textRight = "${trade.amount.format()} ${trade.currency.formatCurrency()}",
 
         onClick = { onTradeClick(trade) }
     )

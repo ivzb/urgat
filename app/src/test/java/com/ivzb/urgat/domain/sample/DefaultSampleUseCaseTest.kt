@@ -160,11 +160,8 @@ class DefaultSampleUseCaseTest {
             SampleData.SAMPLE_TRADES.forEach {
                 createTradeUseCase(
                     it.name,
-                    it.shares,
-                    it.fee,
-                    it.marketPrice,
+                    it.amount,
                     it.currency,
-                    it.orderType,
                     it.date,
                 )
             }
