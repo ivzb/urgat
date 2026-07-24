@@ -1,3 +1,9 @@
+## Release notes 26.07.05
+
+New:
+- Trades are now part of the budget calculation
+- New trades details screen.
+
 ## Release notes 26.07.04
 
 New:
