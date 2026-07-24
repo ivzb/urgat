@@ -26,6 +26,7 @@ import com.ivzb.urgat.ui.budgets.budgetsEntry
 import com.ivzb.urgat.ui.car.carEntry
 import com.ivzb.urgat.ui.fuelConsumption.fuelConsumptionEntry
 import com.ivzb.urgat.ui.savings.savingsEntry
+import com.ivzb.urgat.ui.trades.tradesEntry
 import com.ivzb.urgat.ui.wellbeing.wellbeingEntry
 
 fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavKey) -> NavEntry<NavKey> {
@@ -44,6 +45,7 @@ fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavK
         investmentsEntry(navigator, navActions)
         addEditInvestmentEntry(navigator)
 
+        tradesEntry(navigator, navActions)
         addEditTradeEntry(navigator)
 
         addEditWeightEntry(navigator)

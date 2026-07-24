@@ -425,18 +425,18 @@ object SampleData {
     )
 
     val SAMPLE_TRADES = listOf(
-        listOf("BTC", "27500", "USD", "180"),
-        listOf("BTC", "31000", "USD", "150"),
-        listOf("BTC", "29000", "USD", "120"),
-        listOf("BTC", "35000", "USD", "90"),
-        listOf("BTC", "42000", "USD", "75"),
-        listOf("BTC", "38000", "USD", "60"),
-        listOf("BTC", "45000", "USD", "45"),
-        listOf("BTC", "52000", "USD", "30"),
-        listOf("BTC", "60000", "USD", "14"),
-        listOf("BTC", "57000", "USD", "7"),
-        listOf("BTC", "63000", "USD", "3"),
-        listOf("BTC", "61000", "USD", "0"),
+        listOf("BTC", "275", "USD", "180"),
+        listOf("BTC", "310", "USD", "150"),
+        listOf("BTC", "290", "USD", "120"),
+        listOf("BTC", "350", "USD", "90"),
+        listOf("BTC", "420", "USD", "75"),
+        listOf("BTC", "380", "USD", "60"),
+        listOf("BTC", "450", "USD", "45"),
+        listOf("BTC", "520", "USD", "30"),
+        listOf("BTC", "600", "USD", "14"),
+        listOf("BTC", "570", "USD", "7"),
+        listOf("BTC", "630", "USD", "3"),
+        listOf("BTC", "610", "USD", "0"),
     )
         .mapIndexed { index, (name, amount, currency, dateOffset) ->
             Trade(
@@ -452,6 +452,15 @@ object SampleData {
 
     val SAMPLE_TRADES_GROUPED =
         Group.byDateMonthly(SAMPLE_TRADES, Trade::date, Trade::total)
+
+    val SAMPLE_TRADES_CATEGORIES_MONTHLY =
+        Group.groupTradeCategoriesMonthly(SAMPLE_TRADES, ::randomUUID)
+
+    val SAMPLE_TRADES_CATEGORIES_YEARLY =
+        Group.groupTradeCategoriesYearly(SAMPLE_TRADES, ::randomUUID)
+
+    val SAMPLE_TRADES_CATEGORIES_ALL_TIME =
+        Group.groupTradeCategoriesAllTime(SAMPLE_TRADES, ::randomUUID)
 
     private operator fun <T> List<T>.component6(): T = this[5]
     private operator fun <T> List<T>.component7(): T = this[6]

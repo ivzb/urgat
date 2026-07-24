@@ -17,6 +17,7 @@ import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
 import com.ivzb.urgat.ui.budgets.BudgetsRoute
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionRoute
 import com.ivzb.urgat.ui.savings.SavingsRoute
+import com.ivzb.urgat.ui.trades.TradesRoute
 
 class UrgatNavActions(private val navigator: Navigator) {
 
@@ -85,8 +86,7 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToTrades() {
-        // todo:
-//        navigator.navigate(TradesRoute)
+        navigator.navigate(TradesRoute)
     }
 
     fun navigateToAddTrade() {

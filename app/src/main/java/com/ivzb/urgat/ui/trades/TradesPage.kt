@@ -9,13 +9,13 @@ sealed class TradesPage(
     override val titleResId: Int,
     override val isHorizontalScrollEnabled: Boolean,
 ): Page {
+    data object Monthly: TradesPage(R.string.monthly, false)
     data object Yearly: TradesPage(R.string.yearly, false)
     data object AllTime: TradesPage(R.string.all_time, true)
-    data object Assets: TradesPage(R.string.assets, true)
 }
 
 val TRADES_PAGES = listOf(
+    TradesPage.Monthly,
     TradesPage.Yearly,
     TradesPage.AllTime,
-    TradesPage.Assets,
 )

@@ -10,6 +10,7 @@ import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.SavingTotal
+import com.ivzb.urgat.data.trade.TradeTotal
 import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
@@ -120,6 +121,22 @@ fun annotateSavingsTotals(totals: List<SavingTotal>): AnnotatedString =
             append(
                 annotateSavings(
                     amount = total.amount,
+                    currency = total.currency,
+                )
+            )
+
+            if (index < totals.lastIndex) {
+                appendLine()
+            }
+        }
+    }
+
+fun annotateTradesTotals(totals: List<TradeTotal>): AnnotatedString =
+    buildAnnotatedString {
+        totals.forEachIndexed { index, total ->
+            append(
+                annotateFinance(
+                    amount = total.price,
                     currency = total.currency,
                 )
             )

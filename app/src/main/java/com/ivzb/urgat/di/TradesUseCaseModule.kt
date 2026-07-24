@@ -12,12 +12,20 @@ import com.ivzb.urgat.domain.trade.GetLastUsedTradeCurrencyUseCase
 import com.ivzb.urgat.domain.trade.GetLastUsedTradeNameUseCase
 import com.ivzb.urgat.domain.trade.GetTradeUseCase
 import com.ivzb.urgat.domain.trade.UpdateTradeUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradeCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradeCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradeCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradesMonthlyUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveTradesFilteringUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveTradesSortingUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveTradesUiStateUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradeCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradeCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradeCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesFilteringUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesSortingUseCase
+import com.ivzb.urgat.domain.trades.ObserveTradesUiStateUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -55,11 +63,27 @@ interface TradesUseCaseModule {
 
     @Singleton
     @Binds
+    fun bindsObserveGroupedTradeCategoriesMonthlyUseCase(useCase: DefaultObserveGroupedTradeCategoriesMonthlyUseCase): ObserveGroupedTradeCategoriesMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedTradeCategoriesYearlyUseCase(useCase: DefaultObserveGroupedTradeCategoriesYearlyUseCase): ObserveGroupedTradeCategoriesYearlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedTradeCategoriesAllTimeUseCase(useCase: DefaultObserveGroupedTradeCategoriesAllTimeUseCase): ObserveGroupedTradeCategoriesAllTimeUseCase
+
+    @Singleton
+    @Binds
     fun bindsObserveTradesFilteringUseCase(useCase: DefaultObserveTradesFilteringUseCase): ObserveTradesFilteringUseCase
 
     @Singleton
     @Binds
     fun bindsObserveTradesSortingUseCase(useCase: DefaultObserveTradesSortingUseCase): ObserveTradesSortingUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveTradesUiStateUseCase(useCase: DefaultObserveTradesUiStateUseCase): ObserveTradesUiStateUseCase
 
 }
 
