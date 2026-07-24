@@ -992,6 +992,7 @@ class ObserveFinanceUiStateUseCaseTest {
             totalIncome = 6_500.toBigDecimal(),
             totalExpenses = 2_000.toBigDecimal(),
             totalInvestments = 3_000.toBigDecimal(),
+            totalTrades = 700.toBigDecimal(),
             totalSavings = 500.toBigDecimal(),
         )
 

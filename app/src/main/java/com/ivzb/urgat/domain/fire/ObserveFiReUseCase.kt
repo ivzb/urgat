@@ -5,10 +5,12 @@ import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesAllTimeUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import com.ivzb.urgat.util.div
@@ -36,6 +38,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
     private val observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase,
     private val observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase,
     private val observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase,
+    private val observeGroupedTradesAllTimeUseCase: ObserveGroupedTradesAllTimeUseCase,
     private val observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase,
     private val forexRepository: ForexRepository,
 ): ObserveFiReUseCase {
@@ -56,12 +59,14 @@ class DefaultObserveFiReUseCase @Inject constructor(
             observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedExpensesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedTradesAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedSavingsAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        ) { withdrawalRate, returnOfInvestment, taxRate, budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsAllTimeAsync, savingsAllTimeAsync ->
+        ) { withdrawalRate, returnOfInvestment, taxRate, budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsAllTimeAsync, tradesAllTimeAsync, savingsAllTimeAsync ->
 
             if (budgetCategoriesMonthlyAsync is Async.Success &&
                 expensesMonthlyAsync is Async.Success &&
                 investmentsAllTimeAsync is Async.Success &&
+                tradesAllTimeAsync is Async.Success &&
                 savingsAllTimeAsync is Async.Success) {
 
                 val budgetCategoriesMonthly = budgetCategoriesMonthlyAsync.data
@@ -112,13 +117,26 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val annualInvestments = monthlyInvestments * 12.toBigDecimal()
 
                 val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.totalMarketPrice }
+                val allTimeTrades = Trade.total(tradesAllTimeAsync.data.items, budgetCurrency, forexRepository::convert)
                 val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forexRepository::convert)
-                val accumulatedStash = allTimeInvestments + allTimeSavings
+                val accumulatedStash = allTimeInvestments + allTimeTrades + allTimeSavings
 
                 // Calculate stash breakdown per asset
                 val investmentBreakdown = investmentsAllTimeAsync.data.items
                     .groupBy { it.category }
                     .map { (category, investments) -> StashBreakdownItem(category, investments.sumOf { it.totalMarketPrice }) }
+
+                val tradesBreakdown = tradesAllTimeAsync.data.items
+                    .groupBy { it.name }
+                    .map { (name, trades) ->
+                        var total = BigDecimal.ZERO
+
+                        for (trade in trades) {
+                            total += forexRepository.convert(trade.amount, trade.currency, budgetCurrency) ?: BigDecimal.ZERO
+                        }
+
+                        StashBreakdownItem(name, total)
+                    }
 
                 val savingsBreakdown = savingsAllTimeAsync.data.items
                     .groupBy { it.name }
@@ -132,7 +150,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                         StashBreakdownItem(name, total)
                     }
 
-                val stashBreakdown = (investmentBreakdown + savingsBreakdown)
+                val stashBreakdown = (investmentBreakdown + tradesBreakdown + savingsBreakdown)
                     .sortedByDescending { it.amount }
 
                 val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()

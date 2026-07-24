@@ -15,14 +15,18 @@ import com.ivzb.urgat.domain.trade.UpdateTradeUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradeCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradeCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradeCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradesAllTimeUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.DefaultObserveGroupedTradesYearlyUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveTradesFilteringUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveTradesSortingUseCase
 import com.ivzb.urgat.domain.trades.DefaultObserveTradesUiStateUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradeCategoriesAllTimeUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradeCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradeCategoriesYearlyUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesAllTimeUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesYearlyUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesFilteringUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesSortingUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesUiStateUseCase
@@ -60,6 +64,14 @@ interface TradesUseCaseModule {
     @Singleton
     @Binds
     fun bindsObserveGroupedTradesMonthlyUseCase(useCase: DefaultObserveGroupedTradesMonthlyUseCase): ObserveGroupedTradesMonthlyUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedTradesAllTimeUseCase(useCase: DefaultObserveGroupedTradesAllTimeUseCase): ObserveGroupedTradesAllTimeUseCase
+
+    @Singleton
+    @Binds
+    fun bindsObserveGroupedTradesYearlyUseCase(useCase: DefaultObserveGroupedTradesYearlyUseCase): ObserveGroupedTradesYearlyUseCase
 
     @Singleton
     @Binds

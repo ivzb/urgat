@@ -16,6 +16,10 @@ import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.GroupedSavings
+import com.ivzb.urgat.domain.trades.GroupedTrades
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesAllTimeUseCase
+import com.ivzb.urgat.data.trade.Trade
+import com.ivzb.urgat.data.trade.TradeTotal
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.coEvery
@@ -38,6 +42,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
     private lateinit var observeGroupedBudgetCategoriesAllTimeUseCase: ObserveGroupedBudgetCategoriesAllTimeUseCase
     private lateinit var observeGroupedExpensesAllTimeUseCase: ObserveGroupedExpensesAllTimeUseCase
     private lateinit var observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase
+    private lateinit var observeGroupedTradesAllTimeUseCase: ObserveGroupedTradesAllTimeUseCase
     private lateinit var observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase
     private lateinit var forexRepository: ForexRepository
 
@@ -50,6 +55,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         observeGroupedBudgetCategoriesAllTimeUseCase = mockk()
         observeGroupedExpensesAllTimeUseCase = mockk()
         observeGroupedInvestmentsAllTimeUseCase = mockk()
+        observeGroupedTradesAllTimeUseCase = mockk()
         observeGroupedSavingsAllTimeUseCase = mockk()
         forexRepository = mockk()
 
@@ -61,6 +67,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             observeGroupedBudgetCategoriesAllTimeUseCase,
             observeGroupedExpensesAllTimeUseCase,
             observeGroupedInvestmentsAllTimeUseCase,
+            observeGroupedTradesAllTimeUseCase,
             observeGroupedSavingsAllTimeUseCase,
             forexRepository,
         )
@@ -119,6 +126,11 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             Saving("3", "Emergency fund", 700.toBigDecimal(), "EUR", 3, false, 3),
         ))
 
+        val trades = GroupedTrades("2025", listOf(TradeTotal("EUR", 1500.toBigDecimal())), listOf(
+            Trade("1", "AAPL", 500.toBigDecimal(), "EUR", 1, false, 1),
+            Trade("2", "AAPL", 1000.toBigDecimal(), "EUR", 2, false, 2),
+        ))
+
         every { observeGroupedBudgetCategoriesAllTimeUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
             dateRangeFlow = eq(dateRangeFlow),
@@ -142,6 +154,14 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(investments))
+
+        every { observeGroupedTradesAllTimeUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(trades))
 
         every { observeGroupedSavingsAllTimeUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
@@ -167,6 +187,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3_800.toBigDecimal(),
+            totalTrades = 1500.toBigDecimal(),
             totalSavings = 1800.toBigDecimal(),
         )
 
@@ -214,6 +235,18 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         ) } returns flowOf(Async.Success(GroupedInvestments(
             group = "",
             total = emptyList(),
+            items = listOf(),
+        )))
+
+        every { observeGroupedTradesAllTimeUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(GroupedTrades(
+            group = "",
+            total = listOf(),
             items = listOf(),
         )))
 

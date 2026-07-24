@@ -19,6 +19,8 @@ import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.GroupedSavings
+import com.ivzb.urgat.domain.trades.GroupedTrades
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesAllTimeUseCase
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -39,6 +41,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     private lateinit var observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase
     private lateinit var observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase
     private lateinit var observeGroupedInvestmentsAllTimeUseCase: ObserveGroupedInvestmentsAllTimeUseCase
+    private lateinit var observeGroupedTradesAllTimeUseCase: ObserveGroupedTradesAllTimeUseCase
     private lateinit var observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase
 
     private lateinit var fakeForexRepository: FakeForexRepository
@@ -52,6 +55,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         observeGroupedBudgetCategoriesMonthlyUseCase = mockk()
         observeGroupedExpensesMonthlyUseCase = mockk()
         observeGroupedInvestmentsAllTimeUseCase = mockk()
+        observeGroupedTradesAllTimeUseCase = mockk()
         observeGroupedSavingsAllTimeUseCase = mockk()
         fakeForexRepository = FakeForexRepository()
 
@@ -59,6 +63,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             observeGroupedBudgetCategoriesMonthlyUseCase,
             observeGroupedExpensesMonthlyUseCase,
             observeGroupedInvestmentsAllTimeUseCase,
+            observeGroupedTradesAllTimeUseCase,
             observeGroupedSavingsAllTimeUseCase,
             fakeForexRepository,
         )
@@ -370,6 +375,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             limitFlow = null,
         ) } returns flowOf(Async.Success(investments))
 
+        every { observeGroupedTradesAllTimeUseCase.invoke(
+            searchQueryFlow = null,
+            dateRangeFlow = null,
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(NO_TRADES))
+
         every { observeGroupedSavingsAllTimeUseCase.invoke(
             searchQueryFlow = null,
             dateRangeFlow = null,
@@ -460,6 +473,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(NO_INVESTMENTS))
+
+        every { observeGroupedTradesAllTimeUseCase.invoke(
+            searchQueryFlow = null,
+            dateRangeFlow = null,
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(NO_TRADES))
 
         every { observeGroupedSavingsAllTimeUseCase.invoke(
              searchQueryFlow = null,
@@ -555,6 +576,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         )
 
         private val NO_SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal("0.00".toBigDecimal(), "EUR")), listOf())
+
+        private val NO_TRADES = GroupedTrades("December 2025", listOf(), listOf())
 
         private val SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal(10_000.toBigDecimal(), "EUR")), listOf(
             Saving("1", "Emergency fund", 7_000.toBigDecimal(), "EUR", 1, false, 1),

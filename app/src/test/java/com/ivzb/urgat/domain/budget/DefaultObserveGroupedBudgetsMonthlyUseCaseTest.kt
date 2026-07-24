@@ -16,6 +16,10 @@ import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
+import com.ivzb.urgat.data.trade.Trade
+import com.ivzb.urgat.data.trade.TradeTotal
+import com.ivzb.urgat.domain.trades.GroupedTrades
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.coEvery
@@ -38,6 +42,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
     private lateinit var observeGroupedBudgetCategoriesMonthlyUseCase: ObserveGroupedBudgetCategoriesMonthlyUseCase
     private lateinit var observeGroupedExpensesMonthlyUseCase: ObserveGroupedExpensesMonthlyUseCase
     private lateinit var observeGroupedInvestmentsMonthlyUseCase: ObserveGroupedInvestmentsMonthlyUseCase
+    private lateinit var observeGroupedTradesMonthlyUseCase: ObserveGroupedTradesMonthlyUseCase
     private lateinit var observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase
     private lateinit var forexRepository: ForexRepository
 
@@ -50,6 +55,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
         observeGroupedBudgetCategoriesMonthlyUseCase = mockk()
         observeGroupedExpensesMonthlyUseCase = mockk()
         observeGroupedInvestmentsMonthlyUseCase = mockk()
+        observeGroupedTradesMonthlyUseCase = mockk()
         observeGroupedSavingsMonthlyUseCase = mockk()
         forexRepository = mockk()
 
@@ -61,6 +67,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
             observeGroupedBudgetCategoriesMonthlyUseCase,
             observeGroupedExpensesMonthlyUseCase,
             observeGroupedInvestmentsMonthlyUseCase,
+            observeGroupedTradesMonthlyUseCase,
             observeGroupedSavingsMonthlyUseCase,
             forexRepository,
         )
@@ -156,6 +163,15 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
             )),
         )
 
+        val trades = listOf(
+            GroupedTrades("2025/11", listOf(TradeTotal("EUR", 300.toBigDecimal())), listOf(
+                Trade("1", "AAPL", 300.toBigDecimal(), "EUR", 1, false, 1),
+            )),
+            GroupedTrades("2025/12", listOf(TradeTotal("EUR", 500.toBigDecimal())), listOf(
+                Trade("2", "TSLA", 500.toBigDecimal(), "EUR", 2, false, 2),
+            )),
+        )
+
         every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
             dateRangeFlow = eq(dateRangeFlow),
@@ -179,6 +195,14 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
             sortTypeFlow = null,
             limitFlow = null,
         ) } returns flowOf(Async.Success(investments))
+
+        every { observeGroupedTradesMonthlyUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(trades))
 
         every { observeGroupedSavingsMonthlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
@@ -205,6 +229,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
                 totalInvestments = 1_800.toBigDecimal(),
+                totalTrades = 300.toBigDecimal(),
                 totalSavings = 1100.toBigDecimal(),
             ),
             GroupedBudget(
@@ -221,6 +246,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                 totalIncome = 7000.toBigDecimal(),
                 totalExpenses = 1400.toBigDecimal(),
                 totalInvestments = 2_000.toBigDecimal(),
+                totalTrades = 500.toBigDecimal(),
                 totalSavings = 700.toBigDecimal(),
             ),
             GroupedBudget(
@@ -235,6 +261,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
                 totalIncome = 6600.toBigDecimal(),
                 totalExpenses = 0.toBigDecimal(),
                 totalInvestments = 0.toBigDecimal(),
+                totalTrades = 0.toBigDecimal(),
                 totalSavings = 0.toBigDecimal(),
             ),
         )
@@ -271,6 +298,14 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
         ) } returns flowOf(Async.Success(listOf()))
 
         every { observeGroupedInvestmentsMonthlyUseCase.invoke(
+            searchQueryFlow = eq(searchQueryFlow),
+            dateRangeFlow = eq(dateRangeFlow),
+            filterTypeFlow = null,
+            sortTypeFlow = null,
+            limitFlow = null,
+        ) } returns flowOf(Async.Success(listOf()))
+
+        every { observeGroupedTradesMonthlyUseCase.invoke(
             searchQueryFlow = eq(searchQueryFlow),
             dateRangeFlow = eq(dateRangeFlow),
             filterTypeFlow = null,

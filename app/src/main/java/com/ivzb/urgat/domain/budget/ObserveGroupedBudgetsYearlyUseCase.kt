@@ -5,9 +5,11 @@ import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsYearlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase
+import com.ivzb.urgat.domain.trades.ObserveGroupedTradesYearlyUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
@@ -34,6 +36,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
     private val observeGroupedBudgetCategoriesYearlyUseCase: ObserveGroupedBudgetCategoriesYearlyUseCase,
     private val observeGroupedExpensesYearlyUseCase: ObserveGroupedExpensesYearlyUseCase,
     private val observeGroupedInvestmentsYearlyUseCase: ObserveGroupedInvestmentsYearlyUseCase,
+    private val observeGroupedTradesYearlyUseCase: ObserveGroupedTradesYearlyUseCase,
     private val observeGroupedSavingsYearlyUseCase: ObserveGroupedSavingsYearlyUseCase,
     private val forexRepository: ForexRepository,
 ): ObserveGroupedBudgetsYearlyUseCase {
@@ -50,17 +53,20 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
             observeGroupedBudgetCategoriesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
             observeGroupedExpensesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedInvestmentsYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+            observeGroupedTradesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedSavingsYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        ) { budgetCategoriesYearlyAsync, expensesYearlyAsync, investmentsYearlyAsync, savingsYearlyAsync ->
+        ) { budgetCategoriesYearlyAsync, expensesYearlyAsync, investmentsYearlyAsync, tradesYearlyAsync, savingsYearlyAsync ->
 
             if (budgetCategoriesYearlyAsync is Async.Success &&
                 expensesYearlyAsync is Async.Success &&
                 investmentsYearlyAsync is Async.Success &&
+                tradesYearlyAsync is Async.Success &&
                 savingsYearlyAsync is Async.Success) {
 
                 val yearlyBudgets = budgetCategoriesYearlyAsync.data.mapIndexed { index, category ->
                     val expenses = expensesYearlyAsync.data.getOrNull(index)
                     val investments = investmentsYearlyAsync.data.getOrNull(index)
+                    val trades = tradesYearlyAsync.data.getOrNull(index)
                     val savings = savingsYearlyAsync.data.getOrNull(index)
 
                     val budgetCurrency = category.items.first().currency
@@ -71,6 +77,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
                         totalIncome = category.total,
                         totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
                         totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
+                        totalTrades = Trade.total(trades?.items, budgetCurrency, forexRepository::convert),
                         totalSavings = Saving.total(savings?.items, budgetCurrency, forexRepository::convert),
                     )
                 }

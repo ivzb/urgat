@@ -12,9 +12,10 @@ class GroupedBudgetTest {
             income = 6600,
             expenses = 2200,
             investments = 3300,
+            trades = 300,
             savings = 500,
 
-            expectedRemaining = 600,
+            expectedRemaining = 300,
             expectedTotal = 6600,
         )
 
@@ -24,7 +25,8 @@ class GroupedBudgetTest {
             income = 6600,
             expenses = 2200,
             investments = 3300,
-            savings = 1100,
+            trades = 600,
+            savings = 500,
 
             expectedRemaining = 0,
             expectedTotal = 6600,
@@ -36,16 +38,18 @@ class GroupedBudgetTest {
             income = 6600,
             expenses = 2200,
             investments = 3300,
+            trades = 500,
             savings = 2100,
 
-            expectedRemaining = -1000,
-            expectedTotal = 7600,
+            expectedRemaining = -1500,
+            expectedTotal = 8100,
         )
 
     private fun testGroupedBudget(
         income: Int,
         expenses: Int,
         investments: Int,
+        trades: Int,
         savings: Int,
 
         expectedRemaining: Int,
@@ -61,6 +65,7 @@ class GroupedBudgetTest {
             totalIncome = income.toBigDecimal(),
             totalExpenses = expenses.toBigDecimal(),
             totalInvestments = investments.toBigDecimal(),
+            totalTrades = trades.toBigDecimal(),
             totalSavings = savings.toBigDecimal(),
         )
 

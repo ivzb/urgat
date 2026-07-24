@@ -302,6 +302,14 @@ fun LazyListScope.budgetCategoryPage(
                 total = annotateFinance(budget.totalSavings, budget.currency),
             ))
 
+            if (budget.totalTrades > BigDecimal.ZERO) {
+                add(PieChartItem(
+                    value = budget.totalTrades.toFloat(),
+                    title = stringResource(R.string.trades),
+                    total = annotateFinance(budget.totalTrades, budget.currency),
+                ))
+            }
+
             if (budget.remaining > BigDecimal.ZERO) {
                 add(PieChartItem(
                     value = budget.remaining.toFloat(),
@@ -352,11 +360,23 @@ fun LazyListScope.budgetCategoryPage(
         )
     }
 
+    val withTrades = budget.totalTrades > BigDecimal.ZERO
+
+    if (withTrades) {
+        item {
+            CategoryItem(
+                name = stringResource(R.string.trades),
+                value = annotateFinance(budget.totalTrades, budget.currency),
+                colorIndex = 3,
+            )
+        }
+    }
+
     item {
         CategoryItem(
             name = stringResource(R.string.remaining),
             value = annotateFinance(budget.remaining, budget.currency),
-            colorIndex = 3,
+            colorIndex = if (withTrades) 4 else 3,
         )
     }
 }

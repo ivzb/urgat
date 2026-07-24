@@ -135,6 +135,7 @@ class FinanceViewModelTest {
             totalIncome = 5000.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 1_300.toBigDecimal(),
+            totalTrades = 700.toBigDecimal(),
             totalSavings = 100.toBigDecimal(),
         )
 

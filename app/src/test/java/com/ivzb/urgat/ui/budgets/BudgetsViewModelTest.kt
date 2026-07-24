@@ -90,6 +90,7 @@ class BudgetsViewModelTest {
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
                 totalInvestments = 1_800.toBigDecimal(),
+                totalTrades = 700.toBigDecimal(),
                 totalSavings = 1100.toBigDecimal(),
             ),
         )
@@ -109,6 +110,7 @@ class BudgetsViewModelTest {
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
                 totalInvestments = 3_800.toBigDecimal(),
+                totalTrades = 700.toBigDecimal(),
                 totalSavings = 1800.toBigDecimal(),
             ),
         )
@@ -124,6 +126,7 @@ class BudgetsViewModelTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3_800.toBigDecimal(),
+            totalTrades = 700.toBigDecimal(),
             totalSavings = 1500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(
@@ -205,6 +208,7 @@ class BudgetsViewModelTest {
                 totalIncome = 6800.toBigDecimal(),
                 totalExpenses = 1200.toBigDecimal(),
                 totalInvestments = 1_800.toBigDecimal(),
+                totalTrades = 700.toBigDecimal(),
                 totalSavings = 1100.toBigDecimal(),
             ),
         )
@@ -224,6 +228,7 @@ class BudgetsViewModelTest {
                 totalIncome = 13800.toBigDecimal(),
                 totalExpenses = 2600.toBigDecimal(),
                 totalInvestments = 3_800.toBigDecimal(),
+                totalTrades = 700.toBigDecimal(),
                 totalSavings = 1800.toBigDecimal(),
             ),
         )
@@ -239,6 +244,7 @@ class BudgetsViewModelTest {
             totalIncome = 20400.toBigDecimal(),
             totalExpenses = 2600.toBigDecimal(),
             totalInvestments = 3_800.toBigDecimal(),
+            totalTrades = 700.toBigDecimal(),
             totalSavings = 1500.toBigDecimal(),
         )
         val fakeBudgetsFiltering = listOf(

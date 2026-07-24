@@ -324,6 +324,7 @@ object SampleData {
         totalIncome = 4_021.34.toBigDecimal(),
         totalExpenses = 571.34.toBigDecimal(),
         totalInvestments = 2_500.toBigDecimal(),
+        totalTrades = 500.toBigDecimal(),
         totalSavings = 950.toBigDecimal(),
     )
 

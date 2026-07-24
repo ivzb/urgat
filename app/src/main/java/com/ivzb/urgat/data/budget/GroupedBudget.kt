@@ -9,15 +9,16 @@ data class GroupedBudget(
     val totalIncome: BigDecimal,
     val totalExpenses: BigDecimal,
     val totalInvestments: BigDecimal,
+    val totalTrades: BigDecimal,
     val totalSavings: BigDecimal,
 ) {
 
     val remaining: BigDecimal by lazy {
-        totalIncome - totalExpenses - totalInvestments - totalSavings
+        totalIncome - totalExpenses - totalInvestments - totalTrades - totalSavings
     }
 
     val total: BigDecimal by lazy {
-        totalIncome.coerceAtLeast(totalExpenses + totalInvestments + totalSavings)
+        totalIncome.coerceAtLeast(totalExpenses + totalInvestments + totalTrades + totalSavings)
     }
 
 }
