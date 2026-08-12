@@ -110,4 +110,3 @@
 - add car remainders based on mileage and time taken from fuel consumption and maintenance history
 - make car fuel consumption filtering by car like in maintenance
 - make maintenance more button work
-- add unit tests for all domain/trades use cases. look at domain/saving for reference
