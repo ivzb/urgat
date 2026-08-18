@@ -38,6 +38,20 @@
                 android:value="androidx.startup"
                 tools:node="remove" />
         </provider>
+
+        <receiver
+            android:name=".ui.widget.NetWorthWidgetReceiver"
+            android:exported="false"
+            android:label="@string/net_worth_widget_label">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/net_worth_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

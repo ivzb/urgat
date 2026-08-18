@@ -283,4 +283,14 @@
     <string name="buy_label">Buy</string>
     <string name="sell_label">Sell</string>
     <string name="empty_trade_message">Please fill in all fields</string>
+
+    <!-- Net worth app widget -->
+    <string name="net_worth">Net worth</string>
+    <string name="net_worth_widget_label">Urgat Net worth</string>
+    <string name="net_worth_widget_description">Keep an eye on your accumulated stash right from the home screen.</string>
+    <string name="net_worth_widget_refresh">Refresh net worth</string>
+    <string name="net_worth_widget_empty">No net worth yet</string>
+    <string name="net_worth_widget_empty_message">Fill in a budget and expenses for at least one complete month.</string>
+    <string name="net_worth_widget_error">Could not load net worth</string>
+    <string name="net_worth_widget_error_message">Tap to open Urgat and try again.</string>
 </resources>

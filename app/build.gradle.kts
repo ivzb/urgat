@@ -149,6 +149,10 @@ dependencies {
     // Json Serialization
     implementation(libs.kotlinx.serialization.json)
 
+    // Glance App Widgets
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+
     // In-App Updates
     implementation(libs.play.app.update)
     implementation(libs.play.app.update.ktx)
