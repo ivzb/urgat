@@ -1,3 +1,8 @@
+## Release notes 26.08.01
+
+New:
+- Track your total financial health at a glance with our new Net Worth Widget, now available right on your home screen.
+
 ## Release notes 26.08.00
 
 No release notes.
