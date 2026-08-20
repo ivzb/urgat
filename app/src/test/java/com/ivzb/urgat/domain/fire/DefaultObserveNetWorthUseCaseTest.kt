@@ -11,6 +11,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveNetWorthUseCaseTest {
@@ -72,6 +74,32 @@ class DefaultObserveNetWorthUseCaseTest {
         val actual = observeUseCase().first()
 
         assertEquals(Async.Loading, actual)
+    }
+
+    @Test
+    fun `invoke should observe fire data of all time`() = runTest {
+        observeUseCase().first()
+
+        val invocation = assertNotNull(fakeObserveFiReUseCase.lastInvocation)
+
+        // the stash is every investment, trade and saving ever made, so it must never be
+        // narrowed down by the date range the user picked on the FI/RE screen
+        assertNull(invocation.dateRangeFlow)
+    }
+
+    @Test
+    fun `invoke should observe fire data with the saved rates`() = runTest {
+        fakeFireRepository.updateWithdrawalRate("5")
+        fakeFireRepository.updateReturnOfInvestment("8")
+        fakeFireRepository.updateTaxRate("12")
+
+        observeUseCase().first()
+
+        val invocation = assertNotNull(fakeObserveFiReUseCase.lastInvocation)
+
+        assertEquals("5".toBigDecimal(), invocation.withdrawalRateFlow.first())
+        assertEquals("8".toBigDecimal(), invocation.returnOfInvestmentFlow.first())
+        assertEquals("12".toBigDecimal(), invocation.taxRateFlow.first())
     }
 
     companion object {

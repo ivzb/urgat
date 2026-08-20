@@ -10,6 +10,9 @@ class FakeObserveFiReUseCase : ObserveFiReUseCase {
 
     private val flow = MutableStateFlow<Async<FiRe?>>(Async.Loading)
 
+    var lastInvocation: Invocation? = null
+        private set
+
     fun emit(value: Async<FiRe?>) {
         flow.value = value
     }
@@ -21,7 +24,21 @@ class FakeObserveFiReUseCase : ObserveFiReUseCase {
 
         dateRangeFlow: Flow<LongRange>?,
     ): Flow<Async<FiRe?>> {
+        lastInvocation = Invocation(
+            withdrawalRateFlow = withdrawalRateFlow,
+            returnOfInvestmentFlow = returnOfInvestmentFlow,
+            taxRateFlow = taxRateFlow,
+            dateRangeFlow = dateRangeFlow,
+        )
+
         return flow
     }
+
+    data class Invocation(
+        val withdrawalRateFlow: Flow<BigDecimal?>,
+        val returnOfInvestmentFlow: Flow<BigDecimal?>,
+        val taxRateFlow: Flow<BigDecimal?>,
+        val dateRangeFlow: Flow<LongRange>?,
+    )
 
 }

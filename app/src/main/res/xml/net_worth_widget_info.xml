@@ -4,7 +4,7 @@
     android:description="@string/net_worth_widget_description"
     android:initialLayout="@layout/glance_default_loading_layout"
     android:minHeight="110dp"
-    android:minResizeHeight="110dp"
+    android:minResizeHeight="40dp"
     android:minResizeWidth="140dp"
     android:minWidth="180dp"
     android:previewImage="@mipmap/ic_launcher"
