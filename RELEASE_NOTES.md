@@ -1,3 +1,8 @@
+## Release notes 26.08.02
+
+New:
+- Expenses charts are now showing the average per month.
+
 ## Release notes 26.08.01
 
 New:
