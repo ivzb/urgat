@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.expense
 
+import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
@@ -50,11 +51,16 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
             ExpensesUiState(hasError = true)
         },
         onSuccess = { expenses, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, sorting, (searchQuery, filterType, sortType) ->
+            val allExpenses = categoriesAllTime.flatMap { it.expenses }
+
             ExpensesUiState(
                 expenses = expenses,
                 categoriesMonthly = categoriesMonthly,
                 categoriesYearly = categoriesYearly,
                 categoriesAllTime = categoriesAllTime,
+                averagesMonthly = Group.groupExpenseAveragesMonthly(allExpenses),
+                averagesYearly = Group.groupExpenseAveragesYearly(allExpenses),
+                averageAllTime = Group.groupExpenseAverageAllTime(allExpenses),
                 isLoading = false,
                 filteringUiInfo = ExpensesFilteringUiInfo.from(
                     searchQuery = searchQuery,

@@ -140,6 +140,7 @@
     <string name="import_button_text_folder">Choose folder to import</string>
     <string name="import_button_text_manually">Enter data manually</string>
     <string name="total">Total</string>
+    <string name="average_monthly">avg/mo</string>
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
     <string name="all_time">All time</string>

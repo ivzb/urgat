@@ -6,6 +6,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.em
 import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -15,6 +16,8 @@ import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
 private val NEGATIVE_AMOUNT_COLOR = Color(0xFFF44336)
+
+private val CHART_AVERAGE_EXPENSES_FONT_SIZE = 0.75.em
 
 fun financeColor(amount: BigDecimal?): Color =
     when {
@@ -63,13 +66,14 @@ fun annotateWatchlistAsset(priceChange: BigDecimal?, priceChangePercentage: BigD
 fun annotateExpenses(amount: BigDecimal, currency: String, prefix: String = ""): AnnotatedString =
     annotateFinance(-amount, currency, prefix = prefix)
 
-fun annotateExpensesTotals(totals: List<ExpenseTotal>): AnnotatedString =
+fun annotateExpensesTotals(totals: List<ExpenseTotal>, prefix: String = ""): AnnotatedString =
     buildAnnotatedString {
         totals.forEachIndexed { index, total ->
             append(
                 annotateExpenses(
                     amount = total.amount,
                     currency = total.currency,
+                    prefix = prefix,
                 )
             )
 
@@ -99,7 +103,7 @@ private fun annotatePrice(totals: List<InvestmentTotal>, price: (InvestmentTotal
         }
     }
 
-fun annotateChart(name: String, total: AnnotatedString?): AnnotatedString =
+fun annotateChart(name: String, total: AnnotatedString?, average: AnnotatedString? = null): AnnotatedString =
     buildAnnotatedString {
         append(name)
 
@@ -108,6 +112,14 @@ fun annotateChart(name: String, total: AnnotatedString?): AnnotatedString =
 
             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
                 append(total)
+            }
+        }
+
+        if (average != null && average.isNotEmpty()) {
+            appendLine()
+
+            withStyle(SpanStyle(fontSize = CHART_AVERAGE_EXPENSES_FONT_SIZE)) {
+                append(average)
             }
         }
     }

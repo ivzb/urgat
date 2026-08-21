@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseAverage
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpenseTotal.Companion.sumByCurrency
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -133,6 +134,7 @@ fun ExpensesScreen(
             when (page) {
                 ExpensesPage.Monthly -> GroupedCategoriesPage(
                     categories = uiState.categoriesMonthly,
+                    averages = uiState.averagesMonthly,
                     filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedMonthlyIds,
                     onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
@@ -143,6 +145,7 @@ fun ExpensesScreen(
 
                 ExpensesPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
+                    averages = uiState.averagesYearly,
                     filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedYearlyIds,
                     onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
@@ -160,6 +163,7 @@ fun ExpensesScreen(
                     ),
                     categories = uiState.categoriesAllTime,
                     expandedCategoryIds = expandedAllTimeIds,
+                    average = uiState.averageAllTime,
                     listState = listState,
                     onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
                     onExpenseClick = onExpenseClick,
@@ -232,6 +236,7 @@ fun TransactionsPage(
 @Composable
 private fun GroupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
+    averages: Map<String, ExpenseAverage>,
     filteringUiInfo: FilteringUiInfo,
     expandedCategoryIds: List<String>,
     onCategoryClick: (String) -> Unit,
@@ -296,6 +301,8 @@ private fun GroupedCategoriesPage(
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
+                average = averages[category.group] ?: ExpenseAverage.EMPTY,
+
                 filteringUiInfo = filteringUiInfo,
                 onResetFilters = onResetFilters,
 
@@ -316,6 +323,8 @@ private fun CategoriesPage(
 
     categories: List<ExpenseCategory>,
     expandedCategoryIds: List<String>,
+
+    average: ExpenseAverage,
 
     filteringUiInfo: FilteringUiInfo,
     onResetFilters: () -> Unit,
@@ -339,6 +348,8 @@ private fun CategoriesPage(
         return
     }
 
+    val averagePrefix = stringResource(R.string.average_monthly)
+
     LazyColumn(
         contentPadding = PaddingValues(
             horizontal = dimensionResource(R.dimen.horizontal_margin),
@@ -353,6 +364,12 @@ private fun CategoriesPage(
             val lastExpandedId = expandedCategoryIds.lastOrNull()
             val expandedCategory = categories.firstOrNull { it.id == lastExpandedId }
 
+            val averageTotals = expandedCategory
+                ?.let { average.categories[it.name].orEmpty() }
+                ?: average.totals
+
+            val averageText = annotateExpensesTotals(averageTotals, prefix = "$averagePrefix ")
+
             val data: List<PieChartItem>
             val defaultText: AnnotatedString
 
@@ -365,7 +382,7 @@ private fun CategoriesPage(
                         total = annotateExpensesTotals(it.totals),
                     )
                 }
-                defaultText = annotateChart(group, total)
+                defaultText = annotateChart(group, total, averageText)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.expenses
@@ -379,7 +396,7 @@ private fun CategoriesPage(
                             total = annotateExpensesTotals(expenseTotal),
                         )
                     }
-                defaultText = annotateChart(expandedCategory.name, annotateExpensesTotals(expandedCategory.totals))
+                defaultText = annotateChart(expandedCategory.name, annotateExpensesTotals(expandedCategory.totals), averageText)
             }
 
             PieChart(
@@ -494,6 +511,9 @@ private fun ExpensesScreenPreview(initialPage: Int = 0) {
                 categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
                 categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
                 categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
+                averagesMonthly = SampleData.SAMPLE_EXPENSES_AVERAGES_MONTHLY,
+                averagesYearly = SampleData.SAMPLE_EXPENSES_AVERAGES_YEARLY,
+                averageAllTime = SampleData.SAMPLE_EXPENSES_AVERAGE_ALL_TIME,
                 filteringUiInfo = ExpensesFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,

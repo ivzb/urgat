@@ -93,6 +93,15 @@ object SampleData {
     val SAMPLE_EXPENSES_CATEGORIES_ALL_TIME =
         Group.groupExpenseCategoriesAllTime(SAMPLE_EXPENSES, ::randomUUID)
 
+    val SAMPLE_EXPENSES_AVERAGES_MONTHLY =
+        Group.groupExpenseAveragesMonthly(SAMPLE_EXPENSES)
+
+    val SAMPLE_EXPENSES_AVERAGES_YEARLY =
+        Group.groupExpenseAveragesYearly(SAMPLE_EXPENSES)
+
+    val SAMPLE_EXPENSES_AVERAGE_ALL_TIME =
+        Group.groupExpenseAverageAllTime(SAMPLE_EXPENSES)
+
     val SAMPLE_NOTES = listOf(
         listOf(
             "Shopping list: eggs, milk, bread, coffee, yogurt, chicken, vegetables, pasta, rice, snacks. " +

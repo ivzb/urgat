@@ -1,5 +1,6 @@
 package com.ivzb.urgat.ui.expenses
 
+import com.ivzb.urgat.data.expense.ExpenseAverage
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
@@ -11,6 +12,10 @@ data class ExpensesUiState(
     val categoriesMonthly: List<GroupedExpenseCategories> = listOf(),
     val categoriesYearly: List<GroupedExpenseCategories> = listOf(),
     val categoriesAllTime: List<ExpenseCategory> = listOf(),
+
+    val averagesMonthly: Map<String, ExpenseAverage> = mapOf(),
+    val averagesYearly: Map<String, ExpenseAverage> = mapOf(),
+    val averageAllTime: ExpenseAverage = ExpenseAverage.EMPTY,
 
     override val isLoading: Boolean = false,
     override val hasError: Boolean = false,

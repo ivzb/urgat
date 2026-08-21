@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.common
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.expense.Expense
+import com.ivzb.urgat.data.expense.ExpenseAverage
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.investment.Investment
@@ -468,6 +469,98 @@ class GroupTest {
         )
 
         val actual = Group.groupExpenseCategoriesAllTime(expenses, randomTestUUID)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupExpenseAveragesMonthly() {
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("100"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("3", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("4", "Groceries", BigDecimal("60"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+
+            // excluded from analytics, so they must not affect any average
+            Expense("5", "Clothing", BigDecimal("500"), "EUR", "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
+            Expense("6", "Dinner", BigDecimal("900"), "EUR", "Food", timestamp(2025, 12, 1), true, false, timestamp(2025, 12, 1)),
+        )
+
+        // 300 over the 2 months of 2025
+        val average2025 = ExpenseAverage(
+            totals = listOf(ExpenseTotal(BigDecimal("150.00"), "EUR")),
+            categories = mapOf(
+                "Shopping" to listOf(ExpenseTotal(BigDecimal("50.00"), "EUR")),
+                "Food" to listOf(ExpenseTotal(BigDecimal("100.00"), "EUR")),
+            ),
+        )
+
+        val expected = mapOf(
+            "November 2025" to average2025,
+            "December 2025" to average2025,
+            // a single month has no meaningful average
+            "December 2024" to ExpenseAverage.EMPTY,
+        )
+
+        val actual = Group.groupExpenseAveragesMonthly(expenses)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupExpenseAveragesYearly() {
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("100"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("3", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("4", "Groceries", BigDecimal("60"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+
+            // excluded from analytics, so they must not affect any average
+            Expense("5", "Clothing", BigDecimal("500"), "EUR", "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
+            Expense("6", "Dinner", BigDecimal("900"), "EUR", "Food", timestamp(2025, 12, 1), true, false, timestamp(2025, 12, 1)),
+        )
+
+        val expected = mapOf(
+            // 300 over the 2 months of 2025
+            "2025" to ExpenseAverage(
+                totals = listOf(ExpenseTotal(BigDecimal("150.00"), "EUR")),
+                categories = mapOf(
+                    "Shopping" to listOf(ExpenseTotal(BigDecimal("50.00"), "EUR")),
+                    "Food" to listOf(ExpenseTotal(BigDecimal("100.00"), "EUR")),
+                ),
+            ),
+            // a single month has no meaningful average
+            "2024" to ExpenseAverage.EMPTY,
+        )
+
+        val actual = Group.groupExpenseAveragesYearly(expenses)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupExpenseAverageAllTime() {
+        val expenses = listOf(
+            Expense("1", "Clothing", BigDecimal("100"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
+            Expense("2", "Groceries", BigDecimal("50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
+            Expense("3", "Groceries", BigDecimal("150"), "EUR", "Food", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
+            Expense("4", "Groceries", BigDecimal("60"), "EUR", "Food", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
+
+            // excluded from analytics, so they must not affect any average
+            Expense("5", "Clothing", BigDecimal("500"), "EUR", "Shopping", timestamp(2025, 11, 25), true, false, timestamp(2025, 11, 25)),
+            Expense("6", "Dinner", BigDecimal("900"), "EUR", "Food", timestamp(2025, 12, 1), true, false, timestamp(2025, 12, 1)),
+        )
+
+        // 360 over 3 months
+        val expected = ExpenseAverage(
+            totals = listOf(ExpenseTotal(BigDecimal("120.00"), "EUR")),
+            categories = mapOf(
+                "Shopping" to listOf(ExpenseTotal(BigDecimal("33.33"), "EUR")),
+                "Food" to listOf(ExpenseTotal(BigDecimal("86.67"), "EUR")),
+            ),
+        )
+
+        val actual = Group.groupExpenseAverageAllTime(expenses)
 
         assertEquals(expected, actual)
     }
