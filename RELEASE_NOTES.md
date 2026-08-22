@@ -1,3 +1,8 @@
+## Release notes 26.08.03
+
+New:
+- Track your favourite assets at a glance with our new Watchlist Widget, now available right on your home screen.
+
 ## Release notes 26.08.02
 
 New:
