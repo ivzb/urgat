@@ -13,8 +13,6 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.util.annotateWatchlistAsset
-import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.formatCurrency
 
 @Composable
 fun TransactionsPage(
@@ -67,8 +65,8 @@ fun WatchlistAssetItem(
         textLeft = asset.name.uppercase(),
         subTextLeft = asset.description ?: "",
 
-        textRight = "${asset.marketPrice?.format(digits = asset.pricePrecision)} ${asset.currency?.formatCurrency()}",
-        subTextRight = annotateWatchlistAsset(asset.priceChange, asset.priceChangePercentage, digits = asset.pricePrecision),
+        textRight = asset.formatMarketPrice(),
+        subTextRight = annotateWatchlistAsset(asset),
 
         onClick = { onWatchlistAssetClick(asset) }
     )

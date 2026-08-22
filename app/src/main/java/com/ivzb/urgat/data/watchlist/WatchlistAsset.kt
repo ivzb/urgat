@@ -1,5 +1,8 @@
 package com.ivzb.urgat.data.watchlist
 
+import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatCurrency
+import com.ivzb.urgat.util.formatPnL
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -27,7 +30,14 @@ data class WatchlistAsset(
         }
     }
 
+    fun formatMarketPrice(): String =
+        "${marketPrice?.format(digits = pricePrecision)} ${currency?.formatCurrency()}"
+
+    fun formatPriceChange(): String =
+        "${priceChange?.formatPnL(digits = pricePrecision, withPercentageSign = false)} (${priceChangePercentage.formatPnL()})"
+
     fun formatCsv(): String =
         "\"$id\", \"$name\", $createdAt"
 
 }
+

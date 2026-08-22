@@ -10,7 +10,7 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
 
 /**
- * The one place the app reaches into the Hilt graph by hand instead of being injected.
+ * Widgets are the one place the app reaches into the Hilt graph by hand instead of being injected.
  *
  * Glance instantiates [GlanceAppWidget][androidx.glance.appwidget.GlanceAppWidget] and
  * [ActionCallback][androidx.glance.appwidget.action.ActionCallback] itself - the latter by

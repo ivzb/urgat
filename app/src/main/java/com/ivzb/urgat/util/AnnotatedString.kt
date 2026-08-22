@@ -12,6 +12,7 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.data.trade.TradeTotal
+import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import java.math.BigDecimal
 
 private val POSITIVE_AMOUNT_COLOR = Color(0xFF4CAF50)
@@ -53,13 +54,13 @@ fun annotateFinancePnL(text: String, pnl: BigDecimal?): AnnotatedString {
     )
 }
 
-fun annotateWatchlistAsset(priceChange: BigDecimal?, priceChangePercentage: BigDecimal?, digits: Int? = null): AnnotatedString {
-    val text = "${priceChange?.formatPnL(digits = digits, withPercentageSign = false)} (${priceChangePercentage.formatPnL()})"
+fun annotateWatchlistAsset(asset: WatchlistAsset): AnnotatedString {
+    val text = asset.formatPriceChange()
 
     return annotateFormattedString(
         formattedString = text,
         part = text,
-        spanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = financeColor(priceChange)),
+        spanStyle = SpanStyle(fontWeight = FontWeight.Bold, color = financeColor(asset.priceChange)),
     )
 }
 

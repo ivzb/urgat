@@ -115,5 +115,4 @@
 - make a widget to show net worth via fire data
 - show loading indicator on the net worth widget when user taps refresh
 - show up or down arrow on each of the net worth items in the widget based on the change in value since yesterday
-- add watchlist widget
 - make a screen for daily results of investments

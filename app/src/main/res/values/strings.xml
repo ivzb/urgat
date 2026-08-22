@@ -294,4 +294,13 @@
     <string name="net_worth_widget_empty_message">Fill in a budget and expenses for at least one complete month.</string>
     <string name="net_worth_widget_error">Could not load net worth</string>
     <string name="net_worth_widget_error_message">Tap to open Urgat and try again.</string>
+
+    <!-- Watchlist app widget -->
+    <string name="watchlist_widget_label">Urgat Watchlist</string>
+    <string name="watchlist_widget_description">Follow the prices of your watchlist right from the home screen.</string>
+    <string name="watchlist_widget_refresh">Refresh watchlist</string>
+    <string name="watchlist_widget_empty">No watchlist assets yet</string>
+    <string name="watchlist_widget_empty_message">Add an asset to your watchlist to follow its price.</string>
+    <string name="watchlist_widget_error">Could not load watchlist</string>
+    <string name="watchlist_widget_error_message">Tap to open Urgat and try again.</string>
 </resources>
