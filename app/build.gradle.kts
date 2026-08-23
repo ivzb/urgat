@@ -152,6 +152,8 @@ dependencies {
     // Glance App Widgets
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
+    implementation(libs.androidx.glance.preview)
+    debugImplementation(libs.androidx.glance.appwidget.preview)
 
     // In-App Updates
     implementation(libs.play.app.update)

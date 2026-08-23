@@ -2,12 +2,14 @@ package com.ivzb.urgat.ui.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
@@ -17,6 +19,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.LocalState
 import androidx.glance.action.clickable
 import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.CircularProgressIndicator
@@ -39,12 +42,15 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.ivzb.urgat.MainActivity
 import com.ivzb.urgat.R
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.financeColor
@@ -83,6 +89,8 @@ class WatchlistWidget : GlanceAppWidget() {
         val isRefreshing = refreshStartedAt > 0L &&
                 System.currentTimeMillis() - refreshStartedAt < REFRESH_STALE_AFTER_MILLIS
 
+        val showRefresh = !isCompact && !isRefreshing
+
         Box(
             modifier = GlanceModifier
                 .fillMaxSize()
@@ -99,7 +107,10 @@ class WatchlistWidget : GlanceAppWidget() {
             ) {
 
                 Row(
-                    modifier = GlanceModifier.fillMaxWidth(),
+                    modifier = GlanceModifier
+                        .fillMaxWidth()
+                        // room for the refresh button laid over the header
+                        .padding(end = if (showRefresh) REFRESH_TAP_TARGET else 0.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
 
@@ -113,10 +124,6 @@ class WatchlistWidget : GlanceAppWidget() {
                         ),
                         maxLines = 1,
                     )
-
-                    if (!isCompact && !isRefreshing) {
-                        RefreshButton()
-                    }
                 }
 
                 Spacer(modifier = GlanceModifier.height(6.dp))
@@ -147,6 +154,18 @@ class WatchlistWidget : GlanceAppWidget() {
                             )
                         }
                     }
+                }
+            }
+
+            if (showRefresh) {
+                // laid over the content, so the tap area can spread into the widget padding
+                Box(
+                    modifier = GlanceModifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopEnd,
+                ) {
+                    RefreshButton(
+                        modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
+                    )
                 }
             }
 
@@ -272,17 +291,22 @@ class WatchlistWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RefreshButton() {
+    private fun RefreshButton(modifier: GlanceModifier) {
         val context = LocalContext.current
 
-        Image(
-            provider = ImageProvider(R.drawable.ic_refresh),
-            contentDescription = context.getString(R.string.watchlist_widget_refresh),
-            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-            modifier = GlanceModifier
-                .size(18.dp)
+        Box(
+            modifier = modifier
                 .clickable(actionRunCallback<RefreshWatchlistAction>()),
-        )
+            contentAlignment = Alignment.Center,
+        ) {
+
+            Image(
+                provider = ImageProvider(R.drawable.ic_refresh),
+                contentDescription = context.getString(R.string.watchlist_widget_refresh),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
+            )
+        }
     }
 
     @Composable
@@ -322,6 +346,10 @@ class WatchlistWidget : GlanceAppWidget() {
 
         internal val LARGE_SIZE = DpSize(220.dp, 220.dp)
 
+        private val REFRESH_ICON_SIZE = 18.dp
+
+        private val REFRESH_TAP_TARGET = 48.dp
+
         /**
          * When the ongoing refresh started, `0` when there is none.
          *
@@ -336,6 +364,61 @@ class WatchlistWidget : GlanceAppWidget() {
         /** After this long an unfinished refresh is considered abandoned. */
         private const val REFRESH_STALE_AFTER_MILLIS = 15_000L
 
+    }
+
+    @Composable
+    private fun WatchlistWidgetPreview(size: DpSize, state: Async<List<WatchlistAsset>>) {
+        CompositionLocalProvider(
+            LocalSize provides size,
+            // the preview host leaves the widget state out, which currentState() cannot cope with
+            LocalState provides emptyPreferences(),
+        ) {
+            UrgatGlanceTheme {
+                WatchlistWidgetContent(state)
+            }
+        }
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 140, heightDp = 110)
+    @Composable
+    private fun WatchlistWidgetSmallPreview() {
+        WatchlistWidgetPreview(SMALL_SIZE, Async.Success(SampleData.SAMPLE_WATCHLIST_ASSETS))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 110)
+    @Composable
+    private fun WatchlistWidgetMediumPreview() {
+        WatchlistWidgetPreview(MEDIUM_SIZE, Async.Success(SampleData.SAMPLE_WATCHLIST_ASSETS))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun WatchlistWidgetLargePreview() {
+        WatchlistWidgetPreview(LARGE_SIZE, Async.Success(SampleData.SAMPLE_WATCHLIST_ASSETS))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun WatchlistWidgetEmptyPreview() {
+        WatchlistWidgetPreview(LARGE_SIZE, Async.Success(listOf()))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun WatchlistWidgetLoadingPreview() {
+        WatchlistWidgetPreview(LARGE_SIZE, Async.Loading)
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun WatchlistWidgetErrorPreview() {
+        WatchlistWidgetPreview(LARGE_SIZE, Async.Error)
     }
 
 }

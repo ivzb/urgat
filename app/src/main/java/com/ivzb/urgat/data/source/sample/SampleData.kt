@@ -5,6 +5,8 @@ import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.fire.FiRe
+import com.ivzb.urgat.data.fire.NetWorth
+import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.note.Note
@@ -432,6 +434,16 @@ object SampleData {
         returnOfInvestment = 7.toBigDecimal(),
         taxRate = 10.toBigDecimal(),
         yearsUntilFiRe = 12.5.toBigDecimal(),
+    )
+
+    val SAMPLE_NET_WORTH = NetWorth(
+        amount = SAMPLE_FIRE.accumulatedStash,
+        currency = SAMPLE_FIRE.currency,
+        breakdown = listOf(
+            StashBreakdownItem(name = "Investments", amount = 90_000.toBigDecimal()),
+            StashBreakdownItem(name = "Savings", amount = 35_000.toBigDecimal()),
+            StashBreakdownItem(name = "Trades", amount = 25_000.toBigDecimal()),
+        ),
     )
 
     val SAMPLE_TRADES = listOf(

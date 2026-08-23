@@ -2,11 +2,13 @@ package com.ivzb.urgat.ui.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
@@ -16,6 +18,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.LocalState
 import androidx.glance.action.clickable
 import androidx.glance.action.actionStartActivity
 import androidx.glance.appwidget.CircularProgressIndicator
@@ -31,18 +34,22 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.ivzb.urgat.MainActivity
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.fire.NetWorth
+import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
@@ -82,6 +89,8 @@ class NetWorthWidget : GlanceAppWidget() {
         val isRefreshing = refreshStartedAt > 0L &&
                 System.currentTimeMillis() - refreshStartedAt < REFRESH_STALE_AFTER_MILLIS
 
+        val showRefresh = !isCompact && !isRefreshing
+
         Box(
             modifier = GlanceModifier
                 .fillMaxSize()
@@ -95,15 +104,33 @@ class NetWorthWidget : GlanceAppWidget() {
                 SingleRowContent(
                     state = state,
                     isCompact = isCompact,
-                    isRefreshing = isRefreshing,
+                    showRefresh = showRefresh,
                 )
             } else {
                 StackedContent(
                     state = state,
                     isCompact = isCompact,
                     showBreakdown = showBreakdown,
-                    isRefreshing = isRefreshing,
+                    showRefresh = showRefresh,
                 )
+            }
+
+            if (showRefresh) {
+                // laid over the content, so the tap area can spread into the widget padding
+                Box(
+                    modifier = GlanceModifier.fillMaxSize(),
+                    contentAlignment = if (isRow) Alignment.CenterEnd else Alignment.TopEnd,
+                ) {
+                    RefreshButton(
+                        modifier = if (isRow) {
+                            GlanceModifier
+                                .fillMaxHeight()
+                                .width(REFRESH_TAP_TARGET)
+                        } else {
+                            GlanceModifier.size(REFRESH_TAP_TARGET)
+                        },
+                    )
+                }
             }
 
             if (isRefreshing) {
@@ -130,14 +157,20 @@ class NetWorthWidget : GlanceAppWidget() {
     private fun SingleRowContent(
         state: Async<NetWorth?>,
         isCompact: Boolean,
-        isRefreshing: Boolean,
+        showRefresh: Boolean,
     ) {
         val context = LocalContext.current
 
         Row(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(
+                    start = 16.dp,
+                    // room for the refresh button laid over the row
+                    end = if (showRefresh) REFRESH_TAP_TARGET else 16.dp,
+                    top = 8.dp,
+                    bottom = 8.dp,
+                ),
             verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
 
@@ -165,12 +198,6 @@ class NetWorthWidget : GlanceAppWidget() {
                 ),
                 maxLines = 1,
             )
-
-            if (!isCompact && !isRefreshing) {
-                Spacer(modifier = GlanceModifier.width(8.dp))
-
-                RefreshButton()
-            }
         }
     }
 
@@ -179,7 +206,7 @@ class NetWorthWidget : GlanceAppWidget() {
         state: Async<NetWorth?>,
         isCompact: Boolean,
         showBreakdown: Boolean,
-        isRefreshing: Boolean,
+        showRefresh: Boolean,
     ) {
         val context = LocalContext.current
 
@@ -190,7 +217,10 @@ class NetWorthWidget : GlanceAppWidget() {
         ) {
 
             Row(
-                modifier = GlanceModifier.fillMaxWidth(),
+                modifier = GlanceModifier
+                    .fillMaxWidth()
+                    // room for the refresh button laid over the header
+                    .padding(end = if (showRefresh) REFRESH_TAP_TARGET else 0.dp),
                 verticalAlignment = Alignment.Vertical.CenterVertically,
             ) {
 
@@ -204,10 +234,6 @@ class NetWorthWidget : GlanceAppWidget() {
                     ),
                     maxLines = 1,
                 )
-
-                if (!isCompact && !isRefreshing) {
-                    RefreshButton()
-                }
             }
 
             Spacer(modifier = GlanceModifier.height(6.dp))
@@ -244,17 +270,22 @@ class NetWorthWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RefreshButton() {
+    private fun RefreshButton(modifier: GlanceModifier) {
         val context = LocalContext.current
 
-        Image(
-            provider = ImageProvider(R.drawable.ic_refresh),
-            contentDescription = context.getString(R.string.net_worth_widget_refresh),
-            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-            modifier = GlanceModifier
-                .size(18.dp)
+        Box(
+            modifier = modifier
                 .clickable(actionRunCallback<RefreshNetWorthAction>()),
-        )
+            contentAlignment = Alignment.Center,
+        ) {
+
+            Image(
+                provider = ImageProvider(R.drawable.ic_refresh),
+                contentDescription = context.getString(R.string.net_worth_widget_refresh),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
+            )
+        }
     }
 
     /** The one line every size has room for, whatever the state is. */
@@ -366,6 +397,10 @@ class NetWorthWidget : GlanceAppWidget() {
 
         internal val LARGE_SIZE = DpSize(220.dp, 220.dp)
 
+        private val REFRESH_ICON_SIZE = 18.dp
+
+        private val REFRESH_TAP_TARGET = 48.dp
+
         /**
          * When the ongoing refresh started, `0` when there is none.
          *
@@ -384,9 +419,75 @@ class NetWorthWidget : GlanceAppWidget() {
 
     }
 
+    @Composable
+    private fun NetWorthWidgetPreview(size: DpSize, state: Async<NetWorth?>) {
+        CompositionLocalProvider(
+            LocalSize provides size,
+            // the preview host leaves the widget state out, which currentState() cannot cope with
+            LocalState provides emptyPreferences(),
+        ) {
+            UrgatGlanceTheme {
+                NetWorthWidgetContent(state)
+            }
+        }
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 140, heightDp = 40)
+    @Composable
+    private fun NetWorthWidgetRowPreview() {
+        NetWorthWidgetPreview(ROW_SIZE, Async.Success(SampleData.SAMPLE_NET_WORTH))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 40)
+    @Composable
+    private fun NetWorthWidgetWideRowPreview() {
+        NetWorthWidgetPreview(WIDE_ROW_SIZE, Async.Success(SampleData.SAMPLE_NET_WORTH))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 140, heightDp = 110)
+    @Composable
+    private fun NetWorthWidgetSmallPreview() {
+        NetWorthWidgetPreview(SMALL_SIZE, Async.Success(SampleData.SAMPLE_NET_WORTH))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 110)
+    @Composable
+    private fun NetWorthWidgetMediumPreview() {
+        NetWorthWidgetPreview(MEDIUM_SIZE, Async.Success(SampleData.SAMPLE_NET_WORTH))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun NetWorthWidgetLargePreview() {
+        NetWorthWidgetPreview(LARGE_SIZE, Async.Success(SampleData.SAMPLE_NET_WORTH))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun NetWorthWidgetEmptyPreview() {
+        NetWorthWidgetPreview(LARGE_SIZE, Async.Success(null))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun NetWorthWidgetLoadingPreview() {
+        NetWorthWidgetPreview(LARGE_SIZE, Async.Loading)
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun NetWorthWidgetErrorPreview() {
+        NetWorthWidgetPreview(LARGE_SIZE, Async.Error)
+    }
+
 }
 
 private fun NetWorth.formatted(): String = "${amount.format()} ${currency.formatCurrency()}"
-
-
-

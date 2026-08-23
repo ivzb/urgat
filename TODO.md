@@ -112,7 +112,6 @@
 - make maintenance more button work
 - check if bulbank has an API so transactions can be automatically imported
 - add chart for investment instruments and watchlist symbols (maybe a link to the chart?)
-- make a widget to show net worth via fire data
-- show loading indicator on the net worth widget when user taps refresh
 - show up or down arrow on each of the net worth items in the widget based on the change in value since yesterday
 - make a screen for daily results of investments
+- show last refresh time so user can now how old is the data. use relevant time words
