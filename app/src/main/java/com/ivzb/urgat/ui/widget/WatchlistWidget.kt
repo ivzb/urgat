@@ -70,7 +70,6 @@ class WatchlistWidget : GlanceAppWidget() {
         val entryPoint = context.watchlistWidgetEntryPoint()
 
         val watchlistFlow = entryPoint.observeWatchlistAssets()
-            // read once the prices are in, so it tells when they were actually fetched
             .map { assets -> assets to entryPoint.marketPriceRepository().lastFetchedAt }
 
         provideContent {
@@ -115,7 +114,6 @@ class WatchlistWidget : GlanceAppWidget() {
                 Row(
                     modifier = GlanceModifier
                         .fillMaxWidth()
-                        // the content padding already covers part of the overlaid refresh button
                         .padding(end = if (showRefresh) REFRESH_TAP_TARGET - CONTENT_PADDING else 0.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
@@ -160,31 +158,14 @@ class WatchlistWidget : GlanceAppWidget() {
             }
 
             if (showRefresh) {
-                // laid over the content, so the tap area can spread into the widget padding
                 Box(
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = Alignment.TopEnd,
                 ) {
-                    Row(
+                    RefreshButton(
                         modifier = GlanceModifier.height(REFRESH_TAP_TARGET),
-                        verticalAlignment = Alignment.Vertical.CenterVertically,
-                    ) {
-
-                        if (lastFetchedAt != null) {
-                            Text(
-                                text = context.formatTimeAgo(lastFetchedAt),
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.onSurfaceVariant,
-                                    fontSize = 11.sp,
-                                ),
-                                maxLines = 1,
-                            )
-                        }
-
-                        RefreshButton(
-                            modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
-                        )
-                    }
+                        lastFetchedAt = lastFetchedAt,
+                    )
                 }
             }
 
@@ -237,7 +218,6 @@ class WatchlistWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
-                // a click anywhere but on a row is caught by the widget itself
                 .clickable(actionStartActivity<MainActivity>()),
             verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
@@ -310,21 +290,38 @@ class WatchlistWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RefreshButton(modifier: GlanceModifier) {
+    private fun RefreshButton(modifier: GlanceModifier, lastFetchedAt: Long?) {
         val context = LocalContext.current
 
-        Box(
+        Row(
             modifier = modifier
                 .clickable(actionRunCallback<RefreshWatchlistAction>()),
-            contentAlignment = Alignment.Center,
+            verticalAlignment = Alignment.Vertical.CenterVertically,
         ) {
 
-            Image(
-                provider = ImageProvider(R.drawable.ic_refresh),
-                contentDescription = context.getString(R.string.watchlist_widget_refresh),
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-                modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
-            )
+            if (lastFetchedAt != null) {
+                Text(
+                    text = context.formatTimeAgo(lastFetchedAt),
+                    style = TextStyle(
+                        color = GlanceTheme.colors.onSurfaceVariant,
+                        fontSize = 11.sp,
+                    ),
+                    maxLines = 1,
+                )
+            }
+
+            Box(
+                modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
+                contentAlignment = Alignment.Center,
+            ) {
+
+                Image(
+                    provider = ImageProvider(R.drawable.ic_refresh),
+                    contentDescription = context.getString(R.string.watchlist_widget_refresh),
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                    modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
+                )
+            }
         }
     }
 
@@ -432,7 +429,6 @@ class WatchlistWidget : GlanceAppWidget() {
     private fun WatchlistWidgetPreview(size: DpSize, state: Async<List<WatchlistAsset>>) {
         CompositionLocalProvider(
             LocalSize provides size,
-            // the preview host leaves the widget state out, which currentState() cannot cope with
             LocalState provides emptyPreferences(),
         ) {
             UrgatGlanceTheme {
