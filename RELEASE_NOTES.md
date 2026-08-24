@@ -1,3 +1,8 @@
+## Release notes 26.08.04
+
+Improved:
+- Improved widgets by adding a relative time indicator to show exactly when data was last updated.
+
 ## Release notes 26.08.03
 
 New:
