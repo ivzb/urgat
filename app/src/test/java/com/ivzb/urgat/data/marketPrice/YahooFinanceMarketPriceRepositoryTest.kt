@@ -17,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
@@ -284,6 +285,46 @@ class YahooFinanceMarketPriceRepositoryTest {
         assertEquals("BTC-USD", result.symbol)
         assertEquals(BigDecimal("91234.56"), result.price.round())
         assertEquals("USD", result.currency)
+    }
+
+    @Test
+    fun `lastFetchedAt is set once a price is fetched`() = runTest(testDispatcher) {
+        val response = YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(
+                result = listOf(
+                    YahooFinanceResponse.Result(
+                        meta = YahooFinanceResponse.Meta(
+                            regularMarketPrice = 150.0,
+                            currency = "USD",
+                            shortName = "Microsoft Corporation (MSFT)",
+                            chartPreviousClose = 149.70,
+                            priceHint = 2,
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery { api.fetch("MSFT") } returns response
+
+        assertNull(repository.lastFetchedAt)
+
+        val fetchedAfter = System.currentTimeMillis()
+
+        repository.fetchPrice("MSFT")
+
+        val lastFetchedAt = requireNotNull(repository.lastFetchedAt)
+
+        assertTrue(lastFetchedAt >= fetchedAfter)
+    }
+
+    @Test
+    fun `lastFetchedAt is left alone when the fetch fails`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        repository.fetchPrice("MSFT")
+
+        assertNull(repository.lastFetchedAt)
     }
 
     @Test

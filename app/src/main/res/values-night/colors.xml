@@ -3,4 +3,5 @@
     <color name="background">#FF0F1417</color>
     <color name="widget_background">#FF1B2023</color>
     <color name="widget_scrim">#B31B2023</color>
+    <color name="widget_skeleton">#1FDEE3E8</color>
 </resources>

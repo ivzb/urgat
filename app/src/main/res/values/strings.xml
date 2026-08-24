@@ -285,7 +285,11 @@
     <string name="sell_label">Sell</string>
     <string name="empty_trade_message">Please fill in all fields</string>
 
+    <!-- App widgets -->
+    <string name="just_now">just now</string>
+
     <!-- Net worth app widget -->
+
     <string name="net_worth">Net worth</string>
     <string name="net_worth_widget_label">Urgat Net worth</string>
     <string name="net_worth_widget_description">Keep an eye on your accumulated stash right from the home screen.</string>

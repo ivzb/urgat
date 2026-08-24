@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -54,6 +53,8 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.financeColor
+import com.ivzb.urgat.util.formatTimeAgo
+import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 
 /**
@@ -66,20 +67,25 @@ class WatchlistWidget : GlanceAppWidget() {
     )
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val watchlistFlow = context.watchlistWidgetEntryPoint()
-            .observeWatchlistAssets()
+        val entryPoint = context.watchlistWidgetEntryPoint()
+
+        val watchlistFlow = entryPoint.observeWatchlistAssets()
+            // read once the prices are in, so it tells when they were actually fetched
+            .map { assets -> assets to entryPoint.marketPriceRepository().lastFetchedAt }
 
         provideContent {
-            val state by watchlistFlow.collectAsState(initial = Async.Loading)
+            val (state, lastFetchedAt) = watchlistFlow
+                .collectAsState(initial = Async.Loading to null)
+                .value
 
             UrgatGlanceTheme {
-                WatchlistWidgetContent(state)
+                WatchlistWidgetContent(state, lastFetchedAt)
             }
         }
     }
 
     @Composable
-    private fun WatchlistWidgetContent(state: Async<List<WatchlistAsset>>) {
+    private fun WatchlistWidgetContent(state: Async<List<WatchlistAsset>>, lastFetchedAt: Long?) {
         val context = LocalContext.current
         val size = LocalSize.current
 
@@ -103,25 +109,21 @@ class WatchlistWidget : GlanceAppWidget() {
             Column(
                 modifier = GlanceModifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(CONTENT_PADDING),
             ) {
 
                 Row(
                     modifier = GlanceModifier
                         .fillMaxWidth()
-                        // room for the refresh button laid over the header
-                        .padding(end = if (showRefresh) REFRESH_TAP_TARGET else 0.dp),
+                        // the content padding already covers part of the overlaid refresh button
+                        .padding(end = if (showRefresh) REFRESH_TAP_TARGET - CONTENT_PADDING else 0.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
 
                     Text(
                         text = context.getString(R.string.watchlist),
                         modifier = GlanceModifier.defaultWeight(),
-                        style = TextStyle(
-                            color = GlanceTheme.colors.onSurfaceVariant,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
-                        ),
+                        style = widgetTitleStyle(),
                         maxLines = 1,
                     )
                 }
@@ -129,9 +131,9 @@ class WatchlistWidget : GlanceAppWidget() {
                 Spacer(modifier = GlanceModifier.height(6.dp))
 
                 when (state) {
-                    is Async.Loading -> Message(
-                        title = context.getString(R.string.loading),
-                        message = null,
+                    is Async.Loading -> WatchlistSkeleton(
+                        items = if (size.height >= LARGE_SIZE.height) SKELETON_ITEMS else SKELETON_ITEMS_SHORT,
+                        isCompact = isCompact,
                     )
 
                     is Async.Error -> Message(
@@ -163,9 +165,26 @@ class WatchlistWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = Alignment.TopEnd,
                 ) {
-                    RefreshButton(
-                        modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
-                    )
+                    Row(
+                        modifier = GlanceModifier.height(REFRESH_TAP_TARGET),
+                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                    ) {
+
+                        if (lastFetchedAt != null) {
+                            Text(
+                                text = context.formatTimeAgo(lastFetchedAt),
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurfaceVariant,
+                                    fontSize = 11.sp,
+                                ),
+                                maxLines = 1,
+                            )
+                        }
+
+                        RefreshButton(
+                            modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
+                        )
+                    }
                 }
             }
 
@@ -310,6 +329,41 @@ class WatchlistWidget : GlanceAppWidget() {
     }
 
     @Composable
+    private fun WatchlistSkeleton(items: Int, isCompact: Boolean) {
+        repeat(items) {
+            Row(
+                modifier = GlanceModifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.Vertical.CenterVertically,
+            ) {
+
+                Column {
+                    SkeletonBar(width = 48.dp, height = 12.dp)
+
+                    if (!isCompact) {
+                        Spacer(modifier = GlanceModifier.height(4.dp))
+
+                        SkeletonBar(width = 76.dp, height = 9.dp)
+                    }
+                }
+
+                Spacer(modifier = GlanceModifier.defaultWeight())
+
+                Column(
+                    horizontalAlignment = Alignment.Horizontal.End,
+                ) {
+                    SkeletonBar(width = 64.dp, height = 12.dp)
+
+                    Spacer(modifier = GlanceModifier.height(4.dp))
+
+                    SkeletonBar(width = 40.dp, height = 9.dp)
+                }
+            }
+        }
+    }
+
+    @Composable
     private fun Message(title: String, message: String?) {
         Text(
             text = title,
@@ -350,6 +404,8 @@ class WatchlistWidget : GlanceAppWidget() {
 
         private val REFRESH_TAP_TARGET = 48.dp
 
+        private val CONTENT_PADDING = 16.dp
+
         /**
          * When the ongoing refresh started, `0` when there is none.
          *
@@ -364,6 +420,12 @@ class WatchlistWidget : GlanceAppWidget() {
         /** After this long an unfinished refresh is considered abandoned. */
         private const val REFRESH_STALE_AFTER_MILLIS = 15_000L
 
+        private const val SKELETON_ITEMS = 4
+
+        private const val SKELETON_ITEMS_SHORT = 2
+
+        private val PREVIEW_LAST_FETCHED_AT get() = System.currentTimeMillis() - 5 * 60_000L
+
     }
 
     @Composable
@@ -374,7 +436,7 @@ class WatchlistWidget : GlanceAppWidget() {
             LocalState provides emptyPreferences(),
         ) {
             UrgatGlanceTheme {
-                WatchlistWidgetContent(state)
+                WatchlistWidgetContent(state, PREVIEW_LAST_FETCHED_AT)
             }
         }
     }
@@ -422,4 +484,7 @@ class WatchlistWidget : GlanceAppWidget() {
     }
 
 }
+
+
+
 

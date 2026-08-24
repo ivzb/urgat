@@ -17,6 +17,8 @@ class FakeMarketPriceRepository : MarketPriceRepository {
     private val _refreshFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     override val refreshFlow: Flow<Unit> = _refreshFlow.asSharedFlow()
 
+    override var lastFetchedAt: Long? = null
+
     override suspend fun fetchPrice(symbol: String): MarketPrice? {
         fetchCount++
 
@@ -24,7 +26,7 @@ class FakeMarketPriceRepository : MarketPriceRepository {
             return null
         }
 
-        return prices[symbol]
+        return prices[symbol]?.also { lastFetchedAt = System.currentTimeMillis() }
     }
 
     override suspend fun clearCache() {

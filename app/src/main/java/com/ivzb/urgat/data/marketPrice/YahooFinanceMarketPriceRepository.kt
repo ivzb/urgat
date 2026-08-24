@@ -29,6 +29,11 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
 
     private val cache = ConcurrentHashMap<String, Deferred<MarketPrice?>>()
 
+    @Volatile
+    private var fetchedAt: Long? = null
+
+    override val lastFetchedAt: Long? get() = fetchedAt
+
     override suspend fun fetchPrice(symbol: String): MarketPrice? {
         val symbol = normalizeInstrument(symbol.uppercase())
 
@@ -46,6 +51,7 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
                             previousClosePrice = BigDecimal(meta.chartPreviousClose),
                             pricePrecision = meta.priceHint,
                         ).also {
+                            fetchedAt = System.currentTimeMillis()
                             logger.debug("market price fetched: $it")
                         }
                     } catch (e: Exception) {

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +52,8 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
+import com.ivzb.urgat.util.formatTimeAgo
+import kotlinx.coroutines.flow.map
 
 /**
  * Home screen app widget showing the accumulated stash (net worth) coming from the FI/RE data.
@@ -64,21 +65,27 @@ class NetWorthWidget : GlanceAppWidget() {
     )
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val netWorthFlow = context.netWorthWidgetEntryPoint()
-            .observeNetWorthUseCase()
+        val entryPoint = context.netWorthWidgetEntryPoint()
+
+        val netWorthFlow = entryPoint.observeNetWorthUseCase()
             .invoke()
+            // read once the prices are in, so it tells when they were actually fetched
+            .map { netWorth -> netWorth to entryPoint.marketPriceRepository().lastFetchedAt }
 
         provideContent {
-            val state by netWorthFlow.collectAsState(initial = Async.Loading)
+            val (state, lastFetchedAt) = netWorthFlow
+                .collectAsState(initial = Async.Loading to null)
+                .value
 
             UrgatGlanceTheme {
-                NetWorthWidgetContent(state)
+                NetWorthWidgetContent(state, lastFetchedAt)
             }
         }
     }
 
     @Composable
-    private fun NetWorthWidgetContent(state: Async<NetWorth?>) {
+    private fun NetWorthWidgetContent(state: Async<NetWorth?>, lastFetchedAt: Long?) {
+        val context = LocalContext.current
         val size = LocalSize.current
 
         val isRow = size.height < SMALL_SIZE.height
@@ -121,15 +128,36 @@ class NetWorthWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = if (isRow) Alignment.CenterEnd else Alignment.TopEnd,
                 ) {
-                    RefreshButton(
+                    Row(
                         modifier = if (isRow) {
-                            GlanceModifier
-                                .fillMaxHeight()
-                                .width(REFRESH_TAP_TARGET)
+                            GlanceModifier.fillMaxHeight()
                         } else {
-                            GlanceModifier.size(REFRESH_TAP_TARGET)
+                            GlanceModifier.height(REFRESH_TAP_TARGET)
                         },
-                    )
+                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                    ) {
+
+                        if (!isRow && lastFetchedAt != null) {
+                            Text(
+                                text = context.formatTimeAgo(lastFetchedAt),
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurfaceVariant,
+                                    fontSize = 11.sp,
+                                ),
+                                maxLines = 1,
+                            )
+                        }
+
+                        RefreshButton(
+                            modifier = if (isRow) {
+                                GlanceModifier
+                                    .fillMaxHeight()
+                                    .width(REFRESH_TAP_TARGET)
+                            } else {
+                                GlanceModifier.size(REFRESH_TAP_TARGET)
+                            },
+                        )
+                    }
                 }
             }
 
@@ -165,9 +193,9 @@ class NetWorthWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .fillMaxSize()
                 .padding(
-                    start = 16.dp,
+                    start = CONTENT_PADDING,
                     // room for the refresh button laid over the row
-                    end = if (showRefresh) REFRESH_TAP_TARGET else 16.dp,
+                    end = if (showRefresh) REFRESH_TAP_TARGET else CONTENT_PADDING,
                     top = 8.dp,
                     bottom = 8.dp,
                 ),
@@ -178,26 +206,26 @@ class NetWorthWidget : GlanceAppWidget() {
                 Text(
                     text = context.getString(R.string.net_worth),
                     modifier = GlanceModifier.defaultWeight(),
-                    style = TextStyle(
-                        color = GlanceTheme.colors.onSurfaceVariant,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
+                    style = widgetTitleStyle(),
                     maxLines = 1,
                 )
             }
 
-            Text(
-                text = headline(state),
-                // without a label there is nothing else to give the leftover space to
-                modifier = if (isCompact) GlanceModifier.defaultWeight() else GlanceModifier,
-                style = TextStyle(
-                    color = GlanceTheme.colors.onSurface,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
-                maxLines = 1,
-            )
+            if (state is Async.Loading) {
+                SkeletonBar(width = 110.dp, height = 16.dp)
+            } else {
+                Text(
+                    text = headline(state),
+                    // without a label there is nothing else to give the leftover space to
+                    modifier = if (isCompact) GlanceModifier.defaultWeight() else GlanceModifier,
+                    style = TextStyle(
+                        color = GlanceTheme.colors.onSurface,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    maxLines = 1,
+                )
+            }
         }
     }
 
@@ -213,25 +241,21 @@ class NetWorthWidget : GlanceAppWidget() {
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(CONTENT_PADDING),
         ) {
 
             Row(
                 modifier = GlanceModifier
                     .fillMaxWidth()
-                    // room for the refresh button laid over the header
-                    .padding(end = if (showRefresh) REFRESH_TAP_TARGET else 0.dp),
+                    // the content padding already covers part of the overlaid refresh button
+                    .padding(end = if (showRefresh) REFRESH_TAP_TARGET - CONTENT_PADDING else 0.dp),
                 verticalAlignment = Alignment.Vertical.CenterVertically,
             ) {
 
                 Text(
                     text = context.getString(R.string.net_worth),
                     modifier = GlanceModifier.defaultWeight(),
-                    style = TextStyle(
-                        color = GlanceTheme.colors.onSurfaceVariant,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
+                    style = widgetTitleStyle(),
                     maxLines = 1,
                 )
             }
@@ -239,9 +263,9 @@ class NetWorthWidget : GlanceAppWidget() {
             Spacer(modifier = GlanceModifier.height(6.dp))
 
             when (state) {
-                is Async.Loading -> Message(
-                    title = headline(state),
-                    message = null,
+                is Async.Loading -> NetWorthSkeleton(
+                    isCompact = isCompact,
+                    showBreakdown = showBreakdown,
                 )
 
                 is Async.Error -> Message(
@@ -356,6 +380,39 @@ class NetWorthWidget : GlanceAppWidget() {
     }
 
     @Composable
+    private fun NetWorthSkeleton(
+        isCompact: Boolean,
+        showBreakdown: Boolean,
+    ) {
+        SkeletonBar(
+            width = if (isCompact) 110.dp else 140.dp,
+            height = if (isCompact) 18.dp else 24.dp,
+        )
+
+        if (!showBreakdown) {
+            return
+        }
+
+        Spacer(modifier = GlanceModifier.height(10.dp))
+
+        repeat(SKELETON_BREAKDOWN_ITEMS) {
+            Row(
+                modifier = GlanceModifier
+                    .fillMaxWidth()
+                    .padding(vertical = 3.dp),
+                verticalAlignment = Alignment.Vertical.CenterVertically,
+            ) {
+
+                SkeletonBar(width = 70.dp, height = 10.dp)
+
+                Spacer(modifier = GlanceModifier.defaultWeight())
+
+                SkeletonBar(width = 50.dp, height = 10.dp)
+            }
+        }
+    }
+
+    @Composable
     private fun Message(title: String, message: String?) {
         Text(
             text = title,
@@ -401,6 +458,8 @@ class NetWorthWidget : GlanceAppWidget() {
 
         private val REFRESH_TAP_TARGET = 48.dp
 
+        private val CONTENT_PADDING = 16.dp
+
         /**
          * When the ongoing refresh started, `0` when there is none.
          *
@@ -417,6 +476,10 @@ class NetWorthWidget : GlanceAppWidget() {
 
         private const val MAX_BREAKDOWN_ITEMS = 5
 
+        private const val SKELETON_BREAKDOWN_ITEMS = 3
+
+        private val PREVIEW_LAST_FETCHED_AT get() = System.currentTimeMillis() - 5 * 60_000L
+
     }
 
     @Composable
@@ -427,7 +490,7 @@ class NetWorthWidget : GlanceAppWidget() {
             LocalState provides emptyPreferences(),
         ) {
             UrgatGlanceTheme {
-                NetWorthWidgetContent(state)
+                NetWorthWidgetContent(state, PREVIEW_LAST_FETCHED_AT)
             }
         }
     }

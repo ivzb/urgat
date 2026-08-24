@@ -6,11 +6,11 @@
     android:minHeight="110dp"
     android:minResizeHeight="110dp"
     android:minResizeWidth="140dp"
-    android:minWidth="180dp"
+    android:minWidth="250dp"
     android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="horizontal|vertical"
     android:targetCellHeight="3"
-    android:targetCellWidth="3"
+    android:targetCellWidth="5"
     android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen"
     tools:targetApi="31" />

@@ -1,5 +1,8 @@
 package com.ivzb.urgat.util
 
+import android.content.Context
+import android.text.format.DateUtils
+import com.ivzb.urgat.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -10,6 +13,22 @@ fun Long.toLocalDate(): LocalDate {
     return Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
+}
+
+/**
+ * How long ago the given moment was, worded the way the system does it - "5 min. ago", "1 day ago".
+ */
+fun Context.formatTimeAgo(timestamp: Long, now: Long = System.currentTimeMillis()): String {
+    if (now - timestamp < DateUtils.MINUTE_IN_MILLIS) {
+        return getString(R.string.just_now)
+    }
+
+    return DateUtils.getRelativeTimeSpanString(
+        timestamp,
+        now,
+        DateUtils.MINUTE_IN_MILLIS,
+        DateUtils.FORMAT_ABBREV_RELATIVE,
+    ).toString()
 }
 
 fun LocalDate.toTimestamp(): Long {
