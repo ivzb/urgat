@@ -1,3 +1,8 @@
+## Release notes 26.08.06
+
+Fixed:
+- Fixed an issue where the widgets refresh button was not updating the displayed content correctly.
+
 ## Release notes 26.08.05
 
 Fixed:
