@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Glance builds the app widget action callbacks by reflection, so nothing calls their
+# constructors and R8 strips them - the widget buttons then silently stop working.
+-keep class * implements androidx.glance.appwidget.action.ActionCallback {
+    <init>();
+}

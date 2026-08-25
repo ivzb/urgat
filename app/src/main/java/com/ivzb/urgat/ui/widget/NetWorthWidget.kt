@@ -39,6 +39,7 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.layout.width
 import androidx.glance.preview.ExperimentalGlancePreviewApi
 import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
@@ -83,6 +84,7 @@ class NetWorthWidget : GlanceAppWidget() {
 
     @Composable
     private fun NetWorthWidgetContent(state: Async<NetWorth?>, lastFetchedAt: Long?) {
+        val context = LocalContext.current
         val size = LocalSize.current
 
         val isRow = size.height < SMALL_SIZE.height
@@ -124,14 +126,36 @@ class NetWorthWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = if (isRow) Alignment.CenterEnd else Alignment.TopEnd,
                 ) {
-                    RefreshButton(
+                    Row(
                         modifier = if (isRow) {
                             GlanceModifier.fillMaxHeight()
                         } else {
                             GlanceModifier.height(REFRESH_TAP_TARGET)
                         },
-                        lastFetchedAt = lastFetchedAt.takeUnless { isRow },
-                    )
+                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                    ) {
+
+                        if (!isRow && lastFetchedAt != null) {
+                            Text(
+                                text = context.formatTimeAgo(lastFetchedAt),
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurfaceVariant,
+                                    fontSize = 11.sp,
+                                ),
+                                maxLines = 1,
+                            )
+                        }
+
+                        RefreshButton(
+                            modifier = if (isRow) {
+                                GlanceModifier
+                                    .fillMaxHeight()
+                                    .width(REFRESH_TAP_TARGET)
+                            } else {
+                                GlanceModifier.size(REFRESH_TAP_TARGET)
+                            },
+                        )
+                    }
                 }
             }
 
@@ -266,38 +290,21 @@ class NetWorthWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RefreshButton(modifier: GlanceModifier, lastFetchedAt: Long?) {
+    private fun RefreshButton(modifier: GlanceModifier) {
         val context = LocalContext.current
 
-        Row(
+        Box(
             modifier = modifier
                 .clickable(actionRunCallback<RefreshNetWorthAction>()),
-            verticalAlignment = Alignment.Vertical.CenterVertically,
+            contentAlignment = Alignment.Center,
         ) {
 
-            if (lastFetchedAt != null) {
-                Text(
-                    text = context.formatTimeAgo(lastFetchedAt),
-                    style = TextStyle(
-                        color = GlanceTheme.colors.onSurfaceVariant,
-                        fontSize = 11.sp,
-                    ),
-                    maxLines = 1,
-                )
-            }
-
-            Box(
-                modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
-                contentAlignment = Alignment.Center,
-            ) {
-
-                Image(
-                    provider = ImageProvider(R.drawable.ic_refresh),
-                    contentDescription = context.getString(R.string.net_worth_widget_refresh),
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-                    modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
-                )
-            }
+            Image(
+                provider = ImageProvider(R.drawable.ic_refresh),
+                contentDescription = context.getString(R.string.net_worth_widget_refresh),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
+            )
         }
     }
 

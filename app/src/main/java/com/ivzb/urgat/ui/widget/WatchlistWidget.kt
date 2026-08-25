@@ -162,10 +162,26 @@ class WatchlistWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.fillMaxSize(),
                     contentAlignment = Alignment.TopEnd,
                 ) {
-                    RefreshButton(
+                    Row(
                         modifier = GlanceModifier.height(REFRESH_TAP_TARGET),
-                        lastFetchedAt = lastFetchedAt,
-                    )
+                        verticalAlignment = Alignment.Vertical.CenterVertically,
+                    ) {
+
+                        if (lastFetchedAt != null) {
+                            Text(
+                                text = context.formatTimeAgo(lastFetchedAt),
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onSurfaceVariant,
+                                    fontSize = 11.sp,
+                                ),
+                                maxLines = 1,
+                            )
+                        }
+
+                        RefreshButton(
+                            modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
+                        )
+                    }
                 }
             }
 
@@ -290,38 +306,21 @@ class WatchlistWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun RefreshButton(modifier: GlanceModifier, lastFetchedAt: Long?) {
+    private fun RefreshButton(modifier: GlanceModifier) {
         val context = LocalContext.current
 
-        Row(
+        Box(
             modifier = modifier
                 .clickable(actionRunCallback<RefreshWatchlistAction>()),
-            verticalAlignment = Alignment.Vertical.CenterVertically,
+            contentAlignment = Alignment.Center,
         ) {
 
-            if (lastFetchedAt != null) {
-                Text(
-                    text = context.formatTimeAgo(lastFetchedAt),
-                    style = TextStyle(
-                        color = GlanceTheme.colors.onSurfaceVariant,
-                        fontSize = 11.sp,
-                    ),
-                    maxLines = 1,
-                )
-            }
-
-            Box(
-                modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
-                contentAlignment = Alignment.Center,
-            ) {
-
-                Image(
-                    provider = ImageProvider(R.drawable.ic_refresh),
-                    contentDescription = context.getString(R.string.watchlist_widget_refresh),
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
-                    modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
-                )
-            }
+            Image(
+                provider = ImageProvider(R.drawable.ic_refresh),
+                contentDescription = context.getString(R.string.watchlist_widget_refresh),
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurfaceVariant),
+                modifier = GlanceModifier.size(REFRESH_ICON_SIZE),
+            )
         }
     }
 
