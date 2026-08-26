@@ -113,4 +113,6 @@
 - check if bulbank has an API so transactions can be automatically imported
 - add chart for investment instruments and watchlist symbols (maybe a link to the chart?)
 - make a screen for daily results of investments
+- check why WatchlistAsset is using priceChangePercentage instead of calculatePnL
 - show up or down arrow on each of the net worth items in the widget based on the change in value since yesterday
+- consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change

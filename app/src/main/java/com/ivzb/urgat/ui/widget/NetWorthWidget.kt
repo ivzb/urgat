@@ -92,8 +92,7 @@ class NetWorthWidget : GlanceAppWidget() {
         val showBreakdown = size.height >= LARGE_SIZE.height
 
         val refreshStartedAt = currentState(REFRESH_STARTED_AT) ?: 0L
-        val isRefreshing = refreshStartedAt > 0L &&
-                System.currentTimeMillis() - refreshStartedAt < REFRESH_STALE_AFTER_MILLIS
+        val isRefreshing = refreshStartedAt > 0L && System.currentTimeMillis() - refreshStartedAt < REFRESH_STALE_AFTER_MILLIS
 
         val showRefresh = !isCompact && !isRefreshing
 
