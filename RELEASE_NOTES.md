@@ -1,3 +1,8 @@
+## Release notes 26.08.07
+
+Fixed:
+- Fixed an issue where foreign exchange and asset requests could fail, ensuring the system handles errors gracefully and notifies you immediately if a failure occurs.
+
 ## Release notes 26.08.06
 
 Fixed:
