@@ -49,6 +49,7 @@ import com.ivzb.urgat.MainActivity
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.fire.NetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
+import com.ivzb.urgat.util.APPROXIMATE
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
@@ -325,6 +326,8 @@ class NetWorthWidget : GlanceAppWidget() {
         isCompact: Boolean,
         showBreakdown: Boolean,
     ) {
+        val context = LocalContext.current
+
         Text(
             text = netWorth.formatted(),
             style = TextStyle(
@@ -334,6 +337,20 @@ class NetWorthWidget : GlanceAppWidget() {
             ),
             maxLines = 1,
         )
+
+        // the compact sizes only get the approximation sign the amount already carries
+        if (netWorth.isPartial && !isCompact) {
+            Spacer(modifier = GlanceModifier.height(4.dp))
+
+            Text(
+                text = context.getString(R.string.net_worth_widget_partial),
+                style = TextStyle(
+                    color = GlanceTheme.colors.onSurfaceVariant,
+                    fontSize = 11.sp,
+                ),
+                maxLines = 2,
+            )
+        }
 
         if (!showBreakdown || netWorth.breakdown.isEmpty()) {
             return
@@ -534,6 +551,26 @@ class NetWorthWidget : GlanceAppWidget() {
     @OptIn(ExperimentalGlancePreviewApi::class)
     @Preview(widthDp = 220, heightDp = 220)
     @Composable
+    private fun NetWorthWidgetPartialPreview() {
+        NetWorthWidgetPreview(
+            LARGE_SIZE,
+            Async.Success(SampleData.SAMPLE_NET_WORTH.copy(isPartial = true)),
+        )
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 140, heightDp = 40)
+    @Composable
+    private fun NetWorthWidgetPartialRowPreview() {
+        NetWorthWidgetPreview(
+            ROW_SIZE,
+            Async.Success(SampleData.SAMPLE_NET_WORTH.copy(isPartial = true)),
+        )
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
     private fun NetWorthWidgetLoadingPreview() {
         NetWorthWidgetPreview(LARGE_SIZE, Async.Loading)
     }
@@ -547,4 +584,10 @@ class NetWorthWidget : GlanceAppWidget() {
 
 }
 
-private fun NetWorth.formatted(): String = "${amount.format()} ${currency.formatCurrency()}"
+private fun NetWorth.formatted(): String {
+    val formatted = "${amount.format()} ${currency.formatCurrency()}"
+
+    // unresolved quotes and rates only ever leave amounts out, so this is a floor - the sign says
+    // so even at the sizes with no room for the explanation underneath
+    return if (isPartial) "$APPROXIMATE $formatted" else formatted
+}

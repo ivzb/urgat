@@ -33,6 +33,7 @@ fun InvestmentEntity.toExternal(
         currency = currency,
         date = date,
         isDeleted = isDeleted,
-        createdAt = createdAt
+        createdAt = createdAt,
+        isMarketPriceStale = marketPrice == null,
     )
 }

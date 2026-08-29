@@ -34,6 +34,9 @@ import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveDashboardBudgetUseCaseTest {
@@ -343,8 +346,13 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         investments: GroupedInvestments = INVESTMENTS,
         savings: GroupedSavings = SAVINGS,
 
+        unresolvedCurrencies: Set<String> = emptySet(),
+
         expected: FiRe? = EXPECTED_FIRE,
+        assertFiRe: ((FiRe?) -> Unit)? = null,
     ) = runTest(testDispatcher) {
+        fakeForexRepository.unresolvedCurrencies += unresolvedCurrencies
+
         val withdrawalRateFlow = flowOf(withdrawalRate)
         val returnOfInvestmentFlow = flowOf(returnOfInvestment)
         val taxRateFlow = flowOf(taxRate)
@@ -399,8 +407,46 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         val first = results.first()
         assert(first is Async.Success)
         val actual = (first as Async.Success).data
-        assertEquals(expected, actual)
+
+        if (assertFiRe != null) {
+            assertFiRe(actual)
+        } else {
+            assertEquals(expected, actual)
+        }
     }
+
+    @Test
+    fun `invoke should not mark partial when everything resolves`() =
+        `invoke should return Success with filtered items`(
+            assertFiRe = { fire ->
+                assertNotNull(fire)
+                assertFalse(fire.isPartial)
+            },
+        )
+
+    @Test
+    fun `invoke should mark partial when a market price is stale`() =
+        `invoke should return Success with filtered items`(
+            investments = INVESTMENTS_WITH_STALE_MARKET_PRICE,
+            // the stash is unchanged - the positions are simply valued at cost, which is what
+            // makes the number look trustworthy while it is not
+            expected = EXPECTED_FIRE.copy(isPartial = true),
+        )
+
+    @Test
+    fun `invoke should mark partial when an exchange rate is unresolved`() =
+        `invoke should return Success with filtered items`(
+            savings = SAVINGS_IN_UNRESOLVED_CURRENCY,
+            unresolvedCurrencies = setOf("USD"),
+            assertFiRe = { fire ->
+                assertNotNull(fire)
+                assertTrue(fire.isPartial)
+
+                // the savings could not be converted, so they contributed nothing at all and the
+                // stash is the investments alone rather than the real total
+                assertEquals("40000".toBigDecimal(), fire.accumulatedStash)
+            },
+        )
 
     @Test
     fun `invoke with multiple months should average income and expenses`() = `invoke should return Success with filtered items`(
@@ -575,6 +621,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             ),
         )
 
+
         private val NO_SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal("0.00".toBigDecimal(), "EUR")), listOf())
 
         private val NO_TRADES = GroupedTrades("December 2025", listOf(), listOf())
@@ -583,6 +630,21 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             Saving("1", "Emergency fund", 7_000.toBigDecimal(), "EUR", 1, false, 1),
             Saving("2", "Emergency fund", 3_000.toBigDecimal(), "EUR", 2, false, 2),
         ))
+
+        /** The same positions, but with no quote behind them - so valued at cost. */
+        private val INVESTMENTS_WITH_STALE_MARKET_PRICE = INVESTMENTS.copy(
+            items = INVESTMENTS.items.map { it.copy(isMarketPriceStale = true) },
+        )
+
+        /** Savings the budget currency has no reachable rate for. */
+        private val SAVINGS_IN_UNRESOLVED_CURRENCY = GroupedSavings(
+            "December 2025",
+            listOf(SavingTotal(10_000.toBigDecimal(), "USD")),
+            listOf(
+                Saving("1", "Emergency fund", 7_000.toBigDecimal(), "USD", 1, false, 1),
+                Saving("2", "Emergency fund", 3_000.toBigDecimal(), "USD", 2, false, 2),
+            ),
+        )
 
     }
 

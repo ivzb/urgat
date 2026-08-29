@@ -58,8 +58,6 @@ import com.ivzb.urgat.util.annotateFinancePnL
 import com.ivzb.urgat.util.annotateChart
 import com.ivzb.urgat.util.annotateCostPrice
 import com.ivzb.urgat.util.annotateMarketPrice
-import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
@@ -576,7 +574,7 @@ fun InvestmentItem(
 
         textRight = investment.shares.toString(),
         subTextRight = annotateFinancePnL(
-            text = "${investment.totalMarketPrice.format(digits = investment.pricePrecision)} ${investment.currency.formatCurrency()}",
+            text = investment.formatTotalMarketPrice(),
             pnl = investment.unrealisedPnL,
         ),
 
@@ -596,7 +594,7 @@ private fun AssetItem(
 
         textRight = asset.shares.toString(),
         subTextRight = annotateFinancePnL(
-            text = "${asset.marketPrice.format()} ${asset.currency.formatCurrency()}",
+            text = asset.formatMarketPrice(),
             pnl = asset.unrealisedPnL,
         ),
 

@@ -281,6 +281,25 @@ object SampleData {
             )
         }
 
+    /** Not one quote could be fetched - nothing price related is known. */
+    val SAMPLE_WATCHLIST_ASSETS_WITHOUT_PRICES = SAMPLE_WATCHLIST_ASSETS.map { asset ->
+        asset.copy(
+            marketPrice = null,
+            previousClosePrice = null,
+            currency = null,
+        )
+    }
+
+    /** Only some quotes failed, so the rows have to render both cases side by side. */
+    val SAMPLE_WATCHLIST_ASSETS_PARTIAL = SAMPLE_WATCHLIST_ASSETS
+        .mapIndexed { index, asset ->
+            if (index % 3 == 1) {
+                asset.copy(marketPrice = null, previousClosePrice = null, currency = null)
+            } else {
+                asset
+            }
+        }
+
     val SAMPLE_WEIGHTS = listOf(
         listOf("70.5"),
         listOf("70.7"),

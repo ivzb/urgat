@@ -31,4 +31,12 @@ data class FiRe(
     val withdrawalRatePlaceholder: BigDecimal = DEFAULT_FIRE_WITHDRAWAL_RATE,
     val returnOfInvestmentPlaceholder: BigDecimal = DEFAULT_FIRE_RETURN_OF_INVESTMENT,
     val taxRatePlaceholder: BigDecimal = DEFAULT_FIRE_TAX_RATE,
+
+    /**
+     * `true` when a quote or an exchange rate could not be resolved while building this.
+     *
+     * Anything that could not be converted contributes nothing to [accumulatedStash] and anything
+     * without a quote is valued at cost, so the stash is then a floor - never an overstatement.
+     */
+    val isPartial: Boolean = false,
 )

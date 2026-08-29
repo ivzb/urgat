@@ -142,13 +142,20 @@ class WatchlistWidget : GlanceAppWidget() {
                     is Async.Success -> {
                         val assets = state.data
 
-                        if (assets.isEmpty()) {
-                            Message(
+                        when {
+                            assets.isEmpty() -> Message(
                                 title = context.getString(R.string.watchlist_widget_empty),
                                 message = context.getString(R.string.watchlist_widget_empty_message).takeUnless { isCompact },
                             )
-                        } else {
-                            WatchlistAssets(
+
+                            // a single missing quote is shown per row, but when not one of them
+                            // could be fetched the list would be a wall of dashes
+                            assets.none { it.hasMarketPrice } -> Message(
+                                title = context.getString(R.string.watchlist_widget_prices_unavailable),
+                                message = context.getString(R.string.watchlist_widget_prices_unavailable_message).takeUnless { isCompact },
+                            )
+
+                            else -> WatchlistAssets(
                                 assets = assets,
                                 isCompact = isCompact,
                             )
@@ -462,6 +469,26 @@ class WatchlistWidget : GlanceAppWidget() {
     @Composable
     private fun WatchlistWidgetEmptyPreview() {
         WatchlistWidgetPreview(LARGE_SIZE, Async.Success(listOf()))
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun WatchlistWidgetPricesUnavailablePreview() {
+        WatchlistWidgetPreview(
+            LARGE_SIZE,
+            Async.Success(SampleData.SAMPLE_WATCHLIST_ASSETS_WITHOUT_PRICES),
+        )
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun WatchlistWidgetPartialPricesPreview() {
+        WatchlistWidgetPreview(
+            LARGE_SIZE,
+            Async.Success(SampleData.SAMPLE_WATCHLIST_ASSETS_PARTIAL),
+        )
     }
 
     @OptIn(ExperimentalGlancePreviewApi::class)

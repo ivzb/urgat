@@ -787,6 +787,11 @@ private fun FiRePage(
                     appendLine("    ${item.name}: ${item.amount.format()} ${fire.currency}")
                 }
 
+                if (fire.isPartial) {
+                    appendLine()
+                    appendLine(stringResource(R.string.fire_stash_partial))
+                }
+
                 appendLine()
 
                 appendLine(

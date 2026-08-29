@@ -93,13 +93,17 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val firstMonth = completeMonths.first()
                 val budgetCurrency = firstMonth.second.items.first().currency
 
+                // a failed conversion is dropped from the sums below, which quietly makes them
+                // too small - wrapping the converter is what makes that visible afterwards
+                val forex = TallyingConverter(forexRepository::convert)
+
                 // Sum income and expenses across all complete months, then average
                 var totalIncome = BigDecimal.ZERO
                 var totalExpenses = BigDecimal.ZERO
 
                 for ((_, budget, expenses) in completeMonths) {
                     totalIncome += budget.total
-                    totalExpenses += Expense.total(expenses.items, budgetCurrency, forexRepository::convert)
+                    totalExpenses += Expense.total(expenses.items, budgetCurrency, forex::convert)
                 }
 
                 val monthlyIncome = if (completeMonths.size == 1) totalIncome else totalIncome / completeMonths.size.toBigDecimal()
@@ -117,8 +121,8 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val annualInvestments = monthlyInvestments * 12.toBigDecimal()
 
                 val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.totalMarketPrice }
-                val allTimeTrades = Trade.total(tradesAllTimeAsync.data.items, budgetCurrency, forexRepository::convert)
-                val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forexRepository::convert)
+                val allTimeTrades = Trade.total(tradesAllTimeAsync.data.items, budgetCurrency, forex::convert)
+                val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forex::convert)
                 val accumulatedStash = allTimeInvestments + allTimeTrades + allTimeSavings
 
                 // Calculate stash breakdown per asset
@@ -132,7 +136,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                         var total = BigDecimal.ZERO
 
                         for (trade in trades) {
-                            total += forexRepository.convert(trade.amount, trade.currency, budgetCurrency) ?: BigDecimal.ZERO
+                            total += forex.convert(trade.amount, trade.currency, budgetCurrency) ?: BigDecimal.ZERO
                         }
 
                         StashBreakdownItem(name, total)
@@ -144,7 +148,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                         var total = BigDecimal.ZERO
 
                         for (saving in savings) {
-                            total += forexRepository.convert(saving.amount, saving.currency, budgetCurrency) ?: BigDecimal.ZERO
+                            total += forex.convert(saving.amount, saving.currency, budgetCurrency) ?: BigDecimal.ZERO
                         }
 
                         StashBreakdownItem(name, total)
@@ -152,6 +156,11 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
                 val stashBreakdown = (investmentBreakdown + tradesBreakdown + savingsBreakdown)
                     .sortedByDescending { it.amount }
+
+                // an unfetched quote values a position at cost and an unresolved rate drops an
+                // amount from the sums, so either way the stash is understated rather than right
+                val isPartial = forex.hasUnresolved ||
+                        investmentsAllTimeAsync.data.items.any { it.isMarketPriceStale }
 
                 val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
 
@@ -185,6 +194,8 @@ class DefaultObserveFiReUseCase @Inject constructor(
                             taxRate = taxRate,
 
                             yearsUntilFiRe = null,
+
+                            isPartial = isPartial,
                         )
                     )
                 }
@@ -226,6 +237,8 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     taxRate = taxRate,
 
                     yearsUntilFiRe = yearsUntilFiRe,
+
+                    isPartial = isPartial,
                 )
 
                 Async.Success(fire)
@@ -286,5 +299,34 @@ class DefaultObserveFiReUseCase @Inject constructor(
         private val INVALID_YEAR = 99.99.toBigDecimal()
 
     }
+
+}
+
+/**
+ * Counts the conversions which could not be resolved.
+ *
+ * [Expense.total] and its siblings drop a failed conversion from the sum, so an unreachable
+ * exchange rate makes a total silently too small. Wrapping the converter is what lets the caller
+ * tell a complete number apart from an incomplete one, without changing what the sums return.
+ */
+private class TallyingConverter(
+    private val delegate: suspend (
+        amount: BigDecimal,
+        fromCurrency: String,
+        toCurrency: String,
+    ) -> BigDecimal?,
+) {
+
+    private var unresolved: Int = 0
+
+    val hasUnresolved: Boolean
+        get() = unresolved > 0
+
+    suspend fun convert(
+        amount: BigDecimal,
+        fromCurrency: String,
+        toCurrency: String,
+    ): BigDecimal? = delegate(amount, fromCurrency, toCurrency)
+        .also { converted -> if (converted == null) unresolved++ }
 
 }

@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.watchlist
 
+import com.ivzb.urgat.util.UNKNOWN
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.formatPnL
@@ -30,11 +31,31 @@ data class WatchlistAsset(
         }
     }
 
-    fun formatMarketPrice(): String =
-        "${marketPrice?.format(digits = pricePrecision)} ${currency?.formatCurrency()}"
+    /**
+     * Whether a quote was actually fetched for this asset.
+     *
+     * Everything price related is `null` until one is, so this is what tells an asset which is
+     * simply not loaded yet apart from one which is.
+     */
+    val hasMarketPrice: Boolean
+        get() = marketPrice != null && currency != null
 
-    fun formatPriceChange(): String =
-        "${priceChange?.formatPnL(digits = pricePrecision, withPercentageSign = false)} (${priceChangePercentage.formatPnL()})"
+    fun formatMarketPrice(): String {
+        val marketPrice = marketPrice ?: return UNKNOWN
+        val currency = currency ?: return UNKNOWN
+
+        return "${marketPrice.format(digits = pricePrecision)} ${currency.formatCurrency()}"
+    }
+
+    fun formatPriceChange(): String {
+        val priceChange = priceChange ?: return UNKNOWN
+
+        val change = priceChange.formatPnL(digits = pricePrecision, withPercentageSign = false)
+        // the percentage is unavailable on its own when the price is zero, the change still is not
+        val percentage = priceChangePercentage?.formatPnL() ?: return change
+
+        return "$change ($percentage)"
+    }
 
     fun formatCsv(): String =
         "\"$id\", \"$name\", $createdAt"

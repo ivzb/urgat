@@ -1,6 +1,9 @@
 package com.ivzb.urgat.data.investment
 
+import com.ivzb.urgat.util.UNKNOWN
 import com.ivzb.urgat.util.calculatePnL
+import com.ivzb.urgat.util.format
+import com.ivzb.urgat.util.formatCurrency
 import java.math.BigDecimal
 
 data class InvestmentAsset(
@@ -16,6 +19,18 @@ data class InvestmentAsset(
     val investments: List<Investment>,
 ) {
 
-    val unrealisedPnL: BigDecimal? = calculatePnL(costPrice, marketPrice)
+    /** One unfetched quote is enough to make the summed [marketPrice] a placeholder. */
+    val isMarketPriceStale: Boolean
+        get() = investments.any { it.isMarketPriceStale }
+
+    val unrealisedPnL: BigDecimal? =
+        if (isMarketPriceStale) null else calculatePnL(costPrice, marketPrice)
+
+    fun formatMarketPrice(): String =
+        if (isMarketPriceStale) {
+            UNKNOWN
+        } else {
+            "${marketPrice.format()} ${currency.formatCurrency()}"
+        }
 
 }

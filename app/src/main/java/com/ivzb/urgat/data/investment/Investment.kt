@@ -1,6 +1,8 @@
 package com.ivzb.urgat.data.investment
 
+import com.ivzb.urgat.util.UNKNOWN
 import com.ivzb.urgat.util.calculatePnL
+import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
 import java.math.BigDecimal
 
@@ -17,6 +19,15 @@ data class Investment(
     val createdAt: Long,
     val description: String? = null,
     val pricePrecision: Int? = null,
+
+    /**
+     * `true` when no quote could be fetched and [marketPrice] fell back to [costPrice].
+     *
+     * The position then values at exactly what it cost, which is indistinguishable from a real
+     * break even - hence the flag, so totals built on top can say they are incomplete instead of
+     * quietly reporting the wrong number.
+     */
+    val isMarketPriceStale: Boolean = false,
 ) {
 
     val totalCostPrice: BigDecimal
@@ -25,7 +36,17 @@ data class Investment(
     val totalMarketPrice: BigDecimal
         get() = marketPrice * shares
 
-    val unrealisedPnL: BigDecimal? = calculatePnL(totalCostPrice, totalMarketPrice)
+    // a stale quote makes the market price a copy of the cost price, so the P&L would always
+    // read as a confident break even - it is unknown instead
+    val unrealisedPnL: BigDecimal? =
+        if (isMarketPriceStale) null else calculatePnL(totalCostPrice, totalMarketPrice)
+
+    fun formatTotalMarketPrice(): String =
+        if (isMarketPriceStale) {
+            UNKNOWN
+        } else {
+            "${totalMarketPrice.format(digits = pricePrecision)} ${currency.formatCurrency()}"
+        }
 
     fun formatCsv(): String =
         "\"$id\", \"$name\", \"$shares\", \"$costPrice\", \"$category\", \"$currency\", $date, $createdAt"
