@@ -12,7 +12,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.junit.Assert
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.concurrent.ConcurrentHashMap
@@ -41,10 +40,9 @@ class DefaultForexRepository @Inject constructor(
 
         val key = "${from}${to}"
 
-        // ConcurrentHashMap.getOrPut is atomic. Meaning that only the first caller wins the put for a given key
-        // and creates the Deferred (scope.async). All concurrent callers for the same key receive
-        // the already-inserted Deferred and simply .await() the same single network result.
-        return cache.getOrPut(key) {
+        // the first caller for a key creates the Deferred and everyone else awaits that same one,
+        // so a burst of conversions still only costs a single network call
+        val attempt = cache.getOrPut(key) {
             scope.async {
                 val rate = marketPriceRepository.fetchPrice("${key}=X")?.price
 
@@ -61,7 +59,18 @@ class DefaultForexRepository @Inject constructor(
 
                 rate
             }
-        }.await()
+        }
+
+        val rate = attempt.await()
+
+        if (rate == null) {
+            // caching the failure would drop every amount in this currency from the totals until
+            // somebody refreshed by hand - only this exact attempt is removed, a newer one may
+            // already be in flight
+            cache.remove(key, attempt)
+        }
+
+        return rate
     }
 
     override suspend fun convert(

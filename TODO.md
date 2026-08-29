@@ -116,4 +116,3 @@
 - check why WatchlistAsset is using priceChangePercentage instead of calculatePnL
 - consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change
 - show up or down arrow on each of the net worth items in the widget based on the change in value since yesterday
-- market data becomes null in the widget and everything in the watchlist shows as null, networth shows incorrect amount. find out why it happens. but don't do anything yet

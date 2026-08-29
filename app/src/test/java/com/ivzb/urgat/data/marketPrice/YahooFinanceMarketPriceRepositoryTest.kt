@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.marketPrice
 
 import com.ivzb.urgat.util.FakeLogger
+import com.ivzb.urgat.util.FakeTimeProvider
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.round
 import io.mockk.coEvery
@@ -17,7 +18,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
@@ -27,6 +27,8 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     private lateinit var api: YahooFinanceApi
     private lateinit var repository: YahooFinanceMarketPriceRepository
+
+    private val fakeTimeProvider = FakeTimeProvider()
 
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = TestScope(testDispatcher)
@@ -38,6 +40,7 @@ class YahooFinanceMarketPriceRepositoryTest {
             dispatcher = testDispatcher,
             api = api,
             logger = FakeLogger(),
+            timeProvider = fakeTimeProvider,
             scope = testScope,
         )
     }
@@ -309,13 +312,11 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         assertNull(repository.lastFetchedAt)
 
-        val fetchedAfter = System.currentTimeMillis()
+        fakeTimeProvider.currentTime = 1_700_000_000_000L
 
         repository.fetchPrice("MSFT")
 
-        val lastFetchedAt = requireNotNull(repository.lastFetchedAt)
-
-        assertTrue(lastFetchedAt >= fetchedAfter)
+        assertEquals(1_700_000_000_000L, repository.lastFetchedAt)
     }
 
     @Test
@@ -497,5 +498,148 @@ class YahooFinanceMarketPriceRepositoryTest {
 
         job.cancel()
     }
+
+    @Test
+    fun `fetchPrice does not cache a failure`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        assertNull(repository.fetchPrice("MSFT"))
+
+        // past the backoff, so the symbol is genuinely asked for again rather than being written
+        // off for the rest of the process
+        fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.INITIAL_BACKOFF_MILLIS
+
+        assertNull(repository.fetchPrice("MSFT"))
+
+        coVerify(exactly = 2) { api.fetch("MSFT") }
+    }
+
+    @Test
+    fun `fetchPrice recovers once the api works again`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        assertNull(repository.fetchPrice("MSFT"))
+
+        coEvery { api.fetch("MSFT") } returns response(price = 150.0, shortName = "Microsoft")
+
+        fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.INITIAL_BACKOFF_MILLIS
+
+        // this is the whole point - no clearCache, no user tapping anything
+        val result = requireNotNull(repository.fetchPrice("MSFT"))
+
+        assertEquals(BigDecimal("150"), result.price)
+    }
+
+    @Test
+    fun `fetchPrice backs off instead of retrying immediately`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        assertNull(repository.fetchPrice("MSFT"))
+        assertNull(repository.fetchPrice("MSFT"))
+        assertNull(repository.fetchPrice("MSFT"))
+
+        // the burst of retries is what earns a rate limit, so only the first one reached the api
+        coVerify(exactly = 1) { api.fetch("MSFT") }
+    }
+
+    @Test
+    fun `fetchPrice backoff grows with each consecutive failure`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        repository.fetchPrice("MSFT")
+        coVerify(exactly = 1) { api.fetch("MSFT") }
+
+        fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.INITIAL_BACKOFF_MILLIS
+        repository.fetchPrice("MSFT")
+        coVerify(exactly = 2) { api.fetch("MSFT") }
+
+        // the second failure doubles the wait, so the same step is no longer enough
+        fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.INITIAL_BACKOFF_MILLIS
+        repository.fetchPrice("MSFT")
+        coVerify(exactly = 2) { api.fetch("MSFT") }
+
+        fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.INITIAL_BACKOFF_MILLIS
+        repository.fetchPrice("MSFT")
+        coVerify(exactly = 3) { api.fetch("MSFT") }
+    }
+
+    @Test
+    fun `fetchPrice backoff never outlasts the widget update period`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        // plenty of failures to push the backoff to its ceiling
+        repeat(20) {
+            fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.MAX_BACKOFF_MILLIS
+            repository.fetchPrice("MSFT")
+        }
+
+        coEvery { api.fetch("MSFT") } returns response(price = 150.0, shortName = "Microsoft")
+
+        fakeTimeProvider.currentTime += YahooFinanceMarketPriceRepository.MAX_BACKOFF_MILLIS
+
+        // a background widget update still gets through and heals the data by itself
+        assertEquals(BigDecimal("150"), requireNotNull(repository.fetchPrice("MSFT")).price)
+    }
+
+    @Test
+    fun `clearCache drops the backoff so a manual refresh retries at once`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        assertNull(repository.fetchPrice("MSFT"))
+        coVerify(exactly = 1) { api.fetch("MSFT") }
+
+        repository.clearCache()
+
+        // no time has passed, but the user explicitly asked for fresh data
+        assertNull(repository.fetchPrice("MSFT"))
+        coVerify(exactly = 2) { api.fetch("MSFT") }
+    }
+
+    @Test
+    fun `fetchPrice backoff is per symbol`() = runTest(testDispatcher) {
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("AAPL") } returns response(price = 100.0, shortName = "Apple")
+
+        assertNull(repository.fetchPrice("MSFT"))
+
+        // one unlucky symbol must not hold up the rest of the watchlist
+        assertEquals(BigDecimal("100"), requireNotNull(repository.fetchPrice("AAPL")).price)
+    }
+
+    @Test
+    fun `fetchPrice failure does not evict an unrelated cached price`() = runTest(testDispatcher) {
+        coEvery { api.fetch("AAPL") } returns response(price = 100.0, shortName = "Apple")
+        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+
+        repository.fetchPrice("AAPL")
+        repository.fetchPrice("MSFT")
+
+        repository.fetchPrice("AAPL")
+
+        // the good symbol stayed cached, unlike with a blanket clearCache
+        coVerify(exactly = 1) { api.fetch("AAPL") }
+    }
+
+    private fun response(
+        price: Double,
+        shortName: String,
+        currency: String = "USD",
+        previousClose: Double = price,
+        priceHint: Int = 2,
+    ) = YahooFinanceResponse(
+        chart = YahooFinanceResponse.Chart(
+            result = listOf(
+                YahooFinanceResponse.Result(
+                    meta = YahooFinanceResponse.Meta(
+                        regularMarketPrice = price,
+                        currency = currency,
+                        shortName = shortName,
+                        chartPreviousClose = previousClose,
+                        priceHint = priceHint,
+                    )
+                )
+            )
+        )
+    )
 }
 

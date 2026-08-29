@@ -281,4 +281,40 @@ class DefaultForexRepositoryTest {
         job.cancel()
     }
 
+    @Test
+    fun `does not cache a failed rate`() = runTest(testDispatcher) {
+        fakeMarketPriceRepository.failingSymbols += "EURUSD=X"
+
+        assertNull(repository.getExchangeRate("EUR", "USD"))
+
+        fakeMarketPriceRepository.failingSymbols.clear()
+        fakeMarketPriceRepository.prices["EURUSD=X"] =
+            MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+
+        advanceUntilIdle()
+
+        // no clearCache anywhere - the next conversion simply asks again and succeeds
+        assertEquals(BigDecimal("1.08"), repository.getExchangeRate("EUR", "USD"))
+    }
+
+    @Test
+    fun `failed rate does not evict an unrelated cached rate`() = runTest(testDispatcher) {
+        fakeMarketPriceRepository.prices["EURUSD=X"] =
+            MarketPrice("EURUSD=X", "EUR/USD", BigDecimal("1.08"), "USD", BigDecimal("1.07"), 4)
+        fakeMarketPriceRepository.failingSymbols += "GBPUSD=X"
+
+        repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        assertNull(repository.getExchangeRate("GBP", "USD"))
+
+        val fetchesBefore = fakeMarketPriceRepository.fetchCount
+
+        repository.getExchangeRate("EUR", "USD")
+        advanceUntilIdle()
+
+        // the good rate stayed cached, unlike with a blanket clearCache
+        assertEquals(fetchesBefore, fakeMarketPriceRepository.fetchCount)
+    }
+
 }
