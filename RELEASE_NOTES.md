@@ -1,3 +1,8 @@
+## Release notes 26.08.08
+
+New:
+- You can now view your profit and loss (PnL) data directly within the Net Worth widget.
+
 ## Release notes 26.08.07
 
 Fixed:
