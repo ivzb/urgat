@@ -107,6 +107,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "36000".toBigDecimal(),
             annualInvestments = "24000".toBigDecimal(),
             accumulatedStash = "0".toBigDecimal(),
+            accumulatedStashCost = "0".toBigDecimal(),
             stashBreakdown = emptyList(),
             savingsRate = "40.00".toBigDecimal(),
             target = "990000.00".toBigDecimal(),
@@ -123,6 +124,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         savings = NO_SAVINGS,
         expected = EXPECTED_FIRE.copy(
             accumulatedStash = "0".toBigDecimal(),
+            accumulatedStashCost = "0".toBigDecimal(),
             stashBreakdown = emptyList(),
             target = "825000.00".toBigDecimal(),
             yearsUntilFiRe = "15.53".toBigDecimal(),
@@ -164,6 +166,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "24000".toBigDecimal(),
             annualInvestments = "36000".toBigDecimal(),
             accumulatedStash = "0".toBigDecimal(),
+            accumulatedStashCost = "0".toBigDecimal(),
             stashBreakdown = emptyList(),
             savingsRate = "60.00".toBigDecimal(),
             target = "660000.00".toBigDecimal(),
@@ -242,6 +245,7 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             annualExpenses = "60000".toBigDecimal(),
             annualInvestments = "0".toBigDecimal(),
             accumulatedStash = "0".toBigDecimal(),
+            accumulatedStashCost = "0".toBigDecimal(),
             stashBreakdown = emptyList(),
             savingsRate = "0.00".toBigDecimal(),
             target = "1650000.00".toBigDecimal(),
@@ -449,8 +453,30 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         )
 
     @Test
-    fun `invoke with multiple months should average income and expenses`() = `invoke should return Success with filtered items`(
-        budget = listOf(
+    fun `invoke should carry what the stash cost next to what it is worth`() =
+        `invoke should return Success with filtered items`(
+            investments = INVESTMENTS_WORTH_TWICE_THEIR_COST,
+            assertFiRe = { fire ->
+                assertNotNull(fire)
+
+                // the positions doubled, the savings are worth exactly what went into them - which
+                // is what the P&L on top of this is worked out of
+                assertEquals("90000".toBigDecimal(), fire.accumulatedStash)
+                assertEquals("50000".toBigDecimal(), fire.accumulatedStashCost)
+
+                assertEquals(
+                    listOf(
+                        StashBreakdownItem("1", 40_000.toBigDecimal(), 20_000.toBigDecimal()),
+                        StashBreakdownItem("2", 40_000.toBigDecimal(), 20_000.toBigDecimal()),
+                        StashBreakdownItem("Emergency fund", 10_000.toBigDecimal()),
+                    ),
+                    fire.stashBreakdown,
+                )
+            },
+        )
+
+    @Test
+    fun `invoke with multiple months should average income and expenses`() = `invoke should return Success with filtered items`(        budget = listOf(
             GroupedBudgetCategories(
                 group = "November 2025",
                 total = 6000.toBigDecimal(),
@@ -634,6 +660,11 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         /** The same positions, but with no quote behind them - so valued at cost. */
         private val INVESTMENTS_WITH_STALE_MARKET_PRICE = INVESTMENTS.copy(
             items = INVESTMENTS.items.map { it.copy(isMarketPriceStale = true) },
+        )
+
+        /** The same positions, but quoted at twice what they were bought for. */
+        private val INVESTMENTS_WORTH_TWICE_THEIR_COST = INVESTMENTS.copy(
+            items = INVESTMENTS.items.map { it.copy(marketPrice = it.marketPrice * 2.toBigDecimal()) },
         )
 
         /** Savings the budget currency has no reachable rate for. */

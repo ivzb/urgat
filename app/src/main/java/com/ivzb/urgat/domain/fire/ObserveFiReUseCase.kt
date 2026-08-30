@@ -125,10 +125,21 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forex::convert)
                 val accumulatedStash = allTimeInvestments + allTimeTrades + allTimeSavings
 
+                // a trade and a saving are worth exactly what went into them, so they contribute
+                // the very same amount to both sides and only the investments carry a profit
+                val allTimeInvestmentsCost = investmentsAllTimeAsync.data.items.sumOf { it.totalCostPrice }
+                val accumulatedStashCost = allTimeInvestmentsCost + allTimeTrades + allTimeSavings
+
                 // Calculate stash breakdown per asset
                 val investmentBreakdown = investmentsAllTimeAsync.data.items
                     .groupBy { it.category }
-                    .map { (category, investments) -> StashBreakdownItem(category, investments.sumOf { it.totalMarketPrice }) }
+                    .map { (category, investments) ->
+                        StashBreakdownItem(
+                            name = category,
+                            amount = investments.sumOf { it.totalMarketPrice },
+                            costPrice = investments.sumOf { it.totalCostPrice },
+                        )
+                    }
 
                 val tradesBreakdown = tradesAllTimeAsync.data.items
                     .groupBy { it.name }
@@ -185,6 +196,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                             annualInvestments = annualInvestments,
 
                             accumulatedStash = accumulatedStash,
+                            accumulatedStashCost = accumulatedStashCost,
                             stashBreakdown = stashBreakdown,
                             savingsRate = null,
                             target = null,
@@ -228,6 +240,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     annualInvestments = annualInvestments,
 
                     accumulatedStash = accumulatedStash,
+                    accumulatedStashCost = accumulatedStashCost,
                     stashBreakdown = stashBreakdown,
                     savingsRate = savingsRate,
                     target = target,

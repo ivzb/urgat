@@ -18,6 +18,15 @@ data class FiRe(
     val annualInvestments: BigDecimal,
 
     val accumulatedStash: BigDecimal,
+
+    /**
+     * What [accumulatedStash] was paid for.
+     *
+     * Only the investments can tell the two apart - a trade or a saving is worth exactly what went
+     * into it - so this defaults to the stash itself.
+     */
+    val accumulatedStashCost: BigDecimal = accumulatedStash,
+
     val stashBreakdown: List<StashBreakdownItem> = emptyList(),
     val savingsRate: BigDecimal?,
     val target: BigDecimal?,

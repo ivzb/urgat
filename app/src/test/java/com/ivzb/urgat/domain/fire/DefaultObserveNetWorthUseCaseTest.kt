@@ -52,8 +52,21 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should return null when there is not enough fire data`() = runTest {
-        fakeObserveFiReUseCase.emit(Async.Success(null))
+    fun `invoke should map what the stash cost so the net worth can report a profit`() = runTest {
+        fakeObserveFiReUseCase.emit(
+            Async.Success(FIRE.copy(accumulatedStashCost = "100000".toBigDecimal()))
+        )
+
+        val actual = observeUseCase().first()
+
+        val netWorth = assertNotNull((actual as Async.Success).data)
+
+        assertEquals("100000".toBigDecimal(), netWorth.costPrice)
+        assertEquals("25.00".toBigDecimal(), netWorth.pnl)
+    }
+
+    @Test
+    fun `invoke should return null when there is not enough fire data`() = runTest {        fakeObserveFiReUseCase.emit(Async.Success(null))
 
         val actual = observeUseCase().first()
 

@@ -8,6 +8,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.em
 import com.ivzb.urgat.data.expense.ExpenseTotal
+import com.ivzb.urgat.data.fire.NetWorth
+import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.SavingTotal
@@ -103,6 +105,41 @@ private fun annotatePrice(totals: List<InvestmentTotal>, price: (InvestmentTotal
             }
         }
     }
+
+/**
+ * The investments' way of putting a price next to how it has done since, for everything which is
+ * not an [InvestmentTotal].
+ */
+fun annotatePrice(
+    amount: BigDecimal,
+    currency: String,
+    pnl: BigDecimal?,
+    withPnL: Boolean = true,
+    prefix: String = "",
+): AnnotatedString =
+    annotateFinancePnL(
+        text = "$prefix${amount.format()} ${currency.formatCurrency()}",
+        pnl = if (withPnL) pnl else null,
+    )
+
+fun annotateNetWorth(netWorth: NetWorth, withPnL: Boolean = true): AnnotatedString =
+    annotatePrice(
+        amount = netWorth.amount,
+        currency = netWorth.currency,
+        pnl = netWorth.pnl,
+        withPnL = withPnL,
+        // unresolved quotes and rates only ever leave amounts out, so a partial stash is a floor -
+        // the sign says so even where there is no room for the explanation underneath
+        prefix = if (netWorth.isPartial) "$APPROXIMATE " else "",
+    )
+
+fun annotateStashBreakdownItem(item: StashBreakdownItem, currency: String, withPnL: Boolean = true): AnnotatedString =
+    annotatePrice(
+        amount = item.amount,
+        currency = currency,
+        pnl = item.pnl,
+        withPnL = withPnL,
+    )
 
 fun annotateChart(name: String, total: AnnotatedString?, average: AnnotatedString? = null): AnnotatedString =
     buildAnnotatedString {

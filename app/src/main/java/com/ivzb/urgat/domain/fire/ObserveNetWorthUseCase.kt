@@ -44,6 +44,7 @@ class DefaultObserveNetWorthUseCase @Inject constructor(
                         NetWorth(
                             amount = fire.accumulatedStash,
                             currency = fire.currency,
+                            costPrice = fire.accumulatedStashCost,
                             breakdown = fire.stashBreakdown,
                         )
                     }

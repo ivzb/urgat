@@ -49,10 +49,9 @@ import com.ivzb.urgat.MainActivity
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.fire.NetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.util.APPROXIMATE
 import com.ivzb.urgat.util.Async
-import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.formatCurrency
+import com.ivzb.urgat.util.annotateNetWorth
+import com.ivzb.urgat.util.annotateStashBreakdownItem
 import com.ivzb.urgat.util.formatTimeAgo
 import kotlinx.coroutines.flow.map
 
@@ -211,17 +210,33 @@ class NetWorthWidget : GlanceAppWidget() {
             if (state is Async.Loading) {
                 SkeletonBar(width = 110.dp, height = 16.dp)
             } else {
-                Text(
-                    text = headline(state),
-                    // without a label there is nothing else to give the leftover space to
-                    modifier = if (isCompact) GlanceModifier.defaultWeight() else GlanceModifier,
-                    style = TextStyle(
-                        color = GlanceTheme.colors.onSurface,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    maxLines = 1,
-                )
+                val netWorth = (state as? Async.Success)?.data
+
+                // without a label there is nothing else to give the leftover space to
+                val amountModifier = if (isCompact) GlanceModifier.defaultWeight() else GlanceModifier
+
+                if (netWorth != null) {
+                    AnnotatedText(
+                        text = annotateNetWorth(netWorth, withPnL = !isCompact),
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                        modifier = amountModifier,
+                    )
+                } else {
+                    Text(
+                        text = headline(state),
+                        modifier = amountModifier,
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                        maxLines = 1,
+                    )
+                }
             }
         }
     }
@@ -308,7 +323,7 @@ class NetWorthWidget : GlanceAppWidget() {
         }
     }
 
-    /** The one line every size has room for, whatever the state is. */
+    /** The one line every size has room for, whenever there is no amount to put there. */
     @Composable
     private fun headline(state: Async<NetWorth?>): String {
         val context = LocalContext.current
@@ -316,7 +331,7 @@ class NetWorthWidget : GlanceAppWidget() {
         return when (state) {
             is Async.Loading -> context.getString(R.string.loading)
             is Async.Error -> context.getString(R.string.net_worth_widget_error)
-            is Async.Success -> state.data?.formatted() ?: context.getString(R.string.net_worth_widget_empty)
+            is Async.Success -> context.getString(R.string.net_worth_widget_empty)
         }
     }
 
@@ -328,14 +343,13 @@ class NetWorthWidget : GlanceAppWidget() {
     ) {
         val context = LocalContext.current
 
-        Text(
-            text = netWorth.formatted(),
+        AnnotatedText(
+            text = annotateNetWorth(netWorth, withPnL = !isCompact),
             style = TextStyle(
                 color = GlanceTheme.colors.onSurface,
-                fontSize = if (isCompact) 18.sp else 24.sp,
+                fontSize = if (isCompact) 18.sp else 20.sp,
                 fontWeight = FontWeight.Bold,
             ),
-            maxLines = 1,
         )
 
         // the compact sizes only get the approximation sign the amount already carries
@@ -356,11 +370,9 @@ class NetWorthWidget : GlanceAppWidget() {
             return
         }
 
-        val currency = netWorth.currency.formatCurrency()
-
         Spacer(modifier = GlanceModifier.height(10.dp))
 
-        netWorth.breakdown.take(MAX_BREAKDOWN_ITEMS).forEach { item ->
+        netWorth.breakdown.forEach { item ->
             Row(
                 modifier = GlanceModifier
                     .fillMaxWidth()
@@ -378,14 +390,13 @@ class NetWorthWidget : GlanceAppWidget() {
                     maxLines = 1,
                 )
 
-                Text(
-                    text = "${item.amount.format()} $currency",
+                AnnotatedText(
+                    text = annotateStashBreakdownItem(item, netWorth.currency),
                     style = TextStyle(
                         color = GlanceTheme.colors.onSurface,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
                     ),
-                    maxLines = 1,
                 )
             }
         }
@@ -486,8 +497,6 @@ class NetWorthWidget : GlanceAppWidget() {
         /** After this long an unfinished refresh is considered abandoned. */
         private const val REFRESH_STALE_AFTER_MILLIS = 15_000L
 
-        private const val MAX_BREAKDOWN_ITEMS = 5
-
         private const val SKELETON_BREAKDOWN_ITEMS = 3
 
         private val PREVIEW_LAST_FETCHED_AT get() = System.currentTimeMillis() - 5 * 60_000L
@@ -584,10 +593,3 @@ class NetWorthWidget : GlanceAppWidget() {
 
 }
 
-private fun NetWorth.formatted(): String {
-    val formatted = "${amount.format()} ${currency.formatCurrency()}"
-
-    // unresolved quotes and rates only ever leave amounts out, so this is a floor - the sign says
-    // so even at the sizes with no room for the explanation underneath
-    return if (isPartial) "$APPROXIMATE $formatted" else formatted
-}

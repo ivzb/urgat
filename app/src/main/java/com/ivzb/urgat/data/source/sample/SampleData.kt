@@ -447,6 +447,7 @@ object SampleData {
         annualExpenses = 30_000.toBigDecimal(),
         annualInvestments = 18_000.toBigDecimal(),
         accumulatedStash = 150_000.toBigDecimal(),
+        accumulatedStashCost = 138_000.toBigDecimal(),
         savingsRate = 50.toBigDecimal(),
         target = 750_000.toBigDecimal(),
         withdrawalRate = 4.toBigDecimal(),
@@ -458,8 +459,10 @@ object SampleData {
     val SAMPLE_NET_WORTH = NetWorth(
         amount = SAMPLE_FIRE.accumulatedStash,
         currency = SAMPLE_FIRE.currency,
+        costPrice = SAMPLE_FIRE.accumulatedStashCost,
         breakdown = listOf(
-            StashBreakdownItem(name = "Investments", amount = 90_000.toBigDecimal()),
+            // only the investments were bought for something other than what they are worth now
+            StashBreakdownItem(name = "Investments", amount = 90_000.toBigDecimal(), costPrice = 78_000.toBigDecimal()),
             StashBreakdownItem(name = "Savings", amount = 35_000.toBigDecimal()),
             StashBreakdownItem(name = "Trades", amount = 25_000.toBigDecimal()),
         ),
