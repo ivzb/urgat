@@ -8,10 +8,4 @@ package com.ivzb.urgat.util
  */
 const val UNKNOWN = "—"
 
-/**
- * Prefixes a number which is known to be incomplete.
- *
- * Some of the values behind it could not be resolved, so it is a floor rather than the truth.
- */
-const val APPROXIMATE = "≈"
 

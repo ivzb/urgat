@@ -215,7 +215,7 @@ class NetWorthWidget : GlanceAppWidget() {
                 // without a label there is nothing else to give the leftover space to
                 val amountModifier = if (isCompact) GlanceModifier.defaultWeight() else GlanceModifier
 
-                if (netWorth != null) {
+                if (netWorth != null && !netWorth.isPartial) {
                     AnnotatedText(
                         text = annotateNetWorth(netWorth, withPnL = !isCompact),
                         style = TextStyle(
@@ -287,16 +287,23 @@ class NetWorthWidget : GlanceAppWidget() {
                 is Async.Success -> {
                     val netWorth = state.data
 
-                    if (netWorth != null) {
-                        NetWorthAmount(
+                    when {
+                        netWorth == null -> Message(
+                            title = headline(state),
+                            message = context.getString(R.string.net_worth_widget_empty_message).takeUnless { isCompact },
+                        )
+
+                        // an unfetched quote values a position at what it cost, so the stash would
+                        // read back the buy price - better to say nothing than something wrong
+                        netWorth.isPartial -> Message(
+                            title = headline(state),
+                            message = context.getString(R.string.net_worth_widget_prices_unavailable_message).takeUnless { isCompact },
+                        )
+
+                        else -> NetWorthAmount(
                             netWorth = netWorth,
                             isCompact = isCompact,
                             showBreakdown = showBreakdown,
-                        )
-                    } else {
-                        Message(
-                            title = headline(state),
-                            message = context.getString(R.string.net_worth_widget_empty_message).takeUnless { isCompact },
                         )
                     }
                 }
@@ -331,7 +338,10 @@ class NetWorthWidget : GlanceAppWidget() {
         return when (state) {
             is Async.Loading -> context.getString(R.string.loading)
             is Async.Error -> context.getString(R.string.net_worth_widget_error)
-            is Async.Success -> context.getString(R.string.net_worth_widget_empty)
+            is Async.Success -> when {
+                state.data?.isPartial == true -> context.getString(R.string.net_worth_widget_prices_unavailable)
+                else -> context.getString(R.string.net_worth_widget_empty)
+            }
         }
     }
 
@@ -341,8 +351,6 @@ class NetWorthWidget : GlanceAppWidget() {
         isCompact: Boolean,
         showBreakdown: Boolean,
     ) {
-        val context = LocalContext.current
-
         AnnotatedText(
             text = annotateNetWorth(netWorth, withPnL = !isCompact),
             style = TextStyle(
@@ -351,20 +359,6 @@ class NetWorthWidget : GlanceAppWidget() {
                 fontWeight = FontWeight.Bold,
             ),
         )
-
-        // the compact sizes only get the approximation sign the amount already carries
-        if (netWorth.isPartial && !isCompact) {
-            Spacer(modifier = GlanceModifier.height(4.dp))
-
-            Text(
-                text = context.getString(R.string.net_worth_widget_partial),
-                style = TextStyle(
-                    color = GlanceTheme.colors.onSurfaceVariant,
-                    fontSize = 11.sp,
-                ),
-                maxLines = 2,
-            )
-        }
 
         if (!showBreakdown || netWorth.breakdown.isEmpty()) {
             return
@@ -560,7 +554,7 @@ class NetWorthWidget : GlanceAppWidget() {
     @OptIn(ExperimentalGlancePreviewApi::class)
     @Preview(widthDp = 220, heightDp = 220)
     @Composable
-    private fun NetWorthWidgetPartialPreview() {
+    private fun NetWorthWidgetPricesUnavailablePreview() {
         NetWorthWidgetPreview(
             LARGE_SIZE,
             Async.Success(SampleData.SAMPLE_NET_WORTH.copy(isPartial = true)),
@@ -570,7 +564,7 @@ class NetWorthWidget : GlanceAppWidget() {
     @OptIn(ExperimentalGlancePreviewApi::class)
     @Preview(widthDp = 140, heightDp = 40)
     @Composable
-    private fun NetWorthWidgetPartialRowPreview() {
+    private fun NetWorthWidgetPricesUnavailableRowPreview() {
         NetWorthWidgetPreview(
             ROW_SIZE,
             Async.Success(SampleData.SAMPLE_NET_WORTH.copy(isPartial = true)),

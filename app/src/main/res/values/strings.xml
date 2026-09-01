@@ -298,7 +298,8 @@
     <string name="net_worth_widget_empty_message">Fill in a budget and expenses for at least one complete month.</string>
     <string name="net_worth_widget_error">Could not load net worth</string>
     <string name="net_worth_widget_error_message">Tap to open Urgat and try again.</string>
-    <string name="net_worth_widget_partial">Some prices unavailable, so this is a minimum.</string>
+    <string name="net_worth_widget_prices_unavailable">Prices unavailable</string>
+    <string name="net_worth_widget_prices_unavailable_message">Tap refresh to fetch the quotes again.</string>
 
     <!-- Watchlist app widget -->
     <string name="watchlist_widget_label">Urgat Watchlist</string>

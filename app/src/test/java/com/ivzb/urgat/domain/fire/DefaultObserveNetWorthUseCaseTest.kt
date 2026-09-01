@@ -13,6 +13,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveNetWorthUseCaseTest {
@@ -66,7 +67,21 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should return null when there is not enough fire data`() = runTest {        fakeObserveFiReUseCase.emit(Async.Success(null))
+    fun `invoke should mark the net worth partial when the fire data is partial`() = runTest {
+        // a quote which could not be fetched values a position at what it cost, so the stash
+        // would read the buy price back as the net worth unless the flag is carried over
+        fakeObserveFiReUseCase.emit(Async.Success(FIRE.copy(isPartial = true)))
+
+        val actual = observeUseCase().first()
+
+        val netWorth = assertNotNull((actual as Async.Success).data)
+
+        assertTrue(netWorth.isPartial)
+    }
+
+    @Test
+    fun `invoke should return null when there is not enough fire data`() = runTest {
+        fakeObserveFiReUseCase.emit(Async.Success(null))
 
         val actual = observeUseCase().first()
 

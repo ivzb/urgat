@@ -21,8 +21,10 @@ data class NetWorth(
     val breakdown: List<StashBreakdownItem> = emptyList(),
 
     /**
-     * `true` when some quotes or exchange rates could not be resolved, which makes [amount] a
-     * floor rather than the real number. Worth telling the reader about.
+     * `true` when some quotes or exchange rates could not be resolved.
+     *
+     * An unfetched quote values a position at what it cost, so [amount] would read the buy price
+     * back as the net worth - readers show that the prices are unavailable instead of the number.
      */
     val isPartial: Boolean = false,
 ) {

@@ -122,15 +122,16 @@ fun annotatePrice(
         pnl = if (withPnL) pnl else null,
     )
 
+/**
+ * The stash is only ever annotated when every quote and rate behind it could be resolved - an
+ * incomplete stash reads back the buy price, so its readers show [UNKNOWN] instead of a number.
+ */
 fun annotateNetWorth(netWorth: NetWorth, withPnL: Boolean = true): AnnotatedString =
     annotatePrice(
         amount = netWorth.amount,
         currency = netWorth.currency,
         pnl = netWorth.pnl,
         withPnL = withPnL,
-        // unresolved quotes and rates only ever leave amounts out, so a partial stash is a floor -
-        // the sign says so even where there is no room for the explanation underneath
-        prefix = if (netWorth.isPartial) "$APPROXIMATE " else "",
     )
 
 fun annotateStashBreakdownItem(item: StashBreakdownItem, currency: String, withPnL: Boolean = true): AnnotatedString =
