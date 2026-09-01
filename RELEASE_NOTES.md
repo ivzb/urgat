@@ -1,3 +1,8 @@
+## Release notes 26.09.00
+
+Improved:
+- The Net Worth widget now displays Prices Unavailable during data gaps, aligning its fallback behavior with the Watchlist widget.
+
 ## Release notes 26.08.08
 
 New:
