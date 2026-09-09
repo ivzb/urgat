@@ -1,3 +1,11 @@
+## Release notes 26.09.01
+
+Improved:
+- Improved error reporting in net worth and watchlist widgets to clearly show which specific asset is missing price data when a stock fails to load.
+
+Fixed:
+- Removed the 'See All' button from the watchlist widget to streamline the user interface.
+
 ## Release notes 26.09.00
 
 Improved:
