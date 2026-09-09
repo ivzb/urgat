@@ -59,6 +59,7 @@ import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu
+import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
@@ -102,7 +103,6 @@ fun FinanceScreen(
     onBudgetClick: (Budget) -> Unit,
 
     onAddWatchlistAsset: () -> Unit,
-    onMoreWatchlistAssets: () -> Unit,
     onWatchlistAssetClick: (WatchlistAsset) -> Unit,
 
     navigator: Navigator,
@@ -130,7 +130,6 @@ fun FinanceScreen(
         onMoreBudgets = onMoreBudgets,
         onBudgetClick = onBudgetClick,
 
-        onMoreWatchlistAssets = onMoreWatchlistAssets,
         onWatchlistAssetClick = onWatchlistAssetClick,
 
         navigator = navigator,
@@ -174,7 +173,6 @@ fun FinanceScreen(
     onMoreBudgets: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
 
-    onMoreWatchlistAssets: () -> Unit,
     onWatchlistAssetClick: (WatchlistAsset) -> Unit,
 
     navigator: Navigator,
@@ -353,7 +351,6 @@ fun FinanceScreen(
                 FinancePage.Watchlist -> WatchlistPage(
                     uiState = uiState.watchlistAssetsUiState,
 
-                    onMoreWatchlistAssets = onMoreWatchlistAssets,
                     onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(page)) },
                     onWatchlistAssetClick = onWatchlistAssetClick,
                     onRefreshWatchlist = { onIntent(FinanceIntent.RefreshWatchlist) },
@@ -640,7 +637,6 @@ private fun ReportPage(
 private fun WatchlistPage(
     uiState: WatchlistAssetsUiState,
 
-    onMoreWatchlistAssets: () -> Unit,
     onAddWatchlistAsset: () -> Unit,
     onWatchlistAssetClick: (WatchlistAsset) -> Unit,
     onRefreshWatchlist: () -> Unit,
@@ -677,9 +673,8 @@ private fun WatchlistPage(
                     onWatchlistAssetClick = onWatchlistAssetClick,
 
                     header = {
-                        ItemHeaderWithMore(
-                            title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                            onMoreClick = onMoreWatchlistAssets,
+                        ItemHeaderLarge(
+                            text = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
                         )
                     },
 
@@ -1182,7 +1177,6 @@ private fun FinanceScreenPreview(
             onBudgetClick = {},
             onMoreBudgets = {},
 
-            onMoreWatchlistAssets = {},
             onWatchlistAssetClick = {},
 
             navigator = FakeNavigator(),
@@ -1344,7 +1338,6 @@ fun FinanceScreenEmptyPreview() {
             onBudgetClick = {},
             onMoreBudgets = {},
 
-            onMoreWatchlistAssets = {},
             onWatchlistAssetClick = {},
 
             navigator = FakeNavigator(),
@@ -1383,7 +1376,6 @@ fun FinanceScreenLoadingPreview() {
             onBudgetClick = {},
             onMoreBudgets = {},
 
-            onMoreWatchlistAssets = {},
             onWatchlistAssetClick = {},
 
             navigator = FakeNavigator(),
@@ -1422,7 +1414,6 @@ fun FinanceScreenErrorPreview() {
             onBudgetClick = {},
             onMoreBudgets = {},
 
-            onMoreWatchlistAssets = {},
             onWatchlistAssetClick = {},
 
             navigator = FakeNavigator(),

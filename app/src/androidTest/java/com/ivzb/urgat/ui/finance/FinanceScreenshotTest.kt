@@ -139,7 +139,6 @@ class FinanceScreenshotTest: ScreenshotTest() {
                     onBudgetClick = {},
                     onMoreBudgets = {},
 
-                    onMoreWatchlistAssets = {},
                     onWatchlistAssetClick = {},
 
                     navigator = FakeNavigator(),
