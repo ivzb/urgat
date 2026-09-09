@@ -47,8 +47,10 @@ class DefaultObserveNetWorthUseCase @Inject constructor(
                             costPrice = fire.accumulatedStashCost,
                             breakdown = fire.stashBreakdown,
                             // an unfetched quote values a position at what it cost, so without
-                            // this the widget would read the buy price back as the net worth
-                            isPartial = fire.isPartial,
+                            // this the widget would read the buy price back as the net worth -
+                            // and naming what is missing is what makes it actionable
+                            unavailableAssets = fire.unavailableAssets,
+                            unavailableRates = fire.unavailableRates,
                         )
                     }
                 )

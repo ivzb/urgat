@@ -70,13 +70,64 @@ class DefaultObserveNetWorthUseCaseTest {
     fun `invoke should mark the net worth partial when the fire data is partial`() = runTest {
         // a quote which could not be fetched values a position at what it cost, so the stash
         // would read the buy price back as the net worth unless the flag is carried over
-        fakeObserveFiReUseCase.emit(Async.Success(FIRE.copy(isPartial = true)))
+        fakeObserveFiReUseCase.emit(
+            Async.Success(FIRE.copy(unavailableAssets = listOf("AAPL")))
+        )
 
         val actual = observeUseCase().first()
 
         val netWorth = assertNotNull((actual as Async.Success).data)
 
         assertTrue(netWorth.isPartial)
+    }
+
+    @Test
+    fun `invoke should carry which assets lost their quote`() = runTest {
+        // the widget has one line to explain itself with - naming the position beats telling the
+        // user that something, somewhere, is missing
+        fakeObserveFiReUseCase.emit(
+            Async.Success(FIRE.copy(unavailableAssets = listOf("AAPL", "TSLA")))
+        )
+
+        val actual = observeUseCase().first()
+
+        val netWorth = assertNotNull((actual as Async.Success).data)
+
+        assertEquals(listOf("AAPL", "TSLA"), netWorth.unavailableAssets)
+    }
+
+    @Test
+    fun `invoke should carry which exchange rates could not be resolved`() = runTest {
+        fakeObserveFiReUseCase.emit(
+            Async.Success(FIRE.copy(unavailableRates = listOf("USD → EUR")))
+        )
+
+        val actual = observeUseCase().first()
+
+        val netWorth = assertNotNull((actual as Async.Success).data)
+
+        assertTrue(netWorth.isPartial)
+        assertEquals(listOf("USD → EUR"), netWorth.unavailableRates)
+    }
+
+    @Test
+    fun `invoke should list the assets before the rates`() = runTest {
+        // a reader with room for one name wants the position the user recognises, not the
+        // currency pair they have never thought about
+        fakeObserveFiReUseCase.emit(
+            Async.Success(
+                FIRE.copy(
+                    unavailableAssets = listOf("AAPL"),
+                    unavailableRates = listOf("USD → EUR"),
+                )
+            )
+        )
+
+        val actual = observeUseCase().first()
+
+        val netWorth = assertNotNull((actual as Async.Success).data)
+
+        assertEquals(listOf("AAPL", "USD → EUR"), netWorth.unavailable)
     }
 
     @Test

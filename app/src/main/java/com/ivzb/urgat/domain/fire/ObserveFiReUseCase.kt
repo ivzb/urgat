@@ -170,8 +170,13 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
                 // an unfetched quote values a position at cost and an unresolved rate drops an
                 // amount from the sums, so either way the stash is understated rather than right
-                val isPartial = forex.hasUnresolved ||
-                        investmentsAllTimeAsync.data.items.any { it.isMarketPriceStale }
+                val unavailableAssets = investmentsAllTimeAsync.data.items
+                    .filter { it.isMarketPriceStale }
+                    .map { it.name }
+                    .distinct()
+                    .sorted()
+
+                val unavailableRates = forex.unresolved.sorted()
 
                 val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
 
@@ -207,7 +212,8 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
                             yearsUntilFiRe = null,
 
-                            isPartial = isPartial,
+                            unavailableAssets = unavailableAssets,
+                            unavailableRates = unavailableRates,
                         )
                     )
                 }
@@ -251,7 +257,8 @@ class DefaultObserveFiReUseCase @Inject constructor(
 
                     yearsUntilFiRe = yearsUntilFiRe,
 
-                    isPartial = isPartial,
+                    unavailableAssets = unavailableAssets,
+                    unavailableRates = unavailableRates,
                 )
 
                 Async.Success(fire)
@@ -316,11 +323,14 @@ class DefaultObserveFiReUseCase @Inject constructor(
 }
 
 /**
- * Counts the conversions which could not be resolved.
+ * Remembers the conversions which could not be resolved.
  *
  * [Expense.total] and its siblings drop a failed conversion from the sum, so an unreachable
  * exchange rate makes a total silently too small. Wrapping the converter is what lets the caller
  * tell a complete number apart from an incomplete one, without changing what the sums return.
+ *
+ * The pair is kept rather than a tally, so the caller can name what is missing instead of only
+ * admitting that something is.
  */
 private class TallyingConverter(
     private val delegate: suspend (
@@ -330,16 +340,27 @@ private class TallyingConverter(
     ) -> BigDecimal?,
 ) {
 
-    private var unresolved: Int = 0
+    private val _unresolved = mutableSetOf<String>()
 
-    val hasUnresolved: Boolean
-        get() = unresolved > 0
+    /** The currency pairs which could not be converted, written as `USD -> EUR`. */
+    val unresolved: Set<String>
+        get() = _unresolved
 
     suspend fun convert(
         amount: BigDecimal,
         fromCurrency: String,
         toCurrency: String,
     ): BigDecimal? = delegate(amount, fromCurrency, toCurrency)
-        .also { converted -> if (converted == null) unresolved++ }
+        .also { converted ->
+            if (converted == null) {
+                _unresolved += "$fromCurrency $RATE_ARROW $toCurrency"
+            }
+        }
+
+    private companion object {
+
+        const val RATE_ARROW = "→"
+
+    }
 
 }

@@ -790,6 +790,26 @@ private fun FiRePage(
                 if (fire.isPartial) {
                     appendLine()
                     appendLine(stringResource(R.string.fire_stash_partial))
+
+                    // a dialog has room to spell every culprit out, unlike the widget - so it
+                    // names them all rather than counting the ones which did not fit
+                    if (fire.unavailableAssets.isNotEmpty()) {
+                        appendLine(
+                            stringResource(
+                                R.string.fire_stash_unavailable_assets,
+                                fire.unavailableAssets.joinToString(", "),
+                            )
+                        )
+                    }
+
+                    if (fire.unavailableRates.isNotEmpty()) {
+                        appendLine(
+                            stringResource(
+                                R.string.fire_stash_unavailable_rates,
+                                fire.unavailableRates.joinToString(", "),
+                            )
+                        )
+                    }
                 }
 
                 appendLine()

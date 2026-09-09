@@ -115,4 +115,4 @@
 - make a screen for daily results of investments
 - check why WatchlistAsset is using priceChangePercentage instead of calculatePnL
 - consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change
-- when price is unavailable due to some stock not loading in the net worth and watchlist widgets - show me which asset is breaking the data
+- hide the watchlist more button

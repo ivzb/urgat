@@ -42,10 +42,29 @@ data class FiRe(
     val taxRatePlaceholder: BigDecimal = DEFAULT_FIRE_TAX_RATE,
 
     /**
+     * The names of the positions whose quote could not be fetched, so they are valued at cost.
+     *
+     * Naming them is the difference between a reader saying the stash is off and a reader saying
+     * what to go and fix.
+     */
+    val unavailableAssets: List<String> = emptyList(),
+
+    /**
+     * The currency pairs whose exchange rate could not be resolved, written as `USD -> EUR`.
+     *
+     * An amount which could not be converted is dropped from the sums entirely, so these bite
+     * harder than a missing quote does.
+     */
+    val unavailableRates: List<String> = emptyList(),
+) {
+
+    /**
      * `true` when a quote or an exchange rate could not be resolved while building this.
      *
      * Anything that could not be converted contributes nothing to [accumulatedStash] and anything
      * without a quote is valued at cost, so the stash is then a floor - never an overstatement.
      */
-    val isPartial: Boolean = false,
-)
+    val isPartial: Boolean
+        get() = unavailableAssets.isNotEmpty() || unavailableRates.isNotEmpty()
+
+}

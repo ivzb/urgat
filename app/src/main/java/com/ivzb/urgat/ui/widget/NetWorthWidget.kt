@@ -52,6 +52,7 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.annotateNetWorth
 import com.ivzb.urgat.util.annotateStashBreakdownItem
+import com.ivzb.urgat.util.formatNames
 import com.ivzb.urgat.util.formatTimeAgo
 import kotlinx.coroutines.flow.map
 
@@ -227,7 +228,7 @@ class NetWorthWidget : GlanceAppWidget() {
                     )
                 } else {
                     Text(
-                        text = headline(state),
+                        text = rowHeadline(state, isCompact),
                         modifier = amountModifier,
                         style = TextStyle(
                             color = GlanceTheme.colors.onSurface,
@@ -296,8 +297,8 @@ class NetWorthWidget : GlanceAppWidget() {
                         // an unfetched quote values a position at what it cost, so the stash would
                         // read back the buy price - better to say nothing than something wrong
                         netWorth.isPartial -> Message(
-                            title = headline(state),
-                            message = context.getString(R.string.net_worth_widget_prices_unavailable_message).takeUnless { isCompact },
+                            title = context.getString(R.string.net_worth_widget_prices_unavailable),
+                            message = unavailableMessage(netWorth, isCompact),
                         )
 
                         else -> NetWorthAmount(
@@ -343,6 +344,59 @@ class NetWorthWidget : GlanceAppWidget() {
                 else -> context.getString(R.string.net_worth_widget_empty)
             }
         }
+    }
+
+    /**
+     * The same line, with whatever held the stash back named on it.
+     *
+     * A single row has no second line to explain itself on, so the culprit has to ride along with
+     * the headline or not be shown at all. A narrow row is left alone - there is only room for the
+     * "Prices unavailable" as it is.
+     */
+    @Composable
+    private fun rowHeadline(state: Async<NetWorth?>, isCompact: Boolean): String {
+        val context = LocalContext.current
+
+        val netWorth = (state as? Async.Success)?.data
+
+        if (isCompact || netWorth?.isPartial != true) {
+            return headline(state)
+        }
+
+        return context.getString(
+            R.string.net_worth_widget_prices_unavailable_named,
+            context.formatNames(netWorth.unavailable, ROW_UNAVAILABLE_LIMIT),
+        )
+    }
+
+    /**
+     * Names what could not be priced, so the user knows which position to go and look at.
+     *
+     * A narrow widget drops the sentence around the names but keeps the names themselves - the
+     * whole point of the message is the culprit, not the instruction to hit refresh.
+     */
+    @Composable
+    private fun unavailableMessage(netWorth: NetWorth, isCompact: Boolean): String? {
+        val context = LocalContext.current
+
+        val limit = if (isCompact) COMPACT_UNAVAILABLE_LIMIT else UNAVAILABLE_LIMIT
+
+        val assets = netWorth.unavailableAssets
+        val rates = netWorth.unavailableRates
+
+        // a position the user recognises beats a currency pair they do not, so the assets are
+        // what the one message there is room for talks about
+        val (names, template) = when {
+            assets.isNotEmpty() -> assets to R.string.net_worth_widget_assets_unavailable_message
+            rates.isNotEmpty() -> rates to R.string.net_worth_widget_rates_unavailable_message
+            // partial without a name behind it should not happen, but a stale widget could
+            else -> return context.getString(R.string.net_worth_widget_prices_unavailable_message)
+                .takeUnless { isCompact }
+        }
+
+        val formatted = context.formatNames(names, limit)
+
+        return if (isCompact) formatted else context.getString(template, formatted)
     }
 
     @Composable
@@ -493,6 +547,15 @@ class NetWorthWidget : GlanceAppWidget() {
 
         private const val SKELETON_BREAKDOWN_ITEMS = 3
 
+        /** How many names the two line message can carry before it starts counting instead. */
+        private const val UNAVAILABLE_LIMIT = 3
+
+        /** A narrow widget shows the bare names, so fewer of them fit. */
+        private const val COMPACT_UNAVAILABLE_LIMIT = 2
+
+        /** A single row shares its one line with the headline, so it names one and counts the rest. */
+        private const val ROW_UNAVAILABLE_LIMIT = 1
+
         private val PREVIEW_LAST_FETCHED_AT get() = System.currentTimeMillis() - 5 * 60_000L
 
     }
@@ -557,7 +620,27 @@ class NetWorthWidget : GlanceAppWidget() {
     private fun NetWorthWidgetPricesUnavailablePreview() {
         NetWorthWidgetPreview(
             LARGE_SIZE,
-            Async.Success(SampleData.SAMPLE_NET_WORTH.copy(isPartial = true)),
+            Async.Success(SampleData.SAMPLE_NET_WORTH_PARTIAL),
+        )
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 220)
+    @Composable
+    private fun NetWorthWidgetRatesUnavailablePreview() {
+        NetWorthWidgetPreview(
+            LARGE_SIZE,
+            Async.Success(SampleData.SAMPLE_NET_WORTH_UNRESOLVED_RATES),
+        )
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 140, heightDp = 110)
+    @Composable
+    private fun NetWorthWidgetPricesUnavailableCompactPreview() {
+        NetWorthWidgetPreview(
+            SMALL_SIZE,
+            Async.Success(SampleData.SAMPLE_NET_WORTH_PARTIAL),
         )
     }
 
@@ -567,7 +650,17 @@ class NetWorthWidget : GlanceAppWidget() {
     private fun NetWorthWidgetPricesUnavailableRowPreview() {
         NetWorthWidgetPreview(
             ROW_SIZE,
-            Async.Success(SampleData.SAMPLE_NET_WORTH.copy(isPartial = true)),
+            Async.Success(SampleData.SAMPLE_NET_WORTH_PARTIAL),
+        )
+    }
+
+    @OptIn(ExperimentalGlancePreviewApi::class)
+    @Preview(widthDp = 220, heightDp = 40)
+    @Composable
+    private fun NetWorthWidgetPricesUnavailableWideRowPreview() {
+        NetWorthWidgetPreview(
+            WIDE_ROW_SIZE,
+            Async.Success(SampleData.SAMPLE_NET_WORTH_PARTIAL),
         )
     }
 

@@ -468,6 +468,16 @@ object SampleData {
         ),
     )
 
+    /** Some quotes failed, so the reader has to name the positions holding the stash back. */
+    val SAMPLE_NET_WORTH_PARTIAL = SAMPLE_NET_WORTH.copy(
+        unavailableAssets = listOf("AAPL", "NVDA", "TSLA", "VOO"),
+    )
+
+    /** Nothing is wrong with the quotes - the budget currency simply could not be reached. */
+    val SAMPLE_NET_WORTH_UNRESOLVED_RATES = SAMPLE_NET_WORTH.copy(
+        unavailableRates = listOf("USD → EUR"),
+    )
+
     val SAMPLE_TRADES = listOf(
         listOf("BTC", "275", "USD", "180"),
         listOf("BTC", "310", "USD", "150"),

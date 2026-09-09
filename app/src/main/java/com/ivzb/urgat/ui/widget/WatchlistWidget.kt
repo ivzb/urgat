@@ -53,6 +53,7 @@ import com.ivzb.urgat.data.source.sample.SampleData
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.financeColor
+import com.ivzb.urgat.util.formatNames
 import com.ivzb.urgat.util.formatTimeAgo
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
@@ -152,7 +153,7 @@ class WatchlistWidget : GlanceAppWidget() {
                             // could be fetched the list would be a wall of dashes
                             assets.none { it.hasMarketPrice } -> Message(
                                 title = context.getString(R.string.watchlist_widget_prices_unavailable),
-                                message = context.getString(R.string.watchlist_widget_prices_unavailable_message).takeUnless { isCompact },
+                                message = unavailableMessage(assets, isCompact),
                             )
 
                             else -> WatchlistAssets(
@@ -210,25 +211,86 @@ class WatchlistWidget : GlanceAppWidget() {
 
     /**
      * The whole watchlist is listed, however tall the widget is - the leftovers are scrolled to.
+     *
+     * Whatever lost its quote is named under the list as well as dashed out in its own row, since
+     * the row doing the failing is easily the one below the fold.
      */
     @Composable
     private fun WatchlistAssets(
         assets: List<WatchlistAsset>,
         isCompact: Boolean,
     ) {
-        LazyColumn(
+        val context = LocalContext.current
+
+        val unavailable = assets.unavailableNames()
+
+        Column(
             modifier = GlanceModifier.fillMaxSize(),
         ) {
-            items(
-                items = assets,
-                itemId = { asset -> asset.id.hashCode().toLong() },
-            ) { asset ->
 
-                WatchlistAssetItem(
-                    asset = asset,
-                    isCompact = isCompact,
-                )
+            LazyColumn(
+                modifier = GlanceModifier.defaultWeight(),
+            ) {
+                items(
+                    items = assets,
+                    itemId = { asset -> asset.id.hashCode().toLong() },
+                ) { asset ->
+
+                    WatchlistAssetItem(
+                        asset = asset,
+                        isCompact = isCompact,
+                    )
+                }
             }
+
+            if (unavailable.isEmpty()) {
+                return@Column
+            }
+
+            Text(
+                text = context.getString(
+                    R.string.watchlist_widget_prices_missing,
+                    context.formatNames(
+                        unavailable,
+                        if (isCompact) COMPACT_UNAVAILABLE_LIMIT else UNAVAILABLE_LIMIT,
+                    ),
+                ),
+                modifier = GlanceModifier.padding(top = 4.dp),
+                style = TextStyle(
+                    color = GlanceTheme.colors.onSurfaceVariant,
+                    fontSize = 11.sp,
+                ),
+                maxLines = 1,
+            )
+        }
+    }
+
+    /**
+     * Names the assets which could not be priced, so the user knows which one to go and look at.
+     *
+     * A narrow widget drops the sentence around the names but keeps the names themselves - the
+     * whole point of the message is the culprit, not the instruction to hit refresh.
+     */
+    @Composable
+    private fun unavailableMessage(assets: List<WatchlistAsset>, isCompact: Boolean): String? {
+        val context = LocalContext.current
+
+        val unavailable = assets.unavailableNames()
+
+        if (unavailable.isEmpty()) {
+            return context.getString(R.string.watchlist_widget_prices_unavailable_message)
+                .takeUnless { isCompact }
+        }
+
+        val formatted = context.formatNames(
+            unavailable,
+            if (isCompact) COMPACT_UNAVAILABLE_LIMIT else UNAVAILABLE_LIMIT,
+        )
+
+        return if (isCompact) {
+            formatted
+        } else {
+            context.getString(R.string.watchlist_widget_assets_unavailable_message, formatted)
         }
     }
 
@@ -427,6 +489,12 @@ class WatchlistWidget : GlanceAppWidget() {
 
         private const val SKELETON_ITEMS_SHORT = 2
 
+        /** How many names the message can carry before it starts counting instead. */
+        private const val UNAVAILABLE_LIMIT = 3
+
+        /** A narrow widget shows the bare names, so fewer of them fit. */
+        private const val COMPACT_UNAVAILABLE_LIMIT = 2
+
         private val PREVIEW_LAST_FETCHED_AT get() = System.currentTimeMillis() - 5 * 60_000L
 
     }
@@ -506,6 +574,17 @@ class WatchlistWidget : GlanceAppWidget() {
     }
 
 }
+
+/**
+ * The symbols with no quote behind them, worded the way the rows word them.
+ *
+ * The same watchlist can hold a symbol twice, and naming the culprit twice reads like two
+ * different things went wrong rather than one.
+ */
+private fun List<WatchlistAsset>.unavailableNames(): List<String> =
+    filterNot { it.hasMarketPrice }
+        .map { it.name.uppercase() }
+        .distinct()
 
 
 

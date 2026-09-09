@@ -287,6 +287,7 @@
 
     <!-- App widgets -->
     <string name="just_now">just now</string>
+    <string name="names_and_more">%1$s and %2$d more</string>
 
     <!-- Net worth app widget -->
 
@@ -300,6 +301,9 @@
     <string name="net_worth_widget_error_message">Tap to open Urgat and try again.</string>
     <string name="net_worth_widget_prices_unavailable">Prices unavailable</string>
     <string name="net_worth_widget_prices_unavailable_message">Tap refresh to fetch the quotes again.</string>
+    <string name="net_worth_widget_prices_unavailable_named">Prices unavailable: %1$s</string>
+    <string name="net_worth_widget_assets_unavailable_message">No price for %1$s. Tap refresh to try again.</string>
+    <string name="net_worth_widget_rates_unavailable_message">No exchange rate for %1$s. Tap refresh to try again.</string>
 
     <!-- Watchlist app widget -->
     <string name="watchlist_widget_label">Urgat Watchlist</string>
@@ -311,7 +315,11 @@
     <string name="watchlist_widget_error_message">Tap to open Urgat and try again.</string>
     <string name="watchlist_widget_prices_unavailable">Prices unavailable</string>
     <string name="watchlist_widget_prices_unavailable_message">Tap refresh to fetch the quotes again.</string>
+    <string name="watchlist_widget_assets_unavailable_message">No price for %1$s. Tap refresh to try again.</string>
+    <string name="watchlist_widget_prices_missing">No price: %1$s</string>
 
     <!-- Incomplete finance data -->
     <string name="fire_stash_partial">Some prices or exchange rates could not be fetched, so the stash above is a minimum.</string>
+    <string name="fire_stash_unavailable_assets">No price for: %1$s</string>
+    <string name="fire_stash_unavailable_rates">No exchange rate for: %1$s</string>
 </resources>

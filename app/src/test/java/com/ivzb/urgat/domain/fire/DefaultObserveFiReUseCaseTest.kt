@@ -425,6 +425,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             assertFiRe = { fire ->
                 assertNotNull(fire)
                 assertFalse(fire.isPartial)
+                assertEquals(emptyList(), fire.unavailableAssets)
+                assertEquals(emptyList(), fire.unavailableRates)
             },
         )
 
@@ -434,7 +436,36 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             investments = INVESTMENTS_WITH_STALE_MARKET_PRICE,
             // the stash is unchanged - the positions are simply valued at cost, which is what
             // makes the number look trustworthy while it is not
-            expected = EXPECTED_FIRE.copy(isPartial = true),
+            expected = EXPECTED_FIRE.copy(unavailableAssets = listOf("1", "2")),
+        )
+
+    @Test
+    fun `invoke should name every position which lost its quote once`() =
+        `invoke should return Success with filtered items`(
+            investments = INVESTMENTS_WITH_STALE_MARKET_PRICE,
+            assertFiRe = { fire ->
+                assertNotNull(fire)
+
+                // "2" is held twice, and a reader naming the culprit twice reads like two
+                // different things went wrong
+                assertEquals(listOf("1", "2"), fire.unavailableAssets)
+            },
+        )
+
+    @Test
+    fun `invoke should name only the positions which lost their quote`() =
+        `invoke should return Success with filtered items`(
+            investments = INVESTMENTS.copy(
+                items = INVESTMENTS.items.map { investment ->
+                    investment.copy(isMarketPriceStale = investment.name == "2")
+                },
+            ),
+            assertFiRe = { fire ->
+                assertNotNull(fire)
+
+                // the position which is priced fine has nothing to do with the stash being off
+                assertEquals(listOf("2"), fire.unavailableAssets)
+            },
         )
 
     @Test
@@ -449,6 +480,11 @@ class DefaultObserveDashboardBudgetUseCaseTest {
                 // the savings could not be converted, so they contributed nothing at all and the
                 // stash is the investments alone rather than the real total
                 assertEquals("40000".toBigDecimal(), fire.accumulatedStash)
+
+                // no position is at fault here, so naming one would send the user chasing the
+                // wrong thing - the pair which could not be reached is what to report
+                assertEquals(emptyList(), fire.unavailableAssets)
+                assertEquals(listOf("USD → EUR"), fire.unavailableRates)
             },
         )
 
