@@ -17,4 +17,5 @@ private val yahooSymbolMapping = mapOf(
     "€" to "EUR",
     "€$=X" to "EURUSD=X",
     "MEUD" to "MEUD.MI",
+    "NOKIA" to "NOK",
 )
