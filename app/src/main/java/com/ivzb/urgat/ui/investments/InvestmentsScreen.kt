@@ -24,9 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -97,9 +99,11 @@ fun InvestmentsScreen(
 
     modifier: Modifier = Modifier,
 ) {
-    val expandedYearlyIds = rememberSaveable { mutableStateListOf<String>() }
-    val expandedAssetIds = rememberSaveable { mutableStateListOf<String>() }
-    val expandedCategoryIds = rememberSaveable { mutableStateListOf<String>() }
+    // the selections are kept by name, instead of by id, so they survive switching between tabs,
+    // as every tab groups its own items and generates new ids for them
+    val expandedCategoryNames = rememberSaveable { mutableStateListOf<String>() }
+    val expandedAssetNames = rememberSaveable { mutableStateListOf<String>() }
+    var selectedChartTitle by rememberSaveable { mutableStateOf<String?>(null) }
 
     PagerScreen(
         uiState = uiState,
@@ -135,10 +139,12 @@ fun InvestmentsScreen(
                     categories = uiState.categoriesYearly,
                     averages = uiState.averagesYearly,
                     filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryIds = expandedYearlyIds,
-                    onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
+                    expandedCategoryNames = expandedCategoryNames,
+                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
                     onInvestmentClick = onInvestmentClick,
                     onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
+                    selectedChartTitle = selectedChartTitle,
+                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -146,15 +152,18 @@ fun InvestmentsScreen(
                     group = stringResource(R.string.all_time),
                     total = annotateMarketPrice(uiState.netWorth?.totals ?: listOf()),
                     categories = uiState.categories,
-                    expandedCategoryIds = expandedCategoryIds,
+                    expandedCategoryNames = expandedCategoryNames,
 
                     average = uiState.averageAllTime,
 
                     filteringUiInfo = uiState.filteringUiInfo,
                     onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
 
-                    onCategoryClick = { categoryId -> expandedCategoryIds.toggle(categoryId) },
+                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
                     onInvestmentClick = onInvestmentClick,
+
+                    selectedChartTitle = selectedChartTitle,
+                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -165,15 +174,18 @@ fun InvestmentsScreen(
                     total = annotateMarketPrice(uiState.netWorth?.totals ?: listOf()),
 
                     assets = uiState.assets,
-                    expandedAssetIds = expandedAssetIds,
+                    expandedAssetNames = expandedAssetNames,
 
                     average = uiState.averageAllTime,
 
                     filteringUiInfo = uiState.filteringUiInfo,
                     onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
 
-                    onAssetClick = { assetId -> expandedAssetIds.toggle(assetId) },
+                    onAssetClick = { assetName -> expandedAssetNames.toggle(assetName) },
                     onInvestmentClick = onInvestmentClick,
+
+                    selectedChartTitle = selectedChartTitle,
+                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
 
                     listState = listState,
                     onListStateChanged = onListStateChanged,
@@ -250,10 +262,12 @@ private fun GroupedCategoriesPage(
     categories: List<GroupedInvestmentCategories>,
     averages: Map<String, InvestmentAverage>,
     filteringUiInfo: FilteringUiInfo,
-    expandedCategoryIds: List<String>,
+    expandedCategoryNames: List<String>,
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
     onResetFilters: () -> Unit,
+    selectedChartTitle: String?,
+    onSelectedChartTitleChanged: (String?) -> Unit,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -311,7 +325,7 @@ private fun GroupedCategoriesPage(
                 total = annotateMarketPrice(category.total),
 
                 categories = category.items,
-                expandedCategoryIds = expandedCategoryIds,
+                expandedCategoryNames = expandedCategoryNames,
 
                 average = averages[category.group] ?: InvestmentAverage.EMPTY,
 
@@ -320,6 +334,9 @@ private fun GroupedCategoriesPage(
 
                 onCategoryClick = onCategoryClick,
                 onInvestmentClick = onInvestmentClick,
+
+                selectedChartTitle = selectedChartTitle,
+                onSelectedChartTitleChanged = onSelectedChartTitleChanged,
 
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
@@ -334,7 +351,7 @@ private fun CategoriesPage(
     total: AnnotatedString?,
 
     categories: List<InvestmentCategory>,
-    expandedCategoryIds: List<String>,
+    expandedCategoryNames: List<String>,
 
     average: InvestmentAverage,
 
@@ -343,6 +360,9 @@ private fun CategoriesPage(
 
     onCategoryClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    selectedChartTitle: String?,
+    onSelectedChartTitleChanged: (String?) -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -373,8 +393,8 @@ private fun CategoriesPage(
     ) {
 
         item {
-            val lastExpandedId = expandedCategoryIds.lastOrNull()
-            val expandedCategory = categories.firstOrNull { it.id == lastExpandedId }
+            val lastExpandedName = expandedCategoryNames.lastOrNull()
+            val expandedCategory = categories.firstOrNull { it.name == lastExpandedName }
 
             val averageTotals = expandedCategory
                 ?.let { average.categories[it.name].orEmpty() }
@@ -416,6 +436,8 @@ private fun CategoriesPage(
                 data = data,
                 defaultText = defaultText,
                 textStyle = MaterialTheme.typography.titleLarge,
+                selectedTitle = selectedChartTitle,
+                onSelectedTitleChanged = onSelectedChartTitleChanged,
             )
         }
 
@@ -431,11 +453,11 @@ private fun CategoriesPage(
                 CategoryItem(
                     category = category,
                     colorIndex = index,
-                    onClick = { onCategoryClick(category.id) },
+                    onClick = { onCategoryClick(category.name) },
                 )
             }
 
-            val isExpanded = expandedCategoryIds.contains(category.id)
+            val isExpanded = expandedCategoryNames.contains(category.name)
 
             if (isExpanded) {
                 subInvestments(category.investments, onInvestmentClick)
@@ -450,7 +472,7 @@ private fun AssetsPage(
     total: AnnotatedString?,
 
     assets: List<InvestmentAsset>,
-    expandedAssetIds: List<String>,
+    expandedAssetNames: List<String>,
 
     average: InvestmentAverage,
 
@@ -459,6 +481,9 @@ private fun AssetsPage(
 
     onAssetClick: (String) -> Unit,
     onInvestmentClick: (Investment) -> Unit,
+
+    selectedChartTitle: String?,
+    onSelectedChartTitleChanged: (String?) -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -490,8 +515,8 @@ private fun AssetsPage(
     ) {
 
         item {
-            val lastExpandedId = expandedAssetIds.lastOrNull()
-            val expandedAsset = assets.firstOrNull { it.id == lastExpandedId }
+            val lastExpandedName = expandedAssetNames.lastOrNull()
+            val expandedAsset = assets.firstOrNull { it.name == lastExpandedName }
 
             val averageTotals = expandedAsset
                 ?.let { average.assets[it.name].orEmpty() }
@@ -533,6 +558,8 @@ private fun AssetsPage(
                 data = data,
                 defaultText = defaultText,
                 textStyle = MaterialTheme.typography.titleLarge,
+                selectedTitle = selectedChartTitle,
+                onSelectedTitleChanged = onSelectedChartTitleChanged,
             )
         }
 
@@ -548,11 +575,11 @@ private fun AssetsPage(
                 AssetItem(
                     asset = asset,
                     colorIndex = index,
-                    onClick = { onAssetClick(asset.id) },
+                    onClick = { onAssetClick(asset.name) },
                 )
             }
 
-            val isExpanded = expandedAssetIds.contains(asset.id)
+            val isExpanded = expandedAssetNames.contains(asset.name)
 
             if (isExpanded) {
                 subInvestments(asset.investments, onInvestmentClick)

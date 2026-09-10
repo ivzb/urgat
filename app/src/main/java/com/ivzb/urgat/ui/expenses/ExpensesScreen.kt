@@ -24,9 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -98,9 +100,10 @@ fun ExpensesScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val expandedMonthlyIds = rememberSaveable { mutableStateListOf<String>() }
-    val expandedYearlyIds = rememberSaveable { mutableStateListOf<String>() }
-    val expandedAllTimeIds = rememberSaveable { mutableStateListOf<String>() }
+    // the selection is kept by name, instead of by id, so it survives switching between tabs,
+    // as every tab groups its own categories and generates new ids for them
+    val expandedCategoryNames = rememberSaveable { mutableStateListOf<String>() }
+    var selectedChartTitle by rememberSaveable { mutableStateOf<String?>(null) }
 
     PagerScreen(
         uiState = uiState,
@@ -136,10 +139,12 @@ fun ExpensesScreen(
                     categories = uiState.categoriesMonthly,
                     averages = uiState.averagesMonthly,
                     filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryIds = expandedMonthlyIds,
-                    onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
+                    expandedCategoryNames = expandedCategoryNames,
+                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
                     onExpenseClick = onExpenseClick,
                     onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
+                    selectedChartTitle = selectedChartTitle,
+                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -147,10 +152,12 @@ fun ExpensesScreen(
                     categories = uiState.categoriesYearly,
                     averages = uiState.averagesYearly,
                     filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryIds = expandedYearlyIds,
-                    onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
+                    expandedCategoryNames = expandedCategoryNames,
+                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
                     onExpenseClick = onExpenseClick,
                     onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
+                    selectedChartTitle = selectedChartTitle,
+                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
                     onListStateChanged = onListStateChanged,
                 )
 
@@ -162,13 +169,15 @@ fun ExpensesScreen(
                             .sumByCurrency()
                     ),
                     categories = uiState.categoriesAllTime,
-                    expandedCategoryIds = expandedAllTimeIds,
+                    expandedCategoryNames = expandedCategoryNames,
                     average = uiState.averageAllTime,
                     listState = listState,
-                    onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
+                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
                     onExpenseClick = onExpenseClick,
                     filteringUiInfo = uiState.filteringUiInfo,
                     onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
+                    selectedChartTitle = selectedChartTitle,
+                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
                     onListStateChanged = onListStateChanged,
                 )
             }
@@ -238,10 +247,12 @@ private fun GroupedCategoriesPage(
     categories: List<GroupedExpenseCategories>,
     averages: Map<String, ExpenseAverage>,
     filteringUiInfo: FilteringUiInfo,
-    expandedCategoryIds: List<String>,
+    expandedCategoryNames: List<String>,
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
     onResetFilters: () -> Unit,
+    selectedChartTitle: String?,
+    onSelectedChartTitleChanged: (String?) -> Unit,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -299,7 +310,7 @@ private fun GroupedCategoriesPage(
                 total = annotateExpensesTotals(category.total),
 
                 categories = category.items,
-                expandedCategoryIds = expandedCategoryIds,
+                expandedCategoryNames = expandedCategoryNames,
 
                 average = averages[category.group] ?: ExpenseAverage.EMPTY,
 
@@ -308,6 +319,9 @@ private fun GroupedCategoriesPage(
 
                 onCategoryClick = onCategoryClick,
                 onExpenseClick = onExpenseClick,
+
+                selectedChartTitle = selectedChartTitle,
+                onSelectedChartTitleChanged = onSelectedChartTitleChanged,
 
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
@@ -322,7 +336,7 @@ private fun CategoriesPage(
     total: AnnotatedString?,
 
     categories: List<ExpenseCategory>,
-    expandedCategoryIds: List<String>,
+    expandedCategoryNames: List<String>,
 
     average: ExpenseAverage,
 
@@ -331,6 +345,9 @@ private fun CategoriesPage(
 
     onCategoryClick: (String) -> Unit,
     onExpenseClick: (Expense) -> Unit,
+
+    selectedChartTitle: String?,
+    onSelectedChartTitleChanged: (String?) -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
@@ -361,8 +378,8 @@ private fun CategoriesPage(
     ) {
 
         item {
-            val lastExpandedId = expandedCategoryIds.lastOrNull()
-            val expandedCategory = categories.firstOrNull { it.id == lastExpandedId }
+            val lastExpandedName = expandedCategoryNames.lastOrNull()
+            val expandedCategory = categories.firstOrNull { it.name == lastExpandedName }
 
             val averageTotals = expandedCategory
                 ?.let { average.categories[it.name].orEmpty() }
@@ -403,6 +420,8 @@ private fun CategoriesPage(
                 data = data,
                 defaultText = defaultText,
                 textStyle = MaterialTheme.typography.titleLarge,
+                selectedTitle = selectedChartTitle,
+                onSelectedTitleChanged = onSelectedChartTitleChanged,
             )
         }
 
@@ -418,11 +437,11 @@ private fun CategoriesPage(
                 CategoryItem(
                     category = category,
                     colorIndex = index,
-                    onClick = { onCategoryClick(category.id) },
+                    onClick = { onCategoryClick(category.name) },
                 )
             }
 
-            val isExpanded = expandedCategoryIds.contains(category.id)
+            val isExpanded = expandedCategoryNames.contains(category.name)
 
             if (isExpanded) {
                 subExpenses(category.expenses, onExpenseClick)

@@ -116,4 +116,4 @@
 - check why WatchlistAsset is using priceChangePercentage instead of calculatePnL
 - consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change
 - hide the watchlist more button
-- add average investments per month the same way it is done for expenses
+- keep the selected chart group selected after changing tabs between the same category like montly and yearly

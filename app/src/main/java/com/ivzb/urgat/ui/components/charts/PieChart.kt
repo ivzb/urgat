@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -48,6 +51,10 @@ fun PieChart(
     textFontWeight: FontWeight? = null,
     textStyle: TextStyle,
 
+    /** Hoisted selection, identified by [PieChartItem.title], so it can be shared between charts. */
+    selectedTitle: String? = null,
+    onSelectedTitleChanged: ((String?) -> Unit)? = null,
+
     modifier: Modifier = Modifier,
 ) {
     val total = data.map { it.value.absoluteValue }.sum()
@@ -55,7 +62,15 @@ fun PieChart(
     val strokeWidth = with(LocalDensity.current) { strokeWidthDp.toPx() }
 
     val sliceAngles = remember(data) { mutableListOf<PieChartSliceAngle>() }
-    val selectedIndex = remember(data) { mutableStateOf<Int?>(null) }
+    val internalSelectedTitle = rememberSaveable { mutableStateOf<String?>(null) }
+
+    // the selection is kept by title, so it survives data changes, like switching between tabs,
+    // and falls back to no selection when the title is missing from the current data
+    val currentTitle = if (onSelectedTitleChanged != null) selectedTitle else internalSelectedTitle.value
+    val selectedIndex = data.indexOfFirst { it.title == currentTitle }.takeIf { it >= 0 }
+
+    val currentTitleUpdated by rememberUpdatedState(currentTitle)
+    val onSelectedTitleChangedUpdated by rememberUpdatedState(onSelectedTitleChanged)
 
     Box(
         contentAlignment = Alignment.Center,
@@ -65,7 +80,7 @@ fun PieChart(
     ) {
 
         val offsets = data.mapIndexed { index, _ ->
-            val isSelected = selectedIndex.value == index && data.size > 1
+            val isSelected = selectedIndex == index && data.size > 1
             animateFloatAsState(targetValue = if (isSelected) 50f else 0f).value
         }
 
@@ -99,7 +114,15 @@ fun PieChart(
                         }
 
                         tappedSlice?.let {
-                            selectedIndex.value = if (selectedIndex.value != it.index) it.index else null
+                            val title = data[it.index].title
+                            val newTitle = if (currentTitleUpdated == title) null else title
+                            val onSelected = onSelectedTitleChangedUpdated
+
+                            if (onSelected != null) {
+                                onSelected(newTitle)
+                            } else {
+                                internalSelectedTitle.value = newTitle
+                            }
                         }
                     }
                 }
@@ -139,9 +162,7 @@ fun PieChart(
             }
         }
 
-        val centerText = remember(selectedIndex.value, defaultText, data) {
-            val selectedIndex = selectedIndex.value
-
+        val centerText = remember(selectedIndex, defaultText, data) {
             if (selectedIndex == null) {
                 defaultText
             } else {
