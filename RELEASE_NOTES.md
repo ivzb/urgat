@@ -1,3 +1,8 @@
+## Release notes 26.09.02
+
+New:
+- Track your funding trends at a glance with the newly added average monthly investments metric.
+
 ## Release notes 26.09.01
 
 Improved:
