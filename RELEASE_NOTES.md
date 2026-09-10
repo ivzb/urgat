@@ -1,3 +1,8 @@
+## Release notes 26.09.03
+
+Improved:
+- Selected chart group now seamlessly stays active even when switching tabs within the same category, making it easier to compare data without losing your place.
+
 ## Release notes 26.09.02
 
 New:
