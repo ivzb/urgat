@@ -11,6 +11,7 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionCategory
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentAverage
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.saving.Saving
@@ -142,6 +143,40 @@ object Group {
         InvestmentNetWorth(
             totals = Investment.total(investments),
         )
+
+    /**
+     * Average monthly investments of each year, keyed by the yearly group.
+     */
+    fun groupInvestmentAveragesYearly(investments: List<Investment>): Map<String, InvestmentAverage> =
+        byDateYearly(investments, Investment::date, ::investmentAverage)
+            .associate { (group, average, _) -> group to average }
+
+    fun groupInvestmentAverageAllTime(investments: List<Investment>): InvestmentAverage =
+        investmentAverage(investments)
+
+    /**
+     * Averages are spread over the months of the whole period,
+     * so every category and asset is comparable within the same period.
+     *
+     * A single month has no meaningful average, as it is the same as its total.
+     */
+    private fun investmentAverage(investments: List<Investment>): InvestmentAverage {
+        val months = Investment.months(investments)
+
+        if (months <= 1) {
+            return InvestmentAverage.EMPTY
+        }
+
+        return InvestmentAverage(
+            totals = Investment.averageMonthly(investments, months),
+            categories = investments
+                .groupBy { it.category }
+                .mapValues { (_, categoryInvestments) -> Investment.averageMonthly(categoryInvestments, months) },
+            assets = investments
+                .groupBy { it.name }
+                .mapValues { (_, assetInvestments) -> Investment.averageMonthly(assetInvestments, months) },
+        )
+    }
 
     fun groupExpenseCategoriesMonthly(expenses: List<Expense>, random: () -> String): List<GroupedExpenseCategories> =
         byDateMonthly(expenses, Expense::date, Expense::total)

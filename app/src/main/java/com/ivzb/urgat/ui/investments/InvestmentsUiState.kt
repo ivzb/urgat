@@ -1,6 +1,7 @@
 package com.ivzb.urgat.ui.investments
 
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentAverage
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.domain.investment.GroupedInvestmentCategories
@@ -14,6 +15,9 @@ data class InvestmentsUiState(
     val assets: List<InvestmentAsset> = listOf(),
     val categories: List<InvestmentCategory> = listOf(),
     val netWorth: InvestmentNetWorth? = null,
+
+    val averagesYearly: Map<String, InvestmentAverage> = mapOf(),
+    val averageAllTime: InvestmentAverage = InvestmentAverage.EMPTY,
 
     override val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,

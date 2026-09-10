@@ -32,6 +32,8 @@ class InvestmentsScreenshotTest: ScreenshotTest() {
             assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
             categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
             netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+            averagesYearly = SampleData.SAMPLE_INVESTMENTS_AVERAGES_YEARLY,
+            averageAllTime = SampleData.SAMPLE_INVESTMENTS_AVERAGE_ALL_TIME,
 
             isLoading = false,
             hasError = false,

@@ -86,16 +86,16 @@ fun annotateExpensesTotals(totals: List<ExpenseTotal>, prefix: String = ""): Ann
         }
     }
 
-fun annotateCostPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true): AnnotatedString = annotatePrice(totals, InvestmentTotal::costPrice, withPnL)
+fun annotateCostPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true, prefix: String = ""): AnnotatedString = annotatePrice(totals, InvestmentTotal::costPrice, withPnL, prefix)
 
-fun annotateMarketPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true): AnnotatedString = annotatePrice(totals, InvestmentTotal::marketPrice, withPnL)
+fun annotateMarketPrice(totals: List<InvestmentTotal>, withPnL: Boolean = true, prefix: String = ""): AnnotatedString = annotatePrice(totals, InvestmentTotal::marketPrice, withPnL, prefix)
 
-private fun annotatePrice(totals: List<InvestmentTotal>, price: (InvestmentTotal) -> BigDecimal, withPnL: Boolean): AnnotatedString =
+private fun annotatePrice(totals: List<InvestmentTotal>, price: (InvestmentTotal) -> BigDecimal, withPnL: Boolean, prefix: String = ""): AnnotatedString =
     buildAnnotatedString {
         totals.forEachIndexed { index, total ->
             append(
                 annotateFinancePnL(
-                    text = "${price(total).format()} ${total.currency.formatCurrency()}",
+                    text = "$prefix${price(total).format()} ${total.currency.formatCurrency()}",
                     pnl = if (withPnL) total.pnl else null,
                 )
             )

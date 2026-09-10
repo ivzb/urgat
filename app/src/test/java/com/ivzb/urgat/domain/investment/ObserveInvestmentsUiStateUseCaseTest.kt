@@ -3,6 +3,7 @@ package com.ivzb.urgat.domain.investment
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentAverage
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -12,6 +13,8 @@ import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.util.calculatePnL
+import com.ivzb.urgat.util.timestamp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -138,6 +141,69 @@ class ObserveInvestmentsUiStateUseCaseTest {
         assertTrue(uiState.filteringUiInfo.showSortBadge)
         assertFalse(uiState.isLoading)
         assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `emits averages when investments span multiple months`() = runTest {
+        emitSuccessData(categories = fakeCategoriesMultipleMonths)
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertEquals(
+            mapOf(
+                "2025" to expectedAverage2025,
+                "2024" to InvestmentAverage.EMPTY,
+            ),
+            uiState.averagesYearly,
+        )
+        assertEquals(expectedAverageAllTime, uiState.averageAllTime)
+        assertFalse(uiState.isLoading)
+        assertFalse(uiState.hasError)
+    }
+
+    @Test
+    fun `emits no averages when investments span a single month`() = runTest {
+        emitSuccessData()
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        // averaging a single month is the same as its total
+        assertEquals(listOf(InvestmentAverage.EMPTY), uiState.averagesYearly.values.toList())
+        assertEquals(InvestmentAverage.EMPTY, uiState.averageAllTime)
+    }
+
+    @Test
+    fun `emits no averages when use case returns empty data`() = runTest {
+        emitSuccessData(categories = listOf())
+
+        val searchQueryFlow = flowOf("")
+        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
+
+        val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        val uiState = results.data
+        assertTrue(uiState.averagesYearly.isEmpty())
+        assertEquals(InvestmentAverage.EMPTY, uiState.averageAllTime)
     }
 
     @Test
@@ -279,11 +345,11 @@ class ObserveInvestmentsUiStateUseCaseTest {
         assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
     }
 
-    private fun emitSuccessData() {
+    private fun emitSuccessData(categories: List<InvestmentCategory> = fakeCategories) {
         fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
         fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
-        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(fakeCategories))
+        fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(categories))
         fakeObserveInvestmentNetWorthUseCase.emit(Async.Success(fakeNetWorth))
         fakeObserveInvestmentsFilteringUseCase.emit(Async.Success(fakeInvestmentsFiltering))
         fakeObserveInvestmentsSortingUseCase.emit(Async.Success(fakeInvestmentsSorting))
@@ -352,6 +418,73 @@ class ObserveInvestmentsUiStateUseCaseTest {
                 investments = investments,
             ),
         )
+
+        /**
+         * "stocks" spans over November and December 2025, "etf" over December 2025
+         * and "gold" over December 2024 - 3 months in total.
+         */
+        private val fakeCategoriesMultipleMonths = listOf(
+            InvestmentCategory(
+                id = "1", name = "stocks",
+                totals = listOf(investmentTotal("300", "330")),
+                investments = listOf(
+                    Investment("1", "GOOGL", BigDecimal("1"), BigDecimal("100"), BigDecimal("110"), "stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+                    Investment("2", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("220"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+                ),
+            ),
+            InvestmentCategory(
+                id = "2", name = "etf",
+                totals = listOf(investmentTotal("400", "440")),
+                investments = listOf(
+                    Investment("3", "SNP 500", BigDecimal("1"), BigDecimal("400"), BigDecimal("440"), "etf", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+                ),
+            ),
+            InvestmentCategory(
+                id = "3", name = "gold",
+                totals = listOf(investmentTotal("60", "66")),
+                investments = listOf(
+                    Investment("4", "Gold", BigDecimal("1"), BigDecimal("60"), BigDecimal("66"), "gold", "USD", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+                ),
+            ),
+        )
+
+        // 700 over the 2 months of 2025
+        private val expectedAverage2025 = InvestmentAverage(
+            totals = listOf(investmentTotal("350.00", "385.00")),
+            categories = mapOf(
+                "stocks" to listOf(investmentTotal("150.00", "165.00")),
+                "etf" to listOf(investmentTotal("200.00", "220.00")),
+            ),
+            assets = mapOf(
+                "GOOGL" to listOf(investmentTotal("50.00", "55.00")),
+                "AAPL" to listOf(investmentTotal("100.00", "110.00")),
+                "SNP 500" to listOf(investmentTotal("200.00", "220.00")),
+            ),
+        )
+
+        // 760 over 3 months
+        private val expectedAverageAllTime = InvestmentAverage(
+            totals = listOf(investmentTotal("253.33", "278.67")),
+            categories = mapOf(
+                "stocks" to listOf(investmentTotal("100.00", "110.00")),
+                "etf" to listOf(investmentTotal("133.33", "146.67")),
+                "gold" to listOf(investmentTotal("20.00", "22.00")),
+            ),
+            assets = mapOf(
+                "GOOGL" to listOf(investmentTotal("33.33", "36.67")),
+                "AAPL" to listOf(investmentTotal("66.67", "73.33")),
+                "SNP 500" to listOf(investmentTotal("133.33", "146.67")),
+                "Gold" to listOf(investmentTotal("20.00", "22.00")),
+            ),
+        )
+
+        private fun investmentTotal(costPrice: String, marketPrice: String, currency: String = "USD") =
+            InvestmentTotal(
+                currency = currency,
+                costPrice = BigDecimal(costPrice),
+                marketPrice = BigDecimal(marketPrice),
+                pnl = calculatePnL(BigDecimal(costPrice), BigDecimal(marketPrice)),
+            )
 
         private val fakeInvestmentsFiltering = listOf(
             FilterMenuItem(type = "stocks", label = "stocks", size = 1),

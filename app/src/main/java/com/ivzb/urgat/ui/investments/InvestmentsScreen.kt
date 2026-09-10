@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentAverage
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -132,6 +133,7 @@ fun InvestmentsScreen(
             when (page) {
                 InvestmentsPage.Yearly -> GroupedCategoriesPage(
                     categories = uiState.categoriesYearly,
+                    averages = uiState.averagesYearly,
                     filteringUiInfo = uiState.filteringUiInfo,
                     expandedCategoryIds = expandedYearlyIds,
                     onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
@@ -145,6 +147,8 @@ fun InvestmentsScreen(
                     total = annotateMarketPrice(uiState.netWorth?.totals ?: listOf()),
                     categories = uiState.categories,
                     expandedCategoryIds = expandedCategoryIds,
+
+                    average = uiState.averageAllTime,
 
                     filteringUiInfo = uiState.filteringUiInfo,
                     onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
@@ -162,6 +166,8 @@ fun InvestmentsScreen(
 
                     assets = uiState.assets,
                     expandedAssetIds = expandedAssetIds,
+
+                    average = uiState.averageAllTime,
 
                     filteringUiInfo = uiState.filteringUiInfo,
                     onResetFilters = { onIntent(InvestmentsIntent.ResetFilters) },
@@ -242,6 +248,7 @@ fun TransactionsPage(
 @Composable
 private fun GroupedCategoriesPage(
     categories: List<GroupedInvestmentCategories>,
+    averages: Map<String, InvestmentAverage>,
     filteringUiInfo: FilteringUiInfo,
     expandedCategoryIds: List<String>,
     onCategoryClick: (String) -> Unit,
@@ -306,6 +313,8 @@ private fun GroupedCategoriesPage(
                 categories = category.items,
                 expandedCategoryIds = expandedCategoryIds,
 
+                average = averages[category.group] ?: InvestmentAverage.EMPTY,
+
                 filteringUiInfo = filteringUiInfo,
                 onResetFilters = onResetFilters,
 
@@ -326,6 +335,8 @@ private fun CategoriesPage(
 
     categories: List<InvestmentCategory>,
     expandedCategoryIds: List<String>,
+
+    average: InvestmentAverage,
 
     filteringUiInfo: FilteringUiInfo,
     onResetFilters: () -> Unit,
@@ -349,6 +360,8 @@ private fun CategoriesPage(
         return
     }
 
+    val averagePrefix = stringResource(R.string.average_monthly)
+
     LazyColumn(
         contentPadding = PaddingValues(
             horizontal = dimensionResource(R.dimen.horizontal_margin),
@@ -363,6 +376,13 @@ private fun CategoriesPage(
             val lastExpandedId = expandedCategoryIds.lastOrNull()
             val expandedCategory = categories.firstOrNull { it.id == lastExpandedId }
 
+            val averageTotals = expandedCategory
+                ?.let { average.categories[it.name].orEmpty() }
+                ?: average.totals
+
+            // the average is what was put in per month, so it reads the cost price without its P&L
+            val averageText = annotateCostPrice(averageTotals, withPnL = false, prefix = "$averagePrefix ")
+
             val data: List<PieChartItem>
             val defaultText: AnnotatedString
 
@@ -375,7 +395,7 @@ private fun CategoriesPage(
                         total = annotateMarketPrice(it.totals),
                     )
                 }
-                defaultText = annotateChart(group, total)
+                defaultText = annotateChart(group, total, averageText)
             } else {
                 // expanded category pie chart
                 data = expandedCategory.investments
@@ -389,7 +409,7 @@ private fun CategoriesPage(
                             total = annotateMarketPrice(investmentTotal),
                         )
                     }
-                defaultText = annotateChart(expandedCategory.name, annotateMarketPrice(expandedCategory.totals))
+                defaultText = annotateChart(expandedCategory.name, annotateMarketPrice(expandedCategory.totals), averageText)
             }
 
             PieChart(
@@ -432,6 +452,8 @@ private fun AssetsPage(
     assets: List<InvestmentAsset>,
     expandedAssetIds: List<String>,
 
+    average: InvestmentAverage,
+
     filteringUiInfo: FilteringUiInfo,
     onResetFilters: () -> Unit,
 
@@ -455,6 +477,8 @@ private fun AssetsPage(
         return
     }
 
+    val averagePrefix = stringResource(R.string.average_monthly)
+
     LazyColumn(
         contentPadding = PaddingValues(
             horizontal = dimensionResource(R.dimen.horizontal_margin),
@@ -469,6 +493,13 @@ private fun AssetsPage(
             val lastExpandedId = expandedAssetIds.lastOrNull()
             val expandedAsset = assets.firstOrNull { it.id == lastExpandedId }
 
+            val averageTotals = expandedAsset
+                ?.let { average.assets[it.name].orEmpty() }
+                ?: average.totals
+
+            // the average is what was put in per month, so it reads the cost price without its P&L
+            val averageText = annotateCostPrice(averageTotals, withPnL = false, prefix = "$averagePrefix ")
+
             val data: List<PieChartItem>
             val defaultText: AnnotatedString
 
@@ -481,7 +512,7 @@ private fun AssetsPage(
                         total = annotateMarketPrice(it.totals),
                     )
                 }
-                defaultText = annotateChart(group, total)
+                defaultText = annotateChart(group, total, averageText)
             } else {
                 // expanded asset pie chart
                 data = expandedAsset.investments
@@ -495,7 +526,7 @@ private fun AssetsPage(
                             total = annotateMarketPrice(investmentTotal),
                         )
                     }
-                defaultText = annotateChart(expandedAsset.name, annotateMarketPrice(expandedAsset.totals))
+                defaultText = annotateChart(expandedAsset.name, annotateMarketPrice(expandedAsset.totals), averageText)
             }
 
             PieChart(
@@ -629,6 +660,8 @@ private fun InvestmentsScreenPreview(initialPage: Int = 0) {
                 assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
                 categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
                 netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+                averagesYearly = SampleData.SAMPLE_INVESTMENTS_AVERAGES_YEARLY,
+                averageAllTime = SampleData.SAMPLE_INVESTMENTS_AVERAGE_ALL_TIME,
                 filteringUiInfo = InvestmentsFilteringUiInfo(),
                 isLoading = false,
                 hasError = false,

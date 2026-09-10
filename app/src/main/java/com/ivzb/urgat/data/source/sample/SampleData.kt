@@ -206,6 +206,12 @@ object SampleData {
     val SAMPLE_INVESTMENTS_ASSETS =
         Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
 
+    val SAMPLE_INVESTMENTS_AVERAGES_YEARLY =
+        Group.groupInvestmentAveragesYearly(SAMPLE_INVESTMENTS)
+
+    val SAMPLE_INVESTMENTS_AVERAGE_ALL_TIME =
+        Group.groupInvestmentAverageAllTime(SAMPLE_INVESTMENTS)
+
     val SAMPLE_SAVINGS =
         listOf(
             listOf("Emergency fund", "500"),

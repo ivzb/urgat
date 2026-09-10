@@ -2,9 +2,12 @@ package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.util.UNKNOWN
 import com.ivzb.urgat.util.calculatePnL
+import com.ivzb.urgat.util.div
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
+import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
+import java.time.YearMonth
 
 data class Investment(
     val id: String,
@@ -68,6 +71,42 @@ data class Investment(
                     )
                 }
                 .sortedBy { it.currency }
+
+        /**
+         * Amount of distinct months the given [investments] span over.
+         */
+        fun months(investments: List<Investment>): Int =
+            investments
+                .map { YearMonth.from(it.date.toLocalDate()) }
+                .distinct()
+                .size
+
+        /**
+         * Average monthly totals per currency of the given [investments],
+         * spread over [months] (defaults to the months the [investments] span over).
+         *
+         * Both prices are spread over the same months, so the P&L of the average
+         * reads the same as the P&L of the period it was taken from.
+         */
+        fun averageMonthly(
+            investments: List<Investment>,
+            months: Int = months(investments),
+        ): List<InvestmentTotal> =
+            if (months <= 0) {
+                listOf()
+            } else {
+                total(investments).map { total ->
+                    val costPrice = total.costPrice / months.toBigDecimal()
+                    val marketPrice = total.marketPrice / months.toBigDecimal()
+
+                    InvestmentTotal(
+                        currency = total.currency,
+                        costPrice = costPrice,
+                        marketPrice = marketPrice,
+                        pnl = calculatePnL(costPrice, marketPrice),
+                    )
+                }
+            }
 
         suspend fun total(
             investments: List<Investment>?,

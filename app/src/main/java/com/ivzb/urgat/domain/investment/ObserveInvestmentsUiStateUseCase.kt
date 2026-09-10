@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.investment
 
+import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
@@ -51,12 +52,16 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
             InvestmentsUiState(hasError = true)
         },
         onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering, sorting, (searchQuery, filterType, sortType) ->
+            val allInvestments = categories.flatMap { it.investments }
+
             InvestmentsUiState(
                 investments = investments,
                 categoriesYearly = categoriesYearly,
                 assets = assets,
                 categories = categories,
                 netWorth = netWorth,
+                averagesYearly = Group.groupInvestmentAveragesYearly(allInvestments),
+                averageAllTime = Group.groupInvestmentAverageAllTime(allInvestments),
                 filteringUiInfo = InvestmentsFilteringUiInfo.from(
                     searchQuery = searchQuery,
                     filterType = filterType,

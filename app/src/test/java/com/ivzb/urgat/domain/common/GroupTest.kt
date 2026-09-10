@@ -8,6 +8,7 @@ import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
+import com.ivzb.urgat.data.investment.InvestmentAverage
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentNetWorth
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -325,6 +326,84 @@ class GroupTest {
 
         assertEquals(expected, actual)
     }
+
+    @Test
+    fun groupInvestmentAveragesYearly() {
+        val investments = listOf(
+            Investment("1", "GOOGL", BigDecimal("1"), BigDecimal("100"), BigDecimal("110"), "stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Investment("2", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("220"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Investment("3", "SNP 500", BigDecimal("1"), BigDecimal("400"), BigDecimal("440"), "etf", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Investment("4", "GOOGL", BigDecimal("1"), BigDecimal("60"), BigDecimal("66"), "stocks", "USD", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+        )
+
+        val expected = mapOf(
+            // 700 over the 2 months of 2025
+            "2025" to InvestmentAverage(
+                totals = listOf(investmentTotal("350.00", "385.00")),
+                categories = mapOf(
+                    "stocks" to listOf(investmentTotal("150.00", "165.00")),
+                    "etf" to listOf(investmentTotal("200.00", "220.00")),
+                ),
+                assets = mapOf(
+                    "GOOGL" to listOf(investmentTotal("50.00", "55.00")),
+                    "AAPL" to listOf(investmentTotal("100.00", "110.00")),
+                    "SNP 500" to listOf(investmentTotal("200.00", "220.00")),
+                ),
+            ),
+            // a single month has no meaningful average
+            "2024" to InvestmentAverage.EMPTY,
+        )
+
+        val actual = Group.groupInvestmentAveragesYearly(investments)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun groupInvestmentAverageAllTime() {
+        val investments = listOf(
+            Investment("1", "GOOGL", BigDecimal("1"), BigDecimal("100"), BigDecimal("110"), "stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
+            Investment("2", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("220"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Investment("3", "SNP 500", BigDecimal("1"), BigDecimal("400"), BigDecimal("440"), "etf", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+            Investment("4", "GOOGL", BigDecimal("1"), BigDecimal("60"), BigDecimal("66"), "stocks", "USD", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),
+        )
+
+        // 760 over 3 months
+        val expected = InvestmentAverage(
+            totals = listOf(investmentTotal("253.33", "278.67")),
+            categories = mapOf(
+                "stocks" to listOf(investmentTotal("120.00", "132.00")),
+                "etf" to listOf(investmentTotal("133.33", "146.67")),
+            ),
+            assets = mapOf(
+                "GOOGL" to listOf(investmentTotal("53.33", "58.67")),
+                "AAPL" to listOf(investmentTotal("66.67", "73.33")),
+                "SNP 500" to listOf(investmentTotal("133.33", "146.67")),
+            ),
+        )
+
+        val actual = Group.groupInvestmentAverageAllTime(investments)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `groupInvestmentAverageAllTime should be empty when investments span a single month`() {
+        val investments = listOf(
+            Investment("1", "GOOGL", BigDecimal("1"), BigDecimal("100"), BigDecimal("110"), "stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
+            Investment("2", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("220"), "stocks", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
+        )
+
+        assertEquals(InvestmentAverage.EMPTY, Group.groupInvestmentAverageAllTime(investments))
+    }
+
+    private fun investmentTotal(costPrice: String, marketPrice: String, currency: String = "USD") =
+        InvestmentTotal(
+            currency = currency,
+            costPrice = BigDecimal(costPrice),
+            marketPrice = BigDecimal(marketPrice),
+            pnl = calculatePnL(BigDecimal(costPrice), BigDecimal(marketPrice)),
+        )
 
     @Test
     fun groupExpenseCategoriesMonthly() {
