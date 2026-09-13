@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_SEARCH_QUERY
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
@@ -217,13 +218,24 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
 
     @Test
     fun `invoke should filter items by fuel type before grouping`() = runTest(testDispatcher) {
+        `invoke should filter items before grouping by`(FuelConsumptionFilter(type = "Diesel"))
+    }
+
+    @Test
+    fun `invoke should filter items by car before grouping`() = runTest(testDispatcher) {
+        `invoke should filter items before grouping by`(FuelConsumptionFilter(carName = "Mercedes w140"))
+    }
+
+    private fun `invoke should filter items before grouping by`(
+        filter: FuelConsumptionFilter,
+    ) = runTest(testDispatcher) {
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
-        val filterTypeFlow = flowOf("Diesel")
+        val filterTypeFlow = flowOf(filter)
         val limitFlow = flowOf(10)
 
         val diesel = makeFuelConsumption("fc_1", amount = "45.5", type = "Diesel", date = 86_400_000L)
-        val petrol = makeFuelConsumption("fc_2", amount = "40.0", type = "Petrol", date = 172_800_000L)
+        val petrol = makeFuelConsumption("fc_2", amount = "40.0", type = "Petrol", carName = "BMW e39", date = 172_800_000L)
 
         every { repository.observe(10, NO_DATE_RANGE) } returns flowOf(listOf(diesel, petrol))
 

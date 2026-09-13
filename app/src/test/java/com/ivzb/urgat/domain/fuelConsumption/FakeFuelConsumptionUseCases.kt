@@ -2,6 +2,7 @@ package com.ivzb.urgat.domain.fuelConsumption
 
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionCategory
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortMenuItem
@@ -20,7 +21,10 @@ class FakeObserveFuelConsumptionUiStateUseCase : ObserveFuelConsumptionUiStateUs
     private val flow = MutableStateFlow<Async<FuelConsumptionUiState>>(Async.Loading)
 
     var lastQuery: String = ""
-    var lastFilterType: String = FuelConsumptionFilterType_All
+    var lastFilter: FuelConsumptionFilter = FuelConsumptionFilter.None
+
+    val lastFilterType: String get() = lastFilter.type
+    val lastCarFilter: String get() = lastFilter.carName
 
     fun emit(value: Async<FuelConsumptionUiState>) {
         flow.value = value
@@ -28,14 +32,14 @@ class FakeObserveFuelConsumptionUiStateUseCase : ObserveFuelConsumptionUiStateUs
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<String>,
+        filterFlow: Flow<FuelConsumptionFilter>,
         sortTypeFlow: Flow<FuelConsumptionSortType>,
     ): Flow<Async<FuelConsumptionUiState>> {
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow.collect { lastQuery = it }
         }
         CoroutineScope(Dispatchers.Unconfined).launch {
-            filterTypeFlow.collect { lastFilterType = it }
+            filterFlow.collect { lastFilter = it }
         }
         return flow
     }
@@ -75,7 +79,7 @@ class FakeObserveGroupedFuelConsumptionMonthlyUseCase : ObserveGroupedFuelConsum
     override fun invoke(
         searchQueryFlow: Flow<String>?,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
+        filterTypeFlow: Flow<FuelConsumptionFilter>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumption>>> {
@@ -100,7 +104,7 @@ class FakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase : ObserveGrouped
     override fun invoke(
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
+        filterTypeFlow: Flow<FuelConsumptionFilter>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumptionCategories>>> {
@@ -125,7 +129,7 @@ class FakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase : ObserveGroupedF
     override fun invoke(
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
+        filterTypeFlow: Flow<FuelConsumptionFilter>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumptionCategories>>> {
@@ -150,7 +154,7 @@ class FakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase : ObserveGrouped
     override fun invoke(
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
+        filterTypeFlow: Flow<FuelConsumptionFilter>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<FuelConsumptionCategory>>> {
@@ -163,6 +167,20 @@ class FakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase : ObserveGrouped
 }
 
 class FakeObserveFuelConsumptionFilteringUseCase : ObserveFuelConsumptionFilteringUseCase {
+
+    private val flow = MutableStateFlow<Async<List<FuelConsumptionFilterMenuItem>>>(Async.Loading)
+
+    fun emit(value: Async<List<FuelConsumptionFilterMenuItem>>) {
+        flow.value = value
+    }
+
+    override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> {
+        return flow
+    }
+
+}
+
+class FakeObserveFuelConsumptionCarFilteringUseCase : ObserveFuelConsumptionCarFilteringUseCase {
 
     private val flow = MutableStateFlow<Async<List<FuelConsumptionFilterMenuItem>>>(Async.Loading)
 

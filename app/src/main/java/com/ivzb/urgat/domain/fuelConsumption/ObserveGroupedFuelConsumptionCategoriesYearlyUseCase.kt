@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.domain.common.Group.groupFuelConsumptionCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,7 @@ interface ObserveGroupedFuelConsumptionCategoriesYearlyUseCase {
     operator fun invoke(
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
+        filterTypeFlow: Flow<FuelConsumptionFilter>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumptionCategories>>>
@@ -41,7 +42,7 @@ class DefaultObserveGroupedFuelConsumptionCategoriesYearlyUseCase @Inject constr
     override fun invoke(
         searchQueryFlow: Flow<String>,
         dateRangeFlow: Flow<LongRange>?,
-        filterTypeFlow: Flow<String>?,
+        filterTypeFlow: Flow<FuelConsumptionFilter>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
     ): Flow<Async<List<GroupedFuelConsumptionCategories>>> = observeGroupedUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)

@@ -36,7 +36,7 @@ class ObserveFuelConsumptionFilteringUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Success with grouped fuel types sorted by size`() = runTest(testDispatcher) {
+    fun `invoke should return Success with all filter item followed by fuel types sorted by size desc`() = runTest(testDispatcher) {
         val expected = listOf(
             FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 5),
             FilterMenuItem(type = "Diesel", label = "Diesel", size = 3),
@@ -45,11 +45,11 @@ class ObserveFuelConsumptionFilteringUseCaseTest {
 
         val repositoryStream = flowOf(
             listOf(
-                fuelConsumption(id = "1", type = "Diesel"),
-                fuelConsumption(id = "2", type = "Diesel"),
-                fuelConsumption(id = "3", type = "Petrol"),
-                fuelConsumption(id = "4", type = "Petrol"),
-                fuelConsumption(id = "5", type = "Diesel"),
+                fuelConsumption(id = "1", type = "Diesel", carName = "Mercedes w140"),
+                fuelConsumption(id = "2", type = "Diesel", carName = "BMW e39"),
+                fuelConsumption(id = "3", type = "Petrol", carName = "BMW e39"),
+                fuelConsumption(id = "4", type = "Petrol", carName = "Mercedes w140"),
+                fuelConsumption(id = "5", type = "Diesel", carName = "Mercedes w140"),
             )
         )
 
@@ -95,14 +95,15 @@ class ObserveFuelConsumptionFilteringUseCaseTest {
 
     private fun fuelConsumption(
         id: String,
-        type: String,
+        type: String = "Diesel",
+        carName: String = "Mercedes w140",
     ) = FuelConsumption(
         id = id,
         amount = BigDecimal("45.5"),
         price = BigDecimal("2.35"),
         currency = "EUR",
         type = type,
-        carName = "Mercedes w140",
+        carName = carName,
         odometer = 150000,
         distance = 500,
         date = 1000L,

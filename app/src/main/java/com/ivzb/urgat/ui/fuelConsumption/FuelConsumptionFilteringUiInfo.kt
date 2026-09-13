@@ -2,9 +2,6 @@ package com.ivzb.urgat.ui.fuelConsumption
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.components.FilteringUiInfo
-import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
-import com.ivzb.urgat.ui.expenses.ExpensesFilterType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 
 data class FuelConsumptionFilteringUiInfo(
     val currentFilteringLabel: Int = R.string.transactions,
@@ -25,6 +22,9 @@ data class FuelConsumptionFilteringUiInfo(
     val filterMenuItems: List<FuelConsumptionFilterMenuItem> = listOf(),
     val showFilterBadge: Boolean = false,
 
+    val carFilterMenuItems: List<FuelConsumptionFilterMenuItem> = listOf(),
+    val showCarFilterBadge: Boolean = false,
+
     val sortMenuItems: List<FuelConsumptionSortMenuItem> = listOf(),
     val showSortBadge: Boolean = false,
 ) : FilteringUiInfo {
@@ -33,14 +33,16 @@ data class FuelConsumptionFilteringUiInfo(
 
         fun from(
             searchQuery: String,
-            filterType: String,
+            filter: FuelConsumptionFilter,
             filterMenuItems: List<FuelConsumptionFilterMenuItem>,
+            carFilterMenuItems: List<FuelConsumptionFilterMenuItem>,
             sortType: FuelConsumptionSortType,
             sortMenuItems: List<FuelConsumptionSortMenuItem>,
         ): FuelConsumptionFilteringUiInfo {
-            val showFilterBadge = filterType != InvestmentsFilterType_All
+            val showFilterBadge = filter.hasType
+            val showCarFilterBadge = filter.hasCar
             val showSortBadge = sortType != FuelConsumptionSortType.BY_DATE
-            val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
+            val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showCarFilterBadge || showSortBadge
 
             return FuelConsumptionFilteringUiInfo(
                 emptyLabel = when {
@@ -61,6 +63,9 @@ data class FuelConsumptionFilteringUiInfo(
 
                 filterMenuItems = filterMenuItems,
                 showFilterBadge = showFilterBadge,
+
+                carFilterMenuItems = carFilterMenuItems,
+                showCarFilterBadge = showCarFilterBadge,
 
                 sortMenuItems = sortMenuItems,
                 showSortBadge = showSortBadge,

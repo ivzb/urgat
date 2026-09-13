@@ -8,6 +8,7 @@ import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_PAGES
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
@@ -31,6 +32,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     private lateinit var fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase: FakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase
     private lateinit var fakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase: FakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase
     private lateinit var fakeObserveFuelConsumptionFilteringUseCase: FakeObserveFuelConsumptionFilteringUseCase
+    private lateinit var fakeObserveFuelConsumptionCarFilteringUseCase: FakeObserveFuelConsumptionCarFilteringUseCase
     private lateinit var fakeObserveFuelConsumptionSortingUseCase: FakeObserveFuelConsumptionSortingUseCase
 
     private lateinit var useCase: ObserveFuelConsumptionUiStateUseCase
@@ -42,6 +44,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase = FakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase()
         fakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase = FakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase()
         fakeObserveFuelConsumptionFilteringUseCase = FakeObserveFuelConsumptionFilteringUseCase()
+        fakeObserveFuelConsumptionCarFilteringUseCase = FakeObserveFuelConsumptionCarFilteringUseCase()
         fakeObserveFuelConsumptionSortingUseCase = FakeObserveFuelConsumptionSortingUseCase()
 
         useCase = DefaultObserveFuelConsumptionUiStateUseCase(
@@ -50,6 +53,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
             fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase,
             fakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase,
             fakeObserveFuelConsumptionFilteringUseCase,
+            fakeObserveFuelConsumptionCarFilteringUseCase,
             fakeObserveFuelConsumptionSortingUseCase,
         )
     }
@@ -61,10 +65,11 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase.emit(Async.Loading)
         fakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase.emit(Async.Loading)
         fakeObserveFuelConsumptionFilteringUseCase.emit(Async.Loading)
+        fakeObserveFuelConsumptionCarFilteringUseCase.emit(Async.Loading)
         fakeObserveFuelConsumptionSortingUseCase.emit(Async.Loading)
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(FuelConsumptionFilterType_All)
+        val filterTypeFlow = flowOf(FuelConsumptionFilter.None)
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -88,7 +93,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(FuelConsumptionFilterType_All)
+        val filterTypeFlow = flowOf(FuelConsumptionFilter.None)
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -102,7 +107,9 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         assertEquals(fakeCategoriesYearly, uiState.categoriesYearly)
         assertEquals(fakeCategoriesAllTime, uiState.categoriesAllTime)
         assertEquals(fakeFiltering, uiState.filteringUiInfo.filterMenuItems)
+        assertEquals(fakeCarFiltering, uiState.filteringUiInfo.carFilterMenuItems)
         assertFalse(uiState.filteringUiInfo.showFilterBadge)
+        assertFalse(uiState.filteringUiInfo.showCarFilterBadge)
         assertEquals(fakeSorting, uiState.filteringUiInfo.sortMenuItems)
         assertFalse(uiState.filteringUiInfo.showSortBadge)
         assertFalse(uiState.filteringUiInfo.hasAppliedFilters)
@@ -119,7 +126,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("diesel")
-        val filterTypeFlow = flowOf("Diesel")
+        val filterTypeFlow = flowOf(FuelConsumptionFilter(type = "Diesel"))
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_MAX)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -147,10 +154,11 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase.emit(Async.Error)
         fakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase.emit(Async.Error)
         fakeObserveFuelConsumptionFilteringUseCase.emit(Async.Error)
+        fakeObserveFuelConsumptionCarFilteringUseCase.emit(Async.Error)
         fakeObserveFuelConsumptionSortingUseCase.emit(Async.Error)
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(FuelConsumptionFilterType_All)
+        val filterTypeFlow = flowOf(FuelConsumptionFilter.None)
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -168,7 +176,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(FuelConsumptionFilterType_All)
+        val filterTypeFlow = flowOf(FuelConsumptionFilter.None)
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
         advanceUntilIdle()
@@ -182,7 +190,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(FuelConsumptionFilterType_All)
+        val filterTypeFlow = flowOf(FuelConsumptionFilter.None)
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_MIN)
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
         advanceUntilIdle()
@@ -196,7 +204,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(FuelConsumptionFilterType_All)
+        val filterTypeFlow = flowOf(FuelConsumptionFilter.None)
         val sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE)
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
         advanceUntilIdle()
@@ -212,7 +220,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
 
         val results = useCase(
             searchQueryFlow = flowOf(""),
-            filterTypeFlow = flowOf("Diesel"),
+            filterFlow = flowOf(FuelConsumptionFilter(type = "Diesel")),
             sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE),
         ).first()
 
@@ -223,12 +231,48 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         assertTrue(results.data.filteringUiInfo.hasAppliedFilters)
     }
 
+    @Test
+    fun `car filter badge is true for specific car and leaves fuel type badge untouched`() = runTest {
+        emitSuccessData()
+
+        val results = useCase(
+            searchQueryFlow = flowOf(""),
+            filterFlow = flowOf(FuelConsumptionFilter(carName = "Mercedes w140")),
+            sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE),
+        ).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        assertTrue(results.data.filteringUiInfo.showCarFilterBadge)
+        assertFalse(results.data.filteringUiInfo.showFilterBadge)
+        assertTrue(results.data.filteringUiInfo.hasAppliedFilters)
+    }
+
+    @Test
+    fun `both filter badges are true when fuel type and car are filtered`() = runTest {
+        emitSuccessData()
+
+        val results = useCase(
+            searchQueryFlow = flowOf(""),
+            filterFlow = flowOf(FuelConsumptionFilter(type = "Diesel", carName = "Mercedes w140")),
+            sortTypeFlow = flowOf(FuelConsumptionSortType.BY_DATE),
+        ).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        assertTrue(results.data.filteringUiInfo.showFilterBadge)
+        assertTrue(results.data.filteringUiInfo.showCarFilterBadge)
+    }
+
     private fun emitSuccessData() {
         fakeObserveGroupedFuelConsumptionMonthlyUseCase.emit(Async.Success(fakeGroupedFuelConsumption))
         fakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase.emit(Async.Success(fakeCategoriesMonthly))
         fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
         fakeObserveGroupedFuelConsumptionCategoriesAllTimeUseCase.emit(Async.Success(fakeCategoriesAllTime))
         fakeObserveFuelConsumptionFilteringUseCase.emit(Async.Success(fakeFiltering))
+        fakeObserveFuelConsumptionCarFilteringUseCase.emit(Async.Success(fakeCarFiltering))
         fakeObserveFuelConsumptionSortingUseCase.emit(Async.Success(fakeSorting))
     }
 
@@ -289,6 +333,11 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         private val fakeFiltering = listOf(
             FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 2),
             FilterMenuItem(type = "Diesel", label = "Diesel", size = 2),
+        )
+
+        private val fakeCarFiltering = listOf(
+            FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 2),
+            FilterMenuItem(type = "Mercedes w140", label = "Mercedes w140", size = 2),
         )
 
         private val fakeSorting = listOf(

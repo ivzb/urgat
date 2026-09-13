@@ -58,6 +58,7 @@
     <string name="more">More</string>
     <string name="close">Close</string>
     <string name="menu_filter">Filter</string>
+    <string name="menu_filter_car">Filter by car</string>
     <string name="menu_sort">Sort</string>
     <string name="filter_all">All</string>
     <string name="filter_active">Active</string>

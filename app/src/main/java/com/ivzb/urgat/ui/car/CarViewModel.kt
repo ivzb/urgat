@@ -9,6 +9,7 @@ import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.UiEventHolder
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
@@ -16,6 +17,7 @@ import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,14 +34,18 @@ class CarViewModel @Inject constructor(
 
     private val _searchQuery = carRepository.searchQueryFlow
 
-    private val _savedFuelConsumptionFilterType = carRepository.fuelConsumptionFilterTypeFlow
+    private val _savedFuelConsumptionFilter = combine(
+        carRepository.fuelConsumptionFilterTypeFlow,
+        carRepository.fuelConsumptionCarFilterFlow,
+        ::FuelConsumptionFilter,
+    )
     private val _savedFuelConsumptionSortType = carRepository.fuelConsumptionSortTypeFlow
 
     private val _savedCarMaintenanceFilterType = carRepository.carMaintenanceFilterTypeFlow
     private val _savedCarMaintenanceSortType = carRepository.carMaintenanceSortTypeFlow
 
     val uiState: StateFlow<CarUiState> = combineUiState(
-        observeFuelConsumptionUiStateUseCase(_searchQuery, _savedFuelConsumptionFilterType, _savedFuelConsumptionSortType),
+        observeFuelConsumptionUiStateUseCase(_searchQuery, _savedFuelConsumptionFilter, _savedFuelConsumptionSortType),
         observeCarMaintenanceUiStateUseCase(_searchQuery, _savedCarMaintenanceFilterType, _savedCarMaintenanceSortType),
         _searchQuery.map { Async.Success(it) },
         uiEventHolder(),
@@ -75,6 +81,7 @@ class CarViewModel @Inject constructor(
             is CarIntent.FabActionClick -> onFabActionClick(intent.page)
 
             is CarIntent.SetFuelConsumptionFiltering -> setFuelConsumptionFiltering(intent.filterType)
+            is CarIntent.SetFuelConsumptionCarFiltering -> setFuelConsumptionCarFiltering(intent.carName)
             is CarIntent.SetFuelConsumptionSorting -> setFuelConsumptionSorting(intent.sortType)
 
             is CarIntent.SetCarMaintenanceFiltering -> setCarMaintenanceFiltering(intent.filterType)
@@ -108,6 +115,12 @@ class CarViewModel @Inject constructor(
         }
     }
 
+    private fun setFuelConsumptionCarFiltering(carName: String) {
+        viewModelScope.launch {
+            carRepository.updateFuelConsumptionCarFilter(carName)
+        }
+    }
+
     private fun setFuelConsumptionSorting(sortType: FuelConsumptionSortType) {
         viewModelScope.launch {
             carRepository.updateFuelConsumptionSortType(sortType)
@@ -135,6 +148,7 @@ class CarViewModel @Inject constructor(
     private fun resetFilters() {
         onSearchQueryChanged("")
         setFuelConsumptionFiltering(FuelConsumptionFilterType_All)
+        setFuelConsumptionCarFiltering(FuelConsumptionFilterType_All)
         setFuelConsumptionSorting(FuelConsumptionSortType.BY_DATE)
         setCarMaintenanceFiltering(CarMaintenanceFilterType_All)
         setCarMaintenanceSorting(CarMaintenanceSortType.BY_DATE)

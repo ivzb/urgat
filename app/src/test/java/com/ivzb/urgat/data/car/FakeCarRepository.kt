@@ -14,6 +14,9 @@ class FakeCarRepository : CarRepository {
     override val fuelConsumptionFilterTypeFlow = MutableStateFlow(FuelConsumptionFilterType_All)
     override suspend fun updateFuelConsumptionFilterType(value: String) { fuelConsumptionFilterTypeFlow.value = value }
 
+    override val fuelConsumptionCarFilterFlow = MutableStateFlow(FuelConsumptionFilterType_All)
+    override suspend fun updateFuelConsumptionCarFilter(value: String) { fuelConsumptionCarFilterFlow.value = value }
+
     override val fuelConsumptionSortTypeFlow = MutableStateFlow(FuelConsumptionSortType.BY_DATE)
     override suspend fun updateFuelConsumptionSortType(value: FuelConsumptionSortType) { fuelConsumptionSortTypeFlow.value = value }
 

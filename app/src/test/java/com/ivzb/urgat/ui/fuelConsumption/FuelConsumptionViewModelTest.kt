@@ -10,6 +10,7 @@ import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumption
 import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumptionCategories
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.SortMenuItem
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.util.Async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -134,7 +135,35 @@ class FuelConsumptionViewModelTest {
         advanceUntilIdle()
 
         assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals("Diesel", fakeObserveFuelConsumptionUiStateUseCase.lastFilterType)
+    }
+
+    @Test
+    fun `set car filtering updates repository and use case input`() = runTest {
+        fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState()))
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FuelConsumptionIntent.SetCarFiltering("Mercedes w140"))
+        advanceUntilIdle()
+
+        assertEquals("Mercedes w140", fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+        assertEquals("Mercedes w140", fakeObserveFuelConsumptionUiStateUseCase.lastCarFilter)
+    }
+
+    @Test
+    fun `type and car filters reach the use case together`() = runTest {
+        fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState()))
+        viewModel = createViewModel()
+
+        viewModel.onIntent(FuelConsumptionIntent.SetFiltering("Diesel"))
+        viewModel.onIntent(FuelConsumptionIntent.SetCarFiltering("Mercedes w140"))
+        advanceUntilIdle()
+
+        assertEquals(
+            FuelConsumptionFilter(type = "Diesel", carName = "Mercedes w140"),
+            fakeObserveFuelConsumptionUiStateUseCase.lastFilter,
+        )
     }
 
     @Test
@@ -153,11 +182,13 @@ class FuelConsumptionViewModelTest {
 
         viewModel.onIntent(FuelConsumptionIntent.SearchQueryChanged("diesel"))
         viewModel.onIntent(FuelConsumptionIntent.SetFiltering("Diesel"))
+        viewModel.onIntent(FuelConsumptionIntent.SetCarFiltering("Mercedes w140"))
         viewModel.onIntent(FuelConsumptionIntent.SetSorting(FuelConsumptionSortType.BY_MAX))
         advanceUntilIdle()
 
         assertEquals("diesel", fakeCarRepository.searchQueryFlow.value)
         assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals("Mercedes w140", fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals(FuelConsumptionSortType.BY_MAX, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
 
         viewModel.onIntent(FuelConsumptionIntent.ResetFilters)
@@ -165,6 +196,7 @@ class FuelConsumptionViewModelTest {
 
         assertEquals("", fakeCarRepository.searchQueryFlow.value)
         assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals(FuelConsumptionSortType.BY_DATE, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
     }
 

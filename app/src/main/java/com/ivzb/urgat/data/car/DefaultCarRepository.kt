@@ -29,6 +29,12 @@ class DefaultCarRepository @Inject constructor(
         dataStore.edit { it[FUEL_CONSUMPTION_FILTER_TYPE] = value }
     }
 
+    override val fuelConsumptionCarFilterFlow: Flow<String> = dataStoreStringFlow(dataStore, FUEL_CONSUMPTION_CAR_FILTER, FuelConsumptionFilterType_All)
+
+    override suspend fun updateFuelConsumptionCarFilter(value: String) {
+        dataStore.edit { it[FUEL_CONSUMPTION_CAR_FILTER] = value }
+    }
+
     override val fuelConsumptionSortTypeFlow: Flow<FuelConsumptionSortType> = dataStoreEnumFlow(dataStore, FUEL_CONSUMPTION_SORT_TYPE, FuelConsumptionSortType.BY_DATE)
 
     override suspend fun updateFuelConsumptionSortType(value: FuelConsumptionSortType) {
@@ -52,6 +58,8 @@ class DefaultCarRepository @Inject constructor(
         private val SEARCH_QUERY = stringPreferencesKey("car_search_query")
 
         private val FUEL_CONSUMPTION_FILTER_TYPE = stringPreferencesKey("car_car_consumption_filter_type")
+
+        private val FUEL_CONSUMPTION_CAR_FILTER = stringPreferencesKey("car_car_consumption_car_filter")
 
         private val FUEL_CONSUMPTION_SORT_TYPE = stringPreferencesKey("car_car_consumption_sort_type")
 

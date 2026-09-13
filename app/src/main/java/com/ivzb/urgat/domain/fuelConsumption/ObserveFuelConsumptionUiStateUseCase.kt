@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.fuelConsumption
 
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
@@ -14,7 +15,7 @@ interface ObserveFuelConsumptionUiStateUseCase {
 
     operator fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<String>,
+        filterFlow: Flow<FuelConsumptionFilter>,
         sortTypeFlow: Flow<FuelConsumptionSortType>,
     ): Flow<Async<FuelConsumptionUiState>>
 
@@ -26,21 +27,23 @@ class DefaultObserveFuelConsumptionUiStateUseCase @Inject constructor(
     private val observeGroupedFuelConsumptionCategoriesYearlyUseCase: ObserveGroupedFuelConsumptionCategoriesYearlyUseCase,
     private val observeGroupedFuelConsumptionCategoriesAllTimeUseCase: ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase,
     private val observeFuelConsumptionFilteringUseCase: ObserveFuelConsumptionFilteringUseCase,
+    private val observeFuelConsumptionCarFilteringUseCase: ObserveFuelConsumptionCarFilteringUseCase,
     private val observeFuelConsumptionSortingUseCase: ObserveFuelConsumptionSortingUseCase,
 ): ObserveFuelConsumptionUiStateUseCase {
 
     override fun invoke(
         searchQueryFlow: Flow<String>,
-        filterTypeFlow: Flow<String>,
+        filterFlow: Flow<FuelConsumptionFilter>,
         sortTypeFlow: Flow<FuelConsumptionSortType>,
     ): Flow<Async<FuelConsumptionUiState>> = combineUiState(
-        observeGroupedFuelConsumptionMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
-        observeGroupedFuelConsumptionCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
-        observeGroupedFuelConsumptionCategoriesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
-        observeGroupedFuelConsumptionCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeGroupedFuelConsumptionMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeGroupedFuelConsumptionCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeGroupedFuelConsumptionCategoriesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeGroupedFuelConsumptionCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = null, filterTypeFlow = filterFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeFuelConsumptionFilteringUseCase(),
+        observeFuelConsumptionCarFilteringUseCase(),
         observeFuelConsumptionSortingUseCase(),
-        combine(searchQueryFlow, filterTypeFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
+        combine(searchQueryFlow, filterFlow, sortTypeFlow, ::Triple).map { Async.Success(it) },
 
         onLoading = {
             FuelConsumptionUiState(isLoading = true)
@@ -48,7 +51,7 @@ class DefaultObserveFuelConsumptionUiStateUseCase @Inject constructor(
         onError = {
             FuelConsumptionUiState(hasError = true)
         },
-        onSuccess = { fuelConsumption, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, sorting, (searchQuery, filterType, sortType) ->
+        onSuccess = { fuelConsumption, categoriesMonthly, categoriesYearly, categoriesAllTime, filtering, carFiltering, sorting, (searchQuery, filter, sortType) ->
             FuelConsumptionUiState(
                 fuelConsumption = fuelConsumption,
                 categoriesMonthly = categoriesMonthly,
@@ -57,8 +60,9 @@ class DefaultObserveFuelConsumptionUiStateUseCase @Inject constructor(
                 isLoading = false,
                 filteringUiInfo = FuelConsumptionFilteringUiInfo.from(
                     searchQuery = searchQuery,
-                    filterType = filterType,
+                    filter = filter,
                     filterMenuItems = filtering,
+                    carFilterMenuItems = carFiltering,
                     sortType = sortType,
                     sortMenuItems = sorting,
                 ),

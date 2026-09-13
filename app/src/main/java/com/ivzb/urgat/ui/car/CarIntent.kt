@@ -9,6 +9,7 @@ sealed class CarIntent {
     data class FabActionClick(val page: Page): CarIntent()
 
     data class SetFuelConsumptionFiltering(val filterType: String): CarIntent()
+    data class SetFuelConsumptionCarFiltering(val carName: String): CarIntent()
     data class SetFuelConsumptionSorting(val sortType: FuelConsumptionSortType): CarIntent()
 
     data class SetCarMaintenanceFiltering(val filterType: String): CarIntent()

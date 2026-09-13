@@ -174,10 +174,14 @@ fun <T> FilterMenu(
     items: List<MenuItem<T>>,
     showBadge: Boolean,
     onFilter: (T) -> Unit,
+    @DrawableRes
+    iconResId: Int = R.drawable.ic_filter_list,
+    @StringRes
+    contentDescriptionResId: Int = R.string.menu_filter,
 ) {
     Menu(
-        iconResId = R.drawable.ic_filter_list,
-        contentDescriptionResId = R.string.menu_filter,
+        iconResId = iconResId,
+        contentDescriptionResId = contentDescriptionResId,
         items = items,
         showBadge = showBadge,
         onFilter = onFilter,

@@ -124,6 +124,14 @@ fun CarScreen(
                             onFilter = { onIntent(CarIntent.SetFuelConsumptionFiltering(it)) },
                         )
 
+                        FilterMenu(
+                            items = uiState.fuelConsumptionUiState.filteringUiInfo.carFilterMenuItems,
+                            showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showCarFilterBadge,
+                            onFilter = { onIntent(CarIntent.SetFuelConsumptionCarFiltering(it)) },
+                            iconResId = R.drawable.ic_filter_car,
+                            contentDescriptionResId = R.string.menu_filter_car,
+                        )
+
                         SortMenu(
                             items = uiState.fuelConsumptionUiState.filteringUiInfo.sortMenuItems,
                             showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showSortBadge,

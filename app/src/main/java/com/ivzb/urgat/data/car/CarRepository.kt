@@ -12,6 +12,9 @@ interface CarRepository {
     val fuelConsumptionFilterTypeFlow: Flow<String>
     suspend fun updateFuelConsumptionFilterType(value: String)
 
+    val fuelConsumptionCarFilterFlow: Flow<String>
+    suspend fun updateFuelConsumptionCarFilter(value: String)
+
     val fuelConsumptionSortTypeFlow: Flow<FuelConsumptionSortType>
     suspend fun updateFuelConsumptionSortType(value: FuelConsumptionSortType)
 

@@ -1,12 +1,15 @@
 package com.ivzb.urgat.domain.fuelConsumption
 
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
+import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 
-fun filterFuelConsumption(items: List<FuelConsumption>, filterType: String): List<FuelConsumption> {
-    if (filterType == FuelConsumptionFilterType_All) {
+fun filterFuelConsumption(items: List<FuelConsumption>, filter: FuelConsumptionFilter): List<FuelConsumption> {
+    if (!filter.hasAppliedFilters) {
         return items
     }
 
-    return items.filter { it.type == filterType }
+    return items.filter { item ->
+        (!filter.hasType || item.type == filter.type) &&
+        (!filter.hasCar || item.carName == filter.carName)
+    }
 }

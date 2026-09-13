@@ -269,6 +269,35 @@ class CarViewModelTest {
     }
 
     @Test
+    fun `SetFuelConsumptionCarFiltering updates repository`() = runTest {
+        viewModel = createViewModel()
+
+        val expected = "Mercedes w140"
+
+        viewModel.onIntent(CarIntent.SetFuelConsumptionCarFiltering(expected))
+        advanceUntilIdle()
+
+        assertEquals(expected, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+    }
+
+    @Test
+    fun `fuel consumption type and car filters are independent`() = runTest {
+        viewModel = createViewModel()
+
+        viewModel.onIntent(CarIntent.SetFuelConsumptionFiltering("Diesel"))
+        advanceUntilIdle()
+
+        assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+
+        viewModel.onIntent(CarIntent.SetFuelConsumptionCarFiltering("Mercedes w140"))
+        advanceUntilIdle()
+
+        assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals("Mercedes w140", fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+    }
+
+    @Test
     fun `SetCarMaintenanceSorting updates repository`() = runTest {
         viewModel = createViewModel()
 
@@ -357,6 +386,7 @@ class CarViewModelTest {
 
         viewModel.onIntent(CarIntent.SearchQueryChanged("coffee"))
         viewModel.onIntent(CarIntent.SetFuelConsumptionFiltering("Diesel"))
+        viewModel.onIntent(CarIntent.SetFuelConsumptionCarFiltering("Mercedes w140"))
         viewModel.onIntent(CarIntent.SetFuelConsumptionSorting(FuelConsumptionSortType.BY_MAX))
         viewModel.onIntent(CarIntent.SetCarMaintenanceFiltering("Car A"))
         viewModel.onIntent(CarIntent.SetCarMaintenanceSorting(CarMaintenanceSortType.BY_ODOMETER_MIN))
@@ -364,6 +394,7 @@ class CarViewModelTest {
 
         assertEquals("coffee", fakeCarRepository.searchQueryFlow.value)
         assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals("Mercedes w140", fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals(FuelConsumptionSortType.BY_MAX, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
         assertEquals("Car A", fakeCarRepository.carMaintenanceFilterTypeFlow.value)
         assertEquals(CarMaintenanceSortType.BY_ODOMETER_MIN, fakeCarRepository.carMaintenanceSortTypeFlow.value)
@@ -373,6 +404,7 @@ class CarViewModelTest {
 
         assertEquals("", fakeCarRepository.searchQueryFlow.value)
         assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals(FuelConsumptionSortType.BY_DATE, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
         assertEquals(CarMaintenanceFilterType_All, fakeCarRepository.carMaintenanceFilterTypeFlow.value)
         assertEquals(CarMaintenanceSortType.BY_DATE, fakeCarRepository.carMaintenanceSortTypeFlow.value)
