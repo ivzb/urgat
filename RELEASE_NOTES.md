@@ -1,3 +1,8 @@
+## Release notes 26.09.04
+
+New:
+- You can now filter fuel consumption data by specific cars directly on the consumption screen.
+
 ## Release notes 26.09.03
 
 Improved:
