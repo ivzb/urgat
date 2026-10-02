@@ -1,3 +1,8 @@
+## Release notes 26.10.00
+
+Improved:
+- The 'Net Worth' and 'Watchlist' widgets now automatically refresh every 30 minutes.
+
 ## Release notes 26.09.04
 
 New:
