@@ -5,11 +5,9 @@ import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.state.updateAppWidgetState
-import com.ivzb.urgat.util.Async
+import com.ivzb.urgat.domain.widget.WidgetType
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Puts the widget into a loading state, drops the cached forex and market prices, then waits for
@@ -27,12 +25,12 @@ class RefreshNetWorthAction : ActionCallback {
         setRefreshing(context, glanceId, isRefreshing = true)
 
         try {
-            entryPoint.forexRepository().clearCache()
-            entryPoint.marketPriceRepository().clearCache()
-
-            withTimeoutOrNull(NetWorthWidget.REFRESH_TIMEOUT_MILLIS) {
-                entryPoint.observeNetWorthUseCase().invoke().first { it !is Async.Loading }
-            }
+            // the same refresh the background worker runs, on a timeout short enough that nobody
+            // is left staring at a spinner
+            entryPoint.refreshQuotesUseCase()(
+                types = setOf(WidgetType.NET_WORTH),
+                timeoutMillis = NetWorthWidget.REFRESH_TIMEOUT_MILLIS,
+            )
         } finally {
             // the content has to come back even when the receiver is being torn down
             withContext(NonCancellable) {

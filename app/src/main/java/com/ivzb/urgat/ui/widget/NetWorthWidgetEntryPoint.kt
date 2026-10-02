@@ -1,9 +1,9 @@
 package com.ivzb.urgat.ui.widget
 
 import android.content.Context
-import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.domain.fire.ObserveNetWorthUseCase
+import com.ivzb.urgat.domain.widget.RefreshQuotesUseCase
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -23,7 +23,7 @@ interface NetWorthWidgetEntryPoint {
 
     fun observeNetWorthUseCase(): ObserveNetWorthUseCase
 
-    fun forexRepository(): ForexRepository
+    fun refreshQuotesUseCase(): RefreshQuotesUseCase
 
     fun marketPriceRepository(): MarketPriceRepository
 

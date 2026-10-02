@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.finance.FinanceRepository
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
+import com.ivzb.urgat.domain.widget.RefreshQuotesUseCase
 import com.ivzb.urgat.util.Async
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -21,6 +22,8 @@ import kotlinx.coroutines.flow.Flow
 interface WatchlistWidgetEntryPoint {
 
     fun observeWatchlistAssetsUseCase(): ObserveWatchlistAssetsUseCase
+
+    fun refreshQuotesUseCase(): RefreshQuotesUseCase
 
     fun financeRepository(): FinanceRepository
 

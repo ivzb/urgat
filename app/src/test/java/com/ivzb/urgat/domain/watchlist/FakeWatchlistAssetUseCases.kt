@@ -65,6 +65,9 @@ class FakeObserveWatchlistAssetsUseCase : ObserveWatchlistAssetsUseCase {
 
     var lastQuery: String = ""
 
+    var invocations = 0
+        private set
+
     fun emit(value: Async<List<WatchlistAsset>>) {
         flow.value = value
     }
@@ -80,6 +83,8 @@ class FakeObserveWatchlistAssetsUseCase : ObserveWatchlistAssetsUseCase {
         sortTypeFlow: Flow<WatchlistAssetsSortType>?,
         limitFlow: Flow<Int>?
     ): Flow<Async<List<WatchlistAsset>>> {
+        invocations++
+
         CoroutineScope(Dispatchers.Unconfined).launch {
             searchQueryFlow?.collect { lastQuery = it }
         }

@@ -5,10 +5,9 @@ import androidx.glance.GlanceId
 import androidx.glance.action.ActionParameters
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.state.updateAppWidgetState
+import com.ivzb.urgat.domain.widget.WidgetType
 import kotlinx.coroutines.NonCancellable
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Puts the widget into a loading state, drops the cached market prices, then waits for the
@@ -26,12 +25,12 @@ class RefreshWatchlistAction : ActionCallback {
         setRefreshing(context, glanceId, isRefreshing = true)
 
         try {
-            entryPoint.marketPriceRepository().clearCache()
-
-            withTimeoutOrNull(WatchlistWidget.REFRESH_TIMEOUT_MILLIS) {
-                // nothing is emitted until every price has been fetched again
-                entryPoint.observeWatchlistAssets().first()
-            }
+            // the same refresh the background worker runs, on a timeout short enough that nobody
+            // is left staring at a spinner
+            entryPoint.refreshQuotesUseCase()(
+                types = setOf(WidgetType.WATCHLIST),
+                timeoutMillis = WatchlistWidget.REFRESH_TIMEOUT_MILLIS,
+            )
         } finally {
             // the content has to come back even when the receiver is being torn down
             withContext(NonCancellable) {
