@@ -54,7 +54,7 @@ import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.financeColor
 import com.ivzb.urgat.util.formatNames
-import com.ivzb.urgat.util.formatTimeAgo
+import com.ivzb.urgat.util.formatUpdatedAt
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 
@@ -177,7 +177,7 @@ class WatchlistWidget : GlanceAppWidget() {
 
                         if (lastFetchedAt != null) {
                             Text(
-                                text = context.formatTimeAgo(lastFetchedAt),
+                                text = context.formatUpdatedAt(lastFetchedAt),
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onSurfaceVariant,
                                     fontSize = 11.sp,

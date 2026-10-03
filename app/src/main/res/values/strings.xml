@@ -287,7 +287,6 @@
     <string name="empty_trade_message">Please fill in all fields</string>
 
     <!-- App widgets -->
-    <string name="just_now">just now</string>
     <string name="names_and_more">%1$s and %2$d more</string>
 
     <!-- Net worth app widget -->

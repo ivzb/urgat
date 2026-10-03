@@ -53,7 +53,7 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.annotateNetWorth
 import com.ivzb.urgat.util.annotateStashBreakdownItem
 import com.ivzb.urgat.util.formatNames
-import com.ivzb.urgat.util.formatTimeAgo
+import com.ivzb.urgat.util.formatUpdatedAt
 import kotlinx.coroutines.flow.map
 
 /**
@@ -137,7 +137,7 @@ class NetWorthWidget : GlanceAppWidget() {
 
                         if (!isRow && lastFetchedAt != null) {
                             Text(
-                                text = context.formatTimeAgo(lastFetchedAt),
+                                text = context.formatUpdatedAt(lastFetchedAt),
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onSurfaceVariant,
                                     fontSize = 11.sp,

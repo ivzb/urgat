@@ -2,7 +2,6 @@ package com.ivzb.urgat.util
 
 import android.content.Context
 import android.text.format.DateUtils
-import com.ivzb.urgat.R
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -16,19 +15,25 @@ fun Long.toLocalDate(): LocalDate {
 }
 
 /**
- * How long ago the given moment was, worded the way the system does it - "5 min. ago", "1 day ago".
+ * The clock time of the given moment - "14:32", or "3 Oct, 14:32" once it is no longer today.
+ *
+ * Deliberately absolute rather than "5 min. ago". A home screen widget is only ever redrawn when
+ * something asks it to, so a relative wording freezes at whatever it said when it was drawn and
+ * then quietly lies - every widget claiming to have been refreshed "just now" for the next half
+ * hour. A clock time drawn once stays true for as long as it is on screen.
+ *
+ * Follows the user's 12/24 hour setting, because the system formatter does.
  */
-fun Context.formatTimeAgo(timestamp: Long, now: Long = System.currentTimeMillis()): String {
-    if (now - timestamp < DateUtils.MINUTE_IN_MILLIS) {
-        return getString(R.string.just_now)
+fun Context.formatUpdatedAt(timestamp: Long, now: Long = System.currentTimeMillis()): String {
+    val sameDay = timestamp.toLocalDate() == now.toLocalDate()
+
+    val flags = DateUtils.FORMAT_SHOW_TIME or if (sameDay) {
+        0
+    } else {
+        DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL or DateUtils.FORMAT_NO_YEAR
     }
 
-    return DateUtils.getRelativeTimeSpanString(
-        timestamp,
-        now,
-        DateUtils.MINUTE_IN_MILLIS,
-        DateUtils.FORMAT_ABBREV_RELATIVE,
-    ).toString()
+    return DateUtils.formatDateTime(this, timestamp, flags)
 }
 
 fun LocalDate.toTimestamp(): Long {
