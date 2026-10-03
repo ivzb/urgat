@@ -1,3 +1,8 @@
+## Release notes 26.10.01
+
+Improved:
+- Widgets now show a more accurate time for the latest data updates.
+
 ## Release notes 26.10.00
 
 Improved:
