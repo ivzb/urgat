@@ -116,3 +116,4 @@
 - check why WatchlistAsset is using priceChangePercentage instead of calculatePnL
 - consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change
 - check if it's possible to sync the widgets data via workmanager when the app is closed
+- check if it makes sense to replace the existing screenshot tests with the new android studio feature - https://developer.android.com/studio/preview/compose-screenshot-testing
