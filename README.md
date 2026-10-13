@@ -178,3 +178,9 @@ Improved
 Fixed
 - Fixed an issue where some notifications were not appearing.
 ```
+
+## License
+
+Copyright 2025–2026 Ivan Zahariev
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
