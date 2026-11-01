@@ -27,21 +27,25 @@ val BOTTOM_NAVIGATION_SCREENS = listOf(
         route = LibraryRoute,
         label = R.string.library,
         icon = Icons.Filled.Home,
+        testTag = "nav_library",
     ),
     BottomNavigationScreen(
         route = FinanceRoute,
         label = R.string.finance,
         icon = Icons.Filled.AttachMoney,
+        testTag = "nav_finance",
     ),
     BottomNavigationScreen(
         route = CarRoute,
         label = R.string.car,
         icon = Icons.Filled.DirectionsCar,
+        testTag = "nav_car",
     ),
     BottomNavigationScreen(
         route = WellbeingRoute,
         label = R.string.wellbeing,
         icon = Icons.Filled.Accessibility,
+        testTag = "nav_wellbeing",
     ),
 )
 
@@ -50,4 +54,6 @@ data class BottomNavigationScreen(
     @StringRes
     val label: Int,
     val icon: ImageVector,
+    // Exposed to UiAutomator as a resource id, see testTagsAsResourceId in NavigationScreen.
+    val testTag: String,
 )

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.baselineprofile)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -194,6 +195,10 @@ dependencies {
 
     // Screenshot tests
     androidTestUtil(libs.androidx.test.services)
+
+    // Baseline profile
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
 }
 
 kotlin {

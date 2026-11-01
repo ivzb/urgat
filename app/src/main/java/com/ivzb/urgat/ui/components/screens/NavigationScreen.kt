@@ -33,8 +33,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -139,6 +142,7 @@ fun NavigationScreen(
                         onClick = {
                             navigator.navigate(it.route)
                         },
+                        modifier = Modifier.testTag(it.testTag),
                         icon = {
                             Icon(
                                 imageVector = it.icon,
@@ -156,6 +160,9 @@ fun NavigationScreen(
             layoutType = navigationLayoutType,
             modifier = modifier
                 .fillMaxSize()
+                // Makes the test tags above readable by UiAutomator, which the macrobenchmarks
+                // in :baselineprofile rely on to drive the navigation.
+                .semantics { testTagsAsResourceId = true }
         ) {
 
             UrgatScaffold(

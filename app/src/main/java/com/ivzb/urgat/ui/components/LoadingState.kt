@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.ivzb.urgat.R
@@ -23,7 +24,8 @@ fun LoadingState(
     modifier: Modifier = Modifier
 ) {
     Column (modifier = modifier
-        .fillMaxSize(),
+        .fillMaxSize()
+        .testTag("loading"),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

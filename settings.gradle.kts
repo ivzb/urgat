@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Urgat"
 
 include(":app")
+include(":baselineprofile")
