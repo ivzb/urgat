@@ -1,3 +1,8 @@
+## Release notes 26.11.00
+
+Improved:
+- Optimized app startup and performance to ensure a smoother, faster experience right from the first launch.
+
 ## Release notes 26.10.01
 
 Improved:
