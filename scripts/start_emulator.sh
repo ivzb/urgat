@@ -105,7 +105,7 @@ if [[ $installedImage = $sdk ]]; then
   echo "#############################"
 else
   yes | $SDKMANAGER --licenses
-  yes | $SDKMANAGER --install $sdk
+  android --sdk="$ANDROID_HOME" sdk install $sdk
   yes | $SDKMANAGER --licenses
 fi
 
