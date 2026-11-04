@@ -71,6 +71,14 @@ Use the following command to publish app bundle to Google Play store:
 ./play_store_release.sh 25.12.0 -skip-screenshots
 ````
 
+### Run ktlint:
+Use the following commands to check and auto-format Kotlin code style:
+
+```bash
+./gradlew ktlintCheck
+./gradlew ktlintFormat
+````
+
 ### Run unit tests:
 Use the following command to run unit tests:
 

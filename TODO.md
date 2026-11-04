@@ -32,7 +32,7 @@
 - there is a diff in some pixels when doing screenshots - it might be caused by the font - check how to fix it or look for another solution for screenshots
 - fix edge to edge recommendation from play store
 - fix pie chart in landscape and tablet (put them in 2 columns side by side)
-- when lists are not long enough the FAB stays on top of last item 
+- when lists are not long enough the FAB stays on top of last item
 - close keyboard when going back from add/edit investment to analytics screen / transactions
 - fix library/finance screen - there is not enough padding above the empty state card
 - encode or replace double quotes from any string to avoid import crash afterwards
@@ -117,4 +117,4 @@
 - consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change
 - check if it makes sense to replace the existing screenshot tests with the new android studio feature - https://developer.android.com/studio/preview/compose-screenshot-testing
 - add support for btc wallet watchlist
-- add kotlin linter
+- run ktlint and fix violations
