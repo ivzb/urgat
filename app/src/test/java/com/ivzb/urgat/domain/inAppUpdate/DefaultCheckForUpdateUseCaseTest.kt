@@ -58,4 +58,3 @@ class DefaultCheckForUpdateUseCaseTest {
         assertEquals(InAppUpdateStatus.InProgress, result)
     }
 }
-

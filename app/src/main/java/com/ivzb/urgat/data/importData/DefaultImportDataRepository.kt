@@ -6,10 +6,10 @@ import android.provider.DocumentsContract
 import androidx.room.withTransaction
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.di.IoDispatcher
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import java.io.InputStream
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class DefaultImportDataRepository @Inject constructor(
     private val contentResolver: ContentResolver,
@@ -22,16 +22,13 @@ class DefaultImportDataRepository @Inject constructor(
         fileName: String,
         parseEntity: (String) -> T,
         insertEntities: suspend (List<T>) -> Unit,
-    ) {
+    ) = withContext(dispatcher) {
+        readFile(
+            uri = uri,
+            fileName = fileName,
+        ) { inputStream ->
 
-        return withContext(dispatcher) {
-            readFile(
-                uri = uri,
-                fileName = fileName,
-            ) { inputStream ->
-
-                import(inputStream, parseEntity, insertEntities)
-            }
+            import(inputStream, parseEntity, insertEntities)
         }
     }
 
@@ -39,12 +36,9 @@ class DefaultImportDataRepository @Inject constructor(
         content: String,
         parseEntity: (String) -> T,
         insertEntities: suspend (List<T>) -> Unit
-    ) {
-
-        return withContext(dispatcher) {
-            // prefix new line because import csv trims first line which is csv header
-            import(("\n" + content).byteInputStream(), parseEntity, insertEntities)
-        }
+    ) = withContext(dispatcher) {
+        // prefix new line because import csv trims first line which is csv header
+        import(("\n" + content).byteInputStream(), parseEntity, insertEntities)
     }
 
     private suspend fun <T> import(

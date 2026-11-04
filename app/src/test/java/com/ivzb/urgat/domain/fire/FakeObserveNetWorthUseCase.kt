@@ -22,4 +22,3 @@ class FakeObserveNetWorthUseCase : ObserveNetWorthUseCase {
     }
 
 }
-

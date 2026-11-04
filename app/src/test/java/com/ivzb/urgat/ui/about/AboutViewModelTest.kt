@@ -1,9 +1,9 @@
 package com.ivzb.urgat.ui.about
 
-import org.junit.Before
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
+import org.junit.Before
+import org.junit.Test
 
 class AboutViewModelTest {
 
@@ -28,4 +28,3 @@ class AboutViewModelTest {
     }
 
 }
-

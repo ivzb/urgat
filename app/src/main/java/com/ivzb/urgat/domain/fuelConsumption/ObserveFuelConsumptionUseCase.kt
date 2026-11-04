@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface ObserveFuelConsumptionUseCase {
 
@@ -38,4 +38,3 @@ class DefaultObserveFuelConsumptionUseCase @Inject constructor(
     ): Flow<Async<List<FuelConsumption>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }
-

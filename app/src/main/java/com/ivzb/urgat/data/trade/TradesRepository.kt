@@ -8,4 +8,3 @@ interface TradesRepository: BaseRepository<Trade> {
     val isRefreshingFlow: StateFlow<Boolean>
 
 }
-

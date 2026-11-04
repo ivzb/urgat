@@ -7,6 +7,8 @@ import com.ivzb.urgat.domain.budget.FakeDeleteBudgetUseCase
 import com.ivzb.urgat.domain.budget.FakeGetBudgetUseCase
 import com.ivzb.urgat.domain.budget.FakeGetLastUsedBudgetCurrencyUseCase
 import com.ivzb.urgat.domain.budget.FakeUpdateBudgetUseCase
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -15,15 +17,13 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditBudgetViewModelTest {
@@ -148,7 +148,7 @@ class AddEditBudgetViewModelTest {
         viewModel.onIntent(AddEditBudgetIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditBudgetIntent.UpdateDate(123L))
         viewModel.onIntent(AddEditBudgetIntent.SaveBudget)
-        
+
         advanceUntilIdle()
 
         val expected = listOf(BigDecimal("6500"), BigDecimal("11000"), BigDecimal("8400"), "EUR", 123L)

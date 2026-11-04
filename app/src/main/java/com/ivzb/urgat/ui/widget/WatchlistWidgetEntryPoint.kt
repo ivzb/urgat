@@ -47,4 +47,3 @@ internal fun WatchlistWidgetEntryPoint.observeWatchlistAssets(): Flow<Async<List
     observeWatchlistAssetsUseCase().invoke(
         sortTypeFlow = financeRepository().watchlistAssetsSortTypeFlow,
     )
-

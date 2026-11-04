@@ -71,4 +71,3 @@ interface CarMaintenanceUseCaseModule {
     fun bindsObserveCarMaintenanceUiStateUseCase(useCase: DefaultObserveCarMaintenanceUiStateUseCase): ObserveCarMaintenanceUiStateUseCase
 
 }
-

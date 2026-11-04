@@ -101,8 +101,6 @@ class FakeObserveWatchlistAssetsSortingUseCase : ObserveWatchlistAssetsSortingUs
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<WatchlistAssetsSortMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<WatchlistAssetsSortMenuItem>>> = flow
 
 }

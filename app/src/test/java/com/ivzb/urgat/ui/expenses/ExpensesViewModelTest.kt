@@ -1,15 +1,18 @@
 package com.ivzb.urgat.ui.expenses
 
-import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpenseTotal
+import com.ivzb.urgat.data.finance.FakeFinanceRepository
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesUiStateUseCase
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -24,9 +27,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ExpensesViewModelTest {
@@ -182,11 +182,13 @@ class ExpensesViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))
-        val fakeExpenses = listOf(GroupedItems(
-            group = "2025/12",
-            total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-            items = expenses,
-        ))
+        val fakeExpenses = listOf(
+            GroupedItems(
+                group = "2025/12",
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                items = expenses,
+            )
+        )
         val fakeCategoriesMonthly = listOf(
             GroupedItems(
                 group = "2025/12",

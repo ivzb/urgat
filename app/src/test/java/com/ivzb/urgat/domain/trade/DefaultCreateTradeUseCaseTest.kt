@@ -5,15 +5,15 @@ import com.ivzb.urgat.data.trade.TradeEntity
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.slot
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
 import java.math.BigDecimal
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
 
 class DefaultCreateTradeUseCaseTest {
 
@@ -84,4 +84,3 @@ class DefaultCreateTradeUseCaseTest {
     }
 
 }
-

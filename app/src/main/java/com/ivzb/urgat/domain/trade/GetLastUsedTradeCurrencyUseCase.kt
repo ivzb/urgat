@@ -13,9 +13,6 @@ class DefaultGetLastUsedTradeCurrencyUseCase @Inject constructor(
     private val tradeDao: TradeDao
 ): GetLastUsedTradeCurrencyUseCase {
 
-    override suspend fun invoke(): String? {
-        return tradeDao.getLastUsedCurrency()
-    }
+    override suspend fun invoke(): String? = tradeDao.getLastUsedCurrency()
 
 }
-

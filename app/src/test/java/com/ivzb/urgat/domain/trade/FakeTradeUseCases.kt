@@ -18,18 +18,14 @@ class FakeGetLastUsedTradeNameUseCase : GetLastUsedTradeNameUseCase {
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeGetLastUsedTradeCurrencyUseCase : GetLastUsedTradeCurrencyUseCase {
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeCreateTradeUseCase : CreateTradeUseCase {
@@ -69,4 +65,3 @@ class FakeDeleteTradeUseCase : DeleteTradeUseCase {
         deleted = listOf(id)
     }
 }
-

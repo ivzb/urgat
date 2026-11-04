@@ -56,8 +56,8 @@ import com.ivzb.urgat.ui.components.charts.PieChart
 import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateChart
+import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateExpensesTotals
 import com.ivzb.urgat.util.annotateMarketPrice
 import com.ivzb.urgat.util.isFirst

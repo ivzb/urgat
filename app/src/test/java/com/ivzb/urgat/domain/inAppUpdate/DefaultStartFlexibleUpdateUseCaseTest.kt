@@ -27,4 +27,3 @@ class DefaultStartFlexibleUpdateUseCaseTest {
         verify(exactly = 1) { repository.startFlexibleUpdate(activity) }
     }
 }
-

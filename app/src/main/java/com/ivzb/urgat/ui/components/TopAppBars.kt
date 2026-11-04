@@ -137,7 +137,8 @@ data class FilterMenuItem<T>(
     override val labelResId: Int? = null,
     override val label: String = "",
     val size: Int,
-): MenuItem<T>, Parcelable {
+): MenuItem<T>,
+    Parcelable {
 
     @Composable
     override fun text(): String {
@@ -151,12 +152,11 @@ data class SortMenuItem<T>(
     override val type: @RawValue T,
     override val labelResId: Int? = null,
     override val label: String = "",
-): MenuItem<T>, Parcelable {
+): MenuItem<T>,
+    Parcelable {
 
     @Composable
-    override fun text(): String {
-        return labelResId?.let { stringResource(it) } ?: label
-    }
+    override fun text(): String = labelResId?.let { stringResource(it) } ?: label
 }
 
 interface MenuItem<T> {

@@ -11,12 +11,12 @@ import com.ivzb.urgat.domain.inAppUpdate.ObserveInstallStateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.StartFlexibleUpdateUseCase
 import com.ivzb.urgat.util.TimeProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val UPDATE_DEBOUNCE_MS = 30 * 60 * 1000L // 30 minutes
 
@@ -53,7 +53,7 @@ class InAppUpdateViewModel @Inject constructor(
 
     private fun checkForUpdate() {
         val state = _uiState.value
-        
+
         if (state.shouldStartUpdate || state.isDownloading || state.isDownloaded) {
             return
         }

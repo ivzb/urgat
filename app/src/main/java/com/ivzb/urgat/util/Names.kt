@@ -42,5 +42,3 @@ fun formatNames(
 }
 
 private const val NAME_SEPARATOR = ", "
-
-

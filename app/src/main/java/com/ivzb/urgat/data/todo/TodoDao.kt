@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Query("" +
-            "SELECT * FROM todo " +
+    @Query(
+        "SELECT * FROM todo " +
             "WHERE isDeleted = 0 AND createdAt BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
@@ -25,20 +25,18 @@ interface TodoDao {
     @RawQuery(observedEntities = [TodoEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<TodoEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "todo",
-                searchColumns = listOf("content"),
-                dateColumn = "createdAt",
-                orderBy = "createdAt DESC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "todo",
+            searchColumns = listOf("content"),
+            dateColumn = "createdAt",
+            orderBy = "createdAt DESC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM todo WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun stream(): Cursor

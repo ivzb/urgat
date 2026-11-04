@@ -14,8 +14,6 @@ class DefaultGetTodoUseCase @Inject constructor(
     private val repository: TodoRepository
 ): GetTodoUseCase {
 
-    override suspend fun invoke(id: String): Todo? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Todo? = repository.get(id)
 
 }

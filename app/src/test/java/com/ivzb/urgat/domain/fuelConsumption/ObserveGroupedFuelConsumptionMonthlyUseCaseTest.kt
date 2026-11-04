@@ -9,6 +9,8 @@ import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -17,8 +19,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
@@ -56,7 +56,7 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
         val limit = 10
         val limitFlow = flowOf(limit)
 
-        val fc1 = makeFuelConsumption("fc_1", amount = "45.5", price = "2.35", date = 86_400_000L)  // Jan 2, 1970
+        val fc1 = makeFuelConsumption("fc_1", amount = "45.5", price = "2.35", date = 86_400_000L) // Jan 2, 1970
         val fc2 = makeFuelConsumption("fc_2", amount = "40.0", price = "2.40", date = 172_800_000L) // Jan 3, 1970
 
         every { repository.observe(limit, NO_DATE_RANGE) } returns flowOf(listOf(fc1, fc2))
@@ -96,7 +96,7 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
         val limitFlow = flowOf(limit)
 
         // January 1970 and February 1970
-        val fc1 = makeFuelConsumption("fc_1", amount = "45.5", price = "2.35", date = 86_400_000L)    // Jan 2, 1970
+        val fc1 = makeFuelConsumption("fc_1", amount = "45.5", price = "2.35", date = 86_400_000L) // Jan 2, 1970
         val fc2 = makeFuelConsumption("fc_2", amount = "40.0", price = "2.40", date = 2_764_800_000L) // Feb 2, 1970
 
         every { repository.observe(limit, NO_DATE_RANGE) } returns flowOf(listOf(fc1, fc2))
@@ -284,4 +284,3 @@ class ObserveGroupedFuelConsumptionMonthlyUseCaseTest {
         )
     }
 }
-

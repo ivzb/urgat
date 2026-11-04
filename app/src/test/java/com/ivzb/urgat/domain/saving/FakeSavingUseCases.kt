@@ -6,12 +6,12 @@ import com.ivzb.urgat.ui.savings.SavingsSortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class FakeObserveSavingsUseCase : ObserveSavingsUseCase {
 
@@ -147,9 +147,7 @@ class FakeGetLastUsedSavingCurrencyUseCase : GetLastUsedSavingCurrencyUseCase {
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeGetSavingUseCase : GetSavingUseCase {
@@ -200,9 +198,7 @@ class FakeObserveSavingsSortingUseCase : ObserveSavingsSortingUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<SavingsSortMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<SavingsSortMenuItem>>> = flow
 
 }
 

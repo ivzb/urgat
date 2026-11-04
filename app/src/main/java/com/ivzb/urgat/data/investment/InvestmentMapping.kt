@@ -20,20 +20,18 @@ fun InvestmentEntity.toExternal(
     description: String?,
     marketPrice: BigDecimal?,
     pricePrecision: Int?,
-): Investment {
-    return Investment(
-        id = id,
-        name = name,
-        description = description,
-        shares = shares,
-        costPrice = cost,
-        marketPrice = marketPrice ?: cost,
-        pricePrecision = pricePrecision,
-        category = category,
-        currency = currency,
-        date = date,
-        isDeleted = isDeleted,
-        createdAt = createdAt,
-        isMarketPriceStale = marketPrice == null,
-    )
-}
+): Investment = Investment(
+    id = id,
+    name = name,
+    description = description,
+    shares = shares,
+    costPrice = cost,
+    marketPrice = marketPrice ?: cost,
+    pricePrecision = pricePrecision,
+    category = category,
+    currency = currency,
+    date = date,
+    isDeleted = isDeleted,
+    createdAt = createdAt,
+    isMarketPriceStale = marketPrice == null,
+)

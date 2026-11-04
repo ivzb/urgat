@@ -31,9 +31,11 @@ class AddEditNoteViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private val noteId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditNoteUiState(
-        screenTitleResId = screenTitleResId,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditNoteUiState(
+            screenTitleResId = screenTitleResId,
+        )
+    )
     val uiState: StateFlow<AddEditNoteUiState> = _uiState.asStateFlow()
 
     init {

@@ -8,6 +8,8 @@ import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -16,8 +18,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveInvestmentNetWorthUseCaseTest {

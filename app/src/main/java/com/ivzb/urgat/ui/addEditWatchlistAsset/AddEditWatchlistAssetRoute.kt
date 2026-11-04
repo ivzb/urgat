@@ -12,4 +12,3 @@ data class AddEditWatchlistAssetRoute(
     @StringRes
     override val titleResId: Int,
 ): UrgatRoute()
-

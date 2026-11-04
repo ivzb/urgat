@@ -17,4 +17,3 @@ interface FinanceUseCaseModule {
     fun bindsObserveFinanceUiStateUseCase(useCase: DefaultObserveFinanceUiStateUseCase): ObserveFinanceUiStateUseCase
 
 }
-

@@ -6,7 +6,6 @@ import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.util.toLocalDate
 
-
 @Composable
 fun CarMaintenanceItem(
     carMaintenance: CarMaintenance,

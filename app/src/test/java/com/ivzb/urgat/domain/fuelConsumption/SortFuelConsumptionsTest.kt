@@ -2,9 +2,9 @@ package com.ivzb.urgat.domain.fuelConsumption
 
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
+import java.math.BigDecimal
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.math.BigDecimal
 
 class SortFuelConsumptionTest {
 
@@ -66,4 +66,3 @@ class SortFuelConsumptionTest {
     }
 
 }
-

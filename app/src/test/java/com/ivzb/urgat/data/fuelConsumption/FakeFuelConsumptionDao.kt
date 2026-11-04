@@ -57,4 +57,3 @@ class FakeFuelConsumptionDao : FuelConsumptionDao {
         items.filter { !it.isDeleted }.maxByOrNull { it.date }
 
 }
-

@@ -14,4 +14,3 @@ sealed class AddEditFuelConsumptionIntent {
     object ClearDefaults: AddEditFuelConsumptionIntent()
     object UserMessageShown: AddEditFuelConsumptionIntent()
 }
-

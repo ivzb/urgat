@@ -7,6 +7,8 @@ import com.ivzb.urgat.domain.investment.FakeDeleteInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeGetInvestmentUseCase
 import com.ivzb.urgat.domain.investment.FakeGetLastUsedInvestmentCurrencyUseCase
 import com.ivzb.urgat.domain.investment.FakeUpdateInvestmentUseCase
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -15,15 +17,13 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditInvestmentViewModelTest {
@@ -154,7 +154,7 @@ class AddEditInvestmentViewModelTest {
         viewModel.onIntent(AddEditInvestmentIntent.UpdateCurrency("USD"))
         viewModel.onIntent(AddEditInvestmentIntent.UpdateDate(1L))
         viewModel.onIntent(AddEditInvestmentIntent.SaveInvestment)
-        
+
         advanceUntilIdle()
 
         val expected = listOf("SNP 500", BigDecimal("250"), BigDecimal("120"), "etfs", "USD", 1L)
@@ -294,7 +294,7 @@ class AddEditInvestmentViewModelTest {
             assertEquals(R.string.something_went_wrong, uiState.userMessage)
         }
     }
-    
+
     @Test
     fun `duplicateInvestment resets state to create mode with current data`() = runTest {
         val investmentId = "123"
@@ -486,6 +486,5 @@ class AddEditInvestmentViewModelTest {
             deleteUseCase,
         )
     }
-
 
 }

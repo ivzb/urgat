@@ -16,6 +16,10 @@ import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -30,10 +34,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CarViewModelTest {
@@ -143,14 +143,18 @@ class CarViewModelTest {
     @Test
     fun `emits empty state when use case returns empty data`() = runTest {
         fakeObserveFuelConsumptionUiStateUseCase.emit(
-            Async.Success(FuelConsumptionUiState(
-                fuelConsumption = listOf(),
-            ))
+            Async.Success(
+                FuelConsumptionUiState(
+                    fuelConsumption = listOf(),
+                )
+            )
         )
         fakeObserveCarMaintenanceUiStateUseCase.emit(
-            Async.Success(CarMaintenanceUiState(
-                carMaintenance = listOf(),
-            ))
+            Async.Success(
+                CarMaintenanceUiState(
+                    carMaintenance = listOf(),
+                )
+            )
         )
         viewModel = createViewModel()
 
@@ -328,13 +332,17 @@ class CarViewModelTest {
     )
 
     private fun emitSuccessData(showSortBadge: Boolean) {
-        fakeObserveFuelConsumptionUiStateUseCase.emit(Async.Success(FuelConsumptionUiState(
-            fuelConsumption = fakeGroupedFuelConsumption,
-            filteringUiInfo = FuelConsumptionFilteringUiInfo(
-                sortMenuItems = fakeSorting,
-                showSortBadge = showSortBadge,
-            ),
-        )))
+        fakeObserveFuelConsumptionUiStateUseCase.emit(
+            Async.Success(
+                FuelConsumptionUiState(
+                    fuelConsumption = fakeGroupedFuelConsumption,
+                    filteringUiInfo = FuelConsumptionFilteringUiInfo(
+                        sortMenuItems = fakeSorting,
+                        showSortBadge = showSortBadge,
+                    ),
+                )
+            )
+        )
         fakeObserveCarMaintenanceUiStateUseCase.emit(Async.Success(CarMaintenanceUiState()))
     }
 
@@ -425,7 +433,7 @@ class CarViewModelTest {
     }
 
     companion object {
-        
+
         private val fakeFuelConsumption = listOf(
             FuelConsumption("fc_1", BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Mercedes w140", 150000, 500, 1000L, false, 1000L),
             FuelConsumption("fc_2", BigDecimal("40.0"), BigDecimal("2.40"), "EUR", "Diesel", "Mercedes w140", 149500, 600, 2000L, false, 2000L),
@@ -446,4 +454,3 @@ class CarViewModelTest {
         )
     }
 }
-

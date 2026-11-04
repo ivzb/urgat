@@ -8,6 +8,9 @@ import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -16,9 +19,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveSavingsUiStateUseCaseTest {
@@ -242,14 +242,16 @@ class ObserveSavingsUiStateUseCaseTest {
 
         private val fakeCategoriesMonthly = listOf(
             GroupedItems(
-                group = "2025/12", total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+                group = "2025/12",
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = listOf(SavingCategory(id = "1", name = "food", totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")), savings = savings))
             )
         )
 
         private val fakeCategoriesYearly = listOf(
             GroupedItems(
-                group = "2025", total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+                group = "2025",
+                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
                 items = listOf(SavingCategory(id = "1", name = "food", totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")), savings = savings))
             )
         )

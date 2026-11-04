@@ -17,4 +17,3 @@ val CAR_PAGES = listOf(
     CarPage.FuelConsumption,
     CarPage.Maintenance,
 )
-

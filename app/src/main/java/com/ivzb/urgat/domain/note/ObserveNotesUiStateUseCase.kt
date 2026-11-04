@@ -5,9 +5,9 @@ import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 interface ObserveNotesUiStateUseCase {
 

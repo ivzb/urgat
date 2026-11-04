@@ -5,4 +5,3 @@ sealed class TradesIntent {
     data class SetSorting(val sortType: TradesSortType): TradesIntent()
     object ResetFilters: TradesIntent()
 }
-

@@ -20,7 +20,8 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
 
 val MIGRATION_3_4 = object : Migration(3, 4) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("""
+        db.execSQL(
+            """
             CREATE TABLE `investments_new` (
                 `id` TEXT NOT NULL, 
                 `name` TEXT NOT NULL, 
@@ -33,12 +34,15 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
                 `createdAt` INTEGER NOT NULL,
                 PRIMARY KEY(`id`)
             )
-        """)
+        """
+        )
 
-        db.execSQL("""
+        db.execSQL(
+            """
             INSERT INTO `investments_new` (`id`, `name`, `shares`, `cost`, `category`, `currency`, `date`, `isDeleted`, `createdAt`)
             SELECT `id`, `name`, `amount`, `cost`, `category`, `currency`, `date`, `isDeleted`, `createdAt` FROM `investments`
-        """)
+        """
+        )
 
         db.execSQL("DROP TABLE `investments`")
 
@@ -54,7 +58,8 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
 
 val MIGRATION_5_6 = object : Migration(5, 6) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("""
+        db.execSQL(
+            """
             CREATE TABLE `budgets` (
                 `id` TEXT NOT NULL, 
                 `income` TEXT NOT NULL, 
@@ -65,13 +70,15 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
                 `createdAt` INTEGER NOT NULL, 
                 PRIMARY KEY(`id`)
             )
-        """)
+        """
+        )
     }
 }
 
 val MIGRATION_6_7 = object : Migration(6, 7) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("""
+        db.execSQL(
+            """
             CREATE TABLE `savings` (
                 `id` TEXT NOT NULL, 
                 `name` TEXT NOT NULL, 
@@ -81,13 +88,15 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
                 `createdAt` INTEGER NOT NULL, 
                 PRIMARY KEY(`id`)
             )
-        """)
+        """
+        )
     }
 }
 
 val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("""
+        db.execSQL(
+            """
             CREATE TABLE `todo_new` (
                 `id` TEXT NOT NULL, 
                 `content` TEXT NOT NULL, 
@@ -96,12 +105,15 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
                 `createdAt` INTEGER NOT NULL, 
                 PRIMARY KEY(`id`)
             )
-        """)
+        """
+        )
 
-        db.execSQL("""
+        db.execSQL(
+            """
             INSERT INTO `todo_new` (`id`, `content`, `isCompleted`, `isDeleted`, `createdAt`)
             SELECT `id`, `title` || CHAR(10) || `description`, `isCompleted`, `isDeleted`, `createdAt` FROM `todo`
-        """)
+        """
+        )
 
         db.execSQL("DROP TABLE `todo`")
 
@@ -117,7 +129,8 @@ val MIGRATION_8_9 = object : Migration(8, 9) {
 
 val MIGRATION_9_10 = object : Migration(9, 10) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        db.execSQL("""
+        db.execSQL(
+            """
             CREATE TABLE `watchlist_assets` (
                 `id` TEXT NOT NULL, 
                 `name` TEXT NOT NULL, 
@@ -125,7 +138,8 @@ val MIGRATION_9_10 = object : Migration(9, 10) {
                 `createdAt` INTEGER NOT NULL, 
                 PRIMARY KEY(`id`)
             )
-        """)
+        """
+        )
     }
 }
 

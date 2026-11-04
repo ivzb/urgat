@@ -1,27 +1,27 @@
 package com.ivzb.urgat.ui.addEditNote
 
+import com.ivzb.urgat.R
+import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.domain.note.FakeCreateNoteUseCase
+import com.ivzb.urgat.domain.note.FakeDeleteNoteUseCase
 import com.ivzb.urgat.domain.note.FakeGetNoteUseCase
 import com.ivzb.urgat.domain.note.FakeUpdateNoteUseCase
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import com.ivzb.urgat.R
-import com.ivzb.urgat.data.note.Note
-import com.ivzb.urgat.domain.note.FakeDeleteNoteUseCase
-import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditNoteViewModelTest {

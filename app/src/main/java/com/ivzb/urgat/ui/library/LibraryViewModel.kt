@@ -16,11 +16,11 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
@@ -62,11 +62,11 @@ class LibraryViewModel @Inject constructor(
             )
         }
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = LibraryUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = LibraryUiState(isLoading = true)
+        )
 
     fun onIntent(intent: LibraryIntent) {
         when (intent) {

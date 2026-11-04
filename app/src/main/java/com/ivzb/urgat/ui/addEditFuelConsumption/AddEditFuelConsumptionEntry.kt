@@ -20,4 +20,3 @@ fun EntryProviderScope<NavKey>.addEditFuelConsumptionEntry(navigator: Navigator)
         )
     }
 }
-

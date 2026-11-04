@@ -13,6 +13,9 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.timestamp
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -21,9 +24,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveExpensesUiStateUseCaseTest {
@@ -372,14 +372,16 @@ class ObserveExpensesUiStateUseCaseTest {
 
         private val fakeCategoriesMonthly = listOf(
             GroupedItems(
-                group = "2025/12", total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                group = "2025/12",
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = listOf(ExpenseCategory(id = "1", name = "food", totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")), expenses = expenses))
             )
         )
 
         private val fakeCategoriesYearly = listOf(
             GroupedItems(
-                group = "2025", total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                group = "2025",
+                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
                 items = listOf(ExpenseCategory(id = "1", name = "food", totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")), expenses = expenses))
             )
         )
@@ -394,20 +396,26 @@ class ObserveExpensesUiStateUseCaseTest {
          */
         private val fakeCategoriesMultipleMonths = listOf(
             ExpenseCategory(
-                id = "1", name = "food", totals = listOf(ExpenseTotal(BigDecimal("150"), "EUR")),
+                id = "1",
+                name = "food",
+                totals = listOf(ExpenseTotal(BigDecimal("150"), "EUR")),
                 expenses = listOf(
                     Expense("1", "Lunch", BigDecimal("100"), "EUR", "food", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
                     Expense("2", "Dinner", BigDecimal("50"), "EUR", "food", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),
                 )
             ),
             ExpenseCategory(
-                id = "2", name = "shopping", totals = listOf(ExpenseTotal(BigDecimal("150"), "EUR")),
+                id = "2",
+                name = "shopping",
+                totals = listOf(ExpenseTotal(BigDecimal("150"), "EUR")),
                 expenses = listOf(
                     Expense("3", "Clothing", BigDecimal("150"), "EUR", "shopping", timestamp(2025, 12, 20), false, false, timestamp(2025, 12, 20)),
                 )
             ),
             ExpenseCategory(
-                id = "3", name = "car", totals = listOf(ExpenseTotal(BigDecimal("60"), "EUR")),
+                id = "3",
+                name = "car",
+                totals = listOf(ExpenseTotal(BigDecimal("60"), "EUR")),
                 expenses = listOf(
                     Expense("4", "Gas", BigDecimal("60"), "EUR", "car", timestamp(2024, 12, 17), false, false, timestamp(2024, 12, 17)),
                 )

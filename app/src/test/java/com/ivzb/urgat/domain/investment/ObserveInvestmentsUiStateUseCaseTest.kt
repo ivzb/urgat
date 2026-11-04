@@ -10,11 +10,15 @@ import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
-import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.calculatePnL
 import com.ivzb.urgat.util.timestamp
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -23,10 +27,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveInvestmentsUiStateUseCaseTest {
@@ -425,7 +425,8 @@ class ObserveInvestmentsUiStateUseCaseTest {
          */
         private val fakeCategoriesMultipleMonths = listOf(
             InvestmentCategory(
-                id = "1", name = "stocks",
+                id = "1",
+                name = "stocks",
                 totals = listOf(investmentTotal("300", "330")),
                 investments = listOf(
                     Investment("1", "GOOGL", BigDecimal("1"), BigDecimal("100"), BigDecimal("110"), "stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
@@ -433,14 +434,16 @@ class ObserveInvestmentsUiStateUseCaseTest {
                 ),
             ),
             InvestmentCategory(
-                id = "2", name = "etf",
+                id = "2",
+                name = "etf",
                 totals = listOf(investmentTotal("400", "440")),
                 investments = listOf(
                     Investment("3", "SNP 500", BigDecimal("1"), BigDecimal("400"), BigDecimal("440"), "etf", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
                 ),
             ),
             InvestmentCategory(
-                id = "3", name = "gold",
+                id = "3",
+                name = "gold",
                 totals = listOf(investmentTotal("60", "66")),
                 investments = listOf(
                     Investment("4", "Gold", BigDecimal("1"), BigDecimal("60"), BigDecimal("66"), "gold", "USD", timestamp(2024, 12, 17), false, timestamp(2024, 12, 17)),

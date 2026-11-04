@@ -52,4 +52,3 @@ class RefreshNetWorthAction : ActionCallback {
     }
 
 }
-

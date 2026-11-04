@@ -4,12 +4,14 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.expense.ExpensesRepository
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -18,8 +20,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveGroupedExpensesAllTimeUseCaseTest {
@@ -42,7 +42,7 @@ class DefaultObserveGroupedExpensesAllTimeUseCaseTest {
         val sortTypeFlow = flowOf(ExpensesSortType.BY_DATE)
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
-        listOf(
+            listOf(
                 Expense("1", "Clothing", BigDecimal("120"), "EUR", "Shopping", timestamp(2025, 11, 25), false, false, timestamp(2025, 11, 25)),
                 Expense("2", "Groceries", BigDecimal("75.50"), "EUR", "Food", timestamp(2025, 11, 27), false, false, timestamp(2025, 11, 27)),
                 Expense("3", "Birthday gift", BigDecimal("80"), "EUR", "Gifts", timestamp(2025, 12, 9), false, false, timestamp(2025, 12, 9)),

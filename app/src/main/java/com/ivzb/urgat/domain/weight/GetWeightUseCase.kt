@@ -14,8 +14,6 @@ class DefaultGetWeightUseCase @Inject constructor(
     private val repository: WeightsRepository
 ): GetWeightUseCase {
 
-    override suspend fun invoke(id: String): Weight? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Weight? = repository.get(id)
 
 }

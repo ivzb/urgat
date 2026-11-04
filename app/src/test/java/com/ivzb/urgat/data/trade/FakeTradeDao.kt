@@ -54,4 +54,3 @@ class FakeTradeDao : TradeDao {
         items.filter { !it.isDeleted }.maxByOrNull { it.createdAt }?.currency
 
 }
-

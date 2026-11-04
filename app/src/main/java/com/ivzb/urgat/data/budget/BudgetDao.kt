@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BudgetDao {
 
-    @Query("" +
-            "SELECT * FROM budgets " +
+    @Query(
+        "SELECT * FROM budgets " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"

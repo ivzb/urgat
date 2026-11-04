@@ -13,7 +13,6 @@ enum class RefreshWidgetPricesResult {
 
     /** The quotes did not arrive in time. The widgets keep whatever they were showing. */
     TIMED_OUT,
-
 }
 
 /**

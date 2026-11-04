@@ -5,12 +5,12 @@ import com.ivzb.urgat.ui.weights.WeightsSortMenuItem
 import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class FakeObserveWeightsUseCase : ObserveWeightsUseCase {
 
@@ -46,9 +46,7 @@ class FakeObserveWeightsSortingUseCase : ObserveWeightsSortingUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<WeightsSortMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<WeightsSortMenuItem>>> = flow
 
 }
 
@@ -110,9 +108,6 @@ class FakeObserveWeightsUiStateUseCase : ObserveWeightsUiStateUseCase {
     override fun invoke(
         sortTypeFlow: Flow<WeightsSortType>,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<WeightsUiState>> {
-        return flow
-    }
+    ): Flow<Async<WeightsUiState>> = flow
 
 }
-

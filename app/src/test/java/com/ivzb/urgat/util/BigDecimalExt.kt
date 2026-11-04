@@ -1,9 +1,9 @@
 package com.ivzb.urgat.util
 
-import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import org.junit.Test
 
 class BigDecimalExt {
 

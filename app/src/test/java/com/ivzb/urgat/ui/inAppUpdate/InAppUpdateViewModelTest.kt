@@ -7,6 +7,7 @@ import com.ivzb.urgat.domain.inAppUpdate.FakeCompleteUpdateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.FakeObserveInstallStateUseCase
 import com.ivzb.urgat.domain.inAppUpdate.FakeStartFlexibleUpdateUseCase
 import com.ivzb.urgat.util.FakeTimeProvider
+import kotlin.test.assertFalse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -22,7 +23,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFalse
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InAppUpdateViewModelTest {
@@ -384,4 +384,3 @@ class InAppUpdateViewModelTest {
         timeProvider = fakeTimeProvider,
     )
 }
-

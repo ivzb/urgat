@@ -9,12 +9,12 @@ import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class FakeObserveFuelConsumptionUiStateUseCase : ObserveFuelConsumptionUiStateUseCase {
 
@@ -60,9 +60,7 @@ class FakeObserveFuelConsumptionUseCase : ObserveFuelConsumptionUseCase {
         filterTypeFlow: Flow<Unit>?,
         sortTypeFlow: Flow<FuelConsumptionSortType>?,
         limitFlow: Flow<Int>?,
-    ): Flow<Async<List<FuelConsumption>>> {
-        return flow
-    }
+    ): Flow<Async<List<FuelConsumption>>> = flow
 
 }
 
@@ -174,9 +172,7 @@ class FakeObserveFuelConsumptionFilteringUseCase : ObserveFuelConsumptionFilteri
         flow.value = value
     }
 
-    override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> {
-        return flow
-    }
+    override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> = flow
 
 }
 
@@ -188,9 +184,7 @@ class FakeObserveFuelConsumptionCarFilteringUseCase : ObserveFuelConsumptionCarF
         flow.value = value
     }
 
-    override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> {
-        return flow
-    }
+    override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> = flow
 
 }
 
@@ -202,9 +196,7 @@ class FakeObserveFuelConsumptionSortingUseCase : ObserveFuelConsumptionSortingUs
         flow.value = value
     }
 
-    override fun invoke(): Flow<Async<List<FuelConsumptionSortMenuItem>>> {
-        return flow
-    }
+    override fun invoke(): Flow<Async<List<FuelConsumptionSortMenuItem>>> = flow
 
 }
 
@@ -223,27 +215,21 @@ class FakeGetLastUsedFuelConsumptionCurrencyUseCase : GetLastUsedFuelConsumption
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeGetLastUsedFuelConsumptionTypeUseCase : GetLastUsedFuelConsumptionTypeUseCase {
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeGetLastUsedFuelConsumptionCarNameUseCase : GetLastUsedFuelConsumptionCarNameUseCase {
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeCreateFuelConsumptionUseCase : CreateFuelConsumptionUseCase {

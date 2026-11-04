@@ -39,8 +39,8 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionCategory
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal.Companion.sumByType
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumptionCategories
 import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumption
+import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumptionCategories
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu

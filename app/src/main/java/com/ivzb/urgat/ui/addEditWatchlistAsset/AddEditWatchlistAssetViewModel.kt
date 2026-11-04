@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.addEditWatchlistAsset
 
-import kotlin.text.isEmpty
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -14,6 +13,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlin.text.isEmpty
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,9 +32,11 @@ class AddEditWatchlistAssetViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private val watchlistAssetId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditWatchlistAssetUiState(
-        screenTitleResId = screenTitleResId,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditWatchlistAssetUiState(
+            screenTitleResId = screenTitleResId,
+        )
+    )
     val uiState: StateFlow<AddEditWatchlistAssetUiState> = _uiState.asStateFlow()
 
     init {

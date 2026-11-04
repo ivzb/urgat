@@ -1,7 +1,7 @@
 package com.ivzb.urgat.data.carMaintenance
 
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class CarMaintenanceTest {
 
@@ -76,4 +76,3 @@ class CarMaintenanceTest {
         createdAt = date,
     )
 }
-

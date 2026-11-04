@@ -6,12 +6,12 @@ import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.domain.fire.ObserveNetWorthUseCase
 import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.util.Async
+import javax.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
-import javax.inject.Inject
 
 /**
  * Drops the cached quotes and waits for fresh ones to arrive.
@@ -79,4 +79,3 @@ class DefaultRefreshQuotesUseCase @Inject constructor(
     }
 
 }
-

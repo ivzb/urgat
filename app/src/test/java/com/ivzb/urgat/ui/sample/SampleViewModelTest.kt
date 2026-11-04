@@ -72,9 +72,7 @@ class SampleViewModelTest {
         assertTrue(uiState.shouldNavigateBack)
     }
 
-    private fun createViewModel(): SampleViewModel {
-        return SampleViewModel(
-            sampleUseCase,
-        )
-    }
+    private fun createViewModel(): SampleViewModel = SampleViewModel(
+        sampleUseCase,
+    )
 }

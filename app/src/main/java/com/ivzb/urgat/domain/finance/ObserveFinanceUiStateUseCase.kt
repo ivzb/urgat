@@ -16,8 +16,8 @@ import com.ivzb.urgat.domain.saving.ObserveSavingsSortingUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesFilteringUseCase
 import com.ivzb.urgat.domain.trades.ObserveTradesSortingUseCase
-import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsSortingUseCase
+import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
@@ -43,11 +43,11 @@ import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
+import java.math.BigDecimal
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import java.math.BigDecimal
-import javax.inject.Inject
 
 interface ObserveFinanceUiStateUseCase {
 

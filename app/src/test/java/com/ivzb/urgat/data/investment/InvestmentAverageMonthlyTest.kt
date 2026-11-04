@@ -1,9 +1,9 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.util.timestamp
-import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class InvestmentAverageMonthlyTest {
 
@@ -126,4 +126,3 @@ class InvestmentAverageMonthlyTest {
         createdAt = date,
     )
 }
-

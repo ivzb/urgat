@@ -9,4 +9,3 @@ enum class CarMaintenanceSortType: Parcelable {
     BY_ODOMETER_MIN,
     BY_ODOMETER_MAX,
 }
-

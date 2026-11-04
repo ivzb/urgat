@@ -7,6 +7,7 @@ import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -17,7 +18,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
 
 /**
  * Covers the shared observe pipeline in [DefaultObserveUseCase] through its concrete
@@ -219,6 +219,3 @@ class ObserveUseCaseTest {
     }
 
 }
-
-
-

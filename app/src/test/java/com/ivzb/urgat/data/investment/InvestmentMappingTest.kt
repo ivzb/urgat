@@ -1,11 +1,11 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.util.UNKNOWN
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class InvestmentMappingTest {
 
@@ -86,4 +86,3 @@ class InvestmentMappingTest {
         createdAt = 1L,
     )
 }
-

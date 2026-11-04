@@ -38,4 +38,3 @@ class DefaultGetLastUsedCarMaintenanceCarNameUseCaseTest {
         assertNull(result)
     }
 }
-

@@ -37,4 +37,3 @@ class DefaultUpdateFuelConsumptionUseCase @Inject constructor(
     }
 
 }
-

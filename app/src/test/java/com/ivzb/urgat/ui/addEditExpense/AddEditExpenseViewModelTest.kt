@@ -7,6 +7,8 @@ import com.ivzb.urgat.domain.expense.FakeDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.FakeGetLastUsedCurrencyUseCase
 import com.ivzb.urgat.domain.expense.FakeUpdateExpenseUseCase
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -15,15 +17,13 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditExpenseViewModelTest {
@@ -132,7 +132,7 @@ class AddEditExpenseViewModelTest {
         viewModel.onIntent(AddEditExpenseIntent.UpdateCurrency("EUR"))
         viewModel.onIntent(AddEditExpenseIntent.UpdateCategory("Food"))
         viewModel.onIntent(AddEditExpenseIntent.SaveExpense)
-        
+
         advanceUntilIdle()
 
         val (name, amount, currency, category) = createUseCase.created
@@ -274,7 +274,7 @@ class AddEditExpenseViewModelTest {
     }
 
     @Test
-   fun `duplicateExpense resets state to create mode with current data`() = runTest {
+    fun `duplicateExpense resets state to create mode with current data`() = runTest {
         val expenseId = "123"
         val expense = Expense(
             id = expenseId,
@@ -457,6 +457,5 @@ class AddEditExpenseViewModelTest {
             deleteUseCase,
         )
     }
-
 
 }

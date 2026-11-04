@@ -24,4 +24,3 @@ class DefaultCompleteUpdateUseCaseTest {
         verify(exactly = 1) { repository.completeUpdate() }
     }
 }
-

@@ -3,10 +3,10 @@ package com.ivzb.urgat.domain.budget
 import com.ivzb.urgat.data.budget.BudgetsRepository
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.math.BigDecimal
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 
 class DefaultCreateBudgetUseCaseTest {
 

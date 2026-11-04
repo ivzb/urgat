@@ -1,7 +1,7 @@
 package com.ivzb.urgat.data.forex
 
-import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
+import kotlinx.coroutines.flow.Flow
 
 interface ForexRepository {
 
@@ -14,4 +14,3 @@ interface ForexRepository {
     suspend fun clearCache()
 
 }
-

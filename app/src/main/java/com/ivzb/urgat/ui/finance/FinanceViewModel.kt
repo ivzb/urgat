@@ -27,12 +27,12 @@ import com.ivzb.urgat.util.lastMonthRange
 import com.ivzb.urgat.util.lastYearRange
 import com.ivzb.urgat.util.yearToDateRange
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class FinanceViewModel @Inject constructor(
@@ -68,8 +68,11 @@ class FinanceViewModel @Inject constructor(
     ) { type, customStart, customEnd ->
         when (type) {
             FireDateRangeType.LAST_MONTH -> lastMonthRange()
+
             FireDateRangeType.LAST_YEAR -> lastYearRange()
+
             FireDateRangeType.YTD -> yearToDateRange()
+
             FireDateRangeType.CUSTOM -> if (customStart > 0 && customEnd > 0) {
                 customStart .. customEnd
             } else {
@@ -128,40 +131,54 @@ class FinanceViewModel @Inject constructor(
             financeUiState.copy(uiEvent = uiEvent)
         }
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = FinanceUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = FinanceUiState(isLoading = true)
+        )
 
     fun onIntent(intent: FinanceIntent) {
         when (intent) {
             is FinanceIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
-            is FinanceIntent.FabActionClick -> { onFabActionClick(intent.page) }
+
+            is FinanceIntent.FabActionClick -> {
+                onFabActionClick(intent.page)
+            }
+
             is FinanceIntent.UpdateFireWithdrawalRate -> onUpdateFireWithdrawalRate(intent.withdrawalRate)
+
             is FinanceIntent.UpdateFireReturnOfInvestment -> onUpdateFireReturnOfInvestment(intent.returnOfInvestment)
+
             is FinanceIntent.UpdateFireTaxRate -> onUpdateFireTaxRate(intent.taxRate)
+
             is FinanceIntent.UpdateFireDateRangeType -> onUpdateFireDateRangeType(intent.type)
+
             is FinanceIntent.UpdateFireCustomDateRange -> onUpdateFireCustomDateRange(intent.start, intent.end)
 
             is FinanceIntent.SetExpensesFiltering -> setExpensesFiltering(intent.filterType)
+
             is FinanceIntent.SetExpensesSorting -> setExpensesSorting(intent.sortType)
 
             is FinanceIntent.SetInvestmentsFiltering -> setInvestmentsFiltering(intent.filterType)
+
             is FinanceIntent.SetInvestmentsSorting -> setInvestmentsSorting(intent.sortType)
 
             is FinanceIntent.SetTradesFiltering -> setTradesFiltering(intent.filterType)
+
             is FinanceIntent.SetTradesSorting -> setTradesSorting(intent.sortType)
 
             is FinanceIntent.SetSavingsSorting -> setSavingsSorting(intent.sortType)
 
             is FinanceIntent.SetBudgetsFiltering -> setBudgetsFiltering(intent.filterType)
+
             is FinanceIntent.SetBudgetsSorting -> setBudgetsSorting(intent.sortType)
 
             is FinanceIntent.SetWatchlistAssetsSorting -> setWatchlistAssetsSorting(intent.sortType)
 
             is FinanceIntent.RefreshInvestments -> refreshInvestments()
+
             is FinanceIntent.RefreshTrades -> refreshTrades()
+
             is FinanceIntent.RefreshWatchlist -> refreshWatchlist()
 
             is FinanceIntent.ResetFilters -> resetFilters()
@@ -177,19 +194,19 @@ class FinanceViewModel @Inject constructor(
     }
 
     private fun onFabActionClick(page: Page) {
-            viewModelScope.launch {
-                uiEventHolder.emit(
-                    when (page) {
-                        is FinancePage.Expenses -> FinanceUiEvent.AddExpense
-                        is FinancePage.Investments -> FinanceUiEvent.AddInvestment
-                        is FinancePage.Trades -> FinanceUiEvent.AddTrade
-                        is FinancePage.Savings -> FinanceUiEvent.AddSaving
-                        is FinancePage.Budgets -> FinanceUiEvent.AddBudget
-                        is FinancePage.Watchlist -> FinanceUiEvent.AddWatchlistAsset
-                        else -> null
-                    }
-                )
-            }
+        viewModelScope.launch {
+            uiEventHolder.emit(
+                when (page) {
+                    is FinancePage.Expenses -> FinanceUiEvent.AddExpense
+                    is FinancePage.Investments -> FinanceUiEvent.AddInvestment
+                    is FinancePage.Trades -> FinanceUiEvent.AddTrade
+                    is FinancePage.Savings -> FinanceUiEvent.AddSaving
+                    is FinancePage.Budgets -> FinanceUiEvent.AddBudget
+                    is FinancePage.Watchlist -> FinanceUiEvent.AddWatchlistAsset
+                    else -> null
+                }
+            )
+        }
     }
 
     private fun onUpdateFireWithdrawalRate(withdrawalRate: String) {

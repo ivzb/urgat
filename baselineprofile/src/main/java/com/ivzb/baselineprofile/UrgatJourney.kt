@@ -49,10 +49,9 @@ private fun MacrobenchmarkScope.openTab(tab: String) {
     awaitLoaded()
 }
 
-private fun MacrobenchmarkScope.awaitTab(tab: String): UiObject2 {
-    return device.wait(Until.findObject(By.res(tab)), UI_TIMEOUT_MS)
+private fun MacrobenchmarkScope.awaitTab(tab: String): UiObject2 =
+    device.wait(Until.findObject(By.res(tab)), UI_TIMEOUT_MS)
         ?: throw AssertionError("Navigation item \"$tab\" not found after ${UI_TIMEOUT_MS}ms")
-}
 
 private fun MacrobenchmarkScope.awaitLoaded() {
     if (!device.wait(Until.gone(By.res(LOADING)), UI_TIMEOUT_MS)) {

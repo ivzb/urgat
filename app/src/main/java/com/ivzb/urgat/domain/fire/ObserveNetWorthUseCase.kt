@@ -4,10 +4,10 @@ import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.fire.NetWorth
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 /**
  * Observes the accumulated stash (net worth) out of the FI/RE data.
@@ -29,14 +29,13 @@ class DefaultObserveNetWorthUseCase @Inject constructor(
     private val fireRepository: FireRepository,
 ): ObserveNetWorthUseCase {
 
-    override fun invoke(): Flow<Async<NetWorth?>> {
-        return observeFiReUseCase(
-            withdrawalRateFlow = fireRepository.withdrawalRateFlow,
-            returnOfInvestmentFlow = fireRepository.returnOfInvestmentFlow,
-            taxRateFlow = fireRepository.taxRateFlow,
-            // no date range, so budget and expenses of every month ever are taken into account
-            dateRangeFlow = null,
-        )
+    override fun invoke(): Flow<Async<NetWorth?>> = observeFiReUseCase(
+        withdrawalRateFlow = fireRepository.withdrawalRateFlow,
+        returnOfInvestmentFlow = fireRepository.returnOfInvestmentFlow,
+        taxRateFlow = fireRepository.taxRateFlow,
+        // no date range, so budget and expenses of every month ever are taken into account
+        dateRangeFlow = null,
+    )
         .map { async ->
             when (async) {
                 is Async.Success -> Async.Success(
@@ -56,6 +55,7 @@ class DefaultObserveNetWorthUseCase @Inject constructor(
                 )
 
                 is Async.Error -> Async.Error
+
                 is Async.Loading -> Async.Loading
             }
         }
@@ -63,7 +63,5 @@ class DefaultObserveNetWorthUseCase @Inject constructor(
             Tracker.error(e)
             emit(Async.Error)
         }
-    }
 
 }
-

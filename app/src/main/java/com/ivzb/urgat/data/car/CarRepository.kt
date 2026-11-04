@@ -25,4 +25,3 @@ interface CarRepository {
     suspend fun updateCarMaintenanceSortType(value: CarMaintenanceSortType)
 
 }
-

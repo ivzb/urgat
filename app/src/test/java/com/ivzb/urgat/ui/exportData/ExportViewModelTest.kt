@@ -75,9 +75,7 @@ class ExportViewModelTest {
         assertTrue(uiState.shouldNavigateBack)
     }
 
-    private fun createViewModel(): ExportDataViewModel {
-        return ExportDataViewModel(
-            exportUseCase,
-        )
-    }
+    private fun createViewModel(): ExportDataViewModel = ExportDataViewModel(
+        exportUseCase,
+    )
 }

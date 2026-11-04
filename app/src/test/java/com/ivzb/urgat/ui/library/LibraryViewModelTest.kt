@@ -16,6 +16,9 @@ import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
 import com.ivzb.urgat.ui.todos.TodosUiState
 import com.ivzb.urgat.util.Async
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -30,9 +33,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryViewModelTest {
@@ -309,13 +309,17 @@ class LibraryViewModelTest {
     )
 
     private fun emitSuccessData(showFilterBadge: Boolean) {
-        fakeObserveTodosUiStateUseCase.emit(Async.Success(TodosUiState(
-            todos = fakeTodos,
-            filteringUiInfo = TodosFilteringUiInfo(
-                filterMenuItems = fakeTodosFiltering,
-                showFilterBadge = showFilterBadge,
-            ),
-        )))
+        fakeObserveTodosUiStateUseCase.emit(
+            Async.Success(
+                TodosUiState(
+                    todos = fakeTodos,
+                    filteringUiInfo = TodosFilteringUiInfo(
+                        filterMenuItems = fakeTodosFiltering,
+                        showFilterBadge = showFilterBadge,
+                    ),
+                )
+            )
+        )
         fakeObserveNotesUiStateUseCase.emit(Async.Success(NotesUiState(notes = fakeNotes)))
     }
 

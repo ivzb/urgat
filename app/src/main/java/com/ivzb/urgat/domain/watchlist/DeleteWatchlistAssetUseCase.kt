@@ -18,4 +18,3 @@ class DefaultDeleteWatchlistAssetUseCase @Inject constructor(
     }
 
 }
-

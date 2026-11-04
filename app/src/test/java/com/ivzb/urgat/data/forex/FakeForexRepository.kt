@@ -1,10 +1,10 @@
 package com.ivzb.urgat.data.forex
 
 import com.ivzb.urgat.util.formatCurrency
+import java.math.BigDecimal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import java.math.BigDecimal
 
 class FakeForexRepository : ForexRepository {
 
@@ -32,7 +32,7 @@ class FakeForexRepository : ForexRepository {
 
         if (from in unresolvedCurrencies || to in unresolvedCurrencies) return null
 
-        return rates["${from}${to}"] ?: throw RuntimeException("No rate for $from -> $to")
+        return rates["$from$to"] ?: throw RuntimeException("No rate for $from -> $to")
     }
 
     override suspend fun convert(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal? {
@@ -50,4 +50,3 @@ class FakeForexRepository : ForexRepository {
     }
 
 }
-

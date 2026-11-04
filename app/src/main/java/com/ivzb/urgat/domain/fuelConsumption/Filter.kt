@@ -10,6 +10,6 @@ fun filterFuelConsumption(items: List<FuelConsumption>, filter: FuelConsumptionF
 
     return items.filter { item ->
         (!filter.hasType || item.type == filter.type) &&
-        (!filter.hasCar || item.carName == filter.carName)
+            (!filter.hasCar || item.carName == filter.carName)
     }
 }

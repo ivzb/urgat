@@ -5,6 +5,11 @@ import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.util.Logger
 import com.ivzb.urgat.util.Tracker
 import com.ivzb.urgat.util.formatCurrency
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -12,11 +17,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class DefaultForexRepository @Inject constructor(
@@ -38,20 +38,20 @@ class DefaultForexRepository @Inject constructor(
             return BigDecimal.ONE
         }
 
-        val key = "${from}${to}"
+        val key = "$from$to"
 
         // the first caller for a key creates the Deferred and everyone else awaits that same one,
         // so a burst of conversions still only costs a single network call
         val attempt = cache.getOrPut(key) {
             scope.async {
-                val rate = marketPriceRepository.fetchPrice("${key}=X")?.price
+                val rate = marketPriceRepository.fetchPrice("$key=X")?.price
 
                 logger.debug("forex rate fetched: $from -> $to = $rate")
 
                 if (rate == null) {
                     Tracker.error(Throwable("forex rate not found: $from -> $to"))
                 } else {
-                    val inverseKey = "${to}${from}"
+                    val inverseKey = "$to$from"
                     val inverseRate = BigDecimal.ONE.divide(rate, 10, RoundingMode.HALF_UP)
                     cache.putIfAbsent(inverseKey, CompletableDeferred(inverseRate))
                     logger.debug("forex rate cached (inverse): $to -> $from = $inverseRate")

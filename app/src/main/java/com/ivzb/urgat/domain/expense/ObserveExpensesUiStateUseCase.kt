@@ -7,10 +7,10 @@ import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 interface ObserveExpensesUiStateUseCase {
 
@@ -74,4 +74,3 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
     ).map { Async.Success(it) }
 
 }
-

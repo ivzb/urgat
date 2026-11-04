@@ -16,4 +16,3 @@ data class AddEditTradeUiState(
     val withDuplicate: Boolean = false,
     val shouldNavigateBack: Boolean = false
 )
-

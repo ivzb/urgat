@@ -64,4 +64,3 @@ class SortCarMaintenanceTest {
         assertEquals("b", sorted[1].id)
     }
 }
-

@@ -26,4 +26,3 @@ fun SkeletonBar(width: Dp, height: Dp) {
         content = {},
     )
 }
-

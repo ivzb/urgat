@@ -5,12 +5,12 @@ import com.ivzb.urgat.data.investment.InvestmentsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
 
 class DefaultGetInvestmentUseCaseTest {
 
@@ -26,7 +26,7 @@ class DefaultGetInvestmentUseCaseTest {
     @Test
     fun `invoke should return investment when repository returns investment`() = runTest {
         val id = "123"
-        val expectedInvestment = Investment(id, "SNP 500",  BigDecimal("350"), BigDecimal("220"), BigDecimal("0"), "etfs", "USD", 1L, false, 1L)
+        val expectedInvestment = Investment(id, "SNP 500", BigDecimal("350"), BigDecimal("220"), BigDecimal("0"), "etfs", "USD", 1L, false, 1L)
         coEvery { repository.get(id) } returns expectedInvestment
 
         val result = getUseCase(id)

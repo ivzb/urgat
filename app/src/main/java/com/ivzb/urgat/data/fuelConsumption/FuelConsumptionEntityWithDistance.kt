@@ -6,4 +6,3 @@ data class FuelConsumptionEntityWithDistance(
     @Embedded val entity: FuelConsumptionEntity,
     val distance: Int?,
 )
-

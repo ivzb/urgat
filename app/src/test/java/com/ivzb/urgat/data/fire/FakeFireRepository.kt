@@ -5,9 +5,9 @@ import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_RETURN_OF_
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_TAX_RATE
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_WITHDRAWAL_RATE
 import com.ivzb.urgat.ui.fire.FireDateRangeType
+import java.math.BigDecimal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.math.BigDecimal
 
 class FakeFireRepository : FireRepository {
 
@@ -54,4 +54,3 @@ class FakeFireRepository : FireRepository {
     }
 
 }
-

@@ -39,7 +39,7 @@ class UrgatNavigator(val state: NavigationState): Navigator {
     }
 }
 
-class FakeNavigator(): Navigator {
+class FakeNavigator: Navigator {
 
     override fun navigate(route: NavKey) = Unit
 

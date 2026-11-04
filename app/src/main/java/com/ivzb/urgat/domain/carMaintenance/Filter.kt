@@ -10,4 +10,3 @@ fun filterCarMaintenance(items: List<CarMaintenance>, filterType: String): List<
 
     return items.filter { it.carName == filterType }
 }
-

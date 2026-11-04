@@ -13,9 +13,9 @@ import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.util.dataStoreBigDecimalFlow
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreLongFlow
-import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class DefaultFireRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,

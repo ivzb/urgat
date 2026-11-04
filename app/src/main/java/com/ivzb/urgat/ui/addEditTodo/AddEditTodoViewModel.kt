@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.todo.CreateTodoUseCase
 import com.ivzb.urgat.domain.todo.DeleteTodoUseCase
-import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import com.ivzb.urgat.domain.todo.GetTodoUseCase
+import com.ivzb.urgat.domain.todo.UpdateTodoUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
 import dagger.assisted.Assisted
@@ -31,9 +31,11 @@ class AddEditTodoViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private val todoId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditTodoUiState(
-        screenTitleResId = screenTitleResId,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditTodoUiState(
+            screenTitleResId = screenTitleResId,
+        )
+    )
     val uiState: StateFlow<AddEditTodoUiState> = _uiState.asStateFlow()
 
     init {

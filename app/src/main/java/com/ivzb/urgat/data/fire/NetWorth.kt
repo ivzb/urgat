@@ -55,4 +55,3 @@ data class NetWorth(
     val pnl: BigDecimal? = calculatePnL(costPrice, amount)
 
 }
-

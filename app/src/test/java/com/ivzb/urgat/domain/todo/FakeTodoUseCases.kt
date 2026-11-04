@@ -105,9 +105,7 @@ class FakeObserveTodosFilteringUseCase : ObserveTodosFilteringUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<TodosFilterMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<TodosFilterMenuItem>>> = flow
 
 }
 

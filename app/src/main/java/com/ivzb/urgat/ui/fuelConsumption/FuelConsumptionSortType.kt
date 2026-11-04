@@ -9,4 +9,3 @@ enum class FuelConsumptionSortType: Parcelable {
     BY_MIN,
     BY_MAX,
 }
-

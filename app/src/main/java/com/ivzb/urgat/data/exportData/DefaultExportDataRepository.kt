@@ -7,10 +7,10 @@ import android.provider.DocumentsContract
 import androidx.core.database.getStringOrNull
 import com.ivzb.urgat.data.csv.CsvMapping
 import com.ivzb.urgat.di.IoDispatcher
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import java.io.OutputStream
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class DefaultExportDataRepository @Inject constructor(
     private val contentResolver: ContentResolver,
@@ -22,17 +22,15 @@ class DefaultExportDataRepository @Inject constructor(
         cursor: Cursor,
         fileName: String,
         mappings: List<CsvMapping>,
-    ) {
-        return withContext(dispatcher) {
-            writeFile(
-                resolver = contentResolver,
-                uri = uri,
-                fileName = fileName,
-                mimeType = CSV_MIME,
-            ) { outputStream ->
+    ) = withContext(dispatcher) {
+        writeFile(
+            resolver = contentResolver,
+            uri = uri,
+            fileName = fileName,
+            mimeType = CSV_MIME,
+        ) { outputStream ->
 
-                export(outputStream, cursor, mappings)
-            }
+            export(outputStream, cursor, mappings)
         }
     }
 
@@ -51,6 +49,7 @@ class DefaultExportDataRepository @Inject constructor(
                     val data = indexes.mapIndexed { index, columnIndex ->
                         when (types[index]) {
                             "string" -> "\"${cursor.getString(columnIndex).replace('"', '\'')}\""
+
                             "string?" -> {
                                 val column = cursor.getStringOrNull(columnIndex)
 
@@ -60,7 +59,9 @@ class DefaultExportDataRepository @Inject constructor(
                                     ""
                                 }
                             }
+
                             "big_decimal" -> "\"${cursor.getString(columnIndex)}\""
+
                             "big_decimal?" -> {
                                 val column = cursor.getStringOrNull(columnIndex)
 
@@ -70,9 +71,13 @@ class DefaultExportDataRepository @Inject constructor(
                                     ""
                                 }
                             }
+
                             "boolean" -> "${cursor.getInt(columnIndex)}"
+
                             "int" -> "${cursor.getInt(columnIndex)}"
+
                             "long" -> "${cursor.getLong(columnIndex)}"
+
                             else -> throw Exception("unsupported type ${types[index]}")
                         }
                     }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight as ComposeFontWeight
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Row
@@ -11,7 +12,6 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import androidx.compose.ui.text.font.FontWeight as ComposeFontWeight
 
 /**
  * Draws an [AnnotatedString] the app already builds - a price with its P&L next to it, say - inside
@@ -95,4 +95,3 @@ private fun ComposeFontWeight.toGlanceFontWeight(): FontWeight = when {
     this >= ComposeFontWeight.Medium -> FontWeight.Medium
     else -> FontWeight.Normal
 }
-

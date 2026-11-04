@@ -15,12 +15,12 @@ import com.ivzb.urgat.data.todo.TodoEntity
 import com.ivzb.urgat.data.trade.TradeEntity
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightEntity
+import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MigrationTest {

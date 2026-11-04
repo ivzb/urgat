@@ -146,7 +146,7 @@ fun PagerContent(
         derivedStateOf { pages[pagerState.currentPage].isHorizontalScrollEnabled }
     }
 
-    Column (
+    Column(
         modifier = modifier,
     ) {
         PrimaryScrollableTabRow(

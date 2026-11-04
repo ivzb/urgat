@@ -5,12 +5,12 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.math.BigDecimal
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 
 class DefaultGetFuelConsumptionUseCaseTest {
 
@@ -65,4 +65,3 @@ class DefaultGetFuelConsumptionUseCaseTest {
         assertNull(result)
     }
 }
-

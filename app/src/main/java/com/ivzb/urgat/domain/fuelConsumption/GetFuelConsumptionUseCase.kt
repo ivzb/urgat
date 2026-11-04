@@ -14,9 +14,6 @@ class DefaultGetFuelConsumptionUseCase @Inject constructor(
     private val repository: FuelConsumptionRepository
 ): GetFuelConsumptionUseCase {
 
-    override suspend fun invoke(id: String): FuelConsumption? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): FuelConsumption? = repository.get(id)
 
 }
-

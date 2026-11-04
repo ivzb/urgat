@@ -16,11 +16,11 @@ import com.ivzb.urgat.util.Tracker
 import com.ivzb.urgat.util.div
 import com.ivzb.urgat.util.round
 import com.ivzb.urgat.util.toPercentage
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import java.math.BigDecimal
 import javax.inject.Inject
 import kotlin.math.pow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 
 interface ObserveFiReUseCase {
 
@@ -67,7 +67,8 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 expensesMonthlyAsync is Async.Success &&
                 investmentsAllTimeAsync is Async.Success &&
                 tradesAllTimeAsync is Async.Success &&
-                savingsAllTimeAsync is Async.Success) {
+                savingsAllTimeAsync is Async.Success
+            ) {
 
                 val budgetCategoriesMonthly = budgetCategoriesMonthlyAsync.data
                 val expensesMonthly = expensesMonthlyAsync.data
@@ -266,10 +267,10 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 Async.Error
             }
         }
-        .catch { e ->
-            Tracker.error(e)
-            emit(Async.Error)
-        }
+            .catch { e ->
+                Tracker.error(e)
+                emit(Async.Error)
+            }
     }
 
     private fun calculateFiReYears(

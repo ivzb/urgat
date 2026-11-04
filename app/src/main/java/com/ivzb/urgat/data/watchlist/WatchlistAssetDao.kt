@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WatchlistAssetDao {
 
-    @Query("" +
-            "SELECT * FROM watchlist_assets " +
+    @Query(
+        "SELECT * FROM watchlist_assets " +
             "WHERE isDeleted = 0 AND createdAt BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
@@ -25,20 +25,18 @@ interface WatchlistAssetDao {
     @RawQuery(observedEntities = [WatchlistAssetEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<WatchlistAssetEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<WatchlistAssetEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "watchlist_assets",
-                searchColumns = listOf("name"),
-                dateColumn = "createdAt",
-                orderBy = "createdAt DESC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<WatchlistAssetEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "watchlist_assets",
+            searchColumns = listOf("name"),
+            dateColumn = "createdAt",
+            orderBy = "createdAt DESC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM watchlist_assets WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun stream(): Cursor

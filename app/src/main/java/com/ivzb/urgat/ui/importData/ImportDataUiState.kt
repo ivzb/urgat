@@ -2,15 +2,15 @@ package com.ivzb.urgat.ui.importData
 
 import com.ivzb.urgat.data.csv.CsvMapping
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.INVESTMENTS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.NOTES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_MAPPING
-import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_MAPPING
-import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_MAPPING
 import com.ivzb.urgat.data.source.sample.SampleData
 

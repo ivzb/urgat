@@ -33,4 +33,3 @@ interface FuelConsumptionRepository: BaseRepository<FuelConsumption> {
     suspend fun getLastUsedCarName(): String?
 
 }
-

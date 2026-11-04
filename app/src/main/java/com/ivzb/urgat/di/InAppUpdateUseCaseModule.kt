@@ -34,4 +34,3 @@ interface InAppUpdateUseCaseModule {
     @Binds
     fun bindsCompleteUpdateUseCase(useCase: DefaultCompleteUpdateUseCase): CompleteUpdateUseCase
 }
-

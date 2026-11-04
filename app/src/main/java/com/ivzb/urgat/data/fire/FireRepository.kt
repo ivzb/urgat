@@ -1,8 +1,8 @@
 package com.ivzb.urgat.data.fire
 
 import com.ivzb.urgat.ui.fire.FireDateRangeType
-import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
+import kotlinx.coroutines.flow.Flow
 
 interface FireRepository {
 

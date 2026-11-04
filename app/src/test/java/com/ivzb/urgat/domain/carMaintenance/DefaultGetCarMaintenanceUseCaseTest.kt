@@ -62,4 +62,3 @@ class DefaultGetCarMaintenanceUseCaseTest {
         assertNull(result)
     }
 }
-

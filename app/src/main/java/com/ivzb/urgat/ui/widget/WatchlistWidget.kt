@@ -19,8 +19,8 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.LocalState
-import androidx.glance.action.clickable
 import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -55,8 +55,8 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.financeColor
 import com.ivzb.urgat.util.formatNames
 import com.ivzb.urgat.util.formatUpdatedAt
-import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
+import kotlinx.coroutines.flow.map
 
 /**
  * Home screen app widget showing the very same assets as the finance watchlist.
@@ -93,7 +93,7 @@ class WatchlistWidget : GlanceAppWidget() {
 
         val refreshStartedAt = currentState(REFRESH_STARTED_AT) ?: 0L
         val isRefreshing = refreshStartedAt > 0L &&
-                System.currentTimeMillis() - refreshStartedAt < REFRESH_STALE_AFTER_MILLIS
+            System.currentTimeMillis() - refreshStartedAt < REFRESH_STALE_AFTER_MILLIS
 
         val showRefresh = !isCompact && !isRefreshing
 
@@ -585,7 +585,3 @@ private fun List<WatchlistAsset>.unavailableNames(): List<String> =
     filterNot { it.hasMarketPrice }
         .map { it.name.uppercase() }
         .distinct()
-
-
-
-

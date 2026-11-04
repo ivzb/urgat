@@ -1,7 +1,7 @@
 package com.ivzb.urgat.util
 
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class NamesTest {
 

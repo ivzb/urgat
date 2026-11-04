@@ -19,4 +19,3 @@ data class AddEditCarMaintenanceUiState(
     val withClearDefaults: Boolean = false,
     val shouldNavigateBack: Boolean = false
 )
-

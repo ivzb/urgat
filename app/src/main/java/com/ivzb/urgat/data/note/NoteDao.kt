@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NoteDao {
 
-    @Query("" +
-            "SELECT * FROM notes " +
+    @Query(
+        "SELECT * FROM notes " +
             "WHERE isDeleted = 0 AND createdAt BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY createdAt DESC " +
             "LIMIT :limit"
@@ -25,20 +25,18 @@ interface NoteDao {
     @RawQuery(observedEntities = [NoteEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<NoteEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<NoteEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "notes",
-                searchColumns = listOf("content"),
-                dateColumn = "createdAt",
-                orderBy = "createdAt DESC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<NoteEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "notes",
+            searchColumns = listOf("content"),
+            dateColumn = "createdAt",
+            orderBy = "createdAt DESC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM notes WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun stream(): Cursor

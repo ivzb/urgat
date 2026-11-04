@@ -6,8 +6,8 @@ import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedSavingsAllTimeUseCase {
 

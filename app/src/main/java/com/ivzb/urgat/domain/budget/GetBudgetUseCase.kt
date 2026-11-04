@@ -14,8 +14,6 @@ class DefaultGetBudgetUseCase @Inject constructor(
     private val repository: BudgetsRepository
 ): GetBudgetUseCase {
 
-    override suspend fun invoke(id: String): Budget? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Budget? = repository.get(id)
 
 }

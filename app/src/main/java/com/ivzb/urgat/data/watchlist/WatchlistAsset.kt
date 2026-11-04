@@ -61,4 +61,3 @@ data class WatchlistAsset(
         "\"$id\", \"$name\", $createdAt"
 
 }
-

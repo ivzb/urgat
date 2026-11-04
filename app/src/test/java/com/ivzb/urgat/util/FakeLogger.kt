@@ -7,4 +7,3 @@ class FakeLogger : Logger {
     override fun error(message: String, throwable: Throwable?) = Unit
 
 }
-

@@ -36,4 +36,3 @@ class DefaultDeleteFuelConsumptionUseCaseTest {
         coVerify(exactly = 1) { repository.delete(id) }
     }
 }
-

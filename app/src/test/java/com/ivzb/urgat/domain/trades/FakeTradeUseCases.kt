@@ -53,9 +53,7 @@ class FakeObserveTradesFilteringUseCase : ObserveTradesFilteringUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<TradesFilterMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<TradesFilterMenuItem>>> = flow
 
 }
 
@@ -67,9 +65,7 @@ class FakeObserveTradesSortingUseCase : ObserveTradesSortingUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<TradesSortMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<TradesSortMenuItem>>> = flow
 
 }
 
@@ -169,4 +165,3 @@ class FakeObserveTradesUiStateUseCase : ObserveTradesUiStateUseCase {
     }
 
 }
-

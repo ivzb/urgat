@@ -9,21 +9,23 @@ import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingTotal
+import com.ivzb.urgat.data.trade.Trade
+import com.ivzb.urgat.data.trade.TradeTotal
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.GroupedSavings
-import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
-import com.ivzb.urgat.data.trade.Trade
-import com.ivzb.urgat.data.trade.TradeTotal
 import com.ivzb.urgat.domain.trades.GroupedTrades
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradesMonthlyUseCase
 import com.ivzb.urgat.util.Async
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -32,8 +34,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveReportBudgetUseCaseTest {
@@ -87,10 +87,14 @@ class DefaultObserveReportBudgetUseCaseTest {
         )
 
         val expenses = listOf(
-            GroupedExpenses("2025/11", listOf(ExpenseTotal(1200.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "2025/11",
+                listOf(ExpenseTotal(1200.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         )
 
         val investments = listOf(
@@ -107,58 +111,76 @@ class DefaultObserveReportBudgetUseCaseTest {
         )
 
         val savings = listOf(
-            GroupedSavings("2025/11", listOf(SavingTotal(1100.toBigDecimal(), "EUR")), listOf(
-                Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
-                Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
-            )),
+            GroupedSavings(
+                "2025/11",
+                listOf(SavingTotal(1100.toBigDecimal(), "EUR")),
+                listOf(
+                    Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
+                    Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
+                )
+            ),
         )
 
         val trades = listOf(
-            GroupedTrades("2025/11", listOf(TradeTotal("EUR", 700.toBigDecimal())), listOf(
-                Trade("1", "AAPL", 400.toBigDecimal(), "EUR", 1, false, 1),
-                Trade("2", "TSLA", 300.toBigDecimal(), "EUR", 2, false, 2),
-            )),
+            GroupedTrades(
+                "2025/11",
+                listOf(TradeTotal("EUR", 700.toBigDecimal())),
+                listOf(
+                    Trade("1", "AAPL", 400.toBigDecimal(), "EUR", 1, false, 1),
+                    Trade("2", "TSLA", 300.toBigDecimal(), "EUR", 2, false, 2),
+                )
+            ),
         )
 
-        every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(categories))
+        every {
+            observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(categories))
 
-        every { observeGroupedExpensesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(expenses))
+        every {
+            observeGroupedExpensesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(expenses))
 
-        every { observeGroupedInvestmentsMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(investments))
+        every {
+            observeGroupedInvestmentsMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(investments))
 
-        every { observeGroupedTradesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(trades))
+        every {
+            observeGroupedTradesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(trades))
 
-        every { observeGroupedSavingsMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(savings))
+        every {
+            observeGroupedSavingsMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(savings))
 
         val results = observeUseCase(dateRangeFlow).toList()
 
@@ -191,45 +213,55 @@ class DefaultObserveReportBudgetUseCaseTest {
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
 
-        every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Error)
+        every {
+            observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Error)
 
-        every { observeGroupedExpensesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(listOf()))
+        every {
+            observeGroupedExpensesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(listOf()))
 
-        every { observeGroupedInvestmentsMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(listOf()))
+        every {
+            observeGroupedInvestmentsMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(listOf()))
 
-        every { observeGroupedSavingsMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(listOf()))
+        every {
+            observeGroupedSavingsMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(listOf()))
 
-        every { observeGroupedTradesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(listOf()))
+        every {
+            observeGroupedTradesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(listOf()))
 
         val results = observeUseCase(dateRangeFlow).toList()
 

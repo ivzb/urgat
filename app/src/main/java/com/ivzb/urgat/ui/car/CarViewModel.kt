@@ -16,12 +16,12 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class CarViewModel @Inject constructor(
@@ -68,25 +68,22 @@ class CarViewModel @Inject constructor(
             )
         }
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = CarUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = CarUiState(isLoading = true)
+        )
 
     fun onIntent(intent: CarIntent) {
         when (intent) {
             is CarIntent.SearchQueryChanged -> onSearchQueryChanged(intent.query)
             is CarIntent.ResetFilters -> resetFilters()
             is CarIntent.FabActionClick -> onFabActionClick(intent.page)
-
             is CarIntent.SetFuelConsumptionFiltering -> setFuelConsumptionFiltering(intent.filterType)
             is CarIntent.SetFuelConsumptionCarFiltering -> setFuelConsumptionCarFiltering(intent.carName)
             is CarIntent.SetFuelConsumptionSorting -> setFuelConsumptionSorting(intent.sortType)
-
             is CarIntent.SetCarMaintenanceFiltering -> setCarMaintenanceFiltering(intent.filterType)
             is CarIntent.SetCarMaintenanceSorting -> setCarMaintenanceSorting(intent.sortType)
-
             is CarIntent.EventConsumed -> onEventConsumed()
         }
     }

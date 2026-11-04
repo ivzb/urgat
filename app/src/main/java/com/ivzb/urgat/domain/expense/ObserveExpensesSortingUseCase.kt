@@ -5,9 +5,9 @@ import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesSortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
 
 interface ObserveExpensesSortingUseCase {
 
@@ -17,12 +17,14 @@ interface ObserveExpensesSortingUseCase {
 
 class DefaultObserveExpensesSortingUseCase @Inject constructor() : ObserveExpensesSortingUseCase {
 
-    override fun invoke(): Flow<Async<List<ExpensesSortMenuItem>>> {
-        return flowOf(Async.Success(listOf(
-            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )))
-    }
+    override fun invoke(): Flow<Async<List<ExpensesSortMenuItem>>> = flowOf(
+        Async.Success(
+            listOf(
+                SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
+                SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
+                SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
+            )
+        )
+    )
 
 }

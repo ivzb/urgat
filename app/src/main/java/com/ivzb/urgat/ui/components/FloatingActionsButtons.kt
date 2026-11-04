@@ -36,11 +36,11 @@ fun ScrollAwareFAB(
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(animationSpec = tween(200)) +
-                scaleIn(initialScale = 0.8f) +
-                slideInVertically(initialOffsetY = { it / 2 }),
+            scaleIn(initialScale = 0.8f) +
+            slideInVertically(initialOffsetY = { it / 2 }),
         exit = fadeOut(animationSpec = tween(150)) +
-                scaleOut(targetScale = 0.8f) +
-                slideOutVertically(targetOffsetY = { it / 2 }),
+            scaleOut(targetScale = 0.8f) +
+            slideOutVertically(targetOffsetY = { it / 2 }),
     ) {
 
         FloatingActionButtonContent(

@@ -12,14 +12,12 @@ fun Trade.toEntity() = TradeEntity(
 
 fun List<Trade>.toEntity() = map(Trade::toEntity)
 
-fun TradeEntity.toExternal(): Trade {
-    return Trade(
-        id = id,
-        name = name,
-        amount = amount,
-        currency = currency,
-        date = date,
-        isDeleted = isDeleted,
-        createdAt = createdAt
-    )
-}
+fun TradeEntity.toExternal(): Trade = Trade(
+    id = id,
+    name = name,
+    amount = amount,
+    currency = currency,
+    date = date,
+    isDeleted = isDeleted,
+    createdAt = createdAt
+)

@@ -18,4 +18,3 @@ class DefaultDeleteTradeUseCase @Inject constructor(
     }
 
 }
-

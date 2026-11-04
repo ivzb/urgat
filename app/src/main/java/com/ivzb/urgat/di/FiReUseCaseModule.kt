@@ -4,7 +4,6 @@ import com.ivzb.urgat.domain.fire.DefaultObserveFiReUseCase
 import com.ivzb.urgat.domain.fire.DefaultObserveNetWorthUseCase
 import com.ivzb.urgat.domain.fire.ObserveFiReUseCase
 import com.ivzb.urgat.domain.fire.ObserveNetWorthUseCase
-
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

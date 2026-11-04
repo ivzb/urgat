@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TradeDao {
 
-    @Query("" +
-            "SELECT * FROM trade " +
+    @Query(
+        "SELECT * FROM trade " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"
@@ -25,20 +25,18 @@ interface TradeDao {
     @RawQuery(observedEntities = [TradeEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<TradeEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TradeEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "trade",
-                searchColumns = listOf("name", "amount", "currency"),
-                dateColumn = "date",
-                orderBy = "date DESC, id ASC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TradeEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "trade",
+            searchColumns = listOf("name", "amount", "currency"),
+            dateColumn = "date",
+            orderBy = "date DESC, id ASC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM trade WHERE isDeleted = 0 ORDER BY date DESC, id ASC")
     fun stream(): Cursor

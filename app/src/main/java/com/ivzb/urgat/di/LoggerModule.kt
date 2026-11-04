@@ -17,4 +17,3 @@ interface LoggerModule {
     fun bindLogger(debugLogger: DebugLogger): Logger
 
 }
-

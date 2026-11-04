@@ -4,8 +4,8 @@ import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface ObserveNotesUseCase {
 

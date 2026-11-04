@@ -23,7 +23,7 @@ data class LibraryUiState(
 
     val hasAppliedFilters: Boolean =
         todosUiState.filteringUiInfo.hasAppliedFilters ||
-        notesUiState.filteringUiInfo.hasAppliedFilters
+            notesUiState.filteringUiInfo.hasAppliedFilters
 
     fun withTopbarActions(page: Page): Boolean {
         val uiState = when (page) {

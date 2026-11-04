@@ -15,5 +15,3 @@ class FakeWidgetUpdater : WidgetUpdater {
     }
 
 }
-
-

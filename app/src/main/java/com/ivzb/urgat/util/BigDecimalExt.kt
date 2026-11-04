@@ -42,18 +42,12 @@ fun calculateFuelConsumption(fuelAmount: BigDecimal, distance: Int?): BigDecimal
     return fuelAmount * 100.toBigDecimal() / distance.toBigDecimal()
 }
 
-fun BigDecimal.round(): BigDecimal {
-    return this.setScale(2, RoundingMode.HALF_UP)
-}
+fun BigDecimal.round(): BigDecimal = this.setScale(2, RoundingMode.HALF_UP)
 
-fun BigDecimal.toPercentage(): BigDecimal {
-    return this / 100.toBigDecimal()
-}
+fun BigDecimal.toPercentage(): BigDecimal = this / 100.toBigDecimal()
 
-operator fun BigDecimal.div(other: BigDecimal): BigDecimal {
-    return this.divide(
-        other,
-        maxOf(this.scale(), other.scale(), 2),
-        RoundingMode.HALF_UP
-    )
-}
+operator fun BigDecimal.div(other: BigDecimal): BigDecimal = this.divide(
+    other,
+    maxOf(this.scale(), other.scale(), 2),
+    RoundingMode.HALF_UP
+)

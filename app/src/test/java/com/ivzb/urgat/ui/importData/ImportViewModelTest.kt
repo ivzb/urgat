@@ -179,9 +179,7 @@ class ImportViewModelTest {
         assertFalse(uiState.isLoading)
     }
 
-    private fun createViewModel(): ImportDataViewModel {
-        return ImportDataViewModel(
-            importUseCase,
-        )
-    }
+    private fun createViewModel(): ImportDataViewModel = ImportDataViewModel(
+        importUseCase,
+    )
 }

@@ -1,13 +1,12 @@
 package com.ivzb.urgat.ui.addEditSaving
 
-import kotlin.text.isEmpty
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DeleteSavingUseCase
-import com.ivzb.urgat.domain.saving.GetSavingUseCase
 import com.ivzb.urgat.domain.saving.GetLastUsedSavingCurrencyUseCase
+import com.ivzb.urgat.domain.saving.GetSavingUseCase
 import com.ivzb.urgat.domain.saving.UpdateSavingUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
@@ -15,6 +14,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlin.text.isEmpty
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,10 +34,12 @@ class AddEditSavingViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private var savingId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditSavingUiState(
-        screenTitleResId = screenTitleResId,
-        withDuplicate = savingId != null,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditSavingUiState(
+            screenTitleResId = screenTitleResId,
+            withDuplicate = savingId != null,
+        )
+    )
     val uiState: StateFlow<AddEditSavingUiState> = _uiState.asStateFlow()
 
     init {

@@ -71,7 +71,7 @@ class CarScreenshotTest: ScreenshotTest() {
                 CarScreen(
                     uiState = uiState,
                     onIntent = {},
-                    
+
                     onMoreFuelConsumption = {},
                     onFuelConsumptionClick = {},
 

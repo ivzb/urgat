@@ -5,11 +5,11 @@ import com.ivzb.urgat.data.weight.WeightsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class DefaultGetWeightUseCaseTest {
 
@@ -25,7 +25,7 @@ class DefaultGetWeightUseCaseTest {
     @Test
     fun `invoke should return weight when repository returns weight`() = runTest {
         val id = "123"
-        val expectedWeight = Weight(id, "80.5".toBigDecimal(),  1L, false, 1L)
+        val expectedWeight = Weight(id, "80.5".toBigDecimal(), 1L, false, 1L)
         coEvery { repository.get(id) } returns expectedWeight
 
         val result = getUseCase(id)

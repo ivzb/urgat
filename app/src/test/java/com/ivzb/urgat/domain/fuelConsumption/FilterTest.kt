@@ -4,9 +4,9 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal.Companion.sumByType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
+import java.math.BigDecimal
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.math.BigDecimal
 
 class FilterTest {
 
@@ -130,4 +130,3 @@ class FilterTest {
         createdAt = 1000L,
     )
 }
-

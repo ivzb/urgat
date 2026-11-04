@@ -20,4 +20,3 @@ fun EntryProviderScope<NavKey>.addEditWatchlistAssetEntry(navigator: Navigator) 
         )
     }
 }
-

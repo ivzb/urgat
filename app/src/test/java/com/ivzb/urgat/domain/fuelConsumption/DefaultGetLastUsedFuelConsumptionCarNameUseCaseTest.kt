@@ -46,4 +46,3 @@ class DefaultGetLastUsedFuelConsumptionCarNameUseCaseTest {
         assertNull(result)
     }
 }
-

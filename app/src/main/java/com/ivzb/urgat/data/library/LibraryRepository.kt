@@ -12,4 +12,3 @@ interface LibraryRepository {
     suspend fun updateTodosFilterType(value: TodosFilterType)
 
 }
-

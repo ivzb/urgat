@@ -5,69 +5,67 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.ivzb.urgat.ui.about.aboutEntry
 import com.ivzb.urgat.ui.addEditBudget.addEditBudgetEntry
+import com.ivzb.urgat.ui.addEditCarMaintenance.addEditCarMaintenanceEntry
 import com.ivzb.urgat.ui.addEditExpense.addEditExpenseEntry
+import com.ivzb.urgat.ui.addEditFuelConsumption.addEditFuelConsumptionEntry
 import com.ivzb.urgat.ui.addEditInvestment.addEditInvestmentEntry
 import com.ivzb.urgat.ui.addEditNote.addEditNoteEntry
 import com.ivzb.urgat.ui.addEditSaving.addEditSavingEntry
 import com.ivzb.urgat.ui.addEditTodo.addEditTodoEntry
+import com.ivzb.urgat.ui.addEditTrade.addEditTradeEntry
 import com.ivzb.urgat.ui.addEditWatchlistAsset.addEditWatchlistAssetEntry
+import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
+import com.ivzb.urgat.ui.budgets.budgetsEntry
+import com.ivzb.urgat.ui.car.carEntry
 import com.ivzb.urgat.ui.expenses.expensesEntry
 import com.ivzb.urgat.ui.exportData.exportDataEntry
 import com.ivzb.urgat.ui.finance.financeEntry
+import com.ivzb.urgat.ui.fuelConsumption.fuelConsumptionEntry
 import com.ivzb.urgat.ui.importData.importDataEntry
 import com.ivzb.urgat.ui.investments.investmentsEntry
 import com.ivzb.urgat.ui.library.libraryEntry
 import com.ivzb.urgat.ui.sample.sampleEntry
-import com.ivzb.urgat.ui.addEditCarMaintenance.addEditCarMaintenanceEntry
-import com.ivzb.urgat.ui.addEditFuelConsumption.addEditFuelConsumptionEntry
-import com.ivzb.urgat.ui.addEditTrade.addEditTradeEntry
-import com.ivzb.urgat.ui.addEditWeight.addEditWeightEntry
-import com.ivzb.urgat.ui.budgets.budgetsEntry
-import com.ivzb.urgat.ui.car.carEntry
-import com.ivzb.urgat.ui.fuelConsumption.fuelConsumptionEntry
 import com.ivzb.urgat.ui.savings.savingsEntry
 import com.ivzb.urgat.ui.trades.tradesEntry
 import com.ivzb.urgat.ui.wellbeing.wellbeingEntry
 
-fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavKey) -> NavEntry<NavKey> {
-    return entryProvider {
-        libraryEntry(navigator, navActions)
-        financeEntry(navigator, navActions)
-        carEntry(navigator, navActions)
-        wellbeingEntry(navigator, navActions)
+fun urgatEntryProvider(navigator: Navigator, navActions: UrgatNavActions): (NavKey) -> NavEntry<NavKey> = entryProvider {
+    libraryEntry(navigator, navActions)
+    financeEntry(navigator, navActions)
+    carEntry(navigator, navActions)
+    wellbeingEntry(navigator, navActions)
 
-        addEditTodoEntry(navigator)
-        addEditNoteEntry(navigator)
+    addEditTodoEntry(navigator)
+    addEditNoteEntry(navigator)
 
-        expensesEntry(navigator, navActions)
-        addEditExpenseEntry(navigator)
+    expensesEntry(navigator, navActions)
+    addEditExpenseEntry(navigator)
 
-        investmentsEntry(navigator, navActions)
-        addEditInvestmentEntry(navigator)
+    investmentsEntry(navigator, navActions)
+    addEditInvestmentEntry(navigator)
 
-        tradesEntry(navigator, navActions)
-        addEditTradeEntry(navigator)
+    tradesEntry(navigator, navActions)
+    addEditTradeEntry(navigator)
 
-        addEditWeightEntry(navigator)
+    addEditWeightEntry(navigator)
 
-        sampleEntry(navigator)
+    sampleEntry(navigator)
 
-        exportDataEntry(navigator)
-        importDataEntry(navigator)
+    exportDataEntry(navigator)
+    importDataEntry(navigator)
 
-        aboutEntry(navigator)
+    aboutEntry(navigator)
 
-        budgetsEntry(navigator)
-        addEditBudgetEntry(navigator)
+    budgetsEntry(navigator)
+    addEditBudgetEntry(navigator)
 
-        savingsEntry(navigator, navActions)
-        addEditSavingEntry(navigator)
+    savingsEntry(navigator, navActions)
+    addEditSavingEntry(navigator)
 
-        addEditWatchlistAssetEntry(navigator)
+    addEditWatchlistAssetEntry(navigator)
 
-        fuelConsumptionEntry(navigator, navActions)
-        addEditFuelConsumptionEntry(navigator)
+    fuelConsumptionEntry(navigator, navActions)
+    addEditFuelConsumptionEntry(navigator)
 
-        addEditCarMaintenanceEntry(navigator)
-    }
+    addEditCarMaintenanceEntry(navigator)
 }

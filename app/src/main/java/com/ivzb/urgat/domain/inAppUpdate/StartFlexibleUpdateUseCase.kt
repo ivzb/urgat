@@ -19,4 +19,3 @@ class DefaultStartFlexibleUpdateUseCase @Inject constructor(
     }
 
 }
-

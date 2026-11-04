@@ -5,7 +5,6 @@ import com.ivzb.urgat.domain.expense.DefaultCreateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultDeleteExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultGetExpenseUseCase
 import com.ivzb.urgat.domain.expense.DefaultGetLastUsedCurrencyUseCase
-import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveExpensesUiStateUseCase
@@ -14,6 +13,7 @@ import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesAllTi
 import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpenseCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesAllTimeUseCase
+import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultObserveGroupedExpensesYearlyUseCase
 import com.ivzb.urgat.domain.expense.DefaultUpdateExpenseUseCase
 import com.ivzb.urgat.domain.expense.DeleteExpenseUseCase

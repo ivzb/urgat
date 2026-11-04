@@ -214,8 +214,11 @@ private fun <R> combineUiState(
 ): Flow<R> = combine(*flows) { asyncItems ->
     when {
         asyncItems.isLoading() -> onLoading()
+
         asyncItems.isError() -> onError()
+
         asyncItems.isSuccess() -> onSuccess(asyncItems.data())
+
         else -> {
             Assert.fail("undefined state: $asyncItems")
             onError()

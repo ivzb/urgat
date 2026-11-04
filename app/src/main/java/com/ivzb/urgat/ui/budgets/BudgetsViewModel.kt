@@ -7,10 +7,10 @@ import com.ivzb.urgat.domain.budget.ObserveBudgetsUiStateUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class BudgetsViewModel @Inject constructor(
@@ -29,11 +29,11 @@ class BudgetsViewModel @Inject constructor(
         onError = { BudgetsUiState(hasError = true) },
         onSuccess = { budgetsUiState -> budgetsUiState },
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = BudgetsUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = BudgetsUiState(isLoading = true)
+        )
 
     fun onIntent(intent: BudgetsIntent) {
         when (intent) {
@@ -69,4 +69,3 @@ class BudgetsViewModel @Inject constructor(
     }
 
 }
-

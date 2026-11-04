@@ -41,4 +41,3 @@ class GlanceWidgetUpdater @Inject constructor(
     }
 
 }
-

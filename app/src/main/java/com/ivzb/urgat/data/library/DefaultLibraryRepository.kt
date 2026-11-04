@@ -7,8 +7,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreStringFlow
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class DefaultLibraryRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,

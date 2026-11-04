@@ -7,6 +7,7 @@ import com.ivzb.urgat.domain.carMaintenance.FakeDeleteCarMaintenanceUseCase
 import com.ivzb.urgat.domain.carMaintenance.FakeGetCarMaintenanceUseCase
 import com.ivzb.urgat.domain.carMaintenance.FakeGetLastUsedCarMaintenanceCarNameUseCase
 import com.ivzb.urgat.domain.carMaintenance.FakeUpdateCarMaintenanceUseCase
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -22,7 +23,6 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditCarMaintenanceViewModelTest {
@@ -478,4 +478,3 @@ class AddEditCarMaintenanceViewModelTest {
     }
 
 }
-

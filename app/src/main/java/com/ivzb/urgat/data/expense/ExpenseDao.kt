@@ -14,8 +14,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ExpenseDao {
 
-    @Query("" +
-            "SELECT * FROM expenses " +
+    @Query(
+        "SELECT * FROM expenses " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC, id ASC " +
             "LIMIT :limit"
@@ -25,20 +25,18 @@ interface ExpenseDao {
     @RawQuery(observedEntities = [ExpenseEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<ExpenseEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<ExpenseEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "expenses",
-                searchColumns = listOf("name", "amount", "category"),
-                dateColumn = "date",
-                orderBy = "date DESC, id ASC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<ExpenseEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "expenses",
+            searchColumns = listOf("name", "amount", "category"),
+            dateColumn = "date",
+            orderBy = "date DESC, id ASC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM expenses WHERE isDeleted = 0 ORDER BY date DESC, id ASC")
     fun stream(): Cursor

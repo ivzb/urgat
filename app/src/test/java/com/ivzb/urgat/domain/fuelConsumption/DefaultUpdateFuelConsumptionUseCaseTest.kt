@@ -3,10 +3,10 @@ package com.ivzb.urgat.domain.fuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.math.BigDecimal
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 
 class DefaultUpdateFuelConsumptionUseCaseTest {
 
@@ -55,4 +55,3 @@ class DefaultUpdateFuelConsumptionUseCaseTest {
         }
     }
 }
-

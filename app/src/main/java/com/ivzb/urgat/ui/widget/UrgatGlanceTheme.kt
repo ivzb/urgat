@@ -34,4 +34,3 @@ fun widgetTitleStyle(): TextStyle = TextStyle(
     fontSize = 13.sp,
     fontWeight = FontWeight.Medium,
 )
-

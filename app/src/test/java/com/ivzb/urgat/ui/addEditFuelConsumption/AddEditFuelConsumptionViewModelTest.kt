@@ -9,6 +9,8 @@ import com.ivzb.urgat.domain.fuelConsumption.FakeGetLastUsedFuelConsumptionCarNa
 import com.ivzb.urgat.domain.fuelConsumption.FakeGetLastUsedFuelConsumptionCurrencyUseCase
 import com.ivzb.urgat.domain.fuelConsumption.FakeGetLastUsedFuelConsumptionTypeUseCase
 import com.ivzb.urgat.domain.fuelConsumption.FakeUpdateFuelConsumptionUseCase
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -24,8 +26,6 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditFuelConsumptionViewModelTest {

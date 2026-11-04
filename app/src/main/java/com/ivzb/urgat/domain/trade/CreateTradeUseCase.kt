@@ -41,4 +41,3 @@ class DefaultCreateTradeUseCase @Inject constructor(
     }
 
 }
-

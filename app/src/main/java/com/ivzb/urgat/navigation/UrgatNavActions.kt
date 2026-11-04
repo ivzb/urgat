@@ -11,42 +11,50 @@ import com.ivzb.urgat.ui.addEditSaving.AddEditSavingRoute
 import com.ivzb.urgat.ui.addEditTodo.AddEditTodoRoute
 import com.ivzb.urgat.ui.addEditTrade.AddEditTradeRoute
 import com.ivzb.urgat.ui.addEditWatchlistAsset.AddEditWatchlistAssetRoute
-import com.ivzb.urgat.ui.expenses.ExpensesRoute
-import com.ivzb.urgat.ui.investments.InvestmentsRoute
 import com.ivzb.urgat.ui.addEditWeight.AddEditWeightRoute
 import com.ivzb.urgat.ui.budgets.BudgetsRoute
+import com.ivzb.urgat.ui.expenses.ExpensesRoute
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionRoute
+import com.ivzb.urgat.ui.investments.InvestmentsRoute
 import com.ivzb.urgat.ui.savings.SavingsRoute
 import com.ivzb.urgat.ui.trades.TradesRoute
 
 class UrgatNavActions(private val navigator: Navigator) {
 
     fun navigateToAddTodo() {
-        navigator.navigate(AddEditTodoRoute(
-            id = null,
-            titleResId = R.string.add_todo
-        ))
+        navigator.navigate(
+            AddEditTodoRoute(
+                id = null,
+                titleResId = R.string.add_todo
+            )
+        )
     }
 
     fun navigateToEditTodo(todoId: String) {
-        navigator.navigate(AddEditTodoRoute(
-            id = todoId,
-            titleResId = R.string.edit_todo
-        ))
+        navigator.navigate(
+            AddEditTodoRoute(
+                id = todoId,
+                titleResId = R.string.edit_todo
+            )
+        )
     }
 
     fun navigateToAddNote() {
-        navigator.navigate(AddEditNoteRoute(
-            id = null,
-            titleResId = R.string.add_note
-        ))
+        navigator.navigate(
+            AddEditNoteRoute(
+                id = null,
+                titleResId = R.string.add_note
+            )
+        )
     }
 
     fun navigateToEditNote(noteId: String) {
-        navigator.navigate(AddEditNoteRoute(
-            id = noteId,
-            titleResId = R.string.edit_note
-        ))
+        navigator.navigate(
+            AddEditNoteRoute(
+                id = noteId,
+                titleResId = R.string.edit_note
+            )
+        )
     }
 
     fun navigateToExpenses() {
@@ -54,17 +62,21 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddExpense() {
-        navigator.navigate(AddEditExpenseRoute(
-            id = null,
-            titleResId = R.string.add_expense
-        ))
+        navigator.navigate(
+            AddEditExpenseRoute(
+                id = null,
+                titleResId = R.string.add_expense
+            )
+        )
     }
 
     fun navigateToEditExpense(expenseId: String) {
-        navigator.navigate(AddEditExpenseRoute(
-            id = expenseId,
-            titleResId = R.string.edit_expense
-        ))
+        navigator.navigate(
+            AddEditExpenseRoute(
+                id = expenseId,
+                titleResId = R.string.edit_expense
+            )
+        )
     }
 
     fun navigateToInvestments() {
@@ -72,17 +84,21 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddInvestment() {
-        navigator.navigate(AddEditInvestmentRoute(
-            id = null,
-            titleResId = R.string.add_investment
-        ))
+        navigator.navigate(
+            AddEditInvestmentRoute(
+                id = null,
+                titleResId = R.string.add_investment
+            )
+        )
     }
 
     fun navigateToEditInvestment(investmentId: String) {
-        navigator.navigate(AddEditInvestmentRoute(
-            id = investmentId,
-            titleResId = R.string.edit_investment
-        ))
+        navigator.navigate(
+            AddEditInvestmentRoute(
+                id = investmentId,
+                titleResId = R.string.edit_investment
+            )
+        )
     }
 
     fun navigateToTrades() {
@@ -90,17 +106,21 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddTrade() {
-        navigator.navigate(AddEditTradeRoute(
-            id = null,
-            titleResId = R.string.add_trade
-        ))
+        navigator.navigate(
+            AddEditTradeRoute(
+                id = null,
+                titleResId = R.string.add_trade
+            )
+        )
     }
 
     fun navigateToEditTrade(tradeId: String) {
-        navigator.navigate(AddEditTradeRoute(
-            id = tradeId,
-            titleResId = R.string.edit_trade
-        ))
+        navigator.navigate(
+            AddEditTradeRoute(
+                id = tradeId,
+                titleResId = R.string.edit_trade
+            )
+        )
     }
 
     fun navigateToSavings() {
@@ -108,17 +128,21 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddSaving() {
-        navigator.navigate(AddEditSavingRoute(
-            id = null,
-            titleResId = R.string.add_saving
-        ))
+        navigator.navigate(
+            AddEditSavingRoute(
+                id = null,
+                titleResId = R.string.add_saving
+            )
+        )
     }
 
     fun navigateToEditSaving(savingId: String) {
-        navigator.navigate(AddEditSavingRoute(
-            id = savingId,
-            titleResId = R.string.edit_saving
-        ))
+        navigator.navigate(
+            AddEditSavingRoute(
+                id = savingId,
+                titleResId = R.string.edit_saving
+            )
+        )
     }
 
     fun navigateToBudgets() {
@@ -126,17 +150,21 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddBudget() {
-        navigator.navigate(AddEditBudgetRoute(
-            id = null,
-            titleResId = R.string.add_budget,
-        ))
+        navigator.navigate(
+            AddEditBudgetRoute(
+                id = null,
+                titleResId = R.string.add_budget,
+            )
+        )
     }
 
     fun navigateToEditBudget(budgetId: String) {
-        navigator.navigate(AddEditBudgetRoute(
-            id = budgetId,
-            titleResId = R.string.edit_budget,
-        ))
+        navigator.navigate(
+            AddEditBudgetRoute(
+                id = budgetId,
+                titleResId = R.string.edit_budget,
+            )
+        )
     }
 
     fun navigateToWatchlistAssets() {
@@ -144,45 +172,57 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddWatchlistAsset() {
-        navigator.navigate(AddEditWatchlistAssetRoute(
-            id = null,
-            titleResId = R.string.add_watchlist_asset,
-        ))
+        navigator.navigate(
+            AddEditWatchlistAssetRoute(
+                id = null,
+                titleResId = R.string.add_watchlist_asset,
+            )
+        )
     }
 
     fun navigateToEditWatchlistAsset(watchlistAssetId: String) {
-        navigator.navigate(AddEditWatchlistAssetRoute(
-            id = watchlistAssetId,
-            titleResId = R.string.edit_watchlist_asset,
-        ))
+        navigator.navigate(
+            AddEditWatchlistAssetRoute(
+                id = watchlistAssetId,
+                titleResId = R.string.edit_watchlist_asset,
+            )
+        )
     }
 
     fun navigateToAddWeight() {
-        navigator.navigate(AddEditWeightRoute(
-            id = null,
-            titleResId = R.string.add_weight,
-        ))
+        navigator.navigate(
+            AddEditWeightRoute(
+                id = null,
+                titleResId = R.string.add_weight,
+            )
+        )
     }
 
     fun navigateToEditWeight(weightId: String) {
-        navigator.navigate(AddEditWeightRoute(
-            id = weightId,
-            titleResId = R.string.edit_weight,
-        ))
+        navigator.navigate(
+            AddEditWeightRoute(
+                id = weightId,
+                titleResId = R.string.edit_weight,
+            )
+        )
     }
 
     fun navigateToAddFuelConsumption() {
-        navigator.navigate(AddEditFuelConsumptionRoute(
-            id = null,
-            titleResId = R.string.add_fuel_consumption,
-        ))
+        navigator.navigate(
+            AddEditFuelConsumptionRoute(
+                id = null,
+                titleResId = R.string.add_fuel_consumption,
+            )
+        )
     }
 
     fun navigateToEditFuelConsumption(fuelConsumptionId: String) {
-        navigator.navigate(AddEditFuelConsumptionRoute(
-            id = fuelConsumptionId,
-            titleResId = R.string.edit_fuel_consumption,
-        ))
+        navigator.navigate(
+            AddEditFuelConsumptionRoute(
+                id = fuelConsumptionId,
+                titleResId = R.string.edit_fuel_consumption,
+            )
+        )
     }
 
     fun navigateToFuelConsumption() {
@@ -190,17 +230,21 @@ class UrgatNavActions(private val navigator: Navigator) {
     }
 
     fun navigateToAddCarMaintenance() {
-        navigator.navigate(AddEditCarMaintenanceRoute(
-            id = null,
-            titleResId = R.string.add_car_maintenance,
-        ))
+        navigator.navigate(
+            AddEditCarMaintenanceRoute(
+                id = null,
+                titleResId = R.string.add_car_maintenance,
+            )
+        )
     }
 
     fun navigateToEditCarMaintenance(carMaintenanceId: String) {
-        navigator.navigate(AddEditCarMaintenanceRoute(
-            id = carMaintenanceId,
-            titleResId = R.string.edit_car_maintenance,
-        ))
+        navigator.navigate(
+            AddEditCarMaintenanceRoute(
+                id = carMaintenanceId,
+                titleResId = R.string.edit_car_maintenance,
+            )
+        )
     }
 
     fun navigateToCarMaintenance() {

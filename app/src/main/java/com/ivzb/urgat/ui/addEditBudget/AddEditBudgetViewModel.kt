@@ -33,10 +33,12 @@ class AddEditBudgetViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private var budgetId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditBudgetUiState(
-        screenTitleResId = screenTitleResId,
-        withDuplicate = budgetId != null,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditBudgetUiState(
+            screenTitleResId = screenTitleResId,
+            withDuplicate = budgetId != null,
+        )
+    )
     val uiState: StateFlow<AddEditBudgetUiState> = _uiState.asStateFlow()
 
     init {

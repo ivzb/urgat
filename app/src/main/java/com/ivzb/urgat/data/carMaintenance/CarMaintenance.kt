@@ -24,4 +24,3 @@ data class CarMaintenance(
         "\"$id\", \"$description\", \"$partNumber\", \"$url\", \"$carName\", $odometer, $date, $createdAt"
 
 }
-

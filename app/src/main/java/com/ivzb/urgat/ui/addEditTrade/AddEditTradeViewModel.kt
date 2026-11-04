@@ -1,14 +1,13 @@
 package com.ivzb.urgat.ui.addEditTrade
 
-import kotlin.text.isEmpty
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.trade.CreateTradeUseCase
 import com.ivzb.urgat.domain.trade.DeleteTradeUseCase
-import com.ivzb.urgat.domain.trade.GetTradeUseCase
 import com.ivzb.urgat.domain.trade.GetLastUsedTradeCurrencyUseCase
 import com.ivzb.urgat.domain.trade.GetLastUsedTradeNameUseCase
+import com.ivzb.urgat.domain.trade.GetTradeUseCase
 import com.ivzb.urgat.domain.trade.UpdateTradeUseCase
 import com.ivzb.urgat.util.Assert
 import com.ivzb.urgat.util.sanitize
@@ -16,6 +15,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlin.text.isEmpty
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,10 +36,12 @@ class AddEditTradeViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private var tradeId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditTradeUiState(
-        screenTitleResId = screenTitleResId,
-        withDuplicate = tradeId != null,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditTradeUiState(
+            screenTitleResId = screenTitleResId,
+            withDuplicate = tradeId != null,
+        )
+    )
     val uiState: StateFlow<AddEditTradeUiState> = _uiState.asStateFlow()
 
     init {
@@ -247,4 +249,3 @@ class AddEditTradeViewModel @AssistedInject constructor(
     }
 
 }
-

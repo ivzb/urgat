@@ -2,11 +2,11 @@ package com.ivzb.urgat.data.trade
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
+import java.math.BigDecimal
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.*
-import java.math.BigDecimal
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -106,7 +106,6 @@ class DefaultTradesRepositoryTest {
         assertEquals(1, result.size)
         assertEquals("AAPL", result.first().name)
     }
-
 
     @Test
     fun `isRefreshingFlow starts as false`() = runTest {
@@ -243,4 +242,3 @@ class DefaultTradesRepositoryTest {
     }
 
 }
-

@@ -7,9 +7,9 @@ import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 interface ObserveWeightsUiStateUseCase {
 
@@ -65,4 +65,3 @@ class DefaultObserveWeightsUiStateUseCase @Inject constructor(
     }
 
 }
-

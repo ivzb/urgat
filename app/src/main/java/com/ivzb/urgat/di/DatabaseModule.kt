@@ -17,10 +17,8 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        return Room
-            .databaseBuilder(appContext, AppDatabase::class.java, "Urgat")
-            .addMigrations(*ALL_MIGRATIONS)
-            .build()
-    }
+    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase = Room
+        .databaseBuilder(appContext, AppDatabase::class.java, "Urgat")
+        .addMigrations(*ALL_MIGRATIONS)
+        .build()
 }

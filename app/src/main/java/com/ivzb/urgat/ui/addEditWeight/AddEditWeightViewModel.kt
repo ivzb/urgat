@@ -30,9 +30,11 @@ class AddEditWeightViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private val weightId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditWeightUiState(
-        screenTitleResId = screenTitleResId,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditWeightUiState(
+            screenTitleResId = screenTitleResId,
+        )
+    )
     val uiState: StateFlow<AddEditWeightUiState> = _uiState.asStateFlow()
 
     init {
@@ -90,8 +92,8 @@ class AddEditWeightViewModel @AssistedInject constructor(
 
     private fun createNewWeight() = viewModelScope.launch {
         createWeightUseCase(
-           value = uiState.value.value.toBigDecimal(),
-           date = uiState.value.date,
+            value = uiState.value.value.toBigDecimal(),
+            date = uiState.value.date,
         )
 
         _uiState.update {

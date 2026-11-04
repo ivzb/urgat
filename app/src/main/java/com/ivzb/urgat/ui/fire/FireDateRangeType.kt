@@ -14,5 +14,3 @@ enum class FireDateRangeType(
     YTD(R.string.fire_date_range_ytd),
     CUSTOM(R.string.fire_date_range_custom),
 }
-
-

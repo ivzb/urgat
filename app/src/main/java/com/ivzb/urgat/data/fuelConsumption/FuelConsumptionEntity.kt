@@ -23,4 +23,3 @@ data class FuelConsumptionEntity(
     val isDeleted: Boolean,
     val createdAt: Long
 )
-

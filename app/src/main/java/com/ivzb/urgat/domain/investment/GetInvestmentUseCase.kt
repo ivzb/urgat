@@ -14,8 +14,6 @@ class DefaultGetInvestmentUseCase @Inject constructor(
     private val repository: InvestmentsRepository
 ): GetInvestmentUseCase {
 
-    override suspend fun invoke(id: String): Investment? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Investment? = repository.get(id)
 
 }

@@ -14,9 +14,6 @@ class DefaultCheckForUpdateUseCase @Inject constructor(
     private val repository: InAppUpdateRepository
 ) : CheckForUpdateUseCase {
 
-    override suspend operator fun invoke(): InAppUpdateStatus {
-        return repository.checkForUpdate()
-    }
+    override suspend operator fun invoke(): InAppUpdateStatus = repository.checkForUpdate()
 
 }
-

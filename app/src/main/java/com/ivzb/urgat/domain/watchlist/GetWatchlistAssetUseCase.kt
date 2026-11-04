@@ -14,9 +14,6 @@ class DefaultGetWatchlistAssetUseCase @Inject constructor(
     private val repository: WatchlistAssetsRepository
 ): GetWatchlistAssetUseCase {
 
-    override suspend fun invoke(id: String): WatchlistAsset? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): WatchlistAsset? = repository.get(id)
 
 }
-

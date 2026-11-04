@@ -5,10 +5,10 @@ import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 interface ObserveSavingsUiStateUseCase {
 
@@ -61,4 +61,3 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
     ).map { Async.Success(it) }
 
 }
-

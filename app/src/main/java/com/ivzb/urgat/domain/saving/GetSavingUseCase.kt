@@ -14,8 +14,6 @@ class DefaultGetSavingUseCase @Inject constructor(
     private val repository: SavingsRepository
 ): GetSavingUseCase {
 
-    override suspend fun invoke(id: String): Saving? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Saving? = repository.get(id)
 
 }

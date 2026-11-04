@@ -5,12 +5,12 @@ import com.ivzb.urgat.data.watchlist.WatchlistAssetsRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Test
 
 class DefaultGetWatchlistAssetUseCaseTest {
 
@@ -56,4 +56,3 @@ class DefaultGetWatchlistAssetUseCaseTest {
         coVerify(exactly = 1) { repository.get(id) }
     }
 }
-

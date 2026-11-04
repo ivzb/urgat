@@ -12,7 +12,5 @@ class ResourcesProvider @Inject constructor(
     private val context: Context
 ) {
 
-    fun getInteger(@IntegerRes integerResId: Int): Int {
-        return context.resources.getInteger(integerResId)
-    }
+    fun getInteger(@IntegerRes integerResId: Int): Int = context.resources.getInteger(integerResId)
 }

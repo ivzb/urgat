@@ -49,12 +49,12 @@ class UrgatApplication : Application(), Configuration.Provider {
             repeatInterval = RefreshWidgetPricesWorker.REPEAT_INTERVAL_MINUTES,
             repeatIntervalTimeUnit = TimeUnit.MINUTES,
         )
-        .setConstraints(
-            Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-        )
-        .build()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .build()
 
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             RefreshWidgetPricesWorker.WORK_NAME,

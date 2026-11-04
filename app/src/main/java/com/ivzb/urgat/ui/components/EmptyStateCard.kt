@@ -65,8 +65,9 @@ fun EmptyStateCard(
                     .padding(dimensionResource(R.dimen.list_item_padding))
             )
 
-            Spacer(modifier = Modifier
-                .width(dimensionResource(R.dimen.card_padding))
+            Spacer(
+                modifier = Modifier
+                    .width(dimensionResource(R.dimen.card_padding))
             )
 
             Column(

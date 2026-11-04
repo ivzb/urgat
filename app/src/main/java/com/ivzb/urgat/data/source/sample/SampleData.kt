@@ -107,42 +107,42 @@ object SampleData {
     val SAMPLE_NOTES = listOf(
         listOf(
             "Shopping list: eggs, milk, bread, coffee, yogurt, chicken, vegetables, pasta, rice, snacks. " +
-                    "Also remember to buy cleaning supplies like dish soap and paper towels. " +
-                    "Check if toiletries like toothpaste or shampoo need restocking."
+                "Also remember to buy cleaning supplies like dish soap and paper towels. " +
+                "Check if toiletries like toothpaste or shampoo need restocking."
         ),
         listOf("Meeting notes about Q4 goals and deadlines"),
         listOf("Idea: build a small habit-tracking Android app"),
         listOf(
             "Recipe: pasta with tomato sauce and basil. Cook pasta for 10 minutes, prepare sauce using fresh tomatoes, garlic, olive oil, and herbs. " +
-                    "Let the sauce simmer for 20 minutes for richer flavor. Mix together, add parmesan, and serve warm."
+                "Let the sauce simmer for 20 minutes for richer flavor. Mix together, add parmesan, and serve warm."
         ),
         listOf("Workout plan: cardio, strength, yoga"),
         listOf(
             "Reminder: call mom in the evening. Ask her about the weekend plans and check if she needs help with anything. " +
-                    "Also remind her about the upcoming family dinner next month so she can prepare in advance."
+                "Also remind her about the upcoming family dinner next month so she can prepare in advance."
         ),
         listOf("Travel checklist: passport, charger, toiletries"),
         listOf(
             "Learning notes about Kotlin coroutines. Coroutines allow asynchronous programming without blocking threads. " +
-                    "Key concepts: suspend functions, CoroutineScope, Dispatchers, and structured concurrency. " +
-                    "Next topic to explore: exception handling and flow."
+                "Key concepts: suspend functions, CoroutineScope, Dispatchers, and structured concurrency. " +
+                "Next topic to explore: exception handling and flow."
         ),
         listOf("Journal: today was productive and calm"),
         listOf(
             "Event planning: book venue, order cake, finalize guest list, prepare decorations. " +
-                    "Consider adding a photo corner and small activity games. " +
-                    "Check budget constraints and update costs after booking vendors."
+                "Consider adding a photo corner and small activity games. " +
+                "Check budget constraints and update costs after booking vendors."
         ),
         listOf("Photography ideas: street portraits at night"),
         listOf(
             "Brainstorming: new features for finance app. Ideas include smart categorization using ML, spending insights, export to PDF, " +
-                    "sync across devices with cloud backup, recurring expense detection, and personalized budgeting recommendations."
+                "sync across devices with cloud backup, recurring expense detection, and personalized budgeting recommendations."
         ),
         listOf("Gardening tips: water early morning"),
         listOf(
             "Creative writing prompt: write a story set in a forgotten library where the books whisper secrets at night. " +
-                    "Develop a main character who discovers a hidden section of enchanted manuscripts. " +
-                    "Focus on setting atmosphere, mystery, and emotional growth."
+                "Develop a main character who discovers a hidden section of enchanted manuscripts. " +
+                "Focus on setting atmosphere, mystery, and emotional growth."
         ),
         listOf("Long-term goals list for next year"),
     )
@@ -183,7 +183,7 @@ object SampleData {
                 description = null,
                 shares = shares.toBigDecimal(),
                 costPrice = cost.toBigDecimal(),
-                marketPrice = cost.toBigDecimal() + (-100 .. 100).random().toBigDecimal(),
+                marketPrice = cost.toBigDecimal() + (-100..100).random().toBigDecimal(),
                 category = category,
                 currency = currency,
                 date = System.currentTimeMillis() - (dateOffset.toLong() * 1_000),
@@ -271,8 +271,8 @@ object SampleData {
         listOf("VOO", "580.03", "USD"),
     )
         .mapIndexed { index, (name, cost, currency) ->
-            val marketPrice = cost.toBigDecimal() + (-100 .. 100).random().toBigDecimal()
-            val previousClosePrice = marketPrice + (-5 .. 5).random().toBigDecimal()
+            val marketPrice = cost.toBigDecimal() + (-100..100).random().toBigDecimal()
+            val previousClosePrice = marketPrice + (-5..5).random().toBigDecimal()
 
             WatchlistAsset(
                 id = "watchlist_asset_$index",

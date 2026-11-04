@@ -10,6 +10,8 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -18,8 +20,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveBudgetsUiStateUseCaseTest {
@@ -135,21 +135,25 @@ class ObserveBudgetsUiStateUseCaseTest {
         fakeObserveBudgetsUseCase.emit(Async.Error)
         fakeObserveGroupedBudgetsMonthlyUseCase.emit(Async.Success(listOf()))
         fakeObserveGroupedBudgetsYearlyUseCase.emit(Async.Success(listOf()))
-        fakeObserveGroupedBudgetsAllTimeUseCase.emit(Async.Success(GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "All time",
-                total = 24_000.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory(id = "1", name = "1", currency = "EUR", value = 24_000.toBigDecimal())
-                ),
-            ),
-            currency = "EUR",
-            totalIncome = 24_000.toBigDecimal(),
-            totalExpenses = 7_600.toBigDecimal(),
-            totalInvestments = 11_200.toBigDecimal(),
-            totalTrades = 1_200.toBigDecimal(),
-            totalSavings = 500.toBigDecimal(),
-        )))
+        fakeObserveGroupedBudgetsAllTimeUseCase.emit(
+            Async.Success(
+                GroupedBudget(
+                    category = GroupedBudgetCategories(
+                        group = "All time",
+                        total = 24_000.toBigDecimal(),
+                        items = listOf(
+                            BudgetCategory(id = "1", name = "1", currency = "EUR", value = 24_000.toBigDecimal())
+                        ),
+                    ),
+                    currency = "EUR",
+                    totalIncome = 24_000.toBigDecimal(),
+                    totalExpenses = 7_600.toBigDecimal(),
+                    totalInvestments = 11_200.toBigDecimal(),
+                    totalTrades = 1_200.toBigDecimal(),
+                    totalSavings = 500.toBigDecimal(),
+                )
+            )
+        )
         fakeObserveBudgetsFilteringUseCase.emit(Async.Success(listOf()))
         fakeObserveBudgetsSortingUseCase.emit(Async.Success(listOf()))
 

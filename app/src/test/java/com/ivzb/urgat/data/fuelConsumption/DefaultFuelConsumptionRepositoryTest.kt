@@ -1,16 +1,16 @@
 package com.ivzb.urgat.data.fuelConsumption
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.*
-import java.math.BigDecimal
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultFuelConsumptionRepositoryTest {
@@ -90,7 +90,13 @@ class DefaultFuelConsumptionRepositoryTest {
     @Test
     fun `update modifies existing fuel consumption`() = runTest {
         val id = repository.create(
-            BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Mercedes w140", 150000, 1L
+            BigDecimal("45.5"),
+            BigDecimal("2.35"),
+            "EUR",
+            "Diesel",
+            "Mercedes w140",
+            150000,
+            1L
         )
 
         repository.update(id, BigDecimal("50.0"), BigDecimal("2.40"), "USD", "Gasoline", "BMW E39", 160000, 2L)
@@ -110,7 +116,14 @@ class DefaultFuelConsumptionRepositoryTest {
     fun `update throws when fuel consumption does not exist`() = runTest {
         val exception = assertFailsWith<Exception> {
             repository.update(
-                "missing", BigDecimal("50.0"), BigDecimal("2.40"), "EUR", "Diesel", "Car", 100000, 2L
+                "missing",
+                BigDecimal("50.0"),
+                BigDecimal("2.40"),
+                "EUR",
+                "Diesel",
+                "Car",
+                100000,
+                2L
             )
         }
 
@@ -120,7 +133,13 @@ class DefaultFuelConsumptionRepositoryTest {
     @Test
     fun `delete removes fuel consumption`() = runTest {
         val id = repository.create(
-            BigDecimal("45.5"), BigDecimal("2.35"), "EUR", "Diesel", "Mercedes w140", 150000, 1L
+            BigDecimal("45.5"),
+            BigDecimal("2.35"),
+            "EUR",
+            "Diesel",
+            "Mercedes w140",
+            150000,
+            1L
         )
         assertNotNull(dao.getById(id))
 

@@ -15,4 +15,3 @@ abstract class TimeProviderModule {
     abstract fun bindTimeProvider(impl: DefaultTimeProvider): TimeProvider
 
 }
-

@@ -10,4 +10,3 @@ data class MarketPrice(
     val previousClosePrice: BigDecimal,
     val pricePrecision: Int,
 )
-

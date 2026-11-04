@@ -63,4 +63,3 @@ class FilterTest {
         createdAt = 1000L,
     )
 }
-

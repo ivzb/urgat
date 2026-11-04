@@ -6,4 +6,3 @@ data class InAppUpdateUiState(
     val isDownloaded: Boolean = false,
     val downloadProgress: Float = 0f,
 )
-

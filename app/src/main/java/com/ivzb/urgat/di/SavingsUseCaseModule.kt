@@ -1,16 +1,13 @@
 package com.ivzb.urgat.di
 
-import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesAllTimeUseCase
-import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesYearlyUseCase
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesAllTimeUseCase
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.saving.CreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultCreateSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultDeleteSavingUseCase
-import com.ivzb.urgat.domain.saving.DefaultGetSavingUseCase
 import com.ivzb.urgat.domain.saving.DefaultGetLastUsedSavingCurrencyUseCase
+import com.ivzb.urgat.domain.saving.DefaultGetSavingUseCase
+import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveGroupedSavingsYearlyUseCase
@@ -19,8 +16,11 @@ import com.ivzb.urgat.domain.saving.DefaultObserveSavingsUiStateUseCase
 import com.ivzb.urgat.domain.saving.DefaultObserveSavingsUseCase
 import com.ivzb.urgat.domain.saving.DefaultUpdateSavingUseCase
 import com.ivzb.urgat.domain.saving.DeleteSavingUseCase
-import com.ivzb.urgat.domain.saving.GetSavingUseCase
 import com.ivzb.urgat.domain.saving.GetLastUsedSavingCurrencyUseCase
+import com.ivzb.urgat.domain.saving.GetSavingUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesAllTimeUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesMonthlyUseCase
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingCategoriesYearlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsYearlyUseCase

@@ -21,4 +21,3 @@ data class CarMaintenanceEntity(
     val isDeleted: Boolean,
     val createdAt: Long
 )
-

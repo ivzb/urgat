@@ -6,12 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
 import com.ivzb.urgat.domain.importData.ImportDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ImportDataViewModel @Inject constructor(
@@ -24,11 +24,9 @@ class ImportDataViewModel @Inject constructor(
     fun onIntent(intent: ImportDataIntent) {
         when (intent) {
             is ImportDataIntent.ImportDataFolder -> importDataFolder(intent.uri)
-
             is ImportDataIntent.SwitchToManualMode -> switchToManualMode()
             is ImportDataIntent.UpdateContent -> updateContent(intent.page, intent.value)
             is ImportDataIntent.ImportDataManually -> importDataManually(intent.page)
-
             is ImportDataIntent.UserMessageShown -> userMessageShown()
         }
     }
@@ -123,7 +121,7 @@ class ImportDataViewModel @Inject constructor(
                 }
             }
         }
-   }
+    }
 
     private fun userMessageShown() {
         _uiState.update {

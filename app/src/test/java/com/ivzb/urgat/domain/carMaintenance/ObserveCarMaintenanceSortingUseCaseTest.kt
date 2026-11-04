@@ -36,4 +36,3 @@ class ObserveCarMaintenanceSortingUseCaseTest {
         assertEquals(R.string.sort_by_odometer_max, items[2].labelResId)
     }
 }
-

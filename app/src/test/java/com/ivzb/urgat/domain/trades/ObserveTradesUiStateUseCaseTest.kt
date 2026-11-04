@@ -8,6 +8,9 @@ import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -16,9 +19,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveTradesUiStateUseCaseTest {
@@ -177,14 +177,16 @@ class ObserveTradesUiStateUseCaseTest {
 
         private val fakeCategoriesMonthly = listOf(
             GroupedItems(
-                group = "2025/12", total = listOf(TradeTotal("USD", "10".toBigDecimal())),
+                group = "2025/12",
+                total = listOf(TradeTotal("USD", "10".toBigDecimal())),
                 items = listOf(TradeCategory(id = "1", name = "AAPL", totals = listOf(TradeTotal("USD", "10".toBigDecimal())), trades = trades))
             )
         )
 
         private val fakeCategoriesYearly = listOf(
             GroupedItems(
-                group = "2025", total = listOf(TradeTotal("USD", "10".toBigDecimal())),
+                group = "2025",
+                total = listOf(TradeTotal("USD", "10".toBigDecimal())),
                 items = listOf(TradeCategory(id = "1", name = "AAPL", totals = listOf(TradeTotal("USD", "10".toBigDecimal())), trades = trades))
             )
         )
@@ -200,4 +202,3 @@ class ObserveTradesUiStateUseCaseTest {
     }
 
 }
-

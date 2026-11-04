@@ -9,13 +9,13 @@ import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.domain.fire.FakeObserveNetWorthUseCase
 import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.util.Async
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultRefreshQuotesUseCaseTest {
@@ -199,4 +199,3 @@ class DefaultRefreshQuotesUseCaseTest {
     }
 
 }
-

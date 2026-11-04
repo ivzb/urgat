@@ -14,8 +14,6 @@ class DefaultGetExpenseUseCase @Inject constructor(
     private val repository: ExpensesRepository
 ): GetExpenseUseCase {
 
-    override suspend fun invoke(id: String): Expense? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Expense? = repository.get(id)
 
 }

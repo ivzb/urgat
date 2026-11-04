@@ -6,11 +6,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.slot
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 class DefaultUpdateTradeUseCaseTest {
 
@@ -94,4 +94,3 @@ class DefaultUpdateTradeUseCaseTest {
     }
 
 }
-

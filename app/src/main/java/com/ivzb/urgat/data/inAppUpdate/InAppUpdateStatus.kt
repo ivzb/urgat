@@ -6,4 +6,3 @@ sealed interface InAppUpdateStatus {
     data object InProgress : InAppUpdateStatus
     data object Downloaded : InAppUpdateStatus
 }
-

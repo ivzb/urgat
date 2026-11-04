@@ -98,4 +98,3 @@ interface TradesUseCaseModule {
     fun bindsObserveTradesUiStateUseCase(useCase: DefaultObserveTradesUiStateUseCase): ObserveTradesUiStateUseCase
 
 }
-

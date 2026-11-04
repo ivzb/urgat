@@ -11,12 +11,12 @@ import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class FakeObserveFinanceUiStateUseCase : ObserveFinanceUiStateUseCase {
 
@@ -56,4 +56,3 @@ class FakeObserveFinanceUiStateUseCase : ObserveFinanceUiStateUseCase {
     }
 
 }
-

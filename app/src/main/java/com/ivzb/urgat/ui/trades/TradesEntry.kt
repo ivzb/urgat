@@ -16,4 +16,3 @@ fun EntryProviderScope<NavKey>.tradesEntry(navigator: Navigator, navActions: Urg
         )
     }
 }
-

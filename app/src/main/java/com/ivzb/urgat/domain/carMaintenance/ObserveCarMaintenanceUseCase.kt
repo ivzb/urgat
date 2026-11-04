@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface ObserveCarMaintenanceUseCase {
 
@@ -38,4 +38,3 @@ class DefaultObserveCarMaintenanceUseCase @Inject constructor(
     ): Flow<Async<List<CarMaintenance>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }
-

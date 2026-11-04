@@ -9,10 +9,10 @@ import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 interface ObserveFuelConsumptionFilteringUseCase {
 

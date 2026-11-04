@@ -10,20 +10,25 @@ import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
-import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.GroupedExpenses
-import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
+import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
-import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
-import com.ivzb.urgat.data.saving.SavingTotal
+import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsAllTimeUseCase
 import com.ivzb.urgat.domain.saving.GroupedSavings
+import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.trades.GroupedTrades
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradesAllTimeUseCase
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -32,11 +37,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveDashboardBudgetUseCaseTest {
@@ -75,10 +75,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 40 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         expected = EXPECTED_FIRE.copy(
             monthlyExpenses = "3000".toBigDecimal(),
@@ -94,10 +98,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 40 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -134,10 +142,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 60 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         expected = EXPECTED_FIRE.copy(
             monthlyExpenses = "2000".toBigDecimal(),
@@ -153,10 +165,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 60 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -213,10 +229,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 percent investments with stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(5000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(5000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         expected = EXPECTED_FIRE.copy(
             monthlyExpenses = "5000".toBigDecimal(),
@@ -232,10 +252,14 @@ class DefaultObserveDashboardBudgetUseCaseTest {
     @Test
     fun `invoke should return Success 0 percent investments without stash`() = `invoke should return Success with filtered items`(
         expenses = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(5000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(5000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 3500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1500.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         investments = NO_INVESTMENTS,
         savings = NO_SAVINGS,
@@ -363,45 +387,55 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
 
-        every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(budget))
+        every {
+            observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(budget))
 
-        every { observeGroupedExpensesMonthlyUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(expenses))
+        every {
+            observeGroupedExpensesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(expenses))
 
-        every { observeGroupedInvestmentsAllTimeUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = null,
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(investments))
+        every {
+            observeGroupedInvestmentsAllTimeUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = null,
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(investments))
 
-        every { observeGroupedTradesAllTimeUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = null,
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(NO_TRADES))
+        every {
+            observeGroupedTradesAllTimeUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = null,
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(NO_TRADES))
 
-        every { observeGroupedSavingsAllTimeUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = null,
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(savings))
+        every {
+            observeGroupedSavingsAllTimeUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = null,
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(savings))
 
         val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, dateRangeFlow).toList()
 
@@ -512,7 +546,8 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         )
 
     @Test
-    fun `invoke with multiple months should average income and expenses`() = `invoke should return Success with filtered items`(        budget = listOf(
+    fun `invoke with multiple months should average income and expenses`() = `invoke should return Success with filtered items`(
+        budget = listOf(
             GroupedBudgetCategories(
                 group = "November 2025",
                 total = 6000.toBigDecimal(),
@@ -529,12 +564,20 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             ),
         ),
         expenses = listOf(
-            GroupedExpenses("November 2025", listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 3000.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-            )),
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")), listOf(
-                Expense("2", "2", 2000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "November 2025",
+                listOf(ExpenseTotal(3000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 3000.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                )
+            ),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(2000.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("2", "2", 2000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         ),
         expected = EXPECTED_FIRE.copy(
             selection = "December 2025 - November 2025",
@@ -558,45 +601,55 @@ class DefaultObserveDashboardBudgetUseCaseTest {
 
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
 
-        every { observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
-             searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Error)
+        every {
+            observeGroupedBudgetCategoriesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Error)
 
-        every { observeGroupedExpensesMonthlyUseCase.invoke(
-             searchQueryFlow = null,
-            dateRangeFlow = eq(dateRangeFlow),
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(listOf()))
+        every {
+            observeGroupedExpensesMonthlyUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = eq(dateRangeFlow),
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(listOf()))
 
-        every { observeGroupedInvestmentsAllTimeUseCase.invoke(
-             searchQueryFlow = null,
-            dateRangeFlow = null,
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(NO_INVESTMENTS))
+        every {
+            observeGroupedInvestmentsAllTimeUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = null,
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(NO_INVESTMENTS))
 
-        every { observeGroupedTradesAllTimeUseCase.invoke(
-            searchQueryFlow = null,
-            dateRangeFlow = null,
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(NO_TRADES))
+        every {
+            observeGroupedTradesAllTimeUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = null,
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(NO_TRADES))
 
-        every { observeGroupedSavingsAllTimeUseCase.invoke(
-             searchQueryFlow = null,
-            dateRangeFlow = null,
-            filterTypeFlow = null,
-            sortTypeFlow = null,
-            limitFlow = null,
-        ) } returns flowOf(Async.Success(NO_SAVINGS))
+        every {
+            observeGroupedSavingsAllTimeUseCase.invoke(
+                searchQueryFlow = null,
+                dateRangeFlow = null,
+                filterTypeFlow = null,
+                sortTypeFlow = null,
+                limitFlow = null,
+            )
+        } returns flowOf(Async.Success(NO_SAVINGS))
 
         val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, dateRangeFlow).toList()
 
@@ -654,12 +707,16 @@ class DefaultObserveDashboardBudgetUseCaseTest {
         )
 
         private val EXPENSES = listOf(
-            GroupedExpenses("December 2025", listOf(ExpenseTotal(2500.toBigDecimal(), "EUR")), listOf(
-                Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 1000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-            )),
+            GroupedExpenses(
+                "December 2025",
+                listOf(ExpenseTotal(2500.toBigDecimal(), "EUR")),
+                listOf(
+                    Expense("1", "1", 1500.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+                    Expense("2", "2", 1000.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+                )
+            ),
         )
-        
+
         private val NO_INVESTMENTS = GroupedInvestments(
             group = "December 2025",
             total = listOf(),
@@ -683,15 +740,18 @@ class DefaultObserveDashboardBudgetUseCaseTest {
             ),
         )
 
-
         private val NO_SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal("0.00".toBigDecimal(), "EUR")), listOf())
 
         private val NO_TRADES = GroupedTrades("December 2025", listOf(), listOf())
 
-        private val SAVINGS = GroupedSavings("December 2025", listOf(SavingTotal(10_000.toBigDecimal(), "EUR")), listOf(
-            Saving("1", "Emergency fund", 7_000.toBigDecimal(), "EUR", 1, false, 1),
-            Saving("2", "Emergency fund", 3_000.toBigDecimal(), "EUR", 2, false, 2),
-        ))
+        private val SAVINGS = GroupedSavings(
+            "December 2025",
+            listOf(SavingTotal(10_000.toBigDecimal(), "EUR")),
+            listOf(
+                Saving("1", "Emergency fund", 7_000.toBigDecimal(), "EUR", 1, false, 1),
+                Saving("2", "Emergency fund", 3_000.toBigDecimal(), "EUR", 2, false, 2),
+            )
+        )
 
         /** The same positions, but with no quote behind them - so valued at cost. */
         private val INVESTMENTS_WITH_STALE_MARKET_PRICE = INVESTMENTS.copy(

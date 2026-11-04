@@ -9,13 +9,13 @@ import com.ivzb.urgat.ui.investments.InvestmentsSortMenuItem
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class FakeObserveInvestmentsUseCase : ObserveInvestmentsUseCase {
 
@@ -184,9 +184,7 @@ class FakeGetLastUsedInvestmentCurrencyUseCase : GetLastUsedInvestmentCurrencyUs
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeGetInvestmentUseCase : GetInvestmentUseCase {
@@ -241,9 +239,7 @@ class FakeObserveInvestmentsFilteringUseCase : ObserveInvestmentsFilteringUseCas
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<InvestmentsFilterMenuItem>>> = flow
 
 }
 
@@ -255,9 +251,7 @@ class FakeObserveInvestmentsSortingUseCase : ObserveInvestmentsSortingUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<InvestmentsSortMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<InvestmentsSortMenuItem>>> = flow
 
 }
 

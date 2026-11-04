@@ -34,4 +34,3 @@ internal fun Context.netWorthWidgetEntryPoint(): NetWorthWidgetEntryPoint =
         applicationContext,
         NetWorthWidgetEntryPoint::class.java,
     )
-

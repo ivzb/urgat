@@ -20,4 +20,3 @@ data class AddEditFuelConsumptionUiState(
     val withClearDefaults: Boolean = false,
     val shouldNavigateBack: Boolean = false
 )
-

@@ -7,6 +7,7 @@ import com.ivzb.urgat.util.round
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.math.BigDecimal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -20,7 +21,6 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class YahooFinanceMarketPriceRepositoryTest {
@@ -642,4 +642,3 @@ class YahooFinanceMarketPriceRepositoryTest {
         )
     )
 }
-

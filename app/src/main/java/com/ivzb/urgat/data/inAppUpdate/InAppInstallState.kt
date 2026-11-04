@@ -9,4 +9,3 @@ sealed interface InAppInstallState {
     data object Failed : InAppInstallState
     data object Canceled : InAppInstallState
 }
-

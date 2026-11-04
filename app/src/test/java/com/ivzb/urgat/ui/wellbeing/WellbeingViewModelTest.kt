@@ -6,6 +6,7 @@ import com.ivzb.urgat.domain.weight.FakeObserveWeightsUiStateUseCase
 import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.Async
+import kotlin.test.assertNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -22,7 +23,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WellbeingViewModelTest {

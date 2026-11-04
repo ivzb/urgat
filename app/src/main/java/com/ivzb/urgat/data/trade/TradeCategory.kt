@@ -7,4 +7,3 @@ data class TradeCategory(
 
     val trades: List<Trade>,
 )
-

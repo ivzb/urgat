@@ -219,7 +219,7 @@ fun TransactionsPage(
                 items = trades,
                 key = { trade -> trade.id },
             ) { trade ->
-                
+
                 TradeItem(
                     trade = trade,
                     onTradeClick = onTradeClick
@@ -544,4 +544,3 @@ private fun TradesScreenErrorPreview() {
         )
     }
 }
-

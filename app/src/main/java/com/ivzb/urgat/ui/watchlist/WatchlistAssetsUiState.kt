@@ -17,4 +17,3 @@ data class WatchlistAssetsUiState(
 
     override val filteringUiInfo: WatchlistAssetsFilteringUiInfo = WatchlistAssetsFilteringUiInfo()
 ): PagerUiState
-

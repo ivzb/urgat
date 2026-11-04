@@ -4,12 +4,14 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
-import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
+import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -18,8 +20,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveGroupedInvestmentsAllTimeUseCaseTest {
@@ -42,7 +42,7 @@ class DefaultObserveGroupedInvestmentsAllTimeUseCaseTest {
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
         val limitFlow = flowOf(limit)
         val repositoryStream = flowOf(
-        listOf(
+            listOf(
                 Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD", timestamp(2025, 11, 25), false, timestamp(2025, 11, 25)),
                 Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), BigDecimal("485.5"), "Stocks", "USD", timestamp(2025, 11, 27), false, timestamp(2025, 11, 27)),
                 Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), BigDecimal("229.16"), "Stocks", "USD", timestamp(2025, 12, 9), false, timestamp(2025, 12, 9)),
@@ -74,7 +74,7 @@ class DefaultObserveGroupedInvestmentsAllTimeUseCaseTest {
                 Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
                 Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), BigDecimal("229.16"), "Stocks", "USD", 1765231200000, false, 1765231200000),
                 Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
-                Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD",  1764021600000, false, 1764021600000),
+                Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD", 1764021600000, false, 1764021600000),
             ),
         )
 
@@ -122,7 +122,7 @@ class DefaultObserveGroupedInvestmentsAllTimeUseCaseTest {
             items = listOf(
                 Investment("2", "Microsoft Corp.", BigDecimal("1800"), BigDecimal("485.5"), BigDecimal("485.5"), "Stocks", "USD", 1764194400000, false, 1764194400000),
                 Investment("4", "Tesla Inc.", BigDecimal("1900"), BigDecimal("419.40"), BigDecimal("419.40"), "Stocks", "USD", 1765922400000, false, 1765922400000),
-                Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD",  1764021600000, false, 1764021600000),
+                Investment("1", "Alphabet (Google)", BigDecimal("2200"), BigDecimal("323.44"), BigDecimal("323.44"), "Stocks", "USD", 1764021600000, false, 1764021600000),
                 Investment("6", "Apple Inc.", BigDecimal("1900"), BigDecimal("276.97"), BigDecimal("276.97"), "Stocks", "USD", timestamp(2026, 1, 10), false, timestamp(2026, 1, 10)),
                 Investment("3", "Amazon.com Inc.", BigDecimal("1700"), BigDecimal("229.16"), BigDecimal("229.16"), "Stocks", "USD", 1765231200000, false, 1765231200000),
                 Investment("5", "NVIDIA Corp.", BigDecimal("1700"), BigDecimal("180.26"), BigDecimal("180.26"), "Stocks", "USD", timestamp(2026, 1, 9), false, timestamp(2026, 1, 9)),

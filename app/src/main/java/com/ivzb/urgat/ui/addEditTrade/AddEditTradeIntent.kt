@@ -10,4 +10,3 @@ sealed class AddEditTradeIntent {
     object DuplicateTrade: AddEditTradeIntent()
     object UserMessageShown: AddEditTradeIntent()
 }
-

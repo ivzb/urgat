@@ -5,6 +5,8 @@ import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.util.Async
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -13,8 +15,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveWeightsUiStateUseCaseTest {
@@ -207,4 +207,3 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
 }
-

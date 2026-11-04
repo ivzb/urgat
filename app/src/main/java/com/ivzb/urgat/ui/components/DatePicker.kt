@@ -25,11 +25,14 @@ fun DatePicker(
     val formattedDate = selectedDate.format()
     val isDarkTheme = isSystemInDarkTheme()
     val themedContext = remember(context, isDarkTheme) {
-        ContextThemeWrapper(context, if (isDarkTheme) {
-            android.R.style.ThemeOverlay_Material_Dark
-        } else {
-            android.R.style.ThemeOverlay_Material_Light
-        })
+        ContextThemeWrapper(
+            context,
+            if (isDarkTheme) {
+                android.R.style.ThemeOverlay_Material_Dark
+            } else {
+                android.R.style.ThemeOverlay_Material_Light
+            }
+        )
     }
 
     val datePickerDialog = remember(selectedDate) {

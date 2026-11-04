@@ -1,8 +1,8 @@
 package com.ivzb.urgat.data.fuelConsumption
 
-import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class FuelConsumptionTest {
 
@@ -83,9 +83,3 @@ class FuelConsumptionTest {
         createdAt = date,
     )
 }
-
-
-
-
-
-

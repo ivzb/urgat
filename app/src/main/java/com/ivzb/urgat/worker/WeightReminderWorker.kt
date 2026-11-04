@@ -59,7 +59,10 @@ class WeightReminderWorker @AssistedInject constructor(
         }
 
         val pendingIntent = PendingIntent.getActivity(
-            context, 0, intent, PendingIntent.FLAG_IMMUTABLE
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -94,4 +97,3 @@ class WeightReminderWorker @AssistedInject constructor(
 
     }
 }
-

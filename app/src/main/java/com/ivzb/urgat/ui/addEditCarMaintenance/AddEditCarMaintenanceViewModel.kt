@@ -33,11 +33,13 @@ class AddEditCarMaintenanceViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private val carMaintenanceId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditCarMaintenanceUiState(
-        screenTitleResId = screenTitleResId,
-        withDuplicate = carMaintenanceId != null,
-        withClearDefaults = carMaintenanceId == null,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditCarMaintenanceUiState(
+            screenTitleResId = screenTitleResId,
+            withDuplicate = carMaintenanceId != null,
+            withClearDefaults = carMaintenanceId == null,
+        )
+    )
     val uiState: StateFlow<AddEditCarMaintenanceUiState> = _uiState.asStateFlow()
 
     init {
@@ -223,4 +225,3 @@ class AddEditCarMaintenanceViewModel @AssistedInject constructor(
     }
 
 }
-

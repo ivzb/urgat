@@ -26,4 +26,3 @@ interface CarMaintenanceRepository: BaseRepository<CarMaintenance> {
     suspend fun getLastUsedCarName(): String?
 
 }
-

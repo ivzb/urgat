@@ -53,4 +53,3 @@ class AddEditWatchlistAssetScreenshotTest: ScreenshotTest() {
     }
 
 }
-

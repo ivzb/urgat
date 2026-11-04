@@ -10,8 +10,8 @@ import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 typealias GroupedExpenseCategories = GroupedItems<String, List<ExpenseTotal>, ExpenseCategory>
 

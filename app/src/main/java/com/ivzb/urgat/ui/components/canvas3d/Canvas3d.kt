@@ -73,11 +73,9 @@ fun read3dModel(context: Context, fileName: String): Model3d {
     )
 }
 
-fun readObjFromAssets(context: Context, fileName: String): String {
-    return context.assets.open(fileName).use { inputStream ->
-        BufferedReader(InputStreamReader(inputStream)).use { reader ->
-            reader.readText()
-        }
+fun readObjFromAssets(context: Context, fileName: String): String = context.assets.open(fileName).use { inputStream ->
+    BufferedReader(InputStreamReader(inputStream)).use { reader ->
+        reader.readText()
     }
 }
 
@@ -137,7 +135,7 @@ private fun Canvas3dContent(
             strokeWidth = 3f
         )
     }
-    
+
     fun DrawScope.fillFace(face: List<Int>, model: Model3d, dz: Float, angle: Float, color: Color) {
         val path = Path().apply {
             val p1 = model.vertices[face[0]].transform(angle, dz, size)
@@ -221,27 +219,21 @@ data class Point2d(val x: Float, val y: Float) {
 
 data class Point3d(val x: Float, val y: Float, val z: Float) {
 
-    fun transform(angle: Float, dz: Float, size: Size): Point2d {
-        return rotateXZ(angle)
+    fun transform(angle: Float, dz: Float, size: Size): Point2d = rotateXZ(angle)
 //            .rotateXY(angle)
-            .rotateYZ(-angle)
-            .translateZ(dz)
-            .project()
-            .screen(size)
-    }
+        .rotateYZ(-angle)
+        .translateZ(dz)
+        .project()
+        .screen(size)
 
-    fun project(): Point2d {
-        return Point2d(
-            x = x / z,
-            y = y / z,
-        )
-    }
+    fun project(): Point2d = Point2d(
+        x = x / z,
+        y = y / z,
+    )
 
-    fun translateZ(dz: Float): Point3d {
-        return copy(
-            z = z + dz,
-        )
-    }
+    fun translateZ(dz: Float): Point3d = copy(
+        z = z + dz,
+    )
 
     fun rotateXZ(angle: Float): Point3d {
         val cos = cos(angle)

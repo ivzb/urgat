@@ -37,11 +37,13 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private var fuelConsumptionId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditFuelConsumptionUiState(
-        screenTitleResId = screenTitleResId,
-        withDuplicate = fuelConsumptionId != null,
-        withClearDefaults = fuelConsumptionId == null,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditFuelConsumptionUiState(
+            screenTitleResId = screenTitleResId,
+            withDuplicate = fuelConsumptionId != null,
+            withClearDefaults = fuelConsumptionId == null,
+        )
+    )
     val uiState: StateFlow<AddEditFuelConsumptionUiState> = _uiState.asStateFlow()
 
     init {
@@ -303,4 +305,3 @@ class AddEditFuelConsumptionViewModel @AssistedInject constructor(
     }
 
 }
-

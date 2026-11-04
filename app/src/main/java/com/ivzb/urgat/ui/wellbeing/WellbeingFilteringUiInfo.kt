@@ -18,5 +18,5 @@ data class WellbeingFilteringUiInfo(
 ) : FilteringUiInfo {
 
     override val hasAppliedFilters: Boolean = false
-    
+
 }

@@ -71,4 +71,3 @@ fun WatchlistAssetItem(
         onClick = { onWatchlistAssetClick(asset) }
     )
 }
-

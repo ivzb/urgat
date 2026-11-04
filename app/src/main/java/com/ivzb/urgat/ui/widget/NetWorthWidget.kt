@@ -18,8 +18,8 @@ import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
 import androidx.glance.LocalState
-import androidx.glance.action.clickable
 import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -338,7 +338,9 @@ class NetWorthWidget : GlanceAppWidget() {
 
         return when (state) {
             is Async.Loading -> context.getString(R.string.loading)
+
             is Async.Error -> context.getString(R.string.net_worth_widget_error)
+
             is Async.Success -> when {
                 state.data?.isPartial == true -> context.getString(R.string.net_worth_widget_prices_unavailable)
                 else -> context.getString(R.string.net_worth_widget_empty)
@@ -388,7 +390,9 @@ class NetWorthWidget : GlanceAppWidget() {
         // what the one message there is room for talks about
         val (names, template) = when {
             assets.isNotEmpty() -> assets to R.string.net_worth_widget_assets_unavailable_message
+
             rates.isNotEmpty() -> rates to R.string.net_worth_widget_rates_unavailable_message
+
             // partial without a name behind it should not happen, but a stale widget could
             else -> return context.getString(R.string.net_worth_widget_prices_unavailable_message)
                 .takeUnless { isCompact }
@@ -679,4 +683,3 @@ class NetWorthWidget : GlanceAppWidget() {
     }
 
 }
-

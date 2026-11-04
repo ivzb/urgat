@@ -2,32 +2,28 @@ package com.ivzb.urgat.data.expense
 
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
+import java.math.BigDecimal
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
-import java.util.UUID
-import javax.inject.Inject
 
 class DefaultExpensesRepository @Inject constructor(
     private val localDataSource: ExpenseDao,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ExpensesRepository {
 
-    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Expense>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { expenses ->
-            withContext(dispatcher) {
-                expenses.toExternal()
-            }
+    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Expense>> = localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { expenses ->
+        withContext(dispatcher) {
+            expenses.toExternal()
         }
     }
 
-    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Expense>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { expenses ->
-            withContext(dispatcher) {
-                expenses.toExternal()
-            }
+    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Expense>> = localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { expenses ->
+        withContext(dispatcher) {
+            expenses.toExternal()
         }
     }
 
@@ -85,15 +81,11 @@ class DefaultExpensesRepository @Inject constructor(
         localDataSource.upsert(expense.toEntity())
     }
 
-    override suspend fun get(id: String): Expense? {
-        return localDataSource.getById(id)?.toExternal()
-    }
+    override suspend fun get(id: String): Expense? = localDataSource.getById(id)?.toExternal()
 
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
     }
 
-    override suspend fun getLastUsedCurrency(): String? {
-        return localDataSource.getLastUsedCurrency()
-    }
+    override suspend fun getLastUsedCurrency(): String? = localDataSource.getLastUsedCurrency()
 }

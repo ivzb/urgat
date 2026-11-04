@@ -8,12 +8,12 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortMenuItem
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class FakeObserveBudgetsUseCase : ObserveBudgetsUseCase {
 
@@ -45,9 +45,7 @@ class FakeGetLastUsedBudgetCurrencyUseCase : GetLastUsedBudgetCurrencyUseCase {
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 }
 
 class FakeGetBudgetUseCase : GetBudgetUseCase {
@@ -111,9 +109,7 @@ class FakeObserveBudgetsFilteringUseCase : ObserveBudgetsFilteringUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<BudgetsFilterMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<BudgetsFilterMenuItem>>> = flow
 
 }
 
@@ -125,9 +121,7 @@ class FakeObserveBudgetsSortingUseCase : ObserveBudgetsSortingUseCase {
         flow.value = value
     }
 
-    override operator fun invoke(): Flow<Async<List<BudgetsSortMenuItem>>> {
-        return flow
-    }
+    override operator fun invoke(): Flow<Async<List<BudgetsSortMenuItem>>> = flow
 
 }
 
@@ -245,9 +239,7 @@ class FakeObserveReportBudgetUseCase: ObserveReportBudgetUseCase {
 
     override fun invoke(
         dateRangeFlow: Flow<LongRange>?,
-    ): Flow<Async<GroupedBudget?>> {
-        return flow
-    }
+    ): Flow<Async<GroupedBudget?>> = flow
 
 }
 

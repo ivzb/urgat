@@ -5,15 +5,15 @@ import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.fire.NetWorth
 import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.util.Async
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveNetWorthUseCaseTest {
@@ -215,4 +215,3 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
 }
-

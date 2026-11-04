@@ -11,4 +11,3 @@ class WatchlistWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = WatchlistWidget()
 
 }
-

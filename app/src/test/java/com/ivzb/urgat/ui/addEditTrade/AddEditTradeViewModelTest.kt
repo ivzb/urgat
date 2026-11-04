@@ -8,6 +8,8 @@ import com.ivzb.urgat.domain.trade.FakeGetLastUsedTradeCurrencyUseCase
 import com.ivzb.urgat.domain.trade.FakeGetLastUsedTradeNameUseCase
 import com.ivzb.urgat.domain.trade.FakeGetTradeUseCase
 import com.ivzb.urgat.domain.trade.FakeUpdateTradeUseCase
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -23,8 +25,6 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditTradeViewModelTest {
@@ -447,4 +447,3 @@ class AddEditTradeViewModelTest {
         )
     }
 }
-

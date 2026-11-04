@@ -6,6 +6,9 @@ import com.ivzb.urgat.util.Logger
 import com.ivzb.urgat.util.TimeProvider
 import com.ivzb.urgat.util.Tracker
 import com.ivzb.urgat.util.normalizeInstrument
+import java.math.BigDecimal
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -14,9 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
 
 class YahooFinanceMarketPriceRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,

@@ -11,18 +11,14 @@ class FakeCheckForUpdateUseCase : CheckForUpdateUseCase {
 
     var result: InAppUpdateStatus = InAppUpdateStatus.NoUpdate
 
-    override suspend fun invoke(): InAppUpdateStatus {
-        return result
-    }
+    override suspend fun invoke(): InAppUpdateStatus = result
 }
 
 class FakeObserveInstallStateUseCase : ObserveInstallStateUseCase {
 
     val flow = MutableSharedFlow<InAppInstallState>()
 
-    override fun invoke(): Flow<InAppInstallState> {
-        return flow
-    }
+    override fun invoke(): Flow<InAppInstallState> = flow
 }
 
 class FakeStartFlexibleUpdateUseCase : StartFlexibleUpdateUseCase {
@@ -42,4 +38,3 @@ class FakeCompleteUpdateUseCase : CompleteUpdateUseCase {
         completed = true
     }
 }
-

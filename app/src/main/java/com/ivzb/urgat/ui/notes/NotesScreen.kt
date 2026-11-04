@@ -33,7 +33,7 @@ fun NoteItem(
                 .padding(dimensionResource(R.dimen.list_item_padding)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
+
             Text(
                 text = note.content,
                 style = MaterialTheme.typography.bodySmall,

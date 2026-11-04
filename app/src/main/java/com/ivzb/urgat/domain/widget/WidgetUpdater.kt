@@ -6,7 +6,6 @@ enum class WidgetType {
     NET_WORTH,
 
     WATCHLIST,
-
 }
 
 /**
@@ -25,4 +24,3 @@ interface WidgetUpdater {
     suspend fun updateAll(type: WidgetType)
 
 }
-

@@ -4,16 +4,16 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.investmentMarketPrice.FakeInvestmentMarketPriceRepository
 import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
 import com.ivzb.urgat.data.marketPrice.MarketPrice
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.*
-import java.math.BigDecimal
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultInvestmentsRepositoryTest {
@@ -175,10 +175,20 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `observe calls fetchPrice for each investment`() = runTest {
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.prices["BRK.B"] = MarketPrice(
-            symbol = "BRK.B", description = "Berkshire", price = BigDecimal("380"), currency = "USD", previousClosePrice = BigDecimal("375"), pricePrecision = 2,
+            symbol = "BRK.B",
+            description = "Berkshire",
+            price = BigDecimal("380"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("375"),
+            pricePrecision = 2,
         )
 
         repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
@@ -219,7 +229,12 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `observe with searchQuery populates description and marketPrice`() = runTest {
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500 ETF", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500 ETF",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("450.00")
 
@@ -236,7 +251,12 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `observe handles partial fetchPrice availability`() = runTest {
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.failingSymbols.add("BRK.B")
 
@@ -321,7 +341,12 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `get calls fetchPrice exactly once`() = runTest {
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
 
         val id = repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
@@ -335,7 +360,12 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `get populates both description and marketPrice together`() = runTest {
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500 ETF", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500 ETF",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("460.00")
 
@@ -387,7 +417,12 @@ class DefaultInvestmentsRepositoryTest {
         assertNull(emissions.first().first().description)
 
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("450")
         fakeMarketPriceRepository.emitRefresh()
@@ -418,7 +453,12 @@ class DefaultInvestmentsRepositoryTest {
         assertNull(emissions.first().first().description)
 
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500 ETF", price = BigDecimal("455"), currency = "USD", previousClosePrice = BigDecimal("450"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500 ETF",
+            price = BigDecimal("455"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("450"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("455")
         fakeMarketPriceRepository.emitRefresh()
@@ -449,10 +489,20 @@ class DefaultInvestmentsRepositoryTest {
         val fetchCountBeforeRefresh = fakeMarketPriceRepository.fetchCount
 
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.prices["BRK.B"] = MarketPrice(
-            symbol = "BRK.B", description = "Berkshire", price = BigDecimal("380"), currency = "USD", previousClosePrice = BigDecimal("375"), pricePrecision = 2,
+            symbol = "BRK.B",
+            description = "Berkshire",
+            price = BigDecimal("380"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("375"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.emitRefresh()
         advanceUntilIdle()
@@ -481,7 +531,12 @@ class DefaultInvestmentsRepositoryTest {
         val emissionsAfterInitial = emissions.size
 
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("450")
         fakeMarketPriceRepository.emitRefresh()
@@ -491,7 +546,12 @@ class DefaultInvestmentsRepositoryTest {
         val emissionsAfterFirstRefresh = emissions.size
 
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("460"), currency = "USD", previousClosePrice = BigDecimal("450"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("460"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("450"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("460")
         fakeMarketPriceRepository.emitRefresh()
@@ -525,7 +585,12 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `clearCache clears market data and triggers re-emission`() = runTest {
         fakeMarketPriceRepository.prices["SNP 500"] = MarketPrice(
-            symbol = "SNP 500", description = "S&P 500", price = BigDecimal("450"), currency = "USD", previousClosePrice = BigDecimal("448"), pricePrecision = 2,
+            symbol = "SNP 500",
+            description = "S&P 500",
+            price = BigDecimal("450"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("448"),
+            pricePrecision = 2,
         )
         fakeInvestmentMarketPriceRepository.prices["SNP 500"] = BigDecimal("450")
         repository.create("SNP 500", 300.toBigDecimal(), 200.toBigDecimal(), "etfs", "USD", 1)
@@ -731,10 +796,20 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `observe toExternal maps all fields for each investment in list`() = runTest {
         fakeMarketPriceRepository.prices["A"] = MarketPrice(
-            symbol = "A", description = "Alpha", price = BigDecimal("100"), currency = "USD", previousClosePrice = BigDecimal("99"), pricePrecision = 2,
+            symbol = "A",
+            description = "Alpha",
+            price = BigDecimal("100"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("99"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.prices["B"] = MarketPrice(
-            symbol = "B", description = "Beta", price = BigDecimal("200"), currency = "EUR", previousClosePrice = BigDecimal("198"), pricePrecision = 3,
+            symbol = "B",
+            description = "Beta",
+            price = BigDecimal("200"),
+            currency = "EUR",
+            previousClosePrice = BigDecimal("198"),
+            pricePrecision = 3,
         )
         fakeInvestmentMarketPriceRepository.prices["A"] = BigDecimal("105")
         fakeInvestmentMarketPriceRepository.prices["B"] = BigDecimal("210")
@@ -772,7 +847,12 @@ class DefaultInvestmentsRepositoryTest {
     @Test
     fun `observe toExternal handles mixed market data availability`() = runTest {
         fakeMarketPriceRepository.prices["A"] = MarketPrice(
-            symbol = "A", description = "Alpha", price = BigDecimal("100"), currency = "USD", previousClosePrice = BigDecimal("99"), pricePrecision = 2,
+            symbol = "A",
+            description = "Alpha",
+            price = BigDecimal("100"),
+            currency = "USD",
+            previousClosePrice = BigDecimal("99"),
+            pricePrecision = 2,
         )
         fakeMarketPriceRepository.failingSymbols.add("B")
         fakeInvestmentMarketPriceRepository.prices["A"] = BigDecimal("105")

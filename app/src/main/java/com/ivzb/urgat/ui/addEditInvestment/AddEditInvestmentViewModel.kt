@@ -1,6 +1,5 @@
 package com.ivzb.urgat.ui.addEditInvestment
 
-import kotlin.text.isEmpty
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.R
@@ -15,6 +14,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlin.text.isEmpty
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,10 +34,12 @@ class AddEditInvestmentViewModel @AssistedInject constructor(
     private val screenTitleResId: Int = route.titleResId
     private var investmentId: String? = route.id
 
-    private val _uiState = MutableStateFlow(AddEditInvestmentUiState(
-        screenTitleResId = screenTitleResId,
-        withDuplicate = investmentId != null,
-    ))
+    private val _uiState = MutableStateFlow(
+        AddEditInvestmentUiState(
+            screenTitleResId = screenTitleResId,
+            withDuplicate = investmentId != null,
+        )
+    )
     val uiState: StateFlow<AddEditInvestmentUiState> = _uiState.asStateFlow()
 
     init {

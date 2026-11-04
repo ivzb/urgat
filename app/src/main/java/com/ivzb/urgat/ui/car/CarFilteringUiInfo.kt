@@ -20,4 +20,3 @@ data class CarFilteringUiInfo(
     override val hasAppliedFilters: Boolean = false
 
 }
-

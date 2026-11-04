@@ -1,16 +1,18 @@
 package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.data.saving.SavingsRepository
-import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
@@ -19,8 +21,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveGroupedSavingCategoriesAllTimeUseCaseTest {

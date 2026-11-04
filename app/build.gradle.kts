@@ -34,7 +34,6 @@ android {
             useSupportLibrary = true
         }
 
-
         // screenshot tests
         testInstrumentationRunnerArguments["useTestStorageService"] = "true"
     }

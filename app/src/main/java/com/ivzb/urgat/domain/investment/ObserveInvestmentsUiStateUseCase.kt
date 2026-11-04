@@ -6,10 +6,10 @@ import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 interface ObserveInvestmentsUiStateUseCase {
 
@@ -72,6 +72,5 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
-    
-}
 
+}

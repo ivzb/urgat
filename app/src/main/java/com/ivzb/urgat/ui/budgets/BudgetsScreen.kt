@@ -49,8 +49,8 @@ import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.toLocalDate
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import kotlinx.coroutines.launch
 
 @Composable
 fun BudgetsScreen(
@@ -284,38 +284,48 @@ fun LazyListScope.budgetCategoryPage(
 
     item {
         val data = buildList {
-            add(PieChartItem(
-                value = budget.totalExpenses.toFloat(),
-                title = stringResource(R.string.expenses),
-                total = annotateExpenses(budget.totalExpenses, budget.currency),
-            ))
+            add(
+                PieChartItem(
+                    value = budget.totalExpenses.toFloat(),
+                    title = stringResource(R.string.expenses),
+                    total = annotateExpenses(budget.totalExpenses, budget.currency),
+                )
+            )
 
-            add(PieChartItem(
-                value = budget.totalInvestments.toFloat(),
-                title = stringResource(R.string.investments),
-                total = annotateFinance(budget.totalInvestments, budget.currency),
-            ))
+            add(
+                PieChartItem(
+                    value = budget.totalInvestments.toFloat(),
+                    title = stringResource(R.string.investments),
+                    total = annotateFinance(budget.totalInvestments, budget.currency),
+                )
+            )
 
-            add(PieChartItem(
-                value = budget.totalSavings.toFloat(),
-                title = stringResource(R.string.savings),
-                total = annotateFinance(budget.totalSavings, budget.currency),
-            ))
+            add(
+                PieChartItem(
+                    value = budget.totalSavings.toFloat(),
+                    title = stringResource(R.string.savings),
+                    total = annotateFinance(budget.totalSavings, budget.currency),
+                )
+            )
 
             if (budget.totalTrades > BigDecimal.ZERO) {
-                add(PieChartItem(
-                    value = budget.totalTrades.toFloat(),
-                    title = stringResource(R.string.trades),
-                    total = annotateFinance(budget.totalTrades, budget.currency),
-                ))
+                add(
+                    PieChartItem(
+                        value = budget.totalTrades.toFloat(),
+                        title = stringResource(R.string.trades),
+                        total = annotateFinance(budget.totalTrades, budget.currency),
+                    )
+                )
             }
 
             if (budget.remaining > BigDecimal.ZERO) {
-                add(PieChartItem(
-                    value = budget.remaining.toFloat(),
-                    title = stringResource(R.string.remaining),
-                    total = annotateFinance(budget.remaining, budget.currency)
-                ))
+                add(
+                    PieChartItem(
+                        value = budget.remaining.toFloat(),
+                        title = stringResource(R.string.remaining),
+                        total = annotateFinance(budget.remaining, budget.currency)
+                    )
+                )
             }
         }
 

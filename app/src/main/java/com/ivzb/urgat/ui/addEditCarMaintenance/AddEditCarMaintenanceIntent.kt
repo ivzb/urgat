@@ -13,4 +13,3 @@ sealed class AddEditCarMaintenanceIntent {
     object ClearDefaults: AddEditCarMaintenanceIntent()
     object UserMessageShown: AddEditCarMaintenanceIntent()
 }
-

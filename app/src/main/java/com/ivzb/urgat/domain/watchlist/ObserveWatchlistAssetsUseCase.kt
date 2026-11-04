@@ -5,9 +5,9 @@ import com.ivzb.urgat.data.watchlist.WatchlistAssetsRepository
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 
 interface ObserveWatchlistAssetsUseCase {
 
@@ -44,4 +44,3 @@ class DefaultObserveWatchlistAssetsUseCase @Inject constructor(
     ): Flow<Async<List<WatchlistAsset>>> = observeUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }
-

@@ -7,8 +7,6 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.BUDGETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.CAR_MAINTENANCE_CSV_MAPPING
-import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_FILE_NAME
-import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.EXPENSES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.FUEL_CONSUMPTION_CSV_FILE_NAME
@@ -21,6 +19,8 @@ import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.SAVINGS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.TODOS_CSV_MAPPING
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_FILE_NAME
+import com.ivzb.urgat.data.csv.CsvMapping.Companion.TRADES_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_FILE_NAME
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WATCHLIST_ASSETS_CSV_MAPPING
 import com.ivzb.urgat.data.csv.CsvMapping.Companion.WEIGHTS_CSV_FILE_NAME
@@ -36,9 +36,9 @@ import com.ivzb.urgat.data.trade.TradeDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.di.IoDispatcher
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 interface ExportDataUseCase {
 
@@ -62,20 +62,18 @@ class DefaultExportDataUseCase @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ): ExportDataUseCase {
 
-    override suspend operator fun invoke(uri: Uri) {
-        return withContext(dispatcher) {
-            exportDataRepository.exportCsv(uri, todoDao.stream(), TODOS_CSV_FILE_NAME, TODOS_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, noteDao.stream(), NOTES_CSV_FILE_NAME, NOTES_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, expenseDao.stream(), EXPENSES_CSV_FILE_NAME, EXPENSES_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, investmentDao.stream(), INVESTMENTS_CSV_FILE_NAME, INVESTMENTS_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, savingDao.stream(), SAVINGS_CSV_FILE_NAME, SAVINGS_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, budgetDao.stream(), BUDGETS_CSV_FILE_NAME, BUDGETS_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, watchlistAssetDao.stream(), WATCHLIST_ASSETS_CSV_FILE_NAME, WATCHLIST_ASSETS_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, weightDao.stream(), WEIGHTS_CSV_FILE_NAME, WEIGHTS_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, fuelConsumptionDao.stream(), FUEL_CONSUMPTION_CSV_FILE_NAME, FUEL_CONSUMPTION_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, carMaintenanceDao.stream(), CAR_MAINTENANCE_CSV_FILE_NAME, CAR_MAINTENANCE_CSV_MAPPING)
-            exportDataRepository.exportCsv(uri, tradeDao.stream(), TRADES_CSV_FILE_NAME, TRADES_CSV_MAPPING)
-        }
+    override suspend operator fun invoke(uri: Uri) = withContext(dispatcher) {
+        exportDataRepository.exportCsv(uri, todoDao.stream(), TODOS_CSV_FILE_NAME, TODOS_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, noteDao.stream(), NOTES_CSV_FILE_NAME, NOTES_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, expenseDao.stream(), EXPENSES_CSV_FILE_NAME, EXPENSES_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, investmentDao.stream(), INVESTMENTS_CSV_FILE_NAME, INVESTMENTS_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, savingDao.stream(), SAVINGS_CSV_FILE_NAME, SAVINGS_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, budgetDao.stream(), BUDGETS_CSV_FILE_NAME, BUDGETS_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, watchlistAssetDao.stream(), WATCHLIST_ASSETS_CSV_FILE_NAME, WATCHLIST_ASSETS_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, weightDao.stream(), WEIGHTS_CSV_FILE_NAME, WEIGHTS_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, fuelConsumptionDao.stream(), FUEL_CONSUMPTION_CSV_FILE_NAME, FUEL_CONSUMPTION_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, carMaintenanceDao.stream(), CAR_MAINTENANCE_CSV_FILE_NAME, CAR_MAINTENANCE_CSV_MAPPING)
+        exportDataRepository.exportCsv(uri, tradeDao.stream(), TRADES_CSV_FILE_NAME, TRADES_CSV_MAPPING)
     }
 
 }

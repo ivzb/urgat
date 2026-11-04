@@ -9,16 +9,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.glance.appwidget.updateAll
-import com.ivzb.urgat.ui.theme.UrgatTheme
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.glance.appwidget.updateAll
 import com.ivzb.urgat.di.ApplicationScope
 import com.ivzb.urgat.navigation.UrgatNavGraph
+import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.widget.NetWorthWidget
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

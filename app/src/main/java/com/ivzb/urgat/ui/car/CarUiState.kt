@@ -23,7 +23,7 @@ data class CarUiState(
 
     val hasAppliedFilters: Boolean =
         fuelConsumptionUiState.filteringUiInfo.hasAppliedFilters ||
-        carMaintenanceUiState.filteringUiInfo.hasAppliedFilters
+            carMaintenanceUiState.filteringUiInfo.hasAppliedFilters
 
     fun withTopbarActions(page: Page): Boolean {
         val uiState = when (page) {

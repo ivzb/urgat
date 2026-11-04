@@ -21,7 +21,5 @@ class DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
-        return appContext.dataStore
-    }
+    fun provideDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> = appContext.dataStore
 }

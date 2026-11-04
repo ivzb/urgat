@@ -6,7 +6,6 @@ import com.ivzb.urgat.domain.widget.RefreshQuotesUseCase
 import com.ivzb.urgat.domain.widget.RefreshWidgetPricesUseCase
 import com.ivzb.urgat.domain.widget.WidgetUpdater
 import com.ivzb.urgat.ui.widget.GlanceWidgetUpdater
-
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -26,5 +25,3 @@ interface WidgetUseCaseModule {
     fun bindsRefreshWidgetPricesUseCase(useCase: DefaultRefreshWidgetPricesUseCase): RefreshWidgetPricesUseCase
 
 }
-
-

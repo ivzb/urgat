@@ -14,29 +14,29 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CarMaintenanceDao {
 
-    @Query("SELECT * FROM car_maintenance " +
+    @Query(
+        "SELECT * FROM car_maintenance " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC " +
-            "LIMIT :limit")
+            "LIMIT :limit"
+    )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<CarMaintenanceEntity>>
 
     @RawQuery(observedEntities = [CarMaintenanceEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<CarMaintenanceEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<CarMaintenanceEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "car_maintenance",
-                searchColumns = listOf("description", "partNumber", "carName", "odometer"),
-                dateColumn = "date",
-                orderBy = "date DESC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<CarMaintenanceEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "car_maintenance",
+            searchColumns = listOf("description", "partNumber", "carName", "odometer"),
+            dateColumn = "date",
+            orderBy = "date DESC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM car_maintenance WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor
@@ -60,4 +60,3 @@ interface CarMaintenanceDao {
     suspend fun getLastUsedCarName(): String?
 
 }
-

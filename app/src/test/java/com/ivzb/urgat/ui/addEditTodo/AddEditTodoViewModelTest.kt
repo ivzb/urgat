@@ -1,11 +1,13 @@
 package com.ivzb.urgat.ui.addEditTodo
 
+import com.ivzb.urgat.R
 import com.ivzb.urgat.data.todo.Todo
 import com.ivzb.urgat.domain.todo.FakeCreateTodoUseCase
+import com.ivzb.urgat.domain.todo.FakeDeleteTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeGetTodoUseCase
 import com.ivzb.urgat.domain.todo.FakeUpdateTodoUseCase
-import com.ivzb.urgat.R
-import com.ivzb.urgat.domain.todo.FakeDeleteTodoUseCase
+import kotlin.collections.component1
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
 import org.junit.*
@@ -14,18 +16,16 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import kotlin.collections.component1
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditTodoViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
-    
+
     private lateinit var getUseCase: FakeGetTodoUseCase
-    
+
     private lateinit var createUseCase: FakeCreateTodoUseCase
-    
+
     private lateinit var updateUseCase: FakeUpdateTodoUseCase
 
     private lateinit var deleteUseCase: FakeDeleteTodoUseCase

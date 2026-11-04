@@ -95,4 +95,3 @@ class CarMaintenanceFilteringUiInfoTest {
         assertEquals(R.string.add_car_maintenance, info.emptyButtonLabel)
     }
 }
-

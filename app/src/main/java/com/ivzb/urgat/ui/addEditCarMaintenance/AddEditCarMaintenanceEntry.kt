@@ -20,4 +20,3 @@ fun EntryProviderScope<NavKey>.addEditCarMaintenanceEntry(navigator: Navigator) 
         )
     }
 }
-

@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.todo.TodoRepository
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface ObserveTodosUseCase {
 

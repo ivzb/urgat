@@ -13,9 +13,6 @@ class DefaultGetLastUsedCarMaintenanceCarNameUseCase @Inject constructor(
     private val repository: CarMaintenanceRepository
 ): GetLastUsedCarMaintenanceCarNameUseCase {
 
-    override suspend fun invoke(): String? {
-        return repository.getLastUsedCarName()
-    }
+    override suspend fun invoke(): String? = repository.getLastUsedCarName()
 
 }
-

@@ -7,5 +7,3 @@ package com.ivzb.urgat.util
  * "it is worth nothing".
  */
 const val UNKNOWN = "—"
-
-

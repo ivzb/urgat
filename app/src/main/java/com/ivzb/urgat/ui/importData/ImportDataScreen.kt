@@ -165,7 +165,7 @@ private fun ImportDataContent(
         }
     }
 
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.source.local.AppDatabase
 import com.ivzb.urgat.data.source.sample.SampleData
+import java.math.BigDecimal
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -15,7 +16,6 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.math.BigDecimal
 
 @RunWith(AndroidJUnit4::class)
 class WeightDaoTest {

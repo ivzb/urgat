@@ -19,9 +19,7 @@ object InAppUpdateProviderModule {
 
     @Provides
     @Singleton
-    fun provideAppUpdateManager(@ApplicationContext context: Context): AppUpdateManager {
-        return AppUpdateManagerFactory.create(context)
-    }
+    fun provideAppUpdateManager(@ApplicationContext context: Context): AppUpdateManager = AppUpdateManagerFactory.create(context)
 }
 
 @Module
@@ -34,4 +32,3 @@ interface InAppUpdateBindsModule {
         repository: DefaultInAppUpdateRepository
     ): InAppUpdateRepository
 }
-

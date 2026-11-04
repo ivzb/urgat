@@ -3,12 +3,12 @@ package com.ivzb.urgat.data.investmentMarketPrice
 import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
 import com.ivzb.urgat.data.marketPrice.MarketPrice
+import java.math.BigDecimal
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
 
 class DefaultInvestmentMarketMarketPriceRepositoryTest {
 
@@ -565,4 +565,3 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
         assertEquals(BigDecimal("190.50") * BigDecimal("0.92"), result)
     }
 }
-

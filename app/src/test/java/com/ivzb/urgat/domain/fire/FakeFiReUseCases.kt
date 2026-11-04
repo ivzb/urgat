@@ -2,9 +2,9 @@ package com.ivzb.urgat.domain.fire
 
 import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.math.BigDecimal
 
 class FakeObserveFiReUseCase : ObserveFiReUseCase {
 

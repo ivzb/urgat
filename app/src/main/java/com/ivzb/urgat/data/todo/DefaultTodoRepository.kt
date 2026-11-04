@@ -2,13 +2,13 @@ package com.ivzb.urgat.data.todo
 
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
+import java.util.UUID
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class DefaultTodoRepository @Inject constructor(
@@ -16,19 +16,15 @@ class DefaultTodoRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : TodoRepository {
 
-    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Todo>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { todos ->
-            withContext(dispatcher) {
-                todos.toExternal()
-            }
+    override fun observe(limit: Int, dateRange: LongRange): Flow<List<Todo>> = localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { todos ->
+        withContext(dispatcher) {
+            todos.toExternal()
         }
     }
 
-    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Todo>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { todos ->
-            withContext(dispatcher) {
-                todos.toExternal()
-            }
+    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Todo>> = localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { todos ->
+        withContext(dispatcher) {
+            todos.toExternal()
         }
     }
 
@@ -62,9 +58,7 @@ class DefaultTodoRepository @Inject constructor(
         localDataSource.upsert(todo.toEntity())
     }
 
-    override suspend fun get(id: String): Todo? {
-        return localDataSource.getById(id)?.toExternal()
-    }
+    override suspend fun get(id: String): Todo? = localDataSource.getById(id)?.toExternal()
 
     override suspend fun complete(id: String) {
         localDataSource.updateCompleted(id = id, completed = true)

@@ -10,8 +10,8 @@ import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreStringFlow
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class DefaultCarRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,

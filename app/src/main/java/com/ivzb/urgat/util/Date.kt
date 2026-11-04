@@ -8,11 +8,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-fun Long.toLocalDate(): LocalDate {
-    return Instant.ofEpochMilli(this)
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate()
-}
+fun Long.toLocalDate(): LocalDate = Instant.ofEpochMilli(this)
+    .atZone(ZoneId.systemDefault())
+    .toLocalDate()
 
 /**
  * The clock time of the given moment - "14:32", or "3 Oct, 14:32" once it is no longer today.
@@ -36,16 +34,12 @@ fun Context.formatUpdatedAt(timestamp: Long, now: Long = System.currentTimeMilli
     return DateUtils.formatDateTime(this, timestamp, flags)
 }
 
-fun LocalDate.toTimestamp(): Long {
-    return this
-        .atStartOfDay(ZoneId.systemDefault())
-        .toInstant()
-        .toEpochMilli()
-}
+fun LocalDate.toTimestamp(): Long = this
+    .atStartOfDay(ZoneId.systemDefault())
+    .toInstant()
+    .toEpochMilli()
 
-fun LocalDate.format(): String {
-    return this.format(DATE_FORMATTER)
-}
+fun LocalDate.format(): String = this.format(DATE_FORMATTER)
 
 fun currentMonthRange(): LongRange {
     val zoneId = ZoneId.systemDefault()

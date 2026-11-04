@@ -23,9 +23,10 @@ fun LoadingState(
     vararg formatArgs: Any,
     modifier: Modifier = Modifier
 ) {
-    Column (modifier = modifier
-        .fillMaxSize()
-        .testTag("loading"),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .testTag("loading"),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

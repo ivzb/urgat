@@ -46,4 +46,3 @@ class DefaultGetLastUsedFuelConsumptionCurrencyUseCaseTest {
         assertNull(result)
     }
 }
-

@@ -13,4 +13,3 @@ data object TradesRoute: UrgatRoute() {
         get() = R.string.trades
 
 }
-

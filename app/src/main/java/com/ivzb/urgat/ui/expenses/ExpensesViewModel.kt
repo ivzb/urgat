@@ -7,10 +7,10 @@ import com.ivzb.urgat.domain.expense.ObserveExpensesUiStateUseCase
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ExpensesViewModel @Inject constructor(
@@ -29,11 +29,11 @@ class ExpensesViewModel @Inject constructor(
         onError = { ExpensesUiState(hasError = true) },
         onSuccess = { expensesUiState -> expensesUiState },
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = ExpensesUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = ExpensesUiState(isLoading = true)
+        )
 
     fun onIntent(intent: ExpensesIntent) {
         when (intent) {
@@ -68,4 +68,3 @@ class ExpensesViewModel @Inject constructor(
         setSorting(ExpensesSortType.BY_DATE)
     }
 }
-

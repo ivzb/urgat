@@ -18,10 +18,10 @@ import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.calculatePnL
 import com.ivzb.urgat.util.timestamp
-import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
-import org.junit.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.runBlocking
+import org.junit.Test
 
 class GroupTest {
 

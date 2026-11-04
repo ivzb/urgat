@@ -14,10 +14,10 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import javax.inject.Inject
 
 interface ObserveGroupedBudgetsMonthlyUseCase {
 
@@ -46,50 +46,48 @@ class DefaultObserveGroupedBudgetsMonthlyUseCase @Inject constructor(
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<GroupedBudget>>> {
+    ): Flow<Async<List<GroupedBudget>>> = combine(
+        observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
+        observeGroupedExpensesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+        observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+        observeGroupedTradesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+        observeGroupedSavingsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
+    ) { budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsMonthlyAsync, tradesMonthlyAsync, savingsMonthlyAsync ->
 
-        return combine(
-            observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
-            observeGroupedExpensesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedInvestmentsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedTradesMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-            observeGroupedSavingsMonthlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        ) { budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsMonthlyAsync, tradesMonthlyAsync, savingsMonthlyAsync ->
+        if (budgetCategoriesMonthlyAsync is Async.Success &&
+            expensesMonthlyAsync is Async.Success &&
+            investmentsMonthlyAsync is Async.Success &&
+            tradesMonthlyAsync is Async.Success &&
+            savingsMonthlyAsync is Async.Success
+        ) {
 
-            if (budgetCategoriesMonthlyAsync is Async.Success &&
-                expensesMonthlyAsync is Async.Success &&
-                investmentsMonthlyAsync is Async.Success &&
-                tradesMonthlyAsync is Async.Success &&
-                savingsMonthlyAsync is Async.Success) {
+            val monthlyBudgets = budgetCategoriesMonthlyAsync.data.mapIndexed { index, category ->
+                val expenses = expensesMonthlyAsync.data.getOrNull(index)
+                val investments = investmentsMonthlyAsync.data.getOrNull(index)
+                val trades = tradesMonthlyAsync.data.getOrNull(index)
+                val savings = savingsMonthlyAsync.data.getOrNull(index)
 
-                val monthlyBudgets = budgetCategoriesMonthlyAsync.data.mapIndexed { index, category ->
-                    val expenses = expensesMonthlyAsync.data.getOrNull(index)
-                    val investments = investmentsMonthlyAsync.data.getOrNull(index)
-                    val trades = tradesMonthlyAsync.data.getOrNull(index)
-                    val savings = savingsMonthlyAsync.data.getOrNull(index)
+                val budgetCurrency = category.items.first().currency
 
-                    val budgetCurrency = category.items.first().currency
-
-                    GroupedBudget(
-                        category = category,
-                        currency = budgetCurrency,
-                        totalIncome = category.total,
-                        totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
-                        totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
-                        totalTrades = Trade.total(trades?.items, budgetCurrency, forexRepository::convert),
-                        totalSavings = Saving.total(savings?.items, budgetCurrency, forexRepository::convert),
-                    )
-                }
-
-                Async.Success(monthlyBudgets)
-            } else {
-                Async.Error
+                GroupedBudget(
+                    category = category,
+                    currency = budgetCurrency,
+                    totalIncome = category.total,
+                    totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
+                    totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
+                    totalTrades = Trade.total(trades?.items, budgetCurrency, forexRepository::convert),
+                    totalSavings = Saving.total(savings?.items, budgetCurrency, forexRepository::convert),
+                )
             }
+
+            Async.Success(monthlyBudgets)
+        } else {
+            Async.Error
         }
+    }
         .catch { e ->
             Tracker.error(e)
             emit(Async.Error)
         }
-    }
 
 }

@@ -7,8 +7,8 @@ import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 typealias GroupedCarMaintenance = GroupedItems<String, Int, CarMaintenance>
 
@@ -50,4 +50,3 @@ class DefaultObserveGroupedCarMaintenanceMonthlyUseCase @Inject constructor(
     )
 
 }
-

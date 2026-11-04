@@ -209,7 +209,6 @@ fun annotateFuelConsumptionTotals(totals: List<FuelConsumptionTotal>): Annotated
         }
     }
 
-
 fun annotateBold(text: String): AnnotatedString =
     buildAnnotatedString {
         withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -221,18 +220,16 @@ private fun annotateFormattedString(
     formattedString: String,
     part: String,
     spanStyle: SpanStyle,
-): AnnotatedString {
-    return buildAnnotatedString {
-        append(formattedString)
+): AnnotatedString = buildAnnotatedString {
+    append(formattedString)
 
-        val partStart = formattedString.indexOf(part)
+    val partStart = formattedString.indexOf(part)
 
-        if (partStart >= 0) {
-            addStyle(
-                spanStyle,
-                partStart,
-                partStart + part.length
-            )
-        }
+    if (partStart >= 0) {
+        addStyle(
+            spanStyle,
+            partStart,
+            partStart + part.length
+        )
     }
 }

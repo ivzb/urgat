@@ -51,4 +51,3 @@ class FakeCarMaintenanceDao : CarMaintenanceDao {
     private fun getLastUsed(): CarMaintenanceEntity? =
         items.filter { !it.isDeleted }.maxByOrNull { it.date }
 }
-

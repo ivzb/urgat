@@ -13,4 +13,3 @@ data class CarMaintenanceUiState(
 
     override val filteringUiInfo: CarMaintenanceFilteringUiInfo = CarMaintenanceFilteringUiInfo(),
 ): UiState
-

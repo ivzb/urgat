@@ -1,8 +1,8 @@
 package com.ivzb.urgat.data.csv
 
 import com.ivzb.urgat.data.budget.BudgetEntity
-import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceEntity
+import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentEntity
 import com.ivzb.urgat.data.note.NoteEntity
@@ -287,9 +287,7 @@ data class CsvMapping(
 
         private const val SEPARATOR = ", "
 
-        fun List<CsvMapping>.format(): String {
-            return this.joinToString(SEPARATOR) { it.column }
-        }
+        fun List<CsvMapping>.format(): String = this.joinToString(SEPARATOR) { it.column }
 
         // handles commas inside quotes
         private fun splitCsvLine(line: String): List<String> {

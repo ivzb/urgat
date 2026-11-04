@@ -20,7 +20,6 @@ import com.ivzb.urgat.domain.expense.FakeObserveExpensesFilteringUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveExpensesSortingUseCase
 import com.ivzb.urgat.domain.expense.FakeObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.fire.FakeObserveFiReUseCase
-import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.domain.investment.FakeObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsFilteringUseCase
 import com.ivzb.urgat.domain.investment.FakeObserveInvestmentsSortingUseCase
@@ -29,8 +28,8 @@ import com.ivzb.urgat.domain.saving.FakeObserveSavingsSortingUseCase
 import com.ivzb.urgat.domain.trades.FakeObserveGroupedTradesMonthlyUseCase
 import com.ivzb.urgat.domain.trades.FakeObserveTradesFilteringUseCase
 import com.ivzb.urgat.domain.trades.FakeObserveTradesSortingUseCase
-import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsSortingUseCase
+import com.ivzb.urgat.domain.watchlist.FakeObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
@@ -38,6 +37,7 @@ import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
+import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
@@ -45,6 +45,9 @@ import com.ivzb.urgat.ui.trades.TradesFilterType_All
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -55,9 +58,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveFinanceUiStateUseCaseTest {

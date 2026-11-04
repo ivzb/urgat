@@ -10,8 +10,8 @@ import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 typealias GroupedFuelConsumptionCategories = GroupedItems<String, List<FuelConsumptionTotal>, FuelConsumptionCategory>
 

@@ -14,8 +14,6 @@ class DefaultGetNoteUseCase @Inject constructor(
     private val repository: NotesRepository
 ): GetNoteUseCase {
 
-    override suspend fun invoke(id: String): Note? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): Note? = repository.get(id)
 
 }

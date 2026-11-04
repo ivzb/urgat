@@ -18,4 +18,3 @@ class DefaultDeleteCarMaintenanceUseCase @Inject constructor(
     }
 
 }
-

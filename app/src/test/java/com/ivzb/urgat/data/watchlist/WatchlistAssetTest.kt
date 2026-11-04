@@ -1,11 +1,11 @@
 package com.ivzb.urgat.data.watchlist
 
 import com.ivzb.urgat.util.UNKNOWN
-import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class WatchlistAssetTest {
 
@@ -149,5 +149,3 @@ class WatchlistAssetTest {
         createdAt = 1L,
     )
 }
-
-

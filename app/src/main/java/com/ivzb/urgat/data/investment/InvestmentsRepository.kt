@@ -1,8 +1,8 @@
 package com.ivzb.urgat.data.investment
 
 import com.ivzb.urgat.data.base.BaseRepository
-import kotlinx.coroutines.flow.StateFlow
 import java.math.BigDecimal
+import kotlinx.coroutines.flow.StateFlow
 
 interface InvestmentsRepository: BaseRepository<Investment> {
 

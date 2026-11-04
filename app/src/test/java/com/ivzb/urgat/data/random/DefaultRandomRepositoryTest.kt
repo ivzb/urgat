@@ -1,10 +1,10 @@
 package com.ivzb.urgat.data.random
 
-import org.junit.Before
-import org.junit.Test
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import org.junit.Before
+import org.junit.Test
 
 class DefaultRandomRepositoryTest {
 
@@ -35,4 +35,3 @@ class DefaultRandomRepositoryTest {
     }
 
 }
-

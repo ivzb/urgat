@@ -46,4 +46,3 @@ interface FinanceRepository {
     suspend fun updateWatchlistAssetsSortType(value: WatchlistAssetsSortType)
 
 }
-

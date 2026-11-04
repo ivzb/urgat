@@ -13,9 +13,6 @@ class DefaultGetLastUsedInvestmentCurrencyUseCase @Inject constructor(
     private val repository: InvestmentsRepository
 ): GetLastUsedInvestmentCurrencyUseCase {
 
-    override suspend fun invoke(): String? {
-        return repository.getLastUsedCurrency()
-    }
+    override suspend fun invoke(): String? = repository.getLastUsedCurrency()
 
 }
-

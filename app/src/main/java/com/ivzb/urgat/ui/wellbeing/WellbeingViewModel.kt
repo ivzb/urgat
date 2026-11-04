@@ -3,17 +3,17 @@ package com.ivzb.urgat.ui.wellbeing
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.domain.weight.ObserveWeightsUiStateUseCase
+import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class WellbeingViewModel @Inject constructor(
@@ -43,11 +43,11 @@ class WellbeingViewModel @Inject constructor(
             )
         }
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = WellbeingUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = WellbeingUiState(isLoading = true)
+        )
 
     fun onIntent(intent: WellbeingIntent) {
         when (intent) {
@@ -76,4 +76,3 @@ class WellbeingViewModel @Inject constructor(
 }
 
 const val WELLBEING_WEIGHTS_SORT_SAVED_STATE_KEY = "WELLBEING_WEIGHTS_SORT_SAVED_STATE_KEY"
-

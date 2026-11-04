@@ -7,8 +7,8 @@ import com.ivzb.urgat.domain.common.Group.groupTradeCategoriesAllTime
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.util.Async
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedTradeCategoriesAllTimeUseCase {
 
@@ -43,4 +43,3 @@ class DefaultObserveGroupedTradeCategoriesAllTimeUseCase @Inject constructor(
     ): Flow<Async<List<TradeCategory>>> = observeGroupedUseCase(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
 
 }
-

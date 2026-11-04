@@ -5,10 +5,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.ivzb.urgat.data.budget.BudgetDao
 import com.ivzb.urgat.data.budget.BudgetEntity
-import com.ivzb.urgat.data.expense.ExpenseDao
-import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceDao
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceEntity
+import com.ivzb.urgat.data.expense.ExpenseDao
+import com.ivzb.urgat.data.expense.ExpenseEntity
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionDao
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
 import com.ivzb.urgat.data.investment.InvestmentDao
@@ -26,19 +26,22 @@ import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.data.weight.WeightEntity
 
-@Database(entities = [
-    TodoEntity::class,
-    ExpenseEntity::class,
-    NoteEntity::class,
-    WeightEntity::class,
-    InvestmentEntity::class,
-    SavingEntity::class,
-    BudgetEntity::class,
-    WatchlistAssetEntity::class,
-    FuelConsumptionEntity::class,
-    CarMaintenanceEntity::class,
-    TradeEntity::class,
- ], version = 19)
+@Database(
+    entities = [
+        TodoEntity::class,
+        ExpenseEntity::class,
+        NoteEntity::class,
+        WeightEntity::class,
+        InvestmentEntity::class,
+        SavingEntity::class,
+        BudgetEntity::class,
+        WatchlistAssetEntity::class,
+        FuelConsumptionEntity::class,
+        CarMaintenanceEntity::class,
+        TradeEntity::class,
+    ],
+    version = 19
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

@@ -20,4 +20,3 @@ fun EntryProviderScope<NavKey>.addEditTradeEntry(navigator: Navigator) {
         )
     }
 }
-

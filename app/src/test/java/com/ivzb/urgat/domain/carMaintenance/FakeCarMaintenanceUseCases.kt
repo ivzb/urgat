@@ -77,9 +77,7 @@ class FakeObserveCarMaintenanceFilteringUseCase : ObserveCarMaintenanceFiltering
         flow.value = value
     }
 
-    override fun invoke(): Flow<Async<List<CarMaintenanceFilterMenuItem>>> {
-        return flow
-    }
+    override fun invoke(): Flow<Async<List<CarMaintenanceFilterMenuItem>>> = flow
 
 }
 
@@ -91,9 +89,7 @@ class FakeObserveCarMaintenanceSortingUseCase : ObserveCarMaintenanceSortingUseC
         flow.value = value
     }
 
-    override fun invoke(): Flow<Async<List<CarMaintenanceSortMenuItem>>> {
-        return flow
-    }
+    override fun invoke(): Flow<Async<List<CarMaintenanceSortMenuItem>>> = flow
 
 }
 
@@ -113,9 +109,7 @@ class FakeGetLastUsedCarMaintenanceCarNameUseCase : GetLastUsedCarMaintenanceCar
 
     var toReturn: String? = null
 
-    override suspend fun invoke(): String? {
-        return toReturn
-    }
+    override suspend fun invoke(): String? = toReturn
 
 }
 
@@ -163,4 +157,3 @@ class FakeDeleteCarMaintenanceUseCase : DeleteCarMaintenanceUseCase {
     }
 
 }
-

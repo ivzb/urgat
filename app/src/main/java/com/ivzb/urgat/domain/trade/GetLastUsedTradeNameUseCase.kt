@@ -13,9 +13,6 @@ class DefaultGetLastUsedTradeNameUseCase @Inject constructor(
     private val tradeDao: TradeDao
 ): GetLastUsedTradeNameUseCase {
 
-    override suspend fun invoke(): String? {
-        return tradeDao.getLastUsedName()
-    }
+    override suspend fun invoke(): String? = tradeDao.getLastUsedName()
 
 }
-

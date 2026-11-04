@@ -12,4 +12,3 @@ data class AddEditFuelConsumptionRoute(
     @StringRes
     override val titleResId: Int,
 ): UrgatRoute()
-

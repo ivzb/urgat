@@ -12,4 +12,3 @@ data class AddEditCarMaintenanceRoute(
     @StringRes
     override val titleResId: Int,
 ): UrgatRoute()
-

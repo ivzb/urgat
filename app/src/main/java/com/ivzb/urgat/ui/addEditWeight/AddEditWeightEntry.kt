@@ -12,7 +12,7 @@ fun EntryProviderScope<NavKey>.addEditWeightEntry(navigator: Navigator) {
                 factory.create(route)
             }
         )
-        
+
         AddEditWeightScreen(
             viewModel = viewModel,
 

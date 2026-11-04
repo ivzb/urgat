@@ -45,11 +45,11 @@ data class FinanceUiState(
 
     val hasAppliedFilters: Boolean =
         expensesUiState.filteringUiInfo.hasAppliedFilters ||
-        investmentsUiState.filteringUiInfo.hasAppliedFilters ||
-        tradesUiState.filteringUiInfo.hasAppliedFilters ||
-        savingsUiState.filteringUiInfo.hasAppliedFilters ||
-        budgetsUiState.filteringUiInfo.hasAppliedFilters ||
-        watchlistAssetsUiState.filteringUiInfo.hasAppliedFilters
+            investmentsUiState.filteringUiInfo.hasAppliedFilters ||
+            tradesUiState.filteringUiInfo.hasAppliedFilters ||
+            savingsUiState.filteringUiInfo.hasAppliedFilters ||
+            budgetsUiState.filteringUiInfo.hasAppliedFilters ||
+            watchlistAssetsUiState.filteringUiInfo.hasAppliedFilters
 
     fun withTopbarActions(page: Page): Boolean {
         val uiState = when (page) {

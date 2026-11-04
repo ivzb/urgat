@@ -41,15 +41,15 @@ fun <T> ExpandableFab(
     fabActions: List<FabAction<T>>,
     onFabActionClick: (T) -> Unit,
 ) {
-    
+
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(animationSpec = tween(200)) +
-                scaleIn(initialScale = 0.8f) +
-                slideInVertically(initialOffsetY = { it / 2 }),
+            scaleIn(initialScale = 0.8f) +
+            slideInVertically(initialOffsetY = { it / 2 }),
         exit = fadeOut(animationSpec = tween(150)) +
-                scaleOut(targetScale = 0.8f) +
-                slideOutVertically(targetOffsetY = { it / 2 }),
+            scaleOut(targetScale = 0.8f) +
+            slideOutVertically(targetOffsetY = { it / 2 }),
     ) {
 
         var isExpanded by remember { mutableStateOf(false) }
@@ -95,8 +95,9 @@ fun <T> ExpandableFab(
                     }
                 )
 
-                Spacer(modifier = Modifier
-                    .height(10.dp)
+                Spacer(
+                    modifier = Modifier
+                        .height(10.dp)
                 )
             }
         }

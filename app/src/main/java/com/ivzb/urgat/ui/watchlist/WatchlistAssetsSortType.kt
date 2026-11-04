@@ -8,4 +8,3 @@ enum class WatchlistAssetsSortType: Parcelable {
     BY_DATE,
     BY_NAME,
 }
-

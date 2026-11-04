@@ -28,16 +28,17 @@ object SearchQueryBuilder {
 
         val searchClause = if (wordClauses.isNotEmpty()) {
             "AND ${wordClauses.joinToString(" AND ")}"
-        } else ""
+        } else {
+            ""
+        }
 
         args.add(limit)
 
         val sql = "SELECT * FROM $tableName " +
-                "WHERE isDeleted = 0 AND $dateColumn BETWEEN ? AND ? $searchClause " +
-                "ORDER BY $orderBy " +
-                "LIMIT ?"
+            "WHERE isDeleted = 0 AND $dateColumn BETWEEN ? AND ? $searchClause " +
+            "ORDER BY $orderBy " +
+            "LIMIT ?"
 
         return SimpleSQLiteQuery(sql, args.toTypedArray())
     }
 }
-

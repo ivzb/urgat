@@ -11,4 +11,3 @@ class NetWorthWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = NetWorthWidget()
 
 }
-

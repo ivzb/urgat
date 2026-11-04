@@ -12,6 +12,9 @@ import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.util.Async
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -26,9 +29,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FuelConsumptionViewModelTest {
@@ -282,4 +282,3 @@ class FuelConsumptionViewModelTest {
         )
     }
 }
-

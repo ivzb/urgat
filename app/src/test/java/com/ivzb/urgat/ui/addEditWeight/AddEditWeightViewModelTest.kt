@@ -7,6 +7,8 @@ import com.ivzb.urgat.domain.weight.FakeDeleteWeightUseCase
 import com.ivzb.urgat.domain.weight.FakeGetWeightUseCase
 import com.ivzb.urgat.domain.weight.FakeUpdateWeightUseCase
 import io.mockk.InternalPlatformDsl.toStr
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -15,15 +17,13 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditWeightViewModelTest {
@@ -47,8 +47,8 @@ class AddEditWeightViewModelTest {
         getUseCase = FakeGetWeightUseCase()
         createUseCase = FakeCreateWeightUseCase()
         updateUseCase = FakeUpdateWeightUseCase()
-        deleteUseCase = FakeDeleteWeightUseCase()        
-        
+        deleteUseCase = FakeDeleteWeightUseCase()
+
         viewModel = createViewModel(id = null)
     }
 
@@ -60,7 +60,7 @@ class AddEditWeightViewModelTest {
     @Test
     fun `init without id does not load weight`() = runTest {
         assertNull(getUseCase.calledWithId)
-        
+
         val uiState = viewModel.uiState.value
         assertEquals("", uiState.value)
         assertFalse(uiState.isLoading)
@@ -84,7 +84,7 @@ class AddEditWeightViewModelTest {
         val viewModel = createViewModel(id = weightId)
 
         advanceUntilIdle()
-        
+
         assertEquals("123", getUseCase.calledWithId)
 
         val state = viewModel.uiState.value
@@ -112,7 +112,7 @@ class AddEditWeightViewModelTest {
         viewModel.onIntent(AddEditWeightIntent.UpdateValue("80"))
         viewModel.onIntent(AddEditWeightIntent.UpdateDate(1764523811))
         viewModel.onIntent(AddEditWeightIntent.SaveWeight)
-        
+
         advanceUntilIdle()
 
         val (value, date) = createUseCase.created
@@ -190,7 +190,7 @@ class AddEditWeightViewModelTest {
 
     private fun createViewModel(id: String?): AddEditWeightViewModel {
         val route = AddEditWeightRoute(id, if (id == null) R.string.add_weight else R.string.edit_weight)
-        
+
         return AddEditWeightViewModel(
             route,
             getUseCase,

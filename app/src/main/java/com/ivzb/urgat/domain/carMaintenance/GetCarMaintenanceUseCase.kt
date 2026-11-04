@@ -14,9 +14,6 @@ class DefaultGetCarMaintenanceUseCase @Inject constructor(
     private val repository: CarMaintenanceRepository
 ): GetCarMaintenanceUseCase {
 
-    override suspend fun invoke(id: String): CarMaintenance? {
-        return repository.get(id)
-    }
+    override suspend fun invoke(id: String): CarMaintenance? = repository.get(id)
 
 }
-

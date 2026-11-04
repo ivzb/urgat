@@ -5,9 +5,9 @@ import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.trades.TradesSortMenuItem
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.util.Async
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import javax.inject.Inject
 
 interface ObserveTradesSortingUseCase {
 
@@ -17,11 +17,12 @@ interface ObserveTradesSortingUseCase {
 
 class DefaultObserveTradesSortingUseCase @Inject constructor() : ObserveTradesSortingUseCase {
 
-    override fun invoke(): Flow<Async<List<TradesSortMenuItem>>> {
-        return flowOf(Async.Success(listOf(
-            SortMenuItem(type = TradesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-        )))
-    }
+    override fun invoke(): Flow<Async<List<TradesSortMenuItem>>> = flowOf(
+        Async.Success(
+            listOf(
+                SortMenuItem(type = TradesSortType.BY_DATE, labelResId = R.string.sort_by_date),
+            )
+        )
+    )
 
 }
-

@@ -2,6 +2,7 @@ package com.ivzb.urgat.data.trade
 
 import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class DefaultTradesRepository @Inject constructor(
     private val localDataSource: TradeDao,
@@ -87,9 +87,7 @@ class DefaultTradesRepository @Inject constructor(
         }
     }
 
-    override suspend fun get(id: String): Trade? {
-        return localDataSource.getById(id)?.toExternal()
-    }
+    override suspend fun get(id: String): Trade? = localDataSource.getById(id)?.toExternal()
 
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
@@ -102,4 +100,3 @@ class DefaultTradesRepository @Inject constructor(
     }
 
 }
-

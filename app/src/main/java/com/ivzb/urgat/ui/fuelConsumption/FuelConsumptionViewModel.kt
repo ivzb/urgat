@@ -7,11 +7,11 @@ import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionUiStateUseCas
 import com.ivzb.urgat.util.WhileUiSubscribed
 import com.ivzb.urgat.util.combineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class FuelConsumptionViewModel @Inject constructor(
@@ -34,11 +34,11 @@ class FuelConsumptionViewModel @Inject constructor(
         onError = { FuelConsumptionUiState(hasError = true) },
         onSuccess = { fuelConsumptionUiState -> fuelConsumptionUiState },
     )
-    .stateIn(
-        scope = viewModelScope,
-        started = WhileUiSubscribed,
-        initialValue = FuelConsumptionUiState(isLoading = true)
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = WhileUiSubscribed,
+            initialValue = FuelConsumptionUiState(isLoading = true)
+        )
 
     fun onIntent(intent: FuelConsumptionIntent) {
         when (intent) {
@@ -81,4 +81,3 @@ class FuelConsumptionViewModel @Inject constructor(
         setSorting(FuelConsumptionSortType.BY_DATE)
     }
 }
-

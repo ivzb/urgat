@@ -14,7 +14,7 @@ data class Budget(
 ) {
 
     val total: BigDecimal?
-        get () {
+        get() {
             if (bankEnd == null) {
                 return null
             }

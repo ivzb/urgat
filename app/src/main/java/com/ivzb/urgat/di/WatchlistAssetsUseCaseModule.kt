@@ -4,13 +4,13 @@ import com.ivzb.urgat.domain.watchlist.CreateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.watchlist.DefaultCreateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.watchlist.DefaultDeleteWatchlistAssetUseCase
 import com.ivzb.urgat.domain.watchlist.DefaultGetWatchlistAssetUseCase
-import com.ivzb.urgat.domain.watchlist.DefaultObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.DefaultObserveWatchlistAssetsSortingUseCase
+import com.ivzb.urgat.domain.watchlist.DefaultObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.DefaultUpdateWatchlistAssetUseCase
 import com.ivzb.urgat.domain.watchlist.DeleteWatchlistAssetUseCase
 import com.ivzb.urgat.domain.watchlist.GetWatchlistAssetUseCase
-import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsSortingUseCase
+import com.ivzb.urgat.domain.watchlist.ObserveWatchlistAssetsUseCase
 import com.ivzb.urgat.domain.watchlist.UpdateWatchlistAssetUseCase
 import dagger.Binds
 import dagger.Module
@@ -46,4 +46,3 @@ interface WatchlistAssetsUseCaseModule {
     fun bindsObserveWatchlistAssetsSortingUseCase(useCase: DefaultObserveWatchlistAssetsSortingUseCase): ObserveWatchlistAssetsSortingUseCase
 
 }
-

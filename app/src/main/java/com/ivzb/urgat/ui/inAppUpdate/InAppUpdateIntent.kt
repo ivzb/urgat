@@ -5,4 +5,3 @@ sealed class InAppUpdateIntent {
     data object CompleteUpdate : InAppUpdateIntent()
     data object UpdateStarted : InAppUpdateIntent()
 }
-

@@ -15,8 +15,8 @@ import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreStringFlow
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class DefaultFinanceRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,

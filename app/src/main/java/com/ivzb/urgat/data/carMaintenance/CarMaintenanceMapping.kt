@@ -23,4 +23,3 @@ fun CarMaintenanceEntity.toExternal() = CarMaintenance(
     isDeleted = isDeleted,
     createdAt = createdAt
 )
-

@@ -14,29 +14,29 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FuelConsumptionDao {
 
-    @Query("SELECT * FROM fuel_consumptions " +
+    @Query(
+        "SELECT * FROM fuel_consumptions " +
             "WHERE isDeleted = 0 AND date BETWEEN :dateStart AND :dateEnd " +
             "ORDER BY date DESC " +
-            "LIMIT :limit")
+            "LIMIT :limit"
+    )
     fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<FuelConsumptionEntity>>
 
     @RawQuery(observedEntities = [FuelConsumptionEntity::class])
     fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<FuelConsumptionEntity>>
 
-    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>> {
-        return observeAllRaw(
-            SearchQueryBuilder.build(
-                tableName = "fuel_consumptions",
-                searchColumns = listOf("amount", "price", "currency", "type", "carName", "odometer"),
-                dateColumn = "date",
-                orderBy = "date DESC",
-                limit = limit,
-                dateStart = dateStart,
-                dateEnd = dateEnd,
-                searchQuery = searchQuery,
-            )
+    fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>> = observeAllRaw(
+        SearchQueryBuilder.build(
+            tableName = "fuel_consumptions",
+            searchColumns = listOf("amount", "price", "currency", "type", "carName", "odometer"),
+            dateColumn = "date",
+            orderBy = "date DESC",
+            limit = limit,
+            dateStart = dateStart,
+            dateEnd = dateEnd,
+            searchQuery = searchQuery,
         )
-    }
+    )
 
     @Query("SELECT * FROM fuel_consumptions WHERE isDeleted = 0 ORDER BY date DESC")
     fun stream(): Cursor
@@ -66,4 +66,3 @@ interface FuelConsumptionDao {
     suspend fun getLastUsedCarName(): String?
 
 }
-

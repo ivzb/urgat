@@ -1,8 +1,8 @@
 package com.ivzb.urgat.data.budget
 
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class GroupedBudgetTest {
 

@@ -11,15 +11,15 @@ import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.fire.FireRepository.Companion.DEFAULT_FIRE_DATE_RANGE_TYPE
 import com.ivzb.urgat.data.forex.FakeForexRepository
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
 import com.ivzb.urgat.data.investment.InvestmentTotal
+import com.ivzb.urgat.data.marketData.FakeMarketPriceRepository
 import com.ivzb.urgat.data.saving.Saving
+import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.domain.finance.FakeObserveFinanceUiStateUseCase
 import com.ivzb.urgat.domain.investment.GroupedInvestments
 import com.ivzb.urgat.domain.saving.GroupedSavings
-import com.ivzb.urgat.data.saving.SavingTotal
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
@@ -43,6 +43,10 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import java.math.BigDecimal
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -58,10 +62,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FinanceViewModelTest {
@@ -193,14 +193,18 @@ class FinanceViewModelTest {
             yearsUntilFiRe = 17.7.toBigDecimal(),
         )
 
-        fakeObserveFinanceUiStateUseCase.emit(Async.Success(FinanceUiState(
-            expensesUiState = fakeExpensesUiState,
-            investmentsUiState = fakeInvestmentsUiState,
-            savingsUiState = fakeSavingsUiState,
-            budgetsUiState = fakeBudgetsUiState,
-            reportBudget = fakeReportBudget,
-            fire = fakeFiRe,
-        )))
+        fakeObserveFinanceUiStateUseCase.emit(
+            Async.Success(
+                FinanceUiState(
+                    expensesUiState = fakeExpensesUiState,
+                    investmentsUiState = fakeInvestmentsUiState,
+                    savingsUiState = fakeSavingsUiState,
+                    budgetsUiState = fakeBudgetsUiState,
+                    reportBudget = fakeReportBudget,
+                    fire = fakeFiRe,
+                )
+            )
+        )
 
         viewModel = createViewModel()
 
@@ -375,7 +379,7 @@ class FinanceViewModelTest {
         viewModel = createViewModel()
 
         val start = 1704067200000L // 2024-01-01
-        val end = 1735689600000L   // 2024-12-31
+        val end = 1735689600000L // 2024-12-31
 
         viewModel.onIntent(FinanceIntent.UpdateFireCustomDateRange(start, end))
 
@@ -845,7 +849,6 @@ class FinanceViewModelTest {
         forexJob.cancel()
     }
 
-
     private fun createViewModel() = FinanceViewModel(
         fakeObserveFinanceUiStateUseCase,
         mockFireRepository,
@@ -854,4 +857,3 @@ class FinanceViewModelTest {
         fakeMarketPriceRepository,
     )
 }
-

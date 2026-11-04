@@ -1,12 +1,12 @@
 package com.ivzb.urgat.domain.widget
 
 import com.ivzb.urgat.util.FakeLogger
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultRefreshWidgetPricesUseCaseTest {

@@ -25,4 +25,3 @@ class FakeInvestmentMarketPriceRepository : InvestmentMarketPriceRepository {
         return pricePerShare * shares
     }
 }
-

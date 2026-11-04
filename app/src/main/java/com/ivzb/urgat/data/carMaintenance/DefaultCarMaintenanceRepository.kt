@@ -2,31 +2,27 @@ package com.ivzb.urgat.data.carMaintenance
 
 import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Assert
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
 
 class DefaultCarMaintenanceRepository @Inject constructor(
     private val localDataSource: CarMaintenanceDao,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : CarMaintenanceRepository {
 
-    override fun observe(limit: Int, dateRange: LongRange): Flow<List<CarMaintenance>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { items ->
-            withContext(dispatcher) {
-                items.map { it.toExternal() }
-            }
+    override fun observe(limit: Int, dateRange: LongRange): Flow<List<CarMaintenance>> = localDataSource.observeAll(limit, dateRange.first, dateRange.last).map { items ->
+        withContext(dispatcher) {
+            items.map { it.toExternal() }
         }
     }
 
-    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<CarMaintenance>> {
-        return localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { items ->
-            withContext(dispatcher) {
-                items.map { it.toExternal() }
-            }
+    override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<CarMaintenance>> = localDataSource.observeAll(limit, dateRange.first, dateRange.last, searchQuery).map { items ->
+        withContext(dispatcher) {
+            items.map { it.toExternal() }
         }
     }
 
@@ -85,17 +81,12 @@ class DefaultCarMaintenanceRepository @Inject constructor(
         localDataSource.upsert(carMaintenance.toEntity())
     }
 
-    override suspend fun get(id: String): CarMaintenance? {
-        return localDataSource.getById(id)?.toExternal()
-    }
+    override suspend fun get(id: String): CarMaintenance? = localDataSource.getById(id)?.toExternal()
 
     override suspend fun delete(id: String) {
         localDataSource.deleteById(id)
     }
 
-    override suspend fun getLastUsedCarName(): String? {
-        return localDataSource.getLastUsedCarName()
-    }
+    override suspend fun getLastUsedCarName(): String? = localDataSource.getLastUsedCarName()
 
 }
-

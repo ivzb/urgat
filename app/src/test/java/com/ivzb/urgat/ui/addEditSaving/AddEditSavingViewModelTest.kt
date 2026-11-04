@@ -4,9 +4,11 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.domain.saving.FakeCreateSavingUseCase
 import com.ivzb.urgat.domain.saving.FakeDeleteSavingUseCase
-import com.ivzb.urgat.domain.saving.FakeGetSavingUseCase
 import com.ivzb.urgat.domain.saving.FakeGetLastUsedSavingCurrencyUseCase
+import com.ivzb.urgat.domain.saving.FakeGetSavingUseCase
 import com.ivzb.urgat.domain.saving.FakeUpdateSavingUseCase
+import java.math.BigDecimal
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -20,8 +22,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import java.math.BigDecimal
-import kotlin.test.assertFailsWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddEditSavingViewModelTest {

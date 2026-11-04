@@ -39,36 +39,36 @@ abstract class DefaultObserveUseCase<T, FilterType, SortType>(
         ) { searchQuery, dateRange, limit ->
             Triple(searchQuery, dateRange, limit)
         }
-        .debounce(DEBOUNCE_TIME_MILLIS)
-        .flatMapLatest { (searchQuery, dateRange, limit) ->
-            val stream = if (searchQuery.isBlank()) {
-                repository.observe(limit, dateRange)
-            } else {
-                repository.observe(limit, dateRange, searchQuery)
+            .debounce(DEBOUNCE_TIME_MILLIS)
+            .flatMapLatest { (searchQuery, dateRange, limit) ->
+                val stream = if (searchQuery.isBlank()) {
+                    repository.observe(limit, dateRange)
+                } else {
+                    repository.observe(limit, dateRange, searchQuery)
+                }
+
+                combine(
+                    stream,
+                    filterTypeFlow ?: flowOf(null),
+                    sortTypeFlow ?: flowOf(null)
+                ) { items, filterType, sortType ->
+                    var result = items
+
+                    if (filter != null && filterType != null) {
+                        result = filter(result, filterType)
+                    }
+
+                    if (sort != null && sortType != null) {
+                        result = sort(result, sortType)
+                    }
+
+                    if (transform != null) {
+                        result = transform(result)
+                    }
+
+                    result
+                }
             }
-
-            combine(
-                stream,
-                filterTypeFlow ?: flowOf(null),
-                sortTypeFlow ?: flowOf(null)
-            ) { items, filterType, sortType ->
-                var result = items
-
-                if (filter != null && filterType != null) {
-                    result = filter(result, filterType)
-                }
-
-                if (sort != null && sortType != null) {
-                    result = sort(result, sortType)
-                }
-
-                if (transform != null) {
-                    result = transform(result)
-                }
-
-                result
-            }
-        }
 
     companion object {
 
