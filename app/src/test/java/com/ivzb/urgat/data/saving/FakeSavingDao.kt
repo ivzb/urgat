@@ -10,25 +10,25 @@ import kotlinx.coroutines.flow.map
 class FakeSavingDao : SavingDao {
 
     private val items = mutableListOf<SavingEntity>()
-    private val _flow = MutableStateFlow<List<SavingEntity>>(listOf())
-    private var _cursor = MatrixCursor(arrayOf())
+    private val itemsFlow = MutableStateFlow<List<SavingEntity>>(listOf())
+    private var itemsCursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<SavingEntity>> =
-        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
+        itemsFlow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<SavingEntity>> =
-        _flow.map { list ->
+        itemsFlow.map { list ->
             list.filter { it.date in dateStart..dateEnd && it.name.contains(searchQuery, ignoreCase = true) }.take(limit)
         }
 
     override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<SavingEntity>> =
-        _flow
+        itemsFlow
 
-    override fun stream(): Cursor = _cursor
+    override fun stream(): Cursor = itemsCursor
 
     override suspend fun insertAll(items: List<SavingEntity>) {
         this.items.addAll(items)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getById(id: String): SavingEntity? =
@@ -36,14 +36,14 @@ class FakeSavingDao : SavingDao {
 
     override suspend fun deleteById(id: String): Int {
         items.removeAll { it.id == id }
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
         return 1
     }
 
     override suspend fun upsert(entity: SavingEntity) {
         val index = items.indexOfFirst { it.id == entity.id }
         if (index >= 0) items[index] = entity else items.add(entity)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getLastUsedCurrency(): String? =

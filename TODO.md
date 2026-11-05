@@ -117,4 +117,5 @@
 - consider changing ObserveNetWorthUseCase to deliver investment like data - look at ObserveInvestmentCategoriesUseCase for reference - there we show total gains % instead of daily % change
 - check if it makes sense to replace the existing screenshot tests with the new android studio feature - https://developer.android.com/studio/preview/compose-screenshot-testing
 - add support for btc wallet watchlist
+- add detekt
 - run ktlint and fix violations

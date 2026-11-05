@@ -10,25 +10,25 @@ import kotlinx.coroutines.flow.map
 class FakeTodoDao : TodoDao {
 
     private val items = mutableListOf<TodoEntity>()
-    private val _flow = MutableStateFlow<List<TodoEntity>>(listOf())
-    private var _cursor = MatrixCursor(arrayOf())
+    private val itemsFlow = MutableStateFlow<List<TodoEntity>>(listOf())
+    private var itemsCursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<TodoEntity>> =
-        _flow.map { it.filter { it.createdAt in dateStart..dateEnd }.take(limit) }
+        itemsFlow.map { it.filter { it.createdAt in dateStart..dateEnd }.take(limit) }
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TodoEntity>> =
-        _flow.map { list ->
+        itemsFlow.map { list ->
             list.filter { it.createdAt in dateStart..dateEnd && it.content.contains(searchQuery, ignoreCase = true) }
         }
 
     override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<TodoEntity>> =
-        _flow
+        itemsFlow
 
-    override fun stream(): Cursor = _cursor
+    override fun stream(): Cursor = itemsCursor
 
     override suspend fun insertAll(items: List<TodoEntity>) {
         this.items.addAll(items)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getById(id: String): TodoEntity? =
@@ -36,14 +36,14 @@ class FakeTodoDao : TodoDao {
 
     override suspend fun deleteById(id: String): Int {
         items.removeAll { it.id == id }
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
         return 1
     }
 
     override suspend fun upsert(entity: TodoEntity) {
         val index = items.indexOfFirst { it.id == entity.id }
         if (index >= 0) items[index] = entity else items.add(entity)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun updateCompleted(id: String, completed: Boolean) {
@@ -53,7 +53,7 @@ class FakeTodoDao : TodoDao {
 
     override suspend fun deleteCompleted(): Int {
         items.removeAll { it.isCompleted }
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
         return 1
     }
 

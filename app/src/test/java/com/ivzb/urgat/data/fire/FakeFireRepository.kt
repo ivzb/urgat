@@ -11,46 +11,46 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class FakeFireRepository : FireRepository {
 
-    private val _withdrawalRate = MutableStateFlow<BigDecimal?>(DEFAULT_FIRE_WITHDRAWAL_RATE)
-    override val withdrawalRateFlow: Flow<BigDecimal?> = _withdrawalRate
+    private val _withdrawalRateFlow = MutableStateFlow<BigDecimal?>(DEFAULT_FIRE_WITHDRAWAL_RATE)
+    override val withdrawalRateFlow: Flow<BigDecimal?> = _withdrawalRateFlow
 
     override suspend fun updateWithdrawalRate(value: String) {
-        _withdrawalRate.value = value.toBigDecimalOrNull()
+        _withdrawalRateFlow.value = value.toBigDecimalOrNull()
     }
 
-    private val _returnOfInvestment = MutableStateFlow<BigDecimal?>(DEFAULT_FIRE_RETURN_OF_INVESTMENT)
-    override val returnOfInvestmentFlow: Flow<BigDecimal?> = _returnOfInvestment
+    private val _returnOfInvestmentFlow = MutableStateFlow<BigDecimal?>(DEFAULT_FIRE_RETURN_OF_INVESTMENT)
+    override val returnOfInvestmentFlow: Flow<BigDecimal?> = _returnOfInvestmentFlow
 
     override suspend fun updateReturnOfInvestment(value: String) {
-        _returnOfInvestment.value = value.toBigDecimalOrNull()
+        _returnOfInvestmentFlow.value = value.toBigDecimalOrNull()
     }
 
-    private val _taxRate = MutableStateFlow<BigDecimal?>(DEFAULT_FIRE_TAX_RATE)
-    override val taxRateFlow: Flow<BigDecimal?> = _taxRate
+    private val _taxRateFlow = MutableStateFlow<BigDecimal?>(DEFAULT_FIRE_TAX_RATE)
+    override val taxRateFlow: Flow<BigDecimal?> = _taxRateFlow
 
     override suspend fun updateTaxRate(value: String) {
-        _taxRate.value = value.toBigDecimalOrNull()
+        _taxRateFlow.value = value.toBigDecimalOrNull()
     }
 
-    private val _fireDateRangeType = MutableStateFlow(DEFAULT_FIRE_DATE_RANGE_TYPE)
-    override val fireDateRangeTypeFlow: Flow<FireDateRangeType> = _fireDateRangeType
+    private val _fireDateRangeTypeFlow = MutableStateFlow(DEFAULT_FIRE_DATE_RANGE_TYPE)
+    override val fireDateRangeTypeFlow: Flow<FireDateRangeType> = _fireDateRangeTypeFlow
 
     override suspend fun updateFireDateRangeType(value: FireDateRangeType) {
-        _fireDateRangeType.value = value
+        _fireDateRangeTypeFlow.value = value
     }
 
-    private val _fireCustomStart = MutableStateFlow(0L)
-    override val fireCustomStartFlow: Flow<Long> = _fireCustomStart
+    private val _fireCustomStartFlow = MutableStateFlow(0L)
+    override val fireCustomStartFlow: Flow<Long> = _fireCustomStartFlow
 
     override suspend fun updateFireCustomStart(value: Long) {
-        _fireCustomStart.value = value
+        _fireCustomStartFlow.value = value
     }
 
-    private val _fireCustomEnd = MutableStateFlow(0L)
-    override val fireCustomEndFlow: Flow<Long> = _fireCustomEnd
+    private val _fireCustomEndFlow = MutableStateFlow(0L)
+    override val fireCustomEndFlow: Flow<Long> = _fireCustomEndFlow
 
     override suspend fun updateFireCustomEnd(value: Long) {
-        _fireCustomEnd.value = value
+        _fireCustomEndFlow.value = value
     }
 
 }

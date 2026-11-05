@@ -10,26 +10,26 @@ import kotlinx.coroutines.flow.map
 class FakeTradeDao : TradeDao {
 
     private val items = mutableListOf<TradeEntity>()
-    private val _flow = MutableStateFlow<List<TradeEntity>>(listOf())
-    private var _cursor = MatrixCursor(arrayOf())
+    private val itemsFlow = MutableStateFlow<List<TradeEntity>>(listOf())
+    private var itemsCursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<TradeEntity>> =
-        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(if (limit == -1) Int.MAX_VALUE else limit) }
+        itemsFlow.map { it.filter { it.date in dateStart..dateEnd }.take(if (limit == -1) Int.MAX_VALUE else limit) }
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<TradeEntity>> =
-        _flow.map { list ->
+        itemsFlow.map { list ->
             list.filter { it.date in dateStart..dateEnd && it.name.contains(searchQuery, ignoreCase = true) }
                 .take(if (limit == -1) Int.MAX_VALUE else limit)
         }
 
     override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<TradeEntity>> =
-        _flow
+        itemsFlow
 
-    override fun stream(): Cursor = _cursor
+    override fun stream(): Cursor = itemsCursor
 
     override suspend fun insertAll(items: List<TradeEntity>) {
         this.items.addAll(items)
-        _flow.value = this.items.toList()
+        itemsFlow.value = this.items.toList()
     }
 
     override suspend fun getById(id: String): TradeEntity? =
@@ -37,14 +37,14 @@ class FakeTradeDao : TradeDao {
 
     override suspend fun deleteById(id: String): Int {
         items.removeAll { it.id == id }
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
         return 1
     }
 
     override suspend fun upsert(entity: TradeEntity) {
         val index = items.indexOfFirst { it.id == entity.id }
         if (index >= 0) items[index] = entity else items.add(entity)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getLastUsedName(): String? =

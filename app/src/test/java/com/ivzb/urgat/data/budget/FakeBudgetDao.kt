@@ -9,17 +9,17 @@ import kotlinx.coroutines.flow.map
 class FakeBudgetDao : BudgetDao {
 
     private val items = mutableListOf<BudgetEntity>()
-    private val _flow = MutableStateFlow<List<BudgetEntity>>(listOf())
-    private var _cursor = MatrixCursor(arrayOf())
+    private val itemsFlow = MutableStateFlow<List<BudgetEntity>>(listOf())
+    private var itemsCursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<BudgetEntity>> =
-        _flow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
+        itemsFlow.map { it.filter { it.date in dateStart..dateEnd }.take(limit) }
 
-    override fun stream(): Cursor = _cursor
+    override fun stream(): Cursor = itemsCursor
 
     override suspend fun insertAll(items: List<BudgetEntity>) {
         this.items.addAll(items)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getById(id: String): BudgetEntity? =
@@ -27,14 +27,14 @@ class FakeBudgetDao : BudgetDao {
 
     override suspend fun deleteById(id: String): Int {
         items.removeAll { it.id == id }
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
         return 1
     }
 
     override suspend fun upsert(entity: BudgetEntity) {
         val index = items.indexOfFirst { it.id == entity.id }
         if (index >= 0) items[index] = entity else items.add(entity)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getLastUsedCurrency(): String? =

@@ -11,29 +11,29 @@ import kotlinx.coroutines.flow.map
 class FakeFuelConsumptionDao : FuelConsumptionDao {
 
     private val items = mutableListOf<FuelConsumptionEntity>()
-    private val _flow = MutableStateFlow<List<FuelConsumptionEntity>>(listOf())
-    private var _cursor = MatrixCursor(arrayOf())
+    private val itemsFlow = MutableStateFlow<List<FuelConsumptionEntity>>(listOf())
+    private var itemsCursor = MatrixCursor(arrayOf())
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long): Flow<List<FuelConsumptionEntity>> =
-        _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd }.sortedByDescending { it.date }.take(limit) }
+        itemsFlow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd }.sortedByDescending { it.date }.take(limit) }
 
     override fun observeAll(limit: Int, dateStart: Long, dateEnd: Long, searchQuery: String): Flow<List<FuelConsumptionEntity>> =
-        _flow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd && e.carName.contains(searchQuery, ignoreCase = true) }.sortedByDescending { it.date }.take(limit) }
+        itemsFlow.map { it.filter { e -> !e.isDeleted && e.date in dateStart..dateEnd && e.carName.contains(searchQuery, ignoreCase = true) }.sortedByDescending { it.date }.take(limit) }
 
     override fun observeAllRaw(query: SupportSQLiteQuery): Flow<List<FuelConsumptionEntity>> =
-        _flow
+        itemsFlow
 
-    override fun stream(): Cursor = _cursor
+    override fun stream(): Cursor = itemsCursor
 
     override suspend fun insertAll(items: List<FuelConsumptionEntity>) {
         this.items.addAll(items)
-        _flow.value = this.items.toList()
+        itemsFlow.value = this.items.toList()
     }
 
     override suspend fun upsert(entity: FuelConsumptionEntity) {
         val index = items.indexOfFirst { it.id == entity.id }
         if (index >= 0) items[index] = entity else items.add(entity)
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
     }
 
     override suspend fun getById(id: String): FuelConsumptionEntity? =
@@ -41,7 +41,7 @@ class FakeFuelConsumptionDao : FuelConsumptionDao {
 
     override suspend fun deleteById(id: String): Int {
         items.removeAll { it.id == id }
-        _flow.value = items.toList()
+        itemsFlow.value = items.toList()
         return 1
     }
 
