@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.carMaintenance
 
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -14,7 +14,7 @@ class FilterTest {
             carMaintenance("2", "Car B"),
         )
 
-        val result = filterCarMaintenance(items, CarMaintenanceFilterType_All)
+        val result = filterCarMaintenance(items, CAR_MAINTENANCE_FILTER_TYPE_ALL)
 
         assertEquals(items, result)
     }
@@ -46,7 +46,7 @@ class FilterTest {
 
     @Test
     fun `filterCarMaintenance with empty list returns empty list`() {
-        val result = filterCarMaintenance(emptyList(), CarMaintenanceFilterType_All)
+        val result = filterCarMaintenance(emptyList(), CAR_MAINTENANCE_FILTER_TYPE_ALL)
 
         assertEquals(emptyList<CarMaintenance>(), result)
     }

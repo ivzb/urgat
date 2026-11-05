@@ -19,16 +19,16 @@ class FuelConsumptionViewModel @Inject constructor(
     private val carRepository: CarRepository,
 ) : ViewModel() {
 
-    private val _savedFilter = combine(
+    private val savedFilterFlow = combine(
         carRepository.fuelConsumptionFilterTypeFlow,
         carRepository.fuelConsumptionCarFilterFlow,
         ::FuelConsumptionFilter,
     )
-    private val _savedSortType = carRepository.fuelConsumptionSortTypeFlow
-    private val _searchQuery = carRepository.searchQueryFlow
+    private val savedSortTypeFlow = carRepository.fuelConsumptionSortTypeFlow
+    private val searchQueryFlow = carRepository.searchQueryFlow
 
     val uiState: StateFlow<FuelConsumptionUiState> = combineUiState(
-        observeFuelConsumptionUiStateUseCase(_searchQuery, _savedFilter, _savedSortType),
+        observeFuelConsumptionUiStateUseCase(searchQueryFlow, savedFilterFlow, savedSortTypeFlow),
 
         onLoading = { FuelConsumptionUiState(isLoading = true) },
         onError = { FuelConsumptionUiState(hasError = true) },
@@ -76,8 +76,8 @@ class FuelConsumptionViewModel @Inject constructor(
 
     private fun resetFilters() {
         onSearchQueryChanged("")
-        setFiltering(FuelConsumptionFilterType_All)
-        setCarFiltering(FuelConsumptionFilterType_All)
+        setFiltering(FUEL_CONSUMPTION_FILTER_TYPE_ALL)
+        setCarFiltering(FUEL_CONSUMPTION_FILTER_TYPE_ALL)
         setSorting(FuelConsumptionSortType.BY_DATE)
     }
 }

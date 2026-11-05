@@ -23,10 +23,10 @@ class WellbeingViewModel @Inject constructor(
 
     private val uiEventHolder = UiEventHolder<WellbeingUiEvent>()
 
-    private val _savedWeightsSortType: Flow<WeightsSortType> = savedStateHandle.getStateFlow(WELLBEING_WEIGHTS_SORT_SAVED_STATE_KEY, WeightsSortType.BY_DATE)
+    private val savedWeightsSortTypeFlow: Flow<WeightsSortType> = savedStateHandle.getStateFlow(WELLBEING_WEIGHTS_SORT_SAVED_STATE_KEY, WeightsSortType.BY_DATE)
 
     val uiState: StateFlow<WellbeingUiState> = combineUiState(
-        observeWeightsUiStateUseCase(_savedWeightsSortType),
+        observeWeightsUiStateUseCase(savedWeightsSortTypeFlow),
         uiEventHolder(),
 
         onLoading = {

@@ -34,14 +34,14 @@ class LibraryViewModel @Inject constructor(
 
     private val uiEventHolder = UiEventHolder<LibraryUiEvent>()
 
-    private val _searchQuery = libraryRepository.searchQueryFlow
+    private val searchQueryFlow = libraryRepository.searchQueryFlow
 
-    private val _savedTodosFilterType = libraryRepository.todosFilterTypeFlow
+    private val savedTodosFilterTypeFlow = libraryRepository.todosFilterTypeFlow
 
     val uiState: StateFlow<LibraryUiState> = combineUiState(
-        observeTodosUiStateUseCase(_searchQuery, _savedTodosFilterType),
-        observeNotesUiStateUseCase(_searchQuery),
-        _searchQuery.map { Async.Success(it) },
+        observeTodosUiStateUseCase(searchQueryFlow, savedTodosFilterTypeFlow),
+        observeNotesUiStateUseCase(searchQueryFlow),
+        searchQueryFlow.map { Async.Success(it) },
         uiEventHolder(),
 
         onLoading = {

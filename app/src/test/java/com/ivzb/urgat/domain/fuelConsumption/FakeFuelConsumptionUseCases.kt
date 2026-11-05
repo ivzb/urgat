@@ -2,9 +2,9 @@ package com.ivzb.urgat.domain.fuelConsumption
 
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionCategory
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterMenuItem
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState

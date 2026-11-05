@@ -10,7 +10,7 @@ import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.calculatePnL
@@ -73,7 +73,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         fakeObserveInvestmentsSortingUseCase.emit(Async.Loading)
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -96,7 +96,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -148,7 +148,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData(categories = fakeCategoriesMultipleMonths)
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -174,7 +174,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -193,7 +193,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData(categories = listOf())
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -217,7 +217,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         fakeObserveInvestmentsSortingUseCase.emit(Async.Success(listOf()))
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -235,7 +235,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -258,7 +258,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("lunch")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_DATE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()
@@ -304,7 +304,7 @@ class ObserveInvestmentsUiStateUseCaseTest {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
-        val filterTypeFlow = flowOf(InvestmentsFilterType_All)
+        val filterTypeFlow = flowOf(INVESTMENTS_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(InvestmentsSortType.BY_MARKET_VALUE)
 
         val results = useCase(searchQueryFlow, filterTypeFlow, sortTypeFlow).first()

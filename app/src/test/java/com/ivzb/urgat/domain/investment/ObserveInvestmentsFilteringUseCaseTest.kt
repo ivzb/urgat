@@ -6,7 +6,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +38,7 @@ class ObserveInvestmentsFilteringUseCaseTest {
     @Test
     fun `invoke should return Success with grouped items`() = runTest(testDispatcher) {
         val expected = listOf(
-            FilterMenuItem(type = InvestmentsFilterType_All, labelResId = R.string.filter_all, size = 5),
+            FilterMenuItem(type = INVESTMENTS_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 5),
             FilterMenuItem(type = "etfs", label = "etfs", size = 2),
             FilterMenuItem(type = "stocks", label = "stocks", size = 2),
             FilterMenuItem(type = "gold", label = "gold", size = 1),

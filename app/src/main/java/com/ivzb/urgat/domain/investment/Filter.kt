@@ -1,10 +1,10 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 
 fun filterInvestments(items: List<Investment>, filterType: String): List<Investment> {
-    if (filterType == InvestmentsFilterType_All) {
+    if (filterType == INVESTMENTS_FILTER_TYPE_ALL) {
         return items
     }
 

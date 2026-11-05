@@ -5,10 +5,10 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,7 +65,7 @@ class DefaultFinanceRepositoryTest {
 
     @Test
     fun `investmentsFilterTypeFlow emits default value when not set`() = runTest {
-        assertEquals(InvestmentsFilterType_All, repository.investmentsFilterTypeFlow.first())
+        assertEquals(INVESTMENTS_FILTER_TYPE_ALL, repository.investmentsFilterTypeFlow.first())
     }
 
     @Test
@@ -131,7 +131,7 @@ class DefaultFinanceRepositoryTest {
 
     @Test
     fun `tradesFilterTypeFlow emits default value when not set`() = runTest {
-        assertEquals(TradesFilterType_All, repository.tradesFilterTypeFlow.first())
+        assertEquals(TRADES_FILTER_TYPE_ALL, repository.tradesFilterTypeFlow.first())
     }
 
     @Test

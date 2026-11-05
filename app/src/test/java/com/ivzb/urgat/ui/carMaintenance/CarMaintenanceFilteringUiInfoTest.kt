@@ -12,7 +12,7 @@ class CarMaintenanceFilteringUiInfoTest {
     fun `from with default values has no applied filters`() {
         val info = CarMaintenanceFilteringUiInfo.from(
             searchQuery = "",
-            filterType = CarMaintenanceFilterType_All,
+            filterType = CAR_MAINTENANCE_FILTER_TYPE_ALL,
             filterMenuItems = listOf(),
             sortType = CarMaintenanceSortType.BY_DATE,
             sortMenuItems = listOf(),
@@ -27,7 +27,7 @@ class CarMaintenanceFilteringUiInfoTest {
     fun `from with search query has applied filters`() {
         val info = CarMaintenanceFilteringUiInfo.from(
             searchQuery = "oil",
-            filterType = CarMaintenanceFilterType_All,
+            filterType = CAR_MAINTENANCE_FILTER_TYPE_ALL,
             filterMenuItems = listOf(),
             sortType = CarMaintenanceSortType.BY_DATE,
             sortMenuItems = listOf(),
@@ -55,7 +55,7 @@ class CarMaintenanceFilteringUiInfoTest {
     fun `from with non-default sort type shows sort badge`() {
         val info = CarMaintenanceFilteringUiInfo.from(
             searchQuery = "",
-            filterType = CarMaintenanceFilterType_All,
+            filterType = CAR_MAINTENANCE_FILTER_TYPE_ALL,
             filterMenuItems = listOf(),
             sortType = CarMaintenanceSortType.BY_ODOMETER_MIN,
             sortMenuItems = listOf(),
@@ -69,7 +69,7 @@ class CarMaintenanceFilteringUiInfoTest {
     fun `from with applied filters shows search empty label`() {
         val info = CarMaintenanceFilteringUiInfo.from(
             searchQuery = "query",
-            filterType = CarMaintenanceFilterType_All,
+            filterType = CAR_MAINTENANCE_FILTER_TYPE_ALL,
             filterMenuItems = listOf(),
             sortType = CarMaintenanceSortType.BY_DATE,
             sortMenuItems = listOf(),
@@ -84,7 +84,7 @@ class CarMaintenanceFilteringUiInfoTest {
     fun `from without applied filters shows default empty label`() {
         val info = CarMaintenanceFilteringUiInfo.from(
             searchQuery = "",
-            filterType = CarMaintenanceFilterType_All,
+            filterType = CAR_MAINTENANCE_FILTER_TYPE_ALL,
             filterMenuItems = listOf(),
             sortType = CarMaintenanceSortType.BY_DATE,
             sortMenuItems = listOf(),

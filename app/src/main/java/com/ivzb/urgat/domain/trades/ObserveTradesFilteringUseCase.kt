@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.trade.TradesRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesFilterMenuItem
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DefaultObserveTradesFilteringUseCase @Inject constructor(
                     return@map listOf()
                 }
 
-                listOf(FilterMenuItem(type = TradesFilterType_All, labelResId = R.string.filter_all, size = it.size))
+                listOf(FilterMenuItem(type = TRADES_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = it.size))
             }
             .map<List<TradesFilterMenuItem>, Async<List<TradesFilterMenuItem>>> { Async.Success(it) }
             .catch { e ->

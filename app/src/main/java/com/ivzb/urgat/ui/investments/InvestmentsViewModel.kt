@@ -18,12 +18,12 @@ class InvestmentsViewModel @Inject constructor(
     private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
-    private val _savedFilterType = financeRepository.investmentsFilterTypeFlow
-    private val _savedSortType = financeRepository.investmentsSortTypeFlow
-    private val _searchQuery = financeRepository.searchQueryFlow
+    private val savedFilterTypeFlow = financeRepository.investmentsFilterTypeFlow
+    private val savedSortTypeFlow = financeRepository.investmentsSortTypeFlow
+    private val searchQueryFlow = financeRepository.searchQueryFlow
 
     val uiState: StateFlow<InvestmentsUiState> = combineUiState(
-        observeInvestmentsUiStateUseCase(_searchQuery, _savedFilterType, _savedSortType),
+        observeInvestmentsUiStateUseCase(searchQueryFlow, savedFilterTypeFlow, savedSortTypeFlow),
 
         onLoading = { InvestmentsUiState(isLoading = true) },
         onError = { InvestmentsUiState(hasError = true) },
@@ -64,7 +64,7 @@ class InvestmentsViewModel @Inject constructor(
 
     private fun resetFilters() {
         onSearchQueryChanged("")
-        setFiltering(InvestmentsFilterType_All)
+        setFiltering(INVESTMENTS_FILTER_TYPE_ALL)
         setSorting(InvestmentsSortType.BY_DATE)
     }
 

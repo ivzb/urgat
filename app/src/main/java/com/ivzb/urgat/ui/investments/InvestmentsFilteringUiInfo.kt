@@ -35,7 +35,7 @@ data class InvestmentsFilteringUiInfo(
             sortType: InvestmentsSortType,
             sortMenuItems: List<InvestmentsSortMenuItem>,
         ): InvestmentsFilteringUiInfo {
-            val showFilterBadge = filterType != InvestmentsFilterType_All
+            val showFilterBadge = filterType != INVESTMENTS_FILTER_TYPE_ALL
             val showSortBadge = sortType != InvestmentsSortType.BY_DATE
             val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 

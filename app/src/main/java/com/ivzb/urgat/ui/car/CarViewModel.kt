@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.ivzb.urgat.data.car.CarRepository
 import com.ivzb.urgat.domain.carMaintenance.ObserveCarMaintenanceUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.ObserveFuelConsumptionUiStateUseCase
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.UiEventHolder
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -32,22 +32,22 @@ class CarViewModel @Inject constructor(
 
     private val uiEventHolder = UiEventHolder<CarUiEvent>()
 
-    private val _searchQuery = carRepository.searchQueryFlow
+    private val searchQueryFlow = carRepository.searchQueryFlow
 
-    private val _savedFuelConsumptionFilter = combine(
+    private val savedFuelConsumptionFilterFlow = combine(
         carRepository.fuelConsumptionFilterTypeFlow,
         carRepository.fuelConsumptionCarFilterFlow,
         ::FuelConsumptionFilter,
     )
-    private val _savedFuelConsumptionSortType = carRepository.fuelConsumptionSortTypeFlow
+    private val savedFuelConsumptionSortTypeFlow = carRepository.fuelConsumptionSortTypeFlow
 
-    private val _savedCarMaintenanceFilterType = carRepository.carMaintenanceFilterTypeFlow
-    private val _savedCarMaintenanceSortType = carRepository.carMaintenanceSortTypeFlow
+    private val savedCarMaintenanceFilterTypeFlow = carRepository.carMaintenanceFilterTypeFlow
+    private val savedCarMaintenanceSortTypeFlow = carRepository.carMaintenanceSortTypeFlow
 
     val uiState: StateFlow<CarUiState> = combineUiState(
-        observeFuelConsumptionUiStateUseCase(_searchQuery, _savedFuelConsumptionFilter, _savedFuelConsumptionSortType),
-        observeCarMaintenanceUiStateUseCase(_searchQuery, _savedCarMaintenanceFilterType, _savedCarMaintenanceSortType),
-        _searchQuery.map { Async.Success(it) },
+        observeFuelConsumptionUiStateUseCase(searchQueryFlow, savedFuelConsumptionFilterFlow, savedFuelConsumptionSortTypeFlow),
+        observeCarMaintenanceUiStateUseCase(searchQueryFlow, savedCarMaintenanceFilterTypeFlow, savedCarMaintenanceSortTypeFlow),
+        searchQueryFlow.map { Async.Success(it) },
         uiEventHolder(),
 
         onLoading = {
@@ -144,10 +144,10 @@ class CarViewModel @Inject constructor(
 
     private fun resetFilters() {
         onSearchQueryChanged("")
-        setFuelConsumptionFiltering(FuelConsumptionFilterType_All)
-        setFuelConsumptionCarFiltering(FuelConsumptionFilterType_All)
+        setFuelConsumptionFiltering(FUEL_CONSUMPTION_FILTER_TYPE_ALL)
+        setFuelConsumptionCarFiltering(FUEL_CONSUMPTION_FILTER_TYPE_ALL)
         setFuelConsumptionSorting(FuelConsumptionSortType.BY_DATE)
-        setCarMaintenanceFiltering(CarMaintenanceFilterType_All)
+        setCarMaintenanceFiltering(CAR_MAINTENANCE_FILTER_TYPE_ALL)
         setCarMaintenanceSorting(CarMaintenanceSortType.BY_DATE)
     }
 

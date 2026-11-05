@@ -1,8 +1,8 @@
 package com.ivzb.urgat.domain.carMaintenance
 
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterMenuItem
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortMenuItem
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceUiState
@@ -18,7 +18,7 @@ class FakeObserveCarMaintenanceUiStateUseCase : ObserveCarMaintenanceUiStateUseC
     private val flow = MutableStateFlow<Async<CarMaintenanceUiState>>(Async.Loading)
 
     var lastQuery: String = ""
-    var lastFilterType: String = CarMaintenanceFilterType_All
+    var lastFilterType: String = CAR_MAINTENANCE_FILTER_TYPE_ALL
 
     fun emit(value: Async<CarMaintenanceUiState>) {
         flow.value = value
@@ -45,7 +45,7 @@ class FakeObserveGroupedCarMaintenanceMonthlyUseCase : ObserveGroupedCarMaintena
     private val flow = MutableStateFlow<Async<List<GroupedCarMaintenance>>>(Async.Loading)
 
     var lastQuery: String = ""
-    var lastFilterType: String = CarMaintenanceFilterType_All
+    var lastFilterType: String = CAR_MAINTENANCE_FILTER_TYPE_ALL
 
     fun emit(value: Async<List<GroupedCarMaintenance>>) {
         flow.value = value

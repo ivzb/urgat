@@ -14,10 +14,10 @@ import com.ivzb.urgat.ui.components.UiEventHolder
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.fire.FireDateRangeType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.WhileUiSubscribed
@@ -45,26 +45,26 @@ class FinanceViewModel @Inject constructor(
 
     private val uiEventHolder = UiEventHolder<FinanceUiEvent>()
 
-    private val _searchQuery = financeRepository.searchQueryFlow
+    private val searchQueryFlow = financeRepository.searchQueryFlow
 
-    private val _budgetDateRange = MutableStateFlow(currentMonthRange())
+    private val budgetDateRangeFlow = MutableStateFlow(currentMonthRange())
 
-    private val _withdrawalRate = fireRepository.withdrawalRateFlow
+    private val withdrawalRateFlow = fireRepository.withdrawalRateFlow
 
-    private val _returnOfInvestment = fireRepository.returnOfInvestmentFlow
+    private val returnOfInvestmentFlow = fireRepository.returnOfInvestmentFlow
 
-    private val _taxRate = fireRepository.taxRateFlow
+    private val taxRateFlow = fireRepository.taxRateFlow
 
-    private val _fireDateRangeType = fireRepository.fireDateRangeTypeFlow
+    private val fireDateRangeTypeFlow = fireRepository.fireDateRangeTypeFlow
 
-    private val _fireCustomStart = fireRepository.fireCustomStartFlow
+    private val fireCustomStartFlow = fireRepository.fireCustomStartFlow
 
-    private val _fireCustomEnd = fireRepository.fireCustomEndFlow
+    private val fireCustomEndFlow = fireRepository.fireCustomEndFlow
 
-    private val _fireDateRange = combine(
-        _fireDateRangeType,
-        _fireCustomStart,
-        _fireCustomEnd,
+    private val fireDateRangeFlow = combine(
+        fireDateRangeTypeFlow,
+        fireCustomStartFlow,
+        fireCustomEndFlow,
     ) { type, customStart, customEnd ->
         when (type) {
             FireDateRangeType.LAST_MONTH -> lastMonthRange()
@@ -81,43 +81,43 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    private val _savedExpensesFilterType = financeRepository.expensesFilterTypeFlow
-    private val _savedExpensesSortType = financeRepository.expensesSortTypeFlow
+    private val savedExpensesFilterTypeFlow = financeRepository.expensesFilterTypeFlow
+    private val savedExpensesSortTypeFlow = financeRepository.expensesSortTypeFlow
 
-    private val _savedInvestmentsFilterType = financeRepository.investmentsFilterTypeFlow
-    private val _savedInvestmentsSortType = financeRepository.investmentsSortTypeFlow
+    private val savedInvestmentsFilterTypeFlow = financeRepository.investmentsFilterTypeFlow
+    private val savedInvestmentsSortTypeFlow = financeRepository.investmentsSortTypeFlow
 
-    private val _savedTradesFilterType = financeRepository.tradesFilterTypeFlow
-    private val _savedTradesSortType = financeRepository.tradesSortTypeFlow
+    private val savedTradesFilterTypeFlow = financeRepository.tradesFilterTypeFlow
+    private val savedTradesSortTypeFlow = financeRepository.tradesSortTypeFlow
 
-    private val _savedSavingsSortType = financeRepository.savingsSortTypeFlow
+    private val savedSavingsSortTypeFlow = financeRepository.savingsSortTypeFlow
 
-    private val _savedBudgetsFilterType = financeRepository.budgetsFilterTypeFlow
-    private val _savedBudgetsSortType = financeRepository.budgetsSortTypeFlow
+    private val savedBudgetsFilterTypeFlow = financeRepository.budgetsFilterTypeFlow
+    private val savedBudgetsSortTypeFlow = financeRepository.budgetsSortTypeFlow
 
-    private val _savedWatchlistAssetsSortType = financeRepository.watchlistAssetsSortTypeFlow
+    private val savedWatchlistAssetsSortTypeFlow = financeRepository.watchlistAssetsSortTypeFlow
 
     val uiState: StateFlow<FinanceUiState> = combineUiState(
         observeFinanceUiStateUseCase(
-            searchQueryFlow = _searchQuery,
-            expensesFilterTypeFlow = _savedExpensesFilterType,
-            expensesSortTypeFlow = _savedExpensesSortType,
-            investmentsFilterTypeFlow = _savedInvestmentsFilterType,
-            investmentsSortTypeFlow = _savedInvestmentsSortType,
-            tradesFilterTypeFlow = _savedTradesFilterType,
-            tradesSortTypeFlow = _savedTradesSortType,
-            savingsSortTypeFlow = _savedSavingsSortType,
-            budgetsFilterTypeFlow = _savedBudgetsFilterType,
-            budgetsSortTypeFlow = _savedBudgetsSortType,
-            watchlistAssetsSortTypeFlow = _savedWatchlistAssetsSortType,
-            budgetDateRangeFlow = _budgetDateRange,
-            withdrawalRateFlow = _withdrawalRate,
-            returnOfInvestmentFlow = _returnOfInvestment,
-            taxRateFlow = _taxRate,
-            fireDateRangeFlow = _fireDateRange,
-            fireDateRangeTypeFlow = _fireDateRangeType,
-            fireCustomStartFlow = _fireCustomStart,
-            fireCustomEndFlow = _fireCustomEnd,
+            searchQueryFlow = searchQueryFlow,
+            expensesFilterTypeFlow = savedExpensesFilterTypeFlow,
+            expensesSortTypeFlow = savedExpensesSortTypeFlow,
+            investmentsFilterTypeFlow = savedInvestmentsFilterTypeFlow,
+            investmentsSortTypeFlow = savedInvestmentsSortTypeFlow,
+            tradesFilterTypeFlow = savedTradesFilterTypeFlow,
+            tradesSortTypeFlow = savedTradesSortTypeFlow,
+            savingsSortTypeFlow = savedSavingsSortTypeFlow,
+            budgetsFilterTypeFlow = savedBudgetsFilterTypeFlow,
+            budgetsSortTypeFlow = savedBudgetsSortTypeFlow,
+            watchlistAssetsSortTypeFlow = savedWatchlistAssetsSortTypeFlow,
+            budgetDateRangeFlow = budgetDateRangeFlow,
+            withdrawalRateFlow = withdrawalRateFlow,
+            returnOfInvestmentFlow = returnOfInvestmentFlow,
+            taxRateFlow = taxRateFlow,
+            fireDateRangeFlow = fireDateRangeFlow,
+            fireDateRangeTypeFlow = fireDateRangeTypeFlow,
+            fireCustomStartFlow = fireCustomStartFlow,
+            fireCustomEndFlow = fireCustomEndFlow,
         ),
         uiEventHolder(),
 
@@ -331,9 +331,9 @@ class FinanceViewModel @Inject constructor(
         onSearchQueryChanged("")
         setExpensesFiltering(ExpensesFilterType.ALL_EXPENSES)
         setExpensesSorting(ExpensesSortType.BY_DATE)
-        setInvestmentsFiltering(InvestmentsFilterType_All)
+        setInvestmentsFiltering(INVESTMENTS_FILTER_TYPE_ALL)
         setInvestmentsSorting(InvestmentsSortType.BY_DATE)
-        setTradesFiltering(TradesFilterType_All)
+        setTradesFiltering(TRADES_FILTER_TYPE_ALL)
         setTradesSorting(TradesSortType.BY_DATE)
         setBudgetsFiltering(BudgetsFilterType.ALL_BUDGETS)
         setBudgetsSorting(BudgetsSortType.BY_DATE)

@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.timestamp
@@ -44,7 +44,7 @@ class DefaultObserveCarMaintenanceFilteringUseCaseTest {
         advanceUntilIdle()
 
         val expected = listOf(
-            FilterMenuItem(type = CarMaintenanceFilterType_All, labelResId = R.string.filter_all, size = 5),
+            FilterMenuItem(type = CAR_MAINTENANCE_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 5),
             FilterMenuItem(type = "Mercedes w140", label = "Mercedes w140", size = 3),
             FilterMenuItem(type = "BMW e39", label = "BMW e39", size = 2),
         )

@@ -6,7 +6,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.data.trade.TradesRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +38,7 @@ class DefaultObserveTradesFilteringUseCaseTest {
     @Test
     fun `invoke should return Success with all filter item`() = runTest(testDispatcher) {
         val expected = listOf(
-            FilterMenuItem(type = TradesFilterType_All, labelResId = R.string.filter_all, size = 5),
+            FilterMenuItem(type = TRADES_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 5),
         )
 
         val repositoryStream = flowOf(

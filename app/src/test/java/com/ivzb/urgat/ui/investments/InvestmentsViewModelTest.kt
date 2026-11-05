@@ -402,7 +402,7 @@ class InvestmentsViewModelTest {
         advanceUntilIdle()
 
         assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
-        assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(INVESTMENTS_FILTER_TYPE_ALL, fakeFinanceRepository.investmentsFilterTypeFlow.value)
         assertEquals(InvestmentsSortType.BY_DATE, fakeFinanceRepository.investmentsSortTypeFlow.value)
     }
 

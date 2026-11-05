@@ -18,11 +18,11 @@ class TradesViewModel @Inject constructor(
     private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
-    private val _savedSortType = financeRepository.tradesSortTypeFlow
-    private val _searchQuery = financeRepository.searchQueryFlow
+    private val savedSortTypeFlow = financeRepository.tradesSortTypeFlow
+    private val searchQueryFlow = financeRepository.searchQueryFlow
 
     val uiState: StateFlow<TradesUiState> = combineUiState(
-        observeTradesUiStateUseCase(_searchQuery, _savedSortType),
+        observeTradesUiStateUseCase(searchQueryFlow, savedSortTypeFlow),
 
         onLoading = { TradesUiState(isLoading = true) },
         onError = { TradesUiState(hasError = true) },

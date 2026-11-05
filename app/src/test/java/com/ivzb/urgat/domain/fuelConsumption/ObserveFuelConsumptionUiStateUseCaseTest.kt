@@ -7,9 +7,9 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.components.SortMenuItem
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_PAGES
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import java.math.BigDecimal
@@ -331,12 +331,12 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
         )
 
         private val fakeFiltering = listOf(
-            FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 2),
+            FilterMenuItem(type = FUEL_CONSUMPTION_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 2),
             FilterMenuItem(type = "Diesel", label = "Diesel", size = 2),
         )
 
         private val fakeCarFiltering = listOf(
-            FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 2),
+            FilterMenuItem(type = FUEL_CONSUMPTION_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 2),
             FilterMenuItem(type = "Mercedes w140", label = "Mercedes w140", size = 2),
         )
 

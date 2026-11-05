@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsFilterMenuItem
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DefaultObserveInvestmentsFilteringUseCase @Inject constructor(
                     return@map listOf()
                 }
 
-                listOf(FilterMenuItem(type = InvestmentsFilterType_All, labelResId = R.string.filter_all, size = it.size)) +
+                listOf(FilterMenuItem(type = INVESTMENTS_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = it.size)) +
                     it.groupBy { it.category }
                         .entries
                         .sortedByDescending { it.value.size }

@@ -18,11 +18,11 @@ class SavingsViewModel @Inject constructor(
     private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
-    private val _savedSortType = financeRepository.savingsSortTypeFlow
-    private val _searchQuery = financeRepository.searchQueryFlow
+    private val savedSortTypeFlow = financeRepository.savingsSortTypeFlow
+    private val searchQueryFlow = financeRepository.searchQueryFlow
 
     val uiState: StateFlow<SavingsUiState> = combineUiState(
-        observeSavingsUiStateUseCase(_searchQuery, _savedSortType),
+        observeSavingsUiStateUseCase(searchQueryFlow, savedSortTypeFlow),
 
         onLoading = { SavingsUiState(isLoading = true) },
         onError = { SavingsUiState(hasError = true) },

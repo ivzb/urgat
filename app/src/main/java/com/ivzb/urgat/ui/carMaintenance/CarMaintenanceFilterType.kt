@@ -1,3 +1,3 @@
 package com.ivzb.urgat.ui.carMaintenance
 
-const val CarMaintenanceFilterType_All = "__all"
+const val CAR_MAINTENANCE_FILTER_TYPE_ALL = "__all"

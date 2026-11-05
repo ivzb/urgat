@@ -4,8 +4,8 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterMenuItem
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
@@ -31,7 +31,7 @@ class DefaultObserveCarMaintenanceFilteringUseCase @Inject constructor(
                     return@map listOf()
                 }
 
-                listOf(FilterMenuItem(type = CarMaintenanceFilterType_All, labelResId = R.string.filter_all, size = it.size)) +
+                listOf(FilterMenuItem(type = CAR_MAINTENANCE_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = it.size)) +
                     it.groupBy { it.carName }
                         .entries
                         .sortedByDescending { it.value.size }

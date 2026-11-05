@@ -4,9 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.dataStoreEnumFlow
 import com.ivzb.urgat.util.dataStoreStringFlow
@@ -23,13 +23,13 @@ class DefaultCarRepository @Inject constructor(
         dataStore.edit { it[SEARCH_QUERY] = value }
     }
 
-    override val fuelConsumptionFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, FUEL_CONSUMPTION_FILTER_TYPE, FuelConsumptionFilterType_All)
+    override val fuelConsumptionFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, FUEL_CONSUMPTION_FILTER_TYPE, FUEL_CONSUMPTION_FILTER_TYPE_ALL)
 
     override suspend fun updateFuelConsumptionFilterType(value: String) {
         dataStore.edit { it[FUEL_CONSUMPTION_FILTER_TYPE] = value }
     }
 
-    override val fuelConsumptionCarFilterFlow: Flow<String> = dataStoreStringFlow(dataStore, FUEL_CONSUMPTION_CAR_FILTER, FuelConsumptionFilterType_All)
+    override val fuelConsumptionCarFilterFlow: Flow<String> = dataStoreStringFlow(dataStore, FUEL_CONSUMPTION_CAR_FILTER, FUEL_CONSUMPTION_FILTER_TYPE_ALL)
 
     override suspend fun updateFuelConsumptionCarFilter(value: String) {
         dataStore.edit { it[FUEL_CONSUMPTION_CAR_FILTER] = value }
@@ -41,7 +41,7 @@ class DefaultCarRepository @Inject constructor(
         dataStore.edit { it[FUEL_CONSUMPTION_SORT_TYPE] = value.name }
     }
 
-    override val carMaintenanceFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, CAR_MAINTENANCE_FILTER_TYPE, CarMaintenanceFilterType_All)
+    override val carMaintenanceFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, CAR_MAINTENANCE_FILTER_TYPE, CAR_MAINTENANCE_FILTER_TYPE_ALL)
 
     override suspend fun updateCarMaintenanceFilterType(value: String) {
         dataStore.edit { it[CAR_MAINTENANCE_FILTER_TYPE] = value }

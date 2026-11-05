@@ -18,12 +18,12 @@ class ExpensesViewModel @Inject constructor(
     private val financeRepository: FinanceRepository,
 ) : ViewModel() {
 
-    private val _savedFilterType = financeRepository.expensesFilterTypeFlow
-    private val _savedSortType = financeRepository.expensesSortTypeFlow
-    private val _searchQuery = financeRepository.searchQueryFlow
+    private val savedFilterTypeFlow = financeRepository.expensesFilterTypeFlow
+    private val savedSortTypeFlow = financeRepository.expensesSortTypeFlow
+    private val searchQueryFlow = financeRepository.searchQueryFlow
 
     val uiState: StateFlow<ExpensesUiState> = combineUiState(
-        observeExpensesUiStateUseCase(_searchQuery, _savedFilterType, _savedSortType),
+        observeExpensesUiStateUseCase(searchQueryFlow, savedFilterTypeFlow, savedSortTypeFlow),
 
         onLoading = { ExpensesUiState(isLoading = true) },
         onError = { ExpensesUiState(hasError = true) },

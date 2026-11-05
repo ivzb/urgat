@@ -6,7 +6,7 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +38,7 @@ class ObserveFuelConsumptionFilteringUseCaseTest {
     @Test
     fun `invoke should return Success with all filter item followed by fuel types sorted by size desc`() = runTest(testDispatcher) {
         val expected = listOf(
-            FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 5),
+            FilterMenuItem(type = FUEL_CONSUMPTION_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 5),
             FilterMenuItem(type = "Diesel", label = "Diesel", size = 3),
             FilterMenuItem(type = "Petrol", label = "Petrol", size = 2),
         )

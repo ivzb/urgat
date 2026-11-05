@@ -1,3 +1,3 @@
 package com.ivzb.urgat.ui.fuelConsumption
 
-const val FuelConsumptionFilterType_All = "__all"
+const val FUEL_CONSUMPTION_FILTER_TYPE_ALL = "__all"

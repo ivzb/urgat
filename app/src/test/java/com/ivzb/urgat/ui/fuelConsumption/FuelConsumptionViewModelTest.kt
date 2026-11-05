@@ -135,7 +135,7 @@ class FuelConsumptionViewModelTest {
         advanceUntilIdle()
 
         assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
-        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+        assertEquals(FUEL_CONSUMPTION_FILTER_TYPE_ALL, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals("Diesel", fakeObserveFuelConsumptionUiStateUseCase.lastFilterType)
     }
 
@@ -195,8 +195,8 @@ class FuelConsumptionViewModelTest {
         advanceUntilIdle()
 
         assertEquals("", fakeCarRepository.searchQueryFlow.value)
-        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
-        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+        assertEquals(FUEL_CONSUMPTION_FILTER_TYPE_ALL, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals(FUEL_CONSUMPTION_FILTER_TYPE_ALL, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals(FuelConsumptionSortType.BY_DATE, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
     }
 
@@ -260,7 +260,7 @@ class FuelConsumptionViewModelTest {
         )
 
         private val fakeFiltering = listOf(
-            FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = 2),
+            FilterMenuItem(type = FUEL_CONSUMPTION_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 2),
             FilterMenuItem(type = "Diesel", label = "Diesel", size = 2),
         )
 

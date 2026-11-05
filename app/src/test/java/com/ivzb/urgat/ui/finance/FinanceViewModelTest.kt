@@ -28,12 +28,12 @@ import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
 import com.ivzb.urgat.ui.fire.FireDateRangeType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
@@ -577,7 +577,7 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.ResetFilters)
         advanceUntilIdle()
 
-        assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(INVESTMENTS_FILTER_TYPE_ALL, fakeFinanceRepository.investmentsFilterTypeFlow.value)
     }
 
     @Test
@@ -605,7 +605,7 @@ class FinanceViewModelTest {
         viewModel.onIntent(FinanceIntent.ResetFilters)
         advanceUntilIdle()
 
-        assertEquals(TradesFilterType_All, fakeFinanceRepository.tradesFilterTypeFlow.value)
+        assertEquals(TRADES_FILTER_TYPE_ALL, fakeFinanceRepository.tradesFilterTypeFlow.value)
     }
 
     @Test
@@ -703,9 +703,9 @@ class FinanceViewModelTest {
         assertEquals("", fakeFinanceRepository.searchQueryFlow.value)
         assertEquals(ExpensesFilterType.ALL_EXPENSES, fakeFinanceRepository.expensesFilterTypeFlow.value)
         assertEquals(ExpensesSortType.BY_DATE, fakeFinanceRepository.expensesSortTypeFlow.value)
-        assertEquals(InvestmentsFilterType_All, fakeFinanceRepository.investmentsFilterTypeFlow.value)
+        assertEquals(INVESTMENTS_FILTER_TYPE_ALL, fakeFinanceRepository.investmentsFilterTypeFlow.value)
         assertEquals(InvestmentsSortType.BY_DATE, fakeFinanceRepository.investmentsSortTypeFlow.value)
-        assertEquals(TradesFilterType_All, fakeFinanceRepository.tradesFilterTypeFlow.value)
+        assertEquals(TRADES_FILTER_TYPE_ALL, fakeFinanceRepository.tradesFilterTypeFlow.value)
         assertEquals(TradesSortType.BY_DATE, fakeFinanceRepository.tradesSortTypeFlow.value)
         assertEquals(SavingsSortType.BY_DATE, fakeFinanceRepository.savingsSortTypeFlow.value)
         assertEquals(BudgetsFilterType.ALL_BUDGETS, fakeFinanceRepository.budgetsFilterTypeFlow.value)

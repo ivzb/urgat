@@ -1,8 +1,8 @@
 package com.ivzb.urgat.data.car
 
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -13,12 +13,12 @@ class FakeCarRepository : CarRepository {
         searchQueryFlow.value = value
     }
 
-    override val fuelConsumptionFilterTypeFlow = MutableStateFlow(FuelConsumptionFilterType_All)
+    override val fuelConsumptionFilterTypeFlow = MutableStateFlow(FUEL_CONSUMPTION_FILTER_TYPE_ALL)
     override suspend fun updateFuelConsumptionFilterType(value: String) {
         fuelConsumptionFilterTypeFlow.value = value
     }
 
-    override val fuelConsumptionCarFilterFlow = MutableStateFlow(FuelConsumptionFilterType_All)
+    override val fuelConsumptionCarFilterFlow = MutableStateFlow(FUEL_CONSUMPTION_FILTER_TYPE_ALL)
     override suspend fun updateFuelConsumptionCarFilter(value: String) {
         fuelConsumptionCarFilterFlow.value = value
     }
@@ -28,7 +28,7 @@ class FakeCarRepository : CarRepository {
         fuelConsumptionSortTypeFlow.value = value
     }
 
-    override val carMaintenanceFilterTypeFlow = MutableStateFlow(CarMaintenanceFilterType_All)
+    override val carMaintenanceFilterTypeFlow = MutableStateFlow(CAR_MAINTENANCE_FILTER_TYPE_ALL)
     override suspend fun updateCarMaintenanceFilterType(value: String) {
         carMaintenanceFilterTypeFlow.value = value
     }

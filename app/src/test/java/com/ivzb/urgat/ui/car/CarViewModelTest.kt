@@ -7,11 +7,11 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.domain.carMaintenance.FakeObserveCarMaintenanceUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.FakeObserveFuelConsumptionUiStateUseCase
 import com.ivzb.urgat.domain.fuelConsumption.GroupedFuelConsumption
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceUiState
 import com.ivzb.urgat.ui.components.SortMenuItem
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
@@ -292,7 +292,7 @@ class CarViewModelTest {
         advanceUntilIdle()
 
         assertEquals("Diesel", fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
-        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+        assertEquals(FUEL_CONSUMPTION_FILTER_TYPE_ALL, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
 
         viewModel.onIntent(CarIntent.SetFuelConsumptionCarFiltering("Mercedes w140"))
         advanceUntilIdle()
@@ -411,10 +411,10 @@ class CarViewModelTest {
         advanceUntilIdle()
 
         assertEquals("", fakeCarRepository.searchQueryFlow.value)
-        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
-        assertEquals(FuelConsumptionFilterType_All, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
+        assertEquals(FUEL_CONSUMPTION_FILTER_TYPE_ALL, fakeCarRepository.fuelConsumptionFilterTypeFlow.value)
+        assertEquals(FUEL_CONSUMPTION_FILTER_TYPE_ALL, fakeCarRepository.fuelConsumptionCarFilterFlow.value)
         assertEquals(FuelConsumptionSortType.BY_DATE, fakeCarRepository.fuelConsumptionSortTypeFlow.value)
-        assertEquals(CarMaintenanceFilterType_All, fakeCarRepository.carMaintenanceFilterTypeFlow.value)
+        assertEquals(CAR_MAINTENANCE_FILTER_TYPE_ALL, fakeCarRepository.carMaintenanceFilterTypeFlow.value)
         assertEquals(CarMaintenanceSortType.BY_DATE, fakeCarRepository.carMaintenanceSortTypeFlow.value)
     }
 

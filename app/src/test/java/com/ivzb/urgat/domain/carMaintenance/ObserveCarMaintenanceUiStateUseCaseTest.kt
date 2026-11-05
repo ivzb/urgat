@@ -2,7 +2,7 @@ package com.ivzb.urgat.domain.carMaintenance
 
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.components.GroupedItems
@@ -161,7 +161,7 @@ class ObserveCarMaintenanceUiStateUseCaseTest {
 
     private suspend fun invokeUseCase(
         searchQuery: String = "",
-        filterType: String = CarMaintenanceFilterType_All,
+        filterType: String = CAR_MAINTENANCE_FILTER_TYPE_ALL,
         sortType: CarMaintenanceSortType = CarMaintenanceSortType.BY_DATE,
     ) = useCase(flowOf(searchQuery), flowOf(filterType), flowOf(sortType)).first()
 
@@ -182,7 +182,7 @@ class ObserveCarMaintenanceUiStateUseCaseTest {
         )
 
         private val fakeFiltering = listOf(
-            FilterMenuItem(type = CarMaintenanceFilterType_All, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = CAR_MAINTENANCE_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = "Mercedes w140", label = "Mercedes w140", size = 1),
         )
 

@@ -35,7 +35,7 @@ data class TradesFilteringUiInfo(
             sortType: TradesSortType,
             sortMenuItems: List<TradesSortMenuItem>,
         ): TradesFilteringUiInfo {
-            val showFilterBadge = filterType != TradesFilterType_All
+            val showFilterBadge = filterType != TRADES_FILTER_TYPE_ALL
             val showSortBadge = sortType != TradesSortType.BY_DATE
             val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 

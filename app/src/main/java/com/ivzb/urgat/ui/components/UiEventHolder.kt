@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.StateFlow
 
 class UiEventHolder<T> {
 
-    private val _uiEvent = MutableStateFlow<Async<T?>>(Async.Success(null))
+    private val uiEventFlow = MutableStateFlow<Async<T?>>(Async.Success(null))
 
-    operator fun invoke(): StateFlow<Async<T?>> = _uiEvent
+    operator fun invoke(): StateFlow<Async<T?>> = uiEventFlow
 
     suspend fun emit(event: T?) {
-        _uiEvent.emit(Async.Success(event))
+        uiEventFlow.emit(Async.Success(event))
     }
 
 }

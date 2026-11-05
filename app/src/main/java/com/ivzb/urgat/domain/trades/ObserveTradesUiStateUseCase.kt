@@ -1,6 +1,6 @@
 package com.ivzb.urgat.domain.trades
 
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesFilteringUiInfo
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.trades.TradesUiState
@@ -53,7 +53,7 @@ class DefaultObserveTradesUiStateUseCase @Inject constructor(
                 categoriesAllTime = categoriesAllTime,
                 filteringUiInfo = TradesFilteringUiInfo.from(
                     searchQuery = searchQuery,
-                    filterType = TradesFilterType_All,
+                    filterType = TRADES_FILTER_TYPE_ALL,
                     filterMenuItems = listOf(),
                     sortType = sortType,
                     sortMenuItems = sorting,

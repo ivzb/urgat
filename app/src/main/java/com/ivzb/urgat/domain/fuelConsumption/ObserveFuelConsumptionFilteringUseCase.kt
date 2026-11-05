@@ -5,8 +5,8 @@ import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.ui.components.FilterMenuItem
+import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterMenuItem
-import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterType_All
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DefaultObserveFuelConsumptionFilteringUseCase @Inject constructor(
                     return@map listOf()
                 }
 
-                listOf(FilterMenuItem(type = FuelConsumptionFilterType_All, labelResId = R.string.filter_all, size = it.size)) +
+                listOf(FilterMenuItem(type = FUEL_CONSUMPTION_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = it.size)) +
                     it.groupBy { it.type }
                         .entries
                         .sortedByDescending { it.value.size }

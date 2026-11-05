@@ -38,10 +38,10 @@ import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.ui.fire.FireDateRangeType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
@@ -816,9 +816,9 @@ class ObserveFinanceUiStateUseCaseTest {
         searchQuery: String = "",
         expensesFilterType: ExpensesFilterType = ExpensesFilterType.ALL_EXPENSES,
         expensesSortType: ExpensesSortType = ExpensesSortType.BY_DATE,
-        investmentsFilterType: String = InvestmentsFilterType_All,
+        investmentsFilterType: String = INVESTMENTS_FILTER_TYPE_ALL,
         investmentsSortType: InvestmentsSortType = InvestmentsSortType.BY_DATE,
-        tradesFilterType: String = TradesFilterType_All,
+        tradesFilterType: String = TRADES_FILTER_TYPE_ALL,
         tradesSortType: TradesSortType = TradesSortType.BY_DATE,
         savingsSortType: SavingsSortType = SavingsSortType.BY_DATE,
         budgetsFilterType: BudgetsFilterType = BudgetsFilterType.ALL_BUDGETS,
@@ -943,7 +943,7 @@ class ObserveFinanceUiStateUseCaseTest {
         )
 
         private val fakeInvestmentsFiltering = listOf(
-            FilterMenuItem(type = InvestmentsFilterType_All, labelResId = R.string.filter_all, size = 1),
+            FilterMenuItem(type = INVESTMENTS_FILTER_TYPE_ALL, labelResId = R.string.filter_all, size = 1),
             FilterMenuItem(type = "stocks", labelResId = R.string.filter_all, size = 1),
         )
 

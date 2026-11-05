@@ -4,10 +4,10 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
-import com.ivzb.urgat.ui.trades.TradesFilterType_All
+import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ class FakeFinanceRepository : FinanceRepository {
         expensesSortTypeFlow.value = value
     }
 
-    override val investmentsFilterTypeFlow = MutableStateFlow(InvestmentsFilterType_All)
+    override val investmentsFilterTypeFlow = MutableStateFlow(INVESTMENTS_FILTER_TYPE_ALL)
     override suspend fun updateInvestmentsFilterType(value: String) {
         investmentsFilterTypeFlow.value = value
     }
@@ -39,7 +39,7 @@ class FakeFinanceRepository : FinanceRepository {
         investmentsSortTypeFlow.value = value
     }
 
-    override val tradesFilterTypeFlow = MutableStateFlow(TradesFilterType_All)
+    override val tradesFilterTypeFlow = MutableStateFlow(TRADES_FILTER_TYPE_ALL)
     override suspend fun updateTradesFilterType(value: String) {
         tradesFilterTypeFlow.value = value
     }

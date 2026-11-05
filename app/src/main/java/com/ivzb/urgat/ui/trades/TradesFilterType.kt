@@ -1,3 +1,3 @@
 package com.ivzb.urgat.ui.trades
 
-const val TradesFilterType_All = "__all"
+const val TRADES_FILTER_TYPE_ALL = "__all"

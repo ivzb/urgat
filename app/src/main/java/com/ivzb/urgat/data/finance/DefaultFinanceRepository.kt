@@ -8,7 +8,7 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
-import com.ivzb.urgat.ui.investments.InvestmentsFilterType_All
+import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.trades.TradesSortType
@@ -40,7 +40,7 @@ class DefaultFinanceRepository @Inject constructor(
         dataStore.edit { it[EXPENSES_SORT_TYPE] = value.name }
     }
 
-    override val investmentsFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, INVESTMENTS_FILTER_TYPE, InvestmentsFilterType_All)
+    override val investmentsFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, INVESTMENTS_FILTER_TYPE, INVESTMENTS_FILTER_TYPE_ALL)
 
     override suspend fun updateInvestmentsFilterType(value: String) {
         dataStore.edit { it[INVESTMENTS_FILTER_TYPE] = value }
@@ -52,7 +52,7 @@ class DefaultFinanceRepository @Inject constructor(
         dataStore.edit { it[INVESTMENTS_SORT_TYPE] = value.name }
     }
 
-    override val tradesFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, TRADES_FILTER_TYPE, InvestmentsFilterType_All)
+    override val tradesFilterTypeFlow: Flow<String> = dataStoreStringFlow(dataStore, TRADES_FILTER_TYPE, INVESTMENTS_FILTER_TYPE_ALL)
 
     override suspend fun updateTradesFilterType(value: String) {
         dataStore.edit { it[TRADES_FILTER_TYPE] = value }

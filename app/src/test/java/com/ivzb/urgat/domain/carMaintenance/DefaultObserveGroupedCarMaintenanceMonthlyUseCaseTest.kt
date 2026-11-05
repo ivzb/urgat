@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.carMaintenance
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
-import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterType_All
+import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.Async
@@ -38,7 +38,7 @@ class DefaultObserveGroupedCarMaintenanceMonthlyUseCaseTest {
         val searchQueryFlow = flowOf("oil")
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
-        val filterTypeFlow = flowOf(CarMaintenanceFilterType_All)
+        val filterTypeFlow = flowOf(CAR_MAINTENANCE_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(CarMaintenanceSortType.BY_DATE)
         val limitFlow = flowOf(limit)
 
@@ -72,7 +72,7 @@ class DefaultObserveGroupedCarMaintenanceMonthlyUseCaseTest {
         val searchQueryFlow = flowOf("")
         val dateRangeFlow = flowOf(NO_DATE_RANGE)
         val limit = 10
-        val filterTypeFlow = flowOf(CarMaintenanceFilterType_All)
+        val filterTypeFlow = flowOf(CAR_MAINTENANCE_FILTER_TYPE_ALL)
         val sortTypeFlow = flowOf(CarMaintenanceSortType.BY_ODOMETER_MIN)
         val limitFlow = flowOf(limit)
 

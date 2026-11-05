@@ -35,7 +35,7 @@ data class CarMaintenanceFilteringUiInfo(
             sortType: CarMaintenanceSortType,
             sortMenuItems: List<CarMaintenanceSortMenuItem>,
         ): CarMaintenanceFilteringUiInfo {
-            val showFilterBadge = filterType != CarMaintenanceFilterType_All
+            val showFilterBadge = filterType != CAR_MAINTENANCE_FILTER_TYPE_ALL
             val showSortBadge = sortType != CarMaintenanceSortType.BY_DATE
             val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 
