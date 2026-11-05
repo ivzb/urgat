@@ -36,6 +36,11 @@ if [ "$FLAG" != "" ] && [ "$FLAG" != "-skip-screenshots" ] && [ "$FLAG" != "--ss
 fi
 
 ##
+# Run ktlint check
+##
+./run_ktlint.sh
+
+##
 # Run unit tests
 ##
 ./run_unit_tests.sh
