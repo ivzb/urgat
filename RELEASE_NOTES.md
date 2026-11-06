@@ -1,3 +1,8 @@
+## Release notes 26.11.02
+
+Improved:
+- Performance and security improvements to keep your app running smoothly and securely.
+
 ## Release notes 26.11.01
 
 Improved:
