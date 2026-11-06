@@ -1,0 +1,45 @@
+# Overrides on top of detekt's default config (buildUponDefaultConfig = true).
+# Rules reference: https://detekt.dev/docs/next/rules/
+# Compose recommendations: https://detekt.dev/docs/next/introduction/compose
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'
+
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    ignoreAnnotatedFunctions:
+      - 'Preview'
+      - 'AllDevicesPreview'
+      - 'LandscapePreview'
+      - 'TabletPreview'
+      - 'TabletDarkModePreview'
+      - 'TabletLandscapePreview'
+      - 'TabletDarkModeLandscapePreview'
+      - 'FoldablePreviewUnfolded'
+      - 'FoldablePreviewFolded'
+      - 'DarkModePreview'
+      - 'DarkModeLandscapePreview'
+
+style:
+  # Formatting is handled by ktlint (see .editorconfig)
+  MaxLineLength:
+    active: false
+  WildcardImport:
+    active: false
+  UnusedPrivateFunction:
+    ignoreAnnotated:
+      - 'Preview'
+      - 'AllDevicesPreview'
+      - 'LandscapePreview'
+      - 'TabletPreview'
+      - 'TabletDarkModePreview'
+      - 'TabletLandscapePreview'
+      - 'TabletDarkModeLandscapePreview'
+      - 'FoldablePreviewUnfolded'
+      - 'FoldablePreviewFolded'
+      - 'DarkModePreview'
+      - 'DarkModeLandscapePreview'

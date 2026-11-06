@@ -79,6 +79,14 @@ Use the following commands to check and auto-format Kotlin code style:
 ./gradlew ktlintFormat
 ````
 
+### Run detekt:
+Use the following command to run static code analysis. Rules are configured in `config/detekt/detekt.yml`
+on top of detekt's default config, and reports are generated in `<module>/build/reports/detekt/`:
+
+```bash
+./gradlew detekt
+````
+
 ### Run unit tests:
 Use the following command to run unit tests:
 
