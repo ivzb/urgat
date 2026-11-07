@@ -14,11 +14,10 @@ import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.combineAsync
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 
 interface ObserveGroupedBudgetsYearlyUseCase {
 
@@ -47,47 +46,33 @@ class DefaultObserveGroupedBudgetsYearlyUseCase @Inject constructor(
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<List<GroupedBudget>>> = combine(
+    ): Flow<Async<List<GroupedBudget>>> = combineAsync(
         observeGroupedBudgetCategoriesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeGroupedExpensesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeGroupedInvestmentsYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeGroupedTradesYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeGroupedSavingsYearlyUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-    ) { budgetCategoriesYearlyAsync, expensesYearlyAsync, investmentsYearlyAsync, tradesYearlyAsync, savingsYearlyAsync ->
+    ) { budgetCategoriesYearly, expensesYearly, investmentsYearly, tradesYearly, savingsYearly ->
 
-        if (budgetCategoriesYearlyAsync is Async.Success &&
-            expensesYearlyAsync is Async.Success &&
-            investmentsYearlyAsync is Async.Success &&
-            tradesYearlyAsync is Async.Success &&
-            savingsYearlyAsync is Async.Success
-        ) {
+        budgetCategoriesYearly.mapIndexed { index, category ->
+            val expenses = expensesYearly.getOrNull(index)
+            val investments = investmentsYearly.getOrNull(index)
+            val trades = tradesYearly.getOrNull(index)
+            val savings = savingsYearly.getOrNull(index)
 
-            val yearlyBudgets = budgetCategoriesYearlyAsync.data.mapIndexed { index, category ->
-                val expenses = expensesYearlyAsync.data.getOrNull(index)
-                val investments = investmentsYearlyAsync.data.getOrNull(index)
-                val trades = tradesYearlyAsync.data.getOrNull(index)
-                val savings = savingsYearlyAsync.data.getOrNull(index)
+            val budgetCurrency = category.items.first().currency
 
-                val budgetCurrency = category.items.first().currency
-
-                GroupedBudget(
-                    category = category,
-                    currency = budgetCurrency,
-                    totalIncome = category.total,
-                    totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
-                    totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
-                    totalTrades = Trade.total(trades?.items, budgetCurrency, forexRepository::convert),
-                    totalSavings = Saving.total(savings?.items, budgetCurrency, forexRepository::convert),
-                )
-            }
-
-            yearlyBudgets
-        } else {
-            throw Exception("Async.Error")
+            GroupedBudget(
+                category = category,
+                currency = budgetCurrency,
+                totalIncome = category.total,
+                totalExpenses = Expense.total(expenses?.items, budgetCurrency, forexRepository::convert),
+                totalInvestments = Investment.total(investments?.items, budgetCurrency, forexRepository::convert),
+                totalTrades = Trade.total(trades?.items, budgetCurrency, forexRepository::convert),
+                totalSavings = Saving.total(savings?.items, budgetCurrency, forexRepository::convert),
+            )
         }
-
     }
-        .map<List<GroupedBudget>, Async<List<GroupedBudget>>> { Async.Success(it) }
         .catch { e ->
             Tracker.error(e)
             emit(Async.Error)

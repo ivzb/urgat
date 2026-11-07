@@ -13,6 +13,7 @@ import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsAllTimeUseCase
 import com.ivzb.urgat.domain.trades.ObserveGroupedTradesAllTimeUseCase
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.combineAsync
 import com.ivzb.urgat.util.div
 import com.ivzb.urgat.util.round
 import com.ivzb.urgat.util.toPercentage
@@ -21,6 +22,7 @@ import javax.inject.Inject
 import kotlin.math.pow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 
 interface ObserveFiReUseCase {
 
@@ -51,190 +53,134 @@ class DefaultObserveFiReUseCase @Inject constructor(
         dateRangeFlow: Flow<LongRange>?,
     ): Flow<Async<FiRe?>> {
 
-        return com.ivzb.urgat.util.combine(
-            withdrawalRateFlow,
-            returnOfInvestmentFlow,
-            taxRateFlow,
+        return combineAsync(
+            withdrawalRateFlow.map { Async.Success(it) },
+            returnOfInvestmentFlow.map { Async.Success(it) },
+            taxRateFlow.map { Async.Success(it) },
 
             observeGroupedBudgetCategoriesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedExpensesMonthlyUseCase(searchQueryFlow = null, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedTradesAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
             observeGroupedSavingsAllTimeUseCase(searchQueryFlow = null, dateRangeFlow = null, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-        ) { withdrawalRate, returnOfInvestment, taxRate, budgetCategoriesMonthlyAsync, expensesMonthlyAsync, investmentsAllTimeAsync, tradesAllTimeAsync, savingsAllTimeAsync ->
+        ) { withdrawalRate, returnOfInvestment, taxRate, budgetCategoriesMonthly, expensesMonthly, investmentsAllTime, tradesAllTime, savingsAllTime ->
 
-            if (budgetCategoriesMonthlyAsync is Async.Success &&
-                expensesMonthlyAsync is Async.Success &&
-                investmentsAllTimeAsync is Async.Success &&
-                tradesAllTimeAsync is Async.Success &&
-                savingsAllTimeAsync is Async.Success
-            ) {
+            // Find all months where both budget and expenses exist
+            val completeMonths = (budgetCategoriesMonthly.map { it.group } + expensesMonthly.map { it.group })
+                .distinct()
+                .mapNotNull { group ->
+                    val budget = budgetCategoriesMonthly.find { budget -> budget.group == group }
+                    val expense = expensesMonthly.find { expense -> expense.group == group }
 
-                val budgetCategoriesMonthly = budgetCategoriesMonthlyAsync.data
-                val expensesMonthly = expensesMonthlyAsync.data
-
-                // Find all months where both budget and expenses exist
-                val completeMonths = (budgetCategoriesMonthly.map { it.group } + expensesMonthly.map { it.group })
-                    .distinct()
-                    .mapNotNull { group ->
-                        val budget = budgetCategoriesMonthly.find { budget -> budget.group == group }
-                        val expense = expensesMonthly.find { expense -> expense.group == group }
-
-                        if (budget != null && expense != null) {
-                            Triple(group, budget, expense)
-                        } else {
-                            null
-                        }
+                    if (budget != null && expense != null) {
+                        Triple(group, budget, expense)
+                    } else {
+                        null
                     }
-
-                if (completeMonths.isEmpty()) {
-                    return@combine Async.Success(null)
                 }
 
-                val firstMonth = completeMonths.first()
-                val budgetCurrency = firstMonth.second.items.first().currency
+            if (completeMonths.isEmpty()) {
+                return@combineAsync null
+            }
 
-                // a failed conversion is dropped from the sums below, which quietly makes them
-                // too small - wrapping the converter is what makes that visible afterwards
-                val forex = TallyingConverter(forexRepository::convert)
+            val firstMonth = completeMonths.first()
+            val budgetCurrency = firstMonth.second.items.first().currency
 
-                // Sum income and expenses across all complete months, then average
-                var totalIncome = BigDecimal.ZERO
-                var totalExpenses = BigDecimal.ZERO
+            // a failed conversion is dropped from the sums below, which quietly makes them
+            // too small - wrapping the converter is what makes that visible afterwards
+            val forex = TallyingConverter(forexRepository::convert)
 
-                for ((_, budget, expenses) in completeMonths) {
-                    totalIncome += budget.total
-                    totalExpenses += Expense.total(expenses.items, budgetCurrency, forex::convert)
-                }
+            // Sum income and expenses across all complete months, then average
+            var totalIncome = BigDecimal.ZERO
+            var totalExpenses = BigDecimal.ZERO
 
-                val monthlyIncome = if (completeMonths.size == 1) totalIncome else totalIncome / completeMonths.size.toBigDecimal()
-                val monthlyExpenses = if (completeMonths.size == 1) totalExpenses else totalExpenses / completeMonths.size.toBigDecimal()
-                val monthlyInvestments = monthlyIncome - monthlyExpenses
+            for ((_, budget, expenses) in completeMonths) {
+                totalIncome += budget.total
+                totalExpenses += Expense.total(expenses.items, budgetCurrency, forex::convert)
+            }
 
-                val selectionGroup = if (completeMonths.size == 1) {
-                    completeMonths.first().first
-                } else {
-                    "${completeMonths.last().first} - ${completeMonths.first().first}"
-                }
+            val monthlyIncome = if (completeMonths.size == 1) totalIncome else totalIncome / completeMonths.size.toBigDecimal()
+            val monthlyExpenses = if (completeMonths.size == 1) totalExpenses else totalExpenses / completeMonths.size.toBigDecimal()
+            val monthlyInvestments = monthlyIncome - monthlyExpenses
 
-                val annualIncome = monthlyIncome * 12.toBigDecimal()
-                val annualExpenses = monthlyExpenses * 12.toBigDecimal()
-                val annualInvestments = monthlyInvestments * 12.toBigDecimal()
+            val selectionGroup = if (completeMonths.size == 1) {
+                completeMonths.first().first
+            } else {
+                "${completeMonths.last().first} - ${completeMonths.first().first}"
+            }
 
-                val allTimeInvestments = investmentsAllTimeAsync.data.items.sumOf { it.totalMarketPrice }
-                val allTimeTrades = Trade.total(tradesAllTimeAsync.data.items, budgetCurrency, forex::convert)
-                val allTimeSavings = Saving.total(savingsAllTimeAsync.data.items, budgetCurrency, forex::convert)
-                val accumulatedStash = allTimeInvestments + allTimeTrades + allTimeSavings
+            val annualIncome = monthlyIncome * 12.toBigDecimal()
+            val annualExpenses = monthlyExpenses * 12.toBigDecimal()
+            val annualInvestments = monthlyInvestments * 12.toBigDecimal()
 
-                // a trade and a saving are worth exactly what went into them, so they contribute
-                // the very same amount to both sides and only the investments carry a profit
-                val allTimeInvestmentsCost = investmentsAllTimeAsync.data.items.sumOf { it.totalCostPrice }
-                val accumulatedStashCost = allTimeInvestmentsCost + allTimeTrades + allTimeSavings
+            val allTimeInvestments = investmentsAllTime.items.sumOf { it.totalMarketPrice }
+            val allTimeTrades = Trade.total(tradesAllTime.items, budgetCurrency, forex::convert)
+            val allTimeSavings = Saving.total(savingsAllTime.items, budgetCurrency, forex::convert)
+            val accumulatedStash = allTimeInvestments + allTimeTrades + allTimeSavings
 
-                // Calculate stash breakdown per asset
-                val investmentBreakdown = investmentsAllTimeAsync.data.items
-                    .groupBy { it.category }
-                    .map { (category, investments) ->
-                        StashBreakdownItem(
-                            name = category,
-                            amount = investments.sumOf { it.totalMarketPrice },
-                            costPrice = investments.sumOf { it.totalCostPrice },
-                        )
-                    }
+            // a trade and a saving are worth exactly what went into them, so they contribute
+            // the very same amount to both sides and only the investments carry a profit
+            val allTimeInvestmentsCost = investmentsAllTime.items.sumOf { it.totalCostPrice }
+            val accumulatedStashCost = allTimeInvestmentsCost + allTimeTrades + allTimeSavings
 
-                val tradesBreakdown = tradesAllTimeAsync.data.items
-                    .groupBy { it.name }
-                    .map { (name, trades) ->
-                        var total = BigDecimal.ZERO
-
-                        for (trade in trades) {
-                            total += forex.convert(trade.amount, trade.currency, budgetCurrency) ?: BigDecimal.ZERO
-                        }
-
-                        StashBreakdownItem(name, total)
-                    }
-
-                val savingsBreakdown = savingsAllTimeAsync.data.items
-                    .groupBy { it.name }
-                    .map { (name, savings) ->
-                        var total = BigDecimal.ZERO
-
-                        for (saving in savings) {
-                            total += forex.convert(saving.amount, saving.currency, budgetCurrency) ?: BigDecimal.ZERO
-                        }
-
-                        StashBreakdownItem(name, total)
-                    }
-
-                val stashBreakdown = (investmentBreakdown + tradesBreakdown + savingsBreakdown)
-                    .sortedByDescending { it.amount }
-
-                // an unfetched quote values a position at cost and an unresolved rate drops an
-                // amount from the sums, so either way the stash is understated rather than right
-                val unavailableAssets = investmentsAllTimeAsync.data.items
-                    .filter { it.isMarketPriceStale }
-                    .map { it.name }
-                    .distinct()
-                    .sorted()
-
-                val unavailableRates = forex.unresolved.sorted()
-
-                val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
-
-                if (isIncomplete) {
-                    return@combine Async.Success(null)
-                }
-
-                val isReady = withdrawalRate != null && returnOfInvestment != null && taxRate != null
-
-                if (!isReady) {
-                    return@combine Async.Success(
-                        FiRe(
-                            selection = selectionGroup,
-                            currency = budgetCurrency,
-
-                            monthlyIncome = monthlyIncome,
-                            monthlyExpenses = monthlyExpenses,
-                            monthlyInvestments = monthlyInvestments,
-
-                            annualIncome = annualIncome,
-                            annualExpenses = annualExpenses,
-                            annualInvestments = annualInvestments,
-
-                            accumulatedStash = accumulatedStash,
-                            accumulatedStashCost = accumulatedStashCost,
-                            stashBreakdown = stashBreakdown,
-                            savingsRate = null,
-                            target = null,
-
-                            withdrawalRate = withdrawalRate,
-                            returnOfInvestment = returnOfInvestment,
-                            taxRate = taxRate,
-
-                            yearsUntilFiRe = null,
-
-                            unavailableAssets = unavailableAssets,
-                            unavailableRates = unavailableRates,
-                        )
+            // Calculate stash breakdown per asset
+            val investmentBreakdown = investmentsAllTime.items
+                .groupBy { it.category }
+                .map { (category, investments) ->
+                    StashBreakdownItem(
+                        name = category,
+                        amount = investments.sumOf { it.totalMarketPrice },
+                        costPrice = investments.sumOf { it.totalCostPrice },
                     )
                 }
 
-                val withdrawalRatePercentage = withdrawalRate.coerceAtLeast(1.toBigDecimal()).toPercentage()
-                val returnOfInvestmentPercentage = 1.toBigDecimal() + returnOfInvestment.toPercentage()
-                val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
+            val tradesBreakdown = tradesAllTime.items
+                .groupBy { it.name }
+                .map { (name, trades) ->
+                    var total = BigDecimal.ZERO
 
-                val savingsRate = (1.toBigDecimal() - (annualExpenses / annualIncome)) * 100.toBigDecimal()
-                val target = (annualExpenses * taxRatePercentage / withdrawalRatePercentage).round()
+                    for (trade in trades) {
+                        total += forex.convert(trade.amount, trade.currency, budgetCurrency) ?: BigDecimal.ZERO
+                    }
 
-                val yearsUntilFiRe = calculateFiReYears(
-                    annualIncome = annualIncome,
-                    annualInvestments = annualIncome - annualExpenses,
-                    accumulatedStash = accumulatedStash,
-                    target = target,
-                    returnOfInvestment = returnOfInvestmentPercentage.toDouble(),
-                )
+                    StashBreakdownItem(name, total)
+                }
 
-                val fire = FiRe(
+            val savingsBreakdown = savingsAllTime.items
+                .groupBy { it.name }
+                .map { (name, savings) ->
+                    var total = BigDecimal.ZERO
+
+                    for (saving in savings) {
+                        total += forex.convert(saving.amount, saving.currency, budgetCurrency) ?: BigDecimal.ZERO
+                    }
+
+                    StashBreakdownItem(name, total)
+                }
+
+            val stashBreakdown = (investmentBreakdown + tradesBreakdown + savingsBreakdown)
+                .sortedByDescending { it.amount }
+
+            // an unfetched quote values a position at cost and an unresolved rate drops an
+            // amount from the sums, so either way the stash is understated rather than right
+            val unavailableAssets = investmentsAllTime.items
+                .filter { it.isMarketPriceStale }
+                .map { it.name }
+                .distinct()
+                .sorted()
+
+            val unavailableRates = forex.unresolved.sorted()
+
+            val isIncomplete = annualIncome == 0.toBigDecimal() || annualExpenses == 0.toBigDecimal()
+
+            if (isIncomplete) {
+                return@combineAsync null
+            }
+
+            val isReady = withdrawalRate != null && returnOfInvestment != null && taxRate != null
+
+            if (!isReady) {
+                return@combineAsync FiRe(
                     selection = selectionGroup,
                     currency = budgetCurrency,
 
@@ -249,23 +195,64 @@ class DefaultObserveFiReUseCase @Inject constructor(
                     accumulatedStash = accumulatedStash,
                     accumulatedStashCost = accumulatedStashCost,
                     stashBreakdown = stashBreakdown,
-                    savingsRate = savingsRate,
-                    target = target,
+                    savingsRate = null,
+                    target = null,
 
                     withdrawalRate = withdrawalRate,
                     returnOfInvestment = returnOfInvestment,
                     taxRate = taxRate,
 
-                    yearsUntilFiRe = yearsUntilFiRe,
+                    yearsUntilFiRe = null,
 
                     unavailableAssets = unavailableAssets,
                     unavailableRates = unavailableRates,
                 )
-
-                Async.Success(fire)
-            } else {
-                Async.Error
             }
+
+            val withdrawalRatePercentage = withdrawalRate.coerceAtLeast(1.toBigDecimal()).toPercentage()
+            val returnOfInvestmentPercentage = 1.toBigDecimal() + returnOfInvestment.toPercentage()
+            val taxRatePercentage = 1.toBigDecimal() + taxRate.toPercentage()
+
+            val savingsRate = (1.toBigDecimal() - (annualExpenses / annualIncome)) * 100.toBigDecimal()
+            val target = (annualExpenses * taxRatePercentage / withdrawalRatePercentage).round()
+
+            val yearsUntilFiRe = calculateFiReYears(
+                annualIncome = annualIncome,
+                annualInvestments = annualIncome - annualExpenses,
+                accumulatedStash = accumulatedStash,
+                target = target,
+                returnOfInvestment = returnOfInvestmentPercentage.toDouble(),
+            )
+
+            val fire = FiRe(
+                selection = selectionGroup,
+                currency = budgetCurrency,
+
+                monthlyIncome = monthlyIncome,
+                monthlyExpenses = monthlyExpenses,
+                monthlyInvestments = monthlyInvestments,
+
+                annualIncome = annualIncome,
+                annualExpenses = annualExpenses,
+                annualInvestments = annualInvestments,
+
+                accumulatedStash = accumulatedStash,
+                accumulatedStashCost = accumulatedStashCost,
+                stashBreakdown = stashBreakdown,
+                savingsRate = savingsRate,
+                target = target,
+
+                withdrawalRate = withdrawalRate,
+                returnOfInvestment = returnOfInvestment,
+                taxRate = taxRate,
+
+                yearsUntilFiRe = yearsUntilFiRe,
+
+                unavailableAssets = unavailableAssets,
+                unavailableRates = unavailableRates,
+            )
+
+            fire
         }
             .catch { e ->
                 Tracker.error(e)

@@ -15,11 +15,10 @@ import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import com.ivzb.urgat.util.combineAsync
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 
 interface ObserveGroupedBudgetsAllTimeUseCase {
 
@@ -48,48 +47,30 @@ class DefaultObserveGroupedBudgetsAllTimeUseCase @Inject constructor(
         filterTypeFlow: Flow<BudgetsFilterType>?,
         sortTypeFlow: Flow<BudgetsSortType>?,
         limitFlow: Flow<Int>?
-    ): Flow<Async<GroupedBudget>> = combine(
+    ): Flow<Async<GroupedBudget>> = combineAsync(
         observeGroupedBudgetCategoriesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = filterTypeFlow, sortTypeFlow = sortTypeFlow, limitFlow = null),
         observeGroupedExpensesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeGroupedInvestmentsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeGroupedTradesAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
         observeGroupedSavingsAllTimeUseCase(searchQueryFlow = searchQueryFlow, dateRangeFlow = dateRangeFlow, filterTypeFlow = null, sortTypeFlow = null, limitFlow = null),
-    ) { budgetCategoriesAllTimeAsync, expensesAllTimeAsync, investmentsAllTimeAsync, tradesAllTimeAsync, savingsAllTimeAsync ->
+    ) { budget, expenses, investments, trades, savings ->
 
-        if (budgetCategoriesAllTimeAsync is Async.Success &&
-            expensesAllTimeAsync is Async.Success &&
-            investmentsAllTimeAsync is Async.Success &&
-            tradesAllTimeAsync is Async.Success &&
-            savingsAllTimeAsync is Async.Success
-        ) {
+        val budgetCurrency = budget.currency
 
-            val budget = budgetCategoriesAllTimeAsync.data
-            val expenses = expensesAllTimeAsync.data
-            val investments = investmentsAllTimeAsync.data
-            val trades = tradesAllTimeAsync.data
-            val savings = savingsAllTimeAsync.data
-
-            val budgetCurrency = budget.currency
-
-            GroupedBudget(
-                category = GroupedItems(
-                    group = "",
-                    total = budget.value,
-                    items = listOf(budget),
-                ),
-                currency = budget.currency,
-                totalIncome = budget.value,
-                totalExpenses = Expense.total(expenses.items, budgetCurrency, forexRepository::convert),
-                totalInvestments = Investment.total(investments.items, budgetCurrency, forexRepository::convert),
-                totalTrades = Trade.total(trades.items, budgetCurrency, forexRepository::convert),
-                totalSavings = Saving.total(savings.items, budgetCurrency, forexRepository::convert),
-            )
-        } else {
-            throw Exception("Async.Error")
-        }
-
+        GroupedBudget(
+            category = GroupedItems(
+                group = "",
+                total = budget.value,
+                items = listOf(budget),
+            ),
+            currency = budget.currency,
+            totalIncome = budget.value,
+            totalExpenses = Expense.total(expenses.items, budgetCurrency, forexRepository::convert),
+            totalInvestments = Investment.total(investments.items, budgetCurrency, forexRepository::convert),
+            totalTrades = Trade.total(trades.items, budgetCurrency, forexRepository::convert),
+            totalSavings = Saving.total(savings.items, budgetCurrency, forexRepository::convert),
+        )
     }
-        .map<GroupedBudget, Async<GroupedBudget>> { Async.Success(it) }
         .catch { e ->
             Tracker.error(e)
             emit(Async.Error)
