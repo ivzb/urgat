@@ -25,6 +25,7 @@ EOF
 }
 
 getDevice() {
+  DEVICE="${1#-}"
   if [ "$1" = "-phone" ]; then
     IS_PHONE=1
   elif [ "$1" = "-tablet7" ]; then
@@ -79,8 +80,8 @@ else
   AVDMANAGER="avdmanager"
 fi
 
-# Kill all running emulators
-adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
+# Kill all running emulators and wait for them to exit (and save their Quick Boot snapshots)
+"$SCRIPT_DIR/stop_emulator.sh"
 
 if [[ $(uname -m) == 'x86_64' ]]; then
   ABI_ARCH=x86_64
@@ -96,10 +97,11 @@ else
 fi
 
 # Install the emulator system image if it's not already
+# (checking the folder directly is much faster than `sdkmanager --list_installed`)
 sdk="system-images;android-36;google_apis;$ABI_ARCH"
-installedImage=$($SDKMANAGER --list_installed | grep -o "$sdk" || true)
+sysDirPath="system-images/android-36/google_apis/$ABI_ARCH/"
 
-if [[ $installedImage = $sdk ]]; then
+if [[ -f "$ANDROID_HOME/$sysDirPath/system.img" ]]; then
   echo "#############################"
   echo "## Urgat: The required SDK is already installed";
   echo "#############################"
@@ -109,8 +111,9 @@ else
   yes | $SDKMANAGER --licenses
 fi
 
-name=Pixel_Urgat
-echo no | $AVDMANAGER create avd --force --name $name --abi $ABI_ARCH --package $sdk
+# One AVD per device/orientation is kept between runs so it can resume from its Quick Boot snapshot
+name="Urgat_${DEVICE}_${ORIENTATION}"
+avdDir="$HOME/.android/avd/$name.avd"
 
 if [[ $IS_PHONE -eq 1 ]]; then
   lcd="hw.lcd.density=480
@@ -144,19 +147,16 @@ hw.lcd.height=2560"
   fi
 fi
 
-sysDir=$(cat $HOME/.android/avd/$name.avd/config.ini | grep "image.sysdir.1=")
-
-# Edit the created emulator config
 cfg="AvdId=$name
-PlayStore.enabled=true
+PlayStore.enabled=false
 abi.type=$ABI_ARCH
 avd.ini.displayname=$name
 avd.ini.encoding=UTF-8
 disk.dataPartition.size=10G
 fastboot.chosenSnapshotFile=
 fastboot.forceChosenSnapshotBoot=no
-fastboot.forceColdBoot=yes
-fastboot.forceFastBoot=no
+fastboot.forceColdBoot=no
+fastboot.forceFastBoot=yes
 hw.accelerometer=yes
 hw.arc=false
 hw.audioInput=yes
@@ -170,14 +170,14 @@ hw.device.hash2=MD5:fd01af33f0c601eb671ec483a68b1b00
 hw.device.manufacturer=Google
 hw.device.name=pixel_9_pro
 hw.gps=yes
-hw.gpu.enabled=no
-hw.gpu.mode=off
+hw.gpu.enabled=yes
+hw.gpu.mode=host
 hw.initialOrientation=$ORIENTATION
 hw.gyroscope=yes
 hw.keyboard=yes
 $lcd
 hw.mainKeys=no
-hw.ramSize=12288
+hw.ramSize=4096
 hw.sdCard=yes
 hw.sensors.orientation=yes
 hw.sensors.proximity=yes
@@ -185,7 +185,7 @@ hw.sensors.light=yes
 hw.sensors.magnetic_field=yes
 hw.sensors.pressure=yes
 hw.trackBall=no
-$sysDir
+image.sysdir.1=$sysDirPath
 runtime.network.latency=none
 runtime.network.speed=full
 showDeviceFrame=no
@@ -193,20 +193,28 @@ skin.dynamic=yes
 skin.name=$screenSize
 skin.path=_no_skin
 skin.path.backup=_no_skin
-tag.display=Google Play
-tag.id=google_apis_playstore
-vm.heapSize=1024
-PlayStore.enabled=true
+tag.display=Google APIs
+tag.id=google_apis
+vm.heapSize=512
 target=android-36"
 
-echo "$cfg" > $HOME/.android/avd/$name.avd/config.ini
+if [[ ! -d "$avdDir" ]]; then
+  echo no | $AVDMANAGER create avd --force --name $name --abi $ABI_ARCH --package $sdk
+fi
+
+# Only rewrite the config when it changed, otherwise the Quick Boot snapshot stays valid
+if [[ ! -f "$avdDir/config.ini" || "$(cat "$avdDir/config.ini")" != "$cfg" ]]; then
+  echo "$cfg" > "$avdDir/config.ini"
+  rm -rf "$avdDir/snapshots/default_boot"
+fi
 
 # Start the emulator
-# -gpu swiftshader_indirect is recommended for deterministic screenshots
+# -gpu host renders on the host GPU; swiftshader_indirect (CPU rendering) is very slow
+# -no-window runs it headless so no emulator window pops up
 if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
-  cmd //c "start /b emulator -avd $name -no-snapshot -no-boot-anim -wipe-data -gpu swiftshader_indirect" &
+  cmd //c "start /b emulator -avd $name -no-boot-anim -gpu host -no-window" &
 else
-  nohup emulator -avd $name -no-snapshot -no-boot-anim -wipe-data -gpu swiftshader_indirect &
+  nohup emulator -avd $name -no-boot-anim -gpu host -no-window &
 fi
 
 # Wait for device to boot
@@ -218,6 +226,9 @@ while [ "$bootCompleted" != "1" ]; do
     sleep 2
     bootCompleted=$(adb shell getprop sys.boot_completed | tr -d '\r')
 done
+
+# The device is reused between runs, so remove test outputs from previous runs
+adb shell rm -rf /storage/emulated/0/googletest/test_outputfiles
 
 # Enable developer options
 adb shell settings put global development_settings_enabled 1
@@ -236,3 +247,29 @@ fi
 
 # Disable chrome welcome screen
 adb shell 'echo "chrome --disable-fre --no-default-browser-check --no-first-run" > /data/local/tmp/chrome-command-line'
+
+# After a cold boot Android runs heavy background work (Google services, dexopt) for a minute or more,
+# which makes tests flaky (e.g. Espresso focus timeouts). Wait until the device CPU usage settles.
+cpuBusyPercent() {
+  adb shell 'head -1 /proc/stat; sleep 2; head -1 /proc/stat' | tr -d '\r' | awk '
+    { total[NR] = $2+$3+$4+$5+$6+$7+$8+$9; idle[NR] = $5+$6 }
+    END { dt = total[2]-total[1]; print (dt > 0) ? int(100 * (dt - (idle[2]-idle[1])) / dt) : 100 }'
+}
+
+echo "#############################"
+echo "## Urgat: Waiting for the device to become idle"
+echo "#############################"
+
+idleSamples=0
+for i in $(seq 1 90); do
+  busy=$(cpuBusyPercent)
+  echo "Device CPU usage: $busy%"
+  if [[ $busy -lt 30 ]]; then
+    idleSamples=$((idleSamples + 1))
+    if [[ $idleSamples -ge 2 ]]; then
+      break
+    fi
+  else
+    idleSamples=0
+  fi
+done
