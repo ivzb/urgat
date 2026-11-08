@@ -58,12 +58,10 @@ import com.ivzb.urgat.ui.budgets.BudgetsUiState
 import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyState
-import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderLarge
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
 import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
-import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
@@ -76,7 +74,7 @@ import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 
-private const val EMPTY_FIRE_CALCULATION = "∞"
+internal const val EMPTY_FIRE_CALCULATION = "∞"
 
 @Composable
 fun FinanceScreen(
@@ -195,79 +193,8 @@ fun FinanceScreen(
         onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
             if (uiState.withTopbarActions(page)) {
-                when (page) {
-                    FinancePage.Expenses -> {
-                        FilterMenu(
-                            items = uiState.expensesUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.expensesUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(FinanceIntent.SetExpensesFiltering(it)) },
-                        )
-
-                        SortMenu(
-                            items = uiState.expensesUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.expensesUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(FinanceIntent.SetExpensesSorting(it)) },
-                        )
-                    }
-
-                    FinancePage.Investments -> {
-                        FilterMenu(
-                            items = uiState.investmentsUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.investmentsUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(FinanceIntent.SetInvestmentsFiltering(it)) },
-                        )
-
-                        SortMenu(
-                            items = uiState.investmentsUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.investmentsUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(FinanceIntent.SetInvestmentsSorting(it)) },
-                        )
-                    }
-
-                    FinancePage.Trades -> {
-                        FilterMenu(
-                            items = uiState.tradesUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.tradesUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(FinanceIntent.SetTradesFiltering(it)) },
-                        )
-
-                        SortMenu(
-                            items = uiState.tradesUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.tradesUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(FinanceIntent.SetTradesSorting(it)) },
-                        )
-                    }
-
-                    FinancePage.Savings -> {
-                        SortMenu(
-                            items = uiState.savingsUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.savingsUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(FinanceIntent.SetSavingsSorting(it)) },
-                        )
-                    }
-
-                    FinancePage.Budgets -> {
-                        FilterMenu(
-                            items = uiState.budgetsUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.budgetsUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(FinanceIntent.SetBudgetsFiltering(it)) },
-                        )
-
-                        SortMenu(
-                            items = uiState.budgetsUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.budgetsUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(FinanceIntent.SetBudgetsSorting(it)) },
-                        )
-                    }
-
-                    FinancePage.Watchlist -> {
-                        SortMenu(
-                            items = uiState.watchlistAssetsUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.watchlistAssetsUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(FinanceIntent.SetWatchlistAssetsSorting(it)) },
-                        )
-                    }
-                }
+                FinanceFilterMenu(page = page, uiState = uiState, onIntent = onIntent)
+                FinanceSortMenu(page = page, uiState = uiState, onIntent = onIntent)
 
                 MoreMenu(
                     listOfNotNull(
@@ -767,91 +694,7 @@ private fun FiRePage(
         ScreenTitleWithInfo(
             title = stringResource(R.string.fire_title, fire.selection),
             dialogTitle = stringResource(R.string.how_does_it_work),
-            dialogText = StringBuilder().apply {
-                appendLine(stringResource(R.string.fire_info))
-                appendLine()
-
-                appendLine(
-                    stringResource(
-                        R.string.fire_accumulated_stash,
-                        "${fire.accumulatedStash.format()} ${fire.currency}",
-                    )
-                )
-
-                fire.stashBreakdown.forEach { item ->
-                    appendLine("    ${item.name}: ${item.amount.format()} ${fire.currency}")
-                }
-
-                if (fire.isPartial) {
-                    appendLine()
-                    appendLine(stringResource(R.string.fire_stash_partial))
-
-                    // a dialog has room to spell every culprit out, unlike the widget - so it
-                    // names them all rather than counting the ones which did not fit
-                    if (fire.unavailableAssets.isNotEmpty()) {
-                        appendLine(
-                            stringResource(
-                                R.string.fire_stash_unavailable_assets,
-                                fire.unavailableAssets.joinToString(", "),
-                            )
-                        )
-                    }
-
-                    if (fire.unavailableRates.isNotEmpty()) {
-                        appendLine(
-                            stringResource(
-                                R.string.fire_stash_unavailable_rates,
-                                fire.unavailableRates.joinToString(", "),
-                            )
-                        )
-                    }
-                }
-
-                appendLine()
-
-                appendLine(
-                    stringResource(
-                        R.string.fire_annual_income,
-                        "${fire.annualIncome.format()} ${fire.currency}",
-                    )
-                )
-                appendLine(
-                    stringResource(
-                        R.string.fire_annual_expenses,
-                        "${fire.annualExpenses.format()} ${fire.currency}",
-                    )
-                )
-                appendLine(
-                    stringResource(
-                        R.string.fire_annual_investments,
-                        "${fire.annualInvestments.format()} ${fire.currency}",
-                    )
-                )
-
-                appendLine()
-
-                appendLine(
-                    stringResource(
-                        R.string.fire_savings_rate,
-                        fire.savingsRate?.format() ?: EMPTY_FIRE_CALCULATION
-                    )
-                )
-                appendLine(
-                    stringResource(
-                        R.string.fire_target,
-                        fire.target?.let { target -> "${target.format()} ${fire.currency}" } ?: EMPTY_FIRE_CALCULATION
-                    )
-                )
-
-                appendLine()
-
-                appendLine(
-                    stringResource(
-                        R.string.fire_years_until_fire,
-                        fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION
-                    )
-                )
-            }.toString(),
+            dialogText = fireInfoText(fire),
         )
 
         Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))

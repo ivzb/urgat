@@ -41,20 +41,9 @@ data class ExpensesFilteringUiInfo(
             val hasAppliedFilters = searchQuery.isNotEmpty() || showFilterBadge || showSortBadge
 
             return ExpensesFilteringUiInfo(
-                currentFilteringLabel = when (filterType) {
-                    ExpensesFilterType.ALL_EXPENSES -> R.string.transactions
-                    ExpensesFilterType.DEBIT_EXPENSES -> R.string.debit_expenses
-                    ExpensesFilterType.COST_EXPENSES -> R.string.cost_expenses
-                    ExpensesFilterType.EXCLUDED_FROM_ANALYTICS -> R.string.exclude_from_analytics
-                },
+                currentFilteringLabel = filteringLabelOf(filterType),
 
-                emptyLabel = when {
-                    hasAppliedFilters -> R.string.no_expenses_search
-                    filterType == ExpensesFilterType.DEBIT_EXPENSES -> R.string.no_debit_expenses
-                    filterType == ExpensesFilterType.COST_EXPENSES -> R.string.no_cost_expenses
-                    filterType == ExpensesFilterType.EXCLUDED_FROM_ANALYTICS -> R.string.no_excluded_from_analytics_expenses
-                    else -> R.string.no_expenses
-                },
+                emptyLabel = emptyLabelOf(filterType, hasAppliedFilters),
                 emptyMessage = when {
                     hasAppliedFilters -> R.string.no_expenses_search_message
                     else -> R.string.no_expenses_message
@@ -73,6 +62,21 @@ data class ExpensesFilteringUiInfo(
                 sortMenuItems = sortMenuItems,
                 showSortBadge = showSortBadge,
             )
+        }
+
+        private fun filteringLabelOf(filterType: ExpensesFilterType): Int = when (filterType) {
+            ExpensesFilterType.ALL_EXPENSES -> R.string.transactions
+            ExpensesFilterType.DEBIT_EXPENSES -> R.string.debit_expenses
+            ExpensesFilterType.COST_EXPENSES -> R.string.cost_expenses
+            ExpensesFilterType.EXCLUDED_FROM_ANALYTICS -> R.string.exclude_from_analytics
+        }
+
+        private fun emptyLabelOf(filterType: ExpensesFilterType, hasAppliedFilters: Boolean): Int = when {
+            hasAppliedFilters -> R.string.no_expenses_search
+            filterType == ExpensesFilterType.DEBIT_EXPENSES -> R.string.no_debit_expenses
+            filterType == ExpensesFilterType.COST_EXPENSES -> R.string.no_cost_expenses
+            filterType == ExpensesFilterType.EXCLUDED_FROM_ANALYTICS -> R.string.no_excluded_from_analytics_expenses
+            else -> R.string.no_expenses
         }
     }
 }

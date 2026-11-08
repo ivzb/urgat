@@ -8,6 +8,9 @@ naming:
       - 'Composable'
 
 complexity:
+  CyclomaticComplexMethod:
+    # MVI `onIntent` dispatchers are a single exhaustive `when` over the intents
+    ignoreSingleWhenExpression: true
   LongParameterList:
     ignoreDefaultParameters: true
   TooManyFunctions:

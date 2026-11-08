@@ -129,40 +129,10 @@ class WatchlistWidget : GlanceAppWidget() {
 
                 Spacer(modifier = GlanceModifier.height(6.dp))
 
-                when (state) {
-                    is Async.Loading -> WatchlistSkeleton(
-                        items = if (size.height >= LARGE_SIZE.height) SKELETON_ITEMS else SKELETON_ITEMS_SHORT,
-                        isCompact = isCompact,
-                    )
-
-                    is Async.Error -> Message(
-                        title = context.getString(R.string.watchlist_widget_error),
-                        message = context.getString(R.string.watchlist_widget_error_message).takeUnless { isCompact },
-                    )
-
-                    is Async.Success -> {
-                        val assets = state.data
-
-                        when {
-                            assets.isEmpty() -> Message(
-                                title = context.getString(R.string.watchlist_widget_empty),
-                                message = context.getString(R.string.watchlist_widget_empty_message).takeUnless { isCompact },
-                            )
-
-                            // a single missing quote is shown per row, but when not one of them
-                            // could be fetched the list would be a wall of dashes
-                            assets.none { it.hasMarketPrice } -> Message(
-                                title = context.getString(R.string.watchlist_widget_prices_unavailable),
-                                message = unavailableMessage(assets, isCompact),
-                            )
-
-                            else -> WatchlistAssets(
-                                assets = assets,
-                                isCompact = isCompact,
-                            )
-                        }
-                    }
-                }
+                WatchlistBody(
+                    state = state,
+                    isCompact = isCompact,
+                )
             }
 
             if (showRefresh) {
@@ -203,6 +173,50 @@ class WatchlistWidget : GlanceAppWidget() {
                     CircularProgressIndicator(
                         modifier = GlanceModifier.size(32.dp),
                         color = GlanceTheme.colors.primary,
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Whatever goes under the title - a skeleton, a message or the assets themselves.
+     */
+    @Composable
+    private fun WatchlistBody(state: Async<List<WatchlistAsset>>, isCompact: Boolean) {
+        val context = LocalContext.current
+        val size = LocalSize.current
+
+        when (state) {
+            is Async.Loading -> WatchlistSkeleton(
+                items = if (size.height >= LARGE_SIZE.height) SKELETON_ITEMS else SKELETON_ITEMS_SHORT,
+                isCompact = isCompact,
+            )
+
+            is Async.Error -> Message(
+                title = context.getString(R.string.watchlist_widget_error),
+                message = context.getString(R.string.watchlist_widget_error_message).takeUnless { isCompact },
+            )
+
+            is Async.Success -> {
+                val assets = state.data
+
+                when {
+                    assets.isEmpty() -> Message(
+                        title = context.getString(R.string.watchlist_widget_empty),
+                        message = context.getString(R.string.watchlist_widget_empty_message).takeUnless { isCompact },
+                    )
+
+                    // a single missing quote is shown per row, but when not one of them
+                    // could be fetched the list would be a wall of dashes
+                    assets.none { it.hasMarketPrice } -> Message(
+                        title = context.getString(R.string.watchlist_widget_prices_unavailable),
+                        message = unavailableMessage(assets, isCompact),
+                    )
+
+                    else -> WatchlistAssets(
+                        assets = assets,
+                        isCompact = isCompact,
                     )
                 }
             }
