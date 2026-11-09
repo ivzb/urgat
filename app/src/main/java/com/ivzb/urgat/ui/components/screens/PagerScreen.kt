@@ -23,8 +23,8 @@ import com.ivzb.urgat.navigation.UrgatRootRoute
 import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
-import kotlinx.coroutines.launch
 import com.ivzb.urgat.util.rememberLazyListStates
+import kotlinx.coroutines.launch
 
 typealias PagerContent = @Composable (
     page: Page,

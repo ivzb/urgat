@@ -59,10 +59,10 @@ import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.isFirst
 import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
+import com.ivzb.urgat.util.rememberLazyListStates
 import com.ivzb.urgat.util.toLocalDate
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
-import com.ivzb.urgat.util.rememberLazyListStates
 
 @Composable
 fun FuelConsumptionScreen(

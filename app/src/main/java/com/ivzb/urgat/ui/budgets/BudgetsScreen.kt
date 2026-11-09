@@ -48,10 +48,10 @@ import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
+import com.ivzb.urgat.util.rememberLazyListStates
 import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
 import kotlinx.coroutines.launch
-import com.ivzb.urgat.util.rememberLazyListStates
 
 @Composable
 fun BudgetsScreen(
