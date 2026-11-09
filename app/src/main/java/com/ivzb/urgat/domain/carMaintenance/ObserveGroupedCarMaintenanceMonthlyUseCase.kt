@@ -2,12 +2,14 @@ package com.ivzb.urgat.domain.carMaintenance
 
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 typealias GroupedCarMaintenance = GroupedItems<String, Int, CarMaintenance>
@@ -25,11 +27,13 @@ interface ObserveGroupedCarMaintenanceMonthlyUseCase {
 }
 
 class DefaultObserveGroupedCarMaintenanceMonthlyUseCase @Inject constructor(
-    repository: CarMaintenanceRepository
+    repository: CarMaintenanceRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedCarMaintenanceMonthlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterCarMaintenance,
         sort = ::sortCarMaintenance,
         group = { items -> Group.byDateMonthly(items, CarMaintenance::date) { it.size } },

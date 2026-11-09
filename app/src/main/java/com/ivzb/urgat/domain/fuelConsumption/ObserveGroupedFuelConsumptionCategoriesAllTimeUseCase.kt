@@ -3,12 +3,14 @@ package com.ivzb.urgat.domain.fuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionCategory
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.data.random.RandomRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group.groupFuelConsumptionCategoriesAllTime
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase {
@@ -26,10 +28,12 @@ interface ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase {
 class DefaultObserveGroupedFuelConsumptionCategoriesAllTimeUseCase @Inject constructor(
     fuelConsumptionRepository: FuelConsumptionRepository,
     private val randomRepository: RandomRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedFuelConsumptionCategoriesAllTimeUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = fuelConsumptionRepository,
+        dispatcher = dispatcher,
         filter = ::filterFuelConsumption,
         sort = ::sortFuelConsumption,
         group = { FuelConsumption -> groupFuelConsumptionCategoriesAllTime(FuelConsumption, randomRepository::uuid) },

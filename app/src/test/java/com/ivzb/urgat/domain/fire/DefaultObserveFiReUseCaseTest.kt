@@ -69,6 +69,7 @@ class DefaultObserveFiReUseCaseTest {
             observeGroupedTradesAllTimeUseCase,
             observeGroupedSavingsAllTimeUseCase,
             fakeForexRepository,
+            dispatcher = testDispatcher,
         )
     }
 

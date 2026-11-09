@@ -29,7 +29,7 @@ class ObserveInvestmentNetWorthUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveInvestmentNetWorthUseCase(repository)
+        observeUseCase = DefaultObserveInvestmentNetWorthUseCase(repository, testDispatcher)
     }
 
     @Test

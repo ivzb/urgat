@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.todo
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.todos.TodosFilterMenuItem
 import com.ivzb.urgat.ui.todos.TodosFilterType
 import com.ivzb.urgat.ui.todos.TodosFilteringUiInfo
@@ -8,8 +9,10 @@ import com.ivzb.urgat.ui.todos.TodosUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveTodosUiStateUseCase {
@@ -24,6 +27,7 @@ interface ObserveTodosUiStateUseCase {
 class DefaultObserveTodosUiStateUseCase @Inject constructor(
     private val observeTodosUseCase: ObserveTodosUseCase,
     private val observeTodosFilteringUseCase: ObserveTodosFilteringUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveTodosUiStateUseCase {
 
     override fun invoke(
@@ -52,6 +56,7 @@ class DefaultObserveTodosUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
     private fun getFilterUiInfo(
         searchQuery: String,

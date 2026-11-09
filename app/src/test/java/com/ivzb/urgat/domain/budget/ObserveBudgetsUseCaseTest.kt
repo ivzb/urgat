@@ -29,7 +29,7 @@ class ObserveBudgetsUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveBudgetsUseCase(repository)
+        observeUseCase = DefaultObserveBudgetsUseCase(repository, testDispatcher)
     }
 
     @Test

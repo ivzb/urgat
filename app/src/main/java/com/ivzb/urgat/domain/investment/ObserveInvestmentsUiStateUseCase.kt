@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.investment
 
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
@@ -7,8 +8,10 @@ import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveInvestmentsUiStateUseCase {
@@ -29,6 +32,7 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
     private val observeInvestmentNetWorthUseCase: ObserveInvestmentNetWorthUseCase,
     private val observeInvestmentsFilteringUseCase: ObserveInvestmentsFilteringUseCase,
     private val observeInvestmentsSortingUseCase: ObserveInvestmentsSortingUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveInvestmentsUiStateUseCase {
 
     override fun invoke(
@@ -72,5 +76,6 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
 }

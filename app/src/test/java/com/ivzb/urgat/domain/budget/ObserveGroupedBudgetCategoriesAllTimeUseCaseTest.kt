@@ -34,7 +34,8 @@ class ObserveGroupedBudgetCategoriesAllTimeUseCaseTest {
         randomRepository = mockk()
         observeUseCase = DefaultObserveGroupedBudgetCategoriesAllTimeUseCase(
             budgetsRepository,
-            randomRepository
+            randomRepository,
+            testDispatcher
         )
 
         every { randomRepository.uuid() } returns TEST_UUID

@@ -1,13 +1,16 @@
 package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortMenuItem
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 
 interface ObserveSavingsSortingUseCase {
 
@@ -15,7 +18,9 @@ interface ObserveSavingsSortingUseCase {
 
 }
 
-class DefaultObserveSavingsSortingUseCase @Inject constructor() : ObserveSavingsSortingUseCase {
+class DefaultObserveSavingsSortingUseCase @Inject constructor(
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+) : ObserveSavingsSortingUseCase {
 
     override fun invoke(): Flow<Async<List<SavingsSortMenuItem>>> = flowOf(
         Async.Success(
@@ -25,6 +30,6 @@ class DefaultObserveSavingsSortingUseCase @Inject constructor() : ObserveSavings
                 SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
             )
         )
-    )
+    ).flowOn(dispatcher)
 
 }

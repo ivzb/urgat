@@ -28,7 +28,7 @@ class DefaultObserveCarMaintenanceUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveCarMaintenanceUseCase(repository)
+        observeUseCase = DefaultObserveCarMaintenanceUseCase(repository, testDispatcher)
     }
 
     @Test

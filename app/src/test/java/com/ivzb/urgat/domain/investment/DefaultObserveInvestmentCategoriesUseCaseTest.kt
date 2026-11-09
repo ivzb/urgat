@@ -34,7 +34,7 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
     fun setUp() {
         investmentsRepository = mockk()
         randomRepository = mockk()
-        observeUseCase = DefaultObserveInvestmentCategoriesUseCase(investmentsRepository, randomRepository)
+        observeUseCase = DefaultObserveInvestmentCategoriesUseCase(investmentsRepository, randomRepository, testDispatcher)
 
         every { randomRepository.uuid() } returns TEST_UUID
     }

@@ -2,10 +2,12 @@ package com.ivzb.urgat.domain.fuelConsumption
 
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveFuelConsumptionUseCase {
@@ -21,11 +23,13 @@ interface ObserveFuelConsumptionUseCase {
 }
 
 class DefaultObserveFuelConsumptionUseCase @Inject constructor(
-    repository: FuelConsumptionRepository
+    repository: FuelConsumptionRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveFuelConsumptionUseCase {
 
     private val observeUseCase = ObserveUseCase<FuelConsumption, Unit, FuelConsumptionSortType>(
         repository = repository,
+        dispatcher = dispatcher,
         sort = ::sortFuelConsumption,
     )
 

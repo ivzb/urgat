@@ -34,7 +34,7 @@ class DefaultObserveGroupedTradeCategoriesMonthlyUseCaseTest {
         repository = mockk()
         randomRepository = mockk()
         every { randomRepository.uuid() } returns "id"
-        observeUseCase = DefaultObserveGroupedTradeCategoriesMonthlyUseCase(repository, randomRepository)
+        observeUseCase = DefaultObserveGroupedTradeCategoriesMonthlyUseCase(repository, randomRepository, testDispatcher)
     }
 
     @Test

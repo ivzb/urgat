@@ -119,3 +119,4 @@
 - add support for btc wallet watchlist
 - run detekt during publishing to play store
 - run detekt and fix violations
+- inspect the UI thread for janky frames

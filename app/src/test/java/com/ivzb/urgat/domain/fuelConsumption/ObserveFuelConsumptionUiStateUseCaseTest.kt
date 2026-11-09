@@ -18,6 +18,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -26,6 +27,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveFuelConsumptionUiStateUseCaseTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveGroupedFuelConsumptionMonthlyUseCase: FakeObserveGroupedFuelConsumptionMonthlyUseCase
     private lateinit var fakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase: FakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase
@@ -55,11 +58,12 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
             fakeObserveFuelConsumptionFilteringUseCase,
             fakeObserveFuelConsumptionCarFilteringUseCase,
             fakeObserveFuelConsumptionSortingUseCase,
+            dispatcher = testDispatcher,
         )
     }
 
     @Test
-    fun `initial state is loading`() = runTest {
+    fun `initial state is loading`() = runTest(testDispatcher) {
         fakeObserveGroupedFuelConsumptionMonthlyUseCase.emit(Async.Loading)
         fakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase.emit(Async.Loading)
         fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase.emit(Async.Loading)
@@ -89,7 +93,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data`() = runTest {
+    fun `emits success state when use case returns data`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -122,7 +126,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state with filter and sort badges when non default values are used`() = runTest {
+    fun `emits success state with filter and sort badges when non default values are used`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("diesel")
@@ -148,7 +152,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits error state when use case returns error`() = runTest {
+    fun `emits error state when use case returns error`() = runTest(testDispatcher) {
         fakeObserveGroupedFuelConsumptionMonthlyUseCase.emit(Async.Error)
         fakeObserveGroupedFuelConsumptionCategoriesMonthlyUseCase.emit(Async.Error)
         fakeObserveGroupedFuelConsumptionCategoriesYearlyUseCase.emit(Async.Error)
@@ -172,7 +176,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `sort badge is false for BY_DATE`() = runTest {
+    fun `sort badge is false for BY_DATE`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -186,7 +190,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `sort badge is true for BY_MIN`() = runTest {
+    fun `sort badge is true for BY_MIN`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -200,7 +204,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `filter badge is false for all filter type`() = runTest {
+    fun `filter badge is false for all filter type`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -215,7 +219,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `filter badge is true for specific fuel type`() = runTest {
+    fun `filter badge is true for specific fuel type`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val results = useCase(
@@ -232,7 +236,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `car filter badge is true for specific car and leaves fuel type badge untouched`() = runTest {
+    fun `car filter badge is true for specific car and leaves fuel type badge untouched`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val results = useCase(
@@ -250,7 +254,7 @@ class ObserveFuelConsumptionUiStateUseCaseTest {
     }
 
     @Test
-    fun `both filter badges are true when fuel type and car are filtered`() = runTest {
+    fun `both filter badges are true when fuel type and car are filtered`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val results = useCase(

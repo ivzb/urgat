@@ -2,11 +2,13 @@ package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.Budget
 import com.ivzb.urgat.data.budget.BudgetsRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveBudgetsUseCase {
@@ -22,11 +24,13 @@ interface ObserveBudgetsUseCase {
 }
 
 class DefaultObserveBudgetsUseCase @Inject constructor(
-    repository: BudgetsRepository
+    repository: BudgetsRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveBudgetsUseCase {
 
     private val observeUseCase = ObserveUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterBudgets,
         sort = ::sortBudgets,
     )

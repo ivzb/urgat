@@ -27,7 +27,7 @@ class ObserveWeightsUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveWeightsUseCase(repository)
+        observeUseCase = DefaultObserveWeightsUseCase(repository, testDispatcher)
     }
 
     @Test

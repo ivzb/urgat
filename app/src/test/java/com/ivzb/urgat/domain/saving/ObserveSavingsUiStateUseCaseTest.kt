@@ -14,6 +14,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -22,6 +23,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveSavingsUiStateUseCaseTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveSavingsUseCase: FakeObserveGroupedSavingsMonthlyUseCase
     private lateinit var fakeObserveGroupedSavingCategoriesMonthlyUseCase: FakeObserveGroupedSavingCategoriesMonthlyUseCase
@@ -45,11 +48,12 @@ class ObserveSavingsUiStateUseCaseTest {
             fakeObserveGroupedSavingCategoriesYearlyUseCase,
             fakeObserveGroupedSavingCategoriesAllTimeUseCase,
             fakeObserveSavingsSortingUseCase,
+            dispatcher = testDispatcher,
         )
     }
 
     @Test
-    fun `initial state is loading`() = runTest {
+    fun `initial state is loading`() = runTest(testDispatcher) {
         fakeObserveSavingsUseCase.emit(Async.Loading)
         fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Loading)
         fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Loading)
@@ -74,7 +78,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data`() = runTest {
+    fun `emits success state when use case returns data`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -97,7 +101,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data with sort badge`() = runTest {
+    fun `emits success state when use case returns data with sort badge`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -120,7 +124,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits error state when use case returns error`() = runTest {
+    fun `emits error state when use case returns error`() = runTest(testDispatcher) {
         fakeObserveSavingsUseCase.emit(Async.Error)
         fakeObserveGroupedSavingCategoriesMonthlyUseCase.emit(Async.Error)
         fakeObserveGroupedSavingCategoriesYearlyUseCase.emit(Async.Error)
@@ -141,7 +145,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is false when no filters are applied`() = runTest {
+    fun `hasAppliedFilters is false when no filters are applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -162,7 +166,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when search query is not empty`() = runTest {
+    fun `hasAppliedFilters is true when search query is not empty`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("emergency fund")
@@ -183,7 +187,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when sort type is applied`() = runTest {
+    fun `hasAppliedFilters is true when sort type is applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -204,7 +208,7 @@ class ObserveSavingsUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when all filters are applied`() = runTest {
+    fun `hasAppliedFilters is true when all filters are applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("emergency fund")

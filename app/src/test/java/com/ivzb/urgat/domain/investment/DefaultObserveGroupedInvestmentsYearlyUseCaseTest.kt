@@ -31,7 +31,7 @@ class DefaultObserveGroupedInvestmentsYearlyUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveGroupedInvestmentsYearlyUseCase(repository)
+        observeUseCase = DefaultObserveGroupedInvestmentsYearlyUseCase(repository, testDispatcher)
     }
 
     @Test

@@ -32,7 +32,7 @@ class ObserveTodosFilteringUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveTodosFilteringUseCase(repository)
+        observeUseCase = DefaultObserveTodosFilteringUseCase(repository, dispatcher = testDispatcher)
     }
 
     @Test

@@ -30,7 +30,7 @@ class ObserveWatchlistAssetsUseCaseTest {
     fun setUp() {
         repository = mockk()
         every { repository.isRefreshingFlow } returns MutableStateFlow(false)
-        observeUseCase = DefaultObserveWatchlistAssetsUseCase(repository)
+        observeUseCase = DefaultObserveWatchlistAssetsUseCase(repository, testDispatcher)
     }
 
     @Test
@@ -203,7 +203,7 @@ class ObserveWatchlistAssetsUseCaseTest {
         val repositoryRefreshingFlow = MutableStateFlow(false)
         every { repository.isRefreshingFlow } returns repositoryRefreshingFlow
 
-        val useCase = DefaultObserveWatchlistAssetsUseCase(repository)
+        val useCase = DefaultObserveWatchlistAssetsUseCase(repository, testDispatcher)
 
         assertEquals(false, useCase.isRefreshingFlow.value)
 
@@ -219,7 +219,7 @@ class ObserveWatchlistAssetsUseCaseTest {
         val repositoryRefreshingFlow = MutableStateFlow(true)
         every { repository.isRefreshingFlow } returns repositoryRefreshingFlow
 
-        val useCase = DefaultObserveWatchlistAssetsUseCase(repository)
+        val useCase = DefaultObserveWatchlistAssetsUseCase(repository, testDispatcher)
 
         assertEquals(true, useCase.isRefreshingFlow.value)
     }

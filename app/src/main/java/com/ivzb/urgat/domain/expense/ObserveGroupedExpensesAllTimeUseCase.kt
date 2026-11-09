@@ -2,12 +2,14 @@ package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedExpensesAllTimeUseCase {
@@ -23,11 +25,13 @@ interface ObserveGroupedExpensesAllTimeUseCase {
 }
 
 class DefaultObserveGroupedExpensesAllTimeUseCase @Inject constructor(
-    repository: ExpensesRepository
+    repository: ExpensesRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedExpensesAllTimeUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterExpenses,
         sort = ::sortExpenses,
         group = { items -> Group.byDateAllTime(items, Expense::total) },

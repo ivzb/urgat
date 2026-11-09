@@ -2,10 +2,12 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.saving.SavingsRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveSavingsUseCase {
@@ -21,11 +23,13 @@ interface ObserveSavingsUseCase {
 }
 
 class DefaultObserveSavingsUseCase @Inject constructor(
-    repository: SavingsRepository
+    repository: SavingsRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveSavingsUseCase {
 
     private val observeUseCase = ObserveUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterSavings,
         sort = ::sortSavings,
     )

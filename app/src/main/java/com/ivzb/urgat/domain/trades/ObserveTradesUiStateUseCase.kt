@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.trades
 
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.trades.TRADES_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.trades.TradesFilteringUiInfo
 import com.ivzb.urgat.ui.trades.TradesSortType
@@ -7,8 +8,10 @@ import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveTradesUiStateUseCase {
@@ -26,6 +29,7 @@ class DefaultObserveTradesUiStateUseCase @Inject constructor(
     private val observeGroupedTradeCategoriesYearlyUseCase: ObserveGroupedTradeCategoriesYearlyUseCase,
     private val observeGroupedTradeCategoriesAllTimeUseCase: ObserveGroupedTradeCategoriesAllTimeUseCase,
     private val observeTradesSortingUseCase: ObserveTradesSortingUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveTradesUiStateUseCase {
 
     override fun invoke(
@@ -62,5 +66,6 @@ class DefaultObserveTradesUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
 }

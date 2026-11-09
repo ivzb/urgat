@@ -4,14 +4,17 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.expense.ExpensesRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveExpensesFilteringUseCase {
@@ -21,7 +24,8 @@ interface ObserveExpensesFilteringUseCase {
 }
 
 class DefaultObserveExpensesFilteringUseCase @Inject constructor(
-    private val repository: ExpensesRepository
+    private val repository: ExpensesRepository,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ObserveExpensesFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<ExpensesFilterMenuItem>>> = repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE)
@@ -38,5 +42,6 @@ class DefaultObserveExpensesFilteringUseCase @Inject constructor(
             Tracker.error(e)
             emit(Async.Error)
         }
+        .flowOn(dispatcher)
 
 }

@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.fuelConsumption
 
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilteringUiInfo
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType
@@ -7,8 +8,10 @@ import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveFuelConsumptionUiStateUseCase {
@@ -29,6 +32,7 @@ class DefaultObserveFuelConsumptionUiStateUseCase @Inject constructor(
     private val observeFuelConsumptionFilteringUseCase: ObserveFuelConsumptionFilteringUseCase,
     private val observeFuelConsumptionCarFilteringUseCase: ObserveFuelConsumptionCarFilteringUseCase,
     private val observeFuelConsumptionSortingUseCase: ObserveFuelConsumptionSortingUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveFuelConsumptionUiStateUseCase {
 
     override fun invoke(
@@ -69,5 +73,6 @@ class DefaultObserveFuelConsumptionUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
 }

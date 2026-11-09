@@ -2,9 +2,11 @@ package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.data.note.Note
 import com.ivzb.urgat.data.note.NotesRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveNotesUseCase {
@@ -20,11 +22,13 @@ interface ObserveNotesUseCase {
 }
 
 class DefaultObserveNotesUseCase @Inject constructor(
-    repository: NotesRepository
+    repository: NotesRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveNotesUseCase {
 
     private val observeUseCase = ObserveUseCase<Note, Unit, Unit>(
         repository = repository,
+        dispatcher = dispatcher,
     )
 
     override fun invoke(

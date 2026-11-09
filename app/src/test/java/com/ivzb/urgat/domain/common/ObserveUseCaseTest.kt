@@ -7,12 +7,15 @@ import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -154,6 +157,7 @@ class ObserveUseCaseTest {
 
         val useCase = ObserveUseCase<String, String, String>(
             repository = repository,
+            dispatcher = testDispatcher,
             transform = { list -> list.map { it.uppercase() } },
         )
 
@@ -170,6 +174,7 @@ class ObserveUseCaseTest {
 
         val useCase = ObserveUseCase<String, String, String>(
             repository = repository,
+            dispatcher = testDispatcher,
             filter = { list, type -> list.filter { it.startsWith(type) } },
             sort = { list, type -> if (type == "asc") list.sorted() else list.sortedDescending() },
             transform = { list -> list.map { it.uppercase() } },
@@ -206,8 +211,28 @@ class ObserveUseCaseTest {
         assert(results.first() is Async.Error)
     }
 
+    @Test
+    fun `invoke should observe on the given dispatcher`() = runTest(testDispatcher) {
+        var observeDispatcher: ContinuationInterceptor? = null
+        every { repository.observe(10, NO_DATE_RANGE) } returns flow {
+            observeDispatcher = currentCoroutineContext()[ContinuationInterceptor]
+            emit(items)
+        }
+        val worker = StandardTestDispatcher(testScheduler)
+
+        val useCase = ObserveUseCase<String, String, String>(
+            repository = repository,
+            dispatcher = worker,
+        )
+
+        useCase(flowOf(""), flowOf(NO_DATE_RANGE), null, null, flowOf(10)).toList()
+
+        assertEquals(worker, observeDispatcher)
+    }
+
     private fun useCase() = ObserveUseCase<String, String, String>(
         repository = repository,
+        dispatcher = testDispatcher,
         filter = { list, type -> list.filter { it.startsWith(type) } },
         sort = { list, type -> if (type == "asc") list.sorted() else list.sortedDescending() },
     )

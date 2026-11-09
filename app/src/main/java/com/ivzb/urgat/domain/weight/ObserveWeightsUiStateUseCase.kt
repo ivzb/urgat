@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.weight
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.weights.WeightsFilteringUiInfo
 import com.ivzb.urgat.ui.weights.WeightsSortMenuItem
 import com.ivzb.urgat.ui.weights.WeightsSortType
@@ -8,7 +9,9 @@ import com.ivzb.urgat.ui.weights.WeightsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveWeightsUiStateUseCase {
@@ -23,6 +26,7 @@ interface ObserveWeightsUiStateUseCase {
 class DefaultObserveWeightsUiStateUseCase @Inject constructor(
     private val observeWeightsUseCase: ObserveWeightsUseCase,
     private val observeWeightsSortingUseCase: ObserveWeightsSortingUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ObserveWeightsUiStateUseCase {
 
     override fun invoke(
@@ -50,6 +54,7 @@ class DefaultObserveWeightsUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
     private fun getFilterUiInfo(
         sortType: WeightsSortType,

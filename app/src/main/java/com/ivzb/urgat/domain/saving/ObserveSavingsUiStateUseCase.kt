@@ -1,13 +1,16 @@
 package com.ivzb.urgat.domain.saving
 
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.savings.SavingsFilteringUiInfo
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveSavingsUiStateUseCase {
@@ -25,6 +28,7 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
     private val observeGroupedSavingCategoriesYearlyUseCase: ObserveGroupedSavingCategoriesYearlyUseCase,
     private val observeGroupedSavingCategoriesAllTimeUseCase: ObserveGroupedSavingCategoriesAllTimeUseCase,
     private val observeSavingsSortingUseCase: ObserveSavingsSortingUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveSavingsUiStateUseCase {
 
     override fun invoke(
@@ -59,5 +63,6 @@ class DefaultObserveSavingsUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
 }

@@ -48,10 +48,13 @@ import com.ivzb.urgat.util.Async
 import java.math.BigDecimal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.Before
 
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class ObserveFinanceUiStateUseCaseTestBase {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveGroupedExpensesMonthlyUseCase: FakeObserveGroupedExpensesMonthlyUseCase
     private lateinit var fakeObserveExpensesFilteringUseCase: FakeObserveExpensesFilteringUseCase
@@ -114,6 +117,7 @@ abstract class ObserveFinanceUiStateUseCaseTestBase {
             fakeObserveBudgetsSortingUseCase,
             fakeObserveReportBudgetUseCase,
             fakeObserveFiReUseCase,
+            dispatcher = testDispatcher,
         )
     }
 

@@ -33,7 +33,7 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
     fun setUp() {
         repository = mockk()
         every { repository.isRefreshingFlow } returns MutableStateFlow(false)
-        observeUseCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository)
+        observeUseCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository, testDispatcher)
     }
 
     @Test
@@ -188,7 +188,7 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
         val repositoryRefreshingFlow = MutableStateFlow(false)
         every { repository.isRefreshingFlow } returns repositoryRefreshingFlow
 
-        val useCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository)
+        val useCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository, testDispatcher)
 
         assertEquals(false, useCase.isRefreshingFlow.value)
 
@@ -204,7 +204,7 @@ class DefaultObserveGroupedInvestmentsMonthlyUseCaseTest {
         val repositoryRefreshingFlow = MutableStateFlow(true)
         every { repository.isRefreshingFlow } returns repositoryRefreshingFlow
 
-        val useCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository)
+        val useCase = DefaultObserveGroupedInvestmentsMonthlyUseCase(repository, testDispatcher)
 
         assertEquals(true, useCase.isRefreshingFlow.value)
     }

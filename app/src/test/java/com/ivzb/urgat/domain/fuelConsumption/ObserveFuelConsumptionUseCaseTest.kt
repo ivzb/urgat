@@ -28,7 +28,7 @@ class ObserveFuelConsumptionUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveFuelConsumptionUseCase(repository)
+        observeUseCase = DefaultObserveFuelConsumptionUseCase(repository, testDispatcher)
     }
 
     @Test

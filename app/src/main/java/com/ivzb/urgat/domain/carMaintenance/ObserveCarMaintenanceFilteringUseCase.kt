@@ -4,14 +4,17 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.carMaintenance.CAR_MAINTENANCE_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilterMenuItem
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveCarMaintenanceFilteringUseCase {
@@ -21,7 +24,8 @@ interface ObserveCarMaintenanceFilteringUseCase {
 }
 
 class DefaultObserveCarMaintenanceFilteringUseCase @Inject constructor(
-    private val repository: CarMaintenanceRepository
+    private val repository: CarMaintenanceRepository,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ObserveCarMaintenanceFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<CarMaintenanceFilterMenuItem>>> {
@@ -42,6 +46,7 @@ class DefaultObserveCarMaintenanceFilteringUseCase @Inject constructor(
                 Tracker.error(e)
                 emit(Async.Error)
             }
+            .flowOn(dispatcher)
     }
 
 }

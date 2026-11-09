@@ -70,6 +70,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             observeGroupedTradesAllTimeUseCase,
             observeGroupedSavingsAllTimeUseCase,
             forexRepository,
+            dispatcher = testDispatcher,
         )
     }
 

@@ -1,12 +1,15 @@
 package com.ivzb.urgat.domain.note
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
 import com.ivzb.urgat.ui.notes.NotesUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveNotesUiStateUseCase {
@@ -19,6 +22,7 @@ interface ObserveNotesUiStateUseCase {
 
 class DefaultObserveNotesUiStateUseCase @Inject constructor(
     private val observeNotesUseCase: ObserveNotesUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveNotesUiStateUseCase {
 
     override fun invoke(
@@ -43,6 +47,7 @@ class DefaultObserveNotesUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
     private fun getFilterUiInfo(
         searchQuery: String,

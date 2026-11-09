@@ -1,13 +1,16 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.R
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesSortMenuItem
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 
 interface ObserveExpensesSortingUseCase {
 
@@ -15,7 +18,9 @@ interface ObserveExpensesSortingUseCase {
 
 }
 
-class DefaultObserveExpensesSortingUseCase @Inject constructor() : ObserveExpensesSortingUseCase {
+class DefaultObserveExpensesSortingUseCase @Inject constructor(
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
+) : ObserveExpensesSortingUseCase {
 
     override fun invoke(): Flow<Async<List<ExpensesSortMenuItem>>> = flowOf(
         Async.Success(
@@ -25,6 +30,6 @@ class DefaultObserveExpensesSortingUseCase @Inject constructor() : ObserveExpens
                 SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
             )
         )
-    )
+    ).flowOn(dispatcher)
 
 }

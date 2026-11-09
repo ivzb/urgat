@@ -14,6 +14,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -22,6 +23,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveTradesUiStateUseCaseTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveGroupedTradesMonthlyUseCase: FakeObserveGroupedTradesMonthlyUseCase
     private lateinit var fakeObserveGroupedTradeCategoriesMonthlyUseCase: FakeObserveGroupedTradeCategoriesMonthlyUseCase
@@ -45,11 +48,12 @@ class ObserveTradesUiStateUseCaseTest {
             fakeObserveGroupedTradeCategoriesYearlyUseCase,
             fakeObserveGroupedTradeCategoriesAllTimeUseCase,
             fakeObserveTradesSortingUseCase,
+            dispatcher = testDispatcher,
         )
     }
 
     @Test
-    fun `initial state is loading`() = runTest {
+    fun `initial state is loading`() = runTest(testDispatcher) {
         fakeObserveGroupedTradesMonthlyUseCase.emit(Async.Loading)
         fakeObserveGroupedTradeCategoriesMonthlyUseCase.emit(Async.Loading)
         fakeObserveGroupedTradeCategoriesYearlyUseCase.emit(Async.Loading)
@@ -74,7 +78,7 @@ class ObserveTradesUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data`() = runTest {
+    fun `emits success state when use case returns data`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -97,7 +101,7 @@ class ObserveTradesUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits error state when use case returns error`() = runTest {
+    fun `emits error state when use case returns error`() = runTest(testDispatcher) {
         fakeObserveGroupedTradesMonthlyUseCase.emit(Async.Error)
         fakeObserveGroupedTradeCategoriesMonthlyUseCase.emit(Async.Error)
         fakeObserveGroupedTradeCategoriesYearlyUseCase.emit(Async.Error)
@@ -118,7 +122,7 @@ class ObserveTradesUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is false when no filters are applied`() = runTest {
+    fun `hasAppliedFilters is false when no filters are applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -140,7 +144,7 @@ class ObserveTradesUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when search query is not empty`() = runTest {
+    fun `hasAppliedFilters is true when search query is not empty`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("AAPL")

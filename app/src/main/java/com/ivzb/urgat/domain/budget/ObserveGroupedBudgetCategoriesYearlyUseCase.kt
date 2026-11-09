@@ -2,12 +2,14 @@ package com.ivzb.urgat.domain.budget
 
 import com.ivzb.urgat.data.budget.BudgetsRepository
 import com.ivzb.urgat.data.random.RandomRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group.groupBudgetCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedBudgetCategoriesYearlyUseCase {
@@ -25,10 +27,12 @@ interface ObserveGroupedBudgetCategoriesYearlyUseCase {
 class DefaultObserveGroupedBudgetCategoriesYearlyUseCase @Inject constructor(
     budgetsRepository: BudgetsRepository,
     private val randomRepository: RandomRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedBudgetCategoriesYearlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = budgetsRepository,
+        dispatcher = dispatcher,
         filter = ::filterBudgets,
         sort = ::sortBudgets,
         group = { budgets -> groupBudgetCategoriesYearly(budgets, randomRepository::uuid) },

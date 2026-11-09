@@ -70,6 +70,7 @@ class DefaultObserveGroupedBudgetsYearlyUseCaseTest {
             observeGroupedTradesYearlyUseCase,
             observeGroupedSavingsYearlyUseCase,
             forexRepository,
+            dispatcher = testDispatcher,
         )
     }
 

@@ -21,7 +21,7 @@ class ObserveFuelConsumptionSortingUseCaseTest {
 
     @Before
     fun setUp() {
-        observeUseCase = DefaultObserveFuelConsumptionSortingUseCase()
+        observeUseCase = DefaultObserveFuelConsumptionSortingUseCase(dispatcher = testDispatcher)
     }
 
     @Test

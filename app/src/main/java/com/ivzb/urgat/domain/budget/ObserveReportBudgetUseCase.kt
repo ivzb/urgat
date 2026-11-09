@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.trade.Trade
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.expense.ObserveGroupedExpensesMonthlyUseCase
 import com.ivzb.urgat.domain.investment.ObserveGroupedInvestmentsMonthlyUseCase
 import com.ivzb.urgat.domain.saving.ObserveGroupedSavingsMonthlyUseCase
@@ -15,8 +16,10 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import com.ivzb.urgat.util.combineAsync
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 
 interface ObserveReportBudgetUseCase {
 
@@ -33,6 +36,7 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
     private val observeGroupedTradesMonthlyUseCase: ObserveGroupedTradesMonthlyUseCase,
     private val observeGroupedSavingsMonthlyUseCase: ObserveGroupedSavingsMonthlyUseCase,
     private val forexRepository: ForexRepository,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveReportBudgetUseCase {
 
     override fun invoke(
@@ -74,5 +78,6 @@ class DefaultObserveReportBudgetUseCase @Inject constructor(
             Tracker.error(e)
             emit(Async.Error)
         }
+        .flowOn(dispatcher)
 
 }

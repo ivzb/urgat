@@ -3,14 +3,17 @@ package com.ivzb.urgat.domain.common
 import com.ivzb.urgat.data.base.BaseRepository
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class ObserveUseCase<T, FilterType, SortType>(
     repository: BaseRepository<T>,
+    private val dispatcher: CoroutineDispatcher,
     filter: ((List<T>, FilterType) -> List<T>)? = null,
     sort: ((List<T>, SortType) -> List<T>)? = null,
     transform: ((List<T>) -> List<T>)? = null,
@@ -25,6 +28,7 @@ class ObserveUseCase<T, FilterType, SortType>(
         limitFlow: Flow<Int>? = null,
     ): Flow<Async<List<T>>> =
         invokeFlow(searchQueryFlow, dateRangeFlow, filterTypeFlow, sortTypeFlow, limitFlow)
+            .flowOn(dispatcher)
             .map<List<T>, Async<List<T>>> { Async.Success(it) }
             .catch { e ->
                 Tracker.error(e)

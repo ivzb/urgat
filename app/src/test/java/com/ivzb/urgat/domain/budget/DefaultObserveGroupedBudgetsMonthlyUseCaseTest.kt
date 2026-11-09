@@ -26,10 +26,13 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import java.math.BigDecimal
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -70,6 +73,7 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
             observeGroupedTradesMonthlyUseCase,
             observeGroupedSavingsMonthlyUseCase,
             forexRepository,
+            dispatcher = testDispatcher,
         )
     }
 
@@ -372,5 +376,50 @@ class DefaultObserveGroupedBudgetsMonthlyUseCaseTest {
         assertEquals(1, results.size)
         val first = results.first()
         assert(first is Async.Error)
+    }
+
+    @Test
+    fun `invoke should compute budgets on the given dispatcher`() = runTest(testDispatcher) {
+        val worker = StandardTestDispatcher(testScheduler)
+        var convertDispatcher: ContinuationInterceptor? = null
+        coEvery { forexRepository.convert(any(), any(), any()) } coAnswers {
+            convertDispatcher = currentCoroutineContext()[ContinuationInterceptor]
+            firstArg<BigDecimal>()
+        }
+
+        val categories = listOf(
+            GroupedBudgetCategories(
+                group = "2025/11",
+                total = 100.toBigDecimal(),
+                items = listOf(BudgetCategory("1", "1", "EUR", 100.toBigDecimal())),
+            ),
+        )
+        val expenses = listOf(
+            GroupedExpenses(
+                "2025/11",
+                listOf(ExpenseTotal(10.toBigDecimal(), "USD")),
+                listOf(Expense("1", "1", 10.toBigDecimal(), "USD", "1", 1, false, false, 1)),
+            ),
+        )
+
+        every { observeGroupedBudgetCategoriesMonthlyUseCase(any(), any(), any(), any(), any()) } returns flowOf(Async.Success(categories))
+        every { observeGroupedExpensesMonthlyUseCase(any(), any(), any(), any(), any()) } returns flowOf(Async.Success(expenses))
+        every { observeGroupedInvestmentsMonthlyUseCase(any(), any(), any(), any(), any()) } returns flowOf(Async.Success(listOf()))
+        every { observeGroupedTradesMonthlyUseCase(any(), any(), any(), any(), any()) } returns flowOf(Async.Success(listOf()))
+        every { observeGroupedSavingsMonthlyUseCase(any(), any(), any(), any(), any()) } returns flowOf(Async.Success(listOf()))
+
+        val useCase = DefaultObserveGroupedBudgetsMonthlyUseCase(
+            observeGroupedBudgetCategoriesMonthlyUseCase,
+            observeGroupedExpensesMonthlyUseCase,
+            observeGroupedInvestmentsMonthlyUseCase,
+            observeGroupedTradesMonthlyUseCase,
+            observeGroupedSavingsMonthlyUseCase,
+            forexRepository,
+            dispatcher = worker,
+        )
+
+        useCase(flowOf(""), null, null, null, null).toList()
+
+        assertEquals(worker, convertDispatcher)
     }
 }

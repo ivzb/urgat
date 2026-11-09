@@ -21,7 +21,7 @@ class ObserveExpensesSortingUseCaseTest {
 
     @Before
     fun setUp() {
-        observeUseCase = DefaultObserveExpensesSortingUseCase()
+        observeUseCase = DefaultObserveExpensesSortingUseCase(dispatcher = testDispatcher)
     }
 
     @Test

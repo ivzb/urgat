@@ -1,5 +1,6 @@
 package com.ivzb.urgat.domain.finance
 
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.budget.ObserveBudgetsFilteringUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsSortingUseCase
 import com.ivzb.urgat.domain.budget.ObserveBudgetsUseCase
@@ -45,8 +46,10 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import java.math.BigDecimal
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveFinanceUiStateUseCase {
@@ -102,6 +105,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
     private val observeBudgetsSortingUseCase: ObserveBudgetsSortingUseCase,
     private val observeReportBudgetUseCase: ObserveReportBudgetUseCase,
     private val observeFiReUseCase: ObserveFiReUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ObserveFinanceUiStateUseCase {
 
     override fun invoke(
@@ -183,6 +187,7 @@ class DefaultObserveFinanceUiStateUseCase @Inject constructor(
                 )
             }
         ).map { Async.Success(it) }
+            .flowOn(dispatcher)
     }
 
     private fun observeExpensesLightUiState(

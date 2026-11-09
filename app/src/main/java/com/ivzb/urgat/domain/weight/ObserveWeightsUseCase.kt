@@ -2,10 +2,12 @@ package com.ivzb.urgat.domain.weight
 
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.data.weight.WeightsRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.weights.WeightsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveWeightsUseCase {
@@ -21,11 +23,13 @@ interface ObserveWeightsUseCase {
 }
 
 class DefaultObserveWeightsUseCase @Inject constructor(
-    repository: WeightsRepository
+    repository: WeightsRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveWeightsUseCase {
 
     private val observeUseCase = ObserveUseCase<Weight, Unit, WeightsSortType>(
         repository = repository,
+        dispatcher = dispatcher,
         sort = ::sortWeights,
     )
 

@@ -2,11 +2,13 @@ package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentsRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedInvestmentsAllTimeUseCase {
@@ -22,11 +24,13 @@ interface ObserveGroupedInvestmentsAllTimeUseCase {
 }
 
 class DefaultObserveGroupedInvestmentsAllTimeUseCase @Inject constructor(
-    repository: InvestmentsRepository
+    repository: InvestmentsRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedInvestmentsAllTimeUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterInvestments,
         sort = ::sortInvestments,
         group = { items -> Group.byDateAllTime(items, Investment::total) },

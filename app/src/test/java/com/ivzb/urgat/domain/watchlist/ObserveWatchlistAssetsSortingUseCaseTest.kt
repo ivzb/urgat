@@ -21,7 +21,7 @@ class ObserveWatchlistAssetsSortingUseCaseTest {
 
     @Before
     fun setUp() {
-        observeUseCase = DefaultObserveWatchlistAssetsSortingUseCase()
+        observeUseCase = DefaultObserveWatchlistAssetsSortingUseCase(dispatcher = testDispatcher)
     }
 
     @Test

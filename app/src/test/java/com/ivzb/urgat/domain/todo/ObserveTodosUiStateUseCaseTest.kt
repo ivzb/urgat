@@ -10,6 +10,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -18,6 +19,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveTodosUiStateUseCaseTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveTodosUseCase: FakeObserveTodosUseCase
     private lateinit var fakeObserveTodosFilteringUseCase: FakeObserveTodosFilteringUseCase
@@ -32,11 +35,12 @@ class ObserveTodosUiStateUseCaseTest {
         useCase = DefaultObserveTodosUiStateUseCase(
             fakeObserveTodosUseCase,
             fakeObserveTodosFilteringUseCase,
+            dispatcher = testDispatcher,
         )
     }
 
     @Test
-    fun `initial state is loading`() = runTest {
+    fun `initial state is loading`() = runTest(testDispatcher) {
         fakeObserveTodosUseCase.emit(Async.Loading)
         fakeObserveTodosFilteringUseCase.emit(Async.Loading)
 
@@ -55,7 +59,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data`() = runTest {
+    fun `emits success state when use case returns data`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -75,7 +79,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data with filter badge`() = runTest {
+    fun `emits success state when use case returns data with filter badge`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -95,7 +99,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits error state when use case returns error`() = runTest {
+    fun `emits error state when use case returns error`() = runTest(testDispatcher) {
         fakeObserveTodosUseCase.emit(Async.Error)
         fakeObserveTodosFilteringUseCase.emit(Async.Error)
 
@@ -113,7 +117,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is false when no filters are applied`() = runTest {
+    fun `hasAppliedFilters is false when no filters are applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -134,7 +138,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when search query is not empty`() = runTest {
+    fun `hasAppliedFilters is true when search query is not empty`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("lunch")
@@ -155,7 +159,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when filter type is applied`() = runTest {
+    fun `hasAppliedFilters is true when filter type is applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("")
@@ -176,7 +180,7 @@ class ObserveTodosUiStateUseCaseTest {
     }
 
     @Test
-    fun `hasAppliedFilters is true when all filters are applied`() = runTest {
+    fun `hasAppliedFilters is true when all filters are applied`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val searchQueryFlow = flowOf("lunch")

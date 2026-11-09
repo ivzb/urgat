@@ -6,6 +6,7 @@ import com.ivzb.urgat.data.fire.StashBreakdownItem
 import com.ivzb.urgat.data.forex.ForexRepository
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.trade.Trade
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.budget.GroupedBudgetCategories
 import com.ivzb.urgat.domain.budget.ObserveGroupedBudgetCategoriesMonthlyUseCase
 import com.ivzb.urgat.domain.expense.GroupedExpenses
@@ -25,8 +26,10 @@ import com.ivzb.urgat.util.toPercentage
 import java.math.BigDecimal
 import javax.inject.Inject
 import kotlin.math.pow
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveFiReUseCase {
@@ -48,6 +51,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
     private val observeGroupedTradesAllTimeUseCase: ObserveGroupedTradesAllTimeUseCase,
     private val observeGroupedSavingsAllTimeUseCase: ObserveGroupedSavingsAllTimeUseCase,
     private val forexRepository: ForexRepository,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveFiReUseCase {
 
     override fun invoke(
@@ -115,6 +119,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
                 Tracker.error(e)
                 emit(Async.Error)
             }
+            .flowOn(dispatcher)
     }
 
     /**

@@ -2,11 +2,13 @@ package com.ivzb.urgat.domain.saving
 
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.data.saving.SavingsRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group.groupSavingCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedSavingCategoriesYearlyUseCase {
@@ -24,10 +26,12 @@ interface ObserveGroupedSavingCategoriesYearlyUseCase {
 class DefaultObserveGroupedSavingCategoriesYearlyUseCase @Inject constructor(
     savingsRepository: SavingsRepository,
     private val randomRepository: RandomRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedSavingCategoriesYearlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = savingsRepository,
+        dispatcher = dispatcher,
         filter = ::filterSavings,
         sort = ::sortSavings,
         group = { savings -> groupSavingCategoriesYearly(savings, randomRepository::uuid) },

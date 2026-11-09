@@ -36,7 +36,7 @@ class ObserveGroupedFuelConsumptionCategoriesYearlyUseCaseTest {
     fun setUp() {
         repository = mockk()
         randomRepository = mockk()
-        observeUseCase = DefaultObserveGroupedFuelConsumptionCategoriesYearlyUseCase(repository, randomRepository)
+        observeUseCase = DefaultObserveGroupedFuelConsumptionCategoriesYearlyUseCase(repository, randomRepository, testDispatcher)
 
         every { randomRepository.uuid() } returns TEST_UUID
     }

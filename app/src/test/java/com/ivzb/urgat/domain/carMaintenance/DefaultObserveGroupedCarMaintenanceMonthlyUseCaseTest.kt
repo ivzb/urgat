@@ -30,7 +30,7 @@ class DefaultObserveGroupedCarMaintenanceMonthlyUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveGroupedCarMaintenanceMonthlyUseCase(repository)
+        observeUseCase = DefaultObserveGroupedCarMaintenanceMonthlyUseCase(repository, testDispatcher)
     }
 
     @Test

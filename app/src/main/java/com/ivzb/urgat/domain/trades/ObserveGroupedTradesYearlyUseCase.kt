@@ -2,11 +2,13 @@ package com.ivzb.urgat.domain.trades
 
 import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.data.trade.TradesRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.Group
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveGroupedTradesYearlyUseCase {
@@ -22,11 +24,13 @@ interface ObserveGroupedTradesYearlyUseCase {
 }
 
 class DefaultObserveGroupedTradesYearlyUseCase @Inject constructor(
-    repository: TradesRepository
+    repository: TradesRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedTradesYearlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterTrades,
         sort = ::sortTrades,
         group = { items -> Group.byDateYearly(items, Trade::date, Trade::total) },

@@ -4,14 +4,17 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.components.FilterMenuItem
 import com.ivzb.urgat.ui.fuelConsumption.FUEL_CONSUMPTION_FILTER_TYPE_ALL
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilterMenuItem
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveFuelConsumptionCarFilteringUseCase {
@@ -21,7 +24,8 @@ interface ObserveFuelConsumptionCarFilteringUseCase {
 }
 
 class DefaultObserveFuelConsumptionCarFilteringUseCase @Inject constructor(
-    private val repository: FuelConsumptionRepository
+    private val repository: FuelConsumptionRepository,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ObserveFuelConsumptionCarFilteringUseCase {
 
     override fun invoke(): Flow<Async<List<FuelConsumptionFilterMenuItem>>> {
@@ -42,6 +46,7 @@ class DefaultObserveFuelConsumptionCarFilteringUseCase @Inject constructor(
                 Tracker.error(e)
                 emit(Async.Error)
             }
+            .flowOn(dispatcher)
     }
 
 }

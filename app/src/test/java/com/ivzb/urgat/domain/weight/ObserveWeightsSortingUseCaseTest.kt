@@ -21,7 +21,7 @@ class ObserveWeightsSortingUseCaseTest {
 
     @Before
     fun setUp() {
-        observeUseCase = DefaultObserveWeightsSortingUseCase()
+        observeUseCase = DefaultObserveWeightsSortingUseCase(dispatcher = testDispatcher)
     }
 
     @Test

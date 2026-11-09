@@ -1,13 +1,16 @@
 package com.ivzb.urgat.domain.carMaintenance
 
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceFilteringUiInfo
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceUiState
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.combineUiState
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface ObserveCarMaintenanceUiStateUseCase {
@@ -24,6 +27,7 @@ class DefaultObserveCarMaintenanceUiStateUseCase @Inject constructor(
     private val observeGroupedCarMaintenanceMonthlyUseCase: ObserveGroupedCarMaintenanceMonthlyUseCase,
     private val observeCarMaintenanceFilteringUseCase: ObserveCarMaintenanceFilteringUseCase,
     private val observeCarMaintenanceSortingUseCase: ObserveCarMaintenanceSortingUseCase,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveCarMaintenanceUiStateUseCase {
 
     override fun invoke(
@@ -56,5 +60,6 @@ class DefaultObserveCarMaintenanceUiStateUseCase @Inject constructor(
             )
         }
     ).map { Async.Success(it) }
+        .flowOn(dispatcher)
 
 }

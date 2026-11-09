@@ -2,11 +2,14 @@ package com.ivzb.urgat.domain.fire
 
 import com.ivzb.urgat.data.fire.FireRepository
 import com.ivzb.urgat.data.fire.NetWorth
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.Tracker
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 /**
@@ -27,6 +30,7 @@ interface ObserveNetWorthUseCase {
 class DefaultObserveNetWorthUseCase @Inject constructor(
     private val observeFiReUseCase: ObserveFiReUseCase,
     private val fireRepository: FireRepository,
+    @DefaultDispatcher private val dispatcher: CoroutineDispatcher,
 ): ObserveNetWorthUseCase {
 
     override fun invoke(): Flow<Async<NetWorth?>> = observeFiReUseCase(
@@ -63,5 +67,6 @@ class DefaultObserveNetWorthUseCase @Inject constructor(
             Tracker.error(e)
             emit(Async.Error)
         }
+        .flowOn(dispatcher)
 
 }

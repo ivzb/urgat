@@ -32,7 +32,7 @@ class ObserveBudgetsFilteringUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveBudgetsFilteringUseCase(repository)
+        observeUseCase = DefaultObserveBudgetsFilteringUseCase(repository, dispatcher = testDispatcher)
     }
 
     @Test

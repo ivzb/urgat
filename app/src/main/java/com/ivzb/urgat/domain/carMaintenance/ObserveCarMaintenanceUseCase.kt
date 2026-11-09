@@ -2,10 +2,12 @@ package com.ivzb.urgat.domain.carMaintenance
 
 import com.ivzb.urgat.data.carMaintenance.CarMaintenance
 import com.ivzb.urgat.data.carMaintenance.CarMaintenanceRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 interface ObserveCarMaintenanceUseCase {
@@ -21,11 +23,13 @@ interface ObserveCarMaintenanceUseCase {
 }
 
 class DefaultObserveCarMaintenanceUseCase @Inject constructor(
-    repository: CarMaintenanceRepository
+    repository: CarMaintenanceRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveCarMaintenanceUseCase {
 
     private val observeUseCase = ObserveUseCase<CarMaintenance, Unit, CarMaintenanceSortType>(
         repository = repository,
+        dispatcher = dispatcher,
         sort = ::sortCarMaintenance,
     )
 

@@ -28,7 +28,7 @@ class ObserveSavingsUseCaseTest {
     @Before
     fun setUp() {
         repository = mockk()
-        observeUseCase = DefaultObserveSavingsUseCase(repository)
+        observeUseCase = DefaultObserveSavingsUseCase(repository, testDispatcher)
     }
 
     @Test

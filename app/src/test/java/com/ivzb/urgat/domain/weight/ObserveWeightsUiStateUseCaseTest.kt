@@ -10,6 +10,7 @@ import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -18,6 +19,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveWeightsUiStateUseCaseTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveWeightsUseCase: FakeObserveWeightsUseCase
     private lateinit var fakeObserveWeightsSortingUseCase: FakeObserveWeightsSortingUseCase
@@ -32,11 +35,12 @@ class ObserveWeightsUiStateUseCaseTest {
         useCase = DefaultObserveWeightsUiStateUseCase(
             fakeObserveWeightsUseCase,
             fakeObserveWeightsSortingUseCase,
+            dispatcher = testDispatcher,
         )
     }
 
     @Test
-    fun `initial state is loading`() = runTest {
+    fun `initial state is loading`() = runTest(testDispatcher) {
         fakeObserveWeightsUseCase.emit(Async.Loading)
         fakeObserveWeightsSortingUseCase.emit(Async.Loading)
 
@@ -54,7 +58,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data`() = runTest {
+    fun `emits success state when use case returns data`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val sortTypeFlow = flowOf(WeightsSortType.BY_DATE)
@@ -73,7 +77,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns data with sort badge`() = runTest {
+    fun `emits success state when use case returns data with sort badge`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val sortTypeFlow = flowOf(WeightsSortType.BY_MAX)
@@ -92,7 +96,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits success state when use case returns empty data`() = runTest {
+    fun `emits success state when use case returns empty data`() = runTest(testDispatcher) {
         fakeObserveWeightsUseCase.emit(Async.Success(listOf()))
         fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
 
@@ -110,7 +114,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `emits error state when use case returns error`() = runTest {
+    fun `emits error state when use case returns error`() = runTest(testDispatcher) {
         fakeObserveWeightsUseCase.emit(Async.Error)
         fakeObserveWeightsSortingUseCase.emit(Async.Success(fakeWeightsSorting))
 
@@ -127,7 +131,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `showSortBadge is false when sort type is BY_DATE`() = runTest {
+    fun `showSortBadge is false when sort type is BY_DATE`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val sortTypeFlow = flowOf(WeightsSortType.BY_DATE)
@@ -142,7 +146,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `showSortBadge is true when sort type is BY_MIN`() = runTest {
+    fun `showSortBadge is true when sort type is BY_MIN`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val sortTypeFlow = flowOf(WeightsSortType.BY_MIN)
@@ -157,7 +161,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `showSortBadge is true when sort type is BY_MAX`() = runTest {
+    fun `showSortBadge is true when sort type is BY_MAX`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val sortTypeFlow = flowOf(WeightsSortType.BY_MAX)
@@ -172,7 +176,7 @@ class ObserveWeightsUiStateUseCaseTest {
     }
 
     @Test
-    fun `currentFilteringLabel is all_weights`() = runTest {
+    fun `currentFilteringLabel is all_weights`() = runTest(testDispatcher) {
         emitSuccessData()
 
         val sortTypeFlow = flowOf(WeightsSortType.BY_DATE)

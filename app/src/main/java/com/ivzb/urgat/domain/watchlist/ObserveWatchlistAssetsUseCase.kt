@@ -2,10 +2,12 @@ package com.ivzb.urgat.domain.watchlist
 
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.data.watchlist.WatchlistAssetsRepository
+import com.ivzb.urgat.di.DefaultDispatcher
 import com.ivzb.urgat.domain.common.ObserveUseCase
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsSortType
 import com.ivzb.urgat.util.Async
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -24,13 +26,15 @@ interface ObserveWatchlistAssetsUseCase {
 }
 
 class DefaultObserveWatchlistAssetsUseCase @Inject constructor(
-    repository: WatchlistAssetsRepository
+    repository: WatchlistAssetsRepository,
+    @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveWatchlistAssetsUseCase {
 
     override val isRefreshingFlow: StateFlow<Boolean> = repository.isRefreshingFlow
 
     private val observeUseCase = ObserveUseCase(
         repository = repository,
+        dispatcher = dispatcher,
         filter = ::filterWatchlistAssets,
         sort = ::sortWatchlistAssets,
     )

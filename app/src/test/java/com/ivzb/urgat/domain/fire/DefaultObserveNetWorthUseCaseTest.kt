@@ -11,12 +11,15 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveNetWorthUseCaseTest {
+
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var fakeObserveFiReUseCase: FakeObserveFiReUseCase
     private lateinit var fakeFireRepository: FakeFireRepository
@@ -31,11 +34,12 @@ class DefaultObserveNetWorthUseCaseTest {
         observeUseCase = DefaultObserveNetWorthUseCase(
             fakeObserveFiReUseCase,
             fakeFireRepository,
+            dispatcher = testDispatcher,
         )
     }
 
     @Test
-    fun `invoke should map accumulated stash to net worth`() = runTest {
+    fun `invoke should map accumulated stash to net worth`() = runTest(testDispatcher) {
         fakeObserveFiReUseCase.emit(Async.Success(FIRE))
 
         val actual = observeUseCase().first()
@@ -53,7 +57,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should map what the stash cost so the net worth can report a profit`() = runTest {
+    fun `invoke should map what the stash cost so the net worth can report a profit`() = runTest(testDispatcher) {
         fakeObserveFiReUseCase.emit(
             Async.Success(FIRE.copy(accumulatedStashCost = "100000".toBigDecimal()))
         )
@@ -67,7 +71,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should mark the net worth partial when the fire data is partial`() = runTest {
+    fun `invoke should mark the net worth partial when the fire data is partial`() = runTest(testDispatcher) {
         // a quote which could not be fetched values a position at what it cost, so the stash
         // would read the buy price back as the net worth unless the flag is carried over
         fakeObserveFiReUseCase.emit(
@@ -82,7 +86,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should carry which assets lost their quote`() = runTest {
+    fun `invoke should carry which assets lost their quote`() = runTest(testDispatcher) {
         // the widget has one line to explain itself with - naming the position beats telling the
         // user that something, somewhere, is missing
         fakeObserveFiReUseCase.emit(
@@ -97,7 +101,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should carry which exchange rates could not be resolved`() = runTest {
+    fun `invoke should carry which exchange rates could not be resolved`() = runTest(testDispatcher) {
         fakeObserveFiReUseCase.emit(
             Async.Success(FIRE.copy(unavailableRates = listOf("USD → EUR")))
         )
@@ -111,7 +115,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should list the assets before the rates`() = runTest {
+    fun `invoke should list the assets before the rates`() = runTest(testDispatcher) {
         // a reader with room for one name wants the position the user recognises, not the
         // currency pair they have never thought about
         fakeObserveFiReUseCase.emit(
@@ -131,7 +135,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should return null when there is not enough fire data`() = runTest {
+    fun `invoke should return null when there is not enough fire data`() = runTest(testDispatcher) {
         fakeObserveFiReUseCase.emit(Async.Success(null))
 
         val actual = observeUseCase().first()
@@ -140,7 +144,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Error when fire data fails`() = runTest {
+    fun `invoke should return Error when fire data fails`() = runTest(testDispatcher) {
         fakeObserveFiReUseCase.emit(Async.Error)
 
         val actual = observeUseCase().first()
@@ -149,14 +153,14 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should return Loading while fire data is loading`() = runTest {
+    fun `invoke should return Loading while fire data is loading`() = runTest(testDispatcher) {
         val actual = observeUseCase().first()
 
         assertEquals(Async.Loading, actual)
     }
 
     @Test
-    fun `invoke should observe fire data of all time`() = runTest {
+    fun `invoke should observe fire data of all time`() = runTest(testDispatcher) {
         observeUseCase().first()
 
         val invocation = assertNotNull(fakeObserveFiReUseCase.lastInvocation)
@@ -167,7 +171,7 @@ class DefaultObserveNetWorthUseCaseTest {
     }
 
     @Test
-    fun `invoke should observe fire data with the saved rates`() = runTest {
+    fun `invoke should observe fire data with the saved rates`() = runTest(testDispatcher) {
         fakeFireRepository.updateWithdrawalRate("5")
         fakeFireRepository.updateReturnOfInvestment("8")
         fakeFireRepository.updateTaxRate("12")

@@ -35,7 +35,7 @@ class ObserveGroupedSavingCategoriesMonthlyUseCaseTest {
     fun setUp() {
         savingsRepository = mockk()
         randomRepository = mockk()
-        observeUseCase = DefaultObserveGroupedSavingCategoriesMonthlyUseCase(savingsRepository, randomRepository)
+        observeUseCase = DefaultObserveGroupedSavingCategoriesMonthlyUseCase(savingsRepository, randomRepository, testDispatcher)
 
         every { randomRepository.uuid() } returns TEST_UUID
     }
