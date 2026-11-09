@@ -24,6 +24,7 @@ import com.ivzb.urgat.navigation.UrgatRoute
 import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import kotlinx.coroutines.launch
+import com.ivzb.urgat.util.rememberLazyListStates
 
 typealias PagerContent = @Composable (
     page: Page,
@@ -51,7 +52,7 @@ fun NavigationPagerScreen(
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
-    val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
+    val listStates = rememberLazyListStates(uiState.pages.size)
     val currentListState by remember(uiState.pages.size) {
         derivedStateOf { listStates[pagerState.currentPage] }
     }
@@ -102,7 +103,7 @@ fun PagerScreen(
     modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
-    val listStates = remember(uiState.pages.size) { List(uiState.pages.size) { LazyListState() } }
+    val listStates = rememberLazyListStates(uiState.pages.size)
     val currentListState by remember(uiState.pages.size) {
         derivedStateOf { listStates[pagerState.currentPage] }
     }

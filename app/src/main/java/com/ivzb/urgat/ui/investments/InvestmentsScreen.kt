@@ -25,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -66,6 +65,7 @@ import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
+import com.ivzb.urgat.util.rememberLazyListStates
 
 @Composable
 fun InvestmentsScreen(
@@ -272,9 +272,7 @@ private fun GroupedCategoriesPage(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { categories.size }
-    val nestedListStates = remember(categories.size) {
-        List(categories.size) { LazyListState() }
-    }
+    val nestedListStates = rememberLazyListStates(categories.size)
 
     if (categories.isEmpty()) {
         EmptyState(

@@ -51,6 +51,7 @@ import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.toLocalDate
 import java.math.BigDecimal
 import kotlinx.coroutines.launch
+import com.ivzb.urgat.util.rememberLazyListStates
 
 @Composable
 fun BudgetsScreen(
@@ -188,9 +189,7 @@ private fun GroupedBudgetsPage(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { monthlyBudgets.size }
-    val nestedListStates = remember(monthlyBudgets.size) {
-        List(monthlyBudgets.size) { LazyListState() }
-    }
+    val nestedListStates = rememberLazyListStates(monthlyBudgets.size)
 
     if (monthlyBudgets.isEmpty()) {
         EmptyState(

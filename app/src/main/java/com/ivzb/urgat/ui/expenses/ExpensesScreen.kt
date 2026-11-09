@@ -66,6 +66,7 @@ import com.ivzb.urgat.util.paddingIf
 import com.ivzb.urgat.util.toLocalDate
 import com.ivzb.urgat.util.toggle
 import kotlinx.coroutines.launch
+import com.ivzb.urgat.util.rememberLazyListStates
 
 @Composable
 fun ExpensesScreen(
@@ -257,9 +258,7 @@ private fun GroupedCategoriesPage(
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState { categories.size }
-    val nestedListStates = remember(categories.size) {
-        List(categories.size) { LazyListState() }
-    }
+    val nestedListStates = rememberLazyListStates(categories.size)
 
     if (categories.isEmpty()) {
         EmptyState(

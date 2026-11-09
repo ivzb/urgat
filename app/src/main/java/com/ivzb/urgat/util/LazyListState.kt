@@ -6,7 +6,24 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+
+/**
+ * Remembers [count] [LazyListState]s whose scroll positions survive the screen leaving
+ * composition (e.g. navigating to another destination and back) and process recreation.
+ */
+@Composable
+fun rememberLazyListStates(count: Int): List<LazyListState> = rememberSaveable(
+    count,
+    saver = listSaver(
+        save = { states -> states.flatMap { listOf(it.firstVisibleItemIndex, it.firstVisibleItemScrollOffset) } },
+        restore = { values -> values.chunked(2).map { (index, offset) -> LazyListState(index, offset) } },
+    ),
+) {
+    List(count) { LazyListState() }
+}
 
 /**
  * Returns whether the lazy list is currently scrolling up.
