@@ -1,3 +1,12 @@
+## Release notes 26.11.04
+
+Improved:
+- The app is now faster and smoother across every screen.
+
+Fixed:
+- Fully sold positions are now hidden from Assets, Yearly and All-time views on the Investments screen.
+- Fixed scroll jumping back to the top after editing an item. Now you will return where you were previously.
+
 ## Release notes 26.11.03
 
 No release notes.
