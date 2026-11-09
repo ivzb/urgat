@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.expense.Expense
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentCategory
@@ -231,6 +232,35 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
         assert(first is Async.Success)
         val actual = (first as Async.Success).data
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `invoke should exclude positions fully sold in a later year`() = runTest(testDispatcher) {
+        val investments = listOf(
+            Investment("1", "MSFT", BigDecimal("2.527"), BigDecimal("197.62"), BigDecimal("210"), "stock", "EUR", timestamp(2025, 11, 1), false, timestamp(2025, 11, 1)),
+            Investment("2", "MSFT", BigDecimal("2.527"), BigDecimal("197.62"), BigDecimal("210"), "stock", "EUR", timestamp(2025, 12, 1), false, timestamp(2025, 12, 1)),
+            Investment("3", "MSFT", BigDecimal("-5.054"), BigDecimal("197.62"), BigDecimal("210"), "stock", "EUR", timestamp(2026, 11, 1), false, timestamp(2026, 11, 1)),
+            Investment("4", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("200"), "stock", "EUR", timestamp(2025, 11, 1), false, timestamp(2025, 11, 1)),
+        )
+
+        every { investmentsRepository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flowOf(investments)
+
+        val results = observeUseCase(flowOf(""), flowOf(NO_DATE_RANGE), null, null, flowOf(NO_ITEMS_LIMIT)).toList()
+
+        advanceUntilIdle()
+
+        val total = listOf(InvestmentTotal(currency = "EUR", costPrice = BigDecimal("200"), marketPrice = BigDecimal("200"), pnl = BigDecimal("0")))
+
+        // 2026 held nothing but the sale, so it is gone as well
+        val expected = listOf(
+            GroupedItems(
+                group = "2025",
+                total = total,
+                items = listOf(InvestmentCategory(id = TEST_UUID, name = "stock", totals = total, investments = listOf(investments[3]))),
+            ),
+        )
+
+        assertEquals(expected, (results.single() as Async.Success).data)
     }
 
     @Test

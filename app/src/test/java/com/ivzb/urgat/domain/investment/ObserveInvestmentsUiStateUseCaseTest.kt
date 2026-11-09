@@ -170,6 +170,23 @@ class ObserveInvestmentsUiStateUseCaseTest {
     }
 
     @Test
+    fun `emits averages of all transactions, including fully sold positions left out of categories`() = runTest {
+        val allTransactions = fakeCategoriesMultipleMonths.flatMap { it.investments }
+
+        emitSuccessData(
+            categories = listOf(),
+            investments = listOf(fakeInvestments.single().copy(items = allTransactions)),
+        )
+
+        val results = useCase(flowOf(""), flowOf(INVESTMENTS_FILTER_TYPE_ALL), flowOf(InvestmentsSortType.BY_DATE)).first()
+
+        advanceUntilIdle()
+
+        assertTrue(results is Async.Success)
+        assertEquals(expectedAverageAllTime, results.data.averageAllTime)
+    }
+
+    @Test
     fun `emits no averages when investments span a single month`() = runTest {
         emitSuccessData()
 
@@ -345,8 +362,11 @@ class ObserveInvestmentsUiStateUseCaseTest {
         assertEquals(R.string.reset_filters, uiState.filteringUiInfo.emptyButtonLabel)
     }
 
-    private fun emitSuccessData(categories: List<InvestmentCategory> = fakeCategories) {
-        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(fakeInvestments))
+    private fun emitSuccessData(
+        categories: List<InvestmentCategory> = fakeCategories,
+        investments: List<GroupedInvestments> = listOf(fakeInvestments.single().copy(items = categories.flatMap { it.investments })),
+    ) {
+        fakeObserveGroupedInvestmentsUseCase.emit(Async.Success(investments))
         fakeObserveGroupedInvestmentCategoriesYearlyUseCase.emit(Async.Success(fakeCategoriesYearly))
         fakeObserveInvestmentAssetsUseCase.emit(Async.Success(fakeAssets))
         fakeObserveInvestmentCategoriesUseCase.emit(Async.Success(categories))

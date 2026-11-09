@@ -35,6 +35,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCase @Inject constructor
         repository = investmentsRepository,
         filter = ::filterInvestments,
         sort = ::sortInvestments,
+        transform = ::excludeClosedPositions,
         group = { investments -> groupInvestmentCategoriesYearly(investments, randomRepository::uuid) },
     )
 

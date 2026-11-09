@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentAsset
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -77,6 +78,54 @@ class ObserveInvestmentAssetsUseCaseTest {
         assert(first is Async.Success)
         val actual = (first as Async.Success).data
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `invoke should exclude fully sold assets`() = runTest(testDispatcher) {
+        val searchQueryFlow = flowOf("")
+        val dateRangeFlow = flowOf(NO_DATE_RANGE)
+        val limit = 10
+        val limitFlow = flowOf(limit)
+        val investments = listOf(
+            Investment("1", "GOOGL", BigDecimal("10"), BigDecimal("100.00"), BigDecimal("150.00"), "stocks", "USD", 1L, false, 1L),
+            Investment("2", "GOOGL", BigDecimal("-10"), BigDecimal("100.00"), BigDecimal("150.00"), "stocks", "USD", 2L, false, 2L),
+            Investment("3", "BRK.B", BigDecimal("2"), BigDecimal("330"), BigDecimal("330"), "etfs", "USD", 1L, false, 1L),
+        )
+
+        every { investmentsRepository.observe(limit, NO_DATE_RANGE) } returns flowOf(investments)
+
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, null, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        val expected = listOf(
+            InvestmentAsset(id = TEST_UUID, name = "BRK.B", category = "etfs", shares = BigDecimal("2"), costPrice = BigDecimal("660"), marketPrice = BigDecimal("660"), currency = "USD", totals = listOf(InvestmentTotal(currency = "USD", costPrice = BigDecimal("660"), marketPrice = BigDecimal("660"), pnl = BigDecimal("0"))), investments = listOf(investments[2])),
+        )
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        assertEquals(expected, (first as Async.Success).data)
+    }
+
+    @Test
+    fun `invoke should exclude assets fully sold over multiple transactions`() = runTest(testDispatcher) {
+        // two lots accumulated over many buys, each lot sold off in a single transaction
+        val buys = List(21) { Investment("a$it", "MSFT", BigDecimal("2.527"), BigDecimal("197.62"), BigDecimal("210.00"), "stock", "EUR", it.toLong(), false, 1L) } +
+            List(10) { Investment("b$it", "MSFT", BigDecimal("0.611"), BigDecimal("139.96"), BigDecimal("210.00"), "stock", "EUR", it.toLong(), false, 1L) }
+        val sells = listOf(
+            Investment("s1", "MSFT", BigDecimal("-53.067"), BigDecimal("197.62"), BigDecimal("210.00"), "stock", "EUR", 100L, false, 1L),
+            Investment("s2", "MSFT", BigDecimal("-6.11"), BigDecimal("139.96"), BigDecimal("210.00"), "stock", "EUR", 101L, false, 1L),
+        )
+        val investments = buys + sells
+
+        every { investmentsRepository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flowOf(investments)
+
+        val results = observeUseCase(flowOf(""), flowOf(NO_DATE_RANGE), null, null, flowOf(NO_ITEMS_LIMIT)).toList()
+
+        advanceUntilIdle()
+
+        assertEquals(listOf<InvestmentAsset>(), (results.single() as Async.Success).data)
     }
 
     @Test

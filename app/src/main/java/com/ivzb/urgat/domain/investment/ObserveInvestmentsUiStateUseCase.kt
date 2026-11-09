@@ -52,7 +52,7 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
             InvestmentsUiState(hasError = true)
         },
         onSuccess = { investments, categoriesYearly, assets, categories, netWorth, filtering, sorting, (searchQuery, filterType, sortType) ->
-            val allInvestments = categories.flatMap { it.investments }
+            val allInvestments = investments.flatMap { it.items }
 
             InvestmentsUiState(
                 investments = investments,

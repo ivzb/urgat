@@ -22,8 +22,11 @@ fun BigDecimal?.formatPnL(digits: Int? = null, withPercentageSign: Boolean = tru
     "${if (this >= BigDecimal.ZERO) "+" else ""}${this.format(digits)}${if (withPercentageSign) "%" else ""}"
 }.orEmpty()
 
+// signum, not ==, as BigDecimal equality is scale sensitive (0.00 != 0)
+fun BigDecimal.isZero(): Boolean = signum() == 0
+
 fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal?): BigDecimal? {
-    if (costPrice == BigDecimal.ZERO || marketPrice == null) {
+    if (costPrice.isZero() || marketPrice == null) {
         return null
     }
 

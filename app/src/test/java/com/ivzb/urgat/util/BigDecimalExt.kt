@@ -2,7 +2,9 @@ package com.ivzb.urgat.util
 
 import java.math.BigDecimal
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.junit.Test
 
 class BigDecimalExt {
@@ -89,6 +91,20 @@ class BigDecimalExt {
         assertEquals(BigDecimal("15.31"), calculateFuelConsumption(BigDecimal("50.99"), 333))
         assertEquals(BigDecimal("1.23"), calculateFuelConsumption(BigDecimal("1.23"), 100))
         assertEquals(BigDecimal("0.00"), calculateFuelConsumption(BigDecimal.ZERO, 100))
+    }
+
+    @Test
+    fun calculatePnLReturnsNullForZeroCostPriceOfAnyScale() {
+        assertNull(calculatePnL(BigDecimal.ZERO, BigDecimal("10")))
+        assertNull(calculatePnL(BigDecimal("0.00"), BigDecimal("10")))
+        assertNull(calculatePnL(BigDecimal("0.00"), BigDecimal("0.00")))
+    }
+
+    @Test
+    fun isZeroIgnoresScale() {
+        assertTrue(BigDecimal("0.000").isZero())
+        assertTrue(BigDecimal("2.527").minus(BigDecimal("2.527")).isZero())
+        assertFalse(BigDecimal("0.001").isZero())
     }
 
     @Test

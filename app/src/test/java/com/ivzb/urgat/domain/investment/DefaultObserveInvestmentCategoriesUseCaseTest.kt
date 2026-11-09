@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_DATE_RANGE
+import com.ivzb.urgat.data.base.BaseRepository.Companion.NO_ITEMS_LIMIT
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.investment.InvestmentCategory
 import com.ivzb.urgat.data.investment.InvestmentTotal
@@ -95,6 +96,36 @@ class DefaultObserveInvestmentCategoriesUseCaseTest {
         assert(first is Async.Success)
         val actual = (first as Async.Success).data
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `invoke should exclude fully sold positions`() = runTest(testDispatcher) {
+        val investments = listOf(
+            Investment("1", "MSFT", BigDecimal("2.527"), BigDecimal("197.62"), BigDecimal("210"), "stock", "EUR", timestamp(2025, 11, 1), false, timestamp(2025, 11, 1)),
+            Investment("2", "MSFT", BigDecimal("2.527"), BigDecimal("197.62"), BigDecimal("210"), "stock", "EUR", timestamp(2025, 12, 1), false, timestamp(2025, 12, 1)),
+            Investment("3", "MSFT", BigDecimal("-5.054"), BigDecimal("197.62"), BigDecimal("210"), "stock", "EUR", timestamp(2026, 11, 1), false, timestamp(2026, 11, 1)),
+            Investment("4", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("200"), "stock", "EUR", timestamp(2025, 11, 1), false, timestamp(2025, 11, 1)),
+            Investment("5", "Gold", BigDecimal("1"), BigDecimal("100"), BigDecimal("100"), "gold", "EUR", timestamp(2025, 11, 1), false, timestamp(2025, 11, 1)),
+            Investment("6", "Gold", BigDecimal("-1"), BigDecimal("100"), BigDecimal("100"), "gold", "EUR", timestamp(2026, 11, 1), false, timestamp(2026, 11, 1)),
+        )
+
+        every { investmentsRepository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flowOf(investments)
+
+        val results = observeUseCase(flowOf(""), flowOf(NO_DATE_RANGE), null, null, flowOf(NO_ITEMS_LIMIT)).toList()
+
+        advanceUntilIdle()
+
+        // the fully sold "gold" leaves no category behind
+        val expected = listOf(
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stock",
+                totals = listOf(InvestmentTotal(currency = "EUR", costPrice = BigDecimal("200"), marketPrice = BigDecimal("200"), pnl = BigDecimal("0"))),
+                investments = listOf(investments[3]),
+            ),
+        )
+
+        assertEquals(expected, (results.single() as Async.Success).data)
     }
 
     @Test
