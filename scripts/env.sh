@@ -18,3 +18,9 @@ if [[ -z "${ANDROID_HOME}" ]]; then
   echo "#############################"
   exit 1
 fi
+
+# The emulator always starts on this port, so it can be targeted by its serial even when
+# a physical device is connected (`adb -e` is not enough, it also matches wireless debugging devices).
+# adb and Gradle's connected tests use ANDROID_SERIAL as the target device.
+EMULATOR_PORT=5554
+export ANDROID_SERIAL="emulator-$EMULATOR_PORT"

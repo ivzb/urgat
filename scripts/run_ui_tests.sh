@@ -2,6 +2,10 @@
 
 set -e
 
+# Validate environment variables
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/env.sh"
+
 handle_error() {
     echo "#############################"
     echo "## Urgat - $0 - An error occurred on line $1"

@@ -212,9 +212,9 @@ fi
 # -gpu host renders on the host GPU; swiftshader_indirect (CPU rendering) is very slow
 # -no-window runs it headless so no emulator window pops up
 if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
-  cmd //c "start /b emulator -avd $name -no-boot-anim -gpu host -no-window" &
+  cmd //c "start /b emulator -avd $name -port $EMULATOR_PORT -no-boot-anim -gpu host -no-window" &
 else
-  nohup emulator -avd $name -no-boot-anim -gpu host -no-window &
+  nohup emulator -avd $name -port $EMULATOR_PORT -no-boot-anim -gpu host -no-window &
 fi
 
 # Wait for device to boot
