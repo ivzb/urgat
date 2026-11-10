@@ -220,13 +220,16 @@ tasks {
         forkEvery = 0
 
         // print tests executing time
-        afterSuite(
-            KotlinClosure2({ desc: TestDescriptor, result: TestResult ->
-                if (desc.parent == null) {
+        addTestListener(object : TestListener {
+            override fun beforeSuite(suite: TestDescriptor) {}
+            override fun beforeTest(testDescriptor: TestDescriptor) {}
+            override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {}
+            override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+                if (suite.parent == null) {
                     val timeMs = result.endTime - result.startTime
                     println("✅ Tests executed in $timeMs ms")
                 }
-            })
-        )
+            }
+        })
     }
 }
