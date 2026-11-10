@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditTrade
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,24 +98,13 @@ fun AddEditTradeScreen(
     val focusRequesters = remember {
         List(TradeFieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditTradeTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditTradeIntent.DeleteTrade) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditTradeIntent.DuplicateTrade) }).takeIf { uiState.withDuplicate },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -140,133 +130,11 @@ fun AddEditTradeScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
-
-                TextField(
-                    value = nameTextFieldValue,
-                    onValueChange = {
-                        nameTextFieldValue = it
-                        onIntent(AddEditTradeIntent.UpdateName(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.trade_hint)) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[TradeFieldId.Name.ordinal]),
+                AddEditTradeForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-
-                    TextField(
-                        value = uiState.amount,
-                        onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateAmount(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.Amount.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditTradeIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[TradeFieldId.Currency.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                DatePicker(
-                    timestamp = uiState.date,
-                    onTimestampSelected = {
-                        onIntent(AddEditTradeIntent.UpdateDate(it))
-                    }
-                ) { selectedDate, dialog ->
-
-                    TextField(
-                        value = selectedDate,
-                        onValueChange = {},
-                        placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                        label = { Text(stringResource(id = R.string.date_hint)) },
-                        readOnly = true,
-                        maxLines = 1,
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(id = R.string.date_hint)
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequesters[TradeFieldId.Date.ordinal])
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    dialog.show()
-                                    focusManager.clearFocus()
-                                }
-                            },
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditTradeIntent.SaveTrade)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading, uiState.name) {
-                    nameTextFieldValue = TextFieldValue(
-                        text = uiState.name,
-                        selection = TextRange(uiState.name.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -280,6 +148,214 @@ fun AddEditTradeScreen(
                 onIntent(AddEditTradeIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditTradeTopAppBar(
+    uiState: AddEditTradeUiState,
+    onIntent: (AddEditTradeIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditTradeIntent.DeleteTrade) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditTradeIntent.DuplicateTrade) }).takeIf { uiState.withDuplicate },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditTradeForm(
+    uiState: AddEditTradeUiState,
+    onIntent: (AddEditTradeIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
+
+    NameRow(
+        nameTextFieldValue = nameTextFieldValue,
+        onNameChange = {
+            nameTextFieldValue = it
+            onIntent(AddEditTradeIntent.UpdateName(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    AmountAndCurrencyRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    DateRow(
+        date = uiState.date,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading, uiState.name) {
+        nameTextFieldValue = TextFieldValue(
+            text = uiState.name,
+            selection = TextRange(uiState.name.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun NameRow(
+    nameTextFieldValue: TextFieldValue,
+    onNameChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = nameTextFieldValue,
+        onValueChange = onNameChange,
+        placeholder = { Text(text = stringResource(id = R.string.trade_hint)) },
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[TradeFieldId.Name.ordinal]),
+    )
+}
+
+@Composable
+private fun AmountAndCurrencyRow(
+    uiState: AddEditTradeUiState,
+    onIntent: (AddEditTradeIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+
+        TextField(
+            value = uiState.amount,
+            onValueChange = {
+                onIntent(AddEditTradeIntent.UpdateAmount(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[TradeFieldId.Amount.ordinal]),
+        )
+
+        TextField(
+            value = uiState.currency,
+            onValueChange = {
+                onIntent(AddEditTradeIntent.UpdateCurrency(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[TradeFieldId.Currency.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun DateRow(
+    date: Long,
+    onIntent: (AddEditTradeIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    DatePicker(
+        timestamp = date,
+        onTimestampSelected = {
+            onIntent(AddEditTradeIntent.UpdateDate(it))
+        }
+    ) { selectedDate, dialog ->
+
+        TextField(
+            value = selectedDate,
+            onValueChange = {},
+            placeholder = { Text(stringResource(id = R.string.date_hint)) },
+            label = { Text(stringResource(id = R.string.date_hint)) },
+            readOnly = true,
+            maxLines = 1,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = stringResource(id = R.string.date_hint)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequesters[TradeFieldId.Date.ordinal])
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        dialog.show()
+                        focusManager.clearFocus()
+                    }
+                },
+        )
+    }
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditTradeIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditTradeIntent.SaveTrade)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

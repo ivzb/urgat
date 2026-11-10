@@ -1,51 +1,19 @@
 package com.ivzb.urgat.ui.finance
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.budget.Budget
-import com.ivzb.urgat.data.budget.GroupedBudget
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.fire.FiRe
 import com.ivzb.urgat.data.investment.Investment
 import com.ivzb.urgat.data.saving.Saving
 import com.ivzb.urgat.data.source.sample.SampleData
@@ -55,26 +23,16 @@ import com.ivzb.urgat.navigation.FakeNavigator
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.ui.budgets.BudgetsFilteringUiInfo
 import com.ivzb.urgat.ui.budgets.BudgetsUiState
-import com.ivzb.urgat.ui.budgets.CategoriesPage
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyState
-import com.ivzb.urgat.ui.components.ItemHeaderLarge
-import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
-import com.ivzb.urgat.ui.components.ScreenTitleWithInfo
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
-import com.ivzb.urgat.ui.components.uiState.PagerUiState
 import com.ivzb.urgat.ui.expenses.ExpensesUiState
-import com.ivzb.urgat.ui.fire.FireDateRangeType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
 import com.ivzb.urgat.ui.savings.SavingsUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.trades.TradesUiState
 import com.ivzb.urgat.ui.watchlist.WatchlistAssetsUiState
-import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.toLocalDate
-
-internal const val EMPTY_FIRE_CALCULATION = "∞"
 
 @Composable
 fun FinanceScreen(
@@ -192,116 +150,39 @@ fun FinanceScreen(
         withFab = { page -> page != FinancePage.Report && page != FinancePage.FIRE && !isSearchFocused },
         onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
-            if (uiState.withTopbarActions(page)) {
-                FinanceFilterMenu(page = page, uiState = uiState, onIntent = onIntent)
-                FinanceSortMenu(page = page, uiState = uiState, onIntent = onIntent)
-
-                MoreMenu(
-                    listOfNotNull(
-                        (R.string.reset_filters to { onIntent(FinanceIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
-                    )
-                )
-            }
+            FinanceTopAppBarActions(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+            )
         },
 
         content = { page, listState, onListStateChanged ->
-            when (page) {
-                FinancePage.Expenses -> ExpensesPage(
-                    uiState = uiState.expensesUiState,
+            FinancePageContent(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
 
-                    onMoreExpenses = onMoreExpenses,
-                    onAddExpense = { onIntent(FinanceIntent.FabActionClick(page)) },
-                    onExpenseClick = onExpenseClick,
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
+                onMoreExpenses = onMoreExpenses,
+                onExpenseClick = onExpenseClick,
 
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
+                onMoreInvestments = onMoreInvestments,
+                onInvestmentClick = onInvestmentClick,
 
-                FinancePage.Investments -> InvestmentsPage(
-                    uiState = uiState.investmentsUiState,
+                onMoreTrades = onMoreTrades,
+                onTradeClick = onTradeClick,
 
-                    onMoreInvestments = onMoreInvestments,
-                    onAddInvestment = { onIntent(FinanceIntent.FabActionClick(page)) },
-                    onInvestmentClick = onInvestmentClick,
-                    onRefreshInvestments = { onIntent(FinanceIntent.RefreshInvestments) },
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
+                onMoreSavings = onMoreSavings,
+                onSavingClick = onSavingClick,
 
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
+                onMoreBudgets = onMoreBudgets,
+                onBudgetClick = onBudgetClick,
 
-                FinancePage.Trades -> TradesPage(
-                    uiState = uiState.tradesUiState,
+                onWatchlistAssetClick = onWatchlistAssetClick,
 
-                    onMoreTrades = onMoreTrades,
-                    onAddTrade = { onIntent(FinanceIntent.FabActionClick(page)) },
-                    onTradeClick = onTradeClick,
-                    onRefreshTrades = { onIntent(FinanceIntent.RefreshTrades) },
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                FinancePage.Savings -> SavingsPage(
-                    uiState = uiState.savingsUiState,
-
-                    onMoreSavings = onMoreSavings,
-                    onAddSaving = { onIntent(FinanceIntent.FabActionClick(page)) },
-                    onSavingClick = onSavingClick,
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                FinancePage.Budgets -> BudgetsPage(
-                    uiState = uiState.budgetsUiState,
-
-                    onMoreBudgets = onMoreBudgets,
-                    onAddBudget = { onIntent(FinanceIntent.FabActionClick(page)) },
-                    onBudgetClick = onBudgetClick,
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                FinancePage.Report -> ReportPage(
-                    reportBudget = uiState.reportBudget,
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                FinancePage.Watchlist -> WatchlistPage(
-                    uiState = uiState.watchlistAssetsUiState,
-
-                    onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(page)) },
-                    onWatchlistAssetClick = onWatchlistAssetClick,
-                    onRefreshWatchlist = { onIntent(FinanceIntent.RefreshWatchlist) },
-                    onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                FinancePage.FIRE -> FiRePage(
-                    fire = uiState.fire,
-                    fireDateRangeType = uiState.fireDateRangeType,
-                    fireCustomStart = uiState.fireCustomStart,
-                    fireCustomEnd = uiState.fireCustomEnd,
-                    onDateRangeTypeChange = { onIntent(FinanceIntent.UpdateFireDateRangeType(it)) },
-                    onCustomDateRangeChange = { start, end -> onIntent(FinanceIntent.UpdateFireCustomDateRange(start, end)) },
-                    onWithdrawalRateChange = { onIntent(FinanceIntent.UpdateFireWithdrawalRate(it)) },
-                    onReturnOfInvestmentChange = { onIntent(FinanceIntent.UpdateFireReturnOfInvestment(it)) },
-                    onTaxRateChange = { onIntent(FinanceIntent.UpdateFireTaxRate(it)) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
         },
 
         modifier = modifier
@@ -309,643 +190,220 @@ fun FinanceScreen(
 }
 
 @Composable
-private fun FinancePage(
-    uiState: PagerUiState,
-    onEmptyStateButtonClick: () -> Unit,
-    content: @Composable () -> Unit,
+private fun FinanceTopAppBarActions(
+    page: Page,
+    uiState: FinanceUiState,
+    onIntent: (FinanceIntent) -> Unit,
 ) {
-    when {
-        uiState.isEmpty -> {
-            EmptyState(uiState.filteringUiInfo, onEmptyStateButtonClick)
-        }
+    if (uiState.withTopbarActions(page)) {
+        FinanceFilterMenu(page = page, uiState = uiState, onIntent = onIntent)
+        FinanceSortMenu(page = page, uiState = uiState, onIntent = onIntent)
 
-        else -> {
-            content()
-        }
+        MoreMenu(
+            listOfNotNull(
+                (R.string.reset_filters to { onIntent(FinanceIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
+            )
+        )
     }
 }
 
 @Composable
-private fun ExpensesPage(
-    uiState: ExpensesUiState,
+private fun FinancePageContent(
+    page: Page,
+    uiState: FinanceUiState,
+    onIntent: (FinanceIntent) -> Unit,
 
     onMoreExpenses: () -> Unit,
-    onAddExpense: () -> Unit,
     onExpenseClick: (Expense) -> Unit,
-    onResetFilters: () -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddExpense,
-
-        content = {
-            com.ivzb.urgat.ui.expenses.TransactionsPage(
-                expenses = uiState.expenses,
-                onExpenseClick = onExpenseClick,
-
-                header = {
-                    ItemHeaderWithMore(
-                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                        onMoreClick = onMoreExpenses,
-                    )
-                },
-
-                listState = listState,
-                onListStateChanged = onListStateChanged,
-            )
-        }
-    )
-}
-
-@Composable
-private fun InvestmentsPage(
-    uiState: InvestmentsUiState,
 
     onMoreInvestments: () -> Unit,
-    onAddInvestment: () -> Unit,
     onInvestmentClick: (Investment) -> Unit,
-    onRefreshInvestments: () -> Unit,
-    onResetFilters: () -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddInvestment,
-
-        content = {
-            val state = rememberPullToRefreshState()
-
-            PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = onRefreshInvestments,
-                modifier = Modifier,
-                state = state,
-                indicator = {
-                    Indicator(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        isRefreshing = uiState.isRefreshing,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        state = state
-                    )
-                },
-            ) {
-
-                com.ivzb.urgat.ui.investments.TransactionsPage(
-                    investments = uiState.investments,
-                    onInvestmentClick = onInvestmentClick,
-
-                    header = {
-                        ItemHeaderWithMore(
-                            title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                            onMoreClick = onMoreInvestments,
-                        )
-                    },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
-        }
-    )
-}
-
-@Composable
-private fun TradesPage(
-    uiState: TradesUiState,
 
     onMoreTrades: () -> Unit,
-    onAddTrade: () -> Unit,
     onTradeClick: (Trade) -> Unit,
-    onRefreshTrades: () -> Unit,
-    onResetFilters: () -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddTrade,
-
-        content = {
-            val state = rememberPullToRefreshState()
-
-            PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = onRefreshTrades,
-                modifier = Modifier,
-                state = state,
-                indicator = {
-                    Indicator(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        isRefreshing = uiState.isRefreshing,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        state = state
-                    )
-                },
-            ) {
-
-                com.ivzb.urgat.ui.trades.TransactionsPage(
-                    trades = uiState.trades,
-                    onTradeClick = onTradeClick,
-
-                    header = {
-                        ItemHeaderWithMore(
-                            title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                            onMoreClick = onMoreTrades,
-                        )
-                    },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
-        }
-    )
-}
-
-@Composable
-private fun SavingsPage(
-    uiState: SavingsUiState,
 
     onMoreSavings: () -> Unit,
-    onAddSaving: () -> Unit,
     onSavingClick: (Saving) -> Unit,
-    onResetFilters: () -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddSaving,
-        content = {
-            com.ivzb.urgat.ui.savings.TransactionsPage(
-                savings = uiState.savings,
-                onSavingClick = onSavingClick,
-
-                header = {
-                    ItemHeaderWithMore(
-                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                        onMoreClick = onMoreSavings,
-                    )
-                },
-
-                listState = listState,
-                onListStateChanged = onListStateChanged,
-            )
-        }
-    )
-}
-
-@Composable
-private fun BudgetsPage(
-    uiState: BudgetsUiState,
 
     onMoreBudgets: () -> Unit,
-    onAddBudget: () -> Unit,
     onBudgetClick: (Budget) -> Unit,
-    onResetFilters: () -> Unit,
 
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddBudget,
-        content = {
-            com.ivzb.urgat.ui.budgets.TransactionsPage(
-                budgets = uiState.budgets,
-                onBudgetClick = onBudgetClick,
-
-                header = {
-                    ItemHeaderWithMore(
-                        title = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                        onMoreClick = onMoreBudgets,
-                    )
-                },
-
-                listState = listState,
-                onListStateChanged = onListStateChanged,
-            )
-        }
-    )
-}
-
-@Composable
-private fun ReportPage(
-    reportBudget: GroupedBudget?,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    CategoriesPage(
-        budget = reportBudget,
-        group = null,
-
-        listState = listState,
-        onListStateChanged = onListStateChanged,
-    )
-}
-
-@Composable
-private fun WatchlistPage(
-    uiState: WatchlistAssetsUiState,
-
-    onAddWatchlistAsset: () -> Unit,
     onWatchlistAssetClick: (WatchlistAsset) -> Unit,
-    onRefreshWatchlist: () -> Unit,
-    onResetFilters: () -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
+    when (page) {
+        FinancePage.Expenses, FinancePage.Investments, FinancePage.Trades, FinancePage.Savings -> FinanceTransactionsPageContent(
+            page = page,
+            uiState = uiState,
+            onIntent = onIntent,
 
-    FinancePage(
-        uiState = uiState,
-        onEmptyStateButtonClick = if (uiState.filteringUiInfo.hasAppliedFilters) onResetFilters else onAddWatchlistAsset,
-        content = {
-            val state = rememberPullToRefreshState()
+            onMoreExpenses = onMoreExpenses,
+            onExpenseClick = onExpenseClick,
 
-            PullToRefreshBox(
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = onRefreshWatchlist,
-                modifier = Modifier,
-                state = state,
-                indicator = {
-                    Indicator(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        isRefreshing = uiState.isRefreshing,
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        state = state
-                    )
-                },
-            ) {
+            onMoreInvestments = onMoreInvestments,
+            onInvestmentClick = onInvestmentClick,
 
-                com.ivzb.urgat.ui.watchlist.TransactionsPage(
-                    watchlistAssets = uiState.watchlistAssets,
-                    onWatchlistAssetClick = onWatchlistAssetClick,
+            onMoreTrades = onMoreTrades,
+            onTradeClick = onTradeClick,
 
-                    header = {
-                        ItemHeaderLarge(
-                            text = stringResource(uiState.filteringUiInfo.currentFilteringLabel),
-                        )
-                    },
+            onMoreSavings = onMoreSavings,
+            onSavingClick = onSavingClick,
 
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
-        }
-    )
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+
+        FinancePage.Budgets, FinancePage.Report, FinancePage.Watchlist, FinancePage.FIRE -> FinancePlanningPageContent(
+            page = page,
+            uiState = uiState,
+            onIntent = onIntent,
+
+            onMoreBudgets = onMoreBudgets,
+            onBudgetClick = onBudgetClick,
+
+            onWatchlistAssetClick = onWatchlistAssetClick,
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+    }
 }
 
 @Composable
-private fun FiRePage(
-    fire: FiRe?,
-    fireDateRangeType: FireDateRangeType,
-    fireCustomStart: Long,
-    fireCustomEnd: Long,
-    onDateRangeTypeChange: (FireDateRangeType) -> Unit,
-    onCustomDateRangeChange: (Long, Long) -> Unit,
-    onWithdrawalRateChange: (String) -> Unit,
-    onReturnOfInvestmentChange: (String) -> Unit,
-    onTaxRateChange: (String) -> Unit,
+private fun FinanceTransactionsPageContent(
+    page: Page,
+    uiState: FinanceUiState,
+    onIntent: (FinanceIntent) -> Unit,
+
+    onMoreExpenses: () -> Unit,
+    onExpenseClick: (Expense) -> Unit,
+
+    onMoreInvestments: () -> Unit,
+    onInvestmentClick: (Investment) -> Unit,
+
+    onMoreTrades: () -> Unit,
+    onTradeClick: (Trade) -> Unit,
+
+    onMoreSavings: () -> Unit,
+    onSavingClick: (Saving) -> Unit,
 
     listState: LazyListState,
     onListStateChanged: (LazyListState) -> Unit,
 ) {
+    when (page) {
+        FinancePage.Expenses -> ExpensesPage(
+            uiState = uiState.expensesUiState,
 
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
+            onMoreExpenses = onMoreExpenses,
+            onAddExpense = { onIntent(FinanceIntent.FabActionClick(page)) },
+            onExpenseClick = onExpenseClick,
+            onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            )
-    ) {
-
-        Text(
-            text = stringResource(R.string.fire_date_range),
+            listState = listState,
+            onListStateChanged = onListStateChanged,
         )
 
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
+        FinancePage.Investments -> InvestmentsPage(
+            uiState = uiState.investmentsUiState,
 
-        SingleChoiceSegmentedButtonRow(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            FireDateRangeType.entries.forEachIndexed { index, type ->
-                SegmentedButton(
-                    selected = fireDateRangeType == type,
-                    onClick = { onDateRangeTypeChange(type) },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = FireDateRangeType.entries.size,
-                    ),
-                    icon = {},
-                    border = SegmentedButtonDefaults.borderStroke(
-                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                    ),
-                ) {
-                    Text(stringResource(type.labelResId))
-                }
-            }
-        }
+            onMoreInvestments = onMoreInvestments,
+            onAddInvestment = { onIntent(FinanceIntent.FabActionClick(page)) },
+            onInvestmentClick = onInvestmentClick,
+            onRefreshInvestments = { onIntent(FinanceIntent.RefreshInvestments) },
+            onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
-        if (fireDateRangeType == FireDateRangeType.CUSTOM) {
-            Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
-
-            FireCustomDateRangePicker(
-                customStart = fireCustomStart,
-                customEnd = fireCustomEnd,
-                onCustomDateRangeChange = onCustomDateRangeChange,
-            )
-        }
-
-        if (fire == null) {
-            Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
-
-            Text(
-                text = stringResource(R.string.fire_not_enough_data),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            return
-        }
-
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
-
-        ScreenTitleWithInfo(
-            title = stringResource(R.string.fire_title, fire.selection),
-            dialogTitle = stringResource(R.string.how_does_it_work),
-            dialogText = fireInfoText(fire),
+            listState = listState,
+            onListStateChanged = onListStateChanged,
         )
 
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
+        FinancePage.Trades -> TradesPage(
+            uiState = uiState.tradesUiState,
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.fire_withdrawal_rate),
-            )
+            onMoreTrades = onMoreTrades,
+            onAddTrade = { onIntent(FinanceIntent.FabActionClick(page)) },
+            onTradeClick = onTradeClick,
+            onRefreshTrades = { onIntent(FinanceIntent.RefreshTrades) },
+            onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
-            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
 
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.fire_return_of_investment),
-            )
+        FinancePage.Savings -> SavingsPage(
+            uiState = uiState.savingsUiState,
 
-            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
+            onMoreSavings = onMoreSavings,
+            onAddSaving = { onIntent(FinanceIntent.FabActionClick(page)) },
+            onSavingClick = onSavingClick,
+            onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
-            Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(R.string.fire_tax_rate),
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.fire_margin)))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            var withdrawalRateValue by remember {
-                mutableStateOf(
-                    TextFieldValue(
-                        fire.withdrawalRate?.toPlainString() ?: ""
-                    )
-                )
-            }
-            var returnOfInvestmentValue by remember {
-                mutableStateOf(
-                    TextFieldValue(
-                        fire.returnOfInvestment?.toPlainString() ?: ""
-                    )
-                )
-            }
-            var taxRateValue by remember {
-                mutableStateOf(
-                    TextFieldValue(
-                        fire.taxRate?.toPlainString() ?: ""
-                    )
-                )
-            }
-
-            TextField(
-                modifier = Modifier.weight(1f),
-                value = withdrawalRateValue,
-                onValueChange = { onWithdrawalRateChange(it.text) },
-                placeholder = {
-                    Text(
-                        stringResource(
-                            R.string.format_default,
-                            fire.withdrawalRatePlaceholder.toPlainString()
-                        )
-                    )
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
-            )
-
-            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
-
-            TextField(
-                modifier = Modifier.weight(1f),
-                value = returnOfInvestmentValue,
-                onValueChange = { onReturnOfInvestmentChange(it.text) },
-                placeholder = {
-                    Text(
-                        stringResource(
-                            R.string.format_default,
-                            fire.returnOfInvestmentPlaceholder.toPlainString()
-                        )
-                    )
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
-            )
-
-            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
-
-            TextField(
-                modifier = Modifier.weight(1f),
-                value = taxRateValue,
-                onValueChange = { onTaxRateChange(it.text) },
-                placeholder = {
-                    Text(
-                        stringResource(
-                            R.string.format_default,
-                            fire.taxRatePlaceholder.toPlainString()
-                        )
-                    )
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
-            )
-
-            LaunchedEffect(fire) {
-                val withdrawalRate = fire.withdrawalRate?.toPlainString() ?: ""
-                val returnOfInvestment = fire.returnOfInvestment?.toPlainString() ?: ""
-                val taxRate = fire.taxRate?.toPlainString() ?: ""
-
-                withdrawalRateValue = TextFieldValue(
-                    text = withdrawalRate,
-                    selection = TextRange(withdrawalRate.length)
-                )
-
-                returnOfInvestmentValue = TextFieldValue(
-                    text = returnOfInvestment,
-                    selection = TextRange(returnOfInvestment.length)
-                )
-
-                taxRateValue = TextFieldValue(
-                    text = taxRate,
-                    selection = TextRange(taxRate.length)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.padding(dimensionResource(R.dimen.vertical_margin)))
-
-        Text(
-            text = stringResource(
-                R.string.fire_years_until_fire,
-                fire.yearsUntilFiRe?.format() ?: EMPTY_FIRE_CALCULATION
-            ),
-            fontWeight = FontWeight.Bold,
+            listState = listState,
+            onListStateChanged = onListStateChanged,
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FireCustomDateRangePicker(
-    customStart: Long,
-    customEnd: Long,
-    onCustomDateRangeChange: (Long, Long) -> Unit,
+private fun FinancePlanningPageContent(
+    page: Page,
+    uiState: FinanceUiState,
+    onIntent: (FinanceIntent) -> Unit,
+
+    onMoreBudgets: () -> Unit,
+    onBudgetClick: (Budget) -> Unit,
+
+    onWatchlistAssetClick: (WatchlistAsset) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
 ) {
-    var showStartPicker by remember { mutableStateOf(false) }
-    var showEndPicker by remember { mutableStateOf(false) }
+    when (page) {
+        FinancePage.Budgets -> BudgetsPage(
+            uiState = uiState.budgetsUiState,
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        OutlinedButton(
-            onClick = { showStartPicker = true },
-            modifier = Modifier.weight(1f),
-        ) {
-            Text(
-                text = if (customStart > 0L) {
-                    customStart.toLocalDate().format()
-                } else {
-                    stringResource(R.string.fire_select_start_date)
-                }
-            )
-        }
+            onMoreBudgets = onMoreBudgets,
+            onAddBudget = { onIntent(FinanceIntent.FabActionClick(page)) },
+            onBudgetClick = onBudgetClick,
+            onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
 
-        Spacer(modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.fire_margin)))
-
-        OutlinedButton(
-            onClick = { showEndPicker = true },
-            modifier = Modifier.weight(1f),
-        ) {
-            Text(
-                text = if (customEnd > 0L) {
-                    customEnd.toLocalDate().format()
-                } else {
-                    stringResource(R.string.fire_select_end_date)
-                }
-            )
-        }
-    }
-
-    if (showStartPicker) {
-        FireDatePickerDialog(
-            title = stringResource(R.string.fire_custom_start_date),
-            initialSelectedDateMillis = customStart.takeIf { it > 0L },
-            onDateSelected = { selectedDate ->
-                selectedDate?.let { start ->
-                    onCustomDateRangeChange(start, if (customEnd > 0L) customEnd else start)
-                }
-            },
-            onDismiss = { showStartPicker = false },
+            listState = listState,
+            onListStateChanged = onListStateChanged,
         )
-    }
 
-    if (showEndPicker) {
-        FireDatePickerDialog(
-            title = stringResource(R.string.fire_custom_end_date),
-            initialSelectedDateMillis = customEnd.takeIf { it > 0L },
-            onDateSelected = { selectedDate ->
-                selectedDate?.let { end ->
-                    onCustomDateRangeChange(if (customStart > 0L) customStart else end, end)
-                }
-            },
-            onDismiss = { showEndPicker = false },
+        FinancePage.Report -> ReportPage(
+            reportBudget = uiState.reportBudget,
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
         )
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun FireDatePickerDialog(
-    title: String,
-    initialSelectedDateMillis: Long?,
-    onDateSelected: (Long?) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialSelectedDateMillis,
-    )
+        FinancePage.Watchlist -> WatchlistPage(
+            uiState = uiState.watchlistAssetsUiState,
 
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onDateSelected(datePickerState.selectedDateMillis)
-                    onDismiss()
-                },
-            ) {
-                Text(stringResource(R.string.ok))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel))
-            }
-        },
-    ) {
-        DatePicker(
-            state = datePickerState,
-            title = { Text(text = title, modifier = Modifier.padding(start = dimensionResource(R.dimen.content_padding_horizontal), top = dimensionResource(R.dimen.content_padding_vertical))) },
+            onAddWatchlistAsset = { onIntent(FinanceIntent.FabActionClick(page)) },
+            onWatchlistAssetClick = onWatchlistAssetClick,
+            onRefreshWatchlist = { onIntent(FinanceIntent.RefreshWatchlist) },
+            onResetFilters = { onIntent(FinanceIntent.ResetFilters) },
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+
+        FinancePage.FIRE -> FiRePage(
+            fire = uiState.fire,
+            fireDateRangeType = uiState.fireDateRangeType,
+            fireCustomStart = uiState.fireCustomStart,
+            fireCustomEnd = uiState.fireCustomEnd,
+            onDateRangeTypeChange = { onIntent(FinanceIntent.UpdateFireDateRangeType(it)) },
+            onCustomDateRangeChange = { start, end -> onIntent(FinanceIntent.UpdateFireCustomDateRange(start, end)) },
+            onWithdrawalRateChange = { onIntent(FinanceIntent.UpdateFireWithdrawalRate(it)) },
+            onReturnOfInvestmentChange = { onIntent(FinanceIntent.UpdateFireReturnOfInvestment(it)) },
+            onTaxRateChange = { onIntent(FinanceIntent.UpdateFireTaxRate(it)) },
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
         )
     }
 }

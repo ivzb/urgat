@@ -3,16 +3,13 @@ package com.ivzb.urgat.ui.budgets
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -38,19 +35,16 @@ import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.MoreMenu
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
-import com.ivzb.urgat.ui.components.charts.PieChart
-import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateChart
-import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateFinance
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.formatCurrency
 import com.ivzb.urgat.util.rememberLazyListStates
 import com.ivzb.urgat.util.toLocalDate
-import java.math.BigDecimal
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -89,53 +83,81 @@ fun BudgetsScreen(
         onBack = onBack,
 
         topAppBarActionsContent = {
-            FilterMenu(
-                items = uiState.filteringUiInfo.filterMenuItems,
-                showBadge = uiState.filteringUiInfo.showFilterBadge,
-                onFilter = { onIntent(BudgetsIntent.SetFiltering(it)) },
-            )
-
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                showBadge = uiState.filteringUiInfo.showSortBadge,
-                onFilter = { onIntent(BudgetsIntent.SetSorting(it)) },
-            )
-
-            MoreMenu(
-                listOfNotNull(
-                    (R.string.reset_filters to { onIntent(BudgetsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
-                )
+            BudgetsTopAppBarActions(
+                uiState = uiState,
+                onIntent = onIntent,
             )
         },
 
         content = { page, listState, onListStateChanged ->
-            when (page) {
-                BudgetsPage.Monthly -> GroupedBudgetsPage(
-                    monthlyBudgets = uiState.monthlyBudgets,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    onResetFilters = { onIntent(BudgetsIntent.ResetFilters) },
-                    onListStateChanged = onListStateChanged,
-                )
-
-                BudgetsPage.Yearly -> GroupedBudgetsPage(
-                    monthlyBudgets = uiState.yearlyBudgets,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    onResetFilters = { onIntent(BudgetsIntent.ResetFilters) },
-                    onListStateChanged = onListStateChanged,
-                )
-
-                BudgetsPage.AllTime -> CategoriesPage(
-                    budget = uiState.allTimeBudget,
-                    group = stringResource(R.string.all_time),
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
+            BudgetsPageContent(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
         },
 
         modifier = modifier,
     )
+}
+
+@Composable
+private fun BudgetsTopAppBarActions(
+    uiState: BudgetsUiState,
+    onIntent: (BudgetsIntent) -> Unit,
+) {
+    FilterMenu(
+        items = uiState.filteringUiInfo.filterMenuItems,
+        showBadge = uiState.filteringUiInfo.showFilterBadge,
+        onFilter = { onIntent(BudgetsIntent.SetFiltering(it)) },
+    )
+
+    SortMenu(
+        items = uiState.filteringUiInfo.sortMenuItems,
+        showBadge = uiState.filteringUiInfo.showSortBadge,
+        onFilter = { onIntent(BudgetsIntent.SetSorting(it)) },
+    )
+
+    MoreMenu(
+        listOfNotNull(
+            (R.string.reset_filters to { onIntent(BudgetsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+        )
+    )
+}
+
+@Composable
+private fun BudgetsPageContent(
+    page: Page,
+    uiState: BudgetsUiState,
+    onIntent: (BudgetsIntent) -> Unit,
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+    when (page) {
+        BudgetsPage.Monthly -> GroupedBudgetsPage(
+            monthlyBudgets = uiState.monthlyBudgets,
+            filteringUiInfo = uiState.filteringUiInfo,
+            onResetFilters = { onIntent(BudgetsIntent.ResetFilters) },
+            onListStateChanged = onListStateChanged,
+        )
+
+        BudgetsPage.Yearly -> GroupedBudgetsPage(
+            monthlyBudgets = uiState.yearlyBudgets,
+            filteringUiInfo = uiState.filteringUiInfo,
+            onResetFilters = { onIntent(BudgetsIntent.ResetFilters) },
+            onListStateChanged = onListStateChanged,
+        )
+
+        BudgetsPage.AllTime -> CategoriesPage(
+            budget = uiState.allTimeBudget,
+            group = stringResource(R.string.all_time),
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+    }
 }
 
 @Composable
@@ -203,28 +225,11 @@ private fun GroupedBudgetsPage(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            edgePadding = 0.dp,
-        ) {
-            monthlyBudgets.forEachIndexed { index, budget ->
-                Tab(
-                    text = {
-                        Text(
-                            text = budget.category.group,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                )
-            }
-        }
+        GroupedBudgetsTabRow(
+            monthlyBudgets = monthlyBudgets,
+            pagerState = pagerState,
+            scope = scope,
+        )
 
         HorizontalPager(
             state = pagerState,
@@ -240,6 +245,36 @@ private fun GroupedBudgetsPage(
 
                 listState = nestedListStates[pageIndex],
                 onListStateChanged = onListStateChanged,
+            )
+        }
+    }
+}
+
+@Composable
+private fun GroupedBudgetsTabRow(
+    monthlyBudgets: List<GroupedBudget>,
+    pagerState: PagerState,
+    scope: CoroutineScope,
+) {
+    PrimaryScrollableTabRow(
+        selectedTabIndex = pagerState.currentPage,
+        edgePadding = 0.dp,
+    ) {
+        monthlyBudgets.forEachIndexed { index, budget ->
+            Tab(
+                text = {
+                    Text(
+                        text = budget.category.group,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                selected = pagerState.currentPage == index,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
             )
         }
     }
@@ -276,120 +311,6 @@ fun CategoriesPage(
     }
 }
 
-fun LazyListScope.budgetCategoryPage(
-    budget: GroupedBudget,
-    group: String? = null,
-) {
-
-    item {
-        val data = buildList {
-            add(
-                PieChartItem(
-                    value = budget.totalExpenses.toFloat(),
-                    title = stringResource(R.string.expenses),
-                    total = annotateExpenses(budget.totalExpenses, budget.currency),
-                )
-            )
-
-            add(
-                PieChartItem(
-                    value = budget.totalInvestments.toFloat(),
-                    title = stringResource(R.string.investments),
-                    total = annotateFinance(budget.totalInvestments, budget.currency),
-                )
-            )
-
-            add(
-                PieChartItem(
-                    value = budget.totalSavings.toFloat(),
-                    title = stringResource(R.string.savings),
-                    total = annotateFinance(budget.totalSavings, budget.currency),
-                )
-            )
-
-            if (budget.totalTrades > BigDecimal.ZERO) {
-                add(
-                    PieChartItem(
-                        value = budget.totalTrades.toFloat(),
-                        title = stringResource(R.string.trades),
-                        total = annotateFinance(budget.totalTrades, budget.currency),
-                    )
-                )
-            }
-
-            if (budget.remaining > BigDecimal.ZERO) {
-                add(
-                    PieChartItem(
-                        value = budget.remaining.toFloat(),
-                        title = stringResource(R.string.remaining),
-                        total = annotateFinance(budget.remaining, budget.currency)
-                    )
-                )
-            }
-        }
-
-        val total = annotateFinance(budget.total, budget.currency)
-        val defaultText = annotateChart(group ?: budget.category.group, total)
-
-        PieChart(
-            data = data,
-            defaultText = defaultText,
-            textStyle = MaterialTheme.typography.titleLarge,
-        )
-    }
-
-    item {
-        Spacer(
-            modifier = Modifier
-                .height(dimensionResource(R.dimen.vertical_margin))
-        )
-    }
-
-    item {
-        CategoryItem(
-            name = stringResource(R.string.expenses),
-            value = annotateExpenses(budget.totalExpenses, budget.currency),
-            colorIndex = 0,
-        )
-    }
-
-    item {
-        CategoryItem(
-            name = stringResource(R.string.investments),
-            value = annotateFinance(budget.totalInvestments, budget.currency),
-            colorIndex = 1,
-        )
-    }
-
-    item {
-        CategoryItem(
-            name = stringResource(R.string.savings),
-            value = annotateFinance(budget.totalSavings, budget.currency),
-            colorIndex = 2,
-        )
-    }
-
-    val withTrades = budget.totalTrades > BigDecimal.ZERO
-
-    if (withTrades) {
-        item {
-            CategoryItem(
-                name = stringResource(R.string.trades),
-                value = annotateFinance(budget.totalTrades, budget.currency),
-                colorIndex = 3,
-            )
-        }
-    }
-
-    item {
-        CategoryItem(
-            name = stringResource(R.string.remaining),
-            value = annotateFinance(budget.remaining, budget.currency),
-            colorIndex = if (withTrades) 4 else 3,
-        )
-    }
-}
-
 @Composable
 fun BudgetItem(
     budget: Budget,
@@ -406,19 +327,6 @@ fun BudgetItem(
         subTextRight = budget.total?.let { total -> annotateFinance(total, budget.currency) } ?: AnnotatedString(""),
 
         onClick = { onBudgetClick(budget) }
-    )
-}
-
-@Composable
-private fun CategoryItem(
-    name: String,
-    value: AnnotatedString,
-    colorIndex: Int,
-) {
-    ListItem(
-        textLeft = name,
-        subTextRight = value,
-        colorIndex = colorIndex,
     )
 }
 

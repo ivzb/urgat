@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.about
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -53,8 +54,7 @@ fun AboutScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = R.string.about,
+            AboutTopAppBar(
                 onBack = onBack,
             )
         },
@@ -76,13 +76,28 @@ fun AboutScreen(
             verticalArrangement = Arrangement.Center,
         ) {
 
-            LoadingState(
-                label = R.string.version_format,
-                formatArgs = arrayOf(BuildConfig.VERSION_NAME),
-                modifier = Modifier.weight(1f)
-            )
+            AboutContent()
         }
     }
+}
+
+@Composable
+private fun AboutTopAppBar(
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = R.string.about,
+        onBack = onBack,
+    )
+}
+
+@Composable
+private fun ColumnScope.AboutContent() {
+    LoadingState(
+        label = R.string.version_format,
+        formatArgs = arrayOf(BuildConfig.VERSION_NAME),
+        modifier = Modifier.weight(1f)
+    )
 }
 
 @Preview

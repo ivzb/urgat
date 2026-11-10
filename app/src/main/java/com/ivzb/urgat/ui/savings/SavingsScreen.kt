@@ -1,68 +1,41 @@
 package com.ivzb.urgat.ui.savings
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryScrollableTabRow
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.saving.Saving
-import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.data.saving.SavingTotal.Companion.sumByCurrency
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.domain.saving.GroupedSavingCategories
 import com.ivzb.urgat.domain.saving.GroupedSavings
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyState
-import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.MoreMenu
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
-import com.ivzb.urgat.ui.components.charts.PieChart
-import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateChart
 import com.ivzb.urgat.util.annotateSavings
 import com.ivzb.urgat.util.annotateSavingsTotals
 import com.ivzb.urgat.util.format
-import com.ivzb.urgat.util.isFirst
-import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
-import com.ivzb.urgat.util.rememberLazyListStates
 import com.ivzb.urgat.util.toLocalDate
 import com.ivzb.urgat.util.toggle
-import kotlinx.coroutines.launch
 
 @Composable
 fun SavingsScreen(
@@ -110,64 +83,100 @@ fun SavingsScreen(
         onBack = onBack,
 
         topAppBarActionsContent = {
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                showBadge = uiState.filteringUiInfo.showSortBadge,
-                onFilter = { onIntent(SavingsIntent.SetSorting(it)) },
-            )
-
-            MoreMenu(
-                listOfNotNull(
-                    (R.string.reset_filters to { onIntent(SavingsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
-                )
+            SavingsTopAppBarActions(
+                uiState = uiState,
+                onIntent = onIntent,
             )
         },
 
         content = { page, listState, onListStateChanged ->
-            when (page) {
-                SavingsPage.Monthly -> GroupedCategoriesPage(
-                    categories = uiState.categoriesMonthly,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryIds = expandedMonthlyIds,
-                    onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
-                    onSavingClick = onSavingClick,
-                    onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
-                    onListStateChanged = onListStateChanged,
-                )
-
-                SavingsPage.Yearly -> GroupedCategoriesPage(
-                    categories = uiState.categoriesYearly,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryIds = expandedYearlyIds,
-                    onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
-                    onSavingClick = onSavingClick,
-                    onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
-                    onListStateChanged = onListStateChanged,
-                )
-
-                SavingsPage.AllTime -> CategoriesPage(
-                    group = stringResource(R.string.all_time),
-                    total = annotateSavingsTotals(
-                        uiState.categoriesAllTime
-                            .flatMap { it.totals }
-                            .sumByCurrency()
-                    ),
-                    categories = uiState.categoriesAllTime,
-                    expandedCategoryIds = expandedAllTimeIds,
-
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
-
-                    listState = listState,
-                    onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
-                    onSavingClick = onSavingClick,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
+            SavingsPageContent(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+                expandedMonthlyIds = expandedMonthlyIds,
+                expandedYearlyIds = expandedYearlyIds,
+                expandedAllTimeIds = expandedAllTimeIds,
+                onSavingClick = onSavingClick,
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
         },
 
         modifier = modifier,
     )
+}
+
+@Composable
+private fun SavingsTopAppBarActions(
+    uiState: SavingsUiState,
+    onIntent: (SavingsIntent) -> Unit,
+) {
+    SortMenu(
+        items = uiState.filteringUiInfo.sortMenuItems,
+        showBadge = uiState.filteringUiInfo.showSortBadge,
+        onFilter = { onIntent(SavingsIntent.SetSorting(it)) },
+    )
+
+    MoreMenu(
+        listOfNotNull(
+            (R.string.reset_filters to { onIntent(SavingsIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+        )
+    )
+}
+
+@Composable
+private fun SavingsPageContent(
+    page: Page,
+    uiState: SavingsUiState,
+    onIntent: (SavingsIntent) -> Unit,
+    expandedMonthlyIds: MutableSet<String>,
+    expandedYearlyIds: MutableSet<String>,
+    expandedAllTimeIds: MutableSet<String>,
+    onSavingClick: (Saving) -> Unit,
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+    when (page) {
+        SavingsPage.Monthly -> GroupedCategoriesPage(
+            categories = uiState.categoriesMonthly,
+            filteringUiInfo = uiState.filteringUiInfo,
+            expandedCategoryIds = expandedMonthlyIds,
+            onCategoryClick = { categoryId -> expandedMonthlyIds.toggle(categoryId) },
+            onSavingClick = onSavingClick,
+            onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
+            onListStateChanged = onListStateChanged,
+        )
+
+        SavingsPage.Yearly -> GroupedCategoriesPage(
+            categories = uiState.categoriesYearly,
+            filteringUiInfo = uiState.filteringUiInfo,
+            expandedCategoryIds = expandedYearlyIds,
+            onCategoryClick = { categoryId -> expandedYearlyIds.toggle(categoryId) },
+            onSavingClick = onSavingClick,
+            onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
+            onListStateChanged = onListStateChanged,
+        )
+
+        SavingsPage.AllTime -> CategoriesPage(
+            group = stringResource(R.string.all_time),
+            total = annotateSavingsTotals(
+                uiState.categoriesAllTime
+                    .flatMap { it.totals }
+                    .sumByCurrency()
+            ),
+            categories = uiState.categoriesAllTime,
+            expandedCategoryIds = expandedAllTimeIds,
+
+            filteringUiInfo = uiState.filteringUiInfo,
+            onResetFilters = { onIntent(SavingsIntent.ResetFilters) },
+
+            listState = listState,
+            onCategoryClick = { categoryId -> expandedAllTimeIds.toggle(categoryId) },
+            onSavingClick = onSavingClick,
+            onListStateChanged = onListStateChanged,
+        )
+    }
 }
 
 @Composable
@@ -226,198 +235,6 @@ fun TransactionsPage(
 }
 
 @Composable
-private fun GroupedCategoriesPage(
-    categories: List<GroupedSavingCategories>,
-    filteringUiInfo: FilteringUiInfo,
-    expandedCategoryIds: Set<String>,
-    onCategoryClick: (String) -> Unit,
-    onSavingClick: (Saving) -> Unit,
-    onResetFilters: () -> Unit,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState { categories.size }
-    val nestedListStates = rememberLazyListStates(categories.size)
-
-    if (categories.isEmpty()) {
-        EmptyState(
-            filteringUiInfo = filteringUiInfo,
-            onButtonClick = { onResetFilters() },
-        )
-        return
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            edgePadding = 0.dp,
-        ) {
-            categories.forEachIndexed { index, category ->
-                Tab(
-                    text = {
-                        Text(
-                            text = category.group,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                )
-            }
-        }
-
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = true,
-            modifier = Modifier
-                .fillMaxSize(),
-        ) { pageIndex ->
-
-            val category = categories[pageIndex]
-
-            CategoriesPage(
-                group = category.group,
-                total = annotateSavingsTotals(category.total),
-
-                categories = category.items,
-                expandedCategoryIds = expandedCategoryIds,
-
-                filteringUiInfo = filteringUiInfo,
-                onResetFilters = onResetFilters,
-
-                onCategoryClick = onCategoryClick,
-                onSavingClick = onSavingClick,
-
-                listState = nestedListStates[pageIndex],
-                onListStateChanged = onListStateChanged,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CategoriesPage(
-    group: String,
-    total: AnnotatedString?,
-
-    categories: List<SavingCategory>,
-    expandedCategoryIds: Set<String>,
-
-    filteringUiInfo: FilteringUiInfo,
-    onResetFilters: () -> Unit,
-
-    onCategoryClick: (String) -> Unit,
-    onSavingClick: (Saving) -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
-
-    if (categories.isEmpty()) {
-        EmptyState(
-            filteringUiInfo = filteringUiInfo,
-            onButtonClick = { onResetFilters() },
-        )
-        return
-    }
-
-    LazyColumn(
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
-        ),
-        state = listState,
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-
-        item {
-            val data = categories.map {
-                PieChartItem(
-                    value = it.savings.sumOf { it.amount }.toFloat(),
-                    title = it.name,
-                    total = annotateSavingsTotals(it.totals),
-                )
-            }
-            val defaultText = annotateChart(group, total)
-
-            PieChart(
-                data = data,
-                defaultText = defaultText,
-                textStyle = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        categories.forEachIndexed { index, category ->
-            item(key = category.id) {
-                CategoryItem(
-                    category = category,
-                    colorIndex = index,
-                    onClick = { onCategoryClick(category.id) },
-                )
-            }
-
-            val isExpanded = expandedCategoryIds.contains(category.id)
-
-            if (isExpanded) {
-                subSavings(category.savings, onSavingClick)
-            }
-        }
-    }
-}
-
-private fun LazyListScope.subSavings(
-    savings: List<Saving>,
-    onSavingClick: (Saving) -> Unit,
-) {
-    itemsIndexed(
-        savings,
-        key = { _, saving -> saving.id },
-    ) { index, saving ->
-
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(R.dimen.horizontal_margin))
-                .paddingIf(
-                    condition = index.isFirst(),
-                    top = dimensionResource(R.dimen.expanded_group_vertical_margin)
-                )
-                .paddingIf(
-                    condition = index.isLast(savings.size),
-                    bottom = dimensionResource(R.dimen.expanded_group_vertical_margin)
-                ),
-            shadowElevation = 2.dp,
-        ) {
-
-            SavingItem(
-                saving = saving,
-                onSavingClick = onSavingClick,
-            )
-        }
-    }
-}
-
-@Composable
 fun SavingItem(
     saving: Saving,
     onSavingClick: (Saving) -> Unit
@@ -432,21 +249,6 @@ fun SavingItem(
         subTextRight = annotateSavings(saving.amount, saving.currency),
 
         onClick = { onSavingClick(saving) }
-    )
-}
-
-@Composable
-private fun CategoryItem(
-    category: SavingCategory,
-    colorIndex: Int,
-    onClick: () -> Unit,
-) {
-
-    ListItem(
-        textLeft = category.name,
-        subTextRight = annotateSavingsTotals(category.totals),
-        colorIndex = colorIndex,
-        onClick = onClick,
     )
 }
 

@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.addEditWeight
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,18 +97,12 @@ fun AddEditWeightScreen(
         List(FieldId.entries.size) { FocusRequester() }
     }
 
-    val focusManager = LocalFocusManager.current
-
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditWeightTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditWeightIntent.DeleteWeight) })
-                    }
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -133,90 +128,11 @@ fun AddEditWeightScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var valueTextFieldValue by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = uiState.value,
-                            selection = TextRange(uiState.value.length)
-                        )
-                    )
-                }
-
-                TextField(
-                    value = valueTextFieldValue,
-                    onValueChange = {
-                        valueTextFieldValue = it.copy(
-                            selection = TextRange(it.text.length)
-                        )
-
-                        onIntent(AddEditWeightIntent.UpdateValue(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.weight_hint)) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Weight.ordinal]),
+                AddEditWeightForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                DatePicker(
-                    timestamp = uiState.date,
-                    onTimestampSelected = {
-                        onIntent(AddEditWeightIntent.UpdateDate(it))
-                    }
-                ) { selectedDate, dialog ->
-
-                    TextField(
-                        value = selectedDate,
-                        onValueChange = {},
-                        placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                        label = { Text(stringResource(id = R.string.date_hint)) },
-                        readOnly = true,
-                        maxLines = 1,
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(id = R.string.date_hint)
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequesters[FieldId.Date.ordinal])
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    dialog.show()
-                                    focusManager.clearFocus()
-                                }
-                            },
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditWeightIntent.SaveWeight)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -230,6 +146,152 @@ fun AddEditWeightScreen(
                 onIntent(AddEditWeightIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditWeightTopAppBar(
+    uiState: AddEditWeightUiState,
+    onIntent: (AddEditWeightIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditWeightIntent.DeleteWeight) })
+            }
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditWeightForm(
+    uiState: AddEditWeightUiState,
+    onIntent: (AddEditWeightIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var valueTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.value,
+                selection = TextRange(uiState.value.length)
+            )
+        )
+    }
+
+    WeightRow(
+        valueTextFieldValue = valueTextFieldValue,
+        onWeightChange = {
+            valueTextFieldValue = it.copy(
+                selection = TextRange(it.text.length)
+            )
+
+            onIntent(AddEditWeightIntent.UpdateValue(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    DateRow(
+        date = uiState.date,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun WeightRow(
+    valueTextFieldValue: TextFieldValue,
+    onWeightChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = valueTextFieldValue,
+        onValueChange = onWeightChange,
+        placeholder = { Text(text = stringResource(id = R.string.weight_hint)) },
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[FieldId.Weight.ordinal]),
+    )
+}
+
+@Composable
+private fun DateRow(
+    date: Long,
+    onIntent: (AddEditWeightIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    DatePicker(
+        timestamp = date,
+        onTimestampSelected = {
+            onIntent(AddEditWeightIntent.UpdateDate(it))
+        }
+    ) { selectedDate, dialog ->
+
+        TextField(
+            value = selectedDate,
+            onValueChange = {},
+            placeholder = { Text(stringResource(id = R.string.date_hint)) },
+            label = { Text(stringResource(id = R.string.date_hint)) },
+            readOnly = true,
+            maxLines = 1,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = stringResource(id = R.string.date_hint)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        dialog.show()
+                        focusManager.clearFocus()
+                    }
+                },
+        )
+    }
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditWeightIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditWeightIntent.SaveWeight)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

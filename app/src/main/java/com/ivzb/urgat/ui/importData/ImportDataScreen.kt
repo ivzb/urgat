@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -85,8 +86,7 @@ fun ImportDataScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = R.string.import_data,
+            ImportDataTopAppBar(
                 onBack = onBack,
             )
         },
@@ -108,29 +108,12 @@ fun ImportDataScreen(
             verticalArrangement = Arrangement.Center,
         ) {
 
-            when {
-                uiState.isLoading -> {
-                    LoadingState(
-                        label = R.string.loading,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                uiState.isManualMode -> {
-                    ImportDataManualContent(
-                        uiState = uiState,
-                        onIntent = onIntent,
-                        pages = pages,
-                        pagerState = pagerState,
-                    )
-                }
-
-                else -> {
-                    ImportDataContent(
-                        onIntent = onIntent,
-                    )
-                }
-            }
+            ImportDataScreenContent(
+                uiState = uiState,
+                onIntent = onIntent,
+                pages = pages,
+                pagerState = pagerState,
+            )
         }
     }
 
@@ -142,6 +125,48 @@ fun ImportDataScreen(
                 snackbarHostState.showSnackbar(snackbarText)
                 onIntent(ImportDataIntent.UserMessageShown)
             }
+        }
+    }
+}
+
+@Composable
+private fun ImportDataTopAppBar(
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = R.string.import_data,
+        onBack = onBack,
+    )
+}
+
+@Composable
+private fun ColumnScope.ImportDataScreenContent(
+    uiState: ImportDataUiState,
+    onIntent: (ImportDataIntent) -> Unit,
+    pages: List<ImportDataPage>,
+    pagerState: PagerState,
+) {
+    when {
+        uiState.isLoading -> {
+            LoadingState(
+                label = R.string.loading,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        uiState.isManualMode -> {
+            ImportDataManualContent(
+                uiState = uiState,
+                onIntent = onIntent,
+                pages = pages,
+                pagerState = pagerState,
+            )
+        }
+
+        else -> {
+            ImportDataContent(
+                onIntent = onIntent,
+            )
         }
     }
 }
@@ -198,31 +223,11 @@ private fun ImportDataManualContent(
     pages: List<ImportDataPage>,
     pagerState: PagerState,
 ) {
-    val scope = rememberCoroutineScope()
-
     Column {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            edgePadding = 0.dp
-        ) {
-            pages.forEachIndexed { index, page ->
-                Tab(
-                    text = {
-                        Text(
-                            text = stringResource(page.titleResId),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                )
-            }
-        }
+        ImportDataTabRow(
+            pages = pages,
+            pagerState = pagerState,
+        )
 
         HorizontalPager(
             state = pagerState,
@@ -235,6 +240,37 @@ private fun ImportDataManualContent(
                 page = pages[pageIndex],
                 uiState = uiState,
                 onIntent = onIntent,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ImportDataTabRow(
+    pages: List<ImportDataPage>,
+    pagerState: PagerState,
+) {
+    val scope = rememberCoroutineScope()
+
+    PrimaryScrollableTabRow(
+        selectedTabIndex = pagerState.currentPage,
+        edgePadding = 0.dp
+    ) {
+        pages.forEachIndexed { index, page ->
+            Tab(
+                text = {
+                    Text(
+                        text = stringResource(page.titleResId),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                },
+                selected = pagerState.currentPage == index,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                },
             )
         }
     }

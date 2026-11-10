@@ -1,72 +1,44 @@
 package com.ivzb.urgat.ui.expenses
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryScrollableTabRow
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ivzb.urgat.R
 import com.ivzb.urgat.data.expense.Expense
-import com.ivzb.urgat.data.expense.ExpenseAverage
-import com.ivzb.urgat.data.expense.ExpenseCategory
 import com.ivzb.urgat.data.expense.ExpenseTotal.Companion.sumByCurrency
 import com.ivzb.urgat.data.source.sample.SampleData
-import com.ivzb.urgat.domain.expense.GroupedExpenseCategories
 import com.ivzb.urgat.domain.expense.GroupedExpenses
 import com.ivzb.urgat.ui.components.AllDevicesPreview
-import com.ivzb.urgat.ui.components.EmptyState
 import com.ivzb.urgat.ui.components.FilterMenu
-import com.ivzb.urgat.ui.components.FilteringUiInfo
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.MoreMenu
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
-import com.ivzb.urgat.ui.components.charts.PieChart
-import com.ivzb.urgat.ui.components.charts.PieChartItem
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
-import com.ivzb.urgat.util.annotateChart
 import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateExpensesTotals
 import com.ivzb.urgat.util.annotateMarketPrice
-import com.ivzb.urgat.util.isFirst
-import com.ivzb.urgat.util.isLast
 import com.ivzb.urgat.util.paddingIf
-import com.ivzb.urgat.util.rememberLazyListStates
 import com.ivzb.urgat.util.toLocalDate
 import com.ivzb.urgat.util.toggle
-import kotlinx.coroutines.launch
 
 @Composable
 fun ExpensesScreen(
@@ -115,77 +87,113 @@ fun ExpensesScreen(
         onBack = onBack,
 
         topAppBarActionsContent = {
-            FilterMenu(
-                items = uiState.filteringUiInfo.filterMenuItems,
-                showBadge = uiState.filteringUiInfo.showFilterBadge,
-                onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
-            )
-
-            SortMenu(
-                items = uiState.filteringUiInfo.sortMenuItems,
-                showBadge = uiState.filteringUiInfo.showSortBadge,
-                onFilter = { onIntent(ExpensesIntent.SetSorting(it)) },
-            )
-
-            MoreMenu(
-                listOfNotNull(
-                    (R.string.reset_filters to { onIntent(ExpensesIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
-                )
+            ExpensesTopAppBarActions(
+                uiState = uiState,
+                onIntent = onIntent,
             )
         },
 
         content = { page, listState, onListStateChanged ->
-            when (page) {
-                ExpensesPage.Monthly -> GroupedCategoriesPage(
-                    categories = uiState.categoriesMonthly,
-                    averages = uiState.averagesMonthly,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryNames = expandedCategoryNames,
-                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
-                    onExpenseClick = onExpenseClick,
-                    onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
-                    selectedChartTitle = selectedChartTitle,
-                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
-                    onListStateChanged = onListStateChanged,
-                )
-
-                ExpensesPage.Yearly -> GroupedCategoriesPage(
-                    categories = uiState.categoriesYearly,
-                    averages = uiState.averagesYearly,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    expandedCategoryNames = expandedCategoryNames,
-                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
-                    onExpenseClick = onExpenseClick,
-                    onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
-                    selectedChartTitle = selectedChartTitle,
-                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
-                    onListStateChanged = onListStateChanged,
-                )
-
-                ExpensesPage.AllTime -> CategoriesPage(
-                    group = stringResource(R.string.all_time),
-                    total = annotateExpensesTotals(
-                        uiState.categoriesAllTime
-                            .flatMap { it.totals }
-                            .sumByCurrency()
-                    ),
-                    categories = uiState.categoriesAllTime,
-                    expandedCategoryNames = expandedCategoryNames,
-                    average = uiState.averageAllTime,
-                    listState = listState,
-                    onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
-                    onExpenseClick = onExpenseClick,
-                    filteringUiInfo = uiState.filteringUiInfo,
-                    onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
-                    selectedChartTitle = selectedChartTitle,
-                    onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
-                    onListStateChanged = onListStateChanged,
-                )
-            }
+            ExpensesPageContent(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+                expandedCategoryNames = expandedCategoryNames,
+                onExpenseClick = onExpenseClick,
+                selectedChartTitle = selectedChartTitle,
+                onSelectedChartTitleChanged = { title -> selectedChartTitle = title },
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
         },
 
         modifier = modifier,
     )
+}
+
+@Composable
+private fun ExpensesTopAppBarActions(
+    uiState: ExpensesUiState,
+    onIntent: (ExpensesIntent) -> Unit,
+) {
+    FilterMenu(
+        items = uiState.filteringUiInfo.filterMenuItems,
+        showBadge = uiState.filteringUiInfo.showFilterBadge,
+        onFilter = { onIntent(ExpensesIntent.SetFiltering(it)) },
+    )
+
+    SortMenu(
+        items = uiState.filteringUiInfo.sortMenuItems,
+        showBadge = uiState.filteringUiInfo.showSortBadge,
+        onFilter = { onIntent(ExpensesIntent.SetSorting(it)) },
+    )
+
+    MoreMenu(
+        listOfNotNull(
+            (R.string.reset_filters to { onIntent(ExpensesIntent.ResetFilters) }).takeIf { uiState.filteringUiInfo.hasAppliedFilters },
+        )
+    )
+}
+
+@Composable
+private fun ExpensesPageContent(
+    page: Page,
+    uiState: ExpensesUiState,
+    onIntent: (ExpensesIntent) -> Unit,
+    expandedCategoryNames: MutableList<String>,
+    onExpenseClick: (Expense) -> Unit,
+    selectedChartTitle: String?,
+    onSelectedChartTitleChanged: (String?) -> Unit,
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+    when (page) {
+        ExpensesPage.Monthly -> GroupedCategoriesPage(
+            categories = uiState.categoriesMonthly,
+            averages = uiState.averagesMonthly,
+            filteringUiInfo = uiState.filteringUiInfo,
+            expandedCategoryNames = expandedCategoryNames,
+            onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
+            onExpenseClick = onExpenseClick,
+            onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
+            selectedChartTitle = selectedChartTitle,
+            onSelectedChartTitleChanged = onSelectedChartTitleChanged,
+            onListStateChanged = onListStateChanged,
+        )
+
+        ExpensesPage.Yearly -> GroupedCategoriesPage(
+            categories = uiState.categoriesYearly,
+            averages = uiState.averagesYearly,
+            filteringUiInfo = uiState.filteringUiInfo,
+            expandedCategoryNames = expandedCategoryNames,
+            onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
+            onExpenseClick = onExpenseClick,
+            onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
+            selectedChartTitle = selectedChartTitle,
+            onSelectedChartTitleChanged = onSelectedChartTitleChanged,
+            onListStateChanged = onListStateChanged,
+        )
+
+        ExpensesPage.AllTime -> CategoriesPage(
+            group = stringResource(R.string.all_time),
+            total = annotateExpensesTotals(
+                uiState.categoriesAllTime
+                    .flatMap { it.totals }
+                    .sumByCurrency()
+            ),
+            categories = uiState.categoriesAllTime,
+            expandedCategoryNames = expandedCategoryNames,
+            average = uiState.averageAllTime,
+            listState = listState,
+            onCategoryClick = { categoryName -> expandedCategoryNames.toggle(categoryName) },
+            onExpenseClick = onExpenseClick,
+            filteringUiInfo = uiState.filteringUiInfo,
+            onResetFilters = { onIntent(ExpensesIntent.ResetFilters) },
+            selectedChartTitle = selectedChartTitle,
+            onSelectedChartTitleChanged = onSelectedChartTitleChanged,
+            onListStateChanged = onListStateChanged,
+        )
+    }
 }
 
 @Composable
@@ -244,244 +252,6 @@ fun TransactionsPage(
 }
 
 @Composable
-private fun GroupedCategoriesPage(
-    categories: List<GroupedExpenseCategories>,
-    averages: Map<String, ExpenseAverage>,
-    filteringUiInfo: FilteringUiInfo,
-    expandedCategoryNames: List<String>,
-    onCategoryClick: (String) -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-    onResetFilters: () -> Unit,
-    selectedChartTitle: String?,
-    onSelectedChartTitleChanged: (String?) -> Unit,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState { categories.size }
-    val nestedListStates = rememberLazyListStates(categories.size)
-
-    if (categories.isEmpty()) {
-        EmptyState(
-            filteringUiInfo = filteringUiInfo,
-            onButtonClick = { onResetFilters() },
-        )
-        return
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        PrimaryScrollableTabRow(
-            selectedTabIndex = pagerState.currentPage,
-            edgePadding = 0.dp,
-        ) {
-            categories.forEachIndexed { index, category ->
-                Tab(
-                    text = {
-                        Text(
-                            text = category.group,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                )
-            }
-        }
-
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = true,
-            modifier = Modifier
-                .fillMaxSize(),
-        ) { pageIndex ->
-
-            val category = categories[pageIndex]
-
-            CategoriesPage(
-                group = category.group,
-                total = annotateExpensesTotals(category.total),
-
-                categories = category.items,
-                expandedCategoryNames = expandedCategoryNames,
-
-                average = averages[category.group] ?: ExpenseAverage.EMPTY,
-
-                filteringUiInfo = filteringUiInfo,
-                onResetFilters = onResetFilters,
-
-                onCategoryClick = onCategoryClick,
-                onExpenseClick = onExpenseClick,
-
-                selectedChartTitle = selectedChartTitle,
-                onSelectedChartTitleChanged = onSelectedChartTitleChanged,
-
-                listState = nestedListStates[pageIndex],
-                onListStateChanged = onListStateChanged,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CategoriesPage(
-    group: String,
-    total: AnnotatedString?,
-
-    categories: List<ExpenseCategory>,
-    expandedCategoryNames: List<String>,
-
-    average: ExpenseAverage,
-
-    filteringUiInfo: FilteringUiInfo,
-    onResetFilters: () -> Unit,
-
-    onCategoryClick: (String) -> Unit,
-    onExpenseClick: (Expense) -> Unit,
-
-    selectedChartTitle: String?,
-    onSelectedChartTitleChanged: (String?) -> Unit,
-
-    listState: LazyListState,
-    onListStateChanged: (LazyListState) -> Unit,
-) {
-
-    LaunchedEffect(Unit) {
-        onListStateChanged(listState)
-    }
-
-    if (categories.isEmpty()) {
-        EmptyState(
-            filteringUiInfo = filteringUiInfo,
-            onButtonClick = { onResetFilters() },
-        )
-        return
-    }
-
-    val averagePrefix = stringResource(R.string.average_monthly)
-
-    LazyColumn(
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(R.dimen.horizontal_margin),
-            vertical = dimensionResource(R.dimen.vertical_margin),
-        ),
-        state = listState,
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-
-        item {
-            val lastExpandedName = expandedCategoryNames.lastOrNull()
-            val expandedCategory = categories.firstOrNull { it.name == lastExpandedName }
-
-            val averageTotals = expandedCategory
-                ?.let { average.categories[it.name].orEmpty() }
-                ?: average.totals
-
-            val averageText = annotateExpensesTotals(averageTotals, prefix = "$averagePrefix ")
-
-            val data: List<PieChartItem>
-            val defaultText: AnnotatedString
-
-            if (expandedCategory == null) {
-                // all categories pie chart
-                data = categories.map {
-                    PieChartItem(
-                        value = it.expenses.sumOf { it.amount }.toFloat(),
-                        title = it.name,
-                        total = annotateExpensesTotals(it.totals),
-                    )
-                }
-                defaultText = annotateChart(group, total, averageText)
-            } else {
-                // expanded category pie chart
-                data = expandedCategory.expenses
-                    .groupBy { it.name }
-                    .map { (name, expenses) ->
-                        val expenseTotal = Expense.total(expenses)
-
-                        PieChartItem(
-                            value = expenses.sumOf { it.amount }.toFloat(),
-                            title = name,
-                            total = annotateExpensesTotals(expenseTotal),
-                        )
-                    }
-                defaultText = annotateChart(expandedCategory.name, annotateExpensesTotals(expandedCategory.totals), averageText)
-            }
-
-            PieChart(
-                data = data,
-                defaultText = defaultText,
-                textStyle = MaterialTheme.typography.titleLarge,
-                selectedTitle = selectedChartTitle,
-                onSelectedTitleChanged = onSelectedChartTitleChanged,
-            )
-        }
-
-        item {
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.vertical_margin))
-            )
-        }
-
-        categories.forEachIndexed { index, category ->
-            item(key = category.id) {
-                CategoryItem(
-                    category = category,
-                    colorIndex = index,
-                    onClick = { onCategoryClick(category.name) },
-                )
-            }
-
-            val isExpanded = expandedCategoryNames.contains(category.name)
-
-            if (isExpanded) {
-                subExpenses(category.expenses, onExpenseClick)
-            }
-        }
-    }
-}
-
-private fun LazyListScope.subExpenses(
-    expenses: List<Expense>,
-    onExpenseClick: (Expense) -> Unit,
-) {
-    itemsIndexed(
-        expenses,
-        key = { _, expense -> expense.id },
-    ) { index, expense ->
-
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(R.dimen.horizontal_margin))
-                .paddingIf(
-                    condition = index.isFirst(),
-                    top = dimensionResource(R.dimen.expanded_group_vertical_margin)
-                )
-                .paddingIf(
-                    condition = index.isLast(expenses.size),
-                    bottom = dimensionResource(R.dimen.expanded_group_vertical_margin)
-                ),
-            shadowElevation = 2.dp,
-        ) {
-
-            ExpenseItem(
-                expense = expense,
-                onExpenseClick = onExpenseClick,
-            )
-        }
-    }
-}
-
-@Composable
 fun ExpenseItem(
     expense: Expense,
     onExpenseClick: (Expense) -> Unit
@@ -496,26 +266,6 @@ fun ExpenseItem(
         subTextRight = annotateExpenses(expense.amount, expense.currency),
 
         onClick = { onExpenseClick(expense) }
-    )
-}
-
-@Composable
-private fun CategoryItem(
-    category: ExpenseCategory,
-    colorIndex: Int,
-    onClick: () -> Unit,
-) {
-
-    ListItem(
-        textLeft = category.name,
-        subTextLeft = "",
-
-        textRight = "",
-        subTextRight = annotateExpensesTotals(category.totals),
-
-        colorIndex = colorIndex,
-
-        onClick = onClick,
     )
 }
 

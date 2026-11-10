@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.addEditNote
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -91,14 +92,10 @@ fun AddEditNoteScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditNoteTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditNoteIntent.DeleteNote) })
-                    }
-                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -124,53 +121,11 @@ fun AddEditNoteScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var contentTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.content)) }
-
-                TextField(
-                    value = contentTextFieldValue,
-                    onValueChange = {
-                        contentTextFieldValue = it
-                        onIntent(AddEditNoteIntent.UpdateContent(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.note_hint)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Default // allow multiline
-                    ),
-                    colors = transparentTextFieldColors(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .focusRequester(focusRequesters[FieldId.Content.ordinal]),
+                AddEditNoteForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditNoteIntent.SaveNote)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    contentTextFieldValue = TextFieldValue(
-                        text = uiState.content,
-                        selection = TextRange(uiState.content.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -184,6 +139,100 @@ fun AddEditNoteScreen(
                 onIntent(AddEditNoteIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditNoteTopAppBar(
+    uiState: AddEditNoteUiState,
+    onIntent: (AddEditNoteIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditNoteIntent.DeleteNote) })
+            }
+        }
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditNoteForm(
+    uiState: AddEditNoteUiState,
+    onIntent: (AddEditNoteIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var contentTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.content)) }
+
+    ContentRow(
+        contentTextFieldValue = contentTextFieldValue,
+        onContentChange = {
+            contentTextFieldValue = it
+            onIntent(AddEditNoteIntent.UpdateContent(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        contentTextFieldValue = TextFieldValue(
+            text = uiState.content,
+            selection = TextRange(uiState.content.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun ColumnScope.ContentRow(
+    contentTextFieldValue: TextFieldValue,
+    onContentChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = contentTextFieldValue,
+        onValueChange = onContentChange,
+        placeholder = { Text(text = stringResource(id = R.string.note_hint)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Default // allow multiline
+        ),
+        colors = transparentTextFieldColors(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .focusRequester(focusRequesters[FieldId.Content.ordinal]),
+    )
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditNoteIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditNoteIntent.SaveNote)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

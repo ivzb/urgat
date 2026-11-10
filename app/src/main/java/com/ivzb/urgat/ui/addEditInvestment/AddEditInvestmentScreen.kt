@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditInvestment
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -102,24 +103,13 @@ fun AddEditInvestmentScreen(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditInvestmentTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditInvestmentIntent.DeleteInvestment) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditInvestmentIntent.DuplicateInvestment) }).takeIf { uiState.withDuplicate },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -145,175 +135,11 @@ fun AddEditInvestmentScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
-
-                TextField(
-                    value = nameTextFieldValue,
-                    onValueChange = {
-                        nameTextFieldValue = it
-                        onIntent(AddEditInvestmentIntent.UpdateName(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.investment_hint)) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+                AddEditInvestmentForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.shares,
-                        onValueChange = {
-                            onIntent(AddEditInvestmentIntent.UpdateShares(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.shares_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Shares.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.costPrice,
-                        onValueChange = {
-                            onIntent(AddEditInvestmentIntent.UpdateCostPrice(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.cost_price_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Cost.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                TextField(
-                    value = uiState.category,
-                    onValueChange = {
-                        onIntent(AddEditInvestmentIntent.UpdateCategory(it))
-                    },
-                    placeholder = { Text(stringResource(id = R.string.category_hint)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    maxLines = 1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Category.ordinal]),
-                )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditInvestmentIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
-                    )
-
-                    DatePicker(
-                        timestamp = uiState.date,
-                        onTimestampSelected = {
-                            onIntent(AddEditInvestmentIntent.UpdateDate(it))
-                        }
-                    ) { selectedDate, dialog ->
-
-                        TextField(
-                            value = selectedDate,
-                            onValueChange = {},
-                            placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                            label = { Text(stringResource(id = R.string.date_hint)) },
-                            readOnly = true,
-                            maxLines = 1,
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.date_hint)
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequesters[FieldId.Date.ordinal])
-                                .onFocusChanged {
-                                    if (it.isFocused) {
-                                        dialog.show()
-                                        focusManager.clearFocus()
-                                    }
-                                },
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditInvestmentIntent.SaveInvestment)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    nameTextFieldValue = TextFieldValue(
-                        text = uiState.name,
-                        selection = TextRange(uiState.name.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -327,6 +153,269 @@ fun AddEditInvestmentScreen(
                 onIntent(AddEditInvestmentIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditInvestmentTopAppBar(
+    uiState: AddEditInvestmentUiState,
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditInvestmentIntent.DeleteInvestment) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditInvestmentIntent.DuplicateInvestment) }).takeIf { uiState.withDuplicate },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditInvestmentForm(
+    uiState: AddEditInvestmentUiState,
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
+
+    NameRow(
+        nameTextFieldValue = nameTextFieldValue,
+        onNameChange = {
+            nameTextFieldValue = it
+            onIntent(AddEditInvestmentIntent.UpdateName(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    SharesAndCostRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CategoryRow(
+        category = uiState.category,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CurrencyAndDateRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        nameTextFieldValue = TextFieldValue(
+            text = uiState.name,
+            selection = TextRange(uiState.name.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun NameRow(
+    nameTextFieldValue: TextFieldValue,
+    onNameChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = nameTextFieldValue,
+        onValueChange = onNameChange,
+        placeholder = { Text(text = stringResource(id = R.string.investment_hint)) },
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+    )
+}
+
+@Composable
+private fun SharesAndCostRow(
+    uiState: AddEditInvestmentUiState,
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.shares,
+            onValueChange = {
+                onIntent(AddEditInvestmentIntent.UpdateShares(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.shares_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Shares.ordinal]),
+        )
+
+        TextField(
+            value = uiState.costPrice,
+            onValueChange = {
+                onIntent(AddEditInvestmentIntent.UpdateCostPrice(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.cost_price_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Cost.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun CategoryRow(
+    category: String,
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = category,
+        onValueChange = {
+            onIntent(AddEditInvestmentIntent.UpdateCategory(it))
+        },
+        placeholder = { Text(stringResource(id = R.string.category_hint)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        maxLines = 1,
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[FieldId.Category.ordinal]),
+    )
+}
+
+@Composable
+private fun CurrencyAndDateRow(
+    uiState: AddEditInvestmentUiState,
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.currency,
+            onValueChange = {
+                onIntent(AddEditInvestmentIntent.UpdateCurrency(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+        )
+
+        DatePicker(
+            timestamp = uiState.date,
+            onTimestampSelected = {
+                onIntent(AddEditInvestmentIntent.UpdateDate(it))
+            }
+        ) { selectedDate, dialog ->
+
+            TextField(
+                value = selectedDate,
+                onValueChange = {},
+                placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                label = { Text(stringResource(id = R.string.date_hint)) },
+                readOnly = true,
+                maxLines = 1,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = stringResource(id = R.string.date_hint)
+                    )
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            dialog.show()
+                            focusManager.clearFocus()
+                        }
+                    },
+            )
+        }
+    }
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditInvestmentIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditInvestmentIntent.SaveInvestment)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

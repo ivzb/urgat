@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -198,7 +199,6 @@ private fun WellbeingContentLandscape(
     modifier: Modifier = Modifier
 ) {
     val screenName = stringResource(R.string.wellbeing)
-    val configuration = LocalConfiguration.current
 
     Row(
         modifier = modifier
@@ -208,52 +208,93 @@ private fun WellbeingContentLandscape(
         verticalAlignment = Alignment.Top,
     ) {
 
-        LazyColumn(
-            modifier = modifier
-                .weight(1f)
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            ),
-        ) {
+        WellbeingChartColumn(
+            weights = weights,
+            weightsFilteringUiInfo = weightsFilteringUiInfo,
+            onAddWeight = onAddWeight,
+            onWeightClick = onWeightClick,
+            screenName = screenName,
+            modifier = modifier,
+        )
 
-            itemWeights(
-                weights = weights,
-                weightsFilteringUiInfo = weightsFilteringUiInfo,
-                onAddWeight = onAddWeight,
-                onWeightClick = onWeightClick,
+        WellbeingWeightsListColumn(
+            weights = weights,
+            onWeightClick = onWeightClick,
+            screenName = screenName,
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun RowScope.WellbeingChartColumn(
+    weights: List<Weight>,
+    weightsFilteringUiInfo: WeightsFilteringUiInfo,
+
+    onAddWeight: () -> Unit,
+    onWeightClick: (Weight) -> Unit,
+
+    screenName: String,
+    modifier: Modifier = Modifier
+) {
+
+    LazyColumn(
+        modifier = modifier
+            .weight(1f)
+            .semantics { contentDescription = screenName },
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
+        ),
+    ) {
+
+        itemWeights(
+            weights = weights,
+            weightsFilteringUiInfo = weightsFilteringUiInfo,
+            onAddWeight = onAddWeight,
+            onWeightClick = onWeightClick,
+        )
+
+        item {
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.vertical_margin))
             )
-
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-            }
         }
+    }
+}
 
-        LazyColumn(
-            modifier = modifier
-                .weight(1f)
-                .semantics { contentDescription = screenName },
-            contentPadding = PaddingValues(
-                horizontal = dimensionResource(R.dimen.content_padding_horizontal),
-                vertical = dimensionResource(R.dimen.content_padding_vertical),
-            ),
-        ) {
+@Composable
+private fun RowScope.WellbeingWeightsListColumn(
+    weights: List<Weight>,
 
-            if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                items(
-                    items = weights,
-                    key = { weight -> weight.id },
-                ) { weight ->
+    onWeightClick: (Weight) -> Unit,
 
-                    WeightItem(
-                        weight = weight,
-                        onWeightClick = onWeightClick,
-                    )
-                }
+    screenName: String,
+    modifier: Modifier = Modifier
+) {
+    val configuration = LocalConfiguration.current
+
+    LazyColumn(
+        modifier = modifier
+            .weight(1f)
+            .semantics { contentDescription = screenName },
+        contentPadding = PaddingValues(
+            horizontal = dimensionResource(R.dimen.content_padding_horizontal),
+            vertical = dimensionResource(R.dimen.content_padding_vertical),
+        ),
+    ) {
+
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            items(
+                items = weights,
+                key = { weight -> weight.id },
+            ) { weight ->
+
+                WeightItem(
+                    weight = weight,
+                    onWeightClick = onWeightClick,
+                )
             }
         }
     }

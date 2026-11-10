@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditFuelConsumption
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -98,25 +99,13 @@ fun AddEditFuelConsumptionScreen(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditFuelConsumptionTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditFuelConsumptionIntent.DeleteFuelConsumption) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditFuelConsumptionIntent.DuplicateFuelConsumption) }).takeIf { uiState.withDuplicate },
-                            (R.string.clear_defaults to { onIntent(AddEditFuelConsumptionIntent.ClearDefaults) }).takeIf { uiState.withClearDefaults },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -142,190 +131,11 @@ fun AddEditFuelConsumptionScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.amount,
-                        onValueChange = {
-                            onIntent(AddEditFuelConsumptionIntent.UpdateAmount(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fuel_consumption_amount_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.price,
-                        onValueChange = {
-                            onIntent(AddEditFuelConsumptionIntent.UpdatePrice(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fuel_consumption_price_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Price.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
+                AddEditFuelConsumptionForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditFuelConsumptionIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.type,
-                        onValueChange = {
-                            onIntent(AddEditFuelConsumptionIntent.UpdateType(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fuel_consumption_type_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Type.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.carName,
-                        onValueChange = {
-                            onIntent(AddEditFuelConsumptionIntent.UpdateCarName(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fuel_consumption_car_name_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.CarName.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.odometer,
-                        onValueChange = {
-                            onIntent(AddEditFuelConsumptionIntent.UpdateOdometer(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.fuel_consumption_odometer_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Odometer.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                DatePicker(
-                    timestamp = uiState.date,
-                    onTimestampSelected = {
-                        onIntent(AddEditFuelConsumptionIntent.UpdateDate(it))
-                    }
-                ) { selectedDate, dialog ->
-
-                    TextField(
-                        value = selectedDate,
-                        onValueChange = {},
-                        placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                        label = { Text(stringResource(id = R.string.date_hint)) },
-                        readOnly = true,
-                        maxLines = 1,
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(id = R.string.date_hint)
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequesters[FieldId.Date.ordinal])
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    dialog.show()
-                                    focusManager.clearFocus()
-                                }
-                            },
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditFuelConsumptionIntent.SaveFuelConsumption)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -339,6 +149,284 @@ fun AddEditFuelConsumptionScreen(
                 onIntent(AddEditFuelConsumptionIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditFuelConsumptionTopAppBar(
+    uiState: AddEditFuelConsumptionUiState,
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditFuelConsumptionIntent.DeleteFuelConsumption) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditFuelConsumptionIntent.DuplicateFuelConsumption) }).takeIf { uiState.withDuplicate },
+                    (R.string.clear_defaults to { onIntent(AddEditFuelConsumptionIntent.ClearDefaults) }).takeIf { uiState.withClearDefaults },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditFuelConsumptionForm(
+    uiState: AddEditFuelConsumptionUiState,
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    AmountAndPriceRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CurrencyAndTypeRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CarNameAndOdometerRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    DateRow(
+        date = uiState.date,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun AmountAndPriceRow(
+    uiState: AddEditFuelConsumptionUiState,
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.amount,
+            onValueChange = {
+                onIntent(AddEditFuelConsumptionIntent.UpdateAmount(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.fuel_consumption_amount_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
+        )
+
+        TextField(
+            value = uiState.price,
+            onValueChange = {
+                onIntent(AddEditFuelConsumptionIntent.UpdatePrice(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.fuel_consumption_price_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Price.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun CurrencyAndTypeRow(
+    uiState: AddEditFuelConsumptionUiState,
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.currency,
+            onValueChange = {
+                onIntent(AddEditFuelConsumptionIntent.UpdateCurrency(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+        )
+
+        TextField(
+            value = uiState.type,
+            onValueChange = {
+                onIntent(AddEditFuelConsumptionIntent.UpdateType(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.fuel_consumption_type_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Type.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun CarNameAndOdometerRow(
+    uiState: AddEditFuelConsumptionUiState,
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.carName,
+            onValueChange = {
+                onIntent(AddEditFuelConsumptionIntent.UpdateCarName(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.fuel_consumption_car_name_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.CarName.ordinal]),
+        )
+
+        TextField(
+            value = uiState.odometer,
+            onValueChange = {
+                onIntent(AddEditFuelConsumptionIntent.UpdateOdometer(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.fuel_consumption_odometer_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Odometer.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun DateRow(
+    date: Long,
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    DatePicker(
+        timestamp = date,
+        onTimestampSelected = {
+            onIntent(AddEditFuelConsumptionIntent.UpdateDate(it))
+        }
+    ) { selectedDate, dialog ->
+
+        TextField(
+            value = selectedDate,
+            onValueChange = {},
+            placeholder = { Text(stringResource(id = R.string.date_hint)) },
+            label = { Text(stringResource(id = R.string.date_hint)) },
+            readOnly = true,
+            maxLines = 1,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = stringResource(id = R.string.date_hint)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        dialog.show()
+                        focusManager.clearFocus()
+                    }
+                },
+        )
+    }
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditFuelConsumptionIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditFuelConsumptionIntent.SaveFuelConsumption)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

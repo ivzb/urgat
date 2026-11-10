@@ -28,6 +28,7 @@ import com.ivzb.urgat.ui.components.AllDevicesPreview
 import com.ivzb.urgat.ui.components.EmptyStateCard
 import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.MoreMenu
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.notes.NoteItem
 import com.ivzb.urgat.ui.notes.NotesFilteringUiInfo
@@ -104,53 +105,87 @@ fun LibraryScreen(
         withFab = { page -> !isSearchFocused },
         onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
-            if (uiState.withTopbarActions(page)) {
-                when (page) {
-                    LibraryPage.Todos -> {
-                        FilterMenu(
-                            items = uiState.todosUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.todosUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
-                        )
-                    }
-                }
-
-                MoreMenu(
-                    listOfNotNull(
-                        (R.string.clear_completed to { onIntent(LibraryIntent.ClearCompletedTodos) }).takeIf { page == LibraryPage.Todos && uiState.todosUiState.hasCompletedTodos },
-                        (R.string.reset_filters to { onIntent(LibraryIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
-                    )
-                )
-            }
+            LibraryTopAppBarActions(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+            )
         },
 
         content = { page, listState, onListStateChanged ->
-            when (page) {
-                LibraryPage.Todos -> TodosPage(
-                    uiState = uiState.todosUiState,
-                    onAddTodo = { onIntent(LibraryIntent.FabActionClick(page)) },
-                    onTodoClick = onTodoClick,
-                    onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
-                    onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-
-                LibraryPage.Notes -> NotesPage(
-                    uiState = uiState.notesUiState,
-                    onAddNote = { onIntent(LibraryIntent.FabActionClick(page)) },
-                    onNoteClick = onNoteClick,
-                    onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
+            LibraryPageContent(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+                onTodoClick = onTodoClick,
+                onNoteClick = onNoteClick,
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
         },
 
         modifier = modifier
     )
+}
+
+@Composable
+private fun LibraryTopAppBarActions(
+    page: Page,
+    uiState: LibraryUiState,
+    onIntent: (LibraryIntent) -> Unit,
+) {
+    if (uiState.withTopbarActions(page)) {
+        when (page) {
+            LibraryPage.Todos -> {
+                FilterMenu(
+                    items = uiState.todosUiState.filteringUiInfo.filterMenuItems,
+                    showBadge = uiState.todosUiState.filteringUiInfo.showFilterBadge,
+                    onFilter = { onIntent(LibraryIntent.SetTodosFiltering(it)) },
+                )
+            }
+        }
+
+        MoreMenu(
+            listOfNotNull(
+                (R.string.clear_completed to { onIntent(LibraryIntent.ClearCompletedTodos) }).takeIf { page == LibraryPage.Todos && uiState.todosUiState.hasCompletedTodos },
+                (R.string.reset_filters to { onIntent(LibraryIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
+            )
+        )
+    }
+}
+
+@Composable
+private fun LibraryPageContent(
+    page: Page,
+    uiState: LibraryUiState,
+    onIntent: (LibraryIntent) -> Unit,
+    onTodoClick: (Todo) -> Unit,
+    onNoteClick: (Note) -> Unit,
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+    when (page) {
+        LibraryPage.Todos -> TodosPage(
+            uiState = uiState.todosUiState,
+            onAddTodo = { onIntent(LibraryIntent.FabActionClick(page)) },
+            onTodoClick = onTodoClick,
+            onTodoCheckedChange = { todo, completed -> onIntent(LibraryIntent.CompleteTodo(todo, completed)) },
+            onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+
+        LibraryPage.Notes -> NotesPage(
+            uiState = uiState.notesUiState,
+            onAddNote = { onIntent(LibraryIntent.FabActionClick(page)) },
+            onNoteClick = onNoteClick,
+            onResetFilters = { onIntent(LibraryIntent.ResetFilters) },
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+    }
 }
 
 @Composable

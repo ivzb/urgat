@@ -1,11 +1,14 @@
 package com.ivzb.urgat.ui.exportData
 
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -87,8 +90,7 @@ fun ExportDataScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = R.string.export_data,
+            ExportDataTopAppBar(
                 onBack = onBack,
             )
         },
@@ -111,25 +113,10 @@ fun ExportDataScreen(
             verticalArrangement = Arrangement.Center,
         ) {
 
-            when {
-                uiState.isLoading -> {
-                    LoadingState(
-                        label = R.string.loading,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                else -> {
-                    Button(
-                        onClick = {
-                            folderPicker.launch(null)
-                        },
-                    ) {
-
-                        Text(stringResource(R.string.export_button_text))
-                    }
-                }
-            }
+            ExportDataContent(
+                uiState = uiState,
+                folderPicker = folderPicker,
+            )
         }
     }
 
@@ -140,6 +127,42 @@ fun ExportDataScreen(
             coroutineScope.launch {
                 snackbarHostState.showSnackbar(snackbarText)
                 onIntent(ExportDataIntent.UserMessageShown)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExportDataTopAppBar(
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = R.string.export_data,
+        onBack = onBack,
+    )
+}
+
+@Composable
+private fun ColumnScope.ExportDataContent(
+    uiState: ExportDataUiState,
+    folderPicker: ActivityResultLauncher<Uri?>,
+) {
+    when {
+        uiState.isLoading -> {
+            LoadingState(
+                label = R.string.loading,
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        else -> {
+            Button(
+                onClick = {
+                    folderPicker.launch(null)
+                },
+            ) {
+
+                Text(stringResource(R.string.export_button_text))
             }
         }
     }

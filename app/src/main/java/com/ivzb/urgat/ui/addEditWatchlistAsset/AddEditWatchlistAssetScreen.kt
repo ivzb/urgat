@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.addEditWatchlistAsset
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -90,14 +91,10 @@ fun AddEditWatchlistAssetScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditWatchlistAssetTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditWatchlistAssetIntent.DeleteWatchlistAsset) })
-                    }
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -123,52 +120,11 @@ fun AddEditWatchlistAssetScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
-
-                TextField(
-                    value = nameTextFieldValue,
-                    onValueChange = {
-                        nameTextFieldValue = it
-                        onIntent(AddEditWatchlistAssetIntent.UpdateName(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.watchlist_asset_name_hint)) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+                AddEditWatchlistAssetForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditWatchlistAssetIntent.SaveWatchlistAsset)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    nameTextFieldValue = TextFieldValue(
-                        text = uiState.name,
-                        selection = TextRange(uiState.name.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -182,6 +138,99 @@ fun AddEditWatchlistAssetScreen(
                 onIntent(AddEditWatchlistAssetIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditWatchlistAssetTopAppBar(
+    uiState: AddEditWatchlistAssetUiState,
+    onIntent: (AddEditWatchlistAssetIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditWatchlistAssetIntent.DeleteWatchlistAsset) })
+            }
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditWatchlistAssetForm(
+    uiState: AddEditWatchlistAssetUiState,
+    onIntent: (AddEditWatchlistAssetIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
+
+    NameRow(
+        nameTextFieldValue = nameTextFieldValue,
+        onNameChange = {
+            nameTextFieldValue = it
+            onIntent(AddEditWatchlistAssetIntent.UpdateName(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        nameTextFieldValue = TextFieldValue(
+            text = uiState.name,
+            selection = TextRange(uiState.name.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun NameRow(
+    nameTextFieldValue: TextFieldValue,
+    onNameChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = nameTextFieldValue,
+        onValueChange = onNameChange,
+        placeholder = { Text(text = stringResource(id = R.string.watchlist_asset_name_hint)) },
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+    )
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditWatchlistAssetIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditWatchlistAssetIntent.SaveWatchlistAsset)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

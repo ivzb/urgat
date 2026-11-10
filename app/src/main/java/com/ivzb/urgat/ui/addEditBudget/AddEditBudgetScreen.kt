@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditBudget
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -100,24 +101,13 @@ fun AddEditBudgetScreen(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditBudgetTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditBudgetIntent.DeleteBudget) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditBudgetIntent.DuplicateBudget) }).takeIf { uiState.withDuplicate },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -143,163 +133,11 @@ fun AddEditBudgetScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var incomeTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.income)) }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = incomeTextFieldValue,
-                        onValueChange = {
-                            incomeTextFieldValue = it
-                            onIntent(AddEditBudgetIntent.UpdateIncome(it.text))
-                        },
-                        placeholder = { Text(text = stringResource(id = R.string.income_hint)) },
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Income.ordinal]),
-                    )
-
-                    DatePicker(
-                        timestamp = uiState.date,
-                        onTimestampSelected = {
-                            onIntent(AddEditBudgetIntent.UpdateDate(it))
-                        }
-                    ) { selectedDate, dialog ->
-
-                        TextField(
-                            value = selectedDate,
-                            onValueChange = {},
-                            placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                            label = { Text(stringResource(id = R.string.date_hint)) },
-                            readOnly = true,
-                            maxLines = 1,
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.date_hint)
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequesters[FieldId.Date.ordinal])
-                                .onFocusChanged {
-                                    if (it.isFocused) {
-                                        dialog.show()
-                                        focusManager.clearFocus()
-                                    }
-                                },
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
+                AddEditBudgetForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.bankStart,
-                        onValueChange = {
-                            onIntent(AddEditBudgetIntent.UpdateBankStart(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.bank_start_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.BankStart.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.bankEnd,
-                        onValueChange = {
-                            onIntent(AddEditBudgetIntent.UpdateBankEnd(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.bank_end_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.BankEnd.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditBudgetIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
-                    )
-
-                    // empty space to keep currency text field take only half of the row
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditBudgetIntent.SaveBudget)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    incomeTextFieldValue = TextFieldValue(
-                        text = uiState.income,
-                        selection = TextRange(uiState.income.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -313,6 +151,239 @@ fun AddEditBudgetScreen(
                 onIntent(AddEditBudgetIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditBudgetTopAppBar(
+    uiState: AddEditBudgetUiState,
+    onIntent: (AddEditBudgetIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditBudgetIntent.DeleteBudget) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditBudgetIntent.DuplicateBudget) }).takeIf { uiState.withDuplicate },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditBudgetForm(
+    uiState: AddEditBudgetUiState,
+    onIntent: (AddEditBudgetIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var incomeTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.income)) }
+
+    IncomeAndDateRow(
+        incomeTextFieldValue = incomeTextFieldValue,
+        onIncomeChange = {
+            incomeTextFieldValue = it
+            onIntent(AddEditBudgetIntent.UpdateIncome(it.text))
+        },
+        date = uiState.date,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    BankRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CurrencyRow(
+        currency = uiState.currency,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditBudgetIntent.SaveBudget)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
+    }
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        incomeTextFieldValue = TextFieldValue(
+            text = uiState.income,
+            selection = TextRange(uiState.income.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun IncomeAndDateRow(
+    incomeTextFieldValue: TextFieldValue,
+    onIncomeChange: (TextFieldValue) -> Unit,
+    date: Long,
+    onIntent: (AddEditBudgetIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = incomeTextFieldValue,
+            onValueChange = onIncomeChange,
+            placeholder = { Text(text = stringResource(id = R.string.income_hint)) },
+            maxLines = 1,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Income.ordinal]),
+        )
+
+        DatePicker(
+            timestamp = date,
+            onTimestampSelected = {
+                onIntent(AddEditBudgetIntent.UpdateDate(it))
+            }
+        ) { selectedDate, dialog ->
+
+            TextField(
+                value = selectedDate,
+                onValueChange = {},
+                placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                label = { Text(stringResource(id = R.string.date_hint)) },
+                readOnly = true,
+                maxLines = 1,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = stringResource(id = R.string.date_hint)
+                    )
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            dialog.show()
+                            focusManager.clearFocus()
+                        }
+                    },
+            )
+        }
+    }
+}
+
+@Composable
+private fun BankRow(
+    uiState: AddEditBudgetUiState,
+    onIntent: (AddEditBudgetIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.bankStart,
+            onValueChange = {
+                onIntent(AddEditBudgetIntent.UpdateBankStart(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.bank_start_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.BankStart.ordinal]),
+        )
+
+        TextField(
+            value = uiState.bankEnd,
+            onValueChange = {
+                onIntent(AddEditBudgetIntent.UpdateBankEnd(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.bank_end_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.BankEnd.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun CurrencyRow(
+    currency: String,
+    onIntent: (AddEditBudgetIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = currency,
+            onValueChange = {
+                onIntent(AddEditBudgetIntent.UpdateCurrency(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+        )
+
+        // empty space to keep currency text field take only half of the row
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 

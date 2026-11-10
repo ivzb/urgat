@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditSaving
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -100,24 +101,13 @@ fun AddEditSavingScreen(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditSavingTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditSavingIntent.DeleteSaving) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditSavingIntent.DuplicateSaving) }).takeIf { uiState.withDuplicate },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -143,139 +133,11 @@ fun AddEditSavingScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
-
-                TextField(
-                    value = nameTextFieldValue,
-                    onValueChange = {
-                        nameTextFieldValue = it
-                        onIntent(AddEditSavingIntent.UpdateName(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.saving_hint)) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+                AddEditSavingForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.amount,
-                        onValueChange = {
-                            onIntent(AddEditSavingIntent.UpdateAmount(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditSavingIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-
-                    DatePicker(
-                        timestamp = uiState.date,
-                        onTimestampSelected = {
-                            onIntent(AddEditSavingIntent.UpdateDate(it))
-                        }
-                    ) { selectedDate, dialog ->
-
-                        TextField(
-                            value = selectedDate,
-                            onValueChange = {},
-                            placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                            label = { Text(stringResource(id = R.string.date_hint)) },
-                            readOnly = true,
-                            maxLines = 1,
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.date_hint)
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequesters[FieldId.Date.ordinal])
-                                .onFocusChanged {
-                                    if (it.isFocused) {
-                                        dialog.show()
-                                        focusManager.clearFocus()
-                                    }
-                                },
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditSavingIntent.SaveSaving)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    nameTextFieldValue = TextFieldValue(
-                        text = uiState.name,
-                        selection = TextRange(uiState.name.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -289,6 +151,220 @@ fun AddEditSavingScreen(
                 onIntent(AddEditSavingIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditSavingTopAppBar(
+    uiState: AddEditSavingUiState,
+    onIntent: (AddEditSavingIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditSavingIntent.DeleteSaving) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditSavingIntent.DuplicateSaving) }).takeIf { uiState.withDuplicate },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditSavingForm(
+    uiState: AddEditSavingUiState,
+    onIntent: (AddEditSavingIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
+
+    NameRow(
+        nameTextFieldValue = nameTextFieldValue,
+        onNameChange = {
+            nameTextFieldValue = it
+            onIntent(AddEditSavingIntent.UpdateName(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    AmountAndCurrencyRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    DateRow(
+        date = uiState.date,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        nameTextFieldValue = TextFieldValue(
+            text = uiState.name,
+            selection = TextRange(uiState.name.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun NameRow(
+    nameTextFieldValue: TextFieldValue,
+    onNameChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = nameTextFieldValue,
+        onValueChange = onNameChange,
+        placeholder = { Text(text = stringResource(id = R.string.saving_hint)) },
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+    )
+}
+
+@Composable
+private fun AmountAndCurrencyRow(
+    uiState: AddEditSavingUiState,
+    onIntent: (AddEditSavingIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.amount,
+            onValueChange = {
+                onIntent(AddEditSavingIntent.UpdateAmount(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
+        )
+
+        TextField(
+            value = uiState.currency,
+            onValueChange = {
+                onIntent(AddEditSavingIntent.UpdateCurrency(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun DateRow(
+    date: Long,
+    onIntent: (AddEditSavingIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+
+        DatePicker(
+            timestamp = date,
+            onTimestampSelected = {
+                onIntent(AddEditSavingIntent.UpdateDate(it))
+            }
+        ) { selectedDate, dialog ->
+
+            TextField(
+                value = selectedDate,
+                onValueChange = {},
+                placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                label = { Text(stringResource(id = R.string.date_hint)) },
+                readOnly = true,
+                maxLines = 1,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = stringResource(id = R.string.date_hint)
+                    )
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            dialog.show()
+                            focusManager.clearFocus()
+                        }
+                    },
+            )
+        }
+    }
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditSavingIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditSavingIntent.SaveSaving)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

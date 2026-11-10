@@ -124,6 +124,7 @@ class MigrationTest {
                 // verify data integrity after migration
                 runBlocking {
                     assertVersion1RowsMigrated(db)
+                    assertVersion1NoteMigrated(db)
                     assertNewTablesRoundTrip(db)
                 }
 
@@ -151,26 +152,7 @@ class MigrationTest {
             name = TEST_DB,
             version = 19,
             validateDroppedTables = true,
-            migrations = arrayOf(
-                MIGRATION_1_2,
-                MIGRATION_2_3,
-                MIGRATION_3_4,
-                MIGRATION_4_5,
-                MIGRATION_5_6,
-                MIGRATION_6_7,
-                MIGRATION_7_8,
-                MIGRATION_8_9,
-                MIGRATION_9_10,
-                MIGRATION_10_11,
-                MIGRATION_11_12,
-                MIGRATION_12_13,
-                MIGRATION_13_14,
-                MIGRATION_14_15,
-                MIGRATION_15_16,
-                MIGRATION_16_17,
-                MIGRATION_17_18,
-                MIGRATION_18_19,
-            ),
+            migrations = ALL_MIGRATIONS,
         ).close()
 
         // verifications
@@ -178,273 +160,84 @@ class MigrationTest {
             .allowMainThreadQueries()
             .build()
             .let { db ->
-                // verify default values after migration
                 runBlocking {
-                    val actualTodo = db.todoDao().getById("1")
-                    val expectedTodo = TodoEntity(
-                        id = "1",
-                        content = "Buy groceries\nMilk, eggs, bread, and fruits",
-                        isCompleted = false,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
+                    // verify default values after migration
+                    assertVersion1RowsMigrated(db)
 
-                    assertEquals(expectedTodo, actualTodo)
-
-                    val actualExpense = db.expenseDao().getById("1")
-                    val expectedExpense = ExpenseEntity(
-                        id = "1",
-                        name = "Groceries",
-                        amount = 75.5.toBigDecimal(),
-                        currency = "EUR",
-                        category = "Food",
-                        date = 1764362076,
-                        excludeFromAnalytics = false,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedExpense, actualExpense)
-
-                    val actualInvestment = db.investmentDao().getById("1")
-                    val expectedInvestment = InvestmentEntity(
-                        id = "1",
-                        name = "SNP 500",
-                        shares = 500.toBigDecimal(),
-                        cost = 0.toBigDecimal(),
-                        category = "ETF",
-                        currency = "USD",
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedInvestment, actualInvestment)
-
-                    val actualWeight = db.weightDao().getById("1")
-                    val expectedWeight = WeightEntity(
-                        id = "1",
-                        value = 80.5.toBigDecimal(),
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedWeight, actualWeight)
-                }
-
-                // update the new fields
-                runBlocking {
-                    val todo = TodoEntity(
-                        id = "1",
-                        content = "Buy groceries updated",
-                        isCompleted = false,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.todoDao().upsert(todo)
-
-                    val expense = ExpenseEntity(
-                        id = "1",
-                        name = "Groceries",
-                        amount = 75.5.toBigDecimal(),
-                        currency = "EUR",
-                        category = "Food",
-                        date = 1764362076,
-                        excludeFromAnalytics = true,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.expenseDao().upsert(expense)
-
-                    val investment = InvestmentEntity(
-                        id = "1",
-                        name = "SNP 500",
-                        shares = 500.toBigDecimal(),
-                        cost = 250.toBigDecimal(),
-                        category = "ETF",
-                        currency = "USD",
-                        date = 1764438110,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.investmentDao().upsert(investment)
-
-                    val weight = WeightEntity(
-                        id = "1",
-                        value = 81.3.toBigDecimal(),
-                        date = 1764438110,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.weightDao().upsert(weight)
-
-                    val watchlistAsset = WatchlistAssetEntity(
-                        id = "1",
-                        name = "AAPL",
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.watchlistAssetDao().upsert(watchlistAsset)
-
-                    val fuelConsumption = FuelConsumptionEntity(
-                        id = "1",
-                        amount = 45.0.toBigDecimal(),
-                        price = 85.toBigDecimal(),
-                        currency = "EUR",
-                        type = "Petrol",
-                        carName = "Honda Civic",
-                        odometer = 50000,
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.fuelConsumptionDao().upsert(fuelConsumption)
-
-                    val carMaintenance = CarMaintenanceEntity(
-                        id = "1",
-                        description = "Oil change",
-                        partNumber = "OIL-5W30",
-                        url = null,
-                        carName = "Honda Civic",
-                        odometer = 50000,
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.carMaintenanceDao().upsert(carMaintenance)
-
-                    val trade = TradeEntity(
-                        id = "1",
-                        name = "AAPL",
-                        amount = 150.toBigDecimal(),
-                        currency = "USD",
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    db.tradeDao().upsert(trade)
-                }
-
-                // verify new fields are updated
-                runBlocking {
-                    val actualTodo = db.todoDao().getById("1")
-                    val expectedTodo = TodoEntity(
-                        id = "1",
-                        content = "Buy groceries updated",
-                        isCompleted = false,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedTodo, actualTodo)
-
-                    val actualExpense = db.expenseDao().getById("1")
-                    val expectedExpense = ExpenseEntity(
-                        id = "1",
-                        name = "Groceries",
-                        amount = 75.5.toBigDecimal(),
-                        currency = "EUR",
-                        category = "Food",
-                        date = 1764362076,
-                        excludeFromAnalytics = true,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedExpense, actualExpense)
-
-                    val actualInvestment = db.investmentDao().getById("1")
-                    val expectedInvestment = InvestmentEntity(
-                        id = "1",
-                        name = "SNP 500",
-                        shares = 500.toBigDecimal(),
-                        cost = 250.toBigDecimal(),
-                        category = "ETF",
-                        currency = "USD",
-                        date = 1764438110,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedInvestment, actualInvestment)
-
-                    val actualWeight = db.weightDao().getById("1")
-                    val expectedWeight = WeightEntity(
-                        id = "1",
-                        value = 81.3.toBigDecimal(),
-                        date = 1764438110,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedWeight, actualWeight)
-
-                    val actualWatchlistAsset = db.watchlistAssetDao().getById("1")
-                    val expectedWatchlistAsset = WatchlistAssetEntity(
-                        id = "1",
-                        name = "AAPL",
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedWatchlistAsset, actualWatchlistAsset)
-
-                    val actualFuelConsumption = db.fuelConsumptionDao().getById("1")
-                    val expectedFuelConsumption = FuelConsumptionEntity(
-                        id = "1",
-                        amount = 45.0.toBigDecimal(),
-                        price = 85.toBigDecimal(),
-                        currency = "EUR",
-                        type = "Petrol",
-                        carName = "Honda Civic",
-                        odometer = 50000,
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedFuelConsumption, actualFuelConsumption)
-
-                    val actualCarMaintenance = db.carMaintenanceDao().getById("1")
-                    val expectedCarMaintenance = CarMaintenanceEntity(
-                        id = "1",
-                        description = "Oil change",
-                        partNumber = "OIL-5W30",
-                        url = null,
-                        carName = "Honda Civic",
-                        odometer = 50000,
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedCarMaintenance, actualCarMaintenance)
-
-                    val actualTrade = db.tradeDao().getById("1")
-                    val expectedTrade = TradeEntity(
-                        id = "1",
-                        name = "AAPL",
-                        amount = 150.toBigDecimal(),
-                        currency = "USD",
-                        date = 1764362076,
-                        isDeleted = false,
-                        createdAt = 1764362076,
-                    )
-
-                    assertEquals(expectedTrade, actualTrade)
+                    // update the new fields and verify they are persisted
+                    assertUpdatedRowsRoundTrip(db)
+                    assertWatchlistAssetRoundTrip(db)
+                    assertNewTablesRoundTrip(db)
                 }
 
                 db.close()
             }
+    }
+
+    private suspend fun assertUpdatedRowsRoundTrip(db: AppDatabase) {
+        val todo = TodoEntity(
+            id = "1",
+            content = "Buy groceries updated",
+            isCompleted = false,
+            isDeleted = false,
+            createdAt = 1764362076,
+        )
+
+        db.todoDao().upsert(todo)
+        assertEquals(todo, db.todoDao().getById("1"))
+
+        val expense = ExpenseEntity(
+            id = "1",
+            name = "Groceries",
+            amount = 75.5.toBigDecimal(),
+            currency = "EUR",
+            category = "Food",
+            date = 1764362076,
+            excludeFromAnalytics = true,
+            isDeleted = false,
+            createdAt = 1764362076,
+        )
+
+        db.expenseDao().upsert(expense)
+        assertEquals(expense, db.expenseDao().getById("1"))
+
+        val investment = InvestmentEntity(
+            id = "1",
+            name = "SNP 500",
+            shares = 500.toBigDecimal(),
+            cost = 250.toBigDecimal(),
+            category = "ETF",
+            currency = "USD",
+            date = 1764438110,
+            isDeleted = false,
+            createdAt = 1764362076,
+        )
+
+        db.investmentDao().upsert(investment)
+        assertEquals(investment, db.investmentDao().getById("1"))
+
+        val weight = WeightEntity(
+            id = "1",
+            value = 81.3.toBigDecimal(),
+            date = 1764438110,
+            isDeleted = false,
+            createdAt = 1764362076,
+        )
+
+        db.weightDao().upsert(weight)
+        assertEquals(weight, db.weightDao().getById("1"))
+    }
+
+    private suspend fun assertWatchlistAssetRoundTrip(db: AppDatabase) {
+        val watchlistAsset = WatchlistAssetEntity(
+            id = "1",
+            name = "AAPL",
+            isDeleted = false,
+            createdAt = 1764362076,
+        )
+
+        db.watchlistAssetDao().upsert(watchlistAsset)
+        assertEquals(watchlistAsset, db.watchlistAssetDao().getById("1"))
     }
 
     private suspend fun assertVersion1RowsMigrated(db: AppDatabase) {
@@ -489,16 +282,6 @@ class MigrationTest {
 
         assertEquals(expectedInvestment, actualInvestment)
 
-        val actualNote = db.noteDao().getById("1")
-        val expectedNote = NoteEntity(
-            id = "1",
-            content = "Meeting notes about Q4 goals and deadlines",
-            isDeleted = false,
-            createdAt = 1764362076,
-        )
-
-        assertEquals(expectedNote, actualNote)
-
         val actualWeight = db.weightDao().getById("1")
         val expectedWeight = WeightEntity(
             id = "1",
@@ -509,6 +292,18 @@ class MigrationTest {
         )
 
         assertEquals(expectedWeight, actualWeight)
+    }
+
+    private suspend fun assertVersion1NoteMigrated(db: AppDatabase) {
+        val actualNote = db.noteDao().getById("1")
+        val expectedNote = NoteEntity(
+            id = "1",
+            content = "Meeting notes about Q4 goals and deadlines",
+            isDeleted = false,
+            createdAt = 1764362076,
+        )
+
+        assertEquals(expectedNote, actualNote)
     }
 
     private suspend fun assertNewTablesRoundTrip(db: AppDatabase) {

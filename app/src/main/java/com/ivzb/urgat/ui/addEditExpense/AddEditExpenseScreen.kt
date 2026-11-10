@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditExpense
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -103,24 +104,13 @@ fun AddEditExpenseScreen(
     val focusRequesters = remember {
         List(FieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditExpenseTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditExpenseIntent.DeleteExpense) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditExpenseIntent.DuplicateExpense) }).takeIf { uiState.withDuplicate },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -146,167 +136,11 @@ fun AddEditExpenseScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
-
-                TextField(
-                    value = nameTextFieldValue,
-                    onValueChange = {
-                        nameTextFieldValue = it
-                        onIntent(AddEditExpenseIntent.UpdateName(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.expense_hint)) },
-                    maxLines = 1,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+                AddEditExpenseForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.amount,
-                        onValueChange = {
-                            onIntent(AddEditExpenseIntent.UpdateAmount(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.amount_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.currency,
-                        onValueChange = {
-                            onIntent(AddEditExpenseIntent.UpdateCurrency(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.currency_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.category,
-                        onValueChange = {
-                            onIntent(AddEditExpenseIntent.UpdateCategory(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.category_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Done,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[FieldId.Category.ordinal]),
-                    )
-
-                    DatePicker(
-                        timestamp = uiState.date,
-                        onTimestampSelected = {
-                            onIntent(AddEditExpenseIntent.UpdateDate(it))
-                        }
-                    ) { selectedDate, dialog ->
-
-                        TextField(
-                            value = selectedDate,
-                            onValueChange = {},
-                            placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                            label = { Text(stringResource(id = R.string.date_hint)) },
-                            readOnly = true,
-                            maxLines = 1,
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.date_hint)
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequesters[FieldId.Date.ordinal])
-                                .onFocusChanged {
-                                    if (it.isFocused) {
-                                        dialog.show()
-                                        focusManager.clearFocus()
-                                    }
-                                },
-                        )
-                    }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                CheckboxWithLabel(
-                    value = uiState.excludeFromAnalytics,
-                    onValueChange = {
-                        onIntent(AddEditExpenseIntent.UpdateExcludeFromAnalytics(it))
-                    },
-                    label = stringResource(R.string.exclude_from_analytics),
-                )
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditExpenseIntent.SaveExpense)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    nameTextFieldValue = TextFieldValue(
-                        text = uiState.name,
-                        selection = TextRange(uiState.name.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -320,6 +154,259 @@ fun AddEditExpenseScreen(
                 onIntent(AddEditExpenseIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditExpenseTopAppBar(
+    uiState: AddEditExpenseUiState,
+    onIntent: (AddEditExpenseIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditExpenseIntent.DeleteExpense) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditExpenseIntent.DuplicateExpense) }).takeIf { uiState.withDuplicate },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditExpenseForm(
+    uiState: AddEditExpenseUiState,
+    onIntent: (AddEditExpenseIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var nameTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.name)) }
+
+    NameRow(
+        nameTextFieldValue = nameTextFieldValue,
+        onNameChange = {
+            nameTextFieldValue = it
+            onIntent(AddEditExpenseIntent.UpdateName(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    AmountAndCurrencyRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CategoryAndDateRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    ExcludeFromAnalyticsRow(
+        excludeFromAnalytics = uiState.excludeFromAnalytics,
+        onIntent = onIntent,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        nameTextFieldValue = TextFieldValue(
+            text = uiState.name,
+            selection = TextRange(uiState.name.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun NameRow(
+    nameTextFieldValue: TextFieldValue,
+    onNameChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = nameTextFieldValue,
+        onValueChange = onNameChange,
+        placeholder = { Text(text = stringResource(id = R.string.expense_hint)) },
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[FieldId.Name.ordinal]),
+    )
+}
+
+@Composable
+private fun AmountAndCurrencyRow(
+    uiState: AddEditExpenseUiState,
+    onIntent: (AddEditExpenseIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.amount,
+            onValueChange = {
+                onIntent(AddEditExpenseIntent.UpdateAmount(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.amount_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
+        )
+
+        TextField(
+            value = uiState.currency,
+            onValueChange = {
+                onIntent(AddEditExpenseIntent.UpdateCurrency(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.currency_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun CategoryAndDateRow(
+    uiState: AddEditExpenseUiState,
+    onIntent: (AddEditExpenseIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.category,
+            onValueChange = {
+                onIntent(AddEditExpenseIntent.UpdateCategory(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.category_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[FieldId.Category.ordinal]),
+        )
+
+        DatePicker(
+            timestamp = uiState.date,
+            onTimestampSelected = {
+                onIntent(AddEditExpenseIntent.UpdateDate(it))
+            }
+        ) { selectedDate, dialog ->
+
+            TextField(
+                value = selectedDate,
+                onValueChange = {},
+                placeholder = { Text(stringResource(id = R.string.date_hint)) },
+                label = { Text(stringResource(id = R.string.date_hint)) },
+                readOnly = true,
+                maxLines = 1,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = stringResource(id = R.string.date_hint)
+                    )
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequesters[FieldId.Date.ordinal])
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            dialog.show()
+                            focusManager.clearFocus()
+                        }
+                    },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExcludeFromAnalyticsRow(
+    excludeFromAnalytics: Boolean,
+    onIntent: (AddEditExpenseIntent) -> Unit,
+) {
+    CheckboxWithLabel(
+        value = excludeFromAnalytics,
+        onValueChange = {
+            onIntent(AddEditExpenseIntent.UpdateExcludeFromAnalytics(it))
+        },
+        label = stringResource(R.string.exclude_from_analytics),
+    )
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditExpenseIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditExpenseIntent.SaveExpense)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

@@ -2,6 +2,7 @@ package com.ivzb.urgat.ui.addEditTodo
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -90,14 +91,10 @@ fun AddEditTodoScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditTodoTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditTodoIntent.DeleteTodo) })
-                    }
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -123,53 +120,11 @@ fun AddEditTodoScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-                var contentTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.content)) }
-
-                TextField(
-                    value = contentTextFieldValue,
-                    onValueChange = {
-                        contentTextFieldValue = it
-                        onIntent(AddEditTodoIntent.UpdateContent(it.text))
-                    },
-                    placeholder = { Text(text = stringResource(id = R.string.todo_hint)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Default // allow multiline
-                    ),
-                    colors = transparentTextFieldColors(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .focusRequester(focusRequesters[FieldId.Content.ordinal]),
+                AddEditTodoForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditTodoIntent.SaveTodo)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    contentTextFieldValue = TextFieldValue(
-                        text = uiState.content,
-                        selection = TextRange(uiState.content.length)
-                    )
-
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -183,6 +138,100 @@ fun AddEditTodoScreen(
                 onIntent(AddEditTodoIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditTodoTopAppBar(
+    uiState: AddEditTodoUiState,
+    onIntent: (AddEditTodoIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditTodoIntent.DeleteTodo) })
+            }
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditTodoForm(
+    uiState: AddEditTodoUiState,
+    onIntent: (AddEditTodoIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    var contentTextFieldValue by remember { mutableStateOf(TextFieldValue(uiState.content)) }
+
+    ContentRow(
+        contentTextFieldValue = contentTextFieldValue,
+        onContentChange = {
+            contentTextFieldValue = it
+            onIntent(AddEditTodoIntent.UpdateContent(it.text))
+        },
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        contentTextFieldValue = TextFieldValue(
+            text = uiState.content,
+            selection = TextRange(uiState.content.length)
+        )
+
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun ColumnScope.ContentRow(
+    contentTextFieldValue: TextFieldValue,
+    onContentChange: (TextFieldValue) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = contentTextFieldValue,
+        onValueChange = onContentChange,
+        placeholder = { Text(text = stringResource(id = R.string.todo_hint)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Default // allow multiline
+        ),
+        colors = transparentTextFieldColors(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .focusRequester(focusRequesters[FieldId.Content.ordinal]),
+    )
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditTodoIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditTodoIntent.SaveTodo)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
     }
 }
 

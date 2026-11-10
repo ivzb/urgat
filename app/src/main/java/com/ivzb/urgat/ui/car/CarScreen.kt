@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -32,6 +33,7 @@ import com.ivzb.urgat.ui.components.FilterMenu
 import com.ivzb.urgat.ui.components.ItemHeaderSmall
 import com.ivzb.urgat.ui.components.ItemHeaderWithMore
 import com.ivzb.urgat.ui.components.MoreMenu
+import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.NavigationPagerScreen
 import com.ivzb.urgat.ui.components.uiState.UiState
@@ -115,83 +117,149 @@ fun CarScreen(
         withFab = { page -> !isSearchFocused },
         onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
-            if (uiState.withTopbarActions(page)) {
-                when (page) {
-                    CarPage.FuelConsumption -> {
-                        FilterMenu(
-                            items = uiState.fuelConsumptionUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(CarIntent.SetFuelConsumptionFiltering(it)) },
-                        )
-
-                        FilterMenu(
-                            items = uiState.fuelConsumptionUiState.filteringUiInfo.carFilterMenuItems,
-                            showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showCarFilterBadge,
-                            onFilter = { onIntent(CarIntent.SetFuelConsumptionCarFiltering(it)) },
-                            iconResId = R.drawable.ic_filter_car,
-                            contentDescriptionResId = R.string.menu_filter_car,
-                        )
-
-                        SortMenu(
-                            items = uiState.fuelConsumptionUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(CarIntent.SetFuelConsumptionSorting(it)) },
-                        )
-                    }
-
-                    CarPage.Maintenance -> {
-                        FilterMenu(
-                            items = uiState.carMaintenanceUiState.filteringUiInfo.filterMenuItems,
-                            showBadge = uiState.carMaintenanceUiState.filteringUiInfo.showFilterBadge,
-                            onFilter = { onIntent(CarIntent.SetCarMaintenanceFiltering(it)) },
-                        )
-
-                        SortMenu(
-                            items = uiState.carMaintenanceUiState.filteringUiInfo.sortMenuItems,
-                            showBadge = uiState.carMaintenanceUiState.filteringUiInfo.showSortBadge,
-                            onFilter = { onIntent(CarIntent.SetCarMaintenanceSorting(it)) },
-                        )
-                    }
-                }
-
-                MoreMenu(
-                    listOfNotNull(
-                        (R.string.reset_filters to { onIntent(CarIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
-                    )
-                )
-            }
+            CarTopAppBarActions(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
+            )
         },
 
         content = { page, listState, onListStateChanged ->
-            when (page) {
-                CarPage.FuelConsumption -> FuelConsumptionPage(
-                    uiState = uiState.fuelConsumptionUiState,
+            CarPageContent(
+                page = page,
+                uiState = uiState,
+                onIntent = onIntent,
 
-                    onMoreFuelConsumption = onMoreFuelConsumption,
-                    onAddFuelConsumption = { onIntent(CarIntent.FabActionClick(page)) },
-                    onFuelConsumptionClick = onFuelConsumptionClick,
-                    onResetFilters = { onIntent(CarIntent.ResetFilters) },
+                onMoreFuelConsumption = onMoreFuelConsumption,
+                onFuelConsumptionClick = onFuelConsumptionClick,
 
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
+                onMoreCarMaintenance = onMoreCarMaintenance,
+                onCarMaintenanceClick = onCarMaintenanceClick,
 
-                CarPage.Maintenance -> CarMaintenancePage(
-                    uiState = uiState.carMaintenanceUiState,
-
-                    onMoreCarMaintenance = onMoreCarMaintenance,
-                    onAddCarMaintenance = { onIntent(CarIntent.FabActionClick(page)) },
-                    onCarMaintenanceClick = onCarMaintenanceClick,
-                    onResetFilters = { onIntent(CarIntent.ResetFilters) },
-
-                    listState = listState,
-                    onListStateChanged = onListStateChanged,
-                )
-            }
+                listState = listState,
+                onListStateChanged = onListStateChanged,
+            )
         },
 
         modifier = modifier
     )
+}
+
+@Composable
+private fun CarTopAppBarActions(
+    page: Page,
+    uiState: CarUiState,
+    onIntent: (CarIntent) -> Unit,
+) {
+    if (uiState.withTopbarActions(page)) {
+        when (page) {
+            CarPage.FuelConsumption -> {
+                FuelConsumptionTopAppBarActions(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                )
+            }
+
+            CarPage.Maintenance -> {
+                CarMaintenanceTopAppBarActions(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                )
+            }
+        }
+
+        MoreMenu(
+            listOfNotNull(
+                (R.string.reset_filters to { onIntent(CarIntent.ResetFilters) }).takeIf { uiState.hasAppliedFilters },
+            )
+        )
+    }
+}
+
+@Composable
+private fun FuelConsumptionTopAppBarActions(
+    uiState: CarUiState,
+    onIntent: (CarIntent) -> Unit,
+) {
+    FilterMenu(
+        items = uiState.fuelConsumptionUiState.filteringUiInfo.filterMenuItems,
+        showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showFilterBadge,
+        onFilter = { onIntent(CarIntent.SetFuelConsumptionFiltering(it)) },
+    )
+
+    FilterMenu(
+        items = uiState.fuelConsumptionUiState.filteringUiInfo.carFilterMenuItems,
+        showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showCarFilterBadge,
+        onFilter = { onIntent(CarIntent.SetFuelConsumptionCarFiltering(it)) },
+        iconResId = R.drawable.ic_filter_car,
+        contentDescriptionResId = R.string.menu_filter_car,
+    )
+
+    SortMenu(
+        items = uiState.fuelConsumptionUiState.filteringUiInfo.sortMenuItems,
+        showBadge = uiState.fuelConsumptionUiState.filteringUiInfo.showSortBadge,
+        onFilter = { onIntent(CarIntent.SetFuelConsumptionSorting(it)) },
+    )
+}
+
+@Composable
+private fun CarMaintenanceTopAppBarActions(
+    uiState: CarUiState,
+    onIntent: (CarIntent) -> Unit,
+) {
+    FilterMenu(
+        items = uiState.carMaintenanceUiState.filteringUiInfo.filterMenuItems,
+        showBadge = uiState.carMaintenanceUiState.filteringUiInfo.showFilterBadge,
+        onFilter = { onIntent(CarIntent.SetCarMaintenanceFiltering(it)) },
+    )
+
+    SortMenu(
+        items = uiState.carMaintenanceUiState.filteringUiInfo.sortMenuItems,
+        showBadge = uiState.carMaintenanceUiState.filteringUiInfo.showSortBadge,
+        onFilter = { onIntent(CarIntent.SetCarMaintenanceSorting(it)) },
+    )
+}
+
+@Composable
+private fun CarPageContent(
+    page: Page,
+    uiState: CarUiState,
+    onIntent: (CarIntent) -> Unit,
+
+    onMoreFuelConsumption: () -> Unit,
+    onFuelConsumptionClick: (FuelConsumption) -> Unit,
+
+    onMoreCarMaintenance: () -> Unit,
+    onCarMaintenanceClick: (CarMaintenance) -> Unit,
+
+    listState: LazyListState,
+    onListStateChanged: (LazyListState) -> Unit,
+) {
+    when (page) {
+        CarPage.FuelConsumption -> FuelConsumptionPage(
+            uiState = uiState.fuelConsumptionUiState,
+
+            onMoreFuelConsumption = onMoreFuelConsumption,
+            onAddFuelConsumption = { onIntent(CarIntent.FabActionClick(page)) },
+            onFuelConsumptionClick = onFuelConsumptionClick,
+            onResetFilters = { onIntent(CarIntent.ResetFilters) },
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+
+        CarPage.Maintenance -> CarMaintenancePage(
+            uiState = uiState.carMaintenanceUiState,
+
+            onMoreCarMaintenance = onMoreCarMaintenance,
+            onAddCarMaintenance = { onIntent(CarIntent.FabActionClick(page)) },
+            onCarMaintenanceClick = onCarMaintenanceClick,
+            onResetFilters = { onIntent(CarIntent.ResetFilters) },
+
+            listState = listState,
+            onListStateChanged = onListStateChanged,
+        )
+    }
 }
 
 @Composable
@@ -286,31 +354,41 @@ private fun CarMaintenancePage(
                     )
                 }
 
-                uiState.carMaintenance.forEachIndexed { index, (group, count, items) ->
-                    item {
-                        ItemHeaderSmall(
-                            text = group,
-                            total = AnnotatedString(""),
-                            modifier = Modifier
-                                .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
-                                .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
-                        )
-                    }
-
-                    items(
-                        items = items,
-                        key = { it.id },
-                    ) { carMaintenance ->
-
-                        CarMaintenanceItem(
-                            carMaintenance = carMaintenance,
-                            onCarMaintenanceClick = onCarMaintenanceClick,
-                        )
-                    }
-                }
+                carMaintenanceGroupItems(
+                    uiState = uiState,
+                    onCarMaintenanceClick = onCarMaintenanceClick,
+                )
             }
         }
     )
+}
+
+private fun LazyListScope.carMaintenanceGroupItems(
+    uiState: CarMaintenanceUiState,
+    onCarMaintenanceClick: (CarMaintenance) -> Unit,
+) {
+    uiState.carMaintenance.forEachIndexed { index, (group, count, items) ->
+        item {
+            ItemHeaderSmall(
+                text = group,
+                total = AnnotatedString(""),
+                modifier = Modifier
+                    .paddingIf(index == 0, bottom = dimensionResource(R.dimen.vertical_margin))
+                    .paddingIf(index > 0, vertical = dimensionResource(R.dimen.vertical_margin))
+            )
+        }
+
+        items(
+            items = items,
+            key = { it.id },
+        ) { carMaintenance ->
+
+            CarMaintenanceItem(
+                carMaintenance = carMaintenance,
+                onCarMaintenanceClick = onCarMaintenanceClick,
+            )
+        }
+    }
 }
 
 @AllDevicesPreview

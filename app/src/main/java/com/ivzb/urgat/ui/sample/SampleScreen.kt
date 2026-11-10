@@ -69,8 +69,7 @@ fun SampleScreen(
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = R.string.sample_data,
+            SampleTopAppBar(
                 onBack = onBack,
             )
         },
@@ -102,12 +101,9 @@ fun SampleScreen(
                 }
 
                 else -> {
-                    Button(
-                        onClick = { onIntent(SampleIntent.AddSampleData) },
-                    ) {
-
-                        Text(stringResource(R.string.add_sample_data))
-                    }
+                    SampleContent(
+                        onIntent = onIntent,
+                    )
                 }
             }
         }
@@ -122,6 +118,28 @@ fun SampleScreen(
                 onIntent(SampleIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun SampleTopAppBar(
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = R.string.sample_data,
+        onBack = onBack,
+    )
+}
+
+@Composable
+private fun SampleContent(
+    onIntent: (SampleIntent) -> Unit,
+) {
+    Button(
+        onClick = { onIntent(SampleIntent.AddSampleData) },
+    ) {
+
+        Text(stringResource(R.string.add_sample_data))
     }
 }
 

@@ -40,6 +40,13 @@ class DefaultSampleUseCase @Inject constructor(
             return
         }
 
+        createLibrarySamples()
+        createFinanceSamples()
+        createCarSamples()
+        createWellbeingSamples()
+    }
+
+    private suspend fun createLibrarySamples() {
         SampleData.SAMPLE_TODOS.forEach {
             createTodoUseCase(
                 it.content,
@@ -51,7 +58,9 @@ class DefaultSampleUseCase @Inject constructor(
                 it.content,
             )
         }
+    }
 
+    private suspend fun createFinanceSamples() {
         SampleData.SAMPLE_EXPENSES.forEach {
             createExpenseUseCase(
                 it.name,
@@ -93,19 +102,23 @@ class DefaultSampleUseCase @Inject constructor(
             )
         }
 
-        SampleData.SAMPLE_WEIGHTS.forEach {
-            createWeightUseCase(
-                it.value,
-                it.date,
-            )
-        }
-
         SampleData.SAMPLE_WATCHLIST_ASSETS.forEach {
             createWatchlistAssetUseCase(
                 it.name,
             )
         }
 
+        SampleData.SAMPLE_TRADES.forEach {
+            createTradeUseCase(
+                it.name,
+                it.amount,
+                it.currency,
+                it.date,
+            )
+        }
+    }
+
+    private suspend fun createCarSamples() {
         SampleData.SAMPLE_FUEL_CONSUMPTION.forEach {
             createFuelConsumptionUseCase(
                 it.amount,
@@ -128,12 +141,12 @@ class DefaultSampleUseCase @Inject constructor(
                 it.date,
             )
         }
+    }
 
-        SampleData.SAMPLE_TRADES.forEach {
-            createTradeUseCase(
-                it.name,
-                it.amount,
-                it.currency,
+    private suspend fun createWellbeingSamples() {
+        SampleData.SAMPLE_WEIGHTS.forEach {
+            createWeightUseCase(
+                it.value,
                 it.date,
             )
         }

@@ -3,6 +3,7 @@ package com.ivzb.urgat.ui.addEditCarMaintenance
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -97,25 +98,13 @@ fun AddEditCarMaintenanceScreen(
     val focusRequesters = remember {
         List(CarMaintenanceFieldId.entries.size) { FocusRequester() }
     }
-    val focusManager = LocalFocusManager.current
 
     Scaffold(
         topBar = {
-            TextTopAppBar(
-                title = uiState.screenTitleResId,
+            AddEditCarMaintenanceTopAppBar(
+                uiState = uiState,
+                onIntent = onIntent,
                 onBack = onBack,
-                actionsContent = {
-                    if (uiState.withDelete) {
-                        DeleteButton(onClick = { onIntent(AddEditCarMaintenanceIntent.DeleteCarMaintenance) })
-                    }
-
-                    MoreMenu(
-                        listOfNotNull(
-                            (R.string.duplicate to { onIntent(AddEditCarMaintenanceIntent.DuplicateCarMaintenance) }).takeIf { uiState.withDuplicate },
-                            (R.string.clear_defaults to { onIntent(AddEditCarMaintenanceIntent.ClearDefaults) }).takeIf { uiState.withClearDefaults },
-                        )
-                    )
-                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -141,180 +130,11 @@ fun AddEditCarMaintenanceScreen(
                     modifier = Modifier.weight(1f)
                 )
             } else {
-
-                TextField(
-                    value = uiState.description,
-                    onValueChange = {
-                        onIntent(AddEditCarMaintenanceIntent.UpdateDescription(it))
-                    },
-                    placeholder = { Text(stringResource(id = R.string.car_maintenance_description_hint)) },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next,
-                    ),
-                    maxLines = 1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequesters[CarMaintenanceFieldId.Description.ordinal]),
+                AddEditCarMaintenanceForm(
+                    uiState = uiState,
+                    onIntent = onIntent,
+                    focusRequesters = focusRequesters,
                 )
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.partNumber,
-                        onValueChange = {
-                            onIntent(AddEditCarMaintenanceIntent.UpdatePartNumber(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.car_maintenance_part_number_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[CarMaintenanceFieldId.PartNumber.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-
-                    TextField(
-                        value = uiState.url,
-                        onValueChange = {
-                            onIntent(AddEditCarMaintenanceIntent.UpdateUrl(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.car_maintenance_url_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Uri,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[CarMaintenanceFieldId.Url.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
-                ) {
-                    TextField(
-                        value = uiState.carName,
-                        onValueChange = {
-                            onIntent(AddEditCarMaintenanceIntent.UpdateCarName(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.car_maintenance_car_name_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[CarMaintenanceFieldId.CarName.ordinal]),
-                    )
-
-                    TextField(
-                        value = uiState.odometer,
-                        onValueChange = {
-                            onIntent(AddEditCarMaintenanceIntent.UpdateOdometer(it))
-                        },
-                        placeholder = { Text(stringResource(id = R.string.car_maintenance_odometer_hint)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .focusRequester(focusRequesters[CarMaintenanceFieldId.Odometer.ordinal]),
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .height(dimensionResource(R.dimen.vertical_margin))
-                )
-
-                DatePicker(
-                    timestamp = uiState.date,
-                    onTimestampSelected = {
-                        onIntent(AddEditCarMaintenanceIntent.UpdateDate(it))
-                    }
-                ) { selectedDate, dialog ->
-
-                    TextField(
-                        value = selectedDate,
-                        onValueChange = {},
-                        placeholder = { Text(stringResource(id = R.string.date_hint)) },
-                        label = { Text(stringResource(id = R.string.date_hint)) },
-                        readOnly = true,
-                        maxLines = 1,
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = stringResource(id = R.string.date_hint)
-                            )
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequesters[CarMaintenanceFieldId.Date.ordinal])
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    dialog.show()
-                                    focusManager.clearFocus()
-                                }
-                            },
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Button(
-                    onClick = rememberDebouncedClick {
-                        onIntent(AddEditCarMaintenanceIntent.SaveCarMaintenance)
-                    },
-                    modifier = Modifier
-                        .responsiveButtonWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-
-                LaunchedEffect(uiState.focusIndex) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
-
-                LaunchedEffect(uiState.isLoading) {
-                    focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
-                }
             }
         }
     }
@@ -328,6 +148,287 @@ fun AddEditCarMaintenanceScreen(
                 onIntent(AddEditCarMaintenanceIntent.UserMessageShown)
             }
         }
+    }
+}
+
+@Composable
+private fun AddEditCarMaintenanceTopAppBar(
+    uiState: AddEditCarMaintenanceUiState,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    TextTopAppBar(
+        title = uiState.screenTitleResId,
+        onBack = onBack,
+        actionsContent = {
+            if (uiState.withDelete) {
+                DeleteButton(onClick = { onIntent(AddEditCarMaintenanceIntent.DeleteCarMaintenance) })
+            }
+
+            MoreMenu(
+                listOfNotNull(
+                    (R.string.duplicate to { onIntent(AddEditCarMaintenanceIntent.DuplicateCarMaintenance) }).takeIf { uiState.withDuplicate },
+                    (R.string.clear_defaults to { onIntent(AddEditCarMaintenanceIntent.ClearDefaults) }).takeIf { uiState.withClearDefaults },
+                )
+            )
+        },
+    )
+}
+
+@Composable
+private fun ColumnScope.AddEditCarMaintenanceForm(
+    uiState: AddEditCarMaintenanceUiState,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    DescriptionRow(
+        description = uiState.description,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    PartNumberRow(
+        partNumber = uiState.partNumber,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    UrlRow(
+        url = uiState.url,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    CarNameAndOdometerRow(
+        uiState = uiState,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .height(dimensionResource(R.dimen.vertical_margin))
+    )
+
+    DateRow(
+        date = uiState.date,
+        onIntent = onIntent,
+        focusRequesters = focusRequesters,
+    )
+
+    Spacer(
+        modifier = Modifier
+            .weight(1f)
+    )
+
+    SaveButton(
+        onIntent = onIntent,
+    )
+
+    LaunchedEffect(uiState.focusIndex) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+
+    LaunchedEffect(uiState.isLoading) {
+        focusRequesters.getOrNull(uiState.focusIndex)?.requestFocus()
+    }
+}
+
+@Composable
+private fun SaveButton(
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+) {
+    Button(
+        onClick = rememberDebouncedClick {
+            onIntent(AddEditCarMaintenanceIntent.SaveCarMaintenance)
+        },
+        modifier = Modifier
+            .responsiveButtonWidth()
+    ) {
+        Text(stringResource(R.string.save))
+    }
+}
+
+@Composable
+private fun DescriptionRow(
+    description: String,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    TextField(
+        value = description,
+        onValueChange = {
+            onIntent(AddEditCarMaintenanceIntent.UpdateDescription(it))
+        },
+        placeholder = { Text(stringResource(id = R.string.car_maintenance_description_hint)) },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next,
+        ),
+        maxLines = 1,
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequesters[CarMaintenanceFieldId.Description.ordinal]),
+    )
+}
+
+@Composable
+private fun PartNumberRow(
+    partNumber: String,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = partNumber,
+            onValueChange = {
+                onIntent(AddEditCarMaintenanceIntent.UpdatePartNumber(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.car_maintenance_part_number_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[CarMaintenanceFieldId.PartNumber.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun UrlRow(
+    url: String,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+
+        TextField(
+            value = url,
+            onValueChange = {
+                onIntent(AddEditCarMaintenanceIntent.UpdateUrl(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.car_maintenance_url_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[CarMaintenanceFieldId.Url.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun CarNameAndOdometerRow(
+    uiState: AddEditCarMaintenanceUiState,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.horizontal_margin))
+    ) {
+        TextField(
+            value = uiState.carName,
+            onValueChange = {
+                onIntent(AddEditCarMaintenanceIntent.UpdateCarName(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.car_maintenance_car_name_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[CarMaintenanceFieldId.CarName.ordinal]),
+        )
+
+        TextField(
+            value = uiState.odometer,
+            onValueChange = {
+                onIntent(AddEditCarMaintenanceIntent.UpdateOdometer(it))
+            },
+            placeholder = { Text(stringResource(id = R.string.car_maintenance_odometer_hint)) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+            ),
+            maxLines = 1,
+            modifier = Modifier
+                .weight(1f)
+                .focusRequester(focusRequesters[CarMaintenanceFieldId.Odometer.ordinal]),
+        )
+    }
+}
+
+@Composable
+private fun DateRow(
+    date: Long,
+    onIntent: (AddEditCarMaintenanceIntent) -> Unit,
+    focusRequesters: List<FocusRequester>,
+) {
+    val focusManager = LocalFocusManager.current
+
+    DatePicker(
+        timestamp = date,
+        onTimestampSelected = {
+            onIntent(AddEditCarMaintenanceIntent.UpdateDate(it))
+        }
+    ) { selectedDate, dialog ->
+
+        TextField(
+            value = selectedDate,
+            onValueChange = {},
+            placeholder = { Text(stringResource(id = R.string.date_hint)) },
+            label = { Text(stringResource(id = R.string.date_hint)) },
+            readOnly = true,
+            maxLines = 1,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = stringResource(id = R.string.date_hint)
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequesters[CarMaintenanceFieldId.Date.ordinal])
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        dialog.show()
+                        focusManager.clearFocus()
+                    }
+                },
+        )
     }
 }
 
