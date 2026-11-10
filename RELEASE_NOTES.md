@@ -1,3 +1,7 @@
+## Release notes 26.11.05
+
+No release notes.
+
 ## Release notes 26.11.04
 
 Improved:
