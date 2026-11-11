@@ -68,104 +68,120 @@ class DefaultSampleUseCaseTest {
         sampleUseCase()
 
         coVerify(exactly = 1) {
-            SampleData.SAMPLE_TODOS.forEach {
-                createTodoUseCase(
-                    it.content,
-                )
-            }
-
-            SampleData.SAMPLE_EXPENSES.forEach {
-                createExpenseUseCase(
-                    it.name,
-                    it.amount,
-                    it.currency,
-                    it.category,
-                    it.date,
-                    it.excludeFromAnalytics,
-                )
-            }
-
-            SampleData.SAMPLE_NOTES.forEach {
-                createNoteUseCase(
-                    it.content,
-                )
-            }
-
-            SampleData.SAMPLE_INVESTMENTS.forEach {
-                createInvestmentUseCase(
-                    it.name,
-                    it.shares,
-                    it.costPrice,
-                    it.category,
-                    it.currency,
-                    it.date,
-                )
-            }
-
-            SampleData.SAMPLE_SAVINGS.forEach {
-                createSavingUseCase(
-                    it.name,
-                    it.amount,
-                    it.currency,
-                    it.date,
-                )
-            }
-
-            SampleData.SAMPLE_BUDGETS.forEach {
-                createBudgetUseCase(
-                    it.income,
-                    it.bankStart,
-                    it.bankEnd,
-                    it.currency,
-                    it.date,
-                )
-            }
-
-            SampleData.SAMPLE_WATCHLIST_ASSETS.forEach {
-                createWatchlistAssetsUseCase(
-                    it.name,
-                )
-            }
-
-            SampleData.SAMPLE_WEIGHTS.forEach {
-                createWeightUseCase(
-                    it.value,
-                    it.date
-                )
-            }
-
-            SampleData.SAMPLE_FUEL_CONSUMPTION.forEach {
-                createFuelConsumptionUseCase(
-                    it.amount,
-                    it.price,
-                    it.currency,
-                    it.type,
-                    it.carName,
-                    it.odometer,
-                    it.date,
-                )
-            }
-
-            SampleData.SAMPLE_CAR_MAINTENANCE.forEach {
-                createCarMaintenanceUseCase(
-                    it.description,
-                    it.partNumber,
-                    it.url,
-                    it.carName,
-                    it.odometer,
-                    it.date,
-                )
-            }
-
-            SampleData.SAMPLE_TRADES.forEach {
-                createTradeUseCase(
-                    it.name,
-                    it.amount,
-                    it.currency,
-                    it.date,
-                )
-            }
+            verifyTodoExpenseAndNoteSamplesCreated()
+            verifyInvestmentSavingBudgetAndWatchlistSamplesCreated()
+            verifyWeightSamplesCreated()
+            verifyCarSamplesCreated()
+            verifyTradeSamplesCreated()
         }
 
+    }
+
+    private suspend fun verifyTodoExpenseAndNoteSamplesCreated() {
+        SampleData.SAMPLE_TODOS.forEach {
+            createTodoUseCase(
+                it.content,
+            )
+        }
+
+        SampleData.SAMPLE_EXPENSES.forEach {
+            createExpenseUseCase(
+                it.name,
+                it.amount,
+                it.currency,
+                it.category,
+                it.date,
+                it.excludeFromAnalytics,
+            )
+        }
+
+        SampleData.SAMPLE_NOTES.forEach {
+            createNoteUseCase(
+                it.content,
+            )
+        }
+    }
+
+    private suspend fun verifyInvestmentSavingBudgetAndWatchlistSamplesCreated() {
+        SampleData.SAMPLE_INVESTMENTS.forEach {
+            createInvestmentUseCase(
+                it.name,
+                it.shares,
+                it.costPrice,
+                it.category,
+                it.currency,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_SAVINGS.forEach {
+            createSavingUseCase(
+                it.name,
+                it.amount,
+                it.currency,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_BUDGETS.forEach {
+            createBudgetUseCase(
+                it.income,
+                it.bankStart,
+                it.bankEnd,
+                it.currency,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_WATCHLIST_ASSETS.forEach {
+            createWatchlistAssetsUseCase(
+                it.name,
+            )
+        }
+    }
+
+    private suspend fun verifyWeightSamplesCreated() {
+        SampleData.SAMPLE_WEIGHTS.forEach {
+            createWeightUseCase(
+                it.value,
+                it.date
+            )
+        }
+    }
+
+    private suspend fun verifyCarSamplesCreated() {
+        SampleData.SAMPLE_FUEL_CONSUMPTION.forEach {
+            createFuelConsumptionUseCase(
+                it.amount,
+                it.price,
+                it.currency,
+                it.type,
+                it.carName,
+                it.odometer,
+                it.date,
+            )
+        }
+
+        SampleData.SAMPLE_CAR_MAINTENANCE.forEach {
+            createCarMaintenanceUseCase(
+                it.description,
+                it.partNumber,
+                it.url,
+                it.carName,
+                it.odometer,
+                it.date,
+            )
+        }
+    }
+
+    private suspend fun verifyTradeSamplesCreated() {
+        SampleData.SAMPLE_TRADES.forEach {
+            createTradeUseCase(
+                it.name,
+                it.amount,
+                it.currency,
+                it.date,
+            )
+        }
     }
 }

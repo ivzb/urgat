@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,51 +71,68 @@ fun ListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-
-                    if (textLeft.isNotBlank()) {
-                        Text(
-                            text = textLeft,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-
-                    if (subTextLeft.isNotBlank()) {
-                        Text(
-                            text = subTextLeft,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-                }
+                ListItemLeftTexts(textLeft, subTextLeft)
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    if (textRight.isNotBlank()) {
-                        Text(
-                            text = textRight,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-
-                    if (subTextRight.text.isNotBlank() || subTextRightCanBeEmpty) {
-                        Text(
-                            text = subTextRight,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-                }
+                ListItemRightTexts(textRight, subTextRight, subTextRightCanBeEmpty)
             }
         }
 
+    }
+}
+
+@Composable
+private fun ListItemLeftTexts(
+    textLeft: String,
+    subTextLeft: String,
+) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center,
+    ) {
+
+        if (textLeft.isNotBlank()) {
+            Text(
+                text = textLeft,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+
+        if (subTextLeft.isNotBlank()) {
+            Text(
+                text = subTextLeft,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+}
+
+@Composable
+private fun RowScope.ListItemRightTexts(
+    textRight: String,
+    subTextRight: AnnotatedString,
+    subTextRightCanBeEmpty: Boolean,
+) {
+    Column(
+        horizontalAlignment = Alignment.End,
+        modifier = Modifier
+            .weight(1f)
+    ) {
+        if (textRight.isNotBlank()) {
+            Text(
+                text = textRight,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+
+        if (subTextRight.text.isNotBlank() || subTextRightCanBeEmpty) {
+            Text(
+                text = subTextRight,
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
     }
 }
 

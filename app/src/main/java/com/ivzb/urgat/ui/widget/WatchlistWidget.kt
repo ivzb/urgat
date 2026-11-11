@@ -136,46 +136,56 @@ class WatchlistWidget : GlanceAppWidget() {
             }
 
             if (showRefresh) {
-                Box(
-                    modifier = GlanceModifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopEnd,
-                ) {
-                    Row(
-                        modifier = GlanceModifier.height(REFRESH_TAP_TARGET),
-                        verticalAlignment = Alignment.Vertical.CenterVertically,
-                    ) {
-
-                        if (lastFetchedAt != null) {
-                            Text(
-                                text = context.formatUpdatedAt(lastFetchedAt),
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.onSurfaceVariant,
-                                    fontSize = 11.sp,
-                                ),
-                                maxLines = 1,
-                            )
-                        }
-
-                        RefreshButton(
-                            modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
-                        )
-                    }
-                }
+                RefreshOverlay(context, lastFetchedAt)
             }
 
             if (isRefreshing) {
-                Box(
-                    modifier = GlanceModifier
-                        .fillMaxSize()
-                        .background(ImageProvider(R.drawable.widget_scrim)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator(
-                        modifier = GlanceModifier.size(32.dp),
-                        color = GlanceTheme.colors.primary,
+                RefreshingScrim()
+            }
+        }
+    }
+
+    @Composable
+    private fun RefreshOverlay(context: Context, lastFetchedAt: Long?) {
+        Box(
+            modifier = GlanceModifier.fillMaxSize(),
+            contentAlignment = Alignment.TopEnd,
+        ) {
+            Row(
+                modifier = GlanceModifier.height(REFRESH_TAP_TARGET),
+                verticalAlignment = Alignment.Vertical.CenterVertically,
+            ) {
+
+                if (lastFetchedAt != null) {
+                    Text(
+                        text = context.formatUpdatedAt(lastFetchedAt),
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurfaceVariant,
+                            fontSize = 11.sp,
+                        ),
+                        maxLines = 1,
                     )
                 }
+
+                RefreshButton(
+                    modifier = GlanceModifier.size(REFRESH_TAP_TARGET),
+                )
             }
+        }
+    }
+
+    @Composable
+    private fun RefreshingScrim() {
+        Box(
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .background(ImageProvider(R.drawable.widget_scrim)),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator(
+                modifier = GlanceModifier.size(32.dp),
+                color = GlanceTheme.colors.primary,
+            )
         }
     }
 

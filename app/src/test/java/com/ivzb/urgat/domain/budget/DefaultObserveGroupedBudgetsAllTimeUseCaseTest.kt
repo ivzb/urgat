@@ -28,6 +28,7 @@ import io.mockk.mockk
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -96,53 +97,14 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
         val sortTypeFlow = flowOf(sortType)
         val limitFlow = flowOf(limit)
 
-        val budget = BudgetCategory(
-            id = "",
-            name = "",
-            currency = "EUR",
-            value = 20400.toBigDecimal(),
-        )
+        val budget = budgetCategory()
 
-        val expenses = GroupedExpenses(
-            "2025",
-            listOf(ExpenseTotal(2600.toBigDecimal(), "EUR")),
-            listOf(
-                Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
-                Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
-                Expense("3", "3", 1400.toBigDecimal(), "EUR", "3", 3, false, false, 3),
-            )
-        )
+        val expenses = groupedExpenses()
 
-        val investments = GroupedInvestments(
-            "2025",
-            listOf(
-                InvestmentTotal("EUR", 1800.toBigDecimal(), 1800.toBigDecimal(), 0.toBigDecimal()),
-                InvestmentTotal("USD", 2000.toBigDecimal(), 2000.toBigDecimal(), 0.toBigDecimal()),
-            ),
-            listOf(
-                Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
-                Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
-                Investment("3", "3", 1.toBigDecimal(), 2000.toBigDecimal(), 2000.toBigDecimal(), "3", "USD", 3, false, 3),
-            )
-        )
-        val savings = GroupedSavings(
-            "2025",
-            listOf(SavingTotal(1800.toBigDecimal(), "EUR")),
-            listOf(
-                Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
-                Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
-                Saving("3", "Emergency fund", 700.toBigDecimal(), "EUR", 3, false, 3),
-            )
-        )
+        val investments = groupedInvestments()
+        val savings = groupedSavings()
 
-        val trades = GroupedTrades(
-            "2025",
-            listOf(TradeTotal("EUR", 1500.toBigDecimal())),
-            listOf(
-                Trade("1", "AAPL", 500.toBigDecimal(), "EUR", 1, false, 1),
-                Trade("2", "AAPL", 1000.toBigDecimal(), "EUR", 2, false, 2),
-            )
-        )
+        val trades = groupedTrades()
 
         every {
             observeGroupedBudgetCategoriesAllTimeUseCase.invoke(
@@ -174,6 +136,92 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             )
         } returns flowOf(Async.Success(investments))
 
+        stubTradesAndSavings(searchQueryFlow, dateRangeFlow, trades, savings)
+
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        val expected = expectedGroupedBudget()
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        val actual = (first as Async.Success).data
+        assertEquals(expected, actual)
+    }
+
+    private fun budgetCategory() = BudgetCategory(
+        id = "",
+        name = "",
+        currency = "EUR",
+        value = 20400.toBigDecimal(),
+    )
+
+    private fun groupedExpenses() = GroupedExpenses(
+        "2025",
+        listOf(ExpenseTotal(2600.toBigDecimal(), "EUR")),
+        listOf(
+            Expense("1", "1", 600.toBigDecimal(), "EUR", "1", 1, false, false, 1),
+            Expense("2", "2", 600.toBigDecimal(), "EUR", "2", 2, false, false, 2),
+            Expense("3", "3", 1400.toBigDecimal(), "EUR", "3", 3, false, false, 3),
+        )
+    )
+
+    private fun groupedInvestments() = GroupedInvestments(
+        "2025",
+        listOf(
+            InvestmentTotal("EUR", 1800.toBigDecimal(), 1800.toBigDecimal(), 0.toBigDecimal()),
+            InvestmentTotal("USD", 2000.toBigDecimal(), 2000.toBigDecimal(), 0.toBigDecimal()),
+        ),
+        listOf(
+            Investment("1", "1", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "1", "EUR", 1, false, 1),
+            Investment("2", "2", 1.toBigDecimal(), 900.toBigDecimal(), 900.toBigDecimal(), "2", "EUR", 2, false, 2),
+            Investment("3", "3", 1.toBigDecimal(), 2000.toBigDecimal(), 2000.toBigDecimal(), "3", "USD", 3, false, 3),
+        )
+    )
+
+    private fun groupedSavings() = GroupedSavings(
+        "2025",
+        listOf(SavingTotal(1800.toBigDecimal(), "EUR")),
+        listOf(
+            Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1, false, 1),
+            Saving("2", "Emergency fund", 600.toBigDecimal(), "EUR", 2, false, 2),
+            Saving("3", "Emergency fund", 700.toBigDecimal(), "EUR", 3, false, 3),
+        )
+    )
+
+    private fun groupedTrades() = GroupedTrades(
+        "2025",
+        listOf(TradeTotal("EUR", 1500.toBigDecimal())),
+        listOf(
+            Trade("1", "AAPL", 500.toBigDecimal(), "EUR", 1, false, 1),
+            Trade("2", "AAPL", 1000.toBigDecimal(), "EUR", 2, false, 2),
+        )
+    )
+
+    private fun expectedGroupedBudget() = GroupedBudget(
+        category = GroupedBudgetCategories(
+            group = "",
+            total = 20400.toBigDecimal(),
+            items = listOf(
+                BudgetCategory("", "", "EUR", 20400.toBigDecimal()),
+            ),
+        ),
+        currency = "EUR",
+        totalIncome = 20400.toBigDecimal(),
+        totalExpenses = 2600.toBigDecimal(),
+        totalInvestments = 3_800.toBigDecimal(),
+        totalTrades = 1500.toBigDecimal(),
+        totalSavings = 1800.toBigDecimal(),
+    )
+
+    private fun stubTradesAndSavings(
+        searchQueryFlow: Flow<String>,
+        dateRangeFlow: Flow<LongRange>,
+        trades: GroupedTrades,
+        savings: GroupedSavings,
+    ) {
         every {
             observeGroupedTradesAllTimeUseCase.invoke(
                 searchQueryFlow = eq(searchQueryFlow),
@@ -193,32 +241,6 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
                 limitFlow = null,
             )
         } returns flowOf(Async.Success(savings))
-
-        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
-
-        advanceUntilIdle()
-
-        val expected = GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "",
-                total = 20400.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory("", "", "EUR", 20400.toBigDecimal()),
-                ),
-            ),
-            currency = "EUR",
-            totalIncome = 20400.toBigDecimal(),
-            totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = 3_800.toBigDecimal(),
-            totalTrades = 1500.toBigDecimal(),
-            totalSavings = 1800.toBigDecimal(),
-        )
-
-        assertEquals(1, results.size)
-        val first = results.first()
-        assert(first is Async.Success)
-        val actual = (first as Async.Success).data
-        assertEquals(expected, actual)
     }
 
     @Test
@@ -249,11 +271,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             )
         } returns flowOf(
             Async.Success(
-                GroupedExpenses(
-                    group = "",
-                    total = listOf(),
-                    items = listOf(),
-                )
+                emptyGroupedExpenses()
             )
         )
 
@@ -267,14 +285,46 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             )
         } returns flowOf(
             Async.Success(
-                GroupedInvestments(
-                    group = "",
-                    total = emptyList(),
-                    items = listOf(),
-                )
+                emptyGroupedInvestments()
             )
         )
 
+        stubEmptyTradesAndSavings(searchQueryFlow, dateRangeFlow)
+
+        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
+
+        advanceUntilIdle()
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Error)
+    }
+
+    private fun emptyGroupedExpenses() = GroupedExpenses(
+        group = "",
+        total = listOf(),
+        items = listOf(),
+    )
+
+    private fun emptyGroupedInvestments() = GroupedInvestments(
+        group = "",
+        total = emptyList(),
+        items = listOf(),
+    )
+
+    private fun emptyGroupedTrades() = GroupedTrades(
+        group = "",
+        total = listOf(),
+        items = listOf(),
+    )
+
+    private fun emptyGroupedSavings() = GroupedSavings(
+        group = "",
+        total = listOf(),
+        items = listOf(),
+    )
+
+    private fun stubEmptyTradesAndSavings(searchQueryFlow: Flow<String>, dateRangeFlow: Flow<LongRange>) {
         every {
             observeGroupedTradesAllTimeUseCase.invoke(
                 searchQueryFlow = eq(searchQueryFlow),
@@ -285,11 +335,7 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             )
         } returns flowOf(
             Async.Success(
-                GroupedTrades(
-                    group = "",
-                    total = listOf(),
-                    items = listOf(),
-                )
+                emptyGroupedTrades()
             )
         )
 
@@ -303,20 +349,8 @@ class DefaultObserveGroupedBudgetsAllTimeUseCaseTest {
             )
         } returns flowOf(
             Async.Success(
-                GroupedSavings(
-                    group = "",
-                    total = listOf(),
-                    items = listOf(),
-                )
+                emptyGroupedSavings()
             )
         )
-
-        val results = observeUseCase(searchQueryFlow, dateRangeFlow, null, sortTypeFlow, limitFlow).toList()
-
-        advanceUntilIdle()
-
-        assertEquals(1, results.size)
-        val first = results.first()
-        assert(first is Async.Error)
     }
 }

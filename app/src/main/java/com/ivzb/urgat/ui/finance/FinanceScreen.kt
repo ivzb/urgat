@@ -420,46 +420,12 @@ private fun FinanceScreenPreview(
 ) {
     UrgatTheme {
         FinanceScreen(
-            uiState = FinanceUiState(
-                expensesUiState = ExpensesUiState(
-                    expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
-                    categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
-                    categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
-                    categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
-                    initialPage = expensesInitialPage,
-                ),
-                investmentsUiState = InvestmentsUiState(
-                    investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
-                    categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
-                    assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
-                    categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
-                    netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
-                    initialPage = investmentsInitialPage,
-                ),
-                savingsUiState = SavingsUiState(
-                    savings = SampleData.SAMPLE_SAVINGS_GROUPED,
-                    categoriesMonthly = SampleData.SAMPLE_SAVINGS_CATEGORIES_MONTHLY,
-                    categoriesYearly = SampleData.SAMPLE_SAVINGS_CATEGORIES_YEARLY,
-                    categoriesAllTime = SampleData.SAMPLE_SAVINGS_CATEGORIES_ALL_TIME,
-                    initialPage = savingsInitialPage,
-                ),
-                budgetsUiState = BudgetsUiState(
-                    budgets = SampleData.SAMPLE_BUDGETS,
-                    filteringUiInfo = BudgetsFilteringUiInfo(),
-                    initialPage = budgetsInitialPage,
-                ),
-                tradesUiState = TradesUiState(
-                    trades = SampleData.SAMPLE_TRADES_GROUPED,
-                ),
-                watchlistAssetsUiState = WatchlistAssetsUiState(
-                    watchlistAssets = SampleData.SAMPLE_WATCHLIST_ASSETS,
-                ),
-                reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
-                fire = SampleData.SAMPLE_FIRE,
-                isLoading = false,
-                hasError = false,
+            uiState = financeScreenPreviewUiState(
                 initialPage = initialPage,
-                filteringUiInfo = FinanceFilteringUiInfo()
+                expensesInitialPage = expensesInitialPage,
+                investmentsInitialPage = investmentsInitialPage,
+                savingsInitialPage = savingsInitialPage,
+                budgetsInitialPage = budgetsInitialPage,
             ),
             onIntent = {},
 
@@ -485,6 +451,54 @@ private fun FinanceScreenPreview(
         )
     }
 }
+
+private fun financeScreenPreviewUiState(
+    initialPage: Int,
+    expensesInitialPage: Int,
+    investmentsInitialPage: Int,
+    savingsInitialPage: Int,
+    budgetsInitialPage: Int,
+) = FinanceUiState(
+    expensesUiState = ExpensesUiState(
+        expenses = SampleData.SAMPLE_EXPENSES_GROUPED,
+        categoriesMonthly = SampleData.SAMPLE_EXPENSES_CATEGORIES_MONTHLY,
+        categoriesYearly = SampleData.SAMPLE_EXPENSES_CATEGORIES_YEARLY,
+        categoriesAllTime = SampleData.SAMPLE_EXPENSES_CATEGORIES_ALL_TIME,
+        initialPage = expensesInitialPage,
+    ),
+    investmentsUiState = InvestmentsUiState(
+        investments = SampleData.SAMPLE_INVESTMENTS_GROUPED,
+        categoriesYearly = SampleData.SAMPLE_INVESTMENTS_CATEGORIES_YEARLY,
+        assets = SampleData.SAMPLE_INVESTMENTS_ASSETS,
+        categories = SampleData.SAMPLE_INVESTMENTS_CATEGORIES,
+        netWorth = SampleData.SAMPLE_INVESTMENTS_NET_WORTH,
+        initialPage = investmentsInitialPage,
+    ),
+    savingsUiState = SavingsUiState(
+        savings = SampleData.SAMPLE_SAVINGS_GROUPED,
+        categoriesMonthly = SampleData.SAMPLE_SAVINGS_CATEGORIES_MONTHLY,
+        categoriesYearly = SampleData.SAMPLE_SAVINGS_CATEGORIES_YEARLY,
+        categoriesAllTime = SampleData.SAMPLE_SAVINGS_CATEGORIES_ALL_TIME,
+        initialPage = savingsInitialPage,
+    ),
+    budgetsUiState = BudgetsUiState(
+        budgets = SampleData.SAMPLE_BUDGETS,
+        filteringUiInfo = BudgetsFilteringUiInfo(),
+        initialPage = budgetsInitialPage,
+    ),
+    tradesUiState = TradesUiState(
+        trades = SampleData.SAMPLE_TRADES_GROUPED,
+    ),
+    watchlistAssetsUiState = WatchlistAssetsUiState(
+        watchlistAssets = SampleData.SAMPLE_WATCHLIST_ASSETS,
+    ),
+    reportBudget = SampleData.SAMPLE_REPORT_BUDGET,
+    fire = SampleData.SAMPLE_FIRE,
+    isLoading = false,
+    hasError = false,
+    initialPage = initialPage,
+    filteringUiInfo = FinanceFilteringUiInfo()
+)
 
 @AllDevicesPreview
 @Preview

@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,6 +27,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowSize
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -55,6 +57,7 @@ import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.library.LibraryUiState
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.isScrollingUp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -83,79 +86,14 @@ fun NavigationScreen(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                Column(
-                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal))
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Text(
-                        text = stringResource(R.string.menu),
-                        modifier = Modifier.padding(dimensionResource(R.dimen.drawer_section_title_padding)),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .padding(vertical = dimensionResource(R.dimen.drawer_divider_padding)),
-                    )
-
-                    URGAT_NAVIGATION_DRAWER.forEach { section ->
-                        Text(
-                            text = stringResource(section.titleResId),
-                            modifier = Modifier.padding(dimensionResource(R.dimen.drawer_section_title_padding)),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                        )
-
-                        section.items.forEach { item ->
-                            NavigationDrawerItem(
-                                label = { Text(text = stringResource(item.labelResId)) },
-                                selected = false,
-                                icon = { Icon(item.iconVector, contentDescription = null) },
-                                onClick = {
-                                    scope.launch {
-                                        drawerState.close()
-                                        navigator.navigate(item.route)
-                                    }
-                                }
-                            )
-                        }
-
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .padding(vertical = dimensionResource(R.dimen.drawer_divider_padding)),
-                        )
-                    }
-
-                    Spacer(Modifier.height(dimensionResource(R.dimen.vertical_margin)))
-                }
-            }
+            NavigationDrawerContent(drawerState, scope, navigator)
         },
     ) {
         val navigationLayoutType = calculateNavigationSuiteType()
 
         NavigationSuiteScaffold(
             navigationSuiteItems = {
-                BOTTOM_NAVIGATION_SCREENS.forEach {
-                    item(
-                        selected = it.route == route,
-                        onClick = {
-                            navigator.navigate(it.route)
-                        },
-                        modifier = Modifier.testTag(it.testTag),
-                        icon = {
-                            Icon(
-                                imageVector = it.icon,
-                                contentDescription = stringResource(it.label)
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = stringResource(it.label)
-                            )
-                        },
-                    )
-                }
+                bottomNavigationItems(route, navigator)
             },
             layoutType = navigationLayoutType,
             modifier = modifier
@@ -165,48 +103,162 @@ fun NavigationScreen(
                 .semantics { testTagsAsResourceId = true }
         ) {
 
-            UrgatScaffold(
-                selectedRoute = route,
+            NavigationScreenScaffold(
+                uiState = uiState,
+                route = route,
                 searchQuery = searchQuery,
                 onSearchQueryChanged = onSearchQueryChanged,
+                onFabActionClick = onFabActionClick,
                 withSearch = withSearch,
-                onSearchFocusChanged = onSearchFocusChanged,
-                navigationIcon = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            if (drawerState.isClosed) {
-                                drawerState.open()
-                            } else {
-                                drawerState.close()
-                            }
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.menu),
-                        )
-                    }
-                },
+                withFab = withFab,
                 topAppBarActionsContent = topAppBarActionsContent,
-                floatingActionButtonContent = {
-                    if (withFab) {
-                        ScrollAwareFAB(
-                            visible = listState?.isScrollingUp() ?: true,
-                            icon = Icons.Filled.Add,
-                            labelResId = R.string.add,
-                            onClick = onFabActionClick,
-                        )
-                    }
-                },
-                content = {
-                    UrgatScreen(
-                        uiState = uiState,
-                        content = content,
-                    )
-                }
+                listState = listState,
+                onSearchFocusChanged = onSearchFocusChanged,
+                drawerState = drawerState,
+                scope = scope,
+                content = content,
             )
         }
     }
+}
+
+@Composable
+private fun NavigationDrawerContent(
+    drawerState: DrawerState,
+    scope: CoroutineScope,
+    navigator: Navigator,
+) {
+    ModalDrawerSheet {
+        Column(
+            modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.content_padding_horizontal))
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = stringResource(R.string.menu),
+                modifier = Modifier.padding(dimensionResource(R.dimen.drawer_section_title_padding)),
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            HorizontalDivider(
+                modifier = Modifier
+                    .padding(vertical = dimensionResource(R.dimen.drawer_divider_padding)),
+            )
+
+            URGAT_NAVIGATION_DRAWER.forEach { section ->
+                Text(
+                    text = stringResource(section.titleResId),
+                    modifier = Modifier.padding(dimensionResource(R.dimen.drawer_section_title_padding)),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                section.items.forEach { item ->
+                    NavigationDrawerItem(
+                        label = { Text(text = stringResource(item.labelResId)) },
+                        selected = false,
+                        icon = { Icon(item.iconVector, contentDescription = null) },
+                        onClick = {
+                            scope.launch {
+                                drawerState.close()
+                                navigator.navigate(item.route)
+                            }
+                        }
+                    )
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(vertical = dimensionResource(R.dimen.drawer_divider_padding)),
+                )
+            }
+
+            Spacer(Modifier.height(dimensionResource(R.dimen.vertical_margin)))
+        }
+    }
+}
+
+private fun NavigationSuiteScope.bottomNavigationItems(
+    route: UrgatRootRoute,
+    navigator: Navigator,
+) {
+    BOTTOM_NAVIGATION_SCREENS.forEach {
+        item(
+            selected = it.route == route,
+            onClick = {
+                navigator.navigate(it.route)
+            },
+            modifier = Modifier.testTag(it.testTag),
+            icon = {
+                Icon(
+                    imageVector = it.icon,
+                    contentDescription = stringResource(it.label)
+                )
+            },
+            label = {
+                Text(
+                    text = stringResource(it.label)
+                )
+            },
+        )
+    }
+}
+
+@Composable
+private fun NavigationScreenScaffold(
+    uiState: UiState,
+    route: UrgatRootRoute,
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
+    onFabActionClick: () -> Unit,
+    withSearch: Boolean,
+    withFab: Boolean,
+    topAppBarActionsContent: (@Composable () -> Unit)?,
+    listState: LazyListState?,
+    onSearchFocusChanged: ((Boolean) -> Unit)?,
+    drawerState: DrawerState,
+    scope: CoroutineScope,
+    content: @Composable () -> Unit,
+) {
+    UrgatScaffold(
+        selectedRoute = route,
+        searchQuery = searchQuery,
+        onSearchQueryChanged = onSearchQueryChanged,
+        withSearch = withSearch,
+        onSearchFocusChanged = onSearchFocusChanged,
+        navigationIcon = {
+            IconButton(onClick = {
+                scope.launch {
+                    if (drawerState.isClosed) {
+                        drawerState.open()
+                    } else {
+                        drawerState.close()
+                    }
+                }
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = stringResource(R.string.menu),
+                )
+            }
+        },
+        topAppBarActionsContent = topAppBarActionsContent,
+        floatingActionButtonContent = {
+            if (withFab) {
+                ScrollAwareFAB(
+                    visible = listState?.isScrollingUp() ?: true,
+                    icon = Icons.Filled.Add,
+                    labelResId = R.string.add,
+                    onClick = onFabActionClick,
+                )
+            }
+        },
+        content = {
+            UrgatScreen(
+                uiState = uiState,
+                content = content,
+            )
+        }
+    )
 }
 
 @Composable

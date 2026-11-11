@@ -20,6 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -84,110 +85,165 @@ fun PieChart(
             animateFloatAsState(targetValue = if (isSelected) 50f else 0f).value
         }
 
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(data) {
-                    detectTapGestures { tapOffset ->
-                        val center = Offset(size.width / 2f, size.height / 2f)
-                        val dx = tapOffset.x - center.x
-                        val dy = tapOffset.y - center.y
+        PieChartCanvas(
+            data = data,
+            total = total,
+            strokeWidth = strokeWidth,
+            offsets = offsets,
+            sliceAngles = sliceAngles,
+            onSliceClick = {
+                val title = data[it.index].title
+                val newTitle = if (currentTitleUpdated == title) null else title
+                val onSelected = onSelectedTitleChangedUpdated
 
-                        val distance = hypot(dx, dy)
-                        val outerRadius = min(size.width, size.height) / 2f
-                        val innerRadius = outerRadius - strokeWidth
-
-                        if (distance !in innerRadius..outerRadius) {
-                            return@detectTapGestures
-                        }
-
-                        var angle = toDegrees(atan2(dy.toDouble(), dx.toDouble())).toFloat()
-
-                        if (angle < 0f) {
-                            angle += 360f
-                        }
-
-                        val adjustedAngle = (angle + 90f) % 360f
-
-                        val tappedSlice = sliceAngles.firstOrNull {
-                            adjustedAngle in it.start..(it.start + it.sweep)
-                        }
-
-                        tappedSlice?.let {
-                            val title = data[it.index].title
-                            val newTitle = if (currentTitleUpdated == title) null else title
-                            val onSelected = onSelectedTitleChangedUpdated
-
-                            if (onSelected != null) {
-                                onSelected(newTitle)
-                            } else {
-                                internalSelectedTitle.value = newTitle
-                            }
-                        }
-                    }
+                if (onSelected != null) {
+                    onSelected(newTitle)
+                } else {
+                    internalSelectedTitle.value = newTitle
                 }
-        ) {
+            },
+        )
 
-            sliceAngles.clear()
-
-            var startAngle = -90f
-
-            data.forEachIndexed { index, item ->
-                val sweepAngle = (item.value.absoluteValue / total) * 360f
-                sliceAngles += PieChartSliceAngle(
-                    index = index,
-                    start = startAngle + 90f,
-                    sweep = sweepAngle
-                )
-
-                val halfStroke = strokeWidth / 2
-                val diameter = size.minDimension - strokeWidth
-                val offset = offsets[index]
-
-                val rad = Math.toRadians((startAngle + sweepAngle / 2).toDouble())
-                val dx = (offset * kotlin.math.cos(rad)).toFloat()
-                val dy = (offset * kotlin.math.sin(rad)).toFloat()
-
-                drawArc(
-                    color = dataColor(index),
-                    startAngle = startAngle,
-                    sweepAngle = sweepAngle,
-                    useCenter = false,
-                    topLeft = Offset(halfStroke, halfStroke) + Offset(dx, dy),
-                    size = Size(diameter, diameter),
-                    style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
-                )
-
-                startAngle += sweepAngle
-            }
-        }
-
-        val centerText = remember(selectedIndex, defaultText, data) {
-            if (selectedIndex == null) {
-                defaultText
-            } else {
-                val item = data[selectedIndex]
-                val percentage = (item.value.absoluteValue / total) * 100f
-
-                buildAnnotatedString {
-                    append(item.title)
-                    append(" (%.1f%%)".format(percentage))
-                    appendLine()
-
-                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(item.total)
-                    }
-                }
-            }
-        }
-
-        Text(
-            text = centerText,
-            style = textStyle,
-            fontWeight = textFontWeight,
-            textAlign = TextAlign.Center,
+        PieChartCenterText(
+            data = data,
+            total = total,
+            selectedIndex = selectedIndex,
+            defaultText = defaultText,
+            textStyle = textStyle,
+            textFontWeight = textFontWeight,
         )
     }
+}
+
+@Composable
+private fun PieChartCanvas(
+    data: List<PieChartItem>,
+    total: Float,
+    strokeWidth: Float,
+    offsets: List<Float>,
+    sliceAngles: MutableList<PieChartSliceAngle>,
+    onSliceClick: (PieChartSliceAngle) -> Unit,
+) {
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(data) {
+                detectTapGestures { tapOffset ->
+                    val center = Offset(size.width / 2f, size.height / 2f)
+                    val dx = tapOffset.x - center.x
+                    val dy = tapOffset.y - center.y
+
+                    val distance = hypot(dx, dy)
+                    val outerRadius = min(size.width, size.height) / 2f
+                    val innerRadius = outerRadius - strokeWidth
+
+                    if (distance !in innerRadius..outerRadius) {
+                        return@detectTapGestures
+                    }
+
+                    var angle = toDegrees(atan2(dy.toDouble(), dx.toDouble())).toFloat()
+
+                    if (angle < 0f) {
+                        angle += 360f
+                    }
+
+                    val adjustedAngle = (angle + 90f) % 360f
+
+                    val tappedSlice = sliceAngles.firstOrNull {
+                        adjustedAngle in it.start..(it.start + it.sweep)
+                    }
+
+                    tappedSlice?.let(onSliceClick)
+                }
+            }
+    ) {
+
+        drawPieSlices(
+            data = data,
+            total = total,
+            strokeWidth = strokeWidth,
+            offsets = offsets,
+            sliceAngles = sliceAngles,
+        )
+    }
+}
+
+private fun DrawScope.drawPieSlices(
+    data: List<PieChartItem>,
+    total: Float,
+    strokeWidth: Float,
+    offsets: List<Float>,
+    sliceAngles: MutableList<PieChartSliceAngle>,
+) {
+
+    sliceAngles.clear()
+
+    var startAngle = -90f
+
+    data.forEachIndexed { index, item ->
+        val sweepAngle = (item.value.absoluteValue / total) * 360f
+        sliceAngles += PieChartSliceAngle(
+            index = index,
+            start = startAngle + 90f,
+            sweep = sweepAngle
+        )
+
+        val halfStroke = strokeWidth / 2
+        val diameter = size.minDimension - strokeWidth
+        val offset = offsets[index]
+
+        val rad = Math.toRadians((startAngle + sweepAngle / 2).toDouble())
+        val dx = (offset * kotlin.math.cos(rad)).toFloat()
+        val dy = (offset * kotlin.math.sin(rad)).toFloat()
+
+        drawArc(
+            color = dataColor(index),
+            startAngle = startAngle,
+            sweepAngle = sweepAngle,
+            useCenter = false,
+            topLeft = Offset(halfStroke, halfStroke) + Offset(dx, dy),
+            size = Size(diameter, diameter),
+            style = Stroke(width = strokeWidth, cap = StrokeCap.Butt)
+        )
+
+        startAngle += sweepAngle
+    }
+}
+
+@Composable
+private fun PieChartCenterText(
+    data: List<PieChartItem>,
+    total: Float,
+    selectedIndex: Int?,
+    defaultText: AnnotatedString,
+    textStyle: TextStyle,
+    textFontWeight: FontWeight?,
+) {
+    val centerText = remember(selectedIndex, defaultText, data) {
+        if (selectedIndex == null) {
+            defaultText
+        } else {
+            val item = data[selectedIndex]
+            val percentage = (item.value.absoluteValue / total) * 100f
+
+            buildAnnotatedString {
+                append(item.title)
+                append(" (%.1f%%)".format(percentage))
+                appendLine()
+
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(item.total)
+                }
+            }
+        }
+    }
+
+    Text(
+        text = centerText,
+        style = textStyle,
+        fontWeight = textFontWeight,
+        textAlign = TextAlign.Center,
+    )
 }
 
 data class PieChartItem(

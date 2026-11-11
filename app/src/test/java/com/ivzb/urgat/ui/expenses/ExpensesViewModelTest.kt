@@ -73,60 +73,12 @@ class ExpensesViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))
-        val fakeExpenses = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                items = expenses,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                items = listOf(
-                    ExpenseCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                        expenses = expenses,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesYearly = listOf(
-            GroupedItems(
-                group = "2025",
-                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                items = listOf(
-                    ExpenseCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                        expenses = expenses,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesAllTime = listOf(
-            ExpenseCategory(
-                id = "1",
-                name = "food",
-                totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                expenses = expenses,
-            )
-        )
-        val fakeExpensesFiltering = listOf(
-            FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
-            FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
-            FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 0),
-        )
-        val fakeExpensesSorting = listOf(
-            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
+        val fakeExpenses = fakeExpenses(expenses)
+        val fakeCategoriesMonthly = fakeCategoriesMonthly(expenses)
+        val fakeCategoriesYearly = fakeCategoriesYearly(expenses)
+        val fakeCategoriesAllTime = fakeCategoriesAllTime(expenses)
+        val fakeExpensesFiltering = fakeExpensesFiltering()
+        val fakeExpensesSorting = fakeExpensesSorting()
 
         val fakeExpensesUiState = ExpensesUiState(
             expenses = fakeExpenses,
@@ -182,60 +134,12 @@ class ExpensesViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val expenses = listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))
-        val fakeExpenses = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                items = expenses,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                items = listOf(
-                    ExpenseCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                        expenses = expenses,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesYearly = listOf(
-            GroupedItems(
-                group = "2025",
-                total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                items = listOf(
-                    ExpenseCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                        expenses = expenses,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesAllTime = listOf(
-            ExpenseCategory(
-                id = "1",
-                name = "food",
-                totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
-                expenses = expenses,
-            )
-        )
-        val fakeExpensesFiltering = listOf(
-            FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
-            FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
-            FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
-            FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 0),
-        )
-        val fakeExpensesSorting = listOf(
-            SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
+        val fakeExpenses = fakeExpenses(expenses)
+        val fakeCategoriesMonthly = fakeCategoriesMonthly(expenses)
+        val fakeCategoriesYearly = fakeCategoriesYearly(expenses)
+        val fakeCategoriesAllTime = fakeCategoriesAllTime(expenses)
+        val fakeExpensesFiltering = fakeExpensesFiltering()
+        val fakeExpensesSorting = fakeExpensesSorting()
 
         val fakeExpensesUiState = ExpensesUiState(
             expenses = fakeExpenses,
@@ -257,6 +161,66 @@ class ExpensesViewModelTest {
 
         assertEquals("coffee", fakeObserveExpensesUiStateUseCase.lastQuery)
     }
+
+    private fun fakeExpenses(expenses: List<Expense>) = listOf(
+        GroupedItems(
+            group = "2025/12",
+            total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+            items = expenses,
+        )
+    )
+
+    private fun fakeCategoriesMonthly(expenses: List<Expense>) = listOf(
+        GroupedItems(
+            group = "2025/12",
+            total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+            items = listOf(
+                ExpenseCategory(
+                    id = "1",
+                    name = "food",
+                    totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                    expenses = expenses,
+                )
+            )
+        )
+    )
+
+    private fun fakeCategoriesYearly(expenses: List<Expense>) = listOf(
+        GroupedItems(
+            group = "2025",
+            total = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+            items = listOf(
+                ExpenseCategory(
+                    id = "1",
+                    name = "food",
+                    totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+                    expenses = expenses,
+                )
+            )
+        )
+    )
+
+    private fun fakeCategoriesAllTime(expenses: List<Expense>) = listOf(
+        ExpenseCategory(
+            id = "1",
+            name = "food",
+            totals = listOf(ExpenseTotal(BigDecimal("10"), "EUR")),
+            expenses = expenses,
+        )
+    )
+
+    private fun fakeExpensesFiltering() = listOf(
+        FilterMenuItem(type = ExpensesFilterType.ALL_EXPENSES, labelResId = R.string.filter_all, size = 1),
+        FilterMenuItem(type = ExpensesFilterType.DEBIT_EXPENSES, labelResId = R.string.filter_debit, size = 1),
+        FilterMenuItem(type = ExpensesFilterType.COST_EXPENSES, labelResId = R.string.filter_cost, size = 0),
+        FilterMenuItem(type = ExpensesFilterType.EXCLUDED_FROM_ANALYTICS, labelResId = R.string.filter_excluded_from_analytics, size = 0),
+    )
+
+    private fun fakeExpensesSorting() = listOf(
+        SortMenuItem(type = ExpensesSortType.BY_DATE, labelResId = R.string.sort_by_date),
+        SortMenuItem(type = ExpensesSortType.BY_MIN, labelResId = R.string.sort_by_min),
+        SortMenuItem(type = ExpensesSortType.BY_MAX, labelResId = R.string.sort_by_max),
+    )
 
     @Test
     fun `setFiltering updates finance repository`() = runTest {

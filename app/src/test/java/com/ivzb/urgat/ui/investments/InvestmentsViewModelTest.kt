@@ -76,110 +76,14 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val investments = listOf(
-            Investment(
-                "1",
-                "SNP 500",
-                500.toBigDecimal(),
-                300.toBigDecimal(),
-                0.toBigDecimal(),
-                "etfs",
-                "USD",
-                1L,
-                false,
-                1L
-            )
-        )
-        val fakeInvestments = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal("0"),
-                        pnl = BigDecimal("-100"),
-                    ),
-                ),
-                items = investments,
-            ),
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal("0"),
-                        pnl = BigDecimal("-100"),
-                    ),
-                ),
-                items = listOf(
-                    InvestmentCategory(
-                        id = "1",
-                        name = "etfs",
-                        totals = listOf(
-                            InvestmentTotal(
-                                currency = "USD",
-                                costPrice = BigDecimal("150000"),
-                                marketPrice = BigDecimal("0"),
-                                pnl = BigDecimal("-100"),
-                            ),
-                        ),
-                        investments = investments,
-                    ),
-                ),
-            ),
-        )
-        val fakeNetWorth = InvestmentNetWorth(
-            totals = listOf(
-                InvestmentTotal(
-                    currency = "USD",
-                    costPrice = BigDecimal("150000"),
-                    marketPrice = BigDecimal("0"),
-                    pnl = BigDecimal("-100"),
-                ),
-            ),
-        )
-        val fakeCategories = listOf(
-            InvestmentCategory(
-                id = "1",
-                name = "etfs",
-                totals = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal("0"),
-                        pnl = BigDecimal("-100"),
-                    ),
-                ),
-                investments = investments,
-            ),
-        )
-        val fakeAssets = listOf(
-            InvestmentAsset(
-                id = "1",
-                name = "SNP 500",
-                category = "etfs",
-                shares = 500.toBigDecimal(),
-                costPrice = 500.toBigDecimal(),
-                marketPrice = 600.toBigDecimal(),
-                currency = "USD",
-                totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal("0")),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal("0")),
-                ),
-                investments = investments,
-            ),
-        )
-        val fakeInvestmentsFiltering = listOf(
-            FilterMenuItem(type = "stocks", label = "stocks", size = 1),
-        )
-        val fakeInvestmentsSorting = listOf(
-            SortMenuItem(type = InvestmentsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = InvestmentsSortType.BY_MARKET_VALUE, labelResId = R.string.sort_by_market_value),
-        )
+        val investments = investments()
+        val fakeInvestments = fakeInvestments(investments)
+        val fakeCategoriesMonthly = fakeCategoriesMonthly(investments)
+        val fakeNetWorth = fakeNetWorth()
+        val fakeCategories = fakeCategories(investments)
+        val fakeAssets = fakeAssets(investments)
+        val fakeInvestmentsFiltering = fakeInvestmentsFiltering()
+        val fakeInvestmentsSorting = fakeInvestmentsSorting()
 
         val fakeInvestmentsUiState = InvestmentsUiState(
             investments = fakeInvestments,
@@ -234,110 +138,14 @@ class InvestmentsViewModelTest {
 
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
-        val investments = listOf(
-            Investment(
-                "1",
-                "SNP 500",
-                500.toBigDecimal(),
-                300.toBigDecimal(),
-                0.toBigDecimal(),
-                "etfs",
-                "USD",
-                1L,
-                false,
-                1L
-            )
-        )
-        val fakeInvestments = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal("0"),
-                        pnl = BigDecimal("-100"),
-                    ),
-                ),
-                items = investments,
-            ),
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal("0"),
-                        pnl = BigDecimal("-100"),
-                    ),
-                ),
-                items = listOf(
-                    InvestmentCategory(
-                        id = "1",
-                        name = "etfs",
-                        totals = listOf(
-                            InvestmentTotal(
-                                currency = "USD",
-                                costPrice = BigDecimal("150000"),
-                                marketPrice = BigDecimal("0"),
-                                pnl = BigDecimal("-100"),
-                            ),
-                        ),
-                        investments = investments,
-                    ),
-                ),
-            ),
-        )
-        val fakeNetWorth = InvestmentNetWorth(
-            totals = listOf(
-                InvestmentTotal(
-                    currency = "USD",
-                    costPrice = BigDecimal("150000"),
-                    marketPrice = BigDecimal("0"),
-                    pnl = BigDecimal("-100"),
-                ),
-            ),
-        )
-        val fakeCategories = listOf(
-            InvestmentCategory(
-                id = "1",
-                name = "etfs",
-                totals = listOf(
-                    InvestmentTotal(
-                        currency = "USD",
-                        costPrice = BigDecimal("150000"),
-                        marketPrice = BigDecimal("0"),
-                        pnl = BigDecimal("-100"),
-                    ),
-                ),
-                investments = investments,
-            ),
-        )
-        val fakeAssets = listOf(
-            InvestmentAsset(
-                id = "1",
-                name = "SNP 500",
-                category = "etfs",
-                shares = 500.toBigDecimal(),
-                costPrice = 500.toBigDecimal(),
-                marketPrice = 600.toBigDecimal(),
-                currency = "USD",
-                totals = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal("0")),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal("0")),
-                ),
-                investments = investments,
-            ),
-        )
-        val fakeInvestmentsFiltering = listOf(
-            FilterMenuItem(type = "stocks", label = "stocks", size = 1),
-        )
-        val fakeInvestmentsSorting = listOf(
-            SortMenuItem(type = InvestmentsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = InvestmentsSortType.BY_MARKET_VALUE, labelResId = R.string.sort_by_market_value),
-        )
+        val investments = investments()
+        val fakeInvestments = fakeInvestments(investments)
+        val fakeCategoriesMonthly = fakeCategoriesMonthly(investments)
+        val fakeNetWorth = fakeNetWorth()
+        val fakeCategories = fakeCategories(investments)
+        val fakeAssets = fakeAssets(investments)
+        val fakeInvestmentsFiltering = fakeInvestmentsFiltering()
+        val fakeInvestmentsSorting = fakeInvestmentsSorting()
 
         val fakeInvestmentsUiState = InvestmentsUiState(
             investments = fakeInvestments,
@@ -360,6 +168,118 @@ class InvestmentsViewModelTest {
 
         assertEquals("snp", fakeObserveInvestmentsUiStateUseCase.lastQuery)
     }
+
+    private fun investments() = listOf(
+        Investment(
+            "1",
+            "SNP 500",
+            500.toBigDecimal(),
+            300.toBigDecimal(),
+            0.toBigDecimal(),
+            "etfs",
+            "USD",
+            1L,
+            false,
+            1L
+        )
+    )
+
+    private fun fakeInvestments(investments: List<Investment>) = listOf(
+        GroupedItems(
+            group = "2025/12",
+            total = listOf(
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = BigDecimal("150000"),
+                    marketPrice = BigDecimal("0"),
+                    pnl = BigDecimal("-100"),
+                ),
+            ),
+            items = investments,
+        ),
+    )
+
+    private fun fakeCategoriesMonthly(investments: List<Investment>) = listOf(
+        GroupedItems(
+            group = "2025/12",
+            total = listOf(
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = BigDecimal("150000"),
+                    marketPrice = BigDecimal("0"),
+                    pnl = BigDecimal("-100"),
+                ),
+            ),
+            items = listOf(
+                InvestmentCategory(
+                    id = "1",
+                    name = "etfs",
+                    totals = listOf(
+                        InvestmentTotal(
+                            currency = "USD",
+                            costPrice = BigDecimal("150000"),
+                            marketPrice = BigDecimal("0"),
+                            pnl = BigDecimal("-100"),
+                        ),
+                    ),
+                    investments = investments,
+                ),
+            ),
+        ),
+    )
+
+    private fun fakeNetWorth() = InvestmentNetWorth(
+        totals = listOf(
+            InvestmentTotal(
+                currency = "USD",
+                costPrice = BigDecimal("150000"),
+                marketPrice = BigDecimal("0"),
+                pnl = BigDecimal("-100"),
+            ),
+        ),
+    )
+
+    private fun fakeCategories(investments: List<Investment>) = listOf(
+        InvestmentCategory(
+            id = "1",
+            name = "etfs",
+            totals = listOf(
+                InvestmentTotal(
+                    currency = "USD",
+                    costPrice = BigDecimal("150000"),
+                    marketPrice = BigDecimal("0"),
+                    pnl = BigDecimal("-100"),
+                ),
+            ),
+            investments = investments,
+        ),
+    )
+
+    private fun fakeAssets(investments: List<Investment>) = listOf(
+        InvestmentAsset(
+            id = "1",
+            name = "SNP 500",
+            category = "etfs",
+            shares = 500.toBigDecimal(),
+            costPrice = 500.toBigDecimal(),
+            marketPrice = 600.toBigDecimal(),
+            currency = "USD",
+            totals = listOf(
+                InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1750.59"), marketPrice = BigDecimal("1750.59"), pnl = BigDecimal("0")),
+                InvestmentTotal(currency = "USD", costPrice = BigDecimal("2891.05"), marketPrice = BigDecimal("2891.05"), pnl = BigDecimal("0")),
+            ),
+            investments = investments,
+        ),
+    )
+
+    private fun fakeInvestmentsFiltering() = listOf(
+        FilterMenuItem(type = "stocks", label = "stocks", size = 1),
+    )
+
+    private fun fakeInvestmentsSorting() = listOf(
+        SortMenuItem(type = InvestmentsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+        SortMenuItem(type = InvestmentsSortType.BY_MARKET_VALUE, labelResId = R.string.sort_by_market_value),
+    )
 
     @Test
     fun `setFiltering updates finance repository`() = runTest {

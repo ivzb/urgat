@@ -72,54 +72,11 @@ class SavingsViewModelTest {
     @Test
     fun `emits success state when use case returns data`() = runTest {
         val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
-        val fakeSavings = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                items = savings,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                items = listOf(
-                    SavingCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                        savings = savings,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesYearly = listOf(
-            GroupedItems(
-                group = "2025",
-                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                items = listOf(
-                    SavingCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                        savings = savings,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesAllTime = listOf(
-            SavingCategory(
-                id = "1",
-                name = "food",
-                totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                savings = savings,
-            )
-        )
-        val fakeSavingsSorting = listOf(
-            SortMenuItem(type = SavingsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = SavingsSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
+        val fakeSavings = fakeSavings(savings)
+        val fakeCategoriesMonthly = fakeCategoriesMonthly(savings)
+        val fakeCategoriesYearly = fakeCategoriesYearly(savings)
+        val fakeCategoriesAllTime = fakeCategoriesAllTime(savings)
+        val fakeSavingsSorting = fakeSavingsSorting()
 
         val fakeSavingsUiState = SavingsUiState(
             savings = fakeSavings,
@@ -173,54 +130,11 @@ class SavingsViewModelTest {
     @Test
     fun `onSearchQueryChanged updates query and triggers new emission`() = runTest {
         val savings = listOf(Saving("1", "Emergency fund", BigDecimal.TEN, "EUR", 1L, false, 1L))
-        val fakeSavings = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                items = savings,
-            )
-        )
-        val fakeCategoriesMonthly = listOf(
-            GroupedItems(
-                group = "2025/12",
-                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                items = listOf(
-                    SavingCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                        savings = savings,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesYearly = listOf(
-            GroupedItems(
-                group = "2025",
-                total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                items = listOf(
-                    SavingCategory(
-                        id = "1",
-                        name = "food",
-                        totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                        savings = savings,
-                    )
-                )
-            )
-        )
-        val fakeCategoriesAllTime = listOf(
-            SavingCategory(
-                id = "1",
-                name = "food",
-                totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
-                savings = savings,
-            )
-        )
-        val fakeSavingsSorting = listOf(
-            SortMenuItem(type = SavingsSortType.BY_DATE, labelResId = R.string.sort_by_date),
-            SortMenuItem(type = SavingsSortType.BY_MIN, labelResId = R.string.sort_by_min),
-            SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
-        )
+        val fakeSavings = fakeSavings(savings)
+        val fakeCategoriesMonthly = fakeCategoriesMonthly(savings)
+        val fakeCategoriesYearly = fakeCategoriesYearly(savings)
+        val fakeCategoriesAllTime = fakeCategoriesAllTime(savings)
+        val fakeSavingsSorting = fakeSavingsSorting()
 
         val fakeSavingsUiState = SavingsUiState(
             savings = fakeSavings,
@@ -241,6 +155,59 @@ class SavingsViewModelTest {
 
         assertEquals("coffee", fakeObserveSavingsUiStateUseCase.lastQuery)
     }
+
+    private fun fakeSavings(savings: List<Saving>) = listOf(
+        GroupedItems(
+            group = "2025/12",
+            total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+            items = savings,
+        )
+    )
+
+    private fun fakeCategoriesMonthly(savings: List<Saving>) = listOf(
+        GroupedItems(
+            group = "2025/12",
+            total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+            items = listOf(
+                SavingCategory(
+                    id = "1",
+                    name = "food",
+                    totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+                    savings = savings,
+                )
+            )
+        )
+    )
+
+    private fun fakeCategoriesYearly(savings: List<Saving>) = listOf(
+        GroupedItems(
+            group = "2025",
+            total = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+            items = listOf(
+                SavingCategory(
+                    id = "1",
+                    name = "food",
+                    totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+                    savings = savings,
+                )
+            )
+        )
+    )
+
+    private fun fakeCategoriesAllTime(savings: List<Saving>) = listOf(
+        SavingCategory(
+            id = "1",
+            name = "food",
+            totals = listOf(SavingTotal("10".toBigDecimal(), "EUR")),
+            savings = savings,
+        )
+    )
+
+    private fun fakeSavingsSorting() = listOf(
+        SortMenuItem(type = SavingsSortType.BY_DATE, labelResId = R.string.sort_by_date),
+        SortMenuItem(type = SavingsSortType.BY_MIN, labelResId = R.string.sort_by_min),
+        SortMenuItem(type = SavingsSortType.BY_MAX, labelResId = R.string.sort_by_max),
+    )
 
     @Test
     fun `setFiltering updates finance repository`() = runTest {

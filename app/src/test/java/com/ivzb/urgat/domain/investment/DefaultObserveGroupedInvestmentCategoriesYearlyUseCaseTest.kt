@@ -74,62 +74,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
 
         advanceUntilIdle()
 
-        val expected = listOf(
-            GroupedItems(
-                group = "2025",
-                total = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                ),
-                items = listOf(
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "etfs",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
-                        ),
-                        investments = listOf(investments[4], investments[3], investments[1], investments[0]),
-                    ),
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "stocks",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
-                        ),
-                        investments = listOf(investments[5], investments[2]),
-                    ),
-                ),
-            ),
-            GroupedItems(
-                group = "2024",
-                total = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                ),
-                items = listOf(
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "etfs",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
-                        ),
-                        investments = listOf(investments[10], investments[9], investments[7], investments[6]),
-                    ),
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "stocks",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
-                        ),
-                        investments = listOf(investments[11], investments[8]),
-                    ),
-                ),
-            ),
-        )
+        val expected = expectedSortedByDate(investments)
 
         assertEquals(1, results.size)
         val first = results.first()
@@ -137,6 +82,67 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
         val actual = (first as Async.Success).data
         assertEquals(expected, actual)
     }
+
+    private fun expectedSortedByDate(investments: List<Investment>) = listOf(
+        expectedSortedByDateGroup2025(investments),
+        expectedSortedByDateGroup2024(investments),
+    )
+
+    private fun expectedSortedByDateGroup2025(investments: List<Investment>) = GroupedItems(
+        group = "2025",
+        total = listOf(
+            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+        ),
+        items = listOf(
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "etfs",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
+                ),
+                investments = listOf(investments[4], investments[3], investments[1], investments[0]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stocks",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
+                ),
+                investments = listOf(investments[5], investments[2]),
+            ),
+        ),
+    )
+
+    private fun expectedSortedByDateGroup2024(investments: List<Investment>) = GroupedItems(
+        group = "2024",
+        total = listOf(
+            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+        ),
+        items = listOf(
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "etfs",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
+                ),
+                investments = listOf(investments[10], investments[9], investments[7], investments[6]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stocks",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
+                ),
+                investments = listOf(investments[11], investments[8]),
+            ),
+        ),
+    )
 
     @Test
     fun `invoke should return Success with filtered items sorted by market value`() = runTest(testDispatcher) {
@@ -170,62 +176,7 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
 
         advanceUntilIdle()
 
-        val expected = listOf(
-            GroupedItems(
-                group = "2025",
-                total = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                ),
-                items = listOf(
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "etfs",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
-                        ),
-                        investments = listOf(investments[1], investments[4], investments[0], investments[3]),
-                    ),
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "stocks",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
-                        ),
-                        investments = listOf(investments[2], investments[5]),
-                    ),
-                ),
-            ),
-            GroupedItems(
-                group = "2024",
-                total = listOf(
-                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
-                ),
-                items = listOf(
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "etfs",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal.ZERO),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal.ZERO),
-                        ),
-                        investments = listOf(investments[7], investments[10], investments[6], investments[9]),
-                    ),
-                    InvestmentCategory(
-                        id = TEST_UUID,
-                        name = "stocks",
-                        totals = listOf(
-                            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal.ZERO),
-                            InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal.ZERO),
-                        ),
-                        investments = listOf(investments[8], investments[11]),
-                    ),
-                ),
-            ),
-        )
+        val expected = expectedSortedByMarketValue(investments)
 
         assertEquals(1, results.size)
         val first = results.first()
@@ -233,6 +184,67 @@ class DefaultObserveGroupedInvestmentCategoriesYearlyUseCaseTest {
         val actual = (first as Async.Success).data
         assertEquals(expected, actual)
     }
+
+    private fun expectedSortedByMarketValue(investments: List<Investment>) = listOf(
+        expectedSortedByMarketValueGroup2025(investments),
+        expectedSortedByMarketValueGroup2024(investments),
+    )
+
+    private fun expectedSortedByMarketValueGroup2025(investments: List<Investment>) = GroupedItems(
+        group = "2025",
+        total = listOf(
+            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+        ),
+        items = listOf(
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "etfs",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal("0")),
+                ),
+                investments = listOf(investments[1], investments[4], investments[0], investments[3]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stocks",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal("0")),
+                ),
+                investments = listOf(investments[2], investments[5]),
+            ),
+        ),
+    )
+
+    private fun expectedSortedByMarketValueGroup2024(investments: List<Investment>) = GroupedItems(
+        group = "2024",
+        total = listOf(
+            InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+            InvestmentTotal(currency = "USD", costPrice = BigDecimal("1931.05"), marketPrice = BigDecimal("1931.05"), pnl = BigDecimal("0")),
+        ),
+        items = listOf(
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "etfs",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("1160"), marketPrice = BigDecimal("1160"), pnl = BigDecimal.ZERO),
+                ),
+                investments = listOf(investments[7], investments[10], investments[6], investments[9]),
+            ),
+            InvestmentCategory(
+                id = TEST_UUID,
+                name = "stocks",
+                totals = listOf(
+                    InvestmentTotal(currency = "EUR", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal.ZERO),
+                    InvestmentTotal(currency = "USD", costPrice = BigDecimal("771.05"), marketPrice = BigDecimal("771.05"), pnl = BigDecimal.ZERO),
+                ),
+                investments = listOf(investments[8], investments[11]),
+            ),
+        ),
+    )
 
     @Test
     fun `invoke should exclude positions fully sold in a later year`() = runTest(testDispatcher) {

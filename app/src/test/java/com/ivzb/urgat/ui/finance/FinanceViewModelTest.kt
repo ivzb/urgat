@@ -123,75 +123,17 @@ class FinanceViewModelTest {
 
     @Test
     fun `emits success state when use case returns data`() = runTest {
-        val fakeReportBudget = GroupedBudget(
-            category = GroupedBudgetCategories(
-                group = "",
-                total = 5000.toBigDecimal(),
-                items = listOf(
-                    BudgetCategory("", "", "EUR", 5000.toBigDecimal()),
-                ),
-            ),
-            currency = "EUR",
-            totalIncome = 5000.toBigDecimal(),
-            totalExpenses = 2600.toBigDecimal(),
-            totalInvestments = 1_300.toBigDecimal(),
-            totalTrades = 700.toBigDecimal(),
-            totalSavings = 100.toBigDecimal(),
-        )
+        val fakeReportBudget = fakeReportBudget()
 
-        val fakeExpensesUiState = ExpensesUiState(
-            expenses = listOf(GroupedExpenses("1", listOf(ExpenseTotal(10.toBigDecimal(), "EUR")), listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))))
-        )
+        val fakeExpensesUiState = fakeExpensesUiState()
 
-        val fakeInvestmentsUiState = InvestmentsUiState(
-            investments = listOf(
-                GroupedInvestments(
-                    group = "1",
-                    total = listOf(
-                        InvestmentTotal(
-                            currency = "USD",
-                            costPrice = BigDecimal("150000"),
-                            marketPrice = BigDecimal("0"),
-                            pnl = BigDecimal("-100"),
-                        ),
-                    ),
-                    items = listOf(
-                        Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), 0.toBigDecimal(), "etfs", "USD", 1L, false, 1L),
-                    ),
-                ),
-            ),
-        )
+        val fakeInvestmentsUiState = fakeInvestmentsUiState()
 
-        val fakeSavingsUiState = SavingsUiState(
-            savings = listOf(GroupedSavings("1", listOf(SavingTotal(500.toBigDecimal(), "EUR")), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1L, false, 1L))))
-        )
+        val fakeSavingsUiState = fakeSavingsUiState()
 
-        val fakeBudgetsUiState = BudgetsUiState(
-            budgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), "EUR", 1L, false, 1L))
-        )
+        val fakeBudgetsUiState = fakeBudgetsUiState()
 
-        val fakeFiRe = FiRe(
-            selection = "December 2025",
-            currency = "EUR",
-
-            monthlyIncome = 5000.toBigDecimal(),
-            monthlyExpenses = 3000.toBigDecimal(),
-            monthlyInvestments = 2000.toBigDecimal(),
-
-            annualIncome = 60_000.toBigDecimal(),
-            annualExpenses = 36_000.toBigDecimal(),
-            annualInvestments = 24_000.toBigDecimal(),
-
-            accumulatedStash = 50_000.toBigDecimal(),
-            savingsRate = 40.toBigDecimal(),
-            target = 990_000.toBigDecimal(),
-
-            withdrawalRate = 4.toBigDecimal(),
-            returnOfInvestment = 7.toBigDecimal(),
-            taxRate = 10.toBigDecimal(),
-
-            yearsUntilFiRe = 17.7.toBigDecimal(),
-        )
+        val fakeFiRe = fakeFiRe()
 
         fakeObserveFinanceUiStateUseCase.emit(
             Async.Success(
@@ -226,6 +168,76 @@ class FinanceViewModelTest {
 
         job.cancel()
     }
+
+    private fun fakeReportBudget() = GroupedBudget(
+        category = GroupedBudgetCategories(
+            group = "",
+            total = 5000.toBigDecimal(),
+            items = listOf(
+                BudgetCategory("", "", "EUR", 5000.toBigDecimal()),
+            ),
+        ),
+        currency = "EUR",
+        totalIncome = 5000.toBigDecimal(),
+        totalExpenses = 2600.toBigDecimal(),
+        totalInvestments = 1_300.toBigDecimal(),
+        totalTrades = 700.toBigDecimal(),
+        totalSavings = 100.toBigDecimal(),
+    )
+
+    private fun fakeExpensesUiState() = ExpensesUiState(
+        expenses = listOf(GroupedExpenses("1", listOf(ExpenseTotal(10.toBigDecimal(), "EUR")), listOf(Expense("1", "Lunch", BigDecimal.TEN, "EUR", "food", 1L, false, false, 1L))))
+    )
+
+    private fun fakeInvestmentsUiState() = InvestmentsUiState(
+        investments = listOf(
+            GroupedInvestments(
+                group = "1",
+                total = listOf(
+                    InvestmentTotal(
+                        currency = "USD",
+                        costPrice = BigDecimal("150000"),
+                        marketPrice = BigDecimal("0"),
+                        pnl = BigDecimal("-100"),
+                    ),
+                ),
+                items = listOf(
+                    Investment("1", "SNP 500", 500.toBigDecimal(), 300.toBigDecimal(), 0.toBigDecimal(), "etfs", "USD", 1L, false, 1L),
+                ),
+            ),
+        ),
+    )
+
+    private fun fakeSavingsUiState() = SavingsUiState(
+        savings = listOf(GroupedSavings("1", listOf(SavingTotal(500.toBigDecimal(), "EUR")), listOf(Saving("1", "Emergency fund", 500.toBigDecimal(), "EUR", 1L, false, 1L))))
+    )
+
+    private fun fakeBudgetsUiState() = BudgetsUiState(
+        budgets = listOf(Budget("1", 5000.toBigDecimal(), 9500.toBigDecimal(), 11300.toBigDecimal(), "EUR", 1L, false, 1L))
+    )
+
+    private fun fakeFiRe() = FiRe(
+        selection = "December 2025",
+        currency = "EUR",
+
+        monthlyIncome = 5000.toBigDecimal(),
+        monthlyExpenses = 3000.toBigDecimal(),
+        monthlyInvestments = 2000.toBigDecimal(),
+
+        annualIncome = 60_000.toBigDecimal(),
+        annualExpenses = 36_000.toBigDecimal(),
+        annualInvestments = 24_000.toBigDecimal(),
+
+        accumulatedStash = 50_000.toBigDecimal(),
+        savingsRate = 40.toBigDecimal(),
+        target = 990_000.toBigDecimal(),
+
+        withdrawalRate = 4.toBigDecimal(),
+        returnOfInvestment = 7.toBigDecimal(),
+        taxRate = 10.toBigDecimal(),
+
+        yearsUntilFiRe = 17.7.toBigDecimal(),
+    )
 
     @Test
     fun `emits error state when use case returns error`() = runTest {

@@ -408,6 +408,25 @@ class DefaultObserveFiReUseCaseTest {
             )
         } returns flowOf(Async.Success(expenses))
 
+        mockAllTimeUseCases(investments, savings)
+
+        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, dateRangeFlow).toList()
+
+        advanceUntilIdle()
+
+        assertEquals(1, results.size)
+        val first = results.first()
+        assert(first is Async.Success)
+        val actual = (first as Async.Success).data
+
+        if (assertFiRe != null) {
+            assertFiRe(actual)
+        } else {
+            assertEquals(expected, actual)
+        }
+    }
+
+    private fun mockAllTimeUseCases(investments: GroupedInvestments, savings: GroupedSavings) {
         every {
             observeGroupedInvestmentsAllTimeUseCase.invoke(
                 searchQueryFlow = null,
@@ -437,21 +456,6 @@ class DefaultObserveFiReUseCaseTest {
                 limitFlow = null,
             )
         } returns flowOf(Async.Success(savings))
-
-        val results = observeUseCase(withdrawalRateFlow, returnOfInvestmentFlow, taxRateFlow, dateRangeFlow).toList()
-
-        advanceUntilIdle()
-
-        assertEquals(1, results.size)
-        val first = results.first()
-        assert(first is Async.Success)
-        val actual = (first as Async.Success).data
-
-        if (assertFiRe != null) {
-            assertFiRe(actual)
-        } else {
-            assertEquals(expected, actual)
-        }
     }
 
     @Test

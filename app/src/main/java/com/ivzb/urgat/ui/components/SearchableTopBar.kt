@@ -80,129 +80,187 @@ fun SearchableTopBar(
             label = stringResource(R.string.search)
         ) { target ->
             if (!target) {
-                TopAppBar(
-                    title = {
-                        Text(stringResource(titleResId))
-                    },
-                    navigationIcon = {
-                        navigationIcon?.invoke()
-                    },
-                    actions = {
-                        if (withSearch) {
-                            IconButton(onClick = {
-                                onIsSearchingChanged(!isSearching)
-                            }) {
-                                BadgedBox(
-                                    badge = {
-                                        if (searchQuery.isNotEmpty()) {
-                                            Badge(
-                                                containerColor = MaterialTheme.colorScheme.error,
-                                                modifier = Modifier.size(dimensionResource(R.dimen.menu_badge_size))
-                                            )
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = stringResource(R.string.search)
-                                    )
-                                }
-                            }
-                        }
-
-                        actionsContent?.invoke()
-                    },
-                    windowInsets = WindowInsets(0)
+                SearchableTopBarTitle(
+                    isSearching = isSearching,
+                    onIsSearchingChanged = onIsSearchingChanged,
+                    searchQuery = searchQuery,
+                    titleResId = titleResId,
+                    withSearch = withSearch,
+                    navigationIcon = navigationIcon,
+                    actionsContent = actionsContent,
                 )
             } else {
-                var searchQueryTextFieldValue by remember {
-                    mutableStateOf(
-                        TextFieldValue(
-                            text = searchQuery,
-                            selection = TextRange(searchQuery.length)
-                        )
-                    )
-                }
+                SearchableTopBarSearchField(
+                    isSearching = isSearching,
+                    onIsSearchingChanged = onIsSearchingChanged,
+                    searchQuery = searchQuery,
+                    onSearchQueryChanged = onSearchQueryChanged,
+                    focusRequester = focusRequester,
+                )
+            }
+        }
+    }
+}
 
-                // Sync local text field state when searchQuery changes externally (e.g. reset filters)
-                LaunchedEffect(searchQuery) {
-                    if (searchQueryTextFieldValue.text != searchQuery) {
-                        searchQueryTextFieldValue = TextFieldValue(
-                            text = searchQuery,
-                            selection = TextRange(searchQuery.length)
-                        )
-
-                        // Close search bar when query is cleared externally
-                        if (searchQuery.isEmpty()) {
-                            onIsSearchingChanged(false)
-                        }
-                    }
-                }
-
-                val keyboardController = LocalSoftwareKeyboardController.current
-
-                TextField(
-                    value = searchQueryTextFieldValue,
-                    onValueChange = {
-                        searchQueryTextFieldValue = it.copy(
-                            selection = TextRange(it.text.length)
-                        )
-
-                        onSearchQueryChanged(it.text)
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            keyboardController?.hide()
-                        }
-                    ),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.background,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.background
-                    ),
-                    placeholder = {
-                        Text(stringResource(R.string.search))
-                    },
-                    leadingIcon = {
-                        IconButton(onClick = {
-                            onIsSearchingChanged(!isSearching)
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.search)
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        if (searchQuery.isNotBlank()) {
-                            IconButton(onClick = {
-                                searchQueryTextFieldValue = searchQueryTextFieldValue.copy(
-                                    text = "",
-                                    selection = TextRange(0)
-                                )
-                                onSearchQueryChanged("")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Close,
-                                    contentDescription = stringResource(R.string.close)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchableTopBarTitle(
+    isSearching: Boolean,
+    onIsSearchingChanged: (Boolean) -> Unit,
+    searchQuery: String,
+    titleResId: Int,
+    withSearch: Boolean,
+    navigationIcon: (@Composable () -> Unit)?,
+    actionsContent: @Composable (() -> Unit)?,
+) {
+    TopAppBar(
+        title = {
+            Text(stringResource(titleResId))
+        },
+        navigationIcon = {
+            navigationIcon?.invoke()
+        },
+        actions = {
+            if (withSearch) {
+                IconButton(onClick = {
+                    onIsSearchingChanged(!isSearching)
+                }) {
+                    BadgedBox(
+                        badge = {
+                            if (searchQuery.isNotEmpty()) {
+                                Badge(
+                                    containerColor = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.size(dimensionResource(R.dimen.menu_badge_size))
                                 )
                             }
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
-                        .focusRequester(focusRequester)
-                )
-
-                LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.search)
+                        )
+                    }
                 }
             }
+
+            actionsContent?.invoke()
+        },
+        windowInsets = WindowInsets(0)
+    )
+}
+
+@Composable
+private fun SearchableTopBarSearchField(
+    isSearching: Boolean,
+    onIsSearchingChanged: (Boolean) -> Unit,
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
+    focusRequester: FocusRequester,
+) {
+    var searchQueryTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = searchQuery,
+                selection = TextRange(searchQuery.length)
+            )
+        )
+    }
+
+    // Sync local text field state when searchQuery changes externally (e.g. reset filters)
+    LaunchedEffect(searchQuery) {
+        if (searchQueryTextFieldValue.text != searchQuery) {
+            searchQueryTextFieldValue = TextFieldValue(
+                text = searchQuery,
+                selection = TextRange(searchQuery.length)
+            )
+
+            // Close search bar when query is cleared externally
+            if (searchQuery.isEmpty()) {
+                onIsSearchingChanged(false)
+            }
         }
+    }
+
+    SearchTextField(
+        value = searchQueryTextFieldValue,
+        onValueChange = {
+            searchQueryTextFieldValue = it.copy(
+                selection = TextRange(it.text.length)
+            )
+
+            onSearchQueryChanged(it.text)
+        },
+        trailingIcon = {
+            if (searchQuery.isNotBlank()) {
+                IconButton(onClick = {
+                    searchQueryTextFieldValue = searchQueryTextFieldValue.copy(
+                        text = "",
+                        selection = TextRange(0)
+                    )
+                    onSearchQueryChanged("")
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(R.string.close)
+                    )
+                }
+            }
+        },
+        isSearching = isSearching,
+        onIsSearchingChanged = onIsSearchingChanged,
+        focusRequester = focusRequester,
+    )
+}
+
+@Composable
+private fun SearchTextField(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    trailingIcon: @Composable () -> Unit,
+    isSearching: Boolean,
+    onIsSearchingChanged: (Boolean) -> Unit,
+    focusRequester: FocusRequester,
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+            }
+        ),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background
+        ),
+        placeholder = {
+            Text(stringResource(R.string.search))
+        },
+        leadingIcon = {
+            IconButton(onClick = {
+                onIsSearchingChanged(!isSearching)
+            }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.search)
+                )
+            }
+        },
+        trailingIcon = trailingIcon,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = dimensionResource(R.dimen.search_text_field_padding))
+            .focusRequester(focusRequester)
+    )
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
 
