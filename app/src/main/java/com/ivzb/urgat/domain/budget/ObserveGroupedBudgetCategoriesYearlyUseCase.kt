@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.budget
 import com.ivzb.urgat.data.budget.BudgetsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupBudgetCategoriesYearly
+import com.ivzb.urgat.domain.common.GroupBudgets.groupBudgetCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType

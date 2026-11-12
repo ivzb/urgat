@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.trades
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.data.trade.TradesRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupTradeCategoriesYearly
+import com.ivzb.urgat.domain.common.GroupTrades.groupTradeCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.util.Async

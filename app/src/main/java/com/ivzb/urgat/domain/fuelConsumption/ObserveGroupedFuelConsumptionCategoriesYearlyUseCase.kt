@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionTotal
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupFuelConsumptionCategoriesYearly
+import com.ivzb.urgat.domain.common.GroupFuelConsumption.groupFuelConsumptionCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter

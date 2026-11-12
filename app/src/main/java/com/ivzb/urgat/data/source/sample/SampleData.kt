@@ -16,6 +16,12 @@ import com.ivzb.urgat.data.trade.Trade
 import com.ivzb.urgat.data.watchlist.WatchlistAsset
 import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.domain.common.Group
+import com.ivzb.urgat.domain.common.GroupBudgets
+import com.ivzb.urgat.domain.common.GroupExpenses
+import com.ivzb.urgat.domain.common.GroupFuelConsumption
+import com.ivzb.urgat.domain.common.GroupInvestments
+import com.ivzb.urgat.domain.common.GroupSavings
+import com.ivzb.urgat.domain.common.GroupTrades
 import com.ivzb.urgat.util.randomUUID
 import kotlin.collections.component1
 import kotlin.collections.component4
@@ -87,22 +93,22 @@ object SampleData {
         Group.byDateMonthly(SAMPLE_EXPENSES, Expense::date, Expense::total)
 
     val SAMPLE_EXPENSES_CATEGORIES_MONTHLY =
-        Group.groupExpenseCategoriesMonthly(SAMPLE_EXPENSES, ::randomUUID)
+        GroupExpenses.groupExpenseCategoriesMonthly(SAMPLE_EXPENSES, ::randomUUID)
 
     val SAMPLE_EXPENSES_CATEGORIES_YEARLY =
-        Group.groupExpenseCategoriesYearly(SAMPLE_EXPENSES, ::randomUUID)
+        GroupExpenses.groupExpenseCategoriesYearly(SAMPLE_EXPENSES, ::randomUUID)
 
     val SAMPLE_EXPENSES_CATEGORIES_ALL_TIME =
-        Group.groupExpenseCategoriesAllTime(SAMPLE_EXPENSES, ::randomUUID)
+        GroupExpenses.groupExpenseCategoriesAllTime(SAMPLE_EXPENSES, ::randomUUID)
 
     val SAMPLE_EXPENSES_AVERAGES_MONTHLY =
-        Group.groupExpenseAveragesMonthly(SAMPLE_EXPENSES)
+        GroupExpenses.groupExpenseAveragesMonthly(SAMPLE_EXPENSES)
 
     val SAMPLE_EXPENSES_AVERAGES_YEARLY =
-        Group.groupExpenseAveragesYearly(SAMPLE_EXPENSES)
+        GroupExpenses.groupExpenseAveragesYearly(SAMPLE_EXPENSES)
 
     val SAMPLE_EXPENSES_AVERAGE_ALL_TIME =
-        Group.groupExpenseAverageAllTime(SAMPLE_EXPENSES)
+        GroupExpenses.groupExpenseAverageAllTime(SAMPLE_EXPENSES)
 
     val SAMPLE_NOTES = listOf(
         listOf(
@@ -196,21 +202,21 @@ object SampleData {
         Group.byDateMonthly(SAMPLE_INVESTMENTS, Investment::date, Investment::total)
 
     val SAMPLE_INVESTMENTS_CATEGORIES_YEARLY =
-        Group.groupInvestmentCategoriesYearly(SAMPLE_INVESTMENTS, ::randomUUID)
+        GroupInvestments.groupInvestmentCategoriesYearly(SAMPLE_INVESTMENTS, ::randomUUID)
 
-    val SAMPLE_INVESTMENTS_NET_WORTH = Group.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
+    val SAMPLE_INVESTMENTS_NET_WORTH = GroupInvestments.groupInvestmentNetWorth(SAMPLE_INVESTMENTS)
 
     val SAMPLE_INVESTMENTS_CATEGORIES =
-        Group.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
+        GroupInvestments.groupInvestmentCategories(SAMPLE_INVESTMENTS, ::randomUUID)
 
     val SAMPLE_INVESTMENTS_ASSETS =
-        Group.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
+        GroupInvestments.groupInvestmentAssets(SAMPLE_INVESTMENTS, ::randomUUID)
 
     val SAMPLE_INVESTMENTS_AVERAGES_YEARLY =
-        Group.groupInvestmentAveragesYearly(SAMPLE_INVESTMENTS)
+        GroupInvestments.groupInvestmentAveragesYearly(SAMPLE_INVESTMENTS)
 
     val SAMPLE_INVESTMENTS_AVERAGE_ALL_TIME =
-        Group.groupInvestmentAverageAllTime(SAMPLE_INVESTMENTS)
+        GroupInvestments.groupInvestmentAverageAllTime(SAMPLE_INVESTMENTS)
 
     val SAMPLE_SAVINGS =
         listOf(
@@ -250,13 +256,13 @@ object SampleData {
         Group.byDateMonthly(SAMPLE_SAVINGS, Saving::date, Saving::total)
 
     val SAMPLE_SAVINGS_CATEGORIES_MONTHLY =
-        Group.groupSavingCategoriesMonthly(SAMPLE_SAVINGS, ::randomUUID)
+        GroupSavings.groupSavingCategoriesMonthly(SAMPLE_SAVINGS, ::randomUUID)
 
     val SAMPLE_SAVINGS_CATEGORIES_YEARLY =
-        Group.groupSavingCategoriesYearly(SAMPLE_SAVINGS, ::randomUUID)
+        GroupSavings.groupSavingCategoriesYearly(SAMPLE_SAVINGS, ::randomUUID)
 
     val SAMPLE_SAVINGS_CATEGORIES_ALL_TIME =
-        Group.groupSavingCategoriesAllTime(SAMPLE_SAVINGS, ::randomUUID)
+        GroupSavings.groupSavingCategoriesAllTime(SAMPLE_SAVINGS, ::randomUUID)
 
     val SAMPLE_WATCHLIST_ASSETS = listOf(
         listOf("GOOGL", "323.44", "USD"),
@@ -355,7 +361,7 @@ object SampleData {
         }
 
     val SAMPLE_REPORT_BUDGET = GroupedBudget(
-        category = Group.groupBudgetCategoriesMonthly(SAMPLE_BUDGETS, ::randomUUID).first(),
+        category = GroupBudgets.groupBudgetCategoriesMonthly(SAMPLE_BUDGETS, ::randomUUID).first(),
         currency = "EUR",
         totalIncome = 4_021.34.toBigDecimal(),
         totalExpenses = 571.34.toBigDecimal(),
@@ -406,13 +412,13 @@ object SampleData {
         Group.byDateMonthly(SAMPLE_FUEL_CONSUMPTION, FuelConsumption::date, FuelConsumption::total)
 
     val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_MONTHLY =
-        Group.groupFuelConsumptionCategoriesMonthly(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+        GroupFuelConsumption.groupFuelConsumptionCategoriesMonthly(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
 
     val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_YEARLY =
-        Group.groupFuelConsumptionCategoriesYearly(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+        GroupFuelConsumption.groupFuelConsumptionCategoriesYearly(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
 
     val SAMPLE_FUEL_CONSUMPTION_CATEGORIES_ALL_TIME =
-        Group.groupFuelConsumptionCategoriesAllTime(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
+        GroupFuelConsumption.groupFuelConsumptionCategoriesAllTime(SAMPLE_FUEL_CONSUMPTION, ::randomUUID)
 
     val SAMPLE_CAR_MAINTENANCE = listOf(
         listOf("Oil change", "5W-30 Full Synthetic", "https://example.com/oil", "Mercedes w140", "150000", "0"),
@@ -514,13 +520,13 @@ object SampleData {
         Group.byDateMonthly(SAMPLE_TRADES, Trade::date, Trade::total)
 
     val SAMPLE_TRADES_CATEGORIES_MONTHLY =
-        Group.groupTradeCategoriesMonthly(SAMPLE_TRADES, ::randomUUID)
+        GroupTrades.groupTradeCategoriesMonthly(SAMPLE_TRADES, ::randomUUID)
 
     val SAMPLE_TRADES_CATEGORIES_YEARLY =
-        Group.groupTradeCategoriesYearly(SAMPLE_TRADES, ::randomUUID)
+        GroupTrades.groupTradeCategoriesYearly(SAMPLE_TRADES, ::randomUUID)
 
     val SAMPLE_TRADES_CATEGORIES_ALL_TIME =
-        Group.groupTradeCategoriesAllTime(SAMPLE_TRADES, ::randomUUID)
+        GroupTrades.groupTradeCategoriesAllTime(SAMPLE_TRADES, ::randomUUID)
 
     private operator fun <T> List<T>.component6(): T = this[5]
     private operator fun <T> List<T>.component7(): T = this[6]

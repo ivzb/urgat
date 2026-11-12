@@ -1,18 +1,5 @@
 package com.ivzb.urgat.data.csv
 
-import com.ivzb.urgat.data.budget.BudgetEntity
-import com.ivzb.urgat.data.carMaintenance.CarMaintenanceEntity
-import com.ivzb.urgat.data.expense.ExpenseEntity
-import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionEntity
-import com.ivzb.urgat.data.investment.InvestmentEntity
-import com.ivzb.urgat.data.note.NoteEntity
-import com.ivzb.urgat.data.saving.SavingEntity
-import com.ivzb.urgat.data.todo.TodoEntity
-import com.ivzb.urgat.data.trade.TradeEntity
-import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
-import com.ivzb.urgat.data.weight.WeightEntity
-import java.util.UUID
-
 data class CsvMapping(
     val column: String,
     val type: String,
@@ -131,166 +118,12 @@ data class CsvMapping(
             CsvMapping("createdAt", "long"),
         )
 
-        fun parseTodoCsv(line: String): TodoEntity {
-            val split = splitCsvLine(line)
-
-            return TodoEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                content = split[1],
-                isCompleted = split[2].toBoolean(),
-                isDeleted = false,
-                createdAt = split[3].toLong(),
-            )
-        }
-
-        fun parseNoteCsv(line: String): NoteEntity {
-            val split = splitCsvLine(line)
-
-            return NoteEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                content = split[1],
-                isDeleted = false,
-                createdAt = split[2].toLong(),
-            )
-        }
-
-        fun parseExpenseCsv(line: String): ExpenseEntity {
-            val split = splitCsvLine(line)
-
-            return ExpenseEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                name = split[1],
-                amount = split[2].toBigDecimal(),
-                currency = split[3],
-                category = split[4],
-                date = split[5].toLong(),
-                excludeFromAnalytics = split[6].toBoolean(),
-                isDeleted = false,
-                createdAt = split[7].toLong(),
-            )
-        }
-
-        fun parseInvestmentCsv(line: String): InvestmentEntity {
-            val split = splitCsvLine(line)
-
-            return InvestmentEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                name = split[1],
-                shares = split[2].toBigDecimal(),
-                cost = split[3].toBigDecimal(),
-                category = split[4],
-                currency = split[5],
-                date = split[6].toLong(),
-                isDeleted = false,
-                createdAt = split[7].toLong(),
-            )
-        }
-
-        fun parseSavingCsv(line: String): SavingEntity {
-            val split = splitCsvLine(line)
-
-            return SavingEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                name = split[1],
-                amount = split[2].toBigDecimal(),
-                currency = split[3],
-                date = split[4].toLong(),
-                isDeleted = false,
-                createdAt = split[5].toLong(),
-            )
-        }
-
-        fun parseBudgetCsv(line: String): BudgetEntity {
-            val split = splitCsvLine(line)
-
-            return BudgetEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                income = split[1].toBigDecimal(),
-                bankStart = split[2].toBigDecimal(),
-                bankEnd = split[3].toBigDecimalOrNull(),
-                currency = split[4],
-                date = split[5].toLong(),
-                isDeleted = false,
-                createdAt = split[6].toLong(),
-            )
-        }
-
-        fun parseWatchlistAssetCsv(line: String): WatchlistAssetEntity {
-            val split = splitCsvLine(line)
-
-            return WatchlistAssetEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                name = split[1],
-                isDeleted = false,
-                createdAt = split[2].toLong(),
-            )
-        }
-
-        fun parseWeightCsv(line: String): WeightEntity {
-            val split = splitCsvLine(line)
-
-            return WeightEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                value = split[1].toBigDecimal(),
-                date = split[2].toLong(),
-                isDeleted = false,
-                createdAt = split[3].toLong(),
-            )
-        }
-
-        fun parseFuelConsumptionCsv(line: String): FuelConsumptionEntity {
-            val split = splitCsvLine(line)
-
-            return FuelConsumptionEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                amount = split[1].toBigDecimal(),
-                price = split[2].toBigDecimal(),
-                currency = split[3],
-                type = split[4],
-                carName = split[5],
-                odometer = split[6].toInt(),
-                date = split[7].toLong(),
-                isDeleted = false,
-                createdAt = split[8].toLong(),
-            )
-        }
-
-        fun parseCarMaintenanceCsv(line: String): CarMaintenanceEntity {
-            val split = splitCsvLine(line)
-
-            return CarMaintenanceEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                description = split[1],
-                partNumber = split[2],
-                url = split[3].ifEmpty { null },
-                carName = split[4],
-                odometer = split[5].toInt(),
-                date = split[6].toLong(),
-                isDeleted = false,
-                createdAt = split[7].toLong(),
-            )
-        }
-
-        fun parseTradeCsv(line: String): TradeEntity {
-            val split = splitCsvLine(line)
-
-            return TradeEntity(
-                id = split[0].ifEmpty { UUID.randomUUID().toString() },
-                name = split[1],
-                amount = split[2].toBigDecimal(),
-                currency = split[3],
-                date = split[4].toLong(),
-                isDeleted = false,
-                createdAt = split[5].toLong(),
-            )
-        }
-
         private const val SEPARATOR = ", "
 
         fun List<CsvMapping>.format(): String = this.joinToString(SEPARATOR) { it.column }
 
         // handles commas inside quotes
-        private fun splitCsvLine(line: String): List<String> {
+        internal fun splitCsvLine(line: String): List<String> {
             val result = mutableListOf<String>()
             val current = StringBuilder()
             var inQuotes = false

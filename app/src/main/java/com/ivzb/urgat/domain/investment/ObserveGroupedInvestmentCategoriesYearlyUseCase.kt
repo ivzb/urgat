@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.investment.InvestmentTotal
 import com.ivzb.urgat.data.investment.InvestmentsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupInvestmentCategoriesYearly
+import com.ivzb.urgat.domain.common.GroupInvestments.groupInvestmentCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.investments.InvestmentsSortType

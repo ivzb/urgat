@@ -44,7 +44,7 @@ class GroupBudgetsTest {
             ),
         )
 
-        val actual = Group.groupBudgetCategoriesMonthly(budgets, randomTestUUID)
+        val actual = GroupBudgets.groupBudgetCategoriesMonthly(budgets, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -81,7 +81,7 @@ class GroupBudgetsTest {
             ),
         )
 
-        val actual = Group.groupBudgetCategoriesYearly(budgets, randomTestUUID)
+        val actual = GroupBudgets.groupBudgetCategoriesYearly(budgets, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -104,7 +104,7 @@ class GroupBudgetsTest {
             value = "18800".toBigDecimal(),
         )
 
-        val actual = Group.groupBudgetCategoriesAllTime(budgets, randomTestUUID)
+        val actual = GroupBudgets.groupBudgetCategoriesAllTime(budgets, randomTestUUID)
 
         assertEquals(expected, actual)
     }

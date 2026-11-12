@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.expense.ExpenseTotal
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesMonthly
+import com.ivzb.urgat.domain.common.GroupExpenses.groupExpenseCategoriesMonthly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType

@@ -5,7 +5,7 @@ import com.ivzb.urgat.data.trade.TradeCategory
 import com.ivzb.urgat.data.trade.TradeTotal
 import com.ivzb.urgat.data.trade.TradesRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupTradeCategoriesMonthly
+import com.ivzb.urgat.domain.common.GroupTrades.groupTradeCategoriesMonthly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.components.GroupedItems
 import com.ivzb.urgat.ui.trades.TradesSortType

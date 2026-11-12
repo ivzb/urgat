@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.budget.BudgetCategory
 import com.ivzb.urgat.data.budget.BudgetsRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupBudgetCategoriesAllTime
+import com.ivzb.urgat.domain.common.GroupBudgets.groupBudgetCategoriesAllTime
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.budgets.BudgetsFilterType
 import com.ivzb.urgat.ui.budgets.BudgetsSortType

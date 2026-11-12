@@ -24,6 +24,7 @@ import com.ivzb.urgat.data.watchlist.WatchlistAssetDao
 import com.ivzb.urgat.data.watchlist.WatchlistAssetEntity
 import com.ivzb.urgat.data.weight.WeightDao
 import com.ivzb.urgat.data.weight.WeightEntity
+import com.ivzb.urgat.ui.importData.ImportDataPage
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -69,18 +70,17 @@ class DefaultImportDataUseCaseTest {
         tradeDao = mockk(relaxed = true)
 
         importDataUseCase = DefaultImportDataUseCase(
-            importDataRepository,
-            todoDao,
-            noteDao,
-            expenseDao,
-            investmentDao,
-            savingDao,
-            budgetDao,
-            watchlistAssetDao,
-            weightDao,
-            fuelConsumptionDao,
-            carMaintenanceDao,
-            tradeDao,
+            DefaultImportTodosUseCase(importDataRepository, todoDao),
+            DefaultImportNotesUseCase(importDataRepository, noteDao),
+            DefaultImportExpensesUseCase(importDataRepository, expenseDao),
+            DefaultImportInvestmentsUseCase(importDataRepository, investmentDao),
+            DefaultImportSavingsUseCase(importDataRepository, savingDao),
+            DefaultImportBudgetsUseCase(importDataRepository, budgetDao),
+            DefaultImportWatchlistAssetsUseCase(importDataRepository, watchlistAssetDao),
+            DefaultImportWeightsUseCase(importDataRepository, weightDao),
+            DefaultImportFuelConsumptionUseCase(importDataRepository, fuelConsumptionDao),
+            DefaultImportCarMaintenanceUseCase(importDataRepository, carMaintenanceDao),
+            DefaultImportTradesUseCase(importDataRepository, tradeDao),
             dispatcher,
         )
     }
@@ -103,6 +103,61 @@ class DefaultImportDataUseCaseTest {
             importDataRepository.importCsv<FuelConsumptionEntity>(eq(uri), eq("fuel_consumption.csv"), any(), any())
             importDataRepository.importCsv<CarMaintenanceEntity>(eq(uri), eq("car_maintenance.csv"), any(), any())
             importDataRepository.importCsv<TradeEntity>(eq(uri), eq("trades.csv"), any(), any())
+        }
+    }
+
+    @Test
+    fun `importManualData should import content with the use case of the page`() = runTest {
+        val importTodosUseCase = mockk<ImportTodosUseCase>(relaxed = true)
+        val importNotesUseCase = mockk<ImportNotesUseCase>(relaxed = true)
+        val importExpensesUseCase = mockk<ImportExpensesUseCase>(relaxed = true)
+        val importInvestmentsUseCase = mockk<ImportInvestmentsUseCase>(relaxed = true)
+        val importSavingsUseCase = mockk<ImportSavingsUseCase>(relaxed = true)
+        val importBudgetsUseCase = mockk<ImportBudgetsUseCase>(relaxed = true)
+        val importWatchlistAssetsUseCase = mockk<ImportWatchlistAssetsUseCase>(relaxed = true)
+        val importWeightsUseCase = mockk<ImportWeightsUseCase>(relaxed = true)
+        val importFuelConsumptionUseCase = mockk<ImportFuelConsumptionUseCase>(relaxed = true)
+        val importCarMaintenanceUseCase = mockk<ImportCarMaintenanceUseCase>(relaxed = true)
+        val importTradesUseCase = mockk<ImportTradesUseCase>(relaxed = true)
+        val useCase = DefaultImportDataUseCase(
+            importTodosUseCase,
+            importNotesUseCase,
+            importExpensesUseCase,
+            importInvestmentsUseCase,
+            importSavingsUseCase,
+            importBudgetsUseCase,
+            importWatchlistAssetsUseCase,
+            importWeightsUseCase,
+            importFuelConsumptionUseCase,
+            importCarMaintenanceUseCase,
+            importTradesUseCase,
+            dispatcher,
+        )
+
+        useCase.importManualData(ImportDataPage.Todos, "Todos")
+        useCase.importManualData(ImportDataPage.Notes, "Notes")
+        useCase.importManualData(ImportDataPage.Expenses, "Expenses")
+        useCase.importManualData(ImportDataPage.Investments, "Investments")
+        useCase.importManualData(ImportDataPage.Savings, "Savings")
+        useCase.importManualData(ImportDataPage.Budgets, "Budgets")
+        useCase.importManualData(ImportDataPage.WatchlistAssets, "WatchlistAssets")
+        useCase.importManualData(ImportDataPage.Weights, "Weights")
+        useCase.importManualData(ImportDataPage.FuelConsumption, "FuelConsumption")
+        useCase.importManualData(ImportDataPage.CarMaintenance, "CarMaintenance")
+        useCase.importManualData(ImportDataPage.Trades, "Trades")
+
+        coVerify(exactly = 1) {
+            importTodosUseCase.importTodos("Todos")
+            importNotesUseCase.importNotes("Notes")
+            importExpensesUseCase.importExpenses("Expenses")
+            importInvestmentsUseCase.importInvestments("Investments")
+            importSavingsUseCase.importSavings("Savings")
+            importBudgetsUseCase.importBudgets("Budgets")
+            importWatchlistAssetsUseCase.importWatchlistAssets("WatchlistAssets")
+            importWeightsUseCase.importWeights("Weights")
+            importFuelConsumptionUseCase.importFuelConsumption("FuelConsumption")
+            importCarMaintenanceUseCase.importCarMaintenance("CarMaintenance")
+            importTradesUseCase.importTrades("Trades")
         }
     }
 }

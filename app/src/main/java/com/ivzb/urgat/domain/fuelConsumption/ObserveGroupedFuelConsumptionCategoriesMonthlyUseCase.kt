@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.fuelConsumption
 import com.ivzb.urgat.data.fuelConsumption.FuelConsumptionRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupFuelConsumptionCategoriesMonthly
+import com.ivzb.urgat.domain.common.GroupFuelConsumption.groupFuelConsumptionCategoriesMonthly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionFilter
 import com.ivzb.urgat.ui.fuelConsumption.FuelConsumptionSortType

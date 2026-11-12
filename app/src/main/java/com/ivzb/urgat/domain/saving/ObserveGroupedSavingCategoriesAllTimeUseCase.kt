@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.data.saving.SavingCategory
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupSavingCategoriesAllTime
+import com.ivzb.urgat.domain.common.GroupSavings.groupSavingCategoriesAllTime
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async

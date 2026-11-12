@@ -4,7 +4,7 @@ import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.data.trade.TradeCategory
 import com.ivzb.urgat.data.trade.TradesRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupTradeCategoriesAllTime
+import com.ivzb.urgat.domain.common.GroupTrades.groupTradeCategoriesAllTime
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.trades.TradesSortType
 import com.ivzb.urgat.util.Async

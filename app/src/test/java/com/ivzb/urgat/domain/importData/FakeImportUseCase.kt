@@ -1,6 +1,7 @@
 package com.ivzb.urgat.domain.importData
 
 import android.net.Uri
+import com.ivzb.urgat.ui.importData.ImportDataPage
 
 class FakeImportUseCase : ImportDataUseCase {
 
@@ -21,48 +22,20 @@ class FakeImportUseCase : ImportDataUseCase {
         invoked = true
     }
 
-    override suspend fun importExpenses(content: String) {
-        invokedExpenses = true
-    }
-
-    override suspend fun importInvestments(content: String) {
-        invokedInvestments = true
-    }
-
-    override suspend fun importSavings(content: String) {
-        invokedSavings = true
-    }
-
-    override suspend fun importBudgets(content: String) {
-        invokedBudgets = true
-    }
-
-    override suspend fun importTodos(content: String) {
-        invokedTodos = true
-    }
-
-    override suspend fun importNotes(content: String) {
-        invokedNotes = true
-    }
-
-    override suspend fun importWatchlistAssets(content: String) {
-        invokedWatchlistAssets = true
-    }
-
-    override suspend fun importWeights(content: String) {
-        invokedWeights = true
-    }
-
-    override suspend fun importFuelConsumption(content: String) {
-        invokedFuelConsumption = true
-    }
-
-    override suspend fun importCarMaintenance(content: String) {
-        invokedCarMaintenance = true
-    }
-
-    override suspend fun importTrades(content: String) {
-        invokedTrades = true
+    override suspend fun importManualData(page: ImportDataPage, content: String) {
+        when (page) {
+            ImportDataPage.Todos -> invokedTodos = true
+            ImportDataPage.Notes -> invokedNotes = true
+            ImportDataPage.Expenses -> invokedExpenses = true
+            ImportDataPage.Investments -> invokedInvestments = true
+            ImportDataPage.Savings -> invokedSavings = true
+            ImportDataPage.Budgets -> invokedBudgets = true
+            ImportDataPage.WatchlistAssets -> invokedWatchlistAssets = true
+            ImportDataPage.Weights -> invokedWeights = true
+            ImportDataPage.FuelConsumption -> invokedFuelConsumption = true
+            ImportDataPage.CarMaintenance -> invokedCarMaintenance = true
+            ImportDataPage.Trades -> invokedTrades = true
+        }
     }
 
 }

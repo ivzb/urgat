@@ -65,7 +65,7 @@ class GroupExpensesTest {
             ),
         )
 
-        val actual = Group.groupExpenseCategoriesMonthly(expenses, randomTestUUID)
+        val actual = GroupExpenses.groupExpenseCategoriesMonthly(expenses, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -116,7 +116,7 @@ class GroupExpensesTest {
             ),
         )
 
-        val actual = Group.groupExpenseCategoriesYearly(expenses, randomTestUUID)
+        val actual = GroupExpenses.groupExpenseCategoriesYearly(expenses, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -154,7 +154,7 @@ class GroupExpensesTest {
             ExpenseCategory(id = TEST_UUID, "Pets", totals = listOf(ExpenseTotal(BigDecimal("51.0"), "EUR")), expenses = listOf(expenses[3], expenses[9])),
         )
 
-        val actual = Group.groupExpenseCategoriesAllTime(expenses, randomTestUUID)
+        val actual = GroupExpenses.groupExpenseCategoriesAllTime(expenses, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -188,7 +188,7 @@ class GroupExpensesTest {
             "December 2024" to ExpenseAverage.EMPTY,
         )
 
-        val actual = Group.groupExpenseAveragesMonthly(expenses)
+        val actual = GroupExpenses.groupExpenseAveragesMonthly(expenses)
 
         assertEquals(expected, actual)
     }
@@ -219,7 +219,7 @@ class GroupExpensesTest {
             "2024" to ExpenseAverage.EMPTY,
         )
 
-        val actual = Group.groupExpenseAveragesYearly(expenses)
+        val actual = GroupExpenses.groupExpenseAveragesYearly(expenses)
 
         assertEquals(expected, actual)
     }
@@ -246,7 +246,7 @@ class GroupExpensesTest {
             ),
         )
 
-        val actual = Group.groupExpenseAverageAllTime(expenses)
+        val actual = GroupExpenses.groupExpenseAverageAllTime(expenses)
 
         assertEquals(expected, actual)
     }

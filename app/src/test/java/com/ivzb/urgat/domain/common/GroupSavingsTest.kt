@@ -61,7 +61,7 @@ class GroupSavingsTest {
             ),
         )
 
-        val actual = Group.groupSavingCategoriesMonthly(savings, randomTestUUID)
+        val actual = GroupSavings.groupSavingCategoriesMonthly(savings, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -107,7 +107,7 @@ class GroupSavingsTest {
             ),
         )
 
-        val actual = Group.groupSavingCategoriesYearly(savings, randomTestUUID)
+        val actual = GroupSavings.groupSavingCategoriesYearly(savings, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -138,7 +138,7 @@ class GroupSavingsTest {
             SavingCategory(id = TEST_UUID, "Kids fund", totals = listOf(SavingTotal(BigDecimal("1400"), "EUR")), savings = listOf(savings[1], savings[4], savings[7], savings[10])),
         )
 
-        val actual = Group.groupSavingCategoriesAllTime(savings, randomTestUUID)
+        val actual = GroupSavings.groupSavingCategoriesAllTime(savings, randomTestUUID)
 
         assertEquals(expected, actual)
     }

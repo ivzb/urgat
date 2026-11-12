@@ -31,7 +31,7 @@ class GroupInvestmentsTest {
             snp500EurAsset(investments),
         )
 
-        val actual = Group.groupInvestmentAssets(investments, randomTestUUID)
+        val actual = GroupInvestments.groupInvestmentAssets(investments, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -236,7 +236,7 @@ class GroupInvestmentsTest {
             ),
         )
 
-        val actual = Group.groupInvestmentCategories(investments, randomTestUUID)
+        val actual = GroupInvestments.groupInvestmentCategories(investments, randomTestUUID)
 
         assertEquals(expected, actual)
     }
@@ -261,7 +261,7 @@ class GroupInvestmentsTest {
                 InvestmentTotal("USD", BigDecimal("8956.553"), BigDecimal("8956.553"), calculatePnL(BigDecimal("8956.553"), BigDecimal("8956.553"))),
             ),
         )
-        val actual = Group.groupInvestmentNetWorth(investments)
+        val actual = GroupInvestments.groupInvestmentNetWorth(investments)
 
         assertEquals(expected, actual)
     }
@@ -293,7 +293,7 @@ class GroupInvestmentsTest {
             "2024" to InvestmentAverage.EMPTY,
         )
 
-        val actual = Group.groupInvestmentAveragesYearly(investments)
+        val actual = GroupInvestments.groupInvestmentAveragesYearly(investments)
 
         assertEquals(expected, actual)
     }
@@ -321,7 +321,7 @@ class GroupInvestmentsTest {
             ),
         )
 
-        val actual = Group.groupInvestmentAverageAllTime(investments)
+        val actual = GroupInvestments.groupInvestmentAverageAllTime(investments)
 
         assertEquals(expected, actual)
     }
@@ -333,7 +333,7 @@ class GroupInvestmentsTest {
             Investment("2", "AAPL", BigDecimal("1"), BigDecimal("200"), BigDecimal("220"), "stocks", "USD", timestamp(2025, 12, 17), false, timestamp(2025, 12, 17)),
         )
 
-        assertEquals(InvestmentAverage.EMPTY, Group.groupInvestmentAverageAllTime(investments))
+        assertEquals(InvestmentAverage.EMPTY, GroupInvestments.groupInvestmentAverageAllTime(investments))
     }
 
     private fun investmentTotal(costPrice: String, marketPrice: String, currency: String = "USD") =

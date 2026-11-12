@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.expense
 
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group
+import com.ivzb.urgat.domain.common.GroupExpenses
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesFilteringUiInfo
 import com.ivzb.urgat.ui.expenses.ExpensesSortType
@@ -62,9 +62,9 @@ class DefaultObserveExpensesUiStateUseCase @Inject constructor(
                 categoriesMonthly = categoriesMonthly,
                 categoriesYearly = categoriesYearly,
                 categoriesAllTime = categoriesAllTime,
-                averagesMonthly = Group.groupExpenseAveragesMonthly(allExpenses),
-                averagesYearly = Group.groupExpenseAveragesYearly(allExpenses),
-                averageAllTime = Group.groupExpenseAverageAllTime(allExpenses),
+                averagesMonthly = GroupExpenses.groupExpenseAveragesMonthly(allExpenses),
+                averagesYearly = GroupExpenses.groupExpenseAveragesYearly(allExpenses),
+                averageAllTime = GroupExpenses.groupExpenseAverageAllTime(allExpenses),
                 isLoading = false,
                 filteringUiInfo = ExpensesFilteringUiInfo.from(
                     searchQuery = searchQuery,

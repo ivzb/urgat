@@ -1,7 +1,7 @@
 package com.ivzb.urgat.domain.investment
 
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group
+import com.ivzb.urgat.domain.common.GroupInvestments
 import com.ivzb.urgat.ui.investments.InvestmentsFilteringUiInfo
 import com.ivzb.urgat.ui.investments.InvestmentsSortType
 import com.ivzb.urgat.ui.investments.InvestmentsUiState
@@ -64,8 +64,8 @@ class DefaultObserveInvestmentsUiStateUseCase @Inject constructor(
                 assets = assets,
                 categories = categories,
                 netWorth = netWorth,
-                averagesYearly = Group.groupInvestmentAveragesYearly(allInvestments),
-                averageAllTime = Group.groupInvestmentAverageAllTime(allInvestments),
+                averagesYearly = GroupInvestments.groupInvestmentAveragesYearly(allInvestments),
+                averageAllTime = GroupInvestments.groupInvestmentAverageAllTime(allInvestments),
                 filteringUiInfo = InvestmentsFilteringUiInfo.from(
                     searchQuery = searchQuery,
                     filterType = filterType,

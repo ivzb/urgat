@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.expense
 import com.ivzb.urgat.data.expense.ExpensesRepository
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupExpenseCategoriesYearly
+import com.ivzb.urgat.domain.common.GroupExpenses.groupExpenseCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.expenses.ExpensesFilterType
 import com.ivzb.urgat.ui.expenses.ExpensesSortType

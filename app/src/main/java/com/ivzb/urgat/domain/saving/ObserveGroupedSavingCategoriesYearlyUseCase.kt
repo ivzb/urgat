@@ -3,7 +3,7 @@ package com.ivzb.urgat.domain.saving
 import com.ivzb.urgat.data.random.RandomRepository
 import com.ivzb.urgat.data.saving.SavingsRepository
 import com.ivzb.urgat.di.DefaultDispatcher
-import com.ivzb.urgat.domain.common.Group.groupSavingCategoriesYearly
+import com.ivzb.urgat.domain.common.GroupSavings.groupSavingCategoriesYearly
 import com.ivzb.urgat.domain.common.ObserveGroupedUseCase
 import com.ivzb.urgat.ui.savings.SavingsSortType
 import com.ivzb.urgat.util.Async

@@ -91,7 +91,7 @@ class ImportDataViewModel @Inject constructor(
             }
 
             try {
-                importManualData(page, content)
+                importDataUseCase.importManualData(page, content)
 
                 _uiState.update {
                     it.copy(
@@ -108,22 +108,6 @@ class ImportDataViewModel @Inject constructor(
                     )
                 }
             }
-        }
-    }
-
-    private suspend fun importManualData(page: ImportDataPage, content: String) {
-        when (page) {
-            ImportDataPage.Expenses -> importDataUseCase.importExpenses(content)
-            ImportDataPage.Investments -> importDataUseCase.importInvestments(content)
-            ImportDataPage.Trades -> importDataUseCase.importTrades(content)
-            ImportDataPage.Savings -> importDataUseCase.importSavings(content)
-            ImportDataPage.Budgets -> importDataUseCase.importBudgets(content)
-            ImportDataPage.Notes -> importDataUseCase.importNotes(content)
-            ImportDataPage.WatchlistAssets -> importDataUseCase.importWatchlistAssets(content)
-            ImportDataPage.Todos -> importDataUseCase.importTodos(content)
-            ImportDataPage.FuelConsumption -> importDataUseCase.importFuelConsumption(content)
-            ImportDataPage.CarMaintenance -> importDataUseCase.importCarMaintenance(content)
-            ImportDataPage.Weights -> importDataUseCase.importWeights(content)
         }
     }
 
