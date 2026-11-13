@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.map
 /**
  * Home screen app widget showing the accumulated stash (net worth) coming from the FI/RE data.
  */
+@Suppress("TooManyFunctions")
 class NetWorthWidget : GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Responsive(

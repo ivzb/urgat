@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "TooManyFunctions")
 
 package com.ivzb.urgat.util
 

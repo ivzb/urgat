@@ -5,6 +5,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.navigation.UrgatNavActions
+import com.ivzb.urgat.navigation.navigateToEditExpense
 
 fun EntryProviderScope<NavKey>.expensesEntry(navigator: Navigator, navActions: UrgatNavActions) {
     entry<ExpensesRoute> {

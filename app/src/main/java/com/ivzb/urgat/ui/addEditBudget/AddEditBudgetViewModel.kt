@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddEditBudgetViewModel.Factory::class)
+@Suppress("TooManyFunctions")
 class AddEditBudgetViewModel @AssistedInject constructor(
     @Assisted val route: AddEditBudgetRoute,
     private val getBudgetUseCase: GetBudgetUseCase,

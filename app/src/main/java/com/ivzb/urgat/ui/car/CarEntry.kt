@@ -5,6 +5,12 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.ivzb.urgat.navigation.Navigator
 import com.ivzb.urgat.navigation.UrgatNavActions
+import com.ivzb.urgat.navigation.navigateToAddCarMaintenance
+import com.ivzb.urgat.navigation.navigateToAddFuelConsumption
+import com.ivzb.urgat.navigation.navigateToCarMaintenance
+import com.ivzb.urgat.navigation.navigateToEditCarMaintenance
+import com.ivzb.urgat.navigation.navigateToEditFuelConsumption
+import com.ivzb.urgat.navigation.navigateToFuelConsumption
 
 fun EntryProviderScope<NavKey>.carEntry(navigator: Navigator, navActions: UrgatNavActions) {
     entry<CarRoute> {

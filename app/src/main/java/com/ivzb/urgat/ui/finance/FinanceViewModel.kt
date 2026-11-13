@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @HiltViewModel
+@Suppress("TooManyFunctions")
 class FinanceViewModel @Inject constructor(
     observeFinanceUiStateUseCase: ObserveFinanceUiStateUseCase,
     private val fireRepository: FireRepository,

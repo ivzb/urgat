@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = AddEditCarMaintenanceViewModel.Factory::class)
+@Suppress("TooManyFunctions")
 class AddEditCarMaintenanceViewModel @AssistedInject constructor(
     @Assisted val route: AddEditCarMaintenanceRoute,
     private val getCarMaintenanceUseCase: GetCarMaintenanceUseCase,

@@ -12,6 +12,7 @@ import com.ivzb.urgat.data.base.SearchQueryBuilder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
+@Suppress("TooManyFunctions")
 interface FuelConsumptionDao {
 
     @Query(

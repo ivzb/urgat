@@ -61,6 +61,7 @@ import kotlinx.coroutines.flow.map
 /**
  * Home screen app widget showing the very same assets as the finance watchlist.
  */
+@Suppress("TooManyFunctions")
 class WatchlistWidget : GlanceAppWidget() {
 
     override val sizeMode: SizeMode = SizeMode.Responsive(

@@ -26,6 +26,8 @@ complexity:
       - 'FoldablePreviewFolded'
       - 'DarkModePreview'
       - 'DarkModeLandscapePreview'
+      - 'Binds'
+      - 'Provides'
 
 style:
   # Formatting is handled by ktlint (see .editorconfig)
