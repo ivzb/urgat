@@ -7,6 +7,7 @@ import com.ivzb.urgat.util.round
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import java.io.IOException
 import java.math.BigDecimal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -16,11 +17,15 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.SerializationException
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import retrofit2.HttpException
+import retrofit2.Response
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class YahooFinanceMarketPriceRepositoryTest {
@@ -201,11 +206,47 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice returns null on api exception`() = runTest(testDispatcher) {
-        coEvery { api.fetch("INVALID") } throws RuntimeException("Network error")
+        coEvery { api.fetch("INVALID") } throws IOException("Network error")
 
         val result = repository.fetchPrice("INVALID")
 
         assertNull(result)
+    }
+
+    @Test
+    fun `fetchPrice returns null on http error`() = runTest(testDispatcher) {
+        coEvery { api.fetch("INVALID") } throws HttpException(Response.error<YahooFinanceResponse>(404, "".toResponseBody()))
+
+        val result = repository.fetchPrice("INVALID")
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `fetchPrice returns null on malformed response`() = runTest(testDispatcher) {
+        coEvery { api.fetch("INVALID") } throws SerializationException("Field 'meta' is required")
+
+        val result = repository.fetchPrice("INVALID")
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `fetchPrice returns null on empty chart result`() = runTest(testDispatcher) {
+        coEvery { api.fetch("INVALID") } returns YahooFinanceResponse(
+            chart = YahooFinanceResponse.Chart(result = emptyList())
+        )
+
+        val result = repository.fetchPrice("INVALID")
+
+        assertNull(result)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun `fetchPrice rethrows unexpected exceptions`() = runTest(testDispatcher) {
+        coEvery { api.fetch("INVALID") } throws IllegalStateException("bug")
+
+        repository.fetchPrice("INVALID")
     }
 
     @Test
@@ -321,7 +362,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `lastFetchedAt is left alone when the fetch fails`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         repository.fetchPrice("MSFT")
 
@@ -501,7 +542,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice does not cache a failure`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         assertNull(repository.fetchPrice("MSFT"))
 
@@ -516,7 +557,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice recovers once the api works again`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         assertNull(repository.fetchPrice("MSFT"))
 
@@ -532,7 +573,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice backs off instead of retrying immediately`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         assertNull(repository.fetchPrice("MSFT"))
         assertNull(repository.fetchPrice("MSFT"))
@@ -544,7 +585,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice backoff grows with each consecutive failure`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         repository.fetchPrice("MSFT")
         coVerify(exactly = 1) { api.fetch("MSFT") }
@@ -565,7 +606,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice backoff never outlasts the widget update period`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         // plenty of failures to push the backoff to its ceiling
         repeat(20) {
@@ -583,7 +624,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `clearCache drops the backoff so a manual refresh retries at once`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         assertNull(repository.fetchPrice("MSFT"))
         coVerify(exactly = 1) { api.fetch("MSFT") }
@@ -597,7 +638,7 @@ class YahooFinanceMarketPriceRepositoryTest {
 
     @Test
     fun `fetchPrice backoff is per symbol`() = runTest(testDispatcher) {
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
         coEvery { api.fetch("AAPL") } returns response(price = 100.0, shortName = "Apple")
 
         assertNull(repository.fetchPrice("MSFT"))
@@ -609,7 +650,7 @@ class YahooFinanceMarketPriceRepositoryTest {
     @Test
     fun `fetchPrice failure does not evict an unrelated cached price`() = runTest(testDispatcher) {
         coEvery { api.fetch("AAPL") } returns response(price = 100.0, shortName = "Apple")
-        coEvery { api.fetch("MSFT") } throws RuntimeException("no connection")
+        coEvery { api.fetch("MSFT") } throws IOException("no connection")
 
         repository.fetchPrice("AAPL")
         repository.fetchPrice("MSFT")

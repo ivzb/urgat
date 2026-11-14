@@ -78,7 +78,7 @@ class DefaultExportDataRepository @Inject constructor(
 
                             "long" -> "${cursor.getLong(columnIndex)}"
 
-                            else -> throw Exception("unsupported type ${types[index]}")
+                            else -> error("unsupported type ${types[index]}")
                         }
                     }
 

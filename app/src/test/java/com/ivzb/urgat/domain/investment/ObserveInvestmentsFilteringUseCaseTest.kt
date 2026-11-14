@@ -10,6 +10,7 @@ import com.ivzb.urgat.ui.investments.INVESTMENTS_FILTER_TYPE_ALL
 import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
+import java.io.IOException
 import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -84,7 +85,7 @@ class ObserveInvestmentsFilteringUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         every { repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flow {
-            throw RuntimeException("Test error")
+            throw IOException("Test error")
         }
 
         val results = observeUseCase().toList()

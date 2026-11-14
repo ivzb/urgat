@@ -6,6 +6,7 @@ import com.ivzb.urgat.util.Logger
 import com.ivzb.urgat.util.TimeProvider
 import com.ivzb.urgat.util.Tracker
 import com.ivzb.urgat.util.normalizeInstrument
+import java.io.IOException
 import java.math.BigDecimal
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
@@ -17,6 +18,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerializationException
+import retrofit2.HttpException
 
 class YahooFinanceMarketPriceRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
@@ -65,10 +68,16 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
                             fetchedAt = timeProvider.currentTimeMillis()
                             logger.debug("market price fetched: $it")
                         }
-                    } catch (e: Exception) {
-                        logger.debug("market price fetch failed: $symbol")
-                        Tracker.error(e)
-                        null
+                    } catch (e: IOException) {
+                        onFetchFailed(symbol, e)
+                    } catch (e: HttpException) {
+                        onFetchFailed(symbol, e)
+                    } catch (e: SerializationException) {
+                        onFetchFailed(symbol, e)
+                    } catch (e: NoSuchElementException) {
+                        onFetchFailed(symbol, e)
+                    } catch (e: NumberFormatException) {
+                        onFetchFailed(symbol, e)
                     }
                 }
             }
@@ -87,6 +96,12 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
         }
 
         return marketPrice
+    }
+
+    private fun onFetchFailed(symbol: String, e: Exception): MarketPrice? {
+        logger.debug("market price fetch failed: $symbol")
+        Tracker.error(e)
+        return null
     }
 
     override suspend fun clearCache() {

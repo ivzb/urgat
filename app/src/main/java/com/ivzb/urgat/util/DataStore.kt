@@ -58,7 +58,10 @@ fun <T, R> dataStoreFlow(
     }.map { preferences ->
         try {
             transform(preferences[key])
-        } catch (e: Exception) {
+        } catch (e: IllegalArgumentException) {
+            Tracker.error(e)
+            defaultValue
+        } catch (e: ClassCastException) {
             Tracker.error(e)
             defaultValue
         }

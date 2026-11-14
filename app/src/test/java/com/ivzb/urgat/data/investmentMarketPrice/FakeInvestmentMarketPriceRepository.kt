@@ -1,5 +1,6 @@
 package com.ivzb.urgat.data.investmentMarketPrice
 
+import java.io.IOException
 import java.math.BigDecimal
 
 class FakeInvestmentMarketPriceRepository : InvestmentMarketPriceRepository {
@@ -10,7 +11,7 @@ class FakeInvestmentMarketPriceRepository : InvestmentMarketPriceRepository {
 
     override suspend fun calculateMarketPrice(symbol: String, currency: String): BigDecimal {
         if (shouldThrow || symbol in failingSymbols) {
-            throw RuntimeException("Failed to calculate market price for $symbol")
+            throw IOException("Failed to calculate market price for $symbol")
         }
 
         return prices[symbol] ?: BigDecimal.ZERO
@@ -18,7 +19,7 @@ class FakeInvestmentMarketPriceRepository : InvestmentMarketPriceRepository {
 
     override suspend fun calculateMarketPrice(symbol: String, currency: String, shares: BigDecimal): BigDecimal {
         if (shouldThrow || symbol in failingSymbols) {
-            throw RuntimeException("Failed to calculate market price for $symbol")
+            throw IOException("Failed to calculate market price for $symbol")
         }
 
         val pricePerShare = prices[symbol] ?: return BigDecimal.ZERO

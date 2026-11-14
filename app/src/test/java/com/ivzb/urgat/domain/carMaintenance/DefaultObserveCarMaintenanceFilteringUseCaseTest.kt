@@ -11,6 +11,7 @@ import com.ivzb.urgat.util.Async
 import com.ivzb.urgat.util.timestamp
 import io.mockk.every
 import io.mockk.mockk
+import java.io.IOException
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -72,7 +73,7 @@ class DefaultObserveCarMaintenanceFilteringUseCaseTest {
     @Test
     fun `invoke should return Error when repository throws`() = runTest(testDispatcher) {
         every { repository.observe(NO_ITEMS_LIMIT, NO_DATE_RANGE) } returns flow {
-            throw RuntimeException("Test error")
+            throw IOException("Test error")
         }
 
         val results = observeUseCase().toList()

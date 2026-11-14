@@ -7,6 +7,7 @@ import com.ivzb.urgat.util.Async
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import java.io.IOException
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -201,7 +202,7 @@ class ObserveUseCaseTest {
 
     @Test
     fun `invoke should return Error when repository stream throws`() = runTest(testDispatcher) {
-        every { repository.observe(10, NO_DATE_RANGE) } returns flow { throw RuntimeException("Test error") }
+        every { repository.observe(10, NO_DATE_RANGE) } returns flow { throw IOException("Test error") }
 
         val results = useCase()(flowOf(""), flowOf(NO_DATE_RANGE), null, null, flowOf(10)).toList()
 

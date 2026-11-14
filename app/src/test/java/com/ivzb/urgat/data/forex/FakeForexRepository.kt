@@ -1,6 +1,7 @@
 package com.ivzb.urgat.data.forex
 
 import com.ivzb.urgat.util.formatCurrency
+import java.io.IOException
 import java.math.BigDecimal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +24,7 @@ class FakeForexRepository : ForexRepository {
     override val refreshFlow: Flow<Unit> = _refreshFlow.asSharedFlow()
 
     override suspend fun getExchangeRate(fromCurrency: String, toCurrency: String): BigDecimal? {
-        if (shouldThrow) throw RuntimeException("Failed to fetch exchange rate")
+        if (shouldThrow) throw IOException("Failed to fetch exchange rate")
 
         val from = fromCurrency.formatCurrency()
         val to = toCurrency.formatCurrency()
@@ -32,7 +33,7 @@ class FakeForexRepository : ForexRepository {
 
         if (from in unresolvedCurrencies || to in unresolvedCurrencies) return null
 
-        return rates["$from$to"] ?: throw RuntimeException("No rate for $from -> $to")
+        return rates["$from$to"] ?: error("No rate for $from -> $to")
     }
 
     override suspend fun convert(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal? {
