@@ -25,13 +25,13 @@ interface ObserveGroupedFuelConsumptionCategoriesMonthlyUseCase {
 }
 
 class DefaultObserveGroupedFuelConsumptionCategoriesMonthlyUseCase @Inject constructor(
-    FuelConsumptionRepository: FuelConsumptionRepository,
+    fuelConsumptionRepository: FuelConsumptionRepository,
     private val randomRepository: RandomRepository,
     @DefaultDispatcher dispatcher: CoroutineDispatcher,
 ): ObserveGroupedFuelConsumptionCategoriesMonthlyUseCase {
 
     private val observeGroupedUseCase = ObserveGroupedUseCase(
-        repository = FuelConsumptionRepository,
+        repository = fuelConsumptionRepository,
         dispatcher = dispatcher,
         filter = ::filterFuelConsumption,
         sort = ::sortFuelConsumption,
