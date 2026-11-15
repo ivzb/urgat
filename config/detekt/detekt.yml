@@ -33,6 +33,8 @@ style:
   # Formatting is handled by ktlint (see .editorconfig)
   MaxLineLength:
     active: false
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 8
   WildcardImport:
     active: false
   UnusedPrivateFunction:
