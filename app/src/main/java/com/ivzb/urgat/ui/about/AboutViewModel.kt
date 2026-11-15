@@ -13,6 +13,7 @@ class AboutViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(AboutUiState)
     val uiState: StateFlow<AboutUiState> = _uiState.asStateFlow()
 
+    @Suppress("UnusedParameter")
     fun onIntent(intent: AboutIntent) {
         // NOOP
     }

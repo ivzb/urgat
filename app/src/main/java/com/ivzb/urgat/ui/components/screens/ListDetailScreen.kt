@@ -18,6 +18,7 @@ import com.ivzb.urgat.ui.library.LibraryRoute
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.ui.weights.WeightsUiState
 
+@Suppress("UnusedParameter")
 @Composable
 fun ListDetailScreen(
     uiState: UiState,

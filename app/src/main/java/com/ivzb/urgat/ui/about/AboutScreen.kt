@@ -43,6 +43,7 @@ fun AboutScreen(
     )
 }
 
+@Suppress("UnusedParameter")
 @VisibleForTesting
 @Composable
 fun AboutScreen(
