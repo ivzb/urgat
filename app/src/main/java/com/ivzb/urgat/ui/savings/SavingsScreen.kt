@@ -30,6 +30,7 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.abbreviation
 import com.ivzb.urgat.util.annotateSavings
 import com.ivzb.urgat.util.annotateSavingsTotals
 import com.ivzb.urgat.util.format
@@ -243,7 +244,7 @@ fun SavingItem(
 
     ListItem(
         textLeft = date.dayOfMonth.toString(),
-        subTextLeft = date.month.name.take(3),
+        subTextLeft = date.month.abbreviation(),
 
         textRight = saving.name,
         subTextRight = annotateSavings(saving.amount, saving.currency),

@@ -37,6 +37,19 @@ style:
     maxDestructuringEntries: 8
   WildcardImport:
     active: false
+  MagicNumber:
+    ignoreAnnotated:
+      - 'Preview'
+      - 'AllDevicesPreview'
+      - 'LandscapePreview'
+      - 'TabletPreview'
+      - 'TabletDarkModePreview'
+      - 'TabletLandscapePreview'
+      - 'TabletDarkModeLandscapePreview'
+      - 'FoldablePreviewUnfolded'
+      - 'FoldablePreviewFolded'
+      - 'DarkModePreview'
+      - 'DarkModeLandscapePreview'
   UnusedPrivateFunction:
     ignoreAnnotated:
       - 'Preview'

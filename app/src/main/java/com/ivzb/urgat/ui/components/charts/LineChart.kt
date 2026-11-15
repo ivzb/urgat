@@ -96,10 +96,11 @@ fun LineChart(
                 isFakeBoldText = true
             }
 
-            drawText(maxValue.toString(), 0f, verticalPadding.toPx() + 10f, paint)
+            drawText(maxValue.toString(), 0f, verticalPadding.toPx() - paint.ascent(), paint)
             drawText(minValue.toString(), 0f, verticalPadding.toPx() + chartHeight, paint)
             drawText(dateFormatter.format(Date(minTimestamp)), horizontalPadding.toPx(), size.height, paint)
-            drawText(dateFormatter.format(Date(maxTimestamp)), horizontalPadding.toPx() + chartWidth - 50f, size.height, paint)
+            val maxDate = dateFormatter.format(Date(maxTimestamp))
+            drawText(maxDate, horizontalPadding.toPx() + chartWidth - paint.measureText(maxDate), size.height, paint)
         }
     }
 }

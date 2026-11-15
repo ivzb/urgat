@@ -31,6 +31,8 @@ import com.ivzb.urgat.ui.library.LibraryRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+private const val DOUBLE_BACK_TO_EXIT_TIMEOUT_MILLIS = 2_000L
+
 @Composable
 fun UrgatNavGraph(
     modifier: Modifier = Modifier,
@@ -95,7 +97,7 @@ private fun DoubleBackToExitApp(
         Toast.makeText(context, resources.getString(R.string.press_back_once_more_to_exit), Toast.LENGTH_SHORT).show()
 
         scope.launch {
-            delay(2_000)
+            delay(DOUBLE_BACK_TO_EXIT_TIMEOUT_MILLIS)
             backPressedOnce = false
         }
     }

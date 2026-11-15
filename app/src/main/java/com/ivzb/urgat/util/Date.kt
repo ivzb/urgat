@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.format.DateUtils
 import java.time.Instant
 import java.time.LocalDate
+import java.time.Month
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -40,6 +41,8 @@ fun LocalDate.toTimestamp(): Long = this
     .toEpochMilli()
 
 fun LocalDate.format(): String = this.format(DATE_FORMATTER)
+
+fun Month.abbreviation(): String = name.take(MONTH_ABBREVIATION_LENGTH)
 
 fun currentMonthRange(): LongRange {
     val zoneId = ZoneId.systemDefault()
@@ -147,3 +150,5 @@ fun lastYearRange(): LongRange {
 }
 
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+private const val MONTH_ABBREVIATION_LENGTH = 3

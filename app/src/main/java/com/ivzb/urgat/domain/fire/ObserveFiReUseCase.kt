@@ -300,7 +300,7 @@ class DefaultObserveFiReUseCase @Inject constructor(
         var fireYear = maxYears
 
         for (year in 1..maxYears) {
-            stash[year] = (stash[year - 1] * returnOfInvestment) + (annualInvestments.toDouble() * returnOfInvestment.pow(0.5))
+            stash[year] = (stash[year - 1] * returnOfInvestment) + (annualInvestments.toDouble() * returnOfInvestment.pow(MID_YEAR_CONTRIBUTION_EXPONENT))
 
             if (stash[year] >= target.toDouble()) {
                 fireYear = year
@@ -326,6 +326,9 @@ class DefaultObserveFiReUseCase @Inject constructor(
     companion object {
 
         private val INVALID_YEAR = 99.99.toBigDecimal()
+
+        // Contributions are spread over the year, so on average they grow for half of it
+        private const val MID_YEAR_CONTRIBUTION_EXPONENT = 0.5
 
     }
 

@@ -528,8 +528,13 @@ object SampleData {
     val SAMPLE_TRADES_CATEGORIES_ALL_TIME =
         GroupTrades.groupTradeCategoriesAllTime(SAMPLE_TRADES, ::randomUUID)
 
+    @Suppress("MagicNumber")
     private operator fun <T> List<T>.component6(): T = this[5]
+
+    @Suppress("MagicNumber")
     private operator fun <T> List<T>.component7(): T = this[6]
+
+    @Suppress("MagicNumber")
     private operator fun <T> List<T>.component8(): T = this[7]
 
 }

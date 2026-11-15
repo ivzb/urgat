@@ -13,6 +13,8 @@ private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply 
     roundingMode = RoundingMode.DOWN
 }
 
+private val PERCENT = 100.toBigDecimal()
+
 fun BigDecimal.format(digits: Int? = null): String = NUMBER_FORMAT.apply {
     minimumFractionDigits = digits ?: 0
     maximumFractionDigits = digits ?: 2
@@ -34,7 +36,7 @@ fun calculatePnL(costPrice: BigDecimal, marketPrice: BigDecimal?): BigDecimal? {
         return BigDecimal.ZERO
     }
 
-    return (marketPrice - costPrice) / costPrice * BigDecimal(100)
+    return (marketPrice - costPrice) / costPrice * PERCENT
 }
 
 fun calculateFuelConsumption(fuelAmount: BigDecimal, distance: Int?): BigDecimal? {
@@ -47,7 +49,7 @@ fun calculateFuelConsumption(fuelAmount: BigDecimal, distance: Int?): BigDecimal
 
 fun BigDecimal.round(): BigDecimal = this.setScale(2, RoundingMode.HALF_UP)
 
-fun BigDecimal.toPercentage(): BigDecimal = this / 100.toBigDecimal()
+fun BigDecimal.toPercentage(): BigDecimal = this / PERCENT
 
 operator fun BigDecimal.div(other: BigDecimal): BigDecimal = this.divide(
     other,

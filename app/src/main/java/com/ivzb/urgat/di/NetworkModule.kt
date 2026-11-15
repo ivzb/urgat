@@ -21,9 +21,9 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .readTimeout(5, TimeUnit.SECONDS)
-        .writeTimeout(5, TimeUnit.SECONDS)
+        .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .build()
 
     @Provides
@@ -52,5 +52,9 @@ class NetworkModule {
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
             .create(YahooFinanceApi::class.java)
+    }
+
+    companion object {
+        private const val TIMEOUT_SECONDS = 5L
     }
 }

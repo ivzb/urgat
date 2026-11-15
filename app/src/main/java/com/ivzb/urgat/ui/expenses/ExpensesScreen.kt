@@ -33,6 +33,7 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.abbreviation
 import com.ivzb.urgat.util.annotateExpenses
 import com.ivzb.urgat.util.annotateExpensesTotals
 import com.ivzb.urgat.util.annotateMarketPrice
@@ -260,7 +261,7 @@ fun ExpenseItem(
 
     ListItem(
         textLeft = date.dayOfMonth.toString(),
-        subTextLeft = date.month.name.take(3),
+        subTextLeft = date.month.abbreviation(),
 
         textRight = expense.name,
         subTextRight = annotateExpenses(expense.amount, expense.currency),

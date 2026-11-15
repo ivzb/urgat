@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.ivzb.urgat.util
 
 import kotlinx.coroutines.flow.Flow

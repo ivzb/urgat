@@ -43,6 +43,9 @@ import kotlin.math.atan2
 import kotlin.math.hypot
 import kotlin.math.min
 
+private const val FULL_CIRCLE_DEGREES = 360f
+private const val QUARTER_CIRCLE_DEGREES = 90f
+
 @Composable
 fun PieChart(
     data: List<PieChartItem>,
@@ -144,10 +147,10 @@ private fun PieChartCanvas(
                     var angle = toDegrees(atan2(dy.toDouble(), dx.toDouble())).toFloat()
 
                     if (angle < 0f) {
-                        angle += 360f
+                        angle += FULL_CIRCLE_DEGREES
                     }
 
-                    val adjustedAngle = (angle + 90f) % 360f
+                    val adjustedAngle = (angle + QUARTER_CIRCLE_DEGREES) % FULL_CIRCLE_DEGREES
 
                     val tappedSlice = sliceAngles.firstOrNull {
                         adjustedAngle in it.start..(it.start + it.sweep)
@@ -178,13 +181,13 @@ private fun DrawScope.drawPieSlices(
 
     sliceAngles.clear()
 
-    var startAngle = -90f
+    var startAngle = -QUARTER_CIRCLE_DEGREES
 
     data.forEachIndexed { index, item ->
-        val sweepAngle = (item.value.absoluteValue / total) * 360f
+        val sweepAngle = (item.value.absoluteValue / total) * FULL_CIRCLE_DEGREES
         sliceAngles += PieChartSliceAngle(
             index = index,
-            start = startAngle + 90f,
+            start = startAngle + QUARTER_CIRCLE_DEGREES,
             sweep = sweepAngle
         )
 

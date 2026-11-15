@@ -31,6 +31,7 @@ import com.ivzb.urgat.ui.components.Page
 import com.ivzb.urgat.ui.components.SortMenu
 import com.ivzb.urgat.ui.components.screens.PagerScreen
 import com.ivzb.urgat.ui.theme.UrgatTheme
+import com.ivzb.urgat.util.abbreviation
 import com.ivzb.urgat.util.annotateFuelConsumptionTotals
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.paddingIf
@@ -255,7 +256,7 @@ fun FuelConsumptionItem(
 
     ListItem(
         textLeft = date.dayOfMonth.toString(),
-        subTextLeft = date.month.name.take(3),
+        subTextLeft = date.month.abbreviation(),
 
         textRight = fuelConsumption.carName,
         subTextRight = fuelConsumption.summary,

@@ -7,6 +7,7 @@ import com.ivzb.urgat.data.weight.Weight
 import com.ivzb.urgat.ui.components.ListItem
 import com.ivzb.urgat.ui.components.charts.LineChart
 import com.ivzb.urgat.ui.components.charts.LineChartItem
+import com.ivzb.urgat.util.abbreviation
 import com.ivzb.urgat.util.format
 import com.ivzb.urgat.util.toLocalDate
 
@@ -31,7 +32,7 @@ fun WeightItem(
 
     ListItem(
         textLeft = date.dayOfMonth.toString(),
-        subTextLeft = date.month.name.take(3),
+        subTextLeft = date.month.abbreviation(),
 
         textRight = weight.value.format(),
 
