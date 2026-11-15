@@ -41,6 +41,11 @@ fi
 ./run_ktlint.sh
 
 ##
+# Run detekt check
+##
+./run_detekt.sh
+
+##
 # Run unit tests
 ##
 ./run_unit_tests.sh

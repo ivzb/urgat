@@ -4,12 +4,14 @@ import com.ivzb.urgat.R
 import com.ivzb.urgat.ui.carMaintenance.CarMaintenanceSortType
 import com.ivzb.urgat.ui.components.SortMenuItem
 import com.ivzb.urgat.util.Async
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ObserveCarMaintenanceSortingUseCaseTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()

@@ -30,7 +30,7 @@ class MigrationTest {
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
         InstrumentationRegistry.getInstrumentation(),
-        AppDatabase::class.java.canonicalName
+        AppDatabase::class.java
     )
 
     @Test

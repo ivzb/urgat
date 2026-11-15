@@ -28,12 +28,14 @@ import com.ivzb.urgat.ui.importData.ImportDataPage
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultImportDataUseCaseTest {
 
     private lateinit var importDataRepository: ImportDataRepository

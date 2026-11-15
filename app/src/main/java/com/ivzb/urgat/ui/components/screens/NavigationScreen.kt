@@ -23,8 +23,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.adaptive.currentWindowSize
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
@@ -34,7 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -42,7 +41,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import com.ivzb.urgat.R
 import com.ivzb.urgat.navigation.BOTTOM_NAVIGATION_SCREENS
 import com.ivzb.urgat.navigation.FakeNavigator
@@ -265,9 +263,7 @@ private fun NavigationScreenScaffold(
 private fun calculateNavigationSuiteType(): NavigationSuiteType {
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
-    val windowSize = with(LocalDensity.current) {
-        currentWindowSize().toSize().toDpSize()
-    }
+    val windowSize = LocalWindowInfo.current.containerDpSize
 
     val layoutType = when {
         // landscape phone
@@ -282,7 +278,7 @@ private fun calculateNavigationSuiteType(): NavigationSuiteType {
 
         else -> {
             NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
-                currentWindowAdaptiveInfo()
+                currentWindowAdaptiveInfoV2()
             )
         }
     }

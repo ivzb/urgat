@@ -114,7 +114,7 @@ fun CarScreen(
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
-        withFab = { page -> !isSearchFocused },
+        withFab = { _ -> !isSearchFocused },
         onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
             CarTopAppBarActions(
@@ -367,7 +367,7 @@ private fun LazyListScope.carMaintenanceGroupItems(
     uiState: CarMaintenanceUiState,
     onCarMaintenanceClick: (CarMaintenance) -> Unit,
 ) {
-    uiState.carMaintenance.forEachIndexed { index, (group, count, items) ->
+    uiState.carMaintenance.forEachIndexed { index, (group, _, items) ->
         item {
             ItemHeaderSmall(
                 text = group,

@@ -102,7 +102,7 @@ fun LibraryScreen(
         navigator = navigator,
 
         withSearch = { page -> uiState.withTopbarActions(page) },
-        withFab = { page -> !isSearchFocused },
+        withFab = { _ -> !isSearchFocused },
         onSearchFocusChanged = { isSearchFocused = it },
         topAppBarActionsContent = { page ->
             LibraryTopAppBarActions(

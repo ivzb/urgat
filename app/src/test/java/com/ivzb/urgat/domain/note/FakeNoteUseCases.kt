@@ -95,7 +95,7 @@ class FakeObserveNotesUiStateUseCase: ObserveNotesUiStateUseCase {
     ): Flow<Async<NotesUiState>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow?.collect { lastQuery = it }
+            searchQueryFlow.collect { lastQuery = it }
         }
         return flow
     }

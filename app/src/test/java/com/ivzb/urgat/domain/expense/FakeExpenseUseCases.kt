@@ -248,7 +248,7 @@ class FakeObserveExpensesUiStateUseCase: ObserveExpensesUiStateUseCase {
     ): Flow<Async<ExpensesUiState>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow?.collect { lastQuery = it }
+            searchQueryFlow.collect { lastQuery = it }
         }
         return flow
     }

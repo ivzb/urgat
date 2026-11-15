@@ -1,4 +1,4 @@
-@file:Suppress("MagicNumber")
+@file:Suppress("UNCHECKED_CAST", "MagicNumber")
 
 package com.ivzb.urgat.util
 

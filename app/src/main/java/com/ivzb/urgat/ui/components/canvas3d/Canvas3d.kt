@@ -162,10 +162,6 @@ private fun Canvas3dContent(
             fillFace(face, model, dz, angle, primaryColor)
         }
 
-        model.vertices.forEach { p ->
-//            point(p.transform(angle, dz, size))
-        }
-
         model.faces.forEach { face ->
             for (i in 0 until face.size) {
                 val p1 = model.vertices[face[i]].transform(angle, dz, size)

@@ -229,7 +229,7 @@ class FakeObserveSavingsUiStateUseCase: ObserveSavingsUiStateUseCase {
     ): Flow<Async<SavingsUiState>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow?.collect { lastQuery = it }
+            searchQueryFlow.collect { lastQuery = it }
         }
         return flow
     }

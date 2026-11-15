@@ -5,6 +5,7 @@ import com.ivzb.urgat.data.inAppUpdate.InAppUpdateRepository
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -13,6 +14,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultObserveInstallStateUseCaseTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()

@@ -203,8 +203,7 @@ dependencies {
 kotlin {
     compilerOptions {
         extraWarnings.set(true)
-        freeCompilerArgs.add("-Xannotation-default-target=param-property")
-        freeCompilerArgs.add("-Xnested-type-aliases")
+        allWarningsAsErrors.set(true)
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
@@ -231,5 +230,25 @@ tasks {
                 }
             }
         })
+    }
+
+    // Room's generated *_Impl.kt files trigger extraWarnings that can't be fixed at the source,
+    // so suppress them in the generated files only.
+    configureEach {
+        if (name.startsWith("ksp") && name.endsWith("Kotlin")) {
+            val roomGeneratedFiles = outputs.files.asFileTree.matching { include("**/*_Impl.kt") }
+
+            doLast {
+                val suppress = "@file:Suppress(\"CAN_BE_VAL\", \"REDUNDANT_VISIBILITY_MODIFIER\")"
+
+                roomGeneratedFiles.forEach { file ->
+                    val content = file.readText()
+
+                    if (!content.startsWith(suppress)) {
+                        file.writeText("$suppress\n\n$content")
+                    }
+                }
+            }
+        }
     }
 }

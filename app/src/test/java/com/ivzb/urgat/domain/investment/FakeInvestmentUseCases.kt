@@ -205,12 +205,12 @@ class FakeCreateInvestmentUseCase : CreateInvestmentUseCase {
     override suspend fun invoke(
         name: String,
         shares: BigDecimal,
-        cost: BigDecimal,
+        costPrice: BigDecimal,
         category: String,
         currency: String,
         date: Long,
     ) {
-        created = listOf(name, shares, cost, category, currency, date)
+        created = listOf(name, shares, costPrice, category, currency, date)
     }
 }
 
@@ -222,12 +222,12 @@ class FakeUpdateInvestmentUseCase : UpdateInvestmentUseCase {
         id: String,
         name: String,
         shares: BigDecimal,
-        cost: BigDecimal,
+        costPrice: BigDecimal,
         category: String,
         currency: String,
         date: Long,
     ) {
-        updated = listOf(id, name, shares, cost, category, currency, date)
+        updated = listOf(id, name, shares, costPrice, category, currency, date)
     }
 }
 
@@ -283,7 +283,7 @@ class FakeObserveInvestmentsUiStateUseCase: ObserveInvestmentsUiStateUseCase {
     ): Flow<Async<InvestmentsUiState>> {
         // Record query changes for assertions
         CoroutineScope(Dispatchers.Unconfined).launch {
-            searchQueryFlow?.collect { lastQuery = it }
+            searchQueryFlow.collect { lastQuery = it }
         }
         return flow
     }

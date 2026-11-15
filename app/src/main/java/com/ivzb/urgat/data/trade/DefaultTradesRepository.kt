@@ -4,6 +4,7 @@ import com.ivzb.urgat.data.marketPrice.MarketPriceRepository
 import com.ivzb.urgat.di.DefaultDispatcher
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,7 @@ class DefaultTradesRepository @Inject constructor(
     private var refreshStartTime = 0L
     private var isInitialLoad = true
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(limit: Int, dateRange: LongRange): Flow<List<Trade>> {
         isInitialLoad = true
 
@@ -53,6 +55,7 @@ class DefaultTradesRepository @Inject constructor(
             }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun observe(limit: Int, dateRange: LongRange, searchQuery: String): Flow<List<Trade>> {
         isInitialLoad = true
 
