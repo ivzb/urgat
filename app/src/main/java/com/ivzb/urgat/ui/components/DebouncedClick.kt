@@ -2,7 +2,7 @@ package com.ivzb.urgat.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
@@ -11,7 +11,7 @@ fun rememberDebouncedClick(
     debounceMillis: Long = 1_000L,
     onClick: () -> Unit
 ): () -> Unit {
-    var lastClickTime by remember { mutableStateOf(0L) }
+    var lastClickTime by remember { mutableLongStateOf(0L) }
 
     return {
         val now = System.currentTimeMillis()

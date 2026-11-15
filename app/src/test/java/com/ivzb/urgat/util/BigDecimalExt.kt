@@ -1,6 +1,7 @@
 package com.ivzb.urgat.util
 
 import java.math.BigDecimal
+import java.util.Locale
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -80,6 +81,20 @@ class BigDecimalExt {
             "12.1" to "12.100",
         ).forEach { (expected, value) ->
             assertEquals(expected, value.toBigDecimal().format())
+        }
+    }
+
+    @Test
+    fun formatFollowsLocaleChangeTest() {
+        val defaultLocale = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.US)
+            assertEquals("1,234.5", BigDecimal("1234.5").format())
+
+            Locale.setDefault(Locale.GERMANY)
+            assertEquals("1.234,5", BigDecimal("1234.5").format())
+        } finally {
+            Locale.setDefault(defaultLocale)
         }
     }
 

@@ -6,18 +6,13 @@ import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.cos
 
-private val NUMBER_FORMAT = NumberFormat.getInstance(Locale.getDefault()).apply {
-    minimumFractionDigits = 0
-    maximumFractionDigits = 2
-    isGroupingUsed = true
-    roundingMode = RoundingMode.DOWN
-}
-
 private val PERCENT = 100.toBigDecimal()
 
-fun BigDecimal.format(digits: Int? = null): String = NUMBER_FORMAT.apply {
+fun BigDecimal.format(digits: Int? = null): String = NumberFormat.getInstance(Locale.getDefault()).apply {
     minimumFractionDigits = digits ?: 0
     maximumFractionDigits = digits ?: 2
+    isGroupingUsed = true
+    roundingMode = RoundingMode.DOWN
 }.format(this)
 
 fun BigDecimal?.formatPnL(digits: Int? = null, withPercentageSign: Boolean = true): String = this?.let {

@@ -29,12 +29,11 @@ fun ListDetailScreen(
     onBack: () -> Unit,
 
     withSearch: Boolean,
+    modifier: Modifier = Modifier,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     listState: LazyListState,
 
-    content: @Composable () -> Unit,
-
-    modifier: Modifier = Modifier
+    content: @Composable () -> Unit
 ) {
 
     UrgatScaffold(

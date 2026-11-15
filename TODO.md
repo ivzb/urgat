@@ -119,6 +119,3 @@
 - add support for btc wallet watchlist
 - inspect the UI thread for janky frames
 - add small chart UI to the watchlist widget
-- change android lint and compiler warnings to error
-- run kotlin lint during play_store_release.sh
-- enable lint warnings as errors

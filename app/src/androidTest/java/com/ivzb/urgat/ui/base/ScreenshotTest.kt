@@ -1,14 +1,13 @@
 package com.ivzb.urgat.ui.base
 
-import android.content.Context
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.canTakeScreenshot
 import androidx.test.core.graphics.writeToTestStorage
-import com.ivzb.urgat.R
+import androidx.test.platform.app.InstrumentationRegistry
+import com.ivzb.urgat.test.R
 import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestName
@@ -21,7 +20,7 @@ abstract class ScreenshotTest {
     @get:Rule
     val nameRule = TestName()
 
-    private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val context = InstrumentationRegistry.getInstrumentation().context
     private val resources = context.resources
 
     protected var itemsLimit = resources.getInteger(R.integer.items_limit)

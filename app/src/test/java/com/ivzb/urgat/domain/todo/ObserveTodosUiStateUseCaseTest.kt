@@ -212,8 +212,8 @@ class ObserveTodosUiStateUseCaseTest {
 
         private val fakeTodosFiltering = listOf(
             FilterMenuItem(type = TodosFilterType.ALL_TODOS, labelResId = R.string.all_todos, size = 1),
-            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.active_todos, size = 1),
-            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.completed_todos, size = 0),
+            FilterMenuItem(type = TodosFilterType.ACTIVE_TODOS, labelResId = R.string.filter_active, size = 1),
+            FilterMenuItem(type = TodosFilterType.COMPLETED_TODOS, labelResId = R.string.filter_completed, size = 0),
         )
     }
 

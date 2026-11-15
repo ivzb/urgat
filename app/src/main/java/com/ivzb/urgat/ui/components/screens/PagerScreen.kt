@@ -43,13 +43,12 @@ fun NavigationPagerScreen(
     navigator: Navigator,
 
     withSearch: (Page) -> Boolean,
+    modifier: Modifier = Modifier,
     withFab: (Page) -> Boolean = { true },
     onSearchFocusChanged: ((Boolean) -> Unit)? = null,
     topAppBarActionsContent: (@Composable (Page) -> Unit)? = null,
 
     content: PagerContent,
-
-    modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
     val listStates = rememberLazyListStates(uiState.pages.size)
@@ -95,12 +94,11 @@ fun PagerScreen(
     onSearchQueryChanged: (String) -> Unit,
     onBack: () -> Unit,
 
+    modifier: Modifier = Modifier,
     withSearch: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
 
     content: PagerContent,
-
-    modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState(initialPage = uiState.initialPage) { uiState.pages.size }
     val listStates = rememberLazyListStates(uiState.pages.size)
@@ -138,9 +136,9 @@ fun PagerContent(
     pages: List<Page>,
     pagerState: PagerState,
     listStates: List<LazyListState>,
+    modifier: Modifier = Modifier,
     onListStateChanged: ((LazyListState) -> Unit)? = null,
     content: PagerContent,
-    modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
     val isHorizontalScrollEnabled by remember(pages.size) {

@@ -52,14 +52,13 @@ fun PieChart(
 
     defaultText: AnnotatedString,
 
+    modifier: Modifier = Modifier,
     textFontWeight: FontWeight? = null,
     textStyle: TextStyle,
 
     /** Hoisted selection, identified by [PieChartItem.title], so it can be shared between charts. */
     selectedTitle: String? = null,
     onSelectedTitleChanged: ((String?) -> Unit)? = null,
-
-    modifier: Modifier = Modifier,
 ) {
     val total = data.map { it.value.absoluteValue }.sum()
     val strokeWidthDp = dimensionResource(R.dimen.pie_chart_stroke_width)

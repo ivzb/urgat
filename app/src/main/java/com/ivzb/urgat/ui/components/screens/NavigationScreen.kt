@@ -68,14 +68,13 @@ fun NavigationScreen(
     onFabActionClick: () -> Unit,
     navigator: Navigator,
     withSearch: Boolean,
+    modifier: Modifier = Modifier,
     withFab: Boolean = true,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     listState: LazyListState? = null,
     onSearchFocusChanged: ((Boolean) -> Unit)? = null,
 
-    content: @Composable () -> Unit,
-
-    modifier: Modifier = Modifier
+    content: @Composable () -> Unit
 ) {
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

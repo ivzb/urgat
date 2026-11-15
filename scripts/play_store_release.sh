@@ -36,6 +36,11 @@ if [ "$FLAG" != "" ] && [ "$FLAG" != "-skip-screenshots" ] && [ "$FLAG" != "--ss
 fi
 
 ##
+# Run lint check
+##
+./run_lint.sh
+
+##
 # Run ktlint check
 ##
 ./run_ktlint.sh

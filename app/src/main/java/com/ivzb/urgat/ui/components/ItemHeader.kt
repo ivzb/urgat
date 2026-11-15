@@ -50,8 +50,8 @@ fun ItemHeaderMedium(
 @Composable
 fun ItemHeaderSmall(
     text: AnnotatedString,
-    textAlign: TextAlign? = null,
     modifier: Modifier = Modifier,
+    textAlign: TextAlign? = null,
 ) {
 
     Text(
@@ -66,8 +66,8 @@ fun ItemHeaderSmall(
 @Composable
 fun ItemHeaderSmall(
     text: String,
+    modifier: Modifier = Modifier,
     total: AnnotatedString = AnnotatedString(""),
-    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier

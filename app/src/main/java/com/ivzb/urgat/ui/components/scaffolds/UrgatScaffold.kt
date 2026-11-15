@@ -30,12 +30,12 @@ fun UrgatScaffold(
     onSearchQueryChanged: (String) -> Unit,
 
     withSearch: Boolean,
+    modifier: Modifier = Modifier,
     navigationIcon: (@Composable () -> Unit)? = null,
     topAppBarActionsContent: (@Composable () -> Unit)? = null,
     floatingActionButtonContent: (@Composable () -> Unit)? = null,
     onSearchFocusChanged: ((Boolean) -> Unit)? = null,
 
-    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     Scaffold(
