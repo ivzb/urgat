@@ -27,8 +27,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-data class LineChartItem(val value: Float, val timestamp: Long)
-
 @Composable
 fun LineChart(
     items: List<LineChartItem>,

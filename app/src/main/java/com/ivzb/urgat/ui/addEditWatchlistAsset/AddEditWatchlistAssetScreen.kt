@@ -46,7 +46,7 @@ import com.ivzb.urgat.ui.components.responsiveButtonWidth
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
-enum class FieldId {
+private enum class FieldId {
     Name,
 }
 

@@ -52,7 +52,7 @@ import com.ivzb.urgat.ui.components.responsiveButtonWidth
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
-enum class CarMaintenanceFieldId {
+private enum class FieldId {
     Description,
     PartNumber,
     Url,
@@ -96,7 +96,7 @@ fun AddEditCarMaintenanceScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val focusRequesters = remember {
-        List(CarMaintenanceFieldId.entries.size) { FocusRequester() }
+        List(FieldId.entries.size) { FocusRequester() }
     }
 
     Scaffold(
@@ -283,7 +283,7 @@ private fun DescriptionRow(
         maxLines = 1,
         modifier = Modifier
             .fillMaxWidth()
-            .focusRequester(focusRequesters[CarMaintenanceFieldId.Description.ordinal]),
+            .focusRequester(focusRequesters[FieldId.Description.ordinal]),
     )
 }
 
@@ -311,7 +311,7 @@ private fun PartNumberRow(
             maxLines = 1,
             modifier = Modifier
                 .weight(1f)
-                .focusRequester(focusRequesters[CarMaintenanceFieldId.PartNumber.ordinal]),
+                .focusRequester(focusRequesters[FieldId.PartNumber.ordinal]),
         )
     }
 }
@@ -341,7 +341,7 @@ private fun UrlRow(
             maxLines = 1,
             modifier = Modifier
                 .weight(1f)
-                .focusRequester(focusRequesters[CarMaintenanceFieldId.Url.ordinal]),
+                .focusRequester(focusRequesters[FieldId.Url.ordinal]),
         )
     }
 }
@@ -370,7 +370,7 @@ private fun CarNameAndOdometerRow(
             maxLines = 1,
             modifier = Modifier
                 .weight(1f)
-                .focusRequester(focusRequesters[CarMaintenanceFieldId.CarName.ordinal]),
+                .focusRequester(focusRequesters[FieldId.CarName.ordinal]),
         )
 
         TextField(
@@ -386,7 +386,7 @@ private fun CarNameAndOdometerRow(
             maxLines = 1,
             modifier = Modifier
                 .weight(1f)
-                .focusRequester(focusRequesters[CarMaintenanceFieldId.Odometer.ordinal]),
+                .focusRequester(focusRequesters[FieldId.Odometer.ordinal]),
         )
     }
 }
@@ -421,7 +421,7 @@ private fun DateRow(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequesters[CarMaintenanceFieldId.Date.ordinal])
+                .focusRequester(focusRequesters[FieldId.Date.ordinal])
                 .onFocusChanged {
                     if (it.isFocused) {
                         dialog.show()

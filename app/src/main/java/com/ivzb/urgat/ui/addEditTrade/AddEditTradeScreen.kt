@@ -56,7 +56,7 @@ import com.ivzb.urgat.ui.components.responsiveButtonWidth
 import com.ivzb.urgat.ui.theme.UrgatTheme
 import kotlinx.coroutines.launch
 
-enum class TradeFieldId {
+private enum class FieldId {
     Name,
     Amount,
     Currency,
@@ -96,7 +96,7 @@ fun AddEditTradeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val focusRequesters = remember {
-        List(TradeFieldId.entries.size) { FocusRequester() }
+        List(FieldId.entries.size) { FocusRequester() }
     }
 
     Scaffold(
@@ -253,7 +253,7 @@ private fun NameRow(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .focusRequester(focusRequesters[TradeFieldId.Name.ordinal]),
+            .focusRequester(focusRequesters[FieldId.Name.ordinal]),
     )
 }
 
@@ -282,7 +282,7 @@ private fun AmountAndCurrencyRow(
             maxLines = 1,
             modifier = Modifier
                 .weight(1f)
-                .focusRequester(focusRequesters[TradeFieldId.Amount.ordinal]),
+                .focusRequester(focusRequesters[FieldId.Amount.ordinal]),
         )
 
         TextField(
@@ -298,7 +298,7 @@ private fun AmountAndCurrencyRow(
             maxLines = 1,
             modifier = Modifier
                 .weight(1f)
-                .focusRequester(focusRequesters[TradeFieldId.Currency.ordinal]),
+                .focusRequester(focusRequesters[FieldId.Currency.ordinal]),
         )
     }
 }
@@ -333,7 +333,7 @@ private fun DateRow(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(focusRequesters[TradeFieldId.Date.ordinal])
+                .focusRequester(focusRequesters[FieldId.Date.ordinal])
                 .onFocusChanged {
                     if (it.isFocused) {
                         dialog.show()

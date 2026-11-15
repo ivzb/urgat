@@ -48,7 +48,7 @@ import com.ivzb.urgat.ui.theme.UrgatTheme
 import com.ivzb.urgat.util.transparentTextFieldColors
 import kotlinx.coroutines.launch
 
-enum class FieldId {
+private enum class FieldId {
     Content,
 }
 
