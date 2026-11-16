@@ -1,3 +1,8 @@
+## Release notes 26.11.12
+
+New:
+- The watchlist widget now shows a mini chart next to each asset, so you can see how its price moved today at a glance.
+
 ## Release notes 26.11.11
 
 No release notes.
