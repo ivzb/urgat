@@ -81,6 +81,36 @@ class YahooFinanceMarketPriceRepositoryTest {
     }
 
     @Test
+    fun `fetchPrice returns the day's price history without the gaps`() = runTest(testDispatcher) {
+        coEvery { api.fetch("GOOGL") } returns response(price = 180.5, shortName = "Alphabet").let {
+            it.copy(
+                chart = it.chart.copy(
+                    result = listOf(
+                        it.chart.result.first().copy(
+                            indicators = YahooFinanceResponse.Indicators(
+                                quote = listOf(YahooFinanceResponse.Quote(close = listOf(179.0, null, 180.0, 180.5))),
+                            ),
+                        ),
+                    ),
+                ),
+            )
+        }
+
+        val result = requireNotNull(repository.fetchPrice("GOOGL"))
+
+        assertEquals(listOf(179.0, 180.0, 180.5), result.priceHistory)
+    }
+
+    @Test
+    fun `fetchPrice returns an empty price history when none came back`() = runTest(testDispatcher) {
+        coEvery { api.fetch("GOOGL") } returns response(price = 180.5, shortName = "Alphabet")
+
+        val result = requireNotNull(repository.fetchPrice("GOOGL"))
+
+        assertEquals(emptyList<Double>(), result.priceHistory)
+    }
+
+    @Test
     fun `fetchPrice normalizes symbol and returns correct market price`() = runTest(testDispatcher) {
         val response = YahooFinanceResponse(
             chart = YahooFinanceResponse.Chart(

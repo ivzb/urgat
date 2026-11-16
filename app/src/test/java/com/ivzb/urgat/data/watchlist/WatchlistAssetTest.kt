@@ -147,5 +147,6 @@ class WatchlistAssetTest {
         pricePrecision = pricePrecision,
         isDeleted = false,
         createdAt = 1L,
+        priceHistory = emptyList(),
     )
 }

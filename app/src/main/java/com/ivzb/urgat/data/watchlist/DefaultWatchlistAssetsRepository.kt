@@ -90,7 +90,8 @@ class DefaultWatchlistAssetsRepository @Inject constructor(
             previousClosePrice = null,
             pricePrecision = null,
             isDeleted = false,
-            createdAt = System.currentTimeMillis()
+            createdAt = System.currentTimeMillis(),
+            priceHistory = emptyList(),
         )
         localDataSource.upsert(watchlistAsset.toEntity())
         return id

@@ -47,6 +47,7 @@ abstract class DefaultInvestmentsRepositoryTestBase {
             currency = "USD",
             previousClosePrice = BigDecimal(price),
             pricePrecision = pricePrecision,
+            priceHistory = emptyList(),
         )
     }
 }

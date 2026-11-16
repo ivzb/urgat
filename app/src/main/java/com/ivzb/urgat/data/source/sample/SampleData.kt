@@ -25,6 +25,8 @@ import com.ivzb.urgat.domain.common.GroupTrades
 import com.ivzb.urgat.util.randomUUID
 import kotlin.collections.component1
 import kotlin.collections.component4
+import kotlin.math.abs
+import kotlin.random.Random
 
 object SampleData {
 
@@ -290,8 +292,23 @@ object SampleData {
                 currency = currency,
                 isDeleted = false,
                 createdAt = System.currentTimeMillis(),
+                priceHistory = sampleIntradayPrices(
+                    from = previousClosePrice.toDouble(),
+                    to = marketPrice.toDouble(),
+                ),
             )
         }
+
+    private fun sampleIntradayPrices(from: Double, to: Double, points: Int = 26): List<Double> {
+        val wiggle = maxOf(abs(to - from), from * 0.005)
+
+        return List(points) { index ->
+            val progress = index.toDouble() / (points - 1)
+            val noise = if (index == 0 || index == points - 1) 0.0 else Random.nextDouble(-wiggle, wiggle)
+
+            from + (to - from) * progress + noise
+        }
+    }
 
     /** Not one quote could be fetched - nothing price related is known. */
     val SAMPLE_WATCHLIST_ASSETS_WITHOUT_PRICES = SAMPLE_WATCHLIST_ASSETS.map { asset ->
@@ -299,6 +316,7 @@ object SampleData {
             marketPrice = null,
             previousClosePrice = null,
             currency = null,
+            priceHistory = emptyList(),
         )
     }
 
@@ -306,7 +324,7 @@ object SampleData {
     val SAMPLE_WATCHLIST_ASSETS_PARTIAL = SAMPLE_WATCHLIST_ASSETS
         .mapIndexed { index, asset ->
             if (index % 3 == 1) {
-                asset.copy(marketPrice = null, previousClosePrice = null, currency = null)
+                asset.copy(marketPrice = null, previousClosePrice = null, currency = null, priceHistory = emptyList())
             } else {
                 asset
             }

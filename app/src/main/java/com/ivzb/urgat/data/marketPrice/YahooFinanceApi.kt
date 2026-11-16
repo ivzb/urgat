@@ -9,7 +9,7 @@ interface YahooFinanceApi {
     @GET("v8/finance/chart/{symbol}")
     suspend fun fetch(
         @Path("symbol") symbol: String,
-        @Query("interval") interval: String = "1d",
+        @Query("interval") interval: String = "15m",
         @Query("range") range: String = "1d",
     ): YahooFinanceResponse
 

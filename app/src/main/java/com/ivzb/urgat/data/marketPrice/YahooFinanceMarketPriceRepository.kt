@@ -55,7 +55,8 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
             scope.async {
                 withContext(dispatcher) {
                     try {
-                        val meta = api.fetch(symbol).chart.result.first().meta
+                        val result = api.fetch(symbol).chart.result.first()
+                        val meta = result.meta
 
                         MarketPrice(
                             symbol = symbol,
@@ -64,6 +65,10 @@ class YahooFinanceMarketPriceRepository @Inject constructor(
                             currency = meta.currency,
                             previousClosePrice = BigDecimal(meta.chartPreviousClose),
                             pricePrecision = meta.priceHint,
+                            priceHistory = result.indicators?.quote?.firstOrNull()
+                                ?.close
+                                ?.filterNotNull()
+                                .orEmpty(),
                         ).also {
                             fetchedAt = timeProvider.currentTimeMillis()
                             logger.debug("market price fetched: $it")

@@ -48,6 +48,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 3L,
+                    priceHistory = emptyList(),
                 ),
                 WatchlistAsset(
                     id = "2",
@@ -59,6 +60,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 2L,
+                    priceHistory = emptyList(),
                 ),
                 WatchlistAsset(
                     id = "1",
@@ -70,6 +72,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 1L,
+                    priceHistory = emptyList(),
                 ),
             ),
         )
@@ -90,6 +93,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 1L,
+                    priceHistory = emptyList(),
                 ),
                 WatchlistAsset(
                     id = "2",
@@ -101,6 +105,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 2L,
+                    priceHistory = emptyList(),
                 ),
                 WatchlistAsset(
                     id = "3",
@@ -112,6 +117,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 3L,
+                    priceHistory = emptyList(),
                 ),
             ),
         )
@@ -136,6 +142,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 2L,
+                    priceHistory = emptyList(),
                 ),
                 WatchlistAsset(
                     id = "1",
@@ -147,6 +154,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 1L,
+                    priceHistory = emptyList(),
                 ),
                 WatchlistAsset(
                     id = "3",
@@ -158,6 +166,7 @@ class ObserveWatchlistAssetsUseCaseTest {
                     pricePrecision = 2,
                     isDeleted = false,
                     createdAt = 3L,
+                    priceHistory = emptyList(),
                 ),
             )
         )

@@ -118,4 +118,6 @@
 - check if it makes sense to replace the existing screenshot tests with the new android studio feature - https://developer.android.com/studio/preview/compose-screenshot-testing
 - add support for btc wallet watchlist
 - inspect the UI thread for janky frames
-- add small chart UI to the watchlist widget
+- add small chart UI to the watchlist widget next to each item
+- can the build process be improved by parallelism
+- add chart similar to the watchlist widget to finance/watchlist item

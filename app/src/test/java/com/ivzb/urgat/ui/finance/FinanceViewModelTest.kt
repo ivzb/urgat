@@ -734,6 +734,7 @@ class FinanceViewModelTest {
             currency = "USD",
             previousClosePrice = BigDecimal("148.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         fakeForexRepository.rates["USDEUR=X"] = BigDecimal("1.15")
 
@@ -783,6 +784,7 @@ class FinanceViewModelTest {
             currency = "USD",
             previousClosePrice = BigDecimal("148.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         viewModel = createViewModel()
@@ -821,6 +823,7 @@ class FinanceViewModelTest {
             currency = "USD",
             previousClosePrice = BigDecimal("148.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         fakeForexRepository.rates["USDEUR=X"] = BigDecimal("1.15")
 

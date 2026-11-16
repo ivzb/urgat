@@ -15,6 +15,17 @@ data class YahooFinanceResponse(
     @Serializable
     data class Result(
         val meta: Meta,
+        val indicators: Indicators? = null,
+    )
+
+    @Serializable
+    data class Indicators(
+        val quote: List<Quote> = emptyList(),
+    )
+
+    @Serializable
+    data class Quote(
+        val close: List<Double?> = emptyList(),
     )
 
     @Serializable

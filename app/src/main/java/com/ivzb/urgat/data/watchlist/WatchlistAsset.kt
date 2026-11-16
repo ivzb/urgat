@@ -16,7 +16,8 @@ data class WatchlistAsset(
     val previousClosePrice: BigDecimal?,
     val pricePrecision: Int?,
     val isDeleted: Boolean,
-    val createdAt: Long
+    val createdAt: Long,
+    val priceHistory: List<Double>,
 ) {
 
     val priceChange: BigDecimal? by lazy {

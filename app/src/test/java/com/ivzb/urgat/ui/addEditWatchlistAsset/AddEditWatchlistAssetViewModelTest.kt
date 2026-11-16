@@ -75,6 +75,7 @@ class AddEditWatchlistAssetViewModelTest {
             pricePrecision = 2,
             isDeleted = false,
             createdAt = 1L,
+            priceHistory = emptyList(),
         )
 
         getUseCase.toReturn = asset
@@ -153,6 +154,7 @@ class AddEditWatchlistAssetViewModelTest {
             pricePrecision = 2,
             isDeleted = false,
             createdAt = 1L,
+            priceHistory = emptyList(),
         )
         getUseCase.toReturn = asset
 
@@ -188,6 +190,7 @@ class AddEditWatchlistAssetViewModelTest {
             pricePrecision = 2,
             isDeleted = false,
             createdAt = 1L,
+            priceHistory = emptyList(),
         )
         getUseCase.toReturn = asset
 

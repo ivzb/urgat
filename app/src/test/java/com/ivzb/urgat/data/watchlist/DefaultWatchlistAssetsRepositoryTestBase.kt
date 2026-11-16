@@ -51,6 +51,7 @@ abstract class DefaultWatchlistAssetsRepositoryTestBase {
             currency = currency,
             previousClosePrice = BigDecimal(previousClosePrice),
             pricePrecision = pricePrecision,
+            priceHistory = emptyList(),
         )
     }
 }

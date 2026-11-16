@@ -182,6 +182,7 @@ class DefaultRefreshQuotesUseCaseTest {
             currency = "USD",
             previousClosePrice = "99".toBigDecimal(),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         private val WATCHLIST_ASSET = WatchlistAsset(
@@ -194,6 +195,7 @@ class DefaultRefreshQuotesUseCaseTest {
             pricePrecision = null,
             isDeleted = false,
             createdAt = 0L,
+            priceHistory = emptyList(),
         )
 
     }

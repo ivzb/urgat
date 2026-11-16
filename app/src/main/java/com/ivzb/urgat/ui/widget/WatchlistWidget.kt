@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +57,7 @@ import com.ivzb.urgat.util.financeColor
 import com.ivzb.urgat.util.formatNames
 import com.ivzb.urgat.util.formatUpdatedAt
 import java.math.BigDecimal
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.map
 
 /**
@@ -384,6 +386,10 @@ class WatchlistWidget : GlanceAppWidget() {
                     maxLines = 1,
                 )
             }
+
+            if (!isCompact) {
+                Sparkline(asset)
+            }
         }
     }
 
@@ -396,6 +402,44 @@ class WatchlistWidget : GlanceAppWidget() {
             GlanceTheme.colors.onSurfaceVariant
         } else {
             ColorProvider(color)
+        }
+    }
+
+    /**
+     * The day's prices against the previous close, in the very same green/red as the change.
+     *
+     * It sits at the very end of the row - the prices before it are all of different widths, so
+     * only there does it line up row to row. Whatever has no history still takes up the space,
+     * so the prices stay lined up as well.
+     */
+    @Composable
+    private fun Sparkline(asset: WatchlistAsset) {
+        val density = LocalContext.current.resources.displayMetrics.density
+
+        val lineColor = financeColor(asset.priceChange)
+            .takeUnless { it == Color.Unspecified }
+            ?: SPARKLINE_NEUTRAL_COLOR
+
+        val bitmap = sparklineBitmap(
+            prices = asset.priceHistory,
+            baseline = asset.previousClosePrice?.toDouble(),
+            widthPx = (SPARKLINE_WIDTH.value * density).roundToInt(),
+            heightPx = (SPARKLINE_HEIGHT.value * density).roundToInt(),
+            strokeWidthPx = SPARKLINE_STROKE_WIDTH.value * density,
+            lineColor = lineColor.toArgb(),
+            baselineColor = SPARKLINE_BASELINE_COLOR.toArgb(),
+        )
+
+        Box(modifier = GlanceModifier.padding(start = SPARKLINE_SPACING)) {
+            if (bitmap == null) {
+                Spacer(modifier = GlanceModifier.size(SPARKLINE_WIDTH, SPARKLINE_HEIGHT))
+            } else {
+                Image(
+                    provider = ImageProvider(bitmap),
+                    contentDescription = null,
+                    modifier = GlanceModifier.size(SPARKLINE_WIDTH, SPARKLINE_HEIGHT),
+                )
+            }
         }
     }
 
@@ -449,6 +493,12 @@ class WatchlistWidget : GlanceAppWidget() {
 
                     SkeletonBar(width = 40.dp, height = 9.dp)
                 }
+
+                if (!isCompact) {
+                    Box(modifier = GlanceModifier.padding(start = SPARKLINE_SPACING)) {
+                        SkeletonBar(width = SPARKLINE_WIDTH, height = SPARKLINE_HEIGHT)
+                    }
+                }
             }
         }
     }
@@ -495,6 +545,18 @@ class WatchlistWidget : GlanceAppWidget() {
         private val REFRESH_TAP_TARGET = 48.dp
 
         private val CONTENT_PADDING = 16.dp
+
+        private val SPARKLINE_WIDTH = 40.dp
+
+        private val SPARKLINE_HEIGHT = 20.dp
+
+        private val SPARKLINE_STROKE_WIDTH = 1.5.dp
+
+        private val SPARKLINE_SPACING = 8.dp
+
+        private val SPARKLINE_NEUTRAL_COLOR = Color(0xFF9E9E9E)
+
+        private val SPARKLINE_BASELINE_COLOR = Color(0x809E9E9E)
 
         /**
          * When the ongoing refresh started, `0` when there is none.

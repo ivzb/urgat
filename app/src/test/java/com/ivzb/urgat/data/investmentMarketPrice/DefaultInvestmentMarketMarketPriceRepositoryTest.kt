@@ -60,6 +60,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD")
@@ -76,6 +77,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "usd")
@@ -92,6 +94,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "usd",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD")
@@ -108,6 +111,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "$")
@@ -124,6 +128,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "EUR",
             previousClosePrice = BigDecimal("198.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("SAP.DE", "€")
@@ -140,6 +145,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["USDEUR"] = BigDecimal("0.92")
 
@@ -157,6 +163,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "GBP",
             previousClosePrice = BigDecimal("74.50"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["GBPUSD"] = BigDecimal("1.27")
 
@@ -174,6 +181,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "EUR",
             previousClosePrice = BigDecimal("498.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["EURGBP"] = BigDecimal("0.86")
 
@@ -191,6 +199,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "BTC-USD",
             previousClosePrice = BigDecimal("248.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("COIN", "BTC")
@@ -207,6 +216,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "ETH-USD",
             previousClosePrice = BigDecimal("3480.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("TOKEN", "ETH")
@@ -223,6 +233,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD")
@@ -239,6 +250,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val fetchCountBefore = marketPriceRepository.fetchCount
@@ -257,6 +269,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("5.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("DELIST", "USD")
@@ -273,6 +286,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("649500.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("BRK.A", "USD")
@@ -289,6 +303,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("0.00000845"),
             pricePrecision = 8,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("SHIB", "USD")
@@ -312,6 +327,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD", BigDecimal("10"))
@@ -328,6 +344,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["USDEUR"] = BigDecimal("0.92")
 
@@ -347,6 +364,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD", BigDecimal.ZERO)
@@ -363,6 +381,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD", BigDecimal("0.5"))
@@ -379,6 +398,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "USD", BigDecimal("1000000"))
@@ -395,6 +415,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("AAPL", "$", BigDecimal("3"))
@@ -411,6 +432,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "EUR",
             previousClosePrice = BigDecimal("198.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("SAP.DE", "€", BigDecimal("7"))
@@ -427,6 +449,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "BRK-B",
             previousClosePrice = BigDecimal("99.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("TEST", "BRK.B")
@@ -443,6 +466,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "SXR8.DE",
             previousClosePrice = BigDecimal("99.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("TEST", "SXR8")
@@ -459,6 +483,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "GC=F",
             previousClosePrice = BigDecimal("2295.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("GOLD", "XAU")
@@ -475,6 +500,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "CHF",
             previousClosePrice = BigDecimal("49.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("TEST", "CHF")
@@ -491,6 +517,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "CHF",
             previousClosePrice = BigDecimal("49.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["CHFUSD"] = BigDecimal("1.12")
 
@@ -508,6 +535,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("518.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("SPY", "$")
@@ -524,6 +552,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "EUR",
             previousClosePrice = BigDecimal("18450.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
 
         val result = repository.calculateMarketPrice("DAX", "€")
@@ -540,6 +569,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "EUR",
             previousClosePrice = BigDecimal("198.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["EURUSD"] = BigDecimal("1.09")
 
@@ -557,6 +587,7 @@ class DefaultInvestmentMarketMarketPriceRepositoryTest {
             currency = "USD",
             previousClosePrice = BigDecimal("188.00"),
             pricePrecision = 2,
+            priceHistory = emptyList(),
         )
         forexRepository.rates["USDEUR"] = BigDecimal("0.92")
 

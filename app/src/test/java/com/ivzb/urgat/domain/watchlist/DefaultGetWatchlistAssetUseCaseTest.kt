@@ -36,6 +36,7 @@ class DefaultGetWatchlistAssetUseCaseTest {
             pricePrecision = 2,
             isDeleted = false,
             createdAt = 1L,
+            priceHistory = emptyList(),
         )
         coEvery { repository.get(id) } returns expectedAsset
 

@@ -9,4 +9,5 @@ data class MarketPrice(
     val currency: String,
     val previousClosePrice: BigDecimal,
     val pricePrecision: Int,
+    val priceHistory: List<Double>,
 )
