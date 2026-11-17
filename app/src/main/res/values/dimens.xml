@@ -25,4 +25,6 @@
     <dimen name="checkbox_padding">8dp</dimen>
     <dimen name="fire_margin">4dp</dimen>
     <dimen name="menu_badge_size">12dp</dimen>
+    <dimen name="sparkline_width">48dp</dimen>
+    <dimen name="sparkline_height">24dp</dimen>
 </resources>

@@ -40,6 +40,8 @@ fun ListItem(
 
     colorIndex: Int? = null,
 
+    trailing: (@Composable () -> Unit)? = null,
+
     onClick: () -> Unit = {},
 ) {
 
@@ -76,6 +78,12 @@ fun ListItem(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 ListItemRightTexts(textRight, subTextRight, subTextRightCanBeEmpty)
+
+                trailing?.let {
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    it()
+                }
             }
         }
 

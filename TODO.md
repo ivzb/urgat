@@ -120,4 +120,4 @@
 - inspect the UI thread for janky frames
 - add small chart UI to the watchlist widget next to each item
 - can the build process be improved by parallelism
-- add chart similar to the watchlist widget to finance/watchlist item
+- add chart similar to the finance/watchlist to finance/investments item

@@ -1,10 +1,10 @@
-package com.ivzb.urgat.ui.widget
+package com.ivzb.urgat.ui.components
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class SparklineTest {
+class SparklinePointsTest {
 
     @Test
     fun `sparklinePoints needs at least two prices`() {
