@@ -1,3 +1,8 @@
+## Release notes 26.11.13
+
+New:
+- Your watchlist in the app now shows a mini chart next to each asset, so you can see how its price moved today at a glance, just like on the widget.
+
 ## Release notes 26.11.12
 
 New:
